@@ -42,6 +42,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 
+		println(msg.Username + " " + msg.Message + " " + msg.Email) // работает Х)))
+
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			log.Printf("error: %v", err)
 			for client := range usersWs { // ходим по всем подключениям
