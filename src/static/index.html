@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Chat</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/emojione/2.2.6/assets/css/emojione.min.css"/>
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+<header>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="/" class="brand-logo right">Simple Chat</a>
+        </div>
+    </nav>
+</header>
+<main id="app">
+    <div class="row">
+        <div class="col s12">
+            <div class="card horizontal">
+                <div id="chat-messages" class="card-content" v-html="chatContent">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" v-if="joined">
+        <div class="input-field col s8">
+            <input type="text" v-model="newMsg" @keyup.enter="send">
+        </div>
+        <div class="input-field col s4">
+            <button class="waves-effect waves-light btn" @click="send">
+                <i class="material-icons right">chat</i>
+                Send
+            </button>
+        </div>
+    </div>
+    <div class="row" v-if="!joined">
+        <div class="input-field col s8">
+            <input type="email" v-model.trim="email" placeholder="Email">
+        </div>
+        <div class="input-field col s8">
+            <input type="text" v-model.trim="username" placeholder="Username">
+        </div>
+        <div class="input-field col s4">
+            <button class="waves-effect waves-light btn" @click="join()">
+                <i class="material-icons right">done</i>
+                Join
+            </button>
+        </div>
+    </div>
+</main>
+<footer class="page-footer">
+</footer>
+<script src="https://unpkg.com/vue@2.1.3/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/emojione/2.2.6/lib/js/emojione.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/md5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script>
+
+    new Vue({
+    el: '#app',
+
+    data: {
+        ws: null, // Our websocket
+        newMsg: '', // Holds new messages to be sent to the server
+        chatContent: '', // A running list of chat messages displayed on the screen
+        email: null, // Email address used for grabbing an avatar
+        username: null, // Our username
+        joined: false // True if email and username have been filled in
+    },
+
+    created: function() {
+        var self = this;
+        this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+        this.ws.addEventListener('message', function(e) {
+        var msg = JSON.parse(e.data);
+        self.chatContent += '<div class="chip">'
+                         + '<img src="' + self.gravatarURL(msg.email) + '">' // Avatar
+                         + msg.username
+                         + '</div>'
+                         + emojione.toImage(msg.message) + '<br/>'; // Parse emojis
+
+        var element = document.getElementById('chat-messages');
+        element.scrollTop = element.scrollHeight; // Auto scroll to the bottom
+        });
+    },
+
+    methods: {
+        send: function () {
+            if (this.newMsg != '') {
+                this.ws.send(
+                    JSON.stringify({
+                        email: this.email,
+                        username: this.username,
+                        message: $('<p>').html(this.newMsg).text() // Strip out html
+                }));
+                this.newMsg = ''; // Reset newMsg
+            }
+        },
+
+        join: function () {
+            if (!this.email) {
+                Materialize.toast('You must enter an email', 2000);
+                return
+            }
+
+            if (!this.username) {
+                Materialize.toast('You must choose a username', 2000);
+                return
+            }
+
+            this.email = $('<p>').html(this.email).text();
+            this.username = $('<p>').html(this.username).text();
+            this.joined = true;
+        },
+
+        gravatarURL: function(email) {
+            return 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(email);
+        }
+    }
+});
+
+
+</script>
+</body>
+</html>
