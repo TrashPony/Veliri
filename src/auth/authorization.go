@@ -67,6 +67,8 @@ func GetCookie(w http.ResponseWriter, r *http.Request, user User) {
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)
+	http.Redirect(w, r, "http://642e0559eb9c.sn.mynetname.net:8080/lobby/", 302)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

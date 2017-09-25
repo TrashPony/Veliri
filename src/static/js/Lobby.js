@@ -59,16 +59,16 @@ function ResponseLobby(jsonMessage) {
         }
 
         if (event === "GameSelection") {
-            if (JSON.parse(jsonMessage).gameList) {
+            //if (JSON.parse(jsonMessage).gameList) {
                 var SelectGame = document.getElementsByClassName("Games");
                 while (SelectGame.length > 0) {
                     SelectGame[0].parentNode.removeChild(SelectGame[0]);
                 }
 
 
-                var gameName = (JSON.parse(jsonMessage).gameList).split(':');
-                var mapName = (JSON.parse(jsonMessage).mapList).split(':');
-                var userName = (JSON.parse(jsonMessage).userName).split(':');
+                var gameName = (JSON.parse(jsonMessage).response_name_game).split(':');
+                var mapName = (JSON.parse(jsonMessage).response_name_map).split(':');
+                var userName = (JSON.parse(jsonMessage).response_name_user).split(':');
 
                 var gameContent = document.getElementById('Games list');
 
@@ -83,7 +83,7 @@ function ResponseLobby(jsonMessage) {
                     div.appendChild(document.createTextNode(i + ") Имя:     " + gameName[i] + " Карта:      " + mapName[i] + " Создатель:       " + userName[i]));
                     gameContent.appendChild(div);
                 }
-            }
+            //}
         }
 
         if (event === "CrateNewGame") {

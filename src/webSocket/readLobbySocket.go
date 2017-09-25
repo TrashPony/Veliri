@@ -9,7 +9,10 @@ import (
 )
 
 var lobbyPipe = make(chan LobbyMessage) // пайп доп. читать в документации
+var openGamePipe = make(chan LobbyResponse)
+
 var usersWs = make(map[LobbyClients]bool) // тут будут храниться наши подключения
+var wsLogin = ""
 var upgrader = websocket.Upgrader{} // методами приема обычного HTTP-соединения и обновления его до WebSocket
 
 
@@ -30,6 +33,7 @@ func ReadLobbySocket(login string, id int, w http.ResponseWriter, r *http.Reques
 	}
 
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
+	wsLogin = login
 	LobbyReader(ws)
 }
 
@@ -43,23 +47,23 @@ func LobbyReader(ws *websocket.Conn)  {
 			break
 		}
 
-		for client := range usersWs {
-			if(client.ws == ws) {
-				msg.UserName = client.login
-			}
-		}
+
 
 		if msg.Event == "MapSelection"{
 			lobby.MapList()
 		}
+
 		if msg.Event == "GameSelection"{
-			lobby.OpenGameList()
+			var games []string = lobby.OpenGameList()
+			var resp = LobbyResponse{"GameSelection", wsLogin, games[0], games[1], games[2]}
+			openGamePipe <- resp
 		}
+
 		if msg.Event == "CrateNewGame"{
 			lobby.CreateNewGame()
 		}
 
-		lobbyPipe <- msg  // Отправляет сообщение в тред
+		  // Отправляет сообщение в тред
 	}
 }
 
@@ -83,6 +87,22 @@ func LobbySender() {
 	}
 }
 
+func OpenGameSender() {
+	for {
+		resp := <-openGamePipe
+		for client := range usersWs {
+			if client.login == resp.UserName {
+				err := client.ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					client.ws.Close()
+					delete(usersWs, client)
+				}
+			}
+		}
+	}
+}
+
 func DelConn(ws *websocket.Conn, err error)  {
 	log.Printf("error: %v", err)
 	for client := range usersWs { // ходим по всем подключениям
@@ -94,10 +114,18 @@ func DelConn(ws *websocket.Conn, err error)  {
 }
 
 type LobbyMessage struct {
-	Event string `json:"event"`
-	MapName string `json:"map_name"`
+	Event    string `json:"event"`
+	MapName  string `json:"map_name"`
 	UserName string `json:"user_name"`
 	GameName string `json:"game_name"`
+}
+
+type LobbyResponse struct {
+	Event    	  string `json:"event"`
+	UserName	  string
+	ResponseNameGame  string `json:"response_name_game"`
+	ResponseNameMap   string `json:"response_name_map"`
+	ResponseNameUser  string `json:"response_name_user"`
 }
 
 type  LobbyClients struct { // структура описывающая клиента ws соеденение
