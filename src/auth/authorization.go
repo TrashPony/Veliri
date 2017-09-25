@@ -21,7 +21,7 @@ const (
 func Login(w http.ResponseWriter, r *http.Request) {
 	gob.Register(sesKey(0)) // вот это отвечает за шифрование даных как я понял и это важно будет переделать вероятно когда то
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("src/static/login.html")
+		t, _ := template.ParseFiles("src/static/login/login.html")
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()

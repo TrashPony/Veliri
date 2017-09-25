@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/css/style.css" rel="stylesheet">
+    <title>Veliri</title>
+    <script src="/js/Lobby.js"></script>
+    <script> ConnectLobby() </script>
+
+
+</head>
+<body>
+
+<div id="lobby">
+    <div id="Games list">  Игры: </div>
+    <input class="Game" type="button" value="Показать:" onclick="sendGameSelection()"> <p>
+    <input class="Game" name="NameGame" type="text" placeholder="Имя игры">
+    <input class="Game" type="button" value="Создать Игру" onclick="sendMapSelection()">
+    <div id="Games"></div>
+</div>
+</body>
+</html>

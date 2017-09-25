@@ -5,21 +5,22 @@ import (
 	"websocket-master"
 	"net/http"
 	"strconv"
+	"../lobby"
 )
 
-var lobby = make(chan LobbyMessage) // пайп доп. читать в документации
-var usersWs = make(map[Clients]bool) // тут будут храниться наши подключения
+var lobbyPipe = make(chan LobbyMessage) // пайп доп. читать в документации
+var usersWs = make(map[LobbyClients]bool) // тут будут храниться наши подключения
 var upgrader = websocket.Upgrader{} // методами приема обычного HTTP-соединения и обновления его до WebSocket
 
 
-func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request)  {
+func ReadLobbySocket(login string, id int, w http.ResponseWriter, r *http.Request)  {
 
 	ws, err := upgrader.Upgrade(w, r, nil) // запрос GET для перехода на протокол websocket
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	usersWs[Clients{ws, login, id}] = true // Регистрируем нового Клиента
+	usersWs[LobbyClients{ws, login, id}] = true // Регистрируем нового Клиента
 
 
 	for client := range usersWs { // просто смотрим кто есть в подключениях
@@ -32,20 +33,6 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request)  {
 	LobbyReader(ws)
 }
 
-func Router(ws *websocket.Conn)  {
-	for {
-		var msg RouterMessage
-		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			DelConn(ws, err)
-			break
-		}
-		if msg.Target == "lobby" {
-			LobbyReader(ws) // Отправляет вновь принятое сообщение на широковещательный канал
-		}
-	}
-}
-
 func LobbyReader(ws *websocket.Conn)  {
 	for {
 		var msg LobbyMessage
@@ -55,14 +42,26 @@ func LobbyReader(ws *websocket.Conn)  {
 			DelConn(ws, err)
 			break
 		}
-		lobby <- msg // Отправляет вновь принятое сообщение на широковещательный канал
+
+		if msg.Event == "MapSelection"{
+			lobby.MapList()
+		}
+		if msg.Event == "GameSelection"{
+			lobby.OpenGameList()
+		}
+		if msg.Event == "CrateNewGame"{
+			lobby.CreateNewGame()
+		}
+
+		lobbyPipe <- msg  // Отправляет сообщение в тред
+
 	}
 }
 
 func LobbySender() {
 	for {
 		// Берет сообщение из общего канала
-		msg := <-lobby
+		msg := <-lobbyPipe
 		// Отправляет его каждому клиенту
 		// оп оп тут надо сделать так что бы знать как брать нужного клиента
 		for client := range usersWs {
@@ -73,7 +72,7 @@ func LobbySender() {
 				client.ws.Close()
 				delete(usersWs, client)
 			}
-			//}
+
 		}
 	}
 }
@@ -88,17 +87,14 @@ func DelConn(ws *websocket.Conn, err error)  {
 	}
 }
 
-
-type RouterMessage struct { // структура описывающие падающие в общий канал сообщения
-	Target   string `json:"target"` // обратные ковычки позволяют парсить json значения
+type LobbyMessage struct {
+	Event string `json:"event"`
+	MapName string `json:"map_name"`
+	UserName string `json:"user_name"`
+	GameName string `json:"game_name"`
 }
 
-type LobbyMessage struct { // структура описывающие падающие в общий канал сообщения
-	Username string `json:"username"`
-	Message  string `json:"message"`
-}
-
-type Clients struct { // структура описывающая клиента ws соеденение
+type  LobbyClients struct { // структура описывающая клиента ws соеденение
 	ws *websocket.Conn
 	login string
 	id int

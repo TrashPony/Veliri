@@ -1,5 +1,5 @@
 try {
-    var sock = new WebSocket("ws://" + window.location.host + "/ws");
+    var sock = new WebSocket("ws://" + window.location.host + "/wsLobby");
     console.log("Websocket - status: " + sock.readyState);
 
     sock.onopen = function(msg) {
@@ -21,7 +21,6 @@ try {
 
     function Send() {
         sock.send(JSON.stringify({
-          target : "lobby",
           username: "test",
           message: "test"
         }));

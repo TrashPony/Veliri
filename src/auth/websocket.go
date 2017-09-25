@@ -17,6 +17,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 		//http.Redirect(w, r, "http://www.google.com", 401)
 		return // если человек не авторизован то ему не разрешается соеденение
 	}
-
-	webSocket.ReadSocket(login, id , w, r)
+	println(r.URL.Path)
+	if r.URL.Path == "/wsLobby" {
+		webSocket.ReadLobbySocket(login, id, w, r)
+	}
 }
