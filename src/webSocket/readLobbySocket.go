@@ -43,6 +43,12 @@ func LobbyReader(ws *websocket.Conn)  {
 			break
 		}
 
+		for client := range usersWs {
+			if(client.ws == ws) {
+				msg.UserName = client.login
+			}
+		}
+
 		if msg.Event == "MapSelection"{
 			lobby.MapList()
 		}
@@ -54,7 +60,6 @@ func LobbyReader(ws *websocket.Conn)  {
 		}
 
 		lobbyPipe <- msg  // Отправляет сообщение в тред
-
 	}
 }
 
@@ -65,12 +70,13 @@ func LobbySender() {
 		// Отправляет его каждому клиенту
 		// оп оп тут надо сделать так что бы знать как брать нужного клиента
 		for client := range usersWs {
-			//if client.login == "admin" { // ищем юзера админ и только ему отправляем сообщение
-			err := client.ws.WriteJSON(msg)
-			if err != nil {
-				log.Printf("error: %v", err)
-				client.ws.Close()
-				delete(usersWs, client)
+			if client.login == msg.UserName {// ищем юзера который отправил сообщение и только ему отправляем
+				err := client.ws.WriteJSON(msg)
+				if err != nil {
+					log.Printf("error: %v", err)
+					client.ws.Close()
+					delete(usersWs, client)
+				}
 			}
 
 		}
