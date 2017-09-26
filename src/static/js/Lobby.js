@@ -30,13 +30,13 @@ function ResponseLobby(jsonMessage) {
         var event = JSON.parse(jsonMessage).event;
 
         if (event === "MapSelection") {
-            if (JSON.parse(jsonMessage).mapList) {
+            if (JSON.parse(jsonMessage).response_name_map) {
                 var SelectMap = document.getElementsByClassName("SelectMap");
                 while (SelectMap.length > 0) {
                     SelectMap[0].parentNode.removeChild(SelectMap[0]);
                 }
 
-                var mapName = (JSON.parse(jsonMessage).mapList).split(':');
+                var mapName = (JSON.parse(jsonMessage).response_name_map).split(':');
                 var mapContent = document.getElementById('Games');
 
                 var p = document.createElement('p');
@@ -44,13 +44,13 @@ function ResponseLobby(jsonMessage) {
                 p.appendChild(document.createTextNode("Карты:"));
                 mapContent.appendChild(p);
 
-                for (var i = 0; i < mapName.length; i++) {
+                for (var i = 0; (i + 1) < mapName.length; i++) {
                     div = document.createElement('div');
                     div.style.wordWrap = 'break-word';
                     div.className = "SelectMap";
                     div.id = mapName[i];
                     div.onclick = function () {
-                        CreateGame(this.id);
+                        CreateNewGame(this.id);
                     };
                     div.appendChild(document.createTextNode(i + ") " + mapName[i]));
                     mapContent.appendChild(div);
@@ -78,7 +78,7 @@ function ResponseLobby(jsonMessage) {
                     div.className = "Games";
                     div.id = gameName[i];
                     div.onclick = function () {
-                        CreateGame(this.id);
+                        CreateNewGame(this.id);
                     };
                     div.appendChild(document.createTextNode(i + ") Имя:     " + gameName[i] + " Карта:      " + mapName[i] + " Создатель:       " + userName[i]));
                     gameContent.appendChild(div);
@@ -86,8 +86,7 @@ function ResponseLobby(jsonMessage) {
             //}
         }
 
-        if (event === "CrateNewGame") {
-            if (JSON.parse(jsonMessage).mapList === "true") {
+        if (event === "CreateNewGame") {
                 // удаляем старые элементы //
                 del = document.getElementById("lobby");
                 del.remove();
@@ -102,9 +101,14 @@ function ResponseLobby(jsonMessage) {
                 button.value = "Отменить";
                 div.appendChild(button);
                 createGame = true;
-            }
+
         }
     }
+}
+
+function CreateNewGame(mapName) {
+    var gameName = document.querySelector('input[name="NameGame"]').value;
+    sendCrateNewGame(mapName, gameName);
 }
 
 function sendMapSelection() {
@@ -119,11 +123,10 @@ function sendGameSelection() {
     }));
 }
 
-function sendCrateNewGame(mapName, userName, gameName) {
+function sendCrateNewGame(mapName, gameName) {
     sock.send(JSON.stringify({
-        event: "CrateNewGame",
+        event: "CreateNewGame",
         map_name: mapName,
-        user_name: userName,
-        gameName: gameName
+        game_name: gameName
     }));
 }

@@ -1,16 +1,15 @@
-package auth
+package webSocket
 
 import (
 	"net/http"
-	"../webSocket"
+	"../auth"
 )
-
 
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	var login string
 	var id int
 
-	login, id = CheckCookie(w, r) // берем из куки данные по логину и ид пользовтеля
+	login, id = auth.CheckCookie(w, r) // берем из куки данные по логину и ид пользовтеля
 
 	if login == "" || id == 0  || login == "anonymous" {
 		println("Соеденение не разрешено: не авторизован")
@@ -19,6 +18,6 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 	println(r.URL.Path)
 	if r.URL.Path == "/wsLobby" {
-		webSocket.ReadLobbySocket(login, id, w, r)
+		ReadLobbySocket(login, id, w, r)
 	}
 }
