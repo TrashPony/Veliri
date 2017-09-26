@@ -1,74 +1,7 @@
 body{
 
 }
-
-.nline {
-
-}
-
-.fieldUnit {
-    padding: 5px;
-    border: 1px solid #292929;
-    border-radius: 4px;
-    color: black;
-    background-color: #dff0d8;
-    width: 100px;
-    height: 100px;
-    display:inline-block;
-}
-.fieldUnit:hover {
-    border: 1px solid #4a8af4;
-    background-color: #d9d92e;
-    width: 100px;
-}
-.fieldUnit.tank{
-    background-image: url(/img/tank.png);
-    background-size: 100%;
-}
-.fieldUnit.scout{
-    background-image: url(/img/scout.png);
-    background-size: 100%;
-}
-.fieldUnit.arta{
-    background-image: url(/img/arta.png);
-    background-size: 100%;
-}
-
-.fieldInfo {
-    padding: 0;
-    border: 1px solid #e1ba6d;
-    border-radius: 4px;
-    color: black;
-    background-color: #e1ba6d;
-    width: 25px;
-    height: 20px;
-    display:inline-block;
-    text-align: center;
-}
-
-.fieldInfo:hover {
-    border: 1px solid #4a8af4;
-    background-color: #d9d92e;
-}
-
-.fieldSize{
-    padding: 0;
-    border: 1px solid #e1ba6d;
-    border-radius: 4px;
-    color: black;
-    background-color: #e1ba6d;
-    width: 30px;
-    height: 20px;
-    display:inline-block;
-    text-align: center;
-}
-
-.fieldSize:hover {
-    border: 1px solid #4a8af4;
-    background-color: #d9d92e;
-}
-
-.SelectMap {
+.Select{
     margin: 2px;
     padding: 0;
     border: 1px solid #82ffab;
@@ -78,89 +11,40 @@ body{
     width: 75px;
 }
 
-.SelectMap:hover {
+.Select:hover {
     border: 1px solid #4a8af4;
     background-color: #d9d92e;
 }
 
-.unitType{
-    margin: 5px;
+.Select.Map {
+    margin: 2px;
     padding: 0;
-    display:inline-block;
-    text-align: center;
-    transform: translate(0px, -700px);
-}
-.unitType.info {
-    margin: 5px;
-    padding: 0;
-    border: 1px solid #000000;
+    border: 1px solid #82ffab;
     border-radius: 4px;
     color: black;
-    background-color: #000000;
-    width: 100px;
-    height: 100px;
-    display:inline-block;
-    text-align: center;
-    transform: translate(0px, 0px);
+    background-color: #dff0d8;
+    width: 75px;
 }
 
-.unitType.info.tank {
-    background-image: url(/img/tank.png);
-}
-.unitType.info.scout {
-    background-image: url(/img/scout.png);
-}
-.unitType.info.arta {
-    background-image: url(/img/arta.png);
-}
-
-.unitType.info:hover {
-    border: 3px solid #4a8af4;
+.Select.Map:hover {
+    border: 1px solid #4a8af4;
     background-color: #d9d92e;
 }
 
-.gameInfo {
+.Select.Game {
+    margin: 2px;
     padding: 0;
-    border: 2px solid #d6e9c6;
+    border: 1px solid #82ffab;
     border-radius: 4px;
     color: black;
-    background-color: rgba(81, 88, 88, 0.18);
-    width: 300px;
-    height: 300px;
-    display:inline-block;
+    background-color: #dff0d8;
+    width: 350px;
 }
 
-#fieldLog {
-    padding: 0;
-    border: 2px solid #d6e9c6;
-    border-radius: 4px;
-    color: black;
-    background-color: rgba(81, 88, 88, 0.18);
-    width: 300px;
-    height: 300px;
-    display:inline-block;
-    transform: translate(150px, -750px);
-    overflow: scroll;
-    position: relative;
-    top: 0;
-    left: 0;
+.Select.Game:hover {
+    border: 1px solid #4a8af4;
+    background-color: #d9d92e;
 }
 
-#test {
-    display:inline-block;
-    perspective: 400px;
-    white-space: nowrap;
-    width: 80%;
-    height: 100%;
-    padding: 0;
-    text-align: center;
-}
 
-#main {
-    display:inline-block;
-    transform: rotateX(15deg) translate(100px, -250px);
-    overflow:  auto;
-    resize: both;
-    width: 1000px;
-    height: 1050px;
-}
+

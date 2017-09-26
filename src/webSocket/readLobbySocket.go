@@ -22,17 +22,11 @@ func ReadLobbySocket(login string, id int, w http.ResponseWriter, r *http.Reques
 		log.Fatal(err)
 	}
 
-
-
-
 	usersWs[LobbyClients{ws, login, id}] = true // Регистрируем нового Клиента
-
-
 
 	print("WS Сессия: ") // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
-
 
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
@@ -48,22 +42,32 @@ func LobbyReader(ws *websocket.Conn)  {
 			break
 		}
 
-		if msg.Event == "MapSelection"{
-			var maps string = lobby.MapList()
-			var resp = LobbyResponse{"MapSelection", LoginWs(ws), "", maps, ""}
+		if msg.Event == "MapView"{
+			var maps = lobby.MapList()
+			var resp = LobbyResponse{"MapView", LoginWs(ws), "", maps, "", ""}
 			openGamePipe <- resp // Отправляет сообщение в тред
 		}
 
-		if msg.Event == "GameSelection"{
+		if msg.Event == "GameView"{
 			var games []string = lobby.OpenGameList()
-			var resp = LobbyResponse{"GameSelection", LoginWs(ws), games[0], games[1], games[2]}
+			var resp = LobbyResponse{"GameView", LoginWs(ws), games[0], games[1], games[2], ""}
+			openGamePipe <- resp
+		}
+
+		if msg.Event == "ConnectGame"{
+			user2 , success := lobby.ConnectGame(msg.GameName, LoginWs(ws))
+			var resp = LobbyResponse{"GameView", LoginWs(ws), strconv.FormatBool(success), "", "" , user2}
 			openGamePipe <- resp
 		}
 
 		if msg.Event == "CreateNewGame"{
 			lobby.CreateNewGame(msg.GameName, msg.MapName, LoginWs(ws))
-			var resp = LobbyResponse{"CreateNewGame", LoginWs(ws), "", "", ""}
+			var resp = LobbyResponse{"CreateNewGame", LoginWs(ws), "", "", "", ""}
 			openGamePipe <- resp
+		}
+
+		if msg.Event == "StartNewGame"{
+			//lobby.StartNewGame(msg.MapName, msg.UserName)
 		}
 	}
 }
@@ -118,6 +122,7 @@ type LobbyResponse struct {
 	ResponseNameGame  string `json:"response_name_game"`
 	ResponseNameMap   string `json:"response_name_map"`
 	ResponseNameUser  string `json:"response_name_user"`
+	ResponseNameUser2 string `json:"response_name_user_2"`
 }
 
 type  LobbyClients struct { // структура описывающая клиента ws соеденение

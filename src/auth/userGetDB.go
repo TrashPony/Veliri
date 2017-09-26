@@ -31,3 +31,11 @@ func GetUsers()([]User)  {
 	}
 	return users
 }
+
+
+type User struct {
+	id int
+	name string
+	password string
+	mail string
+}
