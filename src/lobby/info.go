@@ -31,12 +31,8 @@ func CreateNewGame (nameGame string, nameMap string, nameCreator string ) {
 	openGames[Games{nameGame, nameMap, nameCreator}] = true
 }
 func DelNewGame(nameCreator string)  {
-	println("зашел")
 	for game := range openGames {
-		println(game.nameCreator)
-		println(nameCreator)
 		if game.nameCreator == nameCreator{
-			println("Удалил")
 			delete(openGames,game)
 		}
 	}

@@ -8,7 +8,7 @@ import (
 	"../lobby"
 )
 
-var lobbyPipe = make(chan LobbyMessage) // пайп доп. читать в документации
+// пайп доп. читать в документации
 var openGamePipe = make(chan LobbyResponse)
 
 var usersWs = make(map[LobbyClients]bool) // тут будут храниться наши подключения
@@ -28,11 +28,11 @@ func ReadLobbySocket(login string, id int, w http.ResponseWriter, r *http.Reques
 	usersWs[LobbyClients{ws, login, id}] = true // Регистрируем нового Клиента
 
 
-	for client := range usersWs { // просто смотрим кто есть в подключениях
-		print("WS Сессия: ")
-		print(client.ws)
-		println(" login: " + client.login + " id: " + strconv.Itoa(client.id))
-	}
+
+	print("WS Сессия: ") // просто смотрим новое подключение
+	print(ws)
+	println(" login: " + login + " id: " + strconv.Itoa(id))
+
 
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
@@ -51,7 +51,7 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "MapSelection"{
 			var maps string = lobby.MapList()
 			var resp = LobbyResponse{"MapSelection", LoginWs(ws), "", maps, ""}
-			openGamePipe <- resp
+			openGamePipe <- resp // Отправляет сообщение в тред
 		}
 
 		if msg.Event == "GameSelection"{
@@ -64,29 +64,6 @@ func LobbyReader(ws *websocket.Conn)  {
 			lobby.CreateNewGame(msg.GameName, msg.MapName, LoginWs(ws))
 			var resp = LobbyResponse{"CreateNewGame", LoginWs(ws), "", "", ""}
 			openGamePipe <- resp
-		}
-
-		  // Отправляет сообщение в тред
-	}
-}
-
-func LobbySender() {
-	for {
-		// Берет сообщение из общего канала
-		msg := <-lobbyPipe
-		// Отправляет его каждому клиенту
-		// оп оп тут надо сделать так что бы знать как брать нужного клиента
-		for client := range usersWs {
-			if client.login == msg.UserName {// ищем юзера который отправил сообщение и только ему отправляем
-				err := client.ws.WriteJSON(msg)
-				if err != nil {
-					log.Printf("error: %v", err)
-					client.ws.Close()
-					lobby.DelNewGame(client.login)
-					delete(usersWs, client)
-				}
-			}
-
 		}
 	}
 }

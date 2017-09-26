@@ -39,14 +39,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 func CheckUserInfo(userName string, userPassword string) (User, bool) {
 	// тестовые in memory пользователи
-	var users []User
-	users = append(users, User{1,"admin", "pass1"})
-	users = append(users, User{2,"user", "pass"})
-
+	var users []User = GetUsers()
 	// сравнием вбитые значения со значениями на сервере
-	for i := 0; i < len(users); i++{
-		if users[i].name == userName && users[i].pass == userPassword{
-			return users[i], true
+	for _, user := range users {
+		if user.name == userName && user.password == userPassword{
+			return user, true
 		}
 	}
 	return users[0], false
@@ -102,7 +99,8 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 type User struct {
 	id int
 	name string
-	pass string
+	password string
+	mail string
 }
 
 
