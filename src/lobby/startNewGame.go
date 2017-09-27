@@ -28,18 +28,18 @@ func StartNewGame(mapName string, game Games)  {
 			idMap = mp.id
 		}
 	}
-	SendToDB(idMap, idPlayer1, idPlayer2)
+	SendToDB(game.nameGame ,idMap, idPlayer1, idPlayer2)
 }
 
-func SendToDB(idMap int, idPlayer1 int, idPlayer2 int)(int64, error)  {
+func SendToDB(Name string, idMap int, idPlayer1 int, idPlayer2 int)(int64, error)  {
 
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
+db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := db.Exec("INSERT INTO activegame (idmap, step, phase, idplayer1, idplayer2, price1, price2, gameend) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",    // добавляем новую игру в БД
-		idMap, 0, "Init", idPlayer1, idPlayer2, 100, 100, false) // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
+	res, err := db.Exec("INSERT INTO activegame (name, idmap, step, phase, idplayer1, idplayer2, price1, price2, gameend) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",    // добавляем новую игру в БД
+		Name, idMap, 0, "Init", idPlayer1, idPlayer2, 100, 100, false) // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 	if err != nil {
 		log.Fatal(err)
 	}

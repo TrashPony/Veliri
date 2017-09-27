@@ -26,7 +26,7 @@ function ConnectLobby() {
 }
 
 function ResponseLobby(jsonMessage) {
-    if(JSON.parse(jsonMessage).event) {
+    if (JSON.parse(jsonMessage).event) {
         var event = JSON.parse(jsonMessage).event;
 
         if (event === "MapView") {
@@ -43,7 +43,7 @@ function ResponseLobby(jsonMessage) {
             p.appendChild(document.createTextNode("Карты:"));
             mapContent.appendChild(p);
 
-            for (var i = 0; (i+1) < mapName.length; i++) {
+            for (var i = 0; (i + 1) < mapName.length; i++) {
                 div = document.createElement('div');
                 div.style.wordWrap = 'break-word';
                 div.className = "Select Map";
@@ -69,7 +69,7 @@ function ResponseLobby(jsonMessage) {
 
             var gameContent = document.getElementById('Games list');
 
-            for (var i = 0; (i+1) < gameName.length; i++) {
+            for (var i = 0; (i + 1) < gameName.length; i++) {
                 div = document.createElement('div');
                 div.style.wordWrap = 'break-word';
                 div.className = "Select Game";
@@ -83,21 +83,49 @@ function ResponseLobby(jsonMessage) {
         }
 
         if (event === "CreateNewGame") {
-                // удаляем старые элементы //
-                del = document.getElementById("lobby");
-                del.remove();
-                // удаляем старые элементы //
+            // удаляем старые элементы //
+            del = document.getElementById("lobby");
+            del.remove();
+            // удаляем старые элементы //
 
-                var div = document.createElement('div');
-                div.className = "gameInfo";
-                var parentElem = document.body;
-                parentElem.appendChild(div);
-                var button = document.createElement("input");
-                button.type = "button";
-                button.value = "Отменить";
-                div.appendChild(button);
-                createGame = true;
+            var div = document.createElement('div');
+            div.className = "gameInfo";
+            var parentElem = document.body;
+            parentElem.appendChild(div);
+            var button = document.createElement("input");
+            button.type = "button";
+            button.value = "Отменить";
+            div.appendChild(button);
+            createGame = true;
 
+        }
+
+
+        if (event === "DontEndGames") {
+            var SelectGame = document.getElementsByClassName("Select Game");
+            while (SelectGame.length > 0) {
+                SelectGame[0].parentNode.removeChild(SelectGame[0]);
+            }
+
+            var gameNames = (JSON.parse(jsonMessage).response_name_game).split(':');
+            var gamesContent = document.getElementById('DontEndGame');
+
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode("Недоиграные игры:"));
+            gamesContent.appendChild(p);
+
+            for (var i = 0; (i + 1) < gameNames.length; i++) {
+                div = document.createElement('div');
+                div.style.wordWrap = 'break-word';
+                div.className = "Select Game";
+                div.id = gameNames[i];
+                div.onclick = function () {
+                    CreateNewGame(this.id);
+                };
+                div.appendChild(document.createTextNode(i + ") " + gameNames[i]));
+                gamesContent.appendChild(div);
+            }
         }
     }
 }
@@ -135,5 +163,11 @@ function sendJoinTiGame(gameName) {
     sock.send(JSON.stringify({
         event: "ConnectGame",
         game_name: gameName
+    }));
+}
+
+function sendDontEndGames () {
+    sock.send(JSON.stringify({
+        event: "DontEndGames"
     }));
 }

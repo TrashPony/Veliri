@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="/css/field.css" rel="stylesheet">
+    <title>Veliri</title>
+    <script src="/js/field.js"></script>
+    <script> ConnectField() </script>
+</head>
+<body>
+    <div class="fieldInfo" onclick="Rotate(0)"> 0 </div>
+    <div class="fieldInfo" onclick="Rotate(90)"> 90 </div>
+    <div class="fieldInfo" onclick="Rotate(180)"> 180 </div>
+    <div class="fieldInfo" onclick="Rotate(270)"> 270 </div>
+    <div class="fieldSize" onclick="SizeMap(1)"> + </div>
+    <div class="fieldSize" onclick="SizeMap(2)"> - </div>
+
+    <input class="createField" name="X" type="number" placeholder="Ширина карты">
+    <input class="createField" name="Y" type="number" placeholder="Высота карты">
+    <input class="createField" type="button" value="Создать" onclick="CreateField()">
+    <br/>
+
+    <div class="unitType">
+        <div class="unitType info tank" onclick="createUnit('tank')">  </div> <br/>
+        <div class="unitType info scout" onclick="createUnit('scout')">  </div> <br/>
+        <div class="unitType info arta" onclick="createUnit('arta')">  </div>
+    </div>
+
+    <div id="test">
+        <div id="main" align="center" >
+        </div>
+        <div id="fieldLog">
+            Log:
+        </div>
+    </div>
+</body>
+</html>

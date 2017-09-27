@@ -20,4 +20,8 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/wsLobby" {
 		ReadLobbySocket(login, id, w, r)
 	}
+
+	if r.URL.Path == "/wsField" {
+		ReadFieldSocket(login, id, w, r)
+	}
 }

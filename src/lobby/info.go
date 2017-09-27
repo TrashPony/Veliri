@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	_ "github.com/lib/pq"
+	"strconv"
 )
 
 var openGames = make(map[Games]bool)
@@ -79,6 +80,40 @@ func GetMapList()([]Map)  {
 	return maps
 }
 
+func DontEndGames(UserName string)(string)  {
+	var users = GetUsers()
+	var playerId int = 0
+	for _, user := range users {
+		if user.name == UserName {
+			playerId = user.id
+		}
+	}
+
+	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rows, err := db.Query("Select name FROM activegame WHERE idplayer1=" + strconv.Itoa(playerId) + " OR idplayer2=" + strconv.Itoa(playerId))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var games string = ""
+	var game ActiveGames
+
+	for rows.Next() {
+		err := rows.Scan(&game.name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		games = games + game.name  + ":"
+	}
+
+	return games
+}
+
 func GetUsers()([]User)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
@@ -109,7 +144,7 @@ func MapList()(string)  {
 	var maps = GetMapList()
 	var responseNameMap = ""
 	for _, bk := range maps {
-		responseNameMap = responseNameMap + bk.name + ":";
+		responseNameMap = responseNameMap + bk.name + ":"
 	}
 	return responseNameMap
 }
@@ -126,6 +161,10 @@ type Games struct{
 	nameMap       string
 	nameCreator   string
 	nameNewPlayer string
+}
+
+type ActiveGames struct{
+	name      string
 }
 
 type Map struct {

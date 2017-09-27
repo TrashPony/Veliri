@@ -3,8 +3,27 @@ var userName;
 var idUnit;
 var create = false;
 var typeUnit;
-/////////////////////////////////////////////////////////////////////Интерфейс////////////////////////////////////////////////
 
+function ConnectField() {
+    sock = new WebSocket("ws://" + window.location.host + "/wsField");
+    console.log("Websocket - status: " + sock.readyState);
+
+    sock.onopen = function(msg) {
+        console.log("CONNECTION opened..." + this.readyState);
+    }
+    sock.onmessage = function(msg) {
+        console.log("message: " + msg.data);
+        Response(msg.data);
+    }
+    sock.onerror = function(msg) {
+        console.log("Error occured sending..." + msg.data);
+    }
+    sock.onclose = function(msg) {
+        console.log("Disconnected - status " + this.readyState);
+        location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
+    }
+}
+/////////////////////////////////////////////////////////////////////Интерфейс////////////////////////////////////////////////
 function SizeMap(params) {
     var div = document.getElementsByClassName("fieldUnit");
     if (params === 1) fieldUnit = fieldUnit + 30;
@@ -51,11 +70,12 @@ function Rotate(params) {
 /////////////////////////////////////////////////////////////////////RESPONSE////////////////////////////////////////////////
 function Response(jsonMessage) {
     var event = JSON.parse(jsonMessage.body).event;
-
 }
-
+function CreateField() {
+    Field(10,10)
+}
 /////////////////////////////////////////////////////////////////////CREATE FIELD/////////////////////////////////////////////////////////////////////
-function field(xSize,ySize) {
+function Field(xSize,ySize) {
     var main = document.getElementById("main");
     main.style.boxShadow = "25px 25px 20px rgba(0,0,0,0.5)";
 
@@ -75,7 +95,6 @@ function field(xSize,ySize) {
         nline.innerHTML = "";
         main.appendChild(nline);
     }
-
 }
 /////////////////////////////////////////////////////////////////////CREATE UNIT/////////////////////////////////////////////////////////////////////
 function createUnit(type) {
@@ -90,7 +109,7 @@ function reply_click(clicked_id) {
 
     if(create){
         var cell = document.getElementById(clicked_id);
-        sendCreateUnit(typeUnit, userName, x, y);
+        //sendCreateUnit(typeUnit, userName, x, y);
         if(typeUnit === "tank") cell.className = "fieldUnit tank";
         if(typeUnit === "scout") cell.className = "fieldUnit scout";
         if(typeUnit === "arta") cell.className = "fieldUnit arta";
@@ -98,7 +117,7 @@ function reply_click(clicked_id) {
         typeUnit = null;
 
     } else {
-        sendSelectEvent(x,y)
+        //sendSelectEvent(x,y)
     }
 }
 
