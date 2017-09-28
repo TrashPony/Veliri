@@ -9,16 +9,13 @@ function ConnectLobby() {
      sock.onopen = function(msg) {
          console.log("CONNECTION opened..." + this.readyState);
      }
-
      sock.onmessage = function(msg) {
          console.log("message: " + msg.data);
          ResponseLobby(msg.data);
      }
-
      sock.onerror = function(msg) {
          console.log("Error occured sending..." + msg.data);
      }
-
      sock.onclose = function(msg) {
         console.log("Disconnected - status " + this.readyState);
         location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
@@ -41,6 +38,7 @@ function ResponseLobby(jsonMessage) {
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
             p.appendChild(document.createTextNode("Карты:"));
+            p.className = "Select Map";
             mapContent.appendChild(p);
 
             for (var i = 0; (i + 1) < mapName.length; i++) {
@@ -62,11 +60,9 @@ function ResponseLobby(jsonMessage) {
                 SelectGame[0].parentNode.removeChild(SelectGame[0]);
             }
 
-
             var gameName = (JSON.parse(jsonMessage).response_name_game).split(':');
             var mapName = (JSON.parse(jsonMessage).response_name_map).split(':');
             var userName = (JSON.parse(jsonMessage).response_name_user).split(':');
-
             var gameContent = document.getElementById('Games list');
 
             for (var i = 0; (i + 1) < gameName.length; i++) {
@@ -113,6 +109,7 @@ function ResponseLobby(jsonMessage) {
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
             p.appendChild(document.createTextNode("Недоиграные игры:"));
+            p.className = "Select Game";
             gamesContent.appendChild(p);
 
             for (var i = 0; (i + 1) < gameNames.length; i++) {
@@ -121,7 +118,7 @@ function ResponseLobby(jsonMessage) {
                 div.className = "Select Game";
                 div.id = gameNames[i];
                 div.onclick = function () {
-                    CreateNewGame(this.id);
+                    JoinToGame(this.id);
                 };
                 div.appendChild(document.createTextNode(i + ") " + gameNames[i]));
                 gamesContent.appendChild(div);
@@ -129,6 +126,7 @@ function ResponseLobby(jsonMessage) {
         }
     }
 }
+
 
 function CreateNewGame(mapName) {
     var gameName = document.querySelector('input[name="NameGame"]').value;
