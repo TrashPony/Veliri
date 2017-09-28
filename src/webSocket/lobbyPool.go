@@ -4,7 +4,7 @@ import (
 	"log"
 	"websocket-master"
 	"strconv"
-	"../lobby"
+	"../DB_info"
 )
 
 // пайп доп. читать в документации
@@ -20,35 +20,35 @@ func LobbyReader(ws *websocket.Conn)  {
 
 		if msg.Event == "MapView"{
 			// запрашивает список доступных карт
-			var maps = lobby.MapList()
+			var maps = DB_info.MapList()
 			var resp = LobbyResponse{"MapView", LoginWs(ws, &usersLobbyWs), "", maps, "", ""}
 			LobbyPipe <- resp // Отправляет сообщение в тред
 		}
 
 		if msg.Event == "GameView"{
 			// запрашивает список созданых игор
-			var games []string = lobby.OpenGameList()
+			var games []string = DB_info.OpenLobbyGameList()
 			var resp = LobbyResponse{"GameView", LoginWs(ws, &usersLobbyWs), games[0], games[1], games[2], ""}
 			LobbyPipe <- resp
 		}
 
 		if msg.Event == "DontEndGames"{
 			// запрашивает списко незавершенных игор
-			var gameName string = lobby.DontEndGames(LoginWs(ws, &usersLobbyWs))
+			var gameName string = DB_info.DontEndGames(LoginWs(ws, &usersLobbyWs))
 			var resp = LobbyResponse{"DontEndGames", LoginWs(ws, &usersLobbyWs), gameName, "", "", ""}
 			LobbyPipe <- resp
 		}
 
 		if msg.Event == "ConnectGame"{
 			// подключается к игре
-			user2 , success := lobby.ConnectGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
+			user2 , success := DB_info.ConnectGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			var resp = LobbyResponse{"GameView", LoginWs(ws, &usersLobbyWs), strconv.FormatBool(success), "", "" , user2}
 			LobbyPipe <- resp
 		}
 
 		if msg.Event == "CreateNewGame"{
 			// создает новую игру
-			lobby.CreateNewGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
+			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
 			var resp = LobbyResponse{"CreateNewGame", LoginWs(ws, &usersLobbyWs), "", "", "", ""}
 			LobbyPipe <- resp
 		}
@@ -69,7 +69,7 @@ func LobbyReposeSender() {
 				err := client.ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
-					lobby.DelNewGame(client.login)
+					DB_info.DelLobbyGame(client.login)
 					client.ws.Close()
 					delete(usersLobbyWs, client)
 				}

@@ -1,4 +1,4 @@
-package lobby
+package DB_info
 
 import (
 	"database/sql"
