@@ -1,5 +1,6 @@
 var stompClient = null;
 var createGame = false;
+var createNameGame = "";
 var sock;
 
 function ConnectLobby() {
@@ -8,18 +9,18 @@ function ConnectLobby() {
 
      sock.onopen = function(msg) {
          console.log("CONNECTION opened..." + this.readyState);
-     }
+     };
      sock.onmessage = function(msg) {
          console.log("message: " + msg.data);
          ResponseLobby(msg.data);
-     }
+     };
      sock.onerror = function(msg) {
          console.log("Error occured sending..." + msg.data);
-     }
+     };
      sock.onclose = function(msg) {
         console.log("Disconnected - status " + this.readyState);
-        location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
-     }
+         location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+     };
 }
 
 function ResponseLobby(jsonMessage) {
@@ -47,7 +48,8 @@ function ResponseLobby(jsonMessage) {
                 div.className = "Select Map";
                 div.id = mapName[i];
                 div.onclick = function () {
-                    CreateNewGame(this.id);
+                    createNameGame = this.id;
+                    CreateLobbyGame(this.id);
                 };
                 div.appendChild(document.createTextNode(i + ") " + mapName[i]));
                 mapContent.appendChild(div);
@@ -78,7 +80,7 @@ function ResponseLobby(jsonMessage) {
             }
         }
 
-        if (event === "CreateNewGame") {
+        if (event === "CreateLobbyGame") {
             // удаляем старые элементы //
             del = document.getElementById("lobby");
             del.remove();
@@ -88,10 +90,16 @@ function ResponseLobby(jsonMessage) {
             div.className = "gameInfo";
             var parentElem = document.body;
             parentElem.appendChild(div);
-            var button = document.createElement("input");
-            button.type = "button";
-            button.value = "Отменить";
-            div.appendChild(button);
+            var button1 = document.createElement("input");
+            button1.type = "button";
+            button1.value = "Отменить";
+            button1.onclick = ReturnLobby;
+            div.appendChild(button1);
+            var button2 = document.createElement("input");
+            button2.type = "button";
+            button2.value = "Начать";
+            button2.onclick = CreateNewGame;
+            div.appendChild(button2);
             createGame = true;
 
         }
@@ -127,14 +135,25 @@ function ResponseLobby(jsonMessage) {
     }
 }
 
+function ReturnLobby() {
+    location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+}
 
-function CreateNewGame(mapName) {
+function CreateLobbyGame(mapName) {
     var gameName = document.querySelector('input[name="NameGame"]').value;
-    sendCrateNewGame(mapName, gameName);
+    sendCreateLobbyGame(mapName, gameName);
+}
+
+function CreateNewGame() {
+    if(createNameGame !== "") {
+        sendStartNewGame(createNameGame);
+    } else {
+        location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+    }
 }
 
 function JoinToGame(gameName) {
-    sendJoinTiGame(gameName)
+    sendJoinToGame(gameName);
 }
 
 function sendMapSelection() {
@@ -149,17 +168,17 @@ function sendGameSelection() {
     }));
 }
 
-function sendCrateNewGame(mapName, gameName) {
+function sendCreateLobbyGame(mapName, gameName) {
     sock.send(JSON.stringify({
-        event: "CreateNewGame",
+        event: "CreateLobbyGame",
         map_name: mapName,
         game_name: gameName
     }));
 }
 
-function sendJoinTiGame(gameName) {
+function sendJoinToGame(gameName) {
     sock.send(JSON.stringify({
-        event: "ConnectGame",
+        event: "JoinToGame",
         game_name: gameName
     }));
 }
@@ -167,5 +186,11 @@ function sendJoinTiGame(gameName) {
 function sendDontEndGames () {
     sock.send(JSON.stringify({
         event: "DontEndGames"
+    }));
+}
+
+function sendStartNewGame () {
+    sock.send(JSON.stringify({
+        event: "StartNewGame"
     }));
 }

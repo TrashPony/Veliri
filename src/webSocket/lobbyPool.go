@@ -39,24 +39,20 @@ func LobbyReader(ws *websocket.Conn)  {
 			LobbyPipe <- resp
 		}
 
-		if msg.Event == "ConnectGame"{
-			// подключается к игре
-			user2 , success := DB_info.ConnectGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"GameView", LoginWs(ws, &usersLobbyWs), strconv.FormatBool(success), "", "" , user2}
-			LobbyPipe <- resp
+		if msg.Event == "JoinToGame"{
+
 		}
 
-		if msg.Event == "CreateNewGame"{
-			// создает новую игру
+		if msg.Event == "CreateLobbyGame"{
 			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"CreateNewGame", LoginWs(ws, &usersLobbyWs), "", "", "", ""}
+			var resp = LobbyResponse{"CreateLobbyGame", LoginWs(ws, &usersLobbyWs), "", "", "", ""}
 			LobbyPipe <- resp
 		}
 
 		if msg.Event == "StartNewGame"{
-
-			// а вот этот метод должен после того как все подтвердили создавать новую игру в бд и перекидывать на новую страницу
-			//lobby.StartNewGame(msg.MapName, msg.UserName)
+			user2 , success := DB_info.StartNewGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
+			var resp = LobbyResponse{"StartNewGame", LoginWs(ws, &usersLobbyWs), strconv.FormatBool(success), "", "" , user2}
+			LobbyPipe <- resp
 		}
 	}
 }

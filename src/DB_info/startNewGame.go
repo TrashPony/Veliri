@@ -4,8 +4,19 @@ import (
 	"database/sql"
 	"log"
 )
+func StartNewGame(nameGame string, userName string) (string, bool)  {
+	for game := range openGames {
+		if game.nameGame == nameGame{
+			game.nameNewPlayer = userName
+			InitNewGame(game.nameMap, game)
+			DelLobbyGame(game.nameCreator)
+			return game.nameCreator, true
+		}
+	}
+	return "", false
+}
 
-func StartNewGame(mapName string, game Games)  {
+func InitNewGame(mapName string, game Games)  {
 	var maps = GetMapList()
 	var users = GetUsers()
 
