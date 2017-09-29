@@ -39,13 +39,13 @@ func LobbyReader(ws *websocket.Conn)  {
 			LobbyPipe <- resp
 		}
 
-		if msg.Event == "JoinToGame"{
+		if msg.Event == "JoinToLobbyGame"{
 			//тут написана хуйня с расчетом на то что в будущем будет возможна игра больше 2х игроков одновременно
 			playerList := DB_info.GetUserList(msg.GameName)
 			creator := DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			//все кто в лоби получают сообщение о том что подключился новйы игрок
 			// for blabla список юзеров каждому отправить месагу
-			var resp = LobbyResponse{"JoinToGame", creator, "", "", LoginWs(ws, &usersLobbyWs), ""}
+			var resp = LobbyResponse{"JoinToLobbyGame", creator, "", "", LoginWs(ws, &usersLobbyWs), ""}
 			LobbyPipe <- resp
 
 			// игрок получает список всех игроков в лоби (нет, пока только создателя так как 1 на 1)
