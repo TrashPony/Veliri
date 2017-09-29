@@ -1,6 +1,7 @@
 var stompClient = null;
 var createGame = false;
 var createNameGame = "";
+var toField = false;
 var sock;
 
 function ConnectLobby() {
@@ -19,7 +20,9 @@ function ConnectLobby() {
      };
      sock.onclose = function(msg) {
         console.log("Disconnected - status " + this.readyState);
-         location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+        if(!toField) {
+            location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+        }
      };
 }
 
@@ -188,13 +191,14 @@ function ResponseLobby(jsonMessage) {
         }
 
         if (event === "StartNewGame") {
-            location.href = "http://642e0559eb9c.sn.mynetname.net:8080/field/";
+            toField = true;
+            location.href = "http://" + window.location.host + "/field";
         }
     }
 }
 
 function ReturnLobby() {
-    location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+    location.href = "http:/" + window.location.host + "/login";
 }
 
 function CreateLobbyGame(mapName) {
@@ -206,7 +210,7 @@ function CreateNewGame() {
     if(createNameGame !== "") {
         sendStartNewGame(createNameGame);
     } else {
-        location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login";
+        location.href = "http:/" + window.location.host + "/login";
     }
 }
 
