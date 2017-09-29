@@ -17,33 +17,19 @@ body{
 }
 
 .Select.Map {
-    margin: 2px;
-    padding: 0;
-    border: 1px solid #82ffab;
-    border-radius: 4px;
-    color: black;
-    background-color: #dff0d8;
-    width: 75px;
+
 }
 
 .Select.Map:hover {
-    border: 1px solid #4a8af4;
-    background-color: #d9d92e;
+
 }
 
 .Select.Game {
-    margin: 2px;
-    padding: 0;
-    border: 1px solid #82ffab;
-    border-radius: 4px;
-    color: black;
-    background-color: #dff0d8;
     width: 295px;
 }
 
 .Select.Game:hover {
-    border: 1px solid #4a8af4;
-    background-color: #d9d92e;
+
 }
 
 .gameInfo {

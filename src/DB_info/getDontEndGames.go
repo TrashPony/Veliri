@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func DontEndGames(UserName string)(string)  {
+func DontEndGames(UserName string)(string, string)  {
 	var users = GetUsers()
 	var playerId int = 0
 	for _, user := range users {
@@ -21,7 +21,7 @@ func DontEndGames(UserName string)(string)  {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select name FROM activegame WHERE idplayer1=" + strconv.Itoa(playerId) + " OR idplayer2=" + strconv.Itoa(playerId))
+	rows, err := db.Query("Select name, id FROM activegame WHERE idplayer1=" + strconv.Itoa(playerId) + " OR idplayer2=" + strconv.Itoa(playerId))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,14 +29,16 @@ func DontEndGames(UserName string)(string)  {
 
 	var games string = ""
 	var game ActiveGames
+	var ids string = ""
 
 	for rows.Next() {
-		err := rows.Scan(&game.name)
+		err := rows.Scan(&game.name, &game.id)
 		if err != nil {
 			log.Fatal(err)
 		}
 		games = games + game.name  + ":"
+		ids = ids + strconv.Itoa(game.id) + ":"
 	}
 
-	return games
+	return games, ids
 }

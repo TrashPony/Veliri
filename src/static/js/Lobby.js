@@ -8,6 +8,9 @@ function ConnectLobby() {
      sock = new WebSocket("ws://" + window.location.host + "/wsLobby");
      console.log("Websocket - status: " + sock.readyState);
 
+    var date = new Date(0);
+    document.cookie = "idGame=; path=/; expires=" + date.toUTCString();
+
      sock.onopen = function(msg) {
          console.log("CONNECTION opened..." + this.readyState);
      };
@@ -119,6 +122,7 @@ function ResponseLobby(jsonMessage) {
             }
 
             var gameNames = (JSON.parse(jsonMessage).response_name_game).split(':');
+            var gameIDs = (JSON.parse(jsonMessage).response_name_map).split(':');
             var gamesContent = document.getElementById('DontEndGame');
 
             var p = document.createElement('p');
@@ -131,11 +135,11 @@ function ResponseLobby(jsonMessage) {
                 div = document.createElement('div');
                 div.style.wordWrap = 'break-word';
                 div.className = "Select Game";
-                div.id = gameNames[i];
+                div.id = gameIDs[i];
                 div.onclick = function () {
                     JoinToGame(this.id);
                 };
-                div.appendChild(document.createTextNode(i + ") " + gameNames[i]));
+                div.appendChild(document.createTextNode(i + ") " + gameNames[i] + " id:" + gameIDs[i]));
                 gamesContent.appendChild(div);
             }
         }
@@ -192,6 +196,8 @@ function ResponseLobby(jsonMessage) {
 
         if (event === "StartNewGame") {
             toField = true;
+            var idGame = JSON.parse(jsonMessage).response_name_map;
+            document.cookie = "idGame=" + idGame + "; path=/;";
             location.href = "http://" + window.location.host + "/field";
         }
     }

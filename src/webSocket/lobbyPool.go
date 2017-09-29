@@ -28,14 +28,15 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "GameView"{
 			// запрашивает список созданых игор
 			var games []string = DB_info.OpenLobbyGameList()
+
 			var resp = LobbyResponse{"GameView", LoginWs(ws, &usersLobbyWs), games[0], games[1], games[2], ""}
 			LobbyPipe <- resp
 		}
 
 		if msg.Event == "DontEndGamesList"{
 			// запрашивает списко незавершенных игор
-			var gameName string = DB_info.DontEndGames(LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"DontEndGamesList", LoginWs(ws, &usersLobbyWs), gameName, "", "", ""}
+			gameName, ids := DB_info.DontEndGames(LoginWs(ws, &usersLobbyWs))
+			var resp = LobbyResponse{"DontEndGamesList", LoginWs(ws, &usersLobbyWs), gameName, ids, "", ""}
 			LobbyPipe <- resp
 		}
 
@@ -62,14 +63,14 @@ func LobbyReader(ws *websocket.Conn)  {
 		}
 
 		if msg.Event == "StartNewGame"{
-			success := DB_info.StartNewGame(msg.GameName)
+			id, success := DB_info.StartNewGame(msg.GameName)
 			if success {
 				//тут написана хуйня с расчетом на то что в будущем будет возможна игра больше 2х игроков одновременно
 				playerList := DB_info.GetUserList(msg.GameName) // список игроков которым надо разослать данные взятые из обьекта игры
 				DB_info.DelLobbyGame(LoginWs(ws, &usersLobbyWs)) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
 
 				for i := 0; i < len(playerList); i++ {
-					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success), "", "", ""}
+					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success), id, "", ""}
 					LobbyPipe <- resp
 				}
 			}

@@ -1,13 +1,17 @@
 var fieldUnit = 100;
+var idGame;
 var userName;
 var idUnit;
 var create = false;
 var typeUnit;
 
 
+
 function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
+
+    idGame = getCookie("idGame");
 
     sock.onopen = function(msg) {
         console.log("CONNECTION opened..." + this.readyState);
@@ -24,6 +28,14 @@ function ConnectField() {
         //location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
     }
 }
+////////////////берем куку ///////////////////////////////
+function getCookie(name) {
+    var matches = document.cookie.match(new RegExp(
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
 /////////////////////////////////////////////////////////////////////Интерфейс////////////////////////////////////////////////
 function SizeMap(params) {
     var div = document.getElementsByClassName("fieldUnit");

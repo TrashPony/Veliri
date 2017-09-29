@@ -16,6 +16,7 @@ type Games struct {
 }
 
 type ActiveGames struct {
+	id	      int
 	name      string
 }
 
