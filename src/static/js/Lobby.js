@@ -48,7 +48,6 @@ function ResponseLobby(jsonMessage) {
                 div.className = "Select Map";
                 div.id = mapName[i];
                 div.onclick = function () {
-                    createNameGame = this.id;
                     CreateLobbyGame(this.id);
                 };
                 div.appendChild(document.createTextNode(i + ") " + mapName[i]));
@@ -100,10 +99,15 @@ function ResponseLobby(jsonMessage) {
             button2.value = "Начать";
             button2.onclick = CreateNewGame;
             div.appendChild(button2);
+            var div3 = document.createElement('div');
+            div3.appendChild(document.createTextNode("Игроки"));
             createGame = true;
 
+            var div3 = document.createElement('div');
+            div3.className = "Select Game";
+            div3.appendChild(document.createTextNode("Подключенные Игроки"));
+            div.appendChild(div3);
         }
-
 
         if (event === "DontEndGames") {
             var SelectGame = document.getElementsByClassName("Select Game");
@@ -131,6 +135,57 @@ function ResponseLobby(jsonMessage) {
                 div.appendChild(document.createTextNode(i + ") " + gameNames[i]));
                 gamesContent.appendChild(div);
             }
+        }
+
+        if (event === "Joiner") {
+            var users = (JSON.parse(jsonMessage).response_name_user_2).split(':');
+            // удаляем старые элементы //
+            del = document.getElementById("lobby");
+            del.remove();
+            // удаляем старые элементы //
+
+            var div2 = document.createElement('div');
+            div2.className = "gameInfo";
+            var parentElem = document.body;
+            parentElem.appendChild(div2);
+            var button1 = document.createElement("input");
+            button1.type = "button";
+            button1.value = "Отменить";
+            button1.onclick = ReturnLobby;
+            div2.appendChild(button1);
+            var button2 = document.createElement("input");
+            button2.type = "button";
+            button2.value = "Начать";
+            button2.onclick = CreateNewGame;
+            div2.appendChild(button2);
+
+            createGame = true;
+            var parentElemDiv = document.getElementsByClassName("gameInfo");
+
+            var div3 = document.createElement('div');
+            div3.className = "Select Game";
+            div3.appendChild(document.createTextNode("Подключенные Игроки"));
+            parentElemDiv[0].appendChild(div3);
+
+            for (var i = 0; i < users.length; i++) {
+                div = document.createElement('div');
+                div.style.wordWrap = 'break-word';
+                div.className = "Select Game";
+                div.id = users[i];
+                div.appendChild(document.createTextNode(i + ") " + users[i]));
+                parentElemDiv[0].appendChild(div);
+            }
+        }
+        if (event === "JoinToGame") {
+            var parentElem = document.getElementsByClassName("gameInfo");
+
+            var user = JSON.parse(jsonMessage).response_name_user;
+            div = document.createElement('div');
+            div.style.wordWrap = 'break-word';
+            div.className = "Select Game";
+            div.id = user;
+            div.appendChild(document.createTextNode(user));
+            parentElem[0].appendChild(div);
         }
     }
 }
@@ -169,6 +224,7 @@ function sendGameSelection() {
 }
 
 function sendCreateLobbyGame(mapName, gameName) {
+    createNameGame = gameName;
     sock.send(JSON.stringify({
         event: "CreateLobbyGame",
         map_name: mapName,
@@ -189,8 +245,9 @@ function sendDontEndGames () {
     }));
 }
 
-function sendStartNewGame () {
+function sendStartNewGame (gameName) {
     sock.send(JSON.stringify({
-        event: "StartNewGame"
+        event: "StartNewGame",
+        game_name: gameName
     }));
 }

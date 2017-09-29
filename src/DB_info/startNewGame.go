@@ -4,16 +4,16 @@ import (
 	"database/sql"
 	"log"
 )
-func StartNewGame(nameGame string, userName string) (string, bool)  {
+
+func StartNewGame(nameGame string) (bool)  {
 	for game := range openGames {
-		if game.nameGame == nameGame{
-			game.nameNewPlayer = userName
-			InitNewGame(game.nameMap, game)
-			DelLobbyGame(game.nameCreator)
-			return game.nameCreator, true
+		if openGames[game].nameGame == nameGame && openGames[game].nameNewPlayer != ""{
+			InitNewGame(openGames[game].nameMap, openGames[game])
+			DelLobbyGame(openGames[game].nameCreator)
+			return true
 		}
 	}
-	return "", false
+	return false
 }
 
 func InitNewGame(mapName string, game Games)  {

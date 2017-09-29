@@ -38,7 +38,7 @@ body{
     border-radius: 4px;
     color: black;
     background-color: #dff0d8;
-    width: 350px;
+    width: 295px;
 }
 
 .Select.Game:hover {
@@ -46,5 +46,15 @@ body{
     background-color: #d9d92e;
 }
 
+.gameInfo {
+    padding: 0;
+    border: 2px solid #d6e9c6;
+    border-radius: 4px;
+    color: black;
+    background-color: rgba(81, 88, 88, 0.18);
+    width: 300px;
+    height: 300px;
+    display:inline-block;
+}
 
 

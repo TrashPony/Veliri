@@ -8,14 +8,14 @@ type User struct {
 	mail string
 }
 
-type Games struct{
+type Games struct {
 	nameGame      string
 	nameMap       string
 	nameCreator   string
 	nameNewPlayer string
 }
 
-type ActiveGames struct{
+type ActiveGames struct {
 	name      string
 }
 
