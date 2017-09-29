@@ -9,7 +9,6 @@ func StartNewGame(nameGame string) (bool)  {
 	for game := range openGames {
 		if openGames[game].nameGame == nameGame && openGames[game].nameNewPlayer != ""{
 			InitNewGame(openGames[game].nameMap, openGames[game])
-			DelLobbyGame(openGames[game].nameCreator)
 			return true
 		}
 	}

@@ -11,7 +11,6 @@ import (
 func main() {
 
 	router := mux.NewRouter()
-
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)

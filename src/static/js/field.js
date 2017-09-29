@@ -4,23 +4,24 @@ var idUnit;
 var create = false;
 var typeUnit;
 
+
 function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
 
     sock.onopen = function(msg) {
         console.log("CONNECTION opened..." + this.readyState);
-    }
+    };
     sock.onmessage = function(msg) {
         console.log("message: " + msg.data);
         Response(msg.data);
-    }
+    };
     sock.onerror = function(msg) {
         console.log("Error occured sending..." + msg.data);
-    }
+    };
     sock.onclose = function(msg) {
         console.log("Disconnected - status " + this.readyState);
-        location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
+        //location.href = "http://642e0559eb9c.sn.mynetname.net:8080/login"
     }
 }
 /////////////////////////////////////////////////////////////////////Интерфейс////////////////////////////////////////////////
@@ -83,8 +84,8 @@ function Field(xSize,ySize) {
         for (var x = 0; x < xSize; x++) {
             var div = document.createElement('div');
                 div.className = "fieldUnit";
-                div.id = "x" + x + "y" + y;
-                div.innerHTML = "x = " + x + " y = " + y;
+                div.id = x + ":" + y;
+                div.innerHTML = x + ":" + y;
                 div.onclick = function () {
                     reply_click(this.id);
                 };

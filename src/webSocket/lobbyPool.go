@@ -32,10 +32,10 @@ func LobbyReader(ws *websocket.Conn)  {
 			LobbyPipe <- resp
 		}
 
-		if msg.Event == "DontEndGames"{
+		if msg.Event == "DontEndGamesList"{
 			// запрашивает списко незавершенных игор
 			var gameName string = DB_info.DontEndGames(LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"DontEndGames", LoginWs(ws, &usersLobbyWs), gameName, "", "", ""}
+			var resp = LobbyResponse{"DontEndGamesList", LoginWs(ws, &usersLobbyWs), gameName, "", "", ""}
 			LobbyPipe <- resp
 		}
 
@@ -49,8 +49,10 @@ func LobbyReader(ws *websocket.Conn)  {
 			LobbyPipe <- resp
 
 			// игрок получает список всех игроков в лоби (нет, пока только создателя так как 1 на 1)
-			resp = LobbyResponse{"Joiner", LoginWs(ws, &usersLobbyWs), "", "", "", playerList} //- костылька
-			LobbyPipe <- resp
+			for i := 0; i < len(playerList); i++ {
+				resp = LobbyResponse{"Joiner", LoginWs(ws, &usersLobbyWs), "", "", "", playerList[0]} //- костылька
+				LobbyPipe <- resp
+			}
 		}
 
 		if msg.Event == "CreateLobbyGame"{
@@ -61,8 +63,16 @@ func LobbyReader(ws *websocket.Conn)  {
 
 		if msg.Event == "StartNewGame"{
 			success := DB_info.StartNewGame(msg.GameName)
-			var resp = LobbyResponse{"StartNewGame", LoginWs(ws, &usersLobbyWs), strconv.FormatBool(success), "", "" , ""}
-			LobbyPipe <- resp
+			if success {
+				//тут написана хуйня с расчетом на то что в будущем будет возможна игра больше 2х игроков одновременно
+				playerList := DB_info.GetUserList(msg.GameName) // список игроков которым надо разослать данные взятые из обьекта игры
+				DB_info.DelLobbyGame(LoginWs(ws, &usersLobbyWs)) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
+
+				for i := 0; i < len(playerList); i++ {
+					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success), "", "", ""}
+					LobbyPipe <- resp
+				}
+			}
 		}
 	}
 }

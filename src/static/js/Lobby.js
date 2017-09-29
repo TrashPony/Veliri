@@ -109,7 +109,7 @@ function ResponseLobby(jsonMessage) {
             div.appendChild(div3);
         }
 
-        if (event === "DontEndGames") {
+        if (event === "DontEndGamesList") {
             var SelectGame = document.getElementsByClassName("Select Game");
             while (SelectGame.length > 0) {
                 SelectGame[0].parentNode.removeChild(SelectGame[0]);
@@ -151,12 +151,11 @@ function ResponseLobby(jsonMessage) {
             var button1 = document.createElement("input");
             button1.type = "button";
             button1.value = "Отменить";
-            button1.onclick = ReturnLobby;
+            //button1.onclick = ReturnLobby;
             div2.appendChild(button1);
             var button2 = document.createElement("input");
             button2.type = "button";
-            button2.value = "Начать";
-            button2.onclick = CreateNewGame;
+            button2.value = "Готов";  // пока никак не работает потом надо будет сделать)
             div2.appendChild(button2);
 
             createGame = true;
@@ -186,6 +185,10 @@ function ResponseLobby(jsonMessage) {
             div.id = user;
             div.appendChild(document.createTextNode(user));
             parentElem[0].appendChild(div);
+        }
+
+        if (event === "StartNewGame") {
+            location.href = "http://642e0559eb9c.sn.mynetname.net:8080/field/";
         }
     }
 }
@@ -239,9 +242,9 @@ function sendJoinToGame(gameName) {
     }));
 }
 
-function sendDontEndGames () {
+function sendDontEndGamesList () {
     sock.send(JSON.stringify({
-        event: "DontEndGames"
+        event: "DontEndGamesList"
     }));
 }
 

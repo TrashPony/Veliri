@@ -61,7 +61,6 @@ func GetCookie(w http.ResponseWriter, r *http.Request, user User) {
 	ses.Values[login] = user.name // ложит данные в сессию
 	ses.Values[id] = user.id // ложит данные в сессию
 
-
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)
 	http.Redirect(w, r, "http://642e0559eb9c.sn.mynetname.net:8080/lobby/", 302)
@@ -88,11 +87,9 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 	id, ok := ses.Values[id].(int)
 
 	if !ok { // если пустая то говорит что ты анонимус
-		login = "anonymous"
+		return "", 0
 	}
 
-	// выводит в браузер кто ты есть
-	//w.Write([]byte("Твой логин " + login + ", твой id " + strconv.Itoa(id)))
 	return login, id
 }
 

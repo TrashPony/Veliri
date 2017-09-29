@@ -44,11 +44,13 @@ func OpenLobbyGameList()([]string) {
 	return games
 }
 
-func GetUserList(nameGame string)(string)  {
+func GetUserList(nameGame string)([]string)  {
+	playerList := make([]string, 0)
 	for game := range openGames {
 		if openGames[game].nameGame == nameGame{
-			return openGames[game].nameCreator
+			playerList = append(playerList, openGames[game].nameCreator)
+			playerList = append(playerList, openGames[game].nameNewPlayer)
 		}
 	}
-	return ""
+	return playerList
 }
