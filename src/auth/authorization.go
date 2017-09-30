@@ -92,6 +92,3 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 
 	return login, id
 }
-
-
-

@@ -16,6 +16,15 @@ func LoginWs(ws *websocket.Conn, usersWs *map[Clients]bool) (string)  {
 	return ""
 }
 
+func IdWs(ws *websocket.Conn, usersWs *map[Clients]bool) (int)  {
+	for client := range *usersWs { // ходим по всем подключениям
+		if(client.ws == ws) {
+			return client.id
+		}
+	}
+	return 0
+}
+
 func DelConn(ws *websocket.Conn, usersWs *map[Clients]bool, err error)  {
 	log.Printf("error: %v", err)
 	for client := range *usersWs { // ходим по всем подключениям

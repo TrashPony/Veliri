@@ -1,40 +1,39 @@
-package auth
-
+package initGame
 
 import (
 	"database/sql"
 	"log"
-	_ "github.com/lib/pq"
+	"strconv"
 )
 
-func GetUsers()([]User)  {
+func GetMap(idMap int)(int, int)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * FROM users")
+	rows, err := db.Query("Select * FROM map WHERE id =" + strconv.Itoa(idMap))
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	var users = make([]User, 0)
-	var user User
-
+	var mp Map
 	for rows.Next() {
-		err := rows.Scan(&user.id, &user.name, &user.password, &user.mail)
+		err := rows.Scan(&mp.id, &mp.name, &mp.xsize, &mp.ysize, &mp.Type)
 		if err != nil {
 			log.Fatal(err)
 		}
-		users = append(users, user)
 	}
-	return users
+
+	return mp.xsize, mp.ysize
 }
 
-type User struct {
+type Map struct {
 	id int
 	name string
-	password string
-	mail string
+	xsize int
+	ysize int
+        Type string
+
 }

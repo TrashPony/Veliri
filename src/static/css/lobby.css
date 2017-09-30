@@ -4,16 +4,16 @@ body{
 .Select{
     margin: 2px;
     padding: 0;
-    border: 1px solid #82ffab;
+    border: 1px solid #53b7c4;
     border-radius: 4px;
     color: black;
-    background-color: #dff0d8;
+    background-color: #12e6ff;
     width: 75px;
 }
 
 .Select:hover {
     border: 1px solid #4a8af4;
-    background-color: #d9d92e;
+    background-color: #63c0cd;
 }
 
 .Select.Map {
