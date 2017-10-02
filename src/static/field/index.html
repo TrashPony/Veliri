@@ -6,7 +6,8 @@
     <title>Veliri</title>
     <script src="/js/field/field.js"></script>
     <script src="/js/field/initGame.js"></script>
-    <script src="/js/field/response.js"></script>
+    <script src="/js/field/ReaderField.js"></script>
+    <script src="/js/field/interface.js"></script>
     <script> ConnectField() </script>
 
 </head>
@@ -17,12 +18,11 @@
     <div class="fieldInfo" onclick="Rotate(270)"> 270 </div>
     <div class="fieldSize" onclick="SizeMap(1)"> + </div>
     <div class="fieldSize" onclick="SizeMap(2)"> - </div>
+    <div class="fieldInfo price" >Твои Деньги: </div>
+    <div class="fieldInfo step" >Ход № </div>
+    <div class="fieldInfo phase" >Фаза: </div>
 
-    <input class="createField" name="X" type="number" placeholder="Ширина карты">
-    <input class="createField" name="Y" type="number" placeholder="Высота карты">
-    <input class="createField" type="button" value="Создать" onclick="CreateField()">
     <br/>
-
     <div class="unitType">
         <div class="unitType info tank" onclick="createUnit('tank')">  </div> <br/>
         <div class="unitType info scout" onclick="createUnit('scout')">  </div> <br/>

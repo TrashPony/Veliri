@@ -1,6 +1,5 @@
-var SizeUnit = 100;
-
-
+var typeUnit;
+var phase;
 function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
@@ -22,50 +21,6 @@ function ConnectField() {
     };
 
 }
-/////////////////////////////////////////////////////////////////////Интерфейс////////////////////////////////////////////////
-function SizeMap(params) {
-    var div = document.getElementsByClassName("fieldUnit");
-    if (params === 1) SizeUnit = SizeUnit + 30;
-    if (SizeUnit > 45) {
-        if (params === 2) SizeUnit = SizeUnit - 30;
-    }
-
-    for (var i = 0; 0 < div.length; i++) {
-        if (params === 1) {
-            div[i].style.height = SizeUnit + "px";
-            div[i].style.width = SizeUnit + "px";
-        }
-
-        if (params === 2) {
-            div[i].style.height = SizeUnit + "px";
-            div[i].style.width = SizeUnit + "px";
-        }
-
-    }
-}
-function Rotate(params) {
-    var div = document.getElementById('main');
-    if(params === 0) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(0deg)";
-    }
-    if(params === 90) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(90deg)";
-    }
-    if(params === 180) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "-25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(180deg)";
-    }
-    if(params === 270) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "-25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(270deg)";
-    }
-}
 
 /////////////////////////////////////////////////////////////////////CREATE UNIT/////////////////////////////////////////////////////////////////////
 function createUnit(type) {
@@ -78,29 +33,28 @@ function reply_click(clicked_id) {
     var x = xy[0];
     var y = xy[1];
 
-    var cell = document.getElementById(clicked_id);
-    //sendCreateUnit(typeUnit, userName, x, y);
-    if (typeUnit === "tank") cell.className = "fieldUnit tank";
-    if (typeUnit === "scout") cell.className = "fieldUnit scout";
-    if (typeUnit === "arta") cell.className = "fieldUnit arta";
-    typeUnit = null;
+    if(phase === "Init" && typeUnit !== null) {
+        sendCreateUnit(typeUnit, x, y);
+    } else {
+        typeUnit = null;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////GAME PROTOCOL/////////////////////////////////////////////////////////////////////
 
-function sendCreateUnit(type, userName, x, y){
-    stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "CreateUnit",
-                                                         'typeUnit': type,
-                                                         'userName': "tost",
-                                                                'x': x,
-                                                                'y': y
-                                                          }));
+function sendCreateUnit(type, x, y){
+    sock.send(JSON.stringify({
+        event: "CreateUnit",
+        type_unit: type,
+        id_game: idGame,
+        x: x,
+        y: y
+    }));
 }
 
 function sendSelectEvent(x,y) {
     stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "SelectUnit",
                                                          'userName': "tost",
-                                                           'idUnit': idUnit,
                                                                 'x': x,
                                                                 'y': y
                                                             }));

@@ -44,7 +44,7 @@ func InitNewGame(mapName string, game Games)(string) {
 
 func SendToDB(Name string, idMap int, idPlayer1 int, idPlayer2 int)(string)  {
 
-db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
+	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +58,7 @@ db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432
 	var id string
 
 	rows, err := db.Query("Select id FROM activegame ORDER BY id DESC LIMIT 1")
-
+	defer rows.Close()
 	for rows.Next() {
 		err := rows.Scan(&id)
 		if err != nil {

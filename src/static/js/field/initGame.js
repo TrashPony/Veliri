@@ -1,10 +1,7 @@
 var idGame;
-var idUnit;
-var typeUnit;
 
 function InitGame() {
     idGame = getCookie("idGame");
-    alert(idGame);
     sendInitGame(idGame);
 }
 

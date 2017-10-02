@@ -42,6 +42,18 @@
     text-align: center;
 }
 
+.fieldInfo.price {
+    width: 155px;
+}
+
+.fieldInfo.step {
+    width: 100px;
+}
+
+.fieldInfo.phase {
+    width: 100px;
+}
+
 .fieldInfo:hover {
     border: 1px solid #4a8af4;
     background-color: #d9d92e;

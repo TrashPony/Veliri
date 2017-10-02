@@ -4,6 +4,7 @@ import (
 	"log"
 	"websocket-master"
 	"../game/initGame"
+	"../game/createUnit"
 	"strconv"
 )
 
@@ -28,7 +29,13 @@ func FieldReader(ws *websocket.Conn)  {
 			if(playerParams[2] != "Init"){ // если игроки еще не начали играть значить и юнитов нет
 				// тут надо возвращать параметры юнитов и их расположение на карте
 			}
+		}
+		if msg.Event == "CreateUnit" {
+			// 1) надо проверить возможно ли его туда поставить например в зависимости от респауна
+			createUnit.CreateUnit(msg.IdGame, strconv.Itoa(IdWs(ws, &usersFieldWs)), msg.TypeUnit, msg.X, msg.Y)
 
+			var resp = FieldResponse{Event:msg.Event,UserName:LoginWs(ws, &usersFieldWs), X:msg.X, Y:msg.Y, TypeUnit:msg.TypeUnit}
+			FieldPipe <- resp
 		}
 	}
 }
