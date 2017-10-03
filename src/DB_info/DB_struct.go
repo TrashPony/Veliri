@@ -1,6 +1,5 @@
 package DB_info
 
-
 type User struct {
 	id int
 	name string

@@ -7,21 +7,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func DontEndGames(UserName string)(string, string)  {
-	var users = GetUsers()
-	var playerId int = 0
-	for _, user := range users {
-		if user.name == UserName {
-			playerId = user.id
-		}
-	}
+func DontEndGames(userName string)(string, string)  {
+	userId := strconv.Itoa(GetID("WHERE name='" + userName + "'"))
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select name, id FROM activegame WHERE idplayer1=" + strconv.Itoa(playerId) + " OR idplayer2=" + strconv.Itoa(playerId))
+	rows, err := db.Query("Select name, id FROM activegame WHERE idplayer1=" + userId + " OR idplayer2=" + userId)
 	if err != nil {
 		log.Fatal(err)
 	}

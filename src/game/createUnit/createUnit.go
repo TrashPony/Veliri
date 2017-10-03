@@ -12,7 +12,7 @@ func CreateUnit(idGame string, idPlayer string, unitType string, x string, y str
 		log.Fatal(err)
 	}
 
-	idType, hp := GetUnitType(unitType)	
+	idType, hp := GetUnitType(unitType)
 
 	rows, err := db.Query("INSERT INTO actiongamesunit (idgame, idunittype, idplayer, hp, action, idtarget, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 		idGame, idType, idPlayer, hp, true, 0, x, y)

@@ -17,21 +17,10 @@ func StartNewGame(nameGame string) (string, bool)  {
 
 func InitNewGame(mapName string, game Games)(string) {
 	var maps = GetMapList()
-	var users = GetUsers()
 
 	var idMap int = 0
-	var idPlayer1 int = 0
-	var idPlayer2 int = 0
-
-
-	for _, user := range users {
-		if user.name == game.nameCreator{
-			idPlayer1 = user.id
-		}
-		if user.name == game.nameNewPlayer{
-			idPlayer2 = user.id
-		}
-	}
+	var idPlayer1 int = GetID("WHERE name='" + game.nameCreator + "'")
+	var idPlayer2 int = GetID("WHERE name=" + game.nameNewPlayer + "'")
 
 	for _, mp := range maps {
 		if mp.name == mapName{

@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"sessions-master"
 	"encoding/gob"
+	"../DB_info"
+	"strconv"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -29,27 +31,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		var userName string = r.Form.Get("username")
 		var password string = r.Form.Get("password")
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
-		user, passed := CheckUserInfo(userName, password)
-		if passed {
+		id, name := DB_info.GetIdAndName("WHERE name='" + userName + "' AND password='" + password + "'")
+		if id != 0 && name != "" {
 			//отправляет пользователя на получение токена подключения
-			GetCookie(w , r, user)
+			GetCookie(w , r, strconv.Itoa(id), name)
 		}
 	}
 }
 
-func CheckUserInfo(userName string, userPassword string) (User, bool) {
-	// тестовые in memory пользователи
-	var users []User = GetUsers()
-	// сравнием вбитые значения со значениями на сервере
-	for _, user := range users {
-		if user.name == userName && user.password == userPassword{
-			return user, true
-		}
-	}
-	return users[0], false
-}
-
-func GetCookie(w http.ResponseWriter, r *http.Request, user User) {
+func GetCookie(w http.ResponseWriter, r *http.Request, id string, name string) {
 	// берет сеанс из браузера пользователя
 	ses, err := cookieStore.Get(r, cookieName)
 	// если есть куки подписаные не правильным ключем то вылетает ошибка
@@ -58,8 +48,8 @@ func GetCookie(w http.ResponseWriter, r *http.Request, user User) {
 		return
 	}
 
-	ses.Values[login] = user.name // ложит данные в сессию
-	ses.Values[id] = user.id // ложит данные в сессию
+	ses.Values[login] = name // ложит данные в сессию
+	ses.Values[id] = id // ложит данные в сессию
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)
