@@ -2,39 +2,36 @@ package initGame
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
 	"log"
+	"strconv"
 )
 
-func GetGame(idGame string) (Game) {
+func GetUserStat(idGame string, idUser int) (UserStat)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * FROM action_games WHERE id=" + idGame)
+	rows, err := db.Query("Select * FROM action_game_user WHERE id_game=" + idGame + " AND id_user=" + strconv.Itoa(idUser))
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	var game Game
+	var user UserStat
 
 	for rows.Next() {
-		err := rows.Scan(&game.id, &game.name, &game.idMap, &game.step, &game.phase, &game.winner)
+		err := rows.Scan(&user.id_game, &user.id_user, &user.price)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	return game
+	return user
 }
 
-type Game struct {
-	id int
-	name string
-	idMap int
-	step int
-	phase string
-	winner string
+type UserStat struct {
+	id_game int
+	id_user int
+	price  int
 }

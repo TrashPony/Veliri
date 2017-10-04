@@ -1,0 +1,26 @@
+CREATE TABLE action_games(
+   id serial primary key,
+   name varchar(64),
+   id_map int references map(id),
+   step int,
+   phase varchar(64),
+   winner varchar(64)
+);
+
+CREATE TABLE action_game_user(
+   id_game int references action_games(id),
+   id_user int references users(id),
+   price int
+);
+
+CREATE TABLE Action_Game_Unit(
+    id serial primary key,
+    id_game int references action_games(id),
+    id_type int references unittype(id),
+    id_user int references users(id),
+    hp int,
+    action varchar(64),
+    target int,
+    x int,
+    y int
+);

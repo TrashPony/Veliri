@@ -18,7 +18,7 @@ func FieldReader(ws *websocket.Conn)  {
 		}
 
 		if msg.Event == "InitGame" {
-			playerParams, idMap := initGame.InitGame(msg.IdGame); // отправляет параметры игрока
+			playerParams, idMap := initGame.InitGame(msg.IdGame, IdWs(ws, &usersFieldWs)); // отправляет параметры игрока
 			var playersParam = FieldResponse{Event:"InitPlayer",UserName:LoginWs(ws, &usersFieldWs), PlayerPrice:playerParams[0], GameStep:playerParams[1], GamePhase:playerParams[2]}
 			FieldPipe <- playersParam
 

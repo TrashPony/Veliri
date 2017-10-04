@@ -12,7 +12,7 @@ func CreateUnit(idGame string, idPlayer string, unitType string, x string, y str
 		log.Fatal(err)
 	}
 
-	idType, hp := GetUnitType(unitType)
+	idType, hp := GetUnitType(unitType, idGame, idPlayer)
 
 	rows, err := db.Query("INSERT INTO actiongamesunit (idgame, idunittype, idplayer, hp, action, idtarget, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 		idGame, idType, idPlayer, hp, true, 0, x, y)
@@ -20,12 +20,13 @@ func CreateUnit(idGame string, idPlayer string, unitType string, x string, y str
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer rows.Close()
 
 
 }
 
-func GetUnitType(unitType string) (string, string)  {
+func GetUnitType(unitType string, idGame string, idPlayer string) (string, string)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
@@ -47,11 +48,20 @@ func GetUnitType(unitType string) (string, string)  {
 		}
 	}
 
-	Price(price)
+	Price(price, idGame, idPlayer)
 
 	return id, hp
 }
 
-func Price(price int)  {
+func Price(price int, idGame string, idPlayer string)  {
+	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	rows, err := db.Query("Select * FROM activegame WHERE id=" + idGame + " AND (idplayer1=" + idPlayer + " OR idplayer2=" + idPlayer + ")")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
 }

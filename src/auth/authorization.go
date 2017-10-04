@@ -32,9 +32,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		var password string = r.Form.Get("password")
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
 		id, name := DB_info.GetIdAndName("WHERE name='" + userName + "' AND password='" + password + "'")
+
 		if id != 0 && name != "" {
 			//отправляет пользователя на получение токена подключения
 			GetCookie(w , r, strconv.Itoa(id), name)
+		} else {
+			println("Соеденение не разрешено: не авторизован")
 		}
 	}
 }
@@ -79,6 +82,5 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 	if !ok { // если пустая то говорит что ты анонимус
 		return "", 0
 	}
-
 	return login, id
 }
