@@ -5,28 +5,32 @@ import (
 	"log"
 )
 
-func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)  {
+func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(bool, int) {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	idType, hp := GetUnitType(unitType, idGame, idPlayer)
+	unit := GetUnitType(unitType, idGame, idPlayer)
+	success, price := Price(unit.price, idGame, idPlayer)
 
-	rows, err := db.Query("INSERT INTO actiongamesunit (idgame, idunittype, idplayer, hp, action, idtarget, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-		idGame, idType, idPlayer, hp, true, 0, x, y)
+	if (success) {
+		rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+			idGame, unit.id, idPlayer, unit.hp, true, 0, x, y)
+		defer rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	if err != nil {
-		log.Fatal(err)
+		return success, price
 	}
-
-	defer rows.Close()
-
-
+	return false, 0
 }
 
-func GetUnitType(unitType string, idGame string, idPlayer string) (string, string)  {
+func GetUnitType(unitType string, idGame string, idPlayer string) (UnitType)  {
+	var unit UnitType
+
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
@@ -38,30 +42,52 @@ func GetUnitType(unitType string, idGame string, idPlayer string) (string, strin
 	}
 	defer rows.Close()
 
-	var id string
-	var hp string
-	var price int
 	for rows.Next() {
-		err := rows.Scan(&id, &hp, &price)
+		err := rows.Scan(&unit.id, &unit.hp, &unit.price)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	Price(price, idGame, idPlayer)
-
-	return id, hp
+	return unit
 }
 
-func Price(price int, idGame string, idPlayer string)  {
+func Price(cost int, idGame string, idPlayer string) (bool, int) {
+	var price int
+
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * FROM activegame WHERE id=" + idGame + " AND (idplayer1=" + idPlayer + " OR idplayer2=" + idPlayer + ")")
+	rows, err := db.Query("Select price FROM action_game_user WHERE id_game=" + idGame + " AND id_user=" + idPlayer)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	for rows.Next() {
+		err := rows.Scan(&price)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if cost < price {
+		price = price - cost
+		_ , err := db.Exec("UPDATE action_game_user SET price = $1 WHERE id_game = $2 AND id_user = $3", price, idGame, idPlayer)
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			return true, price
+		}
+
+	}
+	return false, 0
+}
+
+type UnitType struct {
+	id int
+	hp int
+	price int
 }

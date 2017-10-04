@@ -13,7 +13,7 @@ CREATE TABLE action_game_user(
    price int
 );
 
-CREATE TABLE Action_Game_Unit(
+CREATE TABLE action_game_unit(
     id serial primary key,
     id_game int references action_games(id),
     id_type int references unittype(id),

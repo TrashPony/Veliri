@@ -15,7 +15,7 @@ func DontEndGames(userName string)(string, string)  {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select name, id FROM action_games WHERE id=( Select id_game From action_game_user Where id_user=" + userId + ")")
+	rows, err := db.Query("Select action_games.name, action_games.id FROM action_games, action_game_user WHERE action_game_user.id_game=action_games.id AND action_game_user.id_user=" + userId)
 	if err != nil {
 		log.Fatal(err)
 	}
