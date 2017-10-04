@@ -65,14 +65,14 @@ func UsersToDB(id string, play1 int, play2 int)  {
 		log.Fatal(err)
 	}
 
-	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price) VALUES ($1, $2, $3)",    // добавляем новую игру в БД
-		id, play1, 100) // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
+	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)",    // добавляем новую игру в БД
+		id, play1, 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price) VALUES ($1, $2, $3)",    // добавляем новую игру в БД
-		id, play2, 100) // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
+	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)",    // добавляем новую игру в БД
+		id, play2, 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 	if err != nil {
 		log.Fatal(err)
 	}

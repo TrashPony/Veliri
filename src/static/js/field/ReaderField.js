@@ -5,6 +5,7 @@ function ReadResponse(jsonMessage) {
     var phase;
     var clicked_id;
     var cell;
+    var log;
 
     if (event === "InitPlayer") {
         price = document.getElementsByClassName('fieldInfo price');
@@ -26,13 +27,25 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "CreateUnit"){
-        clicked_id = JSON.parse(jsonMessage).x + ":" + JSON.parse(jsonMessage).y;
-        cell = document.getElementById(clicked_id);
-        if (typeUnit === "tank") cell.className = "fieldUnit tank";
-        if (typeUnit === "scout") cell.className = "fieldUnit scout";
-        if (typeUnit === "artillery") cell.className = "fieldUnit artillery";
-        price = document.getElementsByClassName('fieldInfo price');
-        price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
+        if(JSON.parse(jsonMessage).error_type === "") {
+            clicked_id = JSON.parse(jsonMessage).x + ":" + JSON.parse(jsonMessage).y;
+            cell = document.getElementById(clicked_id);
+            if (typeUnit === "tank") cell.className = "fieldUnit tank";
+            if (typeUnit === "scout") cell.className = "fieldUnit scout";
+            if (typeUnit === "artillery") cell.className = "fieldUnit artillery";
+            price = document.getElementsByClassName('fieldInfo price');
+            price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
+        } else {
+            if(JSON.parse(jsonMessage).error_type === "busy") {
+                log = document.getElementById('fieldLog');
+                log.innerHTML = "Место занято"
+            }
+
+            if(JSON.parse(jsonMessage).error_type === "noMany") {
+                log = document.getElementById('fieldLog');
+                log.innerHTML = "Нет денег"
+            }
+        }
         typeUnit = null;
     }
 }

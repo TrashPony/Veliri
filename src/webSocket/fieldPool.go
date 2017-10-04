@@ -31,12 +31,26 @@ func FieldReader(ws *websocket.Conn)  {
 			}
 		}
 		if msg.Event == "CreateUnit" {
+			var resp FieldResponse
 			// 1) надо проверить возможно ли его туда поставить например в зависимости от респауна
 			success, price := createUnit.CreateUnit(msg.IdGame, strconv.Itoa(IdWs(ws, &usersFieldWs)), msg.TypeUnit, msg.X, msg.Y)
-			if(success) {
-				var resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs),PlayerPrice: strconv.Itoa(price), X:msg.X, Y:msg.Y, TypeUnit:msg.TypeUnit}
+
+			if success {
+				resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs),PlayerPrice: strconv.Itoa(price), X:msg.X, Y:msg.Y, TypeUnit:msg.TypeUnit}
 				FieldPipe <- resp
+			} else {
+				if price == 1 {
+					resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), ErrorType:"busy"}
+					FieldPipe <- resp
+				}
+				if price == 2 {
+					resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), ErrorType:"noMany"}
+					FieldPipe <- resp
+				}
 			}
+		}
+		if msg.Event == "Ready" {
+
 		}
 	}
 }

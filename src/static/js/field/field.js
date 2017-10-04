@@ -51,6 +51,11 @@ function sendCreateUnit(type, x, y){
         y: y
     }));
 }
+function sendReady(){
+    sock.send(JSON.stringify({
+        event: "Ready",
+    }));
+}
 
 function sendSelectEvent(x,y) {
     stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "SelectUnit",

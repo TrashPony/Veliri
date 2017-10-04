@@ -8,8 +8,6 @@ type FieldMessage struct {
 	TypeUnit string `json:"type_unit"`
 	X        string	`json:"x"`
 	Y 	 string	`json:"y"`
-
-
 }
 
 type FieldResponse struct {
@@ -23,4 +21,5 @@ type FieldResponse struct {
 	XMap 	  	  string `json:"x_map"`
 	YMap	  	  string `json:"y_map"`
 	TypeUnit 	  string `json:"type_unit"`
+	ErrorType	  string `json:"error_type"`
 }

@@ -2,6 +2,22 @@
 
 }
 
+#Ready{
+    padding: 0;
+    border: 1px solid #e1720f;
+    border-radius: 4px;
+    color: black;
+    background-color: #e1720f;
+    width: 50px;
+    height: 20px;
+    display:inline-block;
+    text-align: center;
+}
+#Ready:hover {
+    border: 1px solid #f40600;
+    background-color: #d9d92e;
+}
+
 .fieldUnit {
     padding: 5px;
     border: 1px solid #292929;

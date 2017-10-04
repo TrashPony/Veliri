@@ -10,7 +10,8 @@ CREATE TABLE action_games(
 CREATE TABLE action_game_user(
    id_game int references action_games(id),
    id_user int references users(id),
-   price int
+   price int,
+   ready varchar(64)
 );
 
 CREATE TABLE action_game_unit(
