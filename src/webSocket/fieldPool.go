@@ -3,6 +3,7 @@ package webSocket
 import (
 	"log"
 	"websocket-master"
+	"../game"
 	"../game/initGame"
 	"../game/createUnit"
 	"strconv"
@@ -19,17 +20,19 @@ func FieldReader(ws *websocket.Conn)  {
 
 		if msg.Event == "InitGame" {
 			playerParams, idMap := initGame.InitGame(msg.IdGame, IdWs(ws, &usersFieldWs)); // отправляет параметры игрока
-			var playersParam = FieldResponse{Event:"InitPlayer",UserName:LoginWs(ws, &usersFieldWs), PlayerPrice:playerParams[0], GameStep:playerParams[1], GamePhase:playerParams[2]}
+			var playersParam= FieldResponse{Event: "InitPlayer", UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: playerParams[0], GameStep: playerParams[1], GamePhase: playerParams[2], UserReady: playerParams[3]}
 			FieldPipe <- playersParam
 
 			x, y := initGame.GetMap(idMap) // отправляем параметры карты это конечно пиздец >_<
-			var mapParam = FieldResponse{Event:"InitMap",UserName:LoginWs(ws, &usersFieldWs), XMap: strconv.Itoa(x), YMap: strconv.Itoa(y)}
+			var mapParam= FieldResponse{Event: "InitMap", UserName: LoginWs(ws, &usersFieldWs), XMap: strconv.Itoa(x), YMap: strconv.Itoa(y)}
 			FieldPipe <- mapParam
 
-			if(playerParams[2] != "Init"){ // если игроки еще не начали играть значить и юнитов нет
-				// тут надо возвращать параметры юнитов и их расположение на карте
-			}
+			units := initGame.GetUnitList(msg.IdGame)
+			var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[0], UserId: units[1], HP: units[2], UnitAction: units[3],
+				Target: units[4], X: units[5], Y: units[6]}
+			FieldPipe <- unitsParametr
 		}
+
 		if msg.Event == "CreateUnit" {
 			var resp FieldResponse
 			// 1) надо проверить возможно ли его туда поставить например в зависимости от респауна
@@ -50,7 +53,10 @@ func FieldReader(ws *websocket.Conn)  {
 			}
 		}
 		if msg.Event == "Ready" {
-
+			var resp FieldResponse
+			phase := game.UserReady(IdWs(ws, &usersFieldWs), msg.IdGame)
+			resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), Phase:phase}
+			FieldPipe <- resp
 		}
 	}
 }

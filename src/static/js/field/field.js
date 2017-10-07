@@ -54,6 +54,7 @@ function sendCreateUnit(type, x, y){
 function sendReady(){
     sock.send(JSON.stringify({
         event: "Ready",
+        id_game: idGame
     }));
 }
 

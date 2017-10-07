@@ -6,6 +6,7 @@ function ReadResponse(jsonMessage) {
     var clicked_id;
     var cell;
     var log;
+    var ready;
 
     if (event === "InitPlayer") {
         price = document.getElementsByClassName('fieldInfo price');
@@ -15,6 +16,12 @@ function ReadResponse(jsonMessage) {
         phase = document.getElementsByClassName('fieldInfo phase');
         phase[0].innerHTML = "Фаза: " + JSON.parse(jsonMessage).game_phase;
 
+        if(JSON.parse(jsonMessage).user_ready === "true") {
+            ready = document.getElementById("Ready");
+            ready.innerHTML = "Ты готов!";
+            ready.style.backgroundColor = "#e1720f"
+        }
+
         this.phase = JSON.parse(jsonMessage).game_phase;
     }
 
@@ -23,7 +30,17 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
-//////////////////////////////////
+        var x = (JSON.parse(jsonMessage).x).split(':');
+        var y = (JSON.parse(jsonMessage).y).split(':');
+        var type = (JSON.parse(jsonMessage).type_unit).split(':');
+
+        for (var i = 0; i < x.length; i++) {
+            clicked_id = x[i] + ":" + y[i];
+            cell = document.getElementById(clicked_id);
+            if (type[i] === "tank") cell.className = "fieldUnit tank";
+            if (type[i] === "scout") cell.className = "fieldUnit scout";
+            if (type[i] === "artillery") cell.className = "fieldUnit artillery";
+        }
     }
 
     if (event === "CreateUnit"){
@@ -47,5 +64,12 @@ function ReadResponse(jsonMessage) {
             }
         }
         typeUnit = null;
+    }
+    if (event === "Ready") {
+        if(JSON.parse(jsonMessage).phase === "") {
+            ready = document.getElementById("Ready");
+            ready.innerHTML = "Ты готов!";
+            ready.style.backgroundColor = "#e1720f"
+        }
     }
 }
