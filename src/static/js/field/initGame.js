@@ -21,9 +21,14 @@ function Field(xSize,ySize) {
             var div = document.createElement('div');
             div.className = "fieldUnit";
             div.id = x + ":" + y;
-            div.innerHTML = x + ":" + y;
             div.onclick = function () {
                 reply_click(this.id);
+            };
+            div.onmouseover = function () {
+                mouse_over(this.id);
+            };
+            div.onmouseout = function () {
+                mouse_out(this.id)
             };
             main.appendChild(div);
         }

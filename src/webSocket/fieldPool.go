@@ -58,6 +58,16 @@ func FieldReader(ws *websocket.Conn)  {
 			resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), Phase:phase}
 			FieldPipe <- resp
 		}
+		if msg.Event == "MouseOver" {
+			var resp FieldResponse
+			success, unitParams := initGame.GetUnit(msg.IdGame, msg.X, msg.Y)
+			if success {
+				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), TypeUnit: unitParams[0], UserId: unitParams[1], HP: unitParams[2],
+					UnitAction: unitParams[3], Target: unitParams[4], Damage: unitParams[5], MoveSpeed: unitParams[6], Init: unitParams[7], RangeAttack: unitParams[8],
+					RangeView: unitParams[9], AreaAttack: unitParams[10], TypeAttack: unitParams[11]}
+			}
+			FieldPipe <- resp
+		}
 	}
 }
 

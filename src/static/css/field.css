@@ -1,6 +1,7 @@
 .nline {
 
-}
+
+ }
 
 #Ready{
     padding: 0;
@@ -22,11 +23,15 @@
     padding: 5px;
     border: 1px solid #292929;
     border-radius: 4px;
-    color: black;
     background-color: #dff0d8;
     width: 100px;
     height: 100px;
     display:inline-block;
+    text-shadow:1px 1px #00b4ff;
+    color: #29ff10;
+    font-weight:bold;
+    font-size: 18px;
+    overflow: hidden;
 }
 .fieldUnit:hover {
     border: 1px solid #4a8af4;
@@ -141,6 +146,22 @@
     height: 300px;
     display:inline-block;
     transform: translate(150px, -750px);
+    overflow: scroll;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+#unitInfo {
+    padding: 0;
+    border: 2px solid #d6e9c6;
+    border-radius: 4px;
+    color: black;
+    background-color: rgba(81, 88, 88, 0.18);
+    width: 300px;
+    height: 300px;
+    display:inline-block;
+    transform: translate(-160px, -400px);
     overflow: scroll;
     position: relative;
     top: 0;

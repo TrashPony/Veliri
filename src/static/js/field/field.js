@@ -1,5 +1,6 @@
 var typeUnit;
 var phase;
+var unitInfo;
 function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
@@ -33,16 +34,29 @@ function reply_click(clicked_id) {
     var x = xy[0];
     var y = xy[1];
 
-    if(phase === "Init" && typeUnit !== null) {
+    if(phase === "Init" && typeUnit !== null && typeUnit !== undefined) {
         sendCreateUnit(typeUnit, x, y);
     } else {
         typeUnit = null;
     }
 }
 
+function mouse_over(unit_id) {
+    var xy = unit_id.split(":");
+
+    var x = xy[0];
+    var y = xy[1];
+
+    sendMouseOver(x, y);
+}
+
+function mouse_out(unit_id) {
+    unitInfo = document.getElementById("unitInfo");
+    unitInfo.innerHTML = "";
+}
 /////////////////////////////////////////////////////////////////////GAME PROTOCOL/////////////////////////////////////////////////////////////////////
 
-function sendCreateUnit(type, x, y){
+function sendCreateUnit(type, x, y) {
     sock.send(JSON.stringify({
         event: "CreateUnit",
         type_unit: type,
@@ -50,11 +64,22 @@ function sendCreateUnit(type, x, y){
         x: x,
         y: y
     }));
+
 }
-function sendReady(){
+
+function sendReady( x, y){
     sock.send(JSON.stringify({
         event: "Ready",
         id_game: idGame
+    }));
+}
+
+function sendMouseOver(x, y){
+    sock.send(JSON.stringify({
+        event: "MouseOver",
+        id_game: idGame,
+        x: x,
+        y: y
     }));
 }
 

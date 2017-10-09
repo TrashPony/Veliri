@@ -1,22 +1,33 @@
 var SizeUnit = 100;
+var SizeText = 18;
 function SizeMap(params) {
     var div = document.getElementsByClassName("fieldUnit");
-    if (params === 1) SizeUnit = SizeUnit + 30;
+    if (params === 1){
+        SizeUnit = SizeUnit + 30;
+        SizeText = SizeText + 6;
+    }
     if (SizeUnit > 45) {
-        if (params === 2) SizeUnit = SizeUnit - 30;
+        if (params === 2){
+            SizeUnit = SizeUnit - 30;
+            SizeText = SizeText - 6;
+        }
+
     }
 
     for (var i = 0; 0 < div.length; i++) {
-        if (params === 1) {
-            div[i].style.height = SizeUnit + "px";
-            div[i].style.width = SizeUnit + "px";
-        }
+        if(div[i].style !== undefined) { // чет нехуя не работает
+            if (params === 1) {
+                div[i].style.height = SizeUnit + "px";
+                div[i].style.width = SizeUnit + "px";
+                div[i].style.fontSize = SizeText + "px";
+            }
 
-        if (params === 2) {
-            div[i].style.height = SizeUnit + "px";
-            div[i].style.width = SizeUnit + "px";
+            if (params === 2) {
+                div[i].style.height = SizeUnit + "px";
+                div[i].style.width = SizeUnit + "px";
+                div[i].style.fontSize = SizeText + "px";
+            }
         }
-
     }
 }
 function Rotate(params) {

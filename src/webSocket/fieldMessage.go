@@ -7,7 +7,7 @@ type FieldMessage struct {
 	IdTarget string	`json:"id_target"`
 	TypeUnit string `json:"type_unit"`
 	X        string	`json:"x"`
-	Y 	 string	`json:"y"`
+	Y 	     string	`json:"y"`
 }
 
 type FieldResponse struct {
@@ -28,4 +28,11 @@ type FieldResponse struct {
 	HP 			  string `json:"hp"`
 	UnitAction	  string `json:"unit_action"`
 	Target 		  string `json:"target"`
+	Damage		  string `json:"damage"`
+	MoveSpeed	  string `json:"move_speed"`
+	Init		  string `json:"init"`
+	RangeAttack	  string `json:"range_attack"`
+	RangeView	  string `json:"range_view"`
+	AreaAttack    string `json:"area_attack"`
+	TypeAttack	  string `json:"type_attack"`
 }

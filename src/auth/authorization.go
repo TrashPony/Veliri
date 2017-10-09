@@ -6,7 +6,6 @@ import (
 	"sessions-master"
 	"encoding/gob"
 	"../DB_info"
-	"strconv"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -35,14 +34,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		if id != 0 && name != "" {
 			//отправляет пользователя на получение токена подключения
-			GetCookie(w , r, strconv.Itoa(id), name)
+			GetCookie(w , r, id, name)
 		} else {
 			println("Соеденение не разрешено: не авторизован")
 		}
 	}
 }
 
-func GetCookie(w http.ResponseWriter, r *http.Request, id string, name string) {
+func GetCookie(w http.ResponseWriter, r *http.Request, idUser int, name string) {
 	// берет сеанс из браузера пользователя
 	ses, err := cookieStore.Get(r, cookieName)
 	// если есть куки подписаные не правильным ключем то вылетает ошибка
@@ -52,7 +51,7 @@ func GetCookie(w http.ResponseWriter, r *http.Request, id string, name string) {
 	}
 
 	ses.Values[login] = name // ложит данные в сессию
-	ses.Values[id] = id // ложит данные в сессию
+	ses.Values[id] = idUser // ложит данные в сессию
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)
