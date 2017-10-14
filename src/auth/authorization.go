@@ -30,18 +30,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		var userName string = r.Form.Get("username")
 		var password string = r.Form.Get("password")
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
-		id, name := DB_info.GetIdAndName("WHERE name='" + userName + "' AND password='" + password + "'")
+		user := DB_info.GetUsers("WHERE name='" + userName + "' AND password='" + password + "'")
 
-		if id != 0 && name != "" {
+		if user.Id != 0 && user.Name != "" {
 			//отправляет пользователя на получение токена подключения
-			GetCookie(w , r, id, name)
+			GetCookie(w , r, user)
 		} else {
 			println("Соеденение не разрешено: не авторизован")
 		}
 	}
 }
 
-func GetCookie(w http.ResponseWriter, r *http.Request, idUser int, name string) {
+func GetCookie(w http.ResponseWriter, r *http.Request, user DB_info.User) {
 	// берет сеанс из браузера пользователя
 	ses, err := cookieStore.Get(r, cookieName)
 	// если есть куки подписаные не правильным ключем то вылетает ошибка
@@ -50,8 +50,8 @@ func GetCookie(w http.ResponseWriter, r *http.Request, idUser int, name string) 
 		return
 	}
 
-	ses.Values[login] = name // ложит данные в сессию
-	ses.Values[id] = idUser // ложит данные в сессию
+	ses.Values[login] = user.Name // ложит данные в сессию
+	ses.Values[id] = user.Id // ложит данные в сессию
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)

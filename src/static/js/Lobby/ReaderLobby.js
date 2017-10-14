@@ -2,55 +2,30 @@ function ReaderLobby(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
     if (event === "MapView") {
-        var SelectMap = document.getElementsByClassName("Select Map");
-        while (SelectMap.length > 0) {
-            SelectMap[0].parentNode.removeChild(SelectMap[0]);
-        }
 
-        var mapName = (JSON.parse(jsonMessage).response_name_map).split(':');
         var mapContent = document.getElementById('Games');
-
-        var p = document.createElement('p');
-        p.style.wordWrap = 'break-word';
-        p.appendChild(document.createTextNode("Карты:"));
-        p.className = "Select Map";
-        mapContent.appendChild(p);
-
-        for (var i = 0; (i + 1) < mapName.length; i++) {
-            div = document.createElement('div');
-            div.style.wordWrap = 'break-word';
-            div.className = "Select Map";
-            div.id = mapName[i];
-            div.onclick = function () {
-                CreateLobbyGame(this.id);
-            };
-            div.appendChild(document.createTextNode(i + ") " + mapName[i]));
-            mapContent.appendChild(div);
-        }
+        div = document.createElement('div');
+        div.style.wordWrap = 'break-word';
+        div.className = "Select Map";
+        div.id = JSON.parse(jsonMessage).name_map;
+        div.onclick = function () {
+            CreateLobbyGame(this.id);
+        };
+        div.appendChild(document.createTextNode(JSON.parse(jsonMessage).name_map));
+        mapContent.appendChild(div);
     }
 
     if (event === "GameView") {
-        var SelectGame = document.getElementsByClassName("GameView");
-        while (SelectGame.length > 0) {
-            SelectGame[0].parentNode.removeChild(SelectGame[0]);
-        }
-
-        var gameName = (JSON.parse(jsonMessage).response_name_game).split(':');
-        var mapName = (JSON.parse(jsonMessage).response_name_map).split(':');
-        var userName = (JSON.parse(jsonMessage).response_name_user).split(':');
         var gameContent = document.getElementById('Games list');
-
-        for (var i = 0; (i + 1) < gameName.length; i++) {
-            div = document.createElement('div');
-            div.style.wordWrap = 'break-word';
-            div.className = "Select Game";
-            div.id = gameName[i];
-            div.onclick = function () {
-                JoinToLobbyGame(this.id);
-            };
-            div.appendChild(document.createTextNode(i + ") Имя:     " + gameName[i] + " Карта:      " + mapName[i] + " Создатель:       " + userName[i]));
-            gameContent.appendChild(div);
-        }
+        div = document.createElement('div');
+        div.style.wordWrap = 'break-word';
+        div.className = "Select Game";
+        div.id = JSON.parse(jsonMessage).name_game;
+        div.onclick = function () {
+            JoinToLobbyGame(this.id);
+        };
+        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + " Карта: " + JSON.parse(jsonMessage).name_map + " Создатель: " + JSON.parse(jsonMessage).creator));
+        gameContent.appendChild(div);
     }
 
     if (event === "CreateLobbyGame") {
@@ -84,36 +59,23 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "DontEndGamesList") {
-        var SelectGame = document.getElementsByClassName("Select Game");
-        while (SelectGame.length > 0) {
-            SelectGame[0].parentNode.removeChild(SelectGame[0]);
-        }
-
-        var gameNames = (JSON.parse(jsonMessage).response_name_game).split(':');
-        var gameIDs = (JSON.parse(jsonMessage).response_name_map).split(':');
         var gamesContent = document.getElementById('DontEndGame');
 
-        var p = document.createElement('p');
-        p.style.wordWrap = 'break-word';
-        p.appendChild(document.createTextNode("Недоиграные игры:"));
-        p.className = "Select Game";
-        gamesContent.appendChild(p);
+        div = document.createElement('div');
+        div.style.wordWrap = 'break-word';
+        div.className = "Select Game";
+        div.id = JSON.parse(jsonMessage).name_game;
+        div.onclick = function () {
+            JoinToGame(this.id);
+        };
+        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + " id: " + JSON.parse(jsonMessage).id_game + " Шаг: " +
+            JSON.parse(jsonMessage).step_game + " Фаза: " + JSON.parse(jsonMessage).phase_game + " Мой ход: " + (!JSON.parse(jsonMessage).ready)));
+        gamesContent.appendChild(div);
 
-        for (var i = 0; (i + 1) < gameNames.length; i++) {
-            div = document.createElement('div');
-            div.style.wordWrap = 'break-word';
-            div.className = "Select Game";
-            div.id = gameIDs[i];
-            div.onclick = function () {
-                JoinToGame(this.id);
-            };
-            div.appendChild(document.createTextNode(i + ") " + gameNames[i] + " id:" + gameIDs[i]));
-            gamesContent.appendChild(div);
-        }
     }
 
     if (event === "Joiner") {
-        var users = (JSON.parse(jsonMessage).response_name_user_2).split(':');
+        var users = (JSON.parse(jsonMessage).name_user_2).split(':');
         // удаляем старые элементы //
         del = document.getElementById("lobby");
         del.remove();
@@ -153,7 +115,7 @@ function ReaderLobby(jsonMessage) {
     if (event === "JoinToLobbyGame") {
         var parentElem = document.getElementsByClassName("gameInfo");
 
-        var user = JSON.parse(jsonMessage).response_name_user;
+        var user = JSON.parse(jsonMessage).name_user;
         div = document.createElement('div');
         div.style.wordWrap = 'break-word';
         div.className = "Select Game";
@@ -164,7 +126,7 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "StartNewGame") {
         toField = true;
-        var idGame = JSON.parse(jsonMessage).response_name_map;
+        var idGame = JSON.parse(jsonMessage).name_map;
         document.cookie = "idGame=" + idGame + "; path=/;";
         location.href = "http://" + window.location.host + "/field";
     }

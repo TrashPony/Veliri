@@ -25,11 +25,7 @@ body{
 }
 
 .Select.Game {
-    width: 295px;
-}
-
-.Select.Game:hover {
-
+    width: 365px;
 }
 
 .gameInfo {

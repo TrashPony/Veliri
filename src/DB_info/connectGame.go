@@ -1,4 +1,0 @@
-package DB_info
-
-
-

@@ -7,8 +7,8 @@ import (
 
 func StartNewGame(nameGame string) (string, bool)  {
 	for game := range openGames {
-		if openGames[game].nameGame == nameGame && openGames[game].nameNewPlayer != ""{
-			id := InitNewGame(openGames[game].nameMap, openGames[game])
+		if openGames[game].Name == nameGame && openGames[game].NewPlayer != ""{
+			id := InitNewGame(openGames[game].Map, openGames[game])
 			return id, true
 		}
 	}
@@ -19,15 +19,15 @@ func InitNewGame(mapName string, game Games)(string) {
 	var maps = GetMapList()
 
 	var idMap int = 0
-	var idPlayer1 int = GetID("WHERE name='" + game.nameCreator + "'")
-	var idPlayer2 int = GetID("WHERE name='" + game.nameNewPlayer + "'")
+	var Player1 = GetUsers("WHERE name='" + game.Creator + "'")
+	var Player2 = GetUsers("WHERE name='" + game.NewPlayer + "'")
 
 	for _, mp := range maps {
-		if mp.name == mapName{
-			idMap = mp.id
+		if mp.Name == mapName{
+			idMap = mp.Id
 		}
 	}
-	id := SendToDB(game.nameGame ,idMap, idPlayer1, idPlayer2)
+	id := SendToDB(game.Name, idMap, Player1.Id, Player2.Id)
 	return id
 }
 

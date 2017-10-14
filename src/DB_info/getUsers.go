@@ -21,20 +21,10 @@ func GetUsers(query string)(User)  {
 	var user User
 
 	for rows.Next() {
-		err := rows.Scan(&user.id, &user.name, &user.mail)
+		err := rows.Scan(&user.Id, &user.Name, &user.Mail)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 	return user
-}
-
-func GetIdAndName(query string) (int, string) {
-	user := GetUsers(query)
-	return user.id, user.name
-}
-
-func GetID(query string) (int)  {
-	user := GetUsers(query)
-	return user.id
 }

@@ -57,12 +57,30 @@ function JoinToGame(idGame) {
 }
 
 function sendMapSelection() {
+
+    var SelectMap = document.getElementsByClassName("Select Map");
+    while (SelectMap.length > 0) {
+        SelectMap[0].parentNode.removeChild(SelectMap[0]);
+    }
+
+    var mapContent = document.getElementById('Games');
+    var p = document.createElement('p');
+    p.style.wordWrap = 'break-word';
+    p.appendChild(document.createTextNode("Карты:"));
+    p.className = "Select Map";
+    mapContent.appendChild(p);
+
     sock.send(JSON.stringify({
             event: "MapView"
     }));
 }
 
 function sendGameSelection() {
+    var SelectGame = document.getElementsByClassName("GameView");
+    while (SelectGame.length > 0) {
+        SelectGame[0].parentNode.removeChild(SelectGame[0]);
+    }
+
     sock.send(JSON.stringify({
             event: "GameView"
     }));
@@ -85,6 +103,18 @@ function sendJoinToLobbyGame(gameName) {
 }
 
 function sendDontEndGamesList () {
+    var SelectGame = document.getElementsByClassName("Select Game");
+    while (SelectGame.length > 0) {
+        SelectGame[0].parentNode.removeChild(SelectGame[0]);
+    }
+
+    var gamesContent = document.getElementById('DontEndGame');
+
+    var p = document.createElement('p');
+    p.style.wordWrap = 'break-word';
+    p.appendChild(document.createTextNode("Недоиграные игры:"));
+    gamesContent.appendChild(p);
+
     sock.send(JSON.stringify({
         event: "DontEndGamesList"
     }));

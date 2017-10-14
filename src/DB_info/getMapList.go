@@ -22,7 +22,7 @@ func GetMapList()([]Map)  {
 	var mp Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.id, &mp.name, &mp.xSize, &mp.ySize, &mp.Type)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -34,14 +34,4 @@ func GetMapList()([]Map)  {
 	}
 
 	return maps
-}
-
-func MapList()(string)  {
-
-	var maps = GetMapList()
-	var responseNameMap = ""
-	for _, bk := range maps {
-		responseNameMap = responseNameMap + bk.name + ":"
-	}
-	return responseNameMap
 }

@@ -20,24 +20,29 @@ func LobbyReader(ws *websocket.Conn)  {
 
 		if msg.Event == "MapView"{
 			// запрашивает список доступных карт
-			var maps = DB_info.MapList()
-			var resp = LobbyResponse{"MapView", LoginWs(ws, &usersLobbyWs), "", maps, "", ""}
-			LobbyPipe <- resp // Отправляет сообщение в тред
+			var maps = DB_info.GetMapList()
+			for _, Map := range maps {
+				var resp= LobbyResponse{Event:msg.Event, UserName:LoginWs(ws, &usersLobbyWs), NameMap:Map.Name}
+				LobbyPipe <- resp // Отправляет сообщение в тред
+			}
 		}
 
 		if msg.Event == "GameView"{
 			// запрашивает список созданых игор
-			var games []string = DB_info.OpenLobbyGameList()
-
-			var resp = LobbyResponse{"GameView", LoginWs(ws, &usersLobbyWs), games[0], games[1], games[2], ""}
-			LobbyPipe <- resp
+			games := DB_info.GetLobbyGames()
+			for _, game := range games {
+				var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, NameMap: game.Map, Creator: game.Creator}
+				LobbyPipe <- resp
+			}
 		}
 
 		if msg.Event == "DontEndGamesList"{
 			// запрашивает списко незавершенных игор
-			gameName, ids := DB_info.DontEndGames(LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"DontEndGamesList", LoginWs(ws, &usersLobbyWs), gameName, ids, "", ""}
-			LobbyPipe <- resp
+			games := DB_info.GetDontEndGames(LoginWs(ws, &usersLobbyWs))
+			for _, game := range games {
+				var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame:game.Name, IdGame:game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
+				LobbyPipe <- resp
+			}
 		}
 
 		if msg.Event == "JoinToLobbyGame"{
@@ -46,19 +51,19 @@ func LobbyReader(ws *websocket.Conn)  {
 			creator := DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			//все кто в лоби получают сообщение о том что подключился новйы игрок
 			// for blabla список юзеров каждому отправить месагу
-			var resp = LobbyResponse{"JoinToLobbyGame", creator, "", "", LoginWs(ws, &usersLobbyWs), ""}
+			var resp = LobbyResponse{Event: msg.Event,  UserName: creator, NewUser:LoginWs(ws, &usersLobbyWs)}
 			LobbyPipe <- resp
 
 			// игрок получает список всех игроков в лоби (нет, пока только создателя так как 1 на 1)
 			for i := 0; i < len(playerList); i++ {
-				resp = LobbyResponse{"Joiner", LoginWs(ws, &usersLobbyWs), "", "", "", playerList[0]} //- костылька
+				resp = LobbyResponse{"Joiner", LoginWs(ws, &usersLobbyWs), "","","","","", "", "", playerList[0]} //- костылька
 				LobbyPipe <- resp
 			}
 		}
 
 		if msg.Event == "CreateLobbyGame"{
 			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"CreateLobbyGame", LoginWs(ws, &usersLobbyWs), "", "", "", ""}
+			var resp = LobbyResponse{"CreateLobbyGame", LoginWs(ws, &usersLobbyWs), "","","","","", "", "", ""}
 			LobbyPipe <- resp
 		}
 
@@ -70,7 +75,7 @@ func LobbyReader(ws *websocket.Conn)  {
 				DB_info.DelLobbyGame(LoginWs(ws, &usersLobbyWs)) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
 
 				for i := 0; i < len(playerList); i++ {
-					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success), id, "", ""}
+					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success),"","","","", id, "", ""}
 					LobbyPipe <- resp
 				}
 			}

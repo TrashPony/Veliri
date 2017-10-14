@@ -1,28 +1,38 @@
 package DB_info
 
 type User struct {
-	id int
-	name string
-	password string
-	mail string
+	Id int
+	Name string
+	Password string
+	Mail string
 }
 
 type Games struct {
-	nameGame      string
-	nameMap       string
-	nameCreator   string
-	nameNewPlayer string
+	Name      string
+	Map       string
+	Creator   string
+	NewPlayer string
+}
+
+type DontEndGames struct {
+	Id		  string
+	Name      string
+	IdMap       string
+	Step	  string
+	Phase     string
+	Winner    string
+	Ready	  string
 }
 
 type ActiveGames struct {
-	id	      int
-	name      string
+	Id	      int
+	Name      string
 }
 
 type Map struct {
-	id	int
-	name    string
-	xSize   int
-	ySize   int
+	Id	int
+	Name    string
+	XSize   int
+	YSize   int
 	Type    string
 }
