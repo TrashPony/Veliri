@@ -9,8 +9,8 @@ type LobbyMessage struct {
 }
 
 type LobbyResponse struct {
-	Event    	  string `json:"event"`
-	UserName	  string
+	Event     string `json:"event"`
+	UserName  string
 	NameGame  string `json:"name_game"`
 	IdGame	  string `json:"id_game"`
 	PhaseGame string `json:"phase_game"`
@@ -19,5 +19,6 @@ type LobbyResponse struct {
 	NameMap   string `json:"name_map"`
 	Creator   string `json:"creator"`
 	NewUser   string `json:"new_user"`
-	GameUsers string `json:"game_users"`
+	GameUser  string `json:"game_user"`
+	Error     string `json:"error"`
 }

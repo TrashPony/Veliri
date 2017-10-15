@@ -11,8 +11,7 @@ func GetGame(idGame string) (Game) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	rows, err := db.Query("Select * FROM action_games WHERE id=" + idGame)
+	rows, err := db.Query("Select * FROM action_games WHERE id=$1", idGame)
 	if err != nil {
 		log.Fatal(err)
 	}

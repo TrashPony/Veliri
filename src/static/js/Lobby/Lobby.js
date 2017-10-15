@@ -47,6 +47,37 @@ function CreateNewGame() {
 }
 
 function JoinToLobbyGame(gameName) {
+    // удаляем старые элементы //
+    var del = document.getElementById("lobby");
+    del.remove();
+    // удаляем старые элементы //
+
+    var div2 = document.createElement('div');
+    div2.className = "gameInfo";
+    var parentElem = document.body;
+    parentElem.appendChild(div2);
+    var cancel = document.createElement("input");
+    cancel.type = "button";
+    cancel.value = "Отменить";
+    cancel.onclick = ReturnLobby;
+    div2.appendChild(cancel);
+    var tick = document.createElement("input");
+    tick.type = "button";
+    tick.value = "Готов";
+    tick.id = gameName;
+    tick.onclick = function () {
+        sendReady(this.id)
+    };
+    div2.appendChild(tick);
+
+    createGame = true;
+    var parentElemDiv = document.getElementsByClassName("gameInfo");
+
+    var div3 = document.createElement('div');
+    div3.className = "User";
+    div3.appendChild(document.createTextNode("Подключенные Игроки"));
+    parentElemDiv[0].appendChild(div3);
+
     sendJoinToLobbyGame(gameName);
 }
 
@@ -123,6 +154,13 @@ function sendDontEndGamesList () {
 function sendStartNewGame (gameName) {
     sock.send(JSON.stringify({
         event: "StartNewGame",
+        game_name: gameName
+    }));
+}
+
+function sendReady (gameName) {
+    sock.send(JSON.stringify({
+        event: "Ready",
         game_name: gameName
     }));
 }

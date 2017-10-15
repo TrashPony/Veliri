@@ -7,11 +7,11 @@ type User struct {
 	Mail string
 }
 
-type Games struct {
+type LobbyGames struct {
 	Name      string
 	Map       string
 	Creator   string
-	NewPlayer string
+	Users     map[string]bool
 }
 
 type DontEndGames struct {

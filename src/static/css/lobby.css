@@ -1,6 +1,29 @@
 body{
 
 }
+.User {
+    margin: 2px;
+    padding: 0;
+    border: 1px solid #ebcd8d;
+    border-radius: 4px;
+    color: black;
+    background-color: #ebcd8d;
+    width: 250px;
+}
+
+.User.List{
+    border: 1px solid #53b7c4;
+    background-color: #12e6ff;
+}
+
+.User:hover {
+    border: 1px solid #ebcd8d;
+    background-color: #ebcd8d;
+}
+.User.List:hover {
+    border: 1px solid #4a8af4;
+    background-color: #63c0cd;
+}
 .Select{
     margin: 2px;
     padding: 0;

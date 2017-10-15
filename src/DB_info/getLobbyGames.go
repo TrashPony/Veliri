@@ -1,20 +1,31 @@
 package DB_info
 
-var openGames = make(map[string]Games)
+var openGames = make(map[string]LobbyGames)
 
 func CreateNewLobbyGame (nameGame string, nameMap string, nameCreator string ) {
-	openGames[nameGame] = Games{nameGame, nameMap, nameCreator, ""}
+
+	openGames[nameGame] = LobbyGames{Name:nameGame, Map:nameMap, Creator:nameCreator, Users:make(map[string]bool)}
+	openGames[nameGame].Users[nameCreator] = true
 }
 
-func JoinToLobbyGame(nameGame string, nameUser string ) (string)  {
-
+func JoinToLobbyGame(gameName string, userName string ) {
 	for game := range openGames {
-		if game == nameGame && openGames[game].NewPlayer == ""{
-			openGames[game] = Games{nameGame, openGames[game].Map, openGames[game].Creator, nameUser}
-			return openGames[game].Creator
+		if game == gameName {
+			openGames[game].Users[userName] = false
 		}
 	}
-	return ""
+}
+
+func UserReady(gameName string, userName string)  {
+	for game := range openGames {
+		if game == gameName {
+			if openGames[game].Users[userName] == true {
+				openGames[game].Users[userName] = false
+			} else {
+				openGames[game].Users[userName] = true
+			}
+		}
+	}
 }
 
 func DelLobbyGame(nameCreator string)  {
@@ -25,17 +36,15 @@ func DelLobbyGame(nameCreator string)  {
 	}
 }
 
-func GetLobbyGames()(map[string]Games) {
+func GetLobbyGames()(map[string]LobbyGames) {
 	return openGames
 }
 
-func GetUserList(nameGame string)([]string)  {
-	playerList := make([]string, 0)
+func GetUserList(nameGame string)(map[string]bool)  {
 	for game := range openGames {
 		if openGames[game].Name == nameGame{
-			playerList = append(playerList, openGames[game].Creator)
-			playerList = append(playerList, openGames[game].NewPlayer)
+			return openGames[game].Users
 		}
 	}
-	return playerList
+	return nil
 }

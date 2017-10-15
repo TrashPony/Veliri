@@ -7,31 +7,45 @@ import (
 
 func StartNewGame(nameGame string) (string, bool)  {
 	for game := range openGames {
-		if openGames[game].Name == nameGame && openGames[game].NewPlayer != ""{
+		if openGames[game].Name == nameGame && len(openGames[game].Users) > 1{
 			id := InitNewGame(openGames[game].Map, openGames[game])
-			return id, true
+			if id != "" {
+				return id, true
+			} else {
+				return "", false
+			}
 		}
 	}
 	return "", false
 }
 
-func InitNewGame(mapName string, game Games)(string) {
+func InitNewGame(mapName string, game LobbyGames)(string) {
 	var maps = GetMapList()
 
 	var idMap int = 0
-	var Player1 = GetUsers("WHERE name='" + game.Creator + "'")
-	var Player2 = GetUsers("WHERE name='" + game.NewPlayer + "'")
+
 
 	for _, mp := range maps {
 		if mp.Name == mapName{
 			idMap = mp.Id
 		}
 	}
-	id := SendToDB(game.Name, idMap, Player1.Id, Player2.Id)
-	return id
+	idGame := SendToDB(game.Name, idMap)
+
+	usersId := make([]int,0)
+	for userName := range game.Users {
+		user := GetUsers("WHERE name='" + userName + "'")
+		usersId = append(usersId, user.Id)
+	}
+	if len(usersId) > 1 {
+		UsersToDB(idGame, usersId)
+		return idGame
+	} else {
+		return ""
+	}
 }
 
-func SendToDB(Name string, idMap int, idPlayer1 int, idPlayer2 int)(string)  {
+func SendToDB(Name string, idMap int)(string)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
 	if err != nil {
 		log.Fatal(err)
@@ -53,27 +67,20 @@ func SendToDB(Name string, idMap int, idPlayer1 int, idPlayer2 int)(string)  {
 		}
 	}
 
-	UsersToDB(id, idPlayer1, idPlayer2)
-
 	return id
 }
 
-func UsersToDB(id string, play1 int, play2 int)  {
+func UsersToDB(id string, usersId []int)  {
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)",    // добавляем новую игру в БД
-		id, play1, 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_ ,err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)",    // добавляем новую игру в БД
-		id, play2, 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
-	if err != nil {
-		log.Fatal(err)
+	for i := 0; i < len(usersId); i++ {
+		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)", // добавляем новую игру в БД
+			id, usersId[i], 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }

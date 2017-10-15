@@ -1,5 +1,10 @@
 function ReaderLobby(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
+    var parentElem;
+    var cancel;
+    var Start;
+    var Players;
+    var user;
 
     if (event === "MapView") {
 
@@ -30,32 +35,32 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "CreateLobbyGame") {
         // удаляем старые элементы //
-        del = document.getElementById("lobby");
+        var del = document.getElementById("lobby");
         del.remove();
         // удаляем старые элементы //
 
         var div = document.createElement('div');
         div.className = "gameInfo";
-        var parentElem = document.body;
+        parentElem = document.body;
         parentElem.appendChild(div);
-        var button1 = document.createElement("input");
-        button1.type = "button";
-        button1.value = "Отменить";
-        button1.onclick = ReturnLobby;
-        div.appendChild(button1);
-        var button2 = document.createElement("input");
-        button2.type = "button";
-        button2.value = "Начать";
-        button2.onclick = CreateNewGame;
-        div.appendChild(button2);
-        var div3 = document.createElement('div');
-        div3.appendChild(document.createTextNode("Игроки"));
+        cancel = document.createElement("input");
+        cancel.type = "button";
+        cancel.value = "Отменить";
+        cancel.onclick = ReturnLobby;
+        div.appendChild(cancel);
+        Start = document.createElement("input");
+        Start.type = "button";
+        Start.value = "Начать";
+        Start.onclick = CreateNewGame;
+        div.appendChild(Start);
+        Players = document.createElement('div');
+        Players.appendChild(document.createTextNode("Игроки"));
         createGame = true;
 
-        var div3 = document.createElement('div');
-        div3.className = "Select Game";
-        div3.appendChild(document.createTextNode("Подключенные Игроки"));
-        div.appendChild(div3);
+        Players = document.createElement('div');
+        Players.className = "User";
+        Players.appendChild(document.createTextNode("Подключенные Игроки"));
+        div.appendChild(Players);
     }
 
     if (event === "DontEndGamesList") {
@@ -64,7 +69,7 @@ function ReaderLobby(jsonMessage) {
         div = document.createElement('div');
         div.style.wordWrap = 'break-word';
         div.className = "Select Game";
-        div.id = JSON.parse(jsonMessage).name_game;
+        div.id = JSON.parse(jsonMessage).id_game;
         div.onclick = function () {
             JoinToGame(this.id);
         };
@@ -74,60 +79,61 @@ function ReaderLobby(jsonMessage) {
 
     }
 
-    if (event === "Joiner") {
-        var users = (JSON.parse(jsonMessage).name_user_2).split(':');
-        // удаляем старые элементы //
-        del = document.getElementById("lobby");
-        del.remove();
-        // удаляем старые элементы //
-
-        var div2 = document.createElement('div');
-        div2.className = "gameInfo";
-        var parentElem = document.body;
-        parentElem.appendChild(div2);
-        var button1 = document.createElement("input");
-        button1.type = "button";
-        button1.value = "Отменить";
-        //button1.onclick = ReturnLobby;
-        div2.appendChild(button1);
-        var button2 = document.createElement("input");
-        button2.type = "button";
-        button2.value = "Готов";  // пока никак не работает потом надо будет сделать)
-        div2.appendChild(button2);
-
-        createGame = true;
-        var parentElemDiv = document.getElementsByClassName("gameInfo");
-
-        var div3 = document.createElement('div');
-        div3.className = "Select Game";
-        div3.appendChild(document.createTextNode("Подключенные Игроки"));
-        parentElemDiv[0].appendChild(div3);
-
-        for (var i = 0; i < users.length; i++) {
-            div = document.createElement('div');
-            div.style.wordWrap = 'break-word';
-            div.className = "Select Game";
-            div.id = users[i];
-            div.appendChild(document.createTextNode(i + ") " + users[i]));
-            parentElemDiv[0].appendChild(div);
+    if (event === "JoinToLobby") {
+        var gameInfo = document.getElementsByClassName("gameInfo");
+        user = JSON.parse(jsonMessage).game_user;
+        var ready;
+        if (JSON.parse(jsonMessage).ready === "true") {
+            ready = "Готов!"
+        } else {
+            ready = "Не готов"
         }
-    }
-    if (event === "JoinToLobbyGame") {
-        var parentElem = document.getElementsByClassName("gameInfo");
-
-        var user = JSON.parse(jsonMessage).name_user;
         div = document.createElement('div');
         div.style.wordWrap = 'break-word';
-        div.className = "Select Game";
+        div.className = "User List";
         div.id = user;
-        div.appendChild(document.createTextNode(user));
+        div.appendChild(document.createTextNode(user + " " + ready));
+        gameInfo[0].appendChild(div);
+    }
+
+    if (event === "NewUser") {
+        parentElem = document.getElementsByClassName("gameInfo");
+        user = JSON.parse(jsonMessage).new_user;
+        div = document.createElement('div');
+        div.style.wordWrap = 'break-word';
+        div.className = "User List";
+        div.id = user;
+        div.appendChild(document.createTextNode(user+ " Не готов"));
         parentElem[0].appendChild(div);
     }
 
     if (event === "StartNewGame") {
-        toField = true;
-        var idGame = JSON.parse(jsonMessage).name_map;
-        document.cookie = "idGame=" + idGame + "; path=/;";
-        location.href = "http://" + window.location.host + "/field";
+        if (JSON.parse(jsonMessage).error === "") {
+            toField = true;
+            var idGame = JSON.parse(jsonMessage).id_game;
+            document.cookie = "idGame=" + idGame + "; path=/;";
+            location.href = "http://" + window.location.host + "/field";
+        } else {
+            if (JSON.parse(jsonMessage).error === "Players < 2") {
+                alert("Ошибка: Мало игроков для старта");
+            }
+            if (JSON.parse(jsonMessage).error === "error ad to DB") {
+                alert("Неизвестная ошибка");
+            }
+            if (JSON.parse(jsonMessage).error === "PlayerNotReady") {
+                alert("Ошибка: не все игроки готовы");
+            }
+        }
+    }
+
+    if (event === "Ready"){
+        if (JSON.parse(jsonMessage).ready === "true") {
+            ready = "Готов!"
+        } else {
+            ready = "Не готов"
+        }
+        user = JSON.parse(jsonMessage).game_user;
+        var userBlock = document.getElementById(user);
+        userBlock.innerHTML = user + " " + ready;
     }
 }

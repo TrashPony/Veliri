@@ -3,8 +3,8 @@ package webSocket
 import (
 	"log"
 	"websocket-master"
-	"strconv"
 	"../DB_info"
+	"strconv"
 )
 
 // пайп доп. читать в документации
@@ -18,66 +18,97 @@ func LobbyReader(ws *websocket.Conn)  {
 			break
 		}
 
-		if msg.Event == "MapView"{
-			// запрашивает список доступных карт
-			var maps = DB_info.GetMapList()
+		if msg.Event == "MapView" {
+			var maps= DB_info.GetMapList()
 			for _, Map := range maps {
-				var resp= LobbyResponse{Event:msg.Event, UserName:LoginWs(ws, &usersLobbyWs), NameMap:Map.Name}
+				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameMap: Map.Name}
 				LobbyPipe <- resp // Отправляет сообщение в тред
 			}
 		}
 
-		if msg.Event == "GameView"{
-			// запрашивает список созданых игор
+		if msg.Event == "GameView" {
 			games := DB_info.GetLobbyGames()
 			for _, game := range games {
-				var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, NameMap: game.Map, Creator: game.Creator}
+				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, NameMap: game.Map, Creator: game.Creator}
 				LobbyPipe <- resp
 			}
 		}
 
-		if msg.Event == "DontEndGamesList"{
-			// запрашивает списко незавершенных игор
+		if msg.Event == "DontEndGamesList" {
 			games := DB_info.GetDontEndGames(LoginWs(ws, &usersLobbyWs))
 			for _, game := range games {
-				var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame:game.Name, IdGame:game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
+				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
 				LobbyPipe <- resp
 			}
 		}
 
-		if msg.Event == "JoinToLobbyGame"{
-			//тут написана хуйня с расчетом на то что в будущем будет возможна игра больше 2х игроков одновременно
+		if msg.Event == "JoinToLobbyGame" {
+			var resp LobbyResponse
 			playerList := DB_info.GetUserList(msg.GameName)
-			creator := DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
+			DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			//все кто в лоби получают сообщение о том что подключился новйы игрок
-			// for blabla список юзеров каждому отправить месагу
-			var resp = LobbyResponse{Event: msg.Event,  UserName: creator, NewUser:LoginWs(ws, &usersLobbyWs)}
-			LobbyPipe <- resp
-
-			// игрок получает список всех игроков в лоби (нет, пока только создателя так как 1 на 1)
-			for i := 0; i < len(playerList); i++ {
-				resp = LobbyResponse{"Joiner", LoginWs(ws, &usersLobbyWs), "","","","","", "", "", playerList[0]} //- костылька
-				LobbyPipe <- resp
-			}
-		}
-
-		if msg.Event == "CreateLobbyGame"{
-			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
-			var resp = LobbyResponse{"CreateLobbyGame", LoginWs(ws, &usersLobbyWs), "","","","","", "", "", ""}
-			LobbyPipe <- resp
-		}
-
-		if msg.Event == "StartNewGame"{
-			id, success := DB_info.StartNewGame(msg.GameName)
-			if success {
-				//тут написана хуйня с расчетом на то что в будущем будет возможна игра больше 2х игроков одновременно
-				playerList := DB_info.GetUserList(msg.GameName) // список игроков которым надо разослать данные взятые из обьекта игры
-				DB_info.DelLobbyGame(LoginWs(ws, &usersLobbyWs)) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
-
-				for i := 0; i < len(playerList); i++ {
-					var resp = LobbyResponse{"StartNewGame", playerList[i], strconv.FormatBool(success),"","","","", id, "", ""}
+			for user := range playerList {
+				if user != LoginWs(ws, &usersLobbyWs) {
+					resp = LobbyResponse{Event: "NewUser", UserName: user, NewUser: LoginWs(ws, &usersLobbyWs)}
 					LobbyPipe <- resp
 				}
+			}
+
+			// игрок получает список всех игроков в лоби
+			for user, ready := range playerList {
+				if user != LoginWs(ws, &usersLobbyWs) {
+					resp = LobbyResponse{Event: "JoinToLobby", UserName: LoginWs(ws, &usersLobbyWs), GameUser: user, Ready: strconv.FormatBool(ready)}
+					LobbyPipe <- resp
+				}
+			}
+		}
+
+		if msg.Event == "CreateLobbyGame" {
+			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
+			var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs)}
+			LobbyPipe <- resp
+		}
+
+		if msg.Event == "Ready" {
+			DB_info.UserReady(msg.GameName, LoginWs(ws, &usersLobbyWs))
+			playerList := DB_info.GetUserList(msg.GameName)
+			for user := range playerList {
+				if user != LoginWs(ws, &usersLobbyWs) {
+					var resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: LoginWs(ws, &usersLobbyWs), Ready: strconv.FormatBool(playerList[LoginWs(ws, &usersLobbyWs)])}
+					LobbyPipe <- resp
+				}
+			}
+		}
+
+		if msg.Event == "StartNewGame" {
+			playerList := DB_info.GetUserList(msg.GameName) // список игроков которым надо разослать данные взятые из обьекта игры
+			if len(playerList) > 1 {
+				var readyAll = true
+				for _, ready := range playerList {
+					if !ready {
+						readyAll = false
+						break
+					}
+				}
+				if readyAll {
+					id, success := DB_info.StartNewGame(msg.GameName)
+					if success {
+						DB_info.DelLobbyGame(LoginWs(ws, &usersLobbyWs)) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
+						for user := range playerList {
+							var resp = LobbyResponse{Event: msg.Event, UserName: user, IdGame: id}
+							LobbyPipe <- resp
+						}
+					} else {
+						var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), Error: "error ad to DB"}
+						LobbyPipe <- resp
+					}
+				} else {
+					var resp = LobbyResponse{Event: msg.Event, UserName:LoginWs(ws, &usersLobbyWs),  Error: "PlayerNotReady"}
+					LobbyPipe <- resp
+				}
+			} else {
+				var resp = LobbyResponse{Event: msg.Event, UserName:LoginWs(ws, &usersLobbyWs),  Error: "Players < 2"}
+				LobbyPipe <- resp
 			}
 		}
 	}
