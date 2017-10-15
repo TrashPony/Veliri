@@ -26,12 +26,12 @@ func GetMapList()([]Map)  {
 		if err != nil {
 			log.Fatal(err)
 		}
+		row := db.QueryRow("SELECT COUNT(*) as Respawns FROM respawns WHERE id_map=$1", mp.Id)
+		errors := row.Scan(&mp.Respawns)
+		if errors != nil {
+			log.Fatal(errors)
+		}
 		maps = append(maps, mp)
 	}
-
-	if err = rows.Err(); err != nil {
-		log.Fatal(err)
-	}
-
 	return maps
 }

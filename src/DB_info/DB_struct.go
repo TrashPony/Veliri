@@ -11,6 +11,7 @@ type LobbyGames struct {
 	Name      string
 	Map       string
 	Creator   string
+	Respawns  []Respawn
 	Users     map[string]bool
 }
 
@@ -30,9 +31,17 @@ type ActiveGames struct {
 }
 
 type Map struct {
-	Id	int
-	Name    string
-	XSize   int
-	YSize   int
-	Type    string
+	Id	     int
+	Name     string
+	XSize    int
+	YSize    int
+	Type     string
+	Respawns int
+}
+
+type Respawn struct {
+	Id	  int
+	IdMap int
+	X     int
+	Y     int
 }

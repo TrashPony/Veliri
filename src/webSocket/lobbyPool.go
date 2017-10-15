@@ -21,7 +21,7 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "MapView" {
 			var maps= DB_info.GetMapList()
 			for _, Map := range maps {
-				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameMap: Map.Name}
+				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameMap: Map.Name, NumOfPlayers: strconv.Itoa(Map.Respawns)}
 				LobbyPipe <- resp // Отправляет сообщение в тред
 			}
 		}
@@ -45,20 +45,25 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "JoinToLobbyGame" {
 			var resp LobbyResponse
 			playerList := DB_info.GetUserList(msg.GameName)
-			DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
+			success, err := DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			//все кто в лоби получают сообщение о том что подключился новйы игрок
-			for user := range playerList {
-				if user != LoginWs(ws, &usersLobbyWs) {
-					resp = LobbyResponse{Event: "NewUser", UserName: user, NewUser: LoginWs(ws, &usersLobbyWs)}
-					LobbyPipe <- resp
-				}
-			}
+			resp = LobbyResponse{Event: "initLobbyGame", UserName: LoginWs(ws, &usersLobbyWs), NameGame:msg.GameName, Error:err}
+			LobbyPipe <- resp
 
-			// игрок получает список всех игроков в лоби
-			for user, ready := range playerList {
-				if user != LoginWs(ws, &usersLobbyWs) {
-					resp = LobbyResponse{Event: "JoinToLobby", UserName: LoginWs(ws, &usersLobbyWs), GameUser: user, Ready: strconv.FormatBool(ready)}
-					LobbyPipe <- resp
+			if success {
+				for user := range playerList {
+					if user != LoginWs(ws, &usersLobbyWs) {
+						resp = LobbyResponse{Event: "NewUser", UserName: user, NewUser: LoginWs(ws, &usersLobbyWs)}
+						LobbyPipe <- resp
+					}
+				}
+
+				// игрок получает список всех игроков в лоби
+				for user, ready := range playerList {
+					if user != LoginWs(ws, &usersLobbyWs) {
+						resp = LobbyResponse{Event: "JoinToLobby", UserName: LoginWs(ws, &usersLobbyWs), GameUser: user, Ready: strconv.FormatBool(ready)}
+						LobbyPipe <- resp
+					}
 				}
 			}
 		}

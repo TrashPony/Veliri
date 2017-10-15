@@ -39,8 +39,18 @@ body{
     background-color: #63c0cd;
 }
 
-.Select.Map {
+.Maps {
+    margin: 2px;
+    padding: 0;
+    border: 1px solid #ebcd8d;
+    border-radius: 4px;
+    color: black;
+    background-color: #ebcd8d;
+    width: 250px;
+}
 
+.Select.Map {
+    width: 250px;
 }
 
 .Select.Map:hover {

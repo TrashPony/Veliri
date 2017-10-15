@@ -25,3 +25,17 @@ CREATE TABLE action_game_unit(
     x int,
     y int
 );
+
+CREATE TABLE respawns(
+    id serial primary key,
+    id_map int references map(id),
+    x int,
+    y int
+);
+
+INSERT INTO respawns (id_map, x, y) VALUES (1 , 0 ,0);
+INSERT INTO respawns (id_map, x, y) VALUES (1 , 9 ,9);
+INSERT INTO respawns (id_map, x, y) VALUES (2 , 0 ,0);
+INSERT INTO respawns (id_map, x, y) VALUES (2 , 9 ,0);
+INSERT INTO respawns (id_map, x, y) VALUES (2 , 0 ,9);
+INSERT INTO respawns (id_map, x, y) VALUES (2 , 9 ,9);

@@ -17,6 +17,7 @@ type LobbyResponse struct {
 	StepGame  string `json:"step_game"`
 	Ready	  string `json:"ready"`
 	NameMap   string `json:"name_map"`
+	NumOfPlayers string `json:"num_of_players"`
 	Creator   string `json:"creator"`
 	NewUser   string `json:"new_user"`
 	GameUser  string `json:"game_user"`

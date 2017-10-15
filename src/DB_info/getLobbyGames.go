@@ -3,17 +3,23 @@ package DB_info
 var openGames = make(map[string]LobbyGames)
 
 func CreateNewLobbyGame (nameGame string, nameMap string, nameCreator string ) {
-
-	openGames[nameGame] = LobbyGames{Name:nameGame, Map:nameMap, Creator:nameCreator, Users:make(map[string]bool)}
+	respawns := GetRespawns(nameMap)
+	openGames[nameGame] = LobbyGames{Name:nameGame, Map:nameMap, Creator:nameCreator, Users:make(map[string]bool), Respawns: respawns}
 	openGames[nameGame].Users[nameCreator] = true
 }
 
-func JoinToLobbyGame(gameName string, userName string ) {
+func JoinToLobbyGame(gameName string, userName string ) (bool, string) {
 	for game := range openGames {
 		if game == gameName {
-			openGames[game].Users[userName] = false
+			if len(openGames[game].Respawns) > len(openGames[game].Users) {
+				openGames[game].Users[userName] = false
+				return true, ""
+			} else {
+				return false, "lobby is full"
+			}
 		}
 	}
+	return false, "unknown error"
 }
 
 func UserReady(gameName string, userName string)  {
