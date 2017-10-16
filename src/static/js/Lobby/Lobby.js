@@ -50,8 +50,6 @@ function CreateNewGame() {
 }
 
 function JoinToLobbyGame(gameName) {
-
-
     sendJoinToLobbyGame(gameName);
 }
 
@@ -62,18 +60,42 @@ function JoinToGame(idGame) {
 }
 
 function sendMapSelection() {
+    DelElements("DontEndGame");
     DelElements("Select Map");
     DelElements("Maps");
     var mapContent = document.getElementById('Games');
-    var p = document.createElement('p');
-    p.style.wordWrap = 'break-word';
-    p.appendChild(document.createTextNode("Карты:"));
-    p.className = "Maps";
-    mapContent.appendChild(p);
+    var div = document.createElement('div');
+    div.style.wordWrap = 'break-word';
+    div.appendChild(document.createTextNode("Карты:"));
+    div.className = "Maps";
+    div.id = "Maps";
+    mapContent.appendChild(div);
 
     sock.send(JSON.stringify({
             event: "MapView"
     }));
+}
+
+function MouseOverMap(id) {
+    var info = document.getElementById('SelectInfo');
+    info.innerHTML = "Имя карты " + id;
+    var div = document.createElement('div');
+    div.style.wordWrap = 'break-word';
+    div.appendChild(document.createTextNode("Невероятная картинка карты! В разработке"));
+    div.className = "infoMap";
+    div.id = "infoImage";
+    info.appendChild(div);
+    var div2 = document.createElement('div');
+    div2.style.wordWrap = 'break-word';
+    div2.className = "infoMap";
+    div2.appendChild(document.createTextNode("Описание карты, в разработке"));
+    info.appendChild(div2);
+}
+
+function MouseOutMap() {
+    var info = document.getElementById('SelectInfo');
+    info.innerHTML = "";
+    DelElements("infoMap");
 }
 
 function sendGameSelection() {
@@ -129,13 +151,6 @@ function sendReady (gameName) {
     }));
 }
 
-function DelElements(ClassElements) {
-    var SelectMap = document.getElementsByClassName(ClassElements);
-    while (SelectMap.length > 0) {
-        SelectMap[0].parentNode.removeChild(SelectMap[0]);
-    }
-}
-
 function Logout() {
     sock.send(JSON.stringify({
         event: "Logout"
@@ -146,4 +161,12 @@ function InitLobby() {
     sock.send(JSON.stringify({
         event: "InitLobby"
     }));
+}
+
+
+function DelElements(ClassElements) {
+    var SelectMap = document.getElementsByClassName(ClassElements);
+    while (SelectMap.length > 0) {
+        SelectMap[0].parentNode.removeChild(SelectMap[0]);
+    }
 }

@@ -5,6 +5,8 @@ function ReaderLobby(jsonMessage) {
     var text;
     var textButton;
     var funcButton;
+    var funcMouse;
+    var funcOutMouse;
 
     if (event === "InitLobby") {
         var login = document.getElementById('login');
@@ -29,33 +31,41 @@ function ReaderLobby(jsonMessage) {
             text = JSON.parse(jsonMessage).game_user + " Не готов";
         }
         func = null;
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, func, text);
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, func, null, null, text);
     }
 
     if (event === "GameView") {
         func = function () { JoinToLobbyGame(this.id); };
         text = "Имя: " + JSON.parse(jsonMessage).name_game + ", Карта: " + JSON.parse(jsonMessage).name_map + ", Создатель: " +
             JSON.parse(jsonMessage).creator + ", Игроков:" + JSON.parse(jsonMessage).players + "/" + JSON.parse(jsonMessage).num_of_players;
-        CreateLobbyLine('Games list', 'Select Game', JSON.parse(jsonMessage).name_game, func, text);
+        CreateLobbyLine('Games list', 'Select Game', JSON.parse(jsonMessage).name_game, func, null, null, text);
     }
 
     if (event === "DontEndGamesList") {
         func = function () { JoinToGame(this.id); };
         text = "Имя: " + JSON.parse(jsonMessage).name_game + " id: " + JSON.parse(jsonMessage).id_game + " Шаг: " +
             JSON.parse(jsonMessage).step_game + " Фаза: " + JSON.parse(jsonMessage).phase_game + " Мой ход: " + (!JSON.parse(jsonMessage).ready);
-        CreateLobbyLine('DontEndGames', 'Select DontEndGame', JSON.parse(jsonMessage).id_game, func, text);
+        CreateLobbyLine('DontEndGames', 'Select DontEndGame', JSON.parse(jsonMessage).id_game, func, null, null, text);
     }
 
     if (event === "MapView") {
-        func = function () { CreateLobbyGame(this.id); };
+        func = function () {
+            CreateLobbyGame(this.id);
+        };
+        funcMouse = function () {
+            MouseOverMap(this.id);
+        };
+        funcOutMouse = function () {
+            MouseOutMap()
+        };
         text = "Имя: " + JSON.parse(jsonMessage).name_map + " Максимум игроков:" + JSON.parse(jsonMessage).num_of_players;
-        CreateLobbyLine('Games', 'Select Map', JSON.parse(jsonMessage).name_map, func, text);
+        CreateLobbyLine('Maps', 'Select Map', JSON.parse(jsonMessage).name_map, func, funcMouse, funcOutMouse, text);
     }
 
     if (event === "NewUser") {
         func = null;
         text = JSON.parse(jsonMessage).new_user + " Не готов";
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, func, text);
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, func, null, null, text);
     }
 
     if (event === "CreateLobbyGame") {
@@ -139,13 +149,15 @@ function CreateLobbyMenu(textButton, funcButton, id, error) {
     }
 }
 
-function CreateLobbyLine(gameContent, className, id, func, text) {
+function CreateLobbyLine(gameContent, className, id, func, funcMouse, funcOutMouse, text) {
      var list = document.getElementById(gameContent);
      var div = document.createElement('div');
      div.style.wordWrap = 'break-word';
      div.className = className;
-     div.id = id; // id
+     div.id = id;
      div.onclick = func;
+     div.onmouseover = funcMouse;
+     div.onmouseout = funcOutMouse;
      div.appendChild(document.createTextNode(text));
      list.appendChild(div);
 }

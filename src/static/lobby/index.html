@@ -11,18 +11,24 @@
 
 </head>
 <body>
-<div id="lobby">
-    <div class="NotGameLobby">
-    <div class="Games" id="Games list">  Игры: </div>
-    <input name="NameGame" type="text" placeholder="Имя игры">
-    <input type="button" value="Создать Игру" onclick="sendMapSelection()"> <p>
-    <div id="Games"></div>
-    <div id="DontEndGame"></div>
+<div align="center">
+    <div id="lobby" align="left">
+        <div class="NotGameLobby">
+        <div class="Games" id="Games list">  Игры: </div>
+        Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
+        <input type="button" value="Создать Игру" onclick="sendMapSelection()"> <p>
+        <div id="Games"></div>
+        <div class="DontEndGame" id="DontEndGame"></div>
+        </div>
     </div>
-</div>
-<div id="logout">
-    <div id="login">Вы зашли как: </div>
-<input type="button" value="Logout" onclick="Logout()">
+    <div id="info" align="left">
+        <div id="logout">
+            <div id="login">Вы зашли как: </div>
+            <input type="button" value="Logout" onclick="Logout()">
+        </div> <p>
+        <div id="SelectInfo">
+        </div>
+    </div>
 </div>
 </body>
 </html>

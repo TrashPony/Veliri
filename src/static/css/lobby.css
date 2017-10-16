@@ -2,19 +2,39 @@ body{
 
 }
 #lobby {
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #53b7c4;
     display:inline-block;
     width: 400px;
+    height: 425px;
 }
 #logout {
-    padding: 10px;
+    padding: 5px;
     display:inline-block;
     vertical-align:top;
     border: 1px solid #53b7c4;
+    width: 190px;
 }
 #login {
 
+}
+
+#info {
+    padding: 5px;
+    display:inline-block;
+    vertical-align:top;
+    border: 1px solid #53b7c4;
+    width: 200px;
+    height: 425px;
+}
+
+#infoImage {
+    padding: 5px;
+    display:inline-block;
+    vertical-align:top;
+    border: 1px solid #53b7c4;
+    width: 190px;
+    height: 190px;
 }
 .User {
     margin: 2px;
@@ -56,8 +76,8 @@ body{
 
 .Maps {
     margin: 2px;
-    padding: 0;
-    border: 1px solid #ebcd8d;
+    padding: 4px;
+    border: 3px solid #9c7f55;
     border-radius: 4px;
     color: black;
     background-color: #ebcd8d;
@@ -66,27 +86,38 @@ body{
 
 .Games {
     margin: 2px;
-    padding: 0;
-    border: 1px solid #ebcd8d;
+    padding: 4px;
+    border: 3px solid #9c7f55;
     border-radius: 4px;
     color: black;
     background-color: #ebcd8d;
     width: 375px;
+    height: 175px;
 }
 
 .Select.Map {
-    width: 250px;
+    width: 255px;
 }
+.Select.Map:hover {
+    width: 265px;
+}
+
 
 .Select.Map:hover {
 
 }
 
 .Select.Game {
-    width: 375px;
+    width: 380px;
+}
+.Select.Game:hover {
+    width: 390px;
 }
 .Select.DontEndGame {
-    width: 375px;
+    width: 380px;
+}
+.Select.DontEndGame:hover {
+    width: 390px;
 }
 .gameInfo {
     border: 2px solid #d6e9c6;
