@@ -21,6 +21,7 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	}
 
 	if pool == "/wsLobby" {
+		CheckDoubleLogin(login, &usersLobbyWs)
 		usersLobbyWs[Clients{ws, login, id}] = true // Регистрируем нового Клиента
 		print("WS lobby Сессия: ") // просто смотрим новое подключение
 		print(ws)
@@ -29,6 +30,7 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 		LobbyReader(ws)
 	}
 	if pool == "/wsField" {
+		CheckDoubleLogin(login, &usersFieldWs)
 		usersFieldWs[Clients{ws, login, id}] = true // Регистрируем нового Клиента
 		print("WS field Сессия: ") // просто смотрим новое подключение
 		print(ws)

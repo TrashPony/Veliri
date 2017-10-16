@@ -122,6 +122,13 @@ func LobbyReader(ws *websocket.Conn)  {
 				LobbyPipe <- resp
 			}
 		}
+		if msg.Event == "Logout" {
+			ws.Close()
+		}
+		if msg.Event == "InitLobby"{
+			var resp = LobbyResponse{Event: msg.Event, UserName:LoginWs(ws, &usersLobbyWs)}
+			LobbyPipe <- resp
+		}
 	}
 }
 
@@ -143,5 +150,3 @@ func LobbyReposeSender() {
 		mutex.Unlock()
 	}
 }
-
-

@@ -1,24 +1,15 @@
 function ReaderLobby(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
-    var parentElem;
-    var cancel;
-    var Start;
-    var Players;
     var user;
+    var func;
+    var text;
+    var textButton;
+    var funcButton;
 
-    if (event === "MapView") {
-
-        var mapContent = document.getElementById('Games');
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "Select Map";
-        div.id = JSON.parse(jsonMessage).name_map;
-        div.onclick = function () {
-            CreateLobbyGame(this.id);
-        };
-
-        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_map + " Максимум игроков:" + JSON.parse(jsonMessage).num_of_players));
-        mapContent.appendChild(div);
+    if (event === "InitLobby") {
+        var login = document.getElementById('login');
+        var userName = JSON.parse(jsonMessage).user_name;
+        login.innerHTML = "Вы зашли как: " + userName;
     }
 
     if (event === "DisconnectLobby") {
@@ -31,151 +22,54 @@ function ReaderLobby(jsonMessage) {
         DelElements("User List");
     }
 
-    if (event === "UserRefresh") {
-        var gameInfo = document.getElementsByClassName("gameInfo");
-        user = JSON.parse(jsonMessage).game_user;
-        var ready;
+    if (event === "UserRefresh" || event === "JoinToLobby") {
         if (JSON.parse(jsonMessage).ready === "true") {
-            ready = "Готов!"
+            text = JSON.parse(jsonMessage).game_user + " Готов!";
         } else {
-            ready = "Не готов"
+            text = JSON.parse(jsonMessage).game_user + " Не готов";
         }
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "User List";
-        div.id = user;
-        div.appendChild(document.createTextNode(user + " " + ready));
-        gameInfo[0].appendChild(div);
+        func = null;
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, func, text);
     }
 
     if (event === "GameView") {
-        var gameContent = document.getElementById('Games list');
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "Select Game";
-        div.id = JSON.parse(jsonMessage).name_game;
-        div.onclick = function () {
-            JoinToLobbyGame(this.id);
-        };
-        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + ", Карта: " + JSON.parse(jsonMessage).name_map + ", Создатель: " +
-            JSON.parse(jsonMessage).creator + ", Игроков:" + JSON.parse(jsonMessage).players + "/" + JSON.parse(jsonMessage).num_of_players));
-        gameContent.appendChild(div);
-    }
-
-    if (event === "CreateLobbyGame") {
-        // удаляем старые элементы //
-        var del = document.getElementById("lobby");
-        del.remove();
-        // удаляем старые элементы //
-
-        var div = document.createElement('div');
-        div.className = "gameInfo";
-        parentElem = document.body;
-        parentElem.appendChild(div);
-        cancel = document.createElement("input");
-        cancel.type = "button";
-        cancel.value = "Отменить";
-        cancel.onclick = ReturnLobby;
-        div.appendChild(cancel);
-        Start = document.createElement("input");
-        Start.type = "button";
-        Start.value = "Начать";
-        Start.onclick = CreateNewGame;
-        div.appendChild(Start);
-        Players = document.createElement('div');
-        Players.appendChild(document.createTextNode("Игроки"));
-        createGame = true;
-
-        Players = document.createElement('div');
-        Players.className = "User";
-        Players.appendChild(document.createTextNode("Подключенные Игроки"));
-        div.appendChild(Players);
+        func = function () { JoinToLobbyGame(this.id); };
+        text = "Имя: " + JSON.parse(jsonMessage).name_game + ", Карта: " + JSON.parse(jsonMessage).name_map + ", Создатель: " +
+            JSON.parse(jsonMessage).creator + ", Игроков:" + JSON.parse(jsonMessage).players + "/" + JSON.parse(jsonMessage).num_of_players;
+        CreateLobbyLine('Games list', 'Select Game', JSON.parse(jsonMessage).name_game, func, text);
     }
 
     if (event === "DontEndGamesList") {
-        var gamesContent = document.getElementById('DontEndGame');
-
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "Select Game";
-        div.id = JSON.parse(jsonMessage).id_game;
-        div.onclick = function () {
-            JoinToGame(this.id);
-        };
-        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + " id: " + JSON.parse(jsonMessage).id_game + " Шаг: " +
-            JSON.parse(jsonMessage).step_game + " Фаза: " + JSON.parse(jsonMessage).phase_game + " Мой ход: " + (!JSON.parse(jsonMessage).ready)));
-        gamesContent.appendChild(div);
-
+        func = function () { JoinToGame(this.id); };
+        text = "Имя: " + JSON.parse(jsonMessage).name_game + " id: " + JSON.parse(jsonMessage).id_game + " Шаг: " +
+            JSON.parse(jsonMessage).step_game + " Фаза: " + JSON.parse(jsonMessage).phase_game + " Мой ход: " + (!JSON.parse(jsonMessage).ready);
+        CreateLobbyLine('DontEndGames', 'Select DontEndGame', JSON.parse(jsonMessage).id_game, func, text);
     }
 
-    if (event === "initLobbyGame") {
-        if (JSON.parse(jsonMessage).error === "") {
-            // удаляем старые элементы //
-            var del = document.getElementById("lobby");
-            del.remove();
-            // удаляем старые элементы //
-
-            var div2 = document.createElement('div');
-            div2.className = "gameInfo";
-            var parentElem = document.body;
-            parentElem.appendChild(div2);
-            var cancel = document.createElement("input");
-            cancel.type = "button";
-            cancel.value = "Отменить";
-            cancel.onclick = ReturnLobby;
-            div2.appendChild(cancel);
-            var tick = document.createElement("input");
-            tick.type = "button";
-            tick.value = "Готов";
-            tick.id = JSON.parse(jsonMessage).name_game;
-            tick.onclick = function () {
-                sendReady(this.id)
-            };
-            div2.appendChild(tick);
-
-            createGame = true;
-            var parentElemDiv = document.getElementsByClassName("gameInfo");
-
-            var div3 = document.createElement('div');
-            div3.className = "User";
-            div3.appendChild(document.createTextNode("Подключенные Игроки"));
-            parentElemDiv[0].appendChild(div3);
-        } else {
-            if (JSON.parse(jsonMessage).error === "lobby is full") {
-                alert("Игра полная")
-            }
-            if (JSON.parse(jsonMessage).error === "unknown error") {
-                alert("unknown error")
-            }
-        }
-    }
-
-    if (event === "JoinToLobby") {
-        var gameInfo = document.getElementsByClassName("gameInfo");
-        user = JSON.parse(jsonMessage).game_user;
-        var ready;
-        if (JSON.parse(jsonMessage).ready === "true") {
-            ready = "Готов!"
-        } else {
-            ready = "Не готов"
-        }
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "User List";
-        div.id = user;
-        div.appendChild(document.createTextNode(user + " " + ready));
-        gameInfo[0].appendChild(div);
+    if (event === "MapView") {
+        func = function () { CreateLobbyGame(this.id); };
+        text = "Имя: " + JSON.parse(jsonMessage).name_map + " Максимум игроков:" + JSON.parse(jsonMessage).num_of_players;
+        CreateLobbyLine('Games', 'Select Map', JSON.parse(jsonMessage).name_map, func, text);
     }
 
     if (event === "NewUser") {
-        parentElem = document.getElementsByClassName("gameInfo");
-        user = JSON.parse(jsonMessage).new_user;
-        div = document.createElement('div');
-        div.style.wordWrap = 'break-word';
-        div.className = "User List";
-        div.id = user;
-        div.appendChild(document.createTextNode(user+ " Не готов"));
-        parentElem[0].appendChild(div);
+        func = null;
+        text = JSON.parse(jsonMessage).new_user + " Не готов";
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, func, text);
+    }
+
+    if (event === "CreateLobbyGame") {
+        textButton = "Начать";
+        funcButton = CreateNewGame;
+        CreateLobbyMenu(textButton, funcButton, null, JSON.parse(jsonMessage).error);
+    }
+
+    if (event === "initLobbyGame") {
+        textButton = "Готов";
+        funcButton = function () {
+            sendReady(this.id)
+        };
+        CreateLobbyMenu(textButton, funcButton, JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error);
     }
 
     if (event === "StartNewGame") {
@@ -198,6 +92,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Ready"){
+        var ready;
         if (JSON.parse(jsonMessage).ready === "true") {
             ready = "Готов!"
         } else {
@@ -207,4 +102,50 @@ function ReaderLobby(jsonMessage) {
         var userBlock = document.getElementById(user);
         userBlock.innerHTML = user + " " + ready;
     }
+}
+
+function CreateLobbyMenu(textButton, funcButton, id, error) {
+    if (error === "") {
+        DelElements("NotGameLobby");
+        var gameInfo = document.createElement('div');
+        gameInfo.className = "gameInfo";
+        gameInfo.id = "gameInfo";
+        var parentElem = document.getElementById("lobby");
+        parentElem.appendChild(gameInfo);
+        var cancel = document.createElement("input");
+        cancel.type = "button";
+        cancel.value = "Отменить";
+        cancel.onclick = ReturnLobby;
+        gameInfo.appendChild(cancel);
+        var button = document.createElement("input");
+        button.type = "button";
+        button.value = textButton;
+        button.onclick = funcButton;
+        button.id = id;
+        gameInfo.appendChild(button);
+        createGame = true;
+        var parentElemDiv = document.getElementsByClassName("gameInfo");
+        var div3 = document.createElement('div');
+        div3.className = "User";
+        div3.appendChild(document.createTextNode("Подключенные Игроки"));
+        parentElemDiv[0].appendChild(div3);
+    } else {
+        if (error === "lobby is full") {
+            alert("Игра полная")
+        }
+        if (error === "unknown error") {
+            alert("unknown error")
+        }
+    }
+}
+
+function CreateLobbyLine(gameContent, className, id, func, text) {
+     var list = document.getElementById(gameContent);
+     var div = document.createElement('div');
+     div.style.wordWrap = 'break-word';
+     div.className = className;
+     div.id = id; // id
+     div.onclick = func;
+     div.appendChild(document.createTextNode(text));
+     list.appendChild(div);
 }

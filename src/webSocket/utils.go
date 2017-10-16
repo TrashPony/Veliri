@@ -26,6 +26,15 @@ func IdWs(ws *websocket.Conn, usersWs *map[Clients]bool) (int)  {
 	return 0
 }
 
+func CheckDoubleLogin(login string, usersWs *map[Clients]bool)  {
+	for client := range *usersWs {
+		if client.login == login {
+			client.ws.Close()
+			println(login + " Уже был в соеденениях")
+		}
+	}
+}
+
 func DelConn(ws *websocket.Conn, usersWs *map[Clients]bool, err error)  {
 	log.Printf("error: %v", err)
 	for client := range *usersWs { // ходим по всем подключениям

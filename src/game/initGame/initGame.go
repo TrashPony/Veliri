@@ -17,5 +17,3 @@ func InitGame(idGame string, idUser int)([]string, int) {
 
 	return playerParams, idMap
 }
-
-

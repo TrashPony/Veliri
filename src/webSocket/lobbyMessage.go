@@ -10,7 +10,7 @@ type LobbyMessage struct {
 
 type LobbyResponse struct {
 	Event     string `json:"event"`
-	UserName  string
+	UserName  string `json:"user_name"`
 	NameGame  string `json:"name_game"`
 	IdGame	  string `json:"id_game"`
 	PhaseGame string `json:"phase_game"`

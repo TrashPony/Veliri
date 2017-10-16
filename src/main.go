@@ -19,6 +19,3 @@ func main() {
 	log.Println("http server started on :8080")
 	http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 }
-
-
-

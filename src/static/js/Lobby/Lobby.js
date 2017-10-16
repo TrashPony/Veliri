@@ -13,6 +13,7 @@ function ConnectLobby() {
 
      sock.onopen = function(msg) {
          console.log("CONNECTION opened..." + this.readyState);
+         InitLobby();
          sendGameSelection();
          sendDontEndGamesList();
      };
@@ -32,7 +33,7 @@ function ConnectLobby() {
 }
 
 function ReturnLobby() {
-    location.href = "http:/" + window.location.host + "/login";
+    location.reload();
 }
 
 function CreateLobbyGame(mapName) {
@@ -98,14 +99,16 @@ function sendJoinToLobbyGame(gameName) {
 }
 
 function sendDontEndGamesList () {
-    DelElements("Select Game");
+    DelElements("Select DontEndGame");
 
     var gamesContent = document.getElementById('DontEndGame');
 
-    var p = document.createElement('p');
-    p.style.wordWrap = 'break-word';
-    p.appendChild(document.createTextNode("Недоиграные игры:"));
-    gamesContent.appendChild(p);
+    var div = document.createElement('div');
+    div.style.wordWrap = 'break-word';
+    div.appendChild(document.createTextNode("Недоиграные игры:"));
+    div.className= "Games";
+    div.id = "DontEndGames";
+    gamesContent.appendChild(div);
 
     sock.send(JSON.stringify({
         event: "DontEndGamesList"
@@ -131,4 +134,16 @@ function DelElements(ClassElements) {
     while (SelectMap.length > 0) {
         SelectMap[0].parentNode.removeChild(SelectMap[0]);
     }
+}
+
+function Logout() {
+    sock.send(JSON.stringify({
+        event: "Logout"
+    }));
+}
+
+function InitLobby() {
+    sock.send(JSON.stringify({
+        event: "InitLobby"
+    }));
 }
