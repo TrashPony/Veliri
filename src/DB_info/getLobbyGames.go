@@ -4,7 +4,7 @@ var openGames = make(map[string]LobbyGames)
 
 func CreateNewLobbyGame (nameGame string, nameMap string, nameCreator string ) {
 	respawns := GetRespawns(nameMap)
-	openGames[nameGame] = LobbyGames{Name:nameGame, Map:nameMap, Creator:nameCreator, Users:make(map[string]bool), Respawns: respawns}
+	openGames[nameGame] = LobbyGames{Name:nameGame, Map:nameMap, Creator:nameCreator, Users:make(map[string]bool), Respawns:respawns}
 	openGames[nameGame].Users[nameCreator] = true
 }
 

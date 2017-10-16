@@ -67,14 +67,13 @@ func LobbyReader(ws *websocket.Conn)  {
 						LobbyPipe <- resp
 					}
 				}
+				RefreshLobbyGames(ws)
 			}
-
-			RefreshLobbyGames(ws)
 		}
 
 		if msg.Event == "CreateLobbyGame" {
 			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
-			var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs)}
+			var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs)}
 			LobbyPipe <- resp
 
 			RefreshLobbyGames(ws)
@@ -84,10 +83,8 @@ func LobbyReader(ws *websocket.Conn)  {
 			DB_info.UserReady(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			playerList := DB_info.GetUserList(msg.GameName)
 			for user := range playerList {
-				if user != LoginWs(ws, &usersLobbyWs) {
-					var resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: LoginWs(ws, &usersLobbyWs), Ready: strconv.FormatBool(playerList[LoginWs(ws, &usersLobbyWs)])}
-					LobbyPipe <- resp
-				}
+				var resp= LobbyResponse{Event: msg.Event, UserName: user, GameUser: LoginWs(ws, &usersLobbyWs), Ready: strconv.FormatBool(playerList[LoginWs(ws, &usersLobbyWs)]), Respawn: msg.Respawn}
+				LobbyPipe <- resp // TODO : respowns
 			}
 		}
 
@@ -120,6 +117,22 @@ func LobbyReader(ws *websocket.Conn)  {
 			} else {
 				var resp = LobbyResponse{Event: msg.Event, UserName:LoginWs(ws, &usersLobbyWs),  Error: "Players < 2"}
 				LobbyPipe <- resp
+			}
+		}
+		if msg.Event == "Respawn"{
+			games := DB_info.GetLobbyGames()
+			user := LoginWs(ws, &usersLobbyWs)
+			for _, game := range games {
+				for player := range game.Users {
+					if user == player {
+						println(user)
+						for i := 0; i < len(game.Respawns); i++ {
+							var resp = LobbyResponse{Event: msg.Event, UserName:LoginWs(ws, &usersLobbyWs),  Respawn: strconv.Itoa(game.Respawns[i].Id)}
+							LobbyPipe <- resp
+						}
+						break
+					}
+				}
 			}
 		}
 		if msg.Event == "Logout" {

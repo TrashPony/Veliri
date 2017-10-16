@@ -6,6 +6,8 @@ type LobbyMessage struct {
 	MapName  string `json:"map_name"`
 	UserName string `json:"user_name"`
 	GameName string `json:"game_name"`
+	Respawn  string `json:"respawn"`
+
 }
 
 type LobbyResponse struct {
@@ -23,4 +25,5 @@ type LobbyResponse struct {
 	NewUser   string `json:"new_user"`
 	GameUser  string `json:"game_user"`
 	Error     string `json:"error"`
+	Respawn   string `json:"respawn"`
 }

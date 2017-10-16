@@ -20,7 +20,7 @@ function ReaderLobby(jsonMessage) {
     if (event === "GameRefresh") {
         DelElements("Select Game");
     }
-    if (event === "DelUser"){
+    if (event === "DelUser") {
         DelElements("User List");
     }
 
@@ -30,22 +30,25 @@ function ReaderLobby(jsonMessage) {
         } else {
             text = JSON.parse(jsonMessage).game_user + " Не готов";
         }
-        func = null;
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, func, null, null, text);
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, null, null, null, text, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "GameView") {
-        func = function () { JoinToLobbyGame(this.id); };
+        func = function () {
+            JoinToLobbyGame(this.id);
+        };
         text = "Имя: " + JSON.parse(jsonMessage).name_game + ", Карта: " + JSON.parse(jsonMessage).name_map + ", Создатель: " +
             JSON.parse(jsonMessage).creator + ", Игроков:" + JSON.parse(jsonMessage).players + "/" + JSON.parse(jsonMessage).num_of_players;
-        CreateLobbyLine('Games list', 'Select Game', JSON.parse(jsonMessage).name_game, func, null, null, text);
+        CreateLobbyLine('Games list', 'Select Game', JSON.parse(jsonMessage).name_game, func, null, null, text, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "DontEndGamesList") {
-        func = function () { JoinToGame(this.id); };
+        func = function () {
+            JoinToGame(this.id);
+        };
         text = "Имя: " + JSON.parse(jsonMessage).name_game + " id: " + JSON.parse(jsonMessage).id_game + " Шаг: " +
             JSON.parse(jsonMessage).step_game + " Фаза: " + JSON.parse(jsonMessage).phase_game + " Мой ход: " + (!JSON.parse(jsonMessage).ready);
-        CreateLobbyLine('DontEndGames', 'Select DontEndGame', JSON.parse(jsonMessage).id_game, func, null, null, text);
+        CreateLobbyLine('DontEndGames', 'Select DontEndGame', JSON.parse(jsonMessage).id_game, func, null, null, text, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "MapView") {
@@ -59,19 +62,21 @@ function ReaderLobby(jsonMessage) {
             MouseOutMap()
         };
         text = "Имя: " + JSON.parse(jsonMessage).name_map + " Максимум игроков:" + JSON.parse(jsonMessage).num_of_players;
-        CreateLobbyLine('Maps', 'Select Map', JSON.parse(jsonMessage).name_map, func, funcMouse, funcOutMouse, text);
+        CreateLobbyLine('Maps', 'Select Map', JSON.parse(jsonMessage).name_map, func, funcMouse, funcOutMouse, text, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "NewUser") {
-        func = null;
         text = JSON.parse(jsonMessage).new_user + " Не готов";
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, func, null, null, text);
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, null, null, null, text, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "CreateLobbyGame") {
         textButton = "Начать";
         funcButton = CreateNewGame;
         CreateLobbyMenu(textButton, funcButton, null, JSON.parse(jsonMessage).error);
+        text = JSON.parse(jsonMessage).user_name + " Готов!";
+        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).user_name, null, null, null, text, JSON.parse(jsonMessage).user_name);
+        Respawn();
     }
 
     if (event === "initLobbyGame") {
@@ -80,6 +85,21 @@ function ReaderLobby(jsonMessage) {
             sendReady(this.id)
         };
         CreateLobbyMenu(textButton, funcButton, JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error);
+        if (JSON.parse(jsonMessage).error === "") {
+            text = JSON.parse(jsonMessage).user_name + " Не готов";
+            CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).user_name, null, null, null, text, JSON.parse(jsonMessage).user_name);
+            Respawn();
+        } //TODO : respowns
+    }
+
+    if (event === "Respawn") {
+        //Create and append the options
+        var select = document.getElementById("RespawnSelect");
+        var option = document.createElement("option");
+        option.className = "RespawnOption";
+        option.value = JSON.parse(jsonMessage).respawn;
+        option.text = JSON.parse(jsonMessage).respawn;
+        select.appendChild(option);
     }
 
     if (event === "StartNewGame") {
@@ -101,16 +121,20 @@ function ReaderLobby(jsonMessage) {
         }
     }
 
-    if (event === "Ready"){
+    if (event === "Ready") {
         var ready;
-        if (JSON.parse(jsonMessage).ready === "true") {
-            ready = "Готов!"
-        } else {
-            ready = "Не готов"
-        }
         user = JSON.parse(jsonMessage).game_user;
+        if (JSON.parse(jsonMessage).ready === "true") {
+            ready = "Готов! Респаун: " + JSON.parse(jsonMessage).respawn;
+        } else {
+            ready = "Не готов";
+        }
         var userBlock = document.getElementById(user);
         userBlock.innerHTML = user + " " + ready;
+        if (user === JSON.parse(jsonMessage).user_name && JSON.parse(jsonMessage).respawn === "") {
+            CreateSelectRespawn(user);
+            Respawn() //TODO : respowns
+        }
     }
 }
 
@@ -141,15 +165,17 @@ function CreateLobbyMenu(textButton, funcButton, id, error) {
         parentElemDiv[0].appendChild(div3);
     } else {
         if (error === "lobby is full") {
+            console.log("Игра полная");
             alert("Игра полная")
         }
         if (error === "unknown error") {
+            console.log("unknown error");
             alert("unknown error")
         }
     }
 }
 
-function CreateLobbyLine(gameContent, className, id, func, funcMouse, funcOutMouse, text) {
+function CreateLobbyLine(gameContent, className, id, func, funcMouse, funcOutMouse, text, owned) {
      var list = document.getElementById(gameContent);
      var div = document.createElement('div');
      div.style.wordWrap = 'break-word';
@@ -160,4 +186,17 @@ function CreateLobbyLine(gameContent, className, id, func, funcMouse, funcOutMou
      div.onmouseout = funcOutMouse;
      div.appendChild(document.createTextNode(text));
      list.appendChild(div);
+
+     if (id === owned) {
+         CreateSelectRespawn(id)
+     }
+}
+
+function CreateSelectRespawn(id) {
+    var user = document.getElementById(id);
+    user.innerHTML = user.innerHTML + " точка респауна: ";
+    var selectList = document.createElement("select");
+    selectList.id = "RespawnSelect";
+    selectList.className = "RespawnSelect";
+    user.appendChild(selectList);
 }

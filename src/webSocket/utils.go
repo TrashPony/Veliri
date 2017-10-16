@@ -66,15 +66,11 @@ func RefreshUsersList(nameGame string)  {
 	games := DB_info.GetLobbyGames()
 	for _, game := range games {
 		if game.Name == nameGame {
-			for player := range game.Users {
-				var refresh= LobbyResponse{Event: "DelUser", UserName: player}
+			for player, ready := range game.Users {
+				var refresh = LobbyResponse{Event: "DelUser", UserName: player}
 				LobbyPipe <- refresh
-				for players, ready := range game.Users {
-					if player != players {
-						var refresh= LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: players, Ready: strconv.FormatBool(ready)}
-						LobbyPipe <- refresh
-					}
-				}
+				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready)}
+				LobbyPipe <- refresh
 			}
 			break
 		}

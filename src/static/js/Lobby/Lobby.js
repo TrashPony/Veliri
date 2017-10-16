@@ -145,9 +145,12 @@ function sendStartNewGame (gameName) {
 }
 
 function sendReady (gameName) {
+    var selectResp = document.getElementById("RespawnSelect");
+    DelElements("RespawnSelect");
     sock.send(JSON.stringify({
         event: "Ready",
-        game_name: gameName
+        game_name: gameName,
+        respawn: selectResp.value
     }));
 }
 
@@ -163,6 +166,12 @@ function InitLobby() {
     }));
 }
 
+function Respawn() {
+    DelElements("RespawnOption");
+    sock.send(JSON.stringify({
+        event: "Respawn"
+    }));
+}
 
 function DelElements(ClassElements) {
     var SelectMap = document.getElementsByClassName(ClassElements);
