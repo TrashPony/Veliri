@@ -21,6 +21,33 @@ function ReaderLobby(jsonMessage) {
         mapContent.appendChild(div);
     }
 
+    if (event === "DisconnectLobby") {
+        location.reload()
+    }
+    if (event === "GameRefresh") {
+        DelElements("Select Game");
+    }
+    if (event === "DelUser"){
+        DelElements("User List");
+    }
+
+    if (event === "UserRefresh") {
+        var gameInfo = document.getElementsByClassName("gameInfo");
+        user = JSON.parse(jsonMessage).game_user;
+        var ready;
+        if (JSON.parse(jsonMessage).ready === "true") {
+            ready = "Готов!"
+        } else {
+            ready = "Не готов"
+        }
+        div = document.createElement('div');
+        div.style.wordWrap = 'break-word';
+        div.className = "User List";
+        div.id = user;
+        div.appendChild(document.createTextNode(user + " " + ready));
+        gameInfo[0].appendChild(div);
+    }
+
     if (event === "GameView") {
         var gameContent = document.getElementById('Games list');
         div = document.createElement('div');
@@ -30,7 +57,8 @@ function ReaderLobby(jsonMessage) {
         div.onclick = function () {
             JoinToLobbyGame(this.id);
         };
-        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + " Карта: " + JSON.parse(jsonMessage).name_map + " Создатель: " + JSON.parse(jsonMessage).creator));
+        div.appendChild(document.createTextNode("Имя: " + JSON.parse(jsonMessage).name_game + ", Карта: " + JSON.parse(jsonMessage).name_map + ", Создатель: " +
+            JSON.parse(jsonMessage).creator + ", Игроков:" + JSON.parse(jsonMessage).players + "/" + JSON.parse(jsonMessage).num_of_players));
         gameContent.appendChild(div);
     }
 

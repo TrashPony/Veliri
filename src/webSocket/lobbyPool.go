@@ -5,10 +5,11 @@ import (
 	"websocket-master"
 	"../DB_info"
 	"strconv"
+	"sync"
 )
 
 // пайп доп. читать в документации
-
+var mutex = &sync.Mutex{}
 func LobbyReader(ws *websocket.Conn)  {
 	for {
 		var msg LobbyMessage
@@ -29,7 +30,8 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "GameView" {
 			games := DB_info.GetLobbyGames()
 			for _, game := range games {
-				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, NameMap: game.Map, Creator: game.Creator}
+				var resp = LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
+				Players: strconv.Itoa(len(game.Users)), NumOfPlayers:strconv.Itoa(len(game.Respawns))}
 				LobbyPipe <- resp
 			}
 		}
@@ -66,12 +68,16 @@ func LobbyReader(ws *websocket.Conn)  {
 					}
 				}
 			}
+
+			RefreshLobbyGames(ws)
 		}
 
 		if msg.Event == "CreateLobbyGame" {
 			DB_info.CreateNewLobbyGame(msg.GameName, msg.MapName, LoginWs(ws, &usersLobbyWs))
 			var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs)}
 			LobbyPipe <- resp
+
+			RefreshLobbyGames(ws)
 		}
 
 		if msg.Event == "Ready" {
@@ -122,6 +128,7 @@ func LobbyReader(ws *websocket.Conn)  {
 func LobbyReposeSender() {
 	for {
 		resp := <-LobbyPipe
+		mutex.Lock()
 		for client := range usersLobbyWs {
 			if client.login == resp.UserName {
 				err := client.ws.WriteJSON(resp)
@@ -133,6 +140,7 @@ func LobbyReposeSender() {
 				}
 			}
 		}
+		mutex.Unlock()
 	}
 }
 

@@ -13,6 +13,8 @@ function ConnectLobby() {
 
      sock.onopen = function(msg) {
          console.log("CONNECTION opened..." + this.readyState);
+         sendGameSelection();
+         sendDontEndGamesList();
      };
      sock.onmessage = function(msg) {
          console.log("message: " + msg.data);
@@ -59,12 +61,8 @@ function JoinToGame(idGame) {
 }
 
 function sendMapSelection() {
-
-    var SelectMap = document.getElementsByClassName("Select Map");
-    while (SelectMap.length > 0) {
-        SelectMap[0].parentNode.removeChild(SelectMap[0]);
-    }
-
+    DelElements("Select Map");
+    DelElements("Maps");
     var mapContent = document.getElementById('Games');
     var p = document.createElement('p');
     p.style.wordWrap = 'break-word';
@@ -78,11 +76,6 @@ function sendMapSelection() {
 }
 
 function sendGameSelection() {
-    var SelectGame = document.getElementsByClassName("GameView");
-    while (SelectGame.length > 0) {
-        SelectGame[0].parentNode.removeChild(SelectGame[0]);
-    }
-
     sock.send(JSON.stringify({
             event: "GameView"
     }));
@@ -105,10 +98,7 @@ function sendJoinToLobbyGame(gameName) {
 }
 
 function sendDontEndGamesList () {
-    var SelectGame = document.getElementsByClassName("Select Game");
-    while (SelectGame.length > 0) {
-        SelectGame[0].parentNode.removeChild(SelectGame[0]);
-    }
+    DelElements("Select Game");
 
     var gamesContent = document.getElementById('DontEndGame');
 
@@ -134,4 +124,11 @@ function sendReady (gameName) {
         event: "Ready",
         game_name: gameName
     }));
+}
+
+function DelElements(ClassElements) {
+    var SelectMap = document.getElementsByClassName(ClassElements);
+    while (SelectMap.length > 0) {
+        SelectMap[0].parentNode.removeChild(SelectMap[0]);
+    }
 }

@@ -34,14 +34,6 @@ func UserReady(gameName string, userName string)  {
 	}
 }
 
-func DelLobbyGame(nameCreator string)  {
-	for game := range openGames {
-		if openGames[game].Creator == nameCreator{
-			delete(openGames,game)
-		}
-	}
-}
-
 func GetLobbyGames()(map[string]LobbyGames) {
 	return openGames
 }
@@ -53,4 +45,34 @@ func GetUserList(nameGame string)(map[string]bool)  {
 		}
 	}
 	return nil
+}
+
+func DisconnectLobbyGame(userName string)(bool, string) {
+	var success bool = false
+	var nameGame string
+	for game := range openGames {
+		for client := range openGames[game].Users {
+			if userName == client {
+				nameGame = openGames[game].Name
+				delete(openGames[game].Users, client)
+				success = true
+			}
+		}
+	}
+	return success, nameGame
+}
+
+
+func DelLobbyGame(nameCreator string) (bool, map[string]bool)  {
+	var success bool = false
+	users := make(map[string]bool)
+	for game := range openGames {
+		if openGames[game].Creator == nameCreator{
+			users = openGames[game].Users
+			delete(openGames,game)
+			success = true
+		}
+	}
+
+	return success, users
 }
