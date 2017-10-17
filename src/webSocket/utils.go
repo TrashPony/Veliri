@@ -62,6 +62,8 @@ type Clients struct { // структура описывающая клиент�
 	id int
 }
 
+
+
 func RefreshUsersList(nameGame string)  {
 	games := DB_info.GetLobbyGames()
 	for _, game := range games {
@@ -69,7 +71,15 @@ func RefreshUsersList(nameGame string)  {
 			for player, ready := range game.Users {
 				var refresh = LobbyResponse{Event: "DelUser", UserName: player}
 				LobbyPipe <- refresh
-				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready)}
+				var respown int
+				if ready {
+					for respawns := range game.Respawns {
+						if game.Respawns[respawns] == player {
+							respown = respawns.Id
+						}
+					}
+				}
+				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready), Respawn:strconv.Itoa(respown)}
 				LobbyPipe <- refresh
 			}
 			break

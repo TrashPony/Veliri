@@ -3,6 +3,7 @@ var createGame = false;
 var createNameGame = "";
 var toField = false;
 var sock;
+var respownId;
 
 function ConnectLobby() {
      sock = new WebSocket("ws://" + window.location.host + "/wsLobby");
@@ -146,12 +147,23 @@ function sendStartNewGame (gameName) {
 
 function sendReady (gameName) {
     var selectResp = document.getElementById("RespawnSelect");
-    DelElements("RespawnSelect");
-    sock.send(JSON.stringify({
-        event: "Ready",
-        game_name: gameName,
-        respawn: selectResp.value
-    }));
+    if (selectResp) {
+        DelElements("RespawnSelect");
+        respownId = selectResp.value
+    }
+    if (selectResp) {
+        sock.send(JSON.stringify({
+            event: "Ready",
+            game_name: gameName,
+            respawn: selectResp.value
+        }));
+    } else {
+        sock.send(JSON.stringify({
+            event: "Ready",
+            game_name: gameName,
+            respawn: respownId
+        }));
+    }
 }
 
 function Logout() {
