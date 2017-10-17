@@ -8,7 +8,8 @@ function ReadResponse(jsonMessage) {
     var log;
     var ready;
     var info;
-
+    var x;
+    var y;
     if (event === "InitPlayer") {
         price = document.getElementsByClassName('fieldInfo price');
         price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
@@ -31,30 +32,39 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
-        var x = (JSON.parse(jsonMessage).x).split(':');
-        var y = (JSON.parse(jsonMessage).y).split(':');
-        var type = (JSON.parse(jsonMessage).type_unit).split(':');
-        var hp = (JSON.parse(jsonMessage).hp).split(':');
-        var action = (JSON.parse(jsonMessage).unit_action).split(':');
-        var users = (JSON.parse(jsonMessage).user_id).split(':');
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        var type = JSON.parse(jsonMessage).type_unit;
+        var hp = JSON.parse(jsonMessage).hp;
+        var action = JSON.parse(jsonMessage).unit_action;
+        var users = JSON.parse(jsonMessage).user_owned;
 
-        for (var i = 0; i < x.length; i++) {
-            clicked_id = x[i] + ":" + y[i];
-            cell = document.getElementById(clicked_id);
-            if (type[i] === "tank") cell.className = "fieldUnit tank";
-            if (type[i] === "scout") cell.className = "fieldUnit scout";
-            if (type[i] === "artillery") cell.className = "fieldUnit artillery";
-            cell.innerHTML = "hp: " + hp[i];
 
-            if(JSON.parse(jsonMessage).UserName === users[i]){
-                cell.style.color = "#11FF24";
-                cell.style.borderColor = "#11FF24";
-            } else {
-                cell.style.color = "#FF0117";
-                cell.style.borderColor = "#FF0117";
-            }
+        clicked_id = x + ":" + y;
+        cell = document.getElementById(clicked_id);
+        if (type === "tank") cell.className = "fieldUnit tank";
+        if (type === "scout") cell.className = "fieldUnit scout";
+        if (type === "artillery") cell.className = "fieldUnit artillery";
+        cell.innerHTML = "hp: " + hp;
+
+        if (JSON.parse(jsonMessage).user_name === users) {
+            cell.style.color = "#fbfdff";
+            cell.style.borderColor = "#fbfdff";
+        } else {
+            cell.style.color = "#FF0117";
+            cell.style.borderColor = "#FF0117";
         }
     }
+
+    if (event === "InitResp") {
+        x = JSON.parse(jsonMessage).respawn_x;
+        y = JSON.parse(jsonMessage).respawn_y;
+        var coor_id = x + ":" + y;
+        cell = document.getElementById(coor_id);
+        cell.className = "fieldUnit respawn";
+        cell.innerHTML = "Resp: " + JSON.parse(jsonMessage).user_name;
+    }
+
 
     if (event === "CreateUnit"){
         if(JSON.parse(jsonMessage).error_type === "") {

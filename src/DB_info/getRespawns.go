@@ -21,7 +21,7 @@ func GetRespawns(nameMap string)([]Respawn)  {
 	var resp Respawn
 
 	for rows.Next() {
-		err := rows.Scan(&resp.Id, &resp.IdMap, &resp.X, &resp.Y)
+		err := rows.Scan(&resp.Id, &resp.Name,&resp.IdMap, &resp.X, &resp.Y)
 		if err != nil {
 			log.Fatal(err)
 		}

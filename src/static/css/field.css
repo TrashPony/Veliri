@@ -1,10 +1,8 @@
 .nline {
 
-
  }
 
 #Ready{
-    padding: 0;
     border: 1px solid #e1720f;
     border-radius: 4px;
     color: black;
@@ -20,15 +18,14 @@
 }
 
 .fieldUnit {
-    padding: 5px;
-    border: 1px solid #292929;
+    border: 1px solid #000000;
     border-radius: 4px;
-    background-color: #dff0d8;
+    background-color: #404040;
     width: 100px;
     height: 100px;
     display:inline-block;
-    text-shadow:1px 1px #00b4ff;
-    color: #29ff10;
+    text-shadow:1px 1px #000000;
+    color: #fbfdff;
     font-weight:bold;
     font-size: 18px;
     overflow: hidden;
@@ -51,8 +48,12 @@
     background-size: 100%;
 }
 
+.fieldUnit.respawn {
+    background-color: #9c7f55;
+    color: #d4d4d4;
+}
+
 .fieldInfo {
-    padding: 0;
     border: 1px solid #e1ba6d;
     border-radius: 4px;
     color: black;
@@ -135,7 +136,6 @@
 }
 
 
-
 #fieldLog {
     padding: 0;
     border: 2px solid #d6e9c6;
@@ -179,6 +179,7 @@
 }
 
 #main {
+    background-color: #292929;
     display:inline-block;
     transform: rotateX(15deg) translate(100px, -250px);
     overflow:  auto;

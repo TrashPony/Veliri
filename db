@@ -10,6 +10,7 @@ CREATE TABLE action_games(
 CREATE TABLE action_game_user(
    id_game int references action_games(id),
    id_user int references users(id),
+   respawns_id int references respawns(id),
    price int,
    ready varchar(64)
 );
@@ -28,14 +29,15 @@ CREATE TABLE action_game_unit(
 
 CREATE TABLE respawns(
     id serial primary key,
+    name varchar(64),
     id_map int references map(id),
     x int,
     y int
 );
 
-INSERT INTO respawns (id_map, x, y) VALUES (1 , 0 ,0);
-INSERT INTO respawns (id_map, x, y) VALUES (1 , 9 ,9);
-INSERT INTO respawns (id_map, x, y) VALUES (2 , 0 ,0);
-INSERT INTO respawns (id_map, x, y) VALUES (2 , 9 ,0);
-INSERT INTO respawns (id_map, x, y) VALUES (2 , 0 ,9);
-INSERT INTO respawns (id_map, x, y) VALUES (2 , 9 ,9);
+INSERT INTO respawns (id_map, name, x, y) VALUES (1 , '1' , 0 ,0);
+INSERT INTO respawns (id_map, name, x, y) VALUES (1 , '2' , 9 ,9);
+INSERT INTO respawns (id_map, name, x, y) VALUES (2 , '1' , 0 ,0);
+INSERT INTO respawns (id_map, name, x, y) VALUES (2 , '2' , 9 ,0);
+INSERT INTO respawns (id_map, name, x, y) VALUES (2 , '3' , 0 ,9);
+INSERT INTO respawns (id_map, name, x, y) VALUES (2 , '4' , 9 ,9);

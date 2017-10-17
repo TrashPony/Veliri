@@ -20,7 +20,7 @@ func GetGame(idGame string) (Game) {
 	var game Game
 
 	for rows.Next() {
-		err := rows.Scan(&game.id, &game.name, &game.idMap, &game.step, &game.phase, &game.winner)
+		err := rows.Scan(&game.Id, &game.Name, &game.IdMap, &game.Step, &game.Phase, &game.Winner)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -30,10 +30,10 @@ func GetGame(idGame string) (Game) {
 }
 
 type Game struct {
-	id int
-	name string
-	idMap int
-	step int
-	phase string
-	winner string
+	Id int
+	Name string
+	IdMap int
+	Step int
+	Phase string
+	Winner string
 }

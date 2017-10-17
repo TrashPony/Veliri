@@ -53,8 +53,8 @@ func LobbyReader(ws *websocket.Conn)  {
 			}
 			err := DB_info.JoinToLobbyGame(msg.GameName, LoginWs(ws, &usersLobbyWs))
 			if err != nil {
-				log.Panic(err)
 				resp = LobbyResponse{Event: "initLobbyGame", UserName: LoginWs(ws, &usersLobbyWs), NameGame: msg.GameName, Error: err.Error()}
+				LobbyPipe <- resp
 			} else {
 				//все кто в лоби получают сообщение о том что подключился новйы игрок
 				resp = LobbyResponse{Event: "initLobbyGame", UserName: LoginWs(ws, &usersLobbyWs), NameGame: msg.GameName}
@@ -70,15 +70,15 @@ func LobbyReader(ws *websocket.Conn)  {
 				// игрок получает список всех игроков в лоби и их респауны
 				for user, ready := range game.Users {
 					if user != LoginWs(ws, &usersLobbyWs) {
-						var respown int
+						var respown string
 						if ready {
 							for respawns := range game.Respawns {
 								if game.Respawns[respawns] == user {
-									respown = respawns.Id
+									respown = respawns.Name
 								}
 							}
 						}
-						resp = LobbyResponse{Event: "JoinToLobby", UserName: LoginWs(ws, &usersLobbyWs), GameUser: user, Ready: strconv.FormatBool(ready), Respawn:strconv.Itoa(respown)}
+						resp = LobbyResponse{Event: "JoinToLobby", UserName: LoginWs(ws, &usersLobbyWs), GameUser: user, Ready: strconv.FormatBool(ready), RespawnName:respown}
 						LobbyPipe <- resp
 					}
 				}
@@ -100,13 +100,13 @@ func LobbyReader(ws *websocket.Conn)  {
 			if errGetName != nil {
 				log.Panic(errGetName)
 			}
-			respId, errRespawn := DB_info.SetRespawnUser(msg.GameName, LoginWs(ws, &usersLobbyWs), msg.Respawn)
+			respName, errRespawn := DB_info.SetRespawnUser(msg.GameName, LoginWs(ws, &usersLobbyWs), msg.Respawn)
 
 			if errRespawn == nil {
 				DB_info.UserReady(msg.GameName, LoginWs(ws, &usersLobbyWs))
 
 				for user:= range game.Users {
-					resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: LoginWs(ws, &usersLobbyWs), Ready: strconv.FormatBool(game.Users[LoginWs(ws, &usersLobbyWs)]), Respawn: respId}
+					resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: LoginWs(ws, &usersLobbyWs), Ready: strconv.FormatBool(game.Users[LoginWs(ws, &usersLobbyWs)]), RespawnName: respName}
 					LobbyPipe <- resp
 				}
 			} else {
@@ -157,7 +157,7 @@ func LobbyReader(ws *websocket.Conn)  {
 					if user == player {
 						for respawn := range game.Respawns {
 							if game.Respawns[respawn] == "" {
-								var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), Respawn: strconv.Itoa(respawn.Id)}
+								var resp= LobbyResponse{Event: msg.Event, UserName: LoginWs(ws, &usersLobbyWs), Respawn: strconv.Itoa(respawn.Id) , RespawnName:respawn.Name}
 								LobbyPipe <- resp
 							}
 						}

@@ -3,16 +3,15 @@ package initGame
 import (
 	"database/sql"
 	"log"
-	"strconv"
 )
 
-func GetUnits(query string) ([]Unit)  {
+func GetUnits(idGame string) ([]Unit)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * FROM action_game_unit " + query)
+	rows, err := db.Query("Select ag.id, ag.id_game, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y FROM action_game_unit as ag, unittype as t, users as u WHERE ag.id_game=$1 AND ag.id_type=t.id AND ag.id_user=u.id", idGame)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,7 +21,7 @@ func GetUnits(query string) ([]Unit)  {
 	var unit Unit
 
 	for rows.Next() {
-		err := rows.Scan(&unit.id, &unit.id_game, &unit.id_type, &unit.id_user, &unit.hp, &unit.action, &unit.target, &unit.x, &unit.y,)
+		err := rows.Scan(&unit.Id, &unit.Id_game, &unit.NameType, &unit.NameUser, &unit.Hp, &unit.Action, &unit.Target, &unit.X, &unit.Y,)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -36,7 +35,7 @@ func GetUnits(query string) ([]Unit)  {
 	return units
 }
 
-func GetUnit(idGame string, x string, y string)(bool, []string)  {
+/*func GetUnit(idGame string, x string, y string)(bool, []string)  {
 	unit := GetUnits("WHERE id_game=" + idGame + " AND x="+ x + " AND y=" + y)
 	unitParam := make([]string, 0)
 
@@ -59,42 +58,7 @@ func GetUnit(idGame string, x string, y string)(bool, []string)  {
 	}
 	return false, unitParam
 }
-
-func GetUnitList(idGame string) ([]string)  {
-	units := GetUnits("WHERE id_game=" + idGame)
-	unitList := make([]string, 0)
-
-	var idType = ""
-	var idUser = ""
-	var hp = ""
-	var action = ""
-	var target = ""
-	var x = ""
-	var y = ""
-	// ндеееее :\
-	for i := 0; i < len(units); i++ {
-		unitType := GetUnitType(units[i].id_type)
-		idType = idType + unitType.Type + ":"
-		idUser = idUser + GetUserName(units[i].id_user) + ":"
-		hp = hp + strconv.Itoa(units[i].hp) + ":"
-		action = action + strconv.FormatBool(units[i].action) + ":"
-		target = target + strconv.Itoa(units[i].target) + ":"
-		x = x + strconv.Itoa(units[i].x) + ":"
-		y = y + strconv.Itoa(units[i].y) + ":"
-	}
-	// ндооооо :\
-	unitList = append(unitList, idType)
-	unitList = append(unitList, idUser)
-	unitList = append(unitList, hp)
-	unitList = append(unitList, action)
-	unitList = append(unitList, target)
-	unitList = append(unitList, x)
-	unitList = append(unitList, y)
-	// мдеееее :\
-
-	return unitList
-}
-
+*/
 func GetUserName(idUser int) (string) {
 	var UserName string
 
@@ -141,7 +105,6 @@ func GetUnitType(idType int) (UnitType) {
 			log.Fatal(err)
 		}
 	}
-
 	return unitType
 }
 
@@ -160,13 +123,13 @@ type UnitType struct {
 }
 
 type Unit struct {
-	id int
-	id_game int
-	id_type int
-	id_user int
-	hp int
-	action bool
-	target int
-	x int
-	y int
+	Id int
+	Id_game int
+	NameType string
+	NameUser string
+	Hp int
+	Action bool
+	Target int
+	X int
+	Y int
 }

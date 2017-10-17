@@ -71,7 +71,7 @@ func SetRespawnUser(gameName string, userName string, respawnId string) (string,
 						return "", nil
 					} else {
 						openGames[game].Respawns[respawn] = userName
-						return strconv.Itoa(respawn.Id), nil
+						return respawn.Name, nil
 					}
 				}
 			}

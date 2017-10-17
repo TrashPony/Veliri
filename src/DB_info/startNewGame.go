@@ -32,13 +32,18 @@ func InitNewGame(mapName string, game LobbyGames)(string) {
 	}
 	idGame := SendToDB(game.Name, idMap)
 
-	usersId := make([]int,0)
+	usersAndRespId := make(map[int]int) // TODO: Бляяяяяяя я ммудаааакк!!1111 :\ надо было обьект юзера пихать в игру
 	for userName := range game.Users {
-		user := GetUsers("WHERE name='" + userName + "'")
-		usersId = append(usersId, user.Id)
+		for respawns := range game.Respawns {
+			if game.Respawns[respawns] == userName {
+				user := GetUsers("WHERE name='" + userName + "'")
+				usersAndRespId[user.Id] = respawns.Id
+			}
+		}
 	}
-	if len(usersId) > 1 {
-		UsersToDB(idGame, usersId)
+
+	if len(usersAndRespId) > 1 {
+		UsersToDB(idGame, usersAndRespId)
 		return idGame
 	} else {
 		return ""
@@ -70,15 +75,15 @@ func SendToDB(Name string, idMap int)(string)  {
 	return id
 }
 
-func UsersToDB(id string, usersId []int)  {
+func UsersToDB(id string, usersAndRespId map[int]int)  {
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
 	if err != nil {
 		log.Fatal(err)
 	}
-	for i := 0; i < len(usersId); i++ {
-		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, price, ready) VALUES ($1, $2, $3, $4)", // добавляем новую игру в БД
-			id, usersId[i], 100, "false") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
+    for userId, respId :=range usersAndRespId {
+		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, respawns_id, price, ready) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
+			id, userId, respId, 100, "false") // id карты, 0 - ход, id респа,  Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 		if err != nil {
 			log.Fatal(err)
 		}

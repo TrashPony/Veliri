@@ -19,18 +19,26 @@ func FieldReader(ws *websocket.Conn)  {
 		}
 
 		if msg.Event == "InitGame" {
-			playerParams, idMap := initGame.InitGame(msg.IdGame, IdWs(ws, &usersFieldWs)); // отправляет параметры игрока
-			var playersParam= FieldResponse{Event: "InitPlayer", UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: playerParams[0], GameStep: playerParams[1], GamePhase: playerParams[2], UserReady: playerParams[3]}
-			FieldPipe <- playersParam
+			gameStat := initGame.GetGame(msg.IdGame)
+			userStat := initGame.GetUserStat(msg.IdGame, IdWs(ws, &usersFieldWs))
+			var playersParam= FieldResponse{Event: "InitPlayer", UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: strconv.Itoa(userStat.Price),
+				GameStep: strconv.Itoa(gameStat.Step), GamePhase: gameStat.Phase, UserReady: userStat.Ready}
+			FieldPipe <- playersParam // отправляет параметры игрока
 
-			x, y := initGame.GetMap(idMap) // отправляем параметры карты это конечно пиздец >_<
-			var mapParam= FieldResponse{Event: "InitMap", UserName: LoginWs(ws, &usersFieldWs), XMap: strconv.Itoa(x), YMap: strconv.Itoa(y)}
-			FieldPipe <- mapParam
+			mp := initGame.GetMap(gameStat.IdMap)
+			var mapParam= FieldResponse{Event: "InitMap", UserName: LoginWs(ws, &usersFieldWs), NameMap: mp.Name, TypeMap: mp.Type, XMap: strconv.Itoa(mp.Xsize), YMap: strconv.Itoa(mp.Ysize)}
+			FieldPipe <- mapParam // отправляем параметры карты
 
-			units := initGame.GetUnitList(msg.IdGame)
-			var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[0], UserId: units[1], HP: units[2], UnitAction: units[3],
-				Target: units[4], X: units[5], Y: units[6]}
-			FieldPipe <- unitsParametr
+			units := initGame.GetUnits(msg.IdGame)
+			for i := 0; i < len(units); i++ {
+				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[i].NameType, UserOwned: units[i].NameUser,
+					HP: strconv.Itoa(units[i].Hp), UnitAction: strconv.FormatBool(units[i].Action), Target: strconv.Itoa(units[i].Target), X: strconv.Itoa(units[i].X), Y: strconv.Itoa(units[i].Y) }
+				FieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+			}
+			//InitResp
+			respawn := initGame.GetRespawns(IdWs(ws, &usersFieldWs), msg.IdGame)
+			var respawnParametr = FieldResponse{Event: "InitResp", UserName: LoginWs(ws, &usersFieldWs), RespawnX:strconv.Itoa(respawn.X), RespawnY:strconv.Itoa(respawn.Y)}
+			FieldPipe <- respawnParametr
 		}
 
 		if msg.Event == "CreateUnit" {
@@ -60,7 +68,7 @@ func FieldReader(ws *websocket.Conn)  {
 			FieldPipe <- resp
 		}
 
-		if msg.Event == "MouseOver" {
+		/*if msg.Event == "MouseOver" {
 			var resp FieldResponse
 			success, unitParams := initGame.GetUnit(msg.IdGame, msg.X, msg.Y)
 			if success {
@@ -69,7 +77,7 @@ func FieldReader(ws *websocket.Conn)  {
 					RangeView: unitParams[9], AreaAttack: unitParams[10], TypeAttack: unitParams[11]}
 				FieldPipe <- resp
 			}
-		}
+		}*/
 	}
 }
 

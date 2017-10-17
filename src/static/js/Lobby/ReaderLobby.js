@@ -26,7 +26,7 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "UserRefresh" || event === "JoinToLobby") {
         if (JSON.parse(jsonMessage).ready === "true") {
-            text = JSON.parse(jsonMessage).game_user + " Готов! Респаун: " + JSON.parse(jsonMessage).respawn;
+            text = JSON.parse(jsonMessage).game_user + " Готов! Респаун: " + JSON.parse(jsonMessage).respawn_name;
             CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, null, null, null, text, "");
         } else {
             text = JSON.parse(jsonMessage).game_user + " Не готов";
@@ -90,7 +90,7 @@ function ReaderLobby(jsonMessage) {
             text = JSON.parse(jsonMessage).user_name + " Не готов";
             CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).user_name, null, null, null, text, JSON.parse(jsonMessage).user_name);
             Respawn();
-        } //TODO : respowns
+        }
     }
 
     if (event === "Respawn") {
@@ -100,7 +100,7 @@ function ReaderLobby(jsonMessage) {
             var option = document.createElement("option");
             option.className = "RespawnOption";
             option.value = JSON.parse(jsonMessage).respawn;
-            option.text = JSON.parse(jsonMessage).respawn;
+            option.text = JSON.parse(jsonMessage).respawn_name;
             select.appendChild(option);
         }
     }
@@ -130,13 +130,13 @@ function ReaderLobby(jsonMessage) {
         user = JSON.parse(jsonMessage).game_user;
         if (error === "") {
             if (JSON.parse(jsonMessage).ready === "true") {
-                ready = "Готов! Респаун: " + JSON.parse(jsonMessage).respawn;
+                ready = "Готов! Респаун: " + JSON.parse(jsonMessage).respawn_name;
             } else {
                 ready = " Не готов ";
             }
             var userBlock = document.getElementById(user);
             userBlock.innerHTML = user + " " + ready;
-            if (user === JSON.parse(jsonMessage).user_name && JSON.parse(jsonMessage).respawn === "") {
+            if (user === JSON.parse(jsonMessage).user_name && JSON.parse(jsonMessage).respawn_name === "") {
                 CreateSelectRespawn(user, user + " Не готов ");
             }
         } else {

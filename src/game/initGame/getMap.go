@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func GetMap(idMap int)(int, int)  {
+func GetMap(idMap int)(Map)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
@@ -20,20 +20,19 @@ func GetMap(idMap int)(int, int)  {
 
 	var mp Map
 	for rows.Next() {
-		err := rows.Scan(&mp.id, &mp.name, &mp.xsize, &mp.ysize, &mp.Type)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.Xsize, &mp.Ysize, &mp.Type)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	return mp.xsize, mp.ysize
+	return mp
 }
 
 type Map struct {
-	id int
-	name string
-	xsize int
-	ysize int
-        Type string
-
+	Id int
+	Name string
+	Xsize int
+	Ysize int
+	Type string
 }

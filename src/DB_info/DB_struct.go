@@ -41,6 +41,7 @@ type Map struct {
 
 type Respawn struct {
 	Id	  int
+	Name  string
 	IdMap int
 	X     int
 	Y     int

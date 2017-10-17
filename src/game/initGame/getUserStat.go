@@ -21,7 +21,7 @@ func GetUserStat(idGame string, idUser int) (UserStat)  {
 	var user UserStat
 
 	for rows.Next() {
-		err := rows.Scan(&user.id_game, &user.id_user, &user.price, &user.ready)
+		err := rows.Scan(&user.Id_game, &user.Id_user, &user.Id_resp, &user.Price, &user.Ready)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -31,8 +31,9 @@ func GetUserStat(idGame string, idUser int) (UserStat)  {
 }
 
 type UserStat struct {
-	id_game int
-	id_user int
-	price  int
-	ready string
+	Id_game int
+	Id_user int
+	Id_resp int
+	Price  int
+	Ready string
 }
