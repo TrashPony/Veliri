@@ -30,10 +30,20 @@ func FieldReader(ws *websocket.Conn)  {
 			FieldPipe <- mapParam // отправляем параметры карты
 
 			units := initGame.GetUnits(msg.IdGame)
+
 			for i := 0; i < len(units); i++ {
-				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[i].NameType, UserOwned: units[i].NameUser,
-					HP: strconv.Itoa(units[i].Hp), UnitAction: strconv.FormatBool(units[i].Action), Target: strconv.Itoa(units[i].Target), X: strconv.Itoa(units[i].X), Y: strconv.Itoa(units[i].Y) }
-				FieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+				if LoginWs(ws, &usersFieldWs) == units[i].NameUser {
+					PermissCoordinates := game.GetCoordinates(units[i])
+					for c := 0; c < len(PermissCoordinates); c++ {
+						for j := 0; j < len(units); j++ {
+							if (PermissCoordinates[c].X == units[j].X) && (PermissCoordinates[c].Y == units[j].Y) {
+								var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[j].NameType, UserOwned: units[j].NameUser,
+									HP: strconv.Itoa(units[j].Hp), UnitAction: strconv.FormatBool(units[j].Action), Target: strconv.Itoa(units[j].Target), X: strconv.Itoa(units[j].X), Y: strconv.Itoa(units[j].Y) }
+								FieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+							}
+						}
+					}
+				}
 			}
 			//InitResp
 			respawn := initGame.GetRespawns(IdWs(ws, &usersFieldWs), msg.IdGame)

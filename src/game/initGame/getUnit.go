@@ -59,31 +59,8 @@ func GetUnits(idGame string) ([]Unit)  {
 	return false, unitParam
 }
 */
-func GetUserName(idUser int) (string) {
-	var UserName string
 
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rows, err := db.Query("Select name From users WHERE id=$1", idUser)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&UserName)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	return UserName
-}
-
-func GetUnitType(idType int) (UnitType) {
+func GetUnitType(nameType string) (UnitType) {
 	var unitType UnitType
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
@@ -91,16 +68,16 @@ func GetUnitType(idType int) (UnitType) {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * From unittype WHERE id=$1", idType)
+	rows, err := db.Query("Select * From unittype WHERE type=$1", nameType)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&unitType.id, &unitType.Type, &unitType.damage, &unitType.hp,
-			&unitType.movespeed, &unitType.init, &unitType.rangeattack, &unitType.rangeview,
-			&unitType.areaattack, &unitType.typeattack, &unitType.price)
+		err := rows.Scan(&unitType.Id, &unitType.Type, &unitType.Damage, &unitType.Hp,
+			&unitType.MoveSpeed, &unitType.Init, &unitType.RangeAttack, &unitType.WatchZone,
+			&unitType.AreaAttack, &unitType.TypeAttack, &unitType.Price)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -109,17 +86,17 @@ func GetUnitType(idType int) (UnitType) {
 }
 
 type UnitType struct {
-	id int
+	Id int
 	Type string
-	damage int
-	hp int
-	movespeed int
-	init int
-	rangeattack int
-	rangeview int
-	areaattack int
-	typeattack string
-	price int
+	Damage int
+	Hp int
+	MoveSpeed int
+	Init int
+	RangeAttack int
+	WatchZone int
+	AreaAttack int
+	TypeAttack string
+	Price int
 }
 
 type Unit struct {

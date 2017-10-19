@@ -21,6 +21,7 @@ function Field(xSize,ySize) {
             var div = document.createElement('div');
             div.className = "fieldUnit";
             div.id = x + ":" + y;
+            div.innerHTML = x + ":" + y;
             div.onclick = function () {
                 reply_click(this.id);
             };
