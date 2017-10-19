@@ -5,7 +5,6 @@ import (
 	"websocket-master"
 	"../game"
 	"../game/initGame"
-	"../game/createUnit"
 	"strconv"
 )
 
@@ -29,23 +28,11 @@ func FieldReader(ws *websocket.Conn)  {
 			var mapParam= FieldResponse{Event: "InitMap", UserName: LoginWs(ws, &usersFieldWs), NameMap: mp.Name, TypeMap: mp.Type, XMap: strconv.Itoa(mp.Xsize), YMap: strconv.Itoa(mp.Ysize)}
 			FieldPipe <- mapParam // отправляем параметры карты
 
-			units := initGame.GetUnits(msg.IdGame)
-
+			units := initGame.GetAllUnits(msg.IdGame)
 			for i := 0; i < len(units); i++ {
-				if LoginWs(ws, &usersFieldWs) == units[i].NameUser {
-					PermissCoordinates := game.GetCoordinates(units[i])
-					for c := 0; c < len(PermissCoordinates); c++ {
-						for j := 0; j < len(units); j++ {
-							if (PermissCoordinates[c].X == units[j].X) && (PermissCoordinates[c].Y == units[j].Y) {
-								var unitsParametr = FieldResponse{Event: "InitUnit", UserName: LoginWs(ws, &usersFieldWs), TypeUnit: units[j].NameType, UserOwned: units[j].NameUser,
-									HP: strconv.Itoa(units[j].Hp), UnitAction: strconv.FormatBool(units[j].Action), Target: strconv.Itoa(units[j].Target), X: strconv.Itoa(units[j].X), Y: strconv.Itoa(units[j].Y) }
-								FieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
-							}
-						}
-					}
-				}
+				sendPermissionCoordinates(msg.IdGame, LoginWs(ws, &usersFieldWs), units[i])
 			}
-			//InitResp
+
 			respawn := initGame.GetRespawns(IdWs(ws, &usersFieldWs), msg.IdGame)
 			var respawnParametr = FieldResponse{Event: "InitResp", UserName: LoginWs(ws, &usersFieldWs), RespawnX:strconv.Itoa(respawn.X), RespawnY:strconv.Itoa(respawn.Y)}
 			FieldPipe <- respawnParametr
@@ -54,20 +41,27 @@ func FieldReader(ws *websocket.Conn)  {
 		if msg.Event == "CreateUnit" {
 			var resp FieldResponse
 			// 1) надо проверить возможно ли его туда поставить например в зависимости от респауна
-			success, price := createUnit.CreateUnit(msg.IdGame, strconv.Itoa(IdWs(ws, &usersFieldWs)), msg.TypeUnit, msg.X, msg.Y)
+			unit, price, createError := game.CreateUnit(msg.IdGame, strconv.Itoa(IdWs(ws, &usersFieldWs)), msg.TypeUnit, msg.X, msg.Y)
 
-			if success {
-				resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs),PlayerPrice: strconv.Itoa(price), X:msg.X, Y:msg.Y, TypeUnit:msg.TypeUnit}
+			if createError == nil {
+				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: strconv.Itoa(price), X: strconv.Itoa(unit.X), Y: strconv.Itoa(unit.Y), TypeUnit: unit.NameType}
 				FieldPipe <- resp
+				sendPermissionCoordinates(msg.IdGame, LoginWs(ws, &usersFieldWs), unit)
 			} else {
-				if price == 1 {
-					resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), ErrorType:"busy"}
-					FieldPipe <- resp
-				}
-				if price == 2 {
-					resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), ErrorType:"noMany"}
-					FieldPipe <- resp
-				}
+				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), ErrorType: createError.Error()}
+				FieldPipe <- resp
+			}
+		}
+
+		if msg.Event == "MouseOver" {
+			var resp FieldResponse
+			unit, errUnitParams := initGame.GetXYUnits(msg.IdGame, msg.X, msg.Y)
+			if errUnitParams == nil {
+				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), TypeUnit: unit.NameType, UserOwned: unit.NameUser, HP: strconv.Itoa(unit.Hp),
+					UnitAction: strconv.FormatBool(unit.Action) , Target: strconv.Itoa(unit.Target), Damage: strconv.Itoa(unit.Damage), MoveSpeed: strconv.Itoa(unit.MoveSpeed),
+					Init: strconv.Itoa(unit.Init), RangeAttack: strconv.Itoa(unit.RangeAttack), RangeView: strconv.Itoa(unit.WatchZone),
+					AreaAttack: strconv.Itoa(unit.AreaAttack), TypeAttack: unit.TypeAttack}
+				FieldPipe <- resp
 			}
 		}
 
@@ -77,17 +71,6 @@ func FieldReader(ws *websocket.Conn)  {
 			resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), Phase:phase}
 			FieldPipe <- resp
 		}
-
-		/*if msg.Event == "MouseOver" {
-			var resp FieldResponse
-			success, unitParams := initGame.GetUnit(msg.IdGame, msg.X, msg.Y)
-			if success {
-				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), TypeUnit: unitParams[0], UserId: unitParams[1], HP: unitParams[2],
-					UnitAction: unitParams[3], Target: unitParams[4], Damage: unitParams[5], MoveSpeed: unitParams[6], Init: unitParams[7], RangeAttack: unitParams[8],
-					RangeView: unitParams[9], AreaAttack: unitParams[10], TypeAttack: unitParams[11]}
-				FieldPipe <- resp
-			}
-		}*/
 	}
 }
 
@@ -101,6 +84,24 @@ func FieldReposeSender() {
 					log.Printf("error: %v", err)
 					client.ws.Close()
 					delete(usersFieldWs, client)
+				}
+			}
+		}
+	}
+}
+
+func sendPermissionCoordinates(idGame string, login string, unit initGame.Unit) {
+	units := initGame.GetAllUnits(idGame)
+	if login == unit.NameUser {
+		PermissCoordinates := game.GetCoordinates(unit)
+		for c := 0; c < len(PermissCoordinates); c++ {
+			var emptyCoordinates= FieldResponse{Event: "emptyCoordiantes", UserName: login, X: strconv.Itoa(PermissCoordinates[c].X), Y: strconv.Itoa(PermissCoordinates[c].Y)}
+			FieldPipe <- emptyCoordinates
+			for j := 0; j < len(units); j++ {
+				if (PermissCoordinates[c].X == units[j].X) && (PermissCoordinates[c].Y == units[j]	.Y) {
+					var unitsParametr = FieldResponse{Event: "InitUnit", UserName: login, TypeUnit: units[j].NameType, UserOwned: units[j].NameUser,
+						HP: strconv.Itoa(units[j].Hp), UnitAction: strconv.FormatBool(units[j].Action), Target: strconv.Itoa(units[j].Target), X: strconv.Itoa(units[j].X), Y: strconv.Itoa(units[j].Y)}
+					FieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
 				}
 			}
 		}

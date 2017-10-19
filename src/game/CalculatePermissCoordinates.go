@@ -6,17 +6,17 @@ import (
 
 var coordinates = make([]Coordinate,0)
 func GetCoordinates(unit initGame.Unit) ([]Coordinate) {
+
 	typeUnit := initGame.GetUnitType(unit.NameType)
 	circle(unit.X, unit.Y, typeUnit.WatchZone, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
 	circle(unit.Y, unit.X, typeUnit.WatchZone, true)
 
-
 	zx := unit.X - (typeUnit.WatchZone)
 	zy := unit.Y - (typeUnit.WatchZone)
 
-	for y := zy; y <= (typeUnit.WatchZone) * 2 + (typeUnit.WatchZone); y++ {
+	for y := zy; y <= (typeUnit.WatchZone * 2 + typeUnit.WatchZone) + unit.Y; y++ {
 		xMax, xMin := xMaxMin(y)
-		for x := zx; x <= (typeUnit.WatchZone) * 2 + ((typeUnit.WatchZone) - 1); x++ {
+		for x := zx; x <= (typeUnit.WatchZone * 2 + (typeUnit.WatchZone - 1)) + unit.X; x++ {
 			if xMin < x && xMax > x {
 				coordinates = append(coordinates, Coordinate{X:x, Y:y})
 			}

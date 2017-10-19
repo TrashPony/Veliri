@@ -10,7 +10,7 @@ function ConnectField() {
         InitGame();
     };
     sock.onmessage = function(msg) {
-        console.log("message: " + msg.data);
+        //console.log("message: " + msg.data);
         ReadResponse(msg.data);
     };
     sock.onerror = function(msg) {

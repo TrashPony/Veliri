@@ -8,6 +8,7 @@ function ReadResponse(jsonMessage) {
     var log;
     var ready;
     var info;
+    var coor_id;
     var x;
     var y;
     if (event === "InitPlayer") {
@@ -32,6 +33,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
+        console.log("message: " + jsonMessage);
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
         var type = JSON.parse(jsonMessage).type_unit;
@@ -59,12 +61,21 @@ function ReadResponse(jsonMessage) {
     if (event === "InitResp") {
         x = JSON.parse(jsonMessage).respawn_x;
         y = JSON.parse(jsonMessage).respawn_y;
-        var coor_id = x + ":" + y;
+        coor_id = x + ":" + y;
         cell = document.getElementById(coor_id);
         cell.className = "fieldUnit respawn";
         cell.innerHTML = "Resp: " + JSON.parse(jsonMessage).user_name;
     }
 
+    if (event === "emptyCoordiantes") {
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        clicked_id = x + ":" + y;
+        cell = document.getElementById(clicked_id);
+        if (cell) {
+            cell.className = "fieldUnit open";
+        }
+    }
 
     if (event === "CreateUnit"){
         if(JSON.parse(jsonMessage).error_type === "") {

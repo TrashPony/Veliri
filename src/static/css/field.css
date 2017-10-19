@@ -53,6 +53,10 @@
     color: #d4d4d4;
 }
 
+.fieldUnit.open {
+    background-color: #749167;
+}
+
 .fieldInfo {
     border: 1px solid #e1ba6d;
     border-radius: 4px;

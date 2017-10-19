@@ -1,60 +1,42 @@
-package createUnit
+package game
 
 import (
 	"database/sql"
 	"log"
+	"./initGame"
+	"errors"
 )
 
-func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(bool, int) {
+func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(initGame.Unit, int, error) {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	var unit initGame.Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше
-		unit := GetUnitType(unitType, idGame, idPlayer)
-		success, price := Price(unit.price, idGame, idPlayer)
-		if (success) { // если хватило денег то вносим изменения , вероятно тут надо применить транзацию
+		unitType := initGame.GetUnitType(unitType)
+		success, price := Price(unitType.Price, idGame, idPlayer)
+		if success { // если хватило денег то вносим изменения , вероятно тут надо применить транзацию
 			rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-				idGame, unit.id, idPlayer, unit.hp, true, 0, x, y)
+				idGame, unitType.Id, idPlayer, unitType.Hp, true, 0, x, y)
 			defer rows.Close()
 			if err != nil {
 				log.Fatal(err)
 			}
-			return success, price
+			unit, errFound := initGame.GetXYUnits(idGame, x, y)
+			if errFound != nil {
+				return unit, 0, errFound
+			}
+			return unit, price, nil
 		} else {
-			return false, 2
+			return unit, 0, errors.New("no many")
 		}
 	} else {
-		return false, 1
+		return unit, 0, errors.New("busy")
 	}
-	return false, 0
-}
-
-func GetUnitType(unitType string, idGame string, idPlayer string) (UnitType)  {
-	var unit UnitType
-
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rows, err := db.Query("Select id, hp, price From unittype WHERE type=" + "'" +unitType + "'")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&unit.id, &unit.hp, &unit.price)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	return unit
+	return unit, 0, errors.New("unknown error")
 }
 
 func Price(cost int, idGame string, idPlayer string) (bool, int) {
@@ -112,15 +94,9 @@ func CheckPlace(idGame string, x string, y string)(bool)  {
 		}
 	}
 
-	if(id == 0) {
+	if id == 0 {
 		return true
 	} else {
 		return false
 	}
-}
-
-type UnitType struct {
-	id int
-	hp int
-	price int
 }
