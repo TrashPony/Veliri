@@ -33,3 +33,8 @@ type Unit struct {
 	X int
 	Y int
 }
+
+type Coordinate struct {
+	X int
+	Y int
+}

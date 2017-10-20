@@ -77,3 +77,14 @@ func GetUnitType(nameType string) (UnitType) {
 	}
 	return unitType
 }
+
+func GetUnitsCoordinate(units []Unit)([]Coordinate)  {
+	var coordinates []Coordinate
+	for i := 0; i < len(units); i++ {
+		var coordinate Coordinate
+		coordinate.X = units[i].X
+		coordinate.Y = units[i].Y
+		coordinates = append(coordinates, coordinate)
+	}
+	return coordinates
+}

@@ -60,7 +60,7 @@ func Price(cost int, idGame string, idPlayer string) (bool, int) {
 		}
 	}
 
-	if cost < price {
+	if cost <= price {
 		price = price - cost
 		_ , err := db.Exec("UPDATE action_game_user SET price = $1 WHERE id_game = $2 AND id_user = $3", price, idGame, idPlayer)
 		if err != nil {

@@ -180,14 +180,14 @@ func LobbyReposeSender() {
 	for {
 		resp := <-LobbyPipe
 		mutex.Lock()
-		for client := range usersLobbyWs {
+		for ws, client := range usersLobbyWs {
 			if client.login == resp.UserName {
-				err := client.ws.WriteJSON(resp)
+				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
 					DB_info.DelLobbyGame(client.login)
-					client.ws.Close()
-					delete(usersLobbyWs, client)
+					ws.Close()
+					delete(usersLobbyWs, ws)
 				}
 			}
 		}

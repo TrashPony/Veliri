@@ -53,6 +53,11 @@
     color: #d4d4d4;
 }
 
+.fieldUnit.create {
+    background-color: #cefc46;
+    color: #d4d4d4;
+}
+
 .fieldUnit.open {
     background-color: #749167;
 }
