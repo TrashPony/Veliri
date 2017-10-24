@@ -2,23 +2,22 @@ package game
 
 import (
 	"database/sql"
-	"log"
 )
 
-func UserReady(idUser int, idGame string) (string)  {
+func UserReady(idUser int, idGame string) (string, error, bool)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
-		log.Fatal(err)
+		return "", err, false
 	}
 	// устанавливает фраг готовности пользователя в тру
 	rows, err := db.Query("UPDATE action_game_user  SET ready = true WHERE id_user=$1 AND id_game=$2", idUser, idGame)
 	if err != nil {
-		log.Fatal(err)
+		return "", err, false
 	}
 	// берем готовность всех пользователей
 	rows, err = db.Query("Select ready FROM action_game_user WHERE id_game=$1", idGame)
 	if err != nil {
-		log.Fatal(err)
+		return "", err, false
 	}
 	defer rows.Close()
 
@@ -28,7 +27,7 @@ func UserReady(idUser int, idGame string) (string)  {
 	for rows.Next() {
 		err := rows.Scan(&user)
 		if err != nil {
-			log.Fatal(err)
+			return "", err, false
 		}
 		ready = append(ready, user)
 	}
@@ -42,9 +41,13 @@ func UserReady(idUser int, idGame string) (string)  {
 	var phase string
 	// если все игроки готовы то начинается смена фазы
 	if allReady {
-		phase = PhaseСhange()
-		return phase
+		phase, err = PhaseСhange(idGame)
+		if err != nil {
+			return "", err, false
+		} else {
+			return phase, nil, true
+		}
 	} else {
-		return phase
+		return phase, nil, false
 	}
 }

@@ -39,4 +39,5 @@ type FieldResponse struct {
 	TypeAttack	  string `json:"type_attack"`
 	RespawnX       string `json:"respawn_x"`
 	RespawnY       string `json:"respawn_y"`
+	Error		 string   `json:"error"`
 }

@@ -3,37 +3,37 @@ package initGame
 import (
 	"database/sql"
 	"log"
-	"strconv"
 )
 
-func GetUserStat(idGame string, idUser int) (UserStat)  {
+func GetUserStat(idGame string) ([]UserStat)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select * FROM action_game_user WHERE id_game=" + idGame + " AND id_user=" + strconv.Itoa(idUser))
+	rows, err := db.Query("Select agu.id_game, users.name, agu.respawns_id, agu.price, agu.ready FROM action_game_user as agu, users WHERE agu.id_user=users.id AND id_game=$1", idGame)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
+	users := make([]UserStat,0)
 	var user UserStat
-
 	for rows.Next() {
-		err := rows.Scan(&user.Id_game, &user.Id_user, &user.Id_resp, &user.Price, &user.Ready)
+		err := rows.Scan(&user.IdGame, &user.Name, &user.IdResp, &user.Price, &user.Ready)
 		if err != nil {
 			log.Fatal(err)
 		}
+		users = append(users, user)
 	}
 
-	return user
+	return users
 }
 
 type UserStat struct {
-	Id_game int
-	Id_user int
-	Id_resp int
+	IdGame int
+	Name   string
+	IdResp int
 	Price  int
 	Ready string
 }

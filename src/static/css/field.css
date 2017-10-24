@@ -12,6 +12,7 @@
     display:inline-block;
     text-align: center;
 }
+
 #Ready:hover {
     border: 1px solid #f40600;
     background-color: #d9d92e;

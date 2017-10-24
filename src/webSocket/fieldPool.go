@@ -41,7 +41,7 @@ func FieldReader(ws *websocket.Conn)  {
 
 func FieldReposeSender() {
 	for {
-		resp := <-FieldPipe
+		resp := <-FieldPipe // TODO : разделить пайп на множество под каждую фазу
 		for ws, client := range usersFieldWs {
 			if client.login == resp.UserName {
 				err := ws.WriteJSON(resp)
@@ -78,17 +78,20 @@ func sendPermissionCoordinates(idGame string, ws *websocket.Conn, unit initGame.
 			}
 		}
 	}
-
 	return allCoordinate
 }
 
 func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 	gameStat := initGame.GetGame(msg.IdGame)
-	userStat := initGame.GetUserStat(msg.IdGame, IdWs(ws, &usersFieldWs))
-	var playersParam= FieldResponse{Event: "InitPlayer", UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: strconv.Itoa(userStat.Price),
-		GameStep: strconv.Itoa(gameStat.Step), GamePhase: gameStat.Phase, UserReady: userStat.Ready}
-	FieldPipe <- playersParam // отправляет параметры игрока
-
+	userStat := initGame.GetUserStat(msg.IdGame)
+	usersFieldWs[ws].Players = userStat // добавляем параметры всех игроков к обьекту пользователя
+	for _, userStat := range usersFieldWs[ws].Players {
+		if userStat.Name == LoginWs(ws, &usersFieldWs) {
+			var playersParam = FieldResponse{Event: "InitPlayer", UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: strconv.Itoa(userStat.Price),
+				GameStep: strconv.Itoa(gameStat.Step), GamePhase: gameStat.Phase, UserReady: userStat.Ready}
+			FieldPipe <- playersParam // отправляет параметры игрока
+		}
+	}
 	mp := initGame.GetMap(gameStat.IdMap)
 	var mapParam= FieldResponse{Event: "InitMap", UserName: LoginWs(ws, &usersFieldWs), NameMap: mp.Name, TypeMap: mp.Type, XMap: strconv.Itoa(mp.Xsize), YMap: strconv.Itoa(mp.Ysize)}
 	FieldPipe <- mapParam // отправляем параметры карты
@@ -141,7 +144,6 @@ func SelectCoordinateCreate(ws *websocket.Conn)  {
 }
 func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
 	var resp FieldResponse
-	// 1) надо проверить возможно ли его туда поставить например в зависимости от респауна
 	coordinates := usersFieldWs[ws].CreateZone
 	respawn := usersFieldWs[ws].Respawn
 	var errorMsg bool = true
@@ -152,8 +154,12 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
 			unit, price, createError := game.CreateUnit(msg.IdGame, strconv.Itoa(IdWs(ws, &usersFieldWs)), msg.TypeUnit, msg.X, msg.Y)
 
 			if createError == nil {
-				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), PlayerPrice: strconv.Itoa(price), X: strconv.Itoa(unit.X), Y: strconv.Itoa(unit.Y), TypeUnit: unit.NameType}
-				FieldPipe <- resp
+				for _, userStat := range usersFieldWs[ws].Players {
+					if userStat.Name == LoginWs(ws, &usersFieldWs) {
+						resp = FieldResponse{Event: msg.Event, UserName: userStat.Name, PlayerPrice: strconv.Itoa(price), X: strconv.Itoa(unit.X), Y: strconv.Itoa(unit.Y), TypeUnit: unit.NameType, UserOwned: LoginWs(ws, &usersFieldWs)}
+						FieldPipe <- resp
+					}
+				}
 				unitPermissCoordinate := sendPermissionCoordinates(msg.IdGame, ws, unit)
 				for i := 0; i < len(unitPermissCoordinate); i++ {
 					usersFieldWs[ws].permittedCoordinates = append(usersFieldWs[ws].permittedCoordinates, unitPermissCoordinate[i])
@@ -194,10 +200,26 @@ func MouseOver(msg FieldMessage, ws *websocket.Conn)  {
 	}
 }
 
-func Ready(msg FieldMessage, ws *websocket.Conn)  {
+func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
-	phase := game.UserReady(IdWs(ws, &usersFieldWs), msg.IdGame)
-	resp = FieldResponse{Event:msg.Event, UserName:LoginWs(ws, &usersFieldWs), Phase:phase}
-	FieldPipe <- resp
+	if 0 < len(usersFieldWs[ws].Units) {
+		phase, err, phaseChange := game.UserReady(IdWs(ws, &usersFieldWs), msg.IdGame)
+		if err != nil {
+			// TODO : обработать ошибку
+		} else {
+			if phaseChange {
+				for _, userStat := range usersFieldWs[ws].Players {
+					resp = FieldResponse{Event: msg.Event, UserName: userStat.Name, Phase: phase}
+					FieldPipe <- resp
+				}
+			} else {
+				resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), Phase: phase}
+				FieldPipe <- resp
+			}
+		}
+	} else {
+		resp = FieldResponse{Event: msg.Event, UserName: LoginWs(ws, &usersFieldWs), Error: "not units"}
+		FieldPipe <- resp
+	}
 }
 

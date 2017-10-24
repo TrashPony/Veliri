@@ -49,4 +49,5 @@ type Clients struct { // структура описывающая клиент�
 	Units []initGame.Unit
 	Respawn initGame.Respawn
 	CreateZone []initGame.Coordinate
+	Players []initGame.UserStat
 }
