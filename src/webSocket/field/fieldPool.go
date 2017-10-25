@@ -48,6 +48,12 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 		if msg.Event == "Ready" {
 			Ready(msg, ws)
 		}
+		if msg.Event == "SelectUnit" {
+			SelectUnit(msg, ws)
+		}
+		if msg.Event == "MoveUnit" {
+			MoveUnit(msg, ws)
+		}
 	}
 }
 
@@ -74,6 +80,7 @@ type Clients struct { // структура описывающая клиент�
 	Units []objects.Unit
 	Respawn objects.Respawn
 	CreateZone []objects.Coordinate
+	GameStat objects.Game
 	Players []objects.UserStat
 }
 

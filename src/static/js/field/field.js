@@ -1,6 +1,8 @@
 var typeUnit;
 var phase;
 var unitInfo;
+var move = null;
+
 function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
@@ -37,8 +39,29 @@ function reply_click(clicked_id) {
     var x = xy[0];
     var y = xy[1];
 
+    if(phase === "move" && move !== null) {
+        var unit = move.split(":");
+        var unit_x = unit[0];
+        var unit_y = unit[1];
+        sock.send(JSON.stringify({
+            event: "MoveUnit",
+            x: unit_x,
+            y: unit_y,
+            to_x: x,
+            to_y: y
+        }));
+    } else {
+        move = false;
+    }
+
     if(phase === "Init" && typeUnit !== null && typeUnit !== undefined) {
-        sendCreateUnit(typeUnit, x, y);
+        sock.send(JSON.stringify({
+            event: "CreateUnit",
+            type_unit: typeUnit,
+            id_game: idGame,
+            x: x,
+            y: y
+        }));
     } else {
         typeUnit = null;
     }
@@ -57,20 +80,22 @@ function mouse_out(unit_id) {
     unitInfo = document.getElementById("unitInfo");
     unitInfo.innerHTML = "";
 }
-/////////////////////////////////////////////////////////////////////GAME PROTOCOL/////////////////////////////////////////////////////////////////////
 
-function sendCreateUnit(type, x, y) {
+function SelectUnit(id) {
+    var xy = id.split(":");
+    var x = xy[0];
+    var y = xy[1];
+    if(phase === "move") {
+        move = id;
+    }
     sock.send(JSON.stringify({
-        event: "CreateUnit",
-        type_unit: type,
-        id_game: idGame,
+        event: "SelectUnit",
         x: x,
         y: y
     }));
-
 }
 
-function sendReady( x, y){
+function sendReady(){
     sock.send(JSON.stringify({
         event: "Ready",
         id_game: idGame
@@ -86,13 +111,6 @@ function sendMouseOver(x, y){
     }));
 }
 
-function sendSelectEvent(x,y) {
-    stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "SelectUnit",
-                                                         'userName': "tost",
-                                                                'x': x,
-                                                                'y': y
-                                                            }));
-}
 
 function sendMoveEvent(x,y) {
     stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "MoveUnit",

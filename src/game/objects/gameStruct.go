@@ -34,6 +34,14 @@ type Unit struct {
 	Y int
 }
 
+type UserStat struct {
+	IdGame int
+	Name   string
+	IdResp int
+	Price  int
+	Ready string
+}
+
 type Coordinate struct {
 	X int
 	Y int

@@ -11,6 +11,7 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 	gameStat := objects.GetGame(msg.IdGame)
 	userStat := objects.GetUserStat(msg.IdGame)
 	usersFieldWs[ws].Players = userStat // добавляем параметры всех игроков к обьекту пользователя
+	usersFieldWs[ws].GameStat = gameStat // добавляем информацию об игре
 	for _, userStat := range usersFieldWs[ws].Players {
 		if userStat.Name == usersFieldWs[ws].Login {
 			var playersParam = FieldResponse{Event: "InitPlayer", UserName: usersFieldWs[ws].Login, PlayerPrice: strconv.Itoa(userStat.Price),

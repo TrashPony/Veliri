@@ -59,6 +59,11 @@
     color: #d4d4d4;
 }
 
+.fieldUnit.move {
+    background-color: #5b73fc;
+    color: #d4d4d4;
+}
+
 .fieldUnit.open {
     background-color: #749167;
 }

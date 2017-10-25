@@ -30,10 +30,3 @@ func GetUserStat(idGame string) ([]UserStat)  {
 	return users
 }
 
-type UserStat struct {
-	IdGame int
-	Name   string
-	IdResp int
-	Price  int
-	Ready string
-}

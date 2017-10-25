@@ -2,7 +2,6 @@ function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
     var price;
     var step;
-    var phase;
     var clicked_id;
     var cell;
     var log;
@@ -47,6 +46,9 @@ function ReadResponse(jsonMessage) {
         if (type === "tank") cell.className = "fieldUnit tank";
         if (type === "scout") cell.className = "fieldUnit scout";
         if (type === "artillery") cell.className = "fieldUnit artillery";
+        cell.onclick = function () {
+            SelectUnit(this.id)
+        };
         cell.innerHTML = "hp: " + hp;
 
         if (JSON.parse(jsonMessage).user_name === userOwned) {
@@ -95,6 +97,9 @@ function ReadResponse(jsonMessage) {
 
             coor_id = x + ":" + y;
             cell = document.getElementById(coor_id);
+            cell.onclick = function () {
+                SelectUnit(this.id)
+            };
             if (typeUnit === "tank") cell.className = "fieldUnit tank";
             if (typeUnit === "scout") cell.className = "fieldUnit scout";
             if (typeUnit === "artillery") cell.className = "fieldUnit artillery";
@@ -169,12 +174,46 @@ function ReadResponse(jsonMessage) {
                 if (phase === "attack") {
                     ready.style.backgroundColor = "#E12D27";
                 }
-                phaseBlock.innerHTML = JSON.parse(jsonMessage).phase
+                phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
+                var cells = document.getElementsByClassName("fieldUnit create");
+                while (0 < cells.length) {
+                    if (cells[0]) {
+                        cells[0].className = "fieldUnit open";
+                    }
+                }
             }
         } else {
             if (error === "not units"){
                 alert("У вас нет юнитов")
             }
         }
+    }
+
+    if (event === "SelectUnit") {
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        coor_id = x + ":" + y;
+        cell = document.getElementById(coor_id);
+        if (cell) {
+            cell.className = "fieldUnit move";
+        }
+    }
+
+    if (event === "MoveUnit") {
+        move = null;
+        var moveCells = document.getElementsByClassName("fieldUnit move");
+        while (0 < moveCells.length) {
+            if (moveCells[0]) {
+                moveCells[0].className = "fieldUnit open"; // TODO: ставить реальные статусы ячеек
+            }
+        }
+
+        error = JSON.parse(jsonMessage).error;
+        if (error === "") {
+                                // TODO копировать ячейку в новую координату, а старую закрыть
+        } else {
+
+        }
+
     }
 }

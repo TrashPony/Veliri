@@ -7,8 +7,6 @@ import (
 var coordinates = make([]objects.Coordinate,0)
 
 func GetCoordinates(xCenter int, yCenter int, WatchZone int) ([]objects.Coordinate) {
-
-	//typeUnit := objects.GetUnitType(unit.NameType)
 	circle(xCenter, yCenter, WatchZone, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
 	circle(yCenter, xCenter, WatchZone, true)
 
