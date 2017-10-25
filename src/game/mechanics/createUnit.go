@@ -1,22 +1,22 @@
-package game
+package mechanics
 
 import (
 	"database/sql"
 	"log"
-	"./initGame"
+	"../objects"
 	"errors"
 )
 
-func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(initGame.Unit, int, error) {
+func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(objects.Unit, int, error) {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	var unit initGame.Unit
+	var unit objects.Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше
-		unitType := initGame.GetUnitType(unitType)
+		unitType := objects.GetUnitType(unitType)
 		success, price := Price(unitType.Price, idGame, idPlayer)
 		if success { // если хватило денег то вносим изменения , вероятно тут надо применить транзацию
 			rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
@@ -25,7 +25,7 @@ func CreateUnit(idGame string, idPlayer string, unitType string, x string, y str
 			if err != nil {
 				log.Fatal(err)
 			}
-			unit, errFound := initGame.GetXYUnits(idGame, x, y)
+			unit, errFound := objects.GetXYUnits(idGame, x, y)
 			if errFound != nil {
 				return unit, 0, errFound
 			}

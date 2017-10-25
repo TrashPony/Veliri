@@ -1,14 +1,4 @@
-package webSocket
-
-type FieldMessage struct {
-	Event    string `json:"event"`
-	IdGame   string `json:"id_game"`
-	IdUnit	 string `json:"id_unit"`
-	IdTarget string	`json:"id_target"`
-	TypeUnit string `json:"type_unit"`
-	X        string	`json:"x"`
-	Y 	     string	`json:"y"`
-}
+package field
 
 type FieldResponse struct {
 	Event    	  string `json:"event"`
@@ -40,4 +30,15 @@ type FieldResponse struct {
 	RespawnX       string `json:"respawn_x"`
 	RespawnY       string `json:"respawn_y"`
 	Error		 string   `json:"error"`
+}
+
+
+type FieldMessage struct {
+	Event    string `json:"event"`
+	IdGame   string `json:"id_game"`
+	IdUnit	 string `json:"id_unit"`
+	IdTarget string	`json:"id_target"`
+	TypeUnit string `json:"type_unit"`
+	X        string	`json:"x"`
+	Y 	     string	`json:"y"`
 }

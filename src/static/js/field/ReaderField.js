@@ -12,6 +12,7 @@ function ReadResponse(jsonMessage) {
     var x;
     var y;
     var userOwned;
+
     if (event === "InitPlayer") {
         price = document.getElementsByClassName('fieldInfo price');
         price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
@@ -148,17 +149,27 @@ function ReadResponse(jsonMessage) {
     }
     if (event === "Ready") {
         var error = JSON.parse(jsonMessage).error;
+        phase = JSON.parse(jsonMessage).phase;
+        console.log(phase);
         if (error === "") {
             ready = document.getElementById("Ready");
-            phase = document.getElementById("phase");
+            var phaseBlock = document.getElementById("phase");
 
-            if (JSON.parse(jsonMessage).phase === "") {
+            if (phase === "") {
                 ready.innerHTML = "Ты готов!";
                 ready.style.backgroundColor = "#e1720f";
             } else {
                 ready.innerHTML = "Готов!";
-                ready.style.backgroundColor = "#28e139";
-                phase.innerHTML = JSON.parse(jsonMessage).phase
+                if (phase === "move") {
+                    ready.style.backgroundColor = "#A8ADE1";
+                }
+                if (phase === "targeting") {
+                    ready.style.backgroundColor = "#E1C7A6";
+                }
+                if (phase === "attack") {
+                    ready.style.backgroundColor = "#E12D27";
+                }
+                phaseBlock.innerHTML = JSON.parse(jsonMessage).phase
             }
         } else {
             if (error === "not units"){

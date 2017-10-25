@@ -1,4 +1,4 @@
-package game
+package mechanics
 
 import (
 	"database/sql"
@@ -63,6 +63,5 @@ func PhaseСhange(idGame string)(string, error)  {
 			}
 		}
 	}
-
 	return phase, nil
 }

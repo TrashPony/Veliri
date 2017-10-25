@@ -4,15 +4,12 @@ import (
 	"websocket-master"
 	"net/http"
 	"log"
-	"strconv"
-	"../game/initGame"
+	"./lobby"
+	"./field"
 )
 
 var upgrader = websocket.Upgrader{} // методами приема обычного HTTP-соединения и обновления его до WebSocket
-var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
-var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
-var LobbyPipe = make(chan LobbyResponse)
-var FieldPipe = make(chan FieldResponse)
+
 
 func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, pool string)  {
 
@@ -22,32 +19,9 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	}
 
 	if pool == "/wsLobby" {
-		CheckDoubleLogin(login, &usersLobbyWs)
-
-		usersLobbyWs[ws] = &Clients{login:login, id:id} // Регистрируем нового Клиента //TODO: map[Clients]bool --> map[ws]Clients
-		print("WS lobby Сессия: ") // просто смотрим новое подключение
-		print(ws)
-		println(" login: " + login + " id: " + strconv.Itoa(id))
-		defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
-		LobbyReader(ws)
+		lobby.AddNewUser(ws, login, id)
 	}
 	if pool == "/wsField" {
-		CheckDoubleLogin(login, &usersFieldWs)
-		usersFieldWs[ws] = &Clients{login:login, id:id} // Регистрируем нового Клиента
-		print("WS field Сессия: ") // просто смотрим новое подключение
-		print(ws)
-		println(" login: " + login + " id: " + strconv.Itoa(id))
-		defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
-		FieldReader(ws)
+		field.AddNewUser(ws, login, id)
 	}
-}
-
-type Clients struct { // структура описывающая клиента ws соеденение
-	login string
-	id int
-	permittedCoordinates []initGame.Coordinate
-	Units []initGame.Unit
-	Respawn initGame.Respawn
-	CreateZone []initGame.Coordinate
-	Players []initGame.UserStat
 }

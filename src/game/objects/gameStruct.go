@@ -1,4 +1,4 @@
-package initGame
+package objects
 
 type UnitType struct {
 	Id int

@@ -1,14 +1,14 @@
-package game
+package mechanics
 
 import (
-	"./initGame"
+	"../objects"
 )
 
-var coordinates = make([]initGame.Coordinate,0)
+var coordinates = make([]objects.Coordinate,0)
 
-func GetCoordinates(xCenter int, yCenter int, WatchZone int) ([]initGame.Coordinate) {
+func GetCoordinates(xCenter int, yCenter int, WatchZone int) ([]objects.Coordinate) {
 
-	//typeUnit := initGame.GetUnitType(unit.NameType)
+	//typeUnit := objects.GetUnitType(unit.NameType)
 	circle(xCenter, yCenter, WatchZone, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
 	circle(yCenter, xCenter, WatchZone, true)
 
@@ -19,7 +19,7 @@ func GetCoordinates(xCenter int, yCenter int, WatchZone int) ([]initGame.Coordin
 		xMax, xMin := xMaxMin(y)
 		for x := zx; x <= (WatchZone * 2 + (WatchZone - 1)) + xCenter; x++ {
 			if xMin < x && xMax > x {
-				coordinates = append(coordinates, initGame.Coordinate{X:x, Y:y})
+				coordinates = append(coordinates, objects.Coordinate{X:x, Y:y})
 			}
 		}
 	}
@@ -51,9 +51,9 @@ func xMaxMin(y int) (int, int) {
 }
 
 
-func removeDuplicates(elements []initGame.Coordinate) []initGame.Coordinate {
-	encountered := map[initGame.Coordinate]bool{}
-	result := []initGame.Coordinate{}
+func removeDuplicates(elements []objects.Coordinate) []objects.Coordinate {
+	encountered := map[objects.Coordinate]bool{}
+	result := []objects.Coordinate{}
 
 	for v := range elements {
 		if encountered[elements[v]] == true {
@@ -89,15 +89,15 @@ func circle(xCenter,yCenter,radius int, invert bool) {
 
 func putCoordinates( x int, y int, xCenter int, yCenter int, invert bool) () {
 	if !invert { // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
-		coordinates = append(coordinates, initGame.Coordinate{X:xCenter+x, Y: yCenter+y})
-		coordinates = append(coordinates, initGame.Coordinate{X:xCenter+x, Y: yCenter-y})
-		coordinates = append(coordinates, initGame.Coordinate{X:xCenter-x, Y: yCenter+y})
-		coordinates = append(coordinates, initGame.Coordinate{X:xCenter-x, Y: yCenter-y})
+		coordinates = append(coordinates, objects.Coordinate{X:xCenter+x, Y: yCenter+y})
+		coordinates = append(coordinates, objects.Coordinate{X:xCenter+x, Y: yCenter-y})
+		coordinates = append(coordinates, objects.Coordinate{X:xCenter-x, Y: yCenter+y})
+		coordinates = append(coordinates, objects.Coordinate{X:xCenter-x, Y: yCenter-y})
 	} else {
-		coordinates = append(coordinates, initGame.Coordinate{X:yCenter+y, Y: xCenter+x})
-		coordinates = append(coordinates, initGame.Coordinate{X:yCenter-y, Y: xCenter+x})
-		coordinates = append(coordinates, initGame.Coordinate{X:yCenter+y, Y: xCenter-x})
-		coordinates = append(coordinates, initGame.Coordinate{X:yCenter-y, Y: xCenter-x})
+		coordinates = append(coordinates, objects.Coordinate{X:yCenter+y, Y: xCenter+x})
+		coordinates = append(coordinates, objects.Coordinate{X:yCenter-y, Y: xCenter+x})
+		coordinates = append(coordinates, objects.Coordinate{X:yCenter+y, Y: xCenter-x})
+		coordinates = append(coordinates, objects.Coordinate{X:yCenter-y, Y: xCenter-x})
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"sessions-master"
 	"encoding/gob"
-	"../DB_info"
+	"../lobby"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -30,7 +30,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		var userName string = r.Form.Get("username")
 		var password string = r.Form.Get("password")
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
-		user := DB_info.GetUsers("WHERE name='" + userName + "' AND password='" + password + "'")
+		user := lobby.GetUsers("WHERE name='" + userName + "' AND password='" + password + "'")
 
 		if user.Id != 0 && user.Name != "" {
 			//отправляет пользователя на получение токена подключения
@@ -41,7 +41,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetCookie(w http.ResponseWriter, r *http.Request, user DB_info.User) {
+func GetCookie(w http.ResponseWriter, r *http.Request, user lobby.User) {
 	// берет сеанс из браузера пользователя
 	ses, err := cookieStore.Get(r, cookieName)
 	// если есть куки подписаные не правильным ключем то вылетает ошибка

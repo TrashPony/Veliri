@@ -1,4 +1,4 @@
-package webSocket
+package lobby
 
 
 type LobbyMessage struct {

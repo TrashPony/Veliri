@@ -1,4 +1,4 @@
-package initGame
+package objects
 
 import (
 	"database/sql"

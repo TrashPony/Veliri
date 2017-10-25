@@ -6,6 +6,8 @@ import (
 	"log"
 	"./auth"
 	"./webSocket"
+	"./webSocket/lobby"
+	"./webSocket/field"
 )
 
 func main() {
@@ -14,8 +16,8 @@ func main() {
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
-	go webSocket.LobbyReposeSender()// запускается гарутина для рассылки сообщений, гуглить гарутины
-	go webSocket.FieldReposeSender()
+	go lobby.LobbyReposeSender()// запускается гарутина для рассылки сообщений, гуглить гарутины
+	go field.FieldReposeSender()
 	log.Println("http server started on :8080")
 	http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 }

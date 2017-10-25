@@ -1,4 +1,4 @@
-package game
+package mechanics
 
 func FindPath()  {
 	//TODO:
