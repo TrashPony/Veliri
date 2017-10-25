@@ -25,14 +25,13 @@ function ConnectField() {
 
 }
 
-/////////////////////////////////////////////////////////////////////CREATE UNIT/////////////////////////////////////////////////////////////////////
 function createUnit(type) {
     typeUnit = type;
     sock.send(JSON.stringify({
         event: "SelectCoordinateCreate"
     }));
 }
-/////////////////////////////////////////////////////////////////////
+
 function reply_click(clicked_id) {
     var xy = clicked_id.split(":");
 
@@ -73,10 +72,15 @@ function mouse_over(unit_id) {
     var x = xy[0];
     var y = xy[1];
 
-    sendMouseOver(x, y);
+    sock.send(JSON.stringify({
+        event: "MouseOver",
+        id_game: idGame,
+        x: x,
+        y: y
+    }));
 }
 
-function mouse_out(unit_id) {
+function mouse_out() {
     unitInfo = document.getElementById("unitInfo");
     unitInfo.innerHTML = "";
 }
@@ -100,38 +104,4 @@ function sendReady(){
         event: "Ready",
         id_game: idGame
     }));
-}
-
-function sendMouseOver(x, y){
-    sock.send(JSON.stringify({
-        event: "MouseOver",
-        id_game: idGame,
-        x: x,
-        y: y
-    }));
-}
-
-
-function sendMoveEvent(x,y) {
-    stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "MoveUnit",
-                                                         'userName': "Tost",
-                                                           'idUnit': 999,
-                                                                'x': x,
-                                                                'y': y
-                                                            }));
-}
-
-function sendTargetEvent(x,y) {
-    stompClient.send("/app/ControllerLobby", {}, JSON.stringify({'event': "targetUnit",
-                                                         'userName': "Tost",
-                                                           'idUnit': 999,
-                                                         'idTarget': 888,
-                                                                'x': x,
-                                                                'y': y
-                                                            }));
-}
-
-function sleepFor( sleepDuration ){
-    var now = new Date().getTime();
-    while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
 }

@@ -1,8 +1,6 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
     var price;
-    var step;
-    var clicked_id;
     var cell;
     var log;
     var ready;
@@ -13,20 +11,7 @@ function ReadResponse(jsonMessage) {
     var userOwned;
 
     if (event === "InitPlayer") {
-        price = document.getElementsByClassName('fieldInfo price');
-        price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
-        step = document.getElementsByClassName('fieldInfo step');
-        step[0].innerHTML = "Ход № " + JSON.parse(jsonMessage).game_step;
-        phase = document.getElementsByClassName('fieldInfo phase');
-        phase[0].innerHTML = "Фаза: " + JSON.parse(jsonMessage).game_phase;
-
-        if (JSON.parse(jsonMessage).user_ready === "true") {
-            ready = document.getElementById("Ready");
-            ready.innerHTML = "Ты готов!";
-            ready.style.backgroundColor = "#e1720f"
-        }
-
-        this.phase = JSON.parse(jsonMessage).game_phase;
+        InitPlayer(jsonMessage);
     }
 
     if (event === "InitMap") {
@@ -34,39 +19,15 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
-        x = JSON.parse(jsonMessage).x;
-        y = JSON.parse(jsonMessage).y;
-        var type = JSON.parse(jsonMessage).type_unit;
-        var hp = JSON.parse(jsonMessage).hp;
-        var action = JSON.parse(jsonMessage).unit_action;
-        userOwned = JSON.parse(jsonMessage).user_owned;
-
-        clicked_id = x + ":" + y;
-        cell = document.getElementById(clicked_id);
-        if (type === "tank") cell.className = "fieldUnit tank";
-        if (type === "scout") cell.className = "fieldUnit scout";
-        if (type === "artillery") cell.className = "fieldUnit artillery";
-        cell.onclick = function () {
-            SelectUnit(this.id)
-        };
-        cell.innerHTML = "hp: " + hp;
-
-        if (JSON.parse(jsonMessage).user_name === userOwned) {
-            cell.style.color = "#fbfdff";
-            cell.style.borderColor = "#fbfdff";
-        } else {
-            cell.style.color = "#FF0117";
-            cell.style.borderColor = "#FF0117";
-        }
+        InitUnit(jsonMessage);
     }
 
     if (event === "InitResp") {
-        x = JSON.parse(jsonMessage).respawn_x;
-        y = JSON.parse(jsonMessage).respawn_y;
-        coor_id = x + ":" + y;
-        cell = document.getElementById(coor_id);
-        cell.className = "fieldUnit respawn";
-        cell.innerHTML = "Resp: " + JSON.parse(jsonMessage).user_name;
+        InitResp(jsonMessage);
+    }
+
+    if (event === "CreateUnit") {
+        CreateUnit(jsonMessage);
     }
 
     if (event === "emptyCoordinate") {
@@ -89,54 +50,6 @@ function ReadResponse(jsonMessage) {
         }
     }
 
-    if (event === "CreateUnit") {
-        if (JSON.parse(jsonMessage).error_type === "") {
-            userOwned = JSON.parse(jsonMessage).user_owned;
-            x = JSON.parse(jsonMessage).x;
-            y = JSON.parse(jsonMessage).y;
-
-            coor_id = x + ":" + y;
-            cell = document.getElementById(coor_id);
-            cell.onclick = function () {
-                SelectUnit(this.id)
-            };
-            if (typeUnit === "tank") cell.className = "fieldUnit tank";
-            if (typeUnit === "scout") cell.className = "fieldUnit scout";
-            if (typeUnit === "artillery") cell.className = "fieldUnit artillery";
-            price = document.getElementsByClassName('fieldInfo price');
-            price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
-
-            if (JSON.parse(jsonMessage).user_name === userOwned) {
-                cell.style.color = "#fbfdff";
-                cell.style.borderColor = "#fbfdff";
-            } else {
-                cell.style.color = "#FF0117";
-                cell.style.borderColor = "#FF0117";
-            }
-
-        } else {
-            var celles = document.getElementsByClassName("fieldUnit create");
-            while (0 < celles.length) {
-                if (celles[0]) {
-                    celles[0].className = "fieldUnit open";
-                }
-            }
-            if (JSON.parse(jsonMessage).error_type === "busy") {
-                log = document.getElementById('fieldLog');
-                log.innerHTML = "Место занято"
-            }
-
-            if (JSON.parse(jsonMessage).error_type === "no many") {
-                log = document.getElementById('fieldLog');
-                log.innerHTML = "Нет денег"
-            }
-            if (JSON.parse(jsonMessage).error_type === "not allow") {
-                log = document.getElementById('fieldLog');
-                log.innerHTML = "Не разрешено"
-            }
-        }
-        typeUnit = null;
-    }
     if (event === "MouseOver") {
         info = document.getElementById('unitInfo');
         info.innerHTML = "Тип Юнита: " + JSON.parse(jsonMessage).type_unit + "<br>" +
