@@ -54,6 +54,12 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 		if msg.Event == "MoveUnit" {
 			MoveUnit(msg, ws)
 		}
+		if msg.Event == "getPermittedCoordinates" {
+			//TODO хранить координаты и открытые обьекты внутри юнитов что бы не высчитывать каждый раз их заного
+			for _, unit := range usersFieldWs[ws].Units {
+				sendPermissionCoordinates(msg.IdGame, ws, unit)
+			}
+		}
 	}
 }
 

@@ -114,12 +114,19 @@ function ReadResponse(jsonMessage) {
 
     if (event === "MoveUnit") {
         move = null;
+
         var moveCells = document.getElementsByClassName("fieldUnit move");
+
         while (0 < moveCells.length) {
             if (moveCells[0]) {
-                moveCells[0].className = "fieldUnit open"; // TODO: ставить реальные статусы ячеек
+                moveCells[0].className = "fieldUnit"; // TODO: ставить реальные статусы ячеек
             }
         }
+
+        sock.send(JSON.stringify({
+            event: "getPermittedCoordinates",
+            id_game: idGame
+        }));
 
         error = JSON.parse(jsonMessage).error;
         if (error === "") {
@@ -127,6 +134,5 @@ function ReadResponse(jsonMessage) {
         } else {
 
         }
-
     }
 }

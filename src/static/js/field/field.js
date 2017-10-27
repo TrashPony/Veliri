@@ -99,7 +99,7 @@ function SelectUnit(id) {
     }));
 }
 
-function sendReady(){
+function Ready(){
     sock.send(JSON.stringify({
         event: "Ready",
         id_game: idGame
