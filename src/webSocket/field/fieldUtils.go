@@ -6,6 +6,7 @@ import (
 	"../../game/mechanics"
 	"../../game/objects"
 	"strconv"
+	"errors"
 )
 
 func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients)  {
@@ -36,8 +37,9 @@ func subtraction(slice1 []objects.Coordinate, slice2 []objects.Coordinate) []obj
 	return ab
 }
 
-func sendPermissionCoordinates(idGame string, ws *websocket.Conn, unit objects.Unit) ([]objects.Coordinate) {
+func sendPermissionCoordinates(idGame string, ws *websocket.Conn, unit objects.Unit) ([]objects.Coordinate, map[objects.Coordinate]objects.Unit, error) {
 	units := objects.GetAllUnits(idGame)
+	unitsCoordinate := make(map[objects.Coordinate]objects.Unit)
 	var allCoordinate []objects.Coordinate
 	login := usersFieldWs[ws].Login
 	respawn := usersFieldWs[ws].Respawn
@@ -45,19 +47,49 @@ func sendPermissionCoordinates(idGame string, ws *websocket.Conn, unit objects.U
 	if login == unit.NameUser {
 		PermissCoordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.WatchZone)
 		for i := 0; i < len(PermissCoordinates); i++ {
-			allCoordinate = append(allCoordinate, PermissCoordinates[i])
 			if !(PermissCoordinates[i].X == respawn.X && PermissCoordinates[i].Y == respawn.Y) {
-				var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: login, X: strconv.Itoa(PermissCoordinates[i].X), Y: strconv.Itoa(PermissCoordinates[i].Y)}
-				fieldPipe <- emptyCoordinates
+				allCoordinate = append(allCoordinate, PermissCoordinates[i])
 			}
 			for j := 0; j < len(units); j++ {
 				if (PermissCoordinates[i].X == units[j].X) && (PermissCoordinates[i].Y == units[j].Y) {
-					var unitsParametr = FieldResponse{Event: "InitUnit", UserName: login, TypeUnit: units[j].NameType, UserOwned: units[j].NameUser,
-						HP: strconv.Itoa(units[j].Hp), UnitAction: strconv.FormatBool(units[j].Action), Target: strconv.Itoa(units[j].Target), X: strconv.Itoa(units[j].X), Y: strconv.Itoa(units[j].Y)}
-					fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+					unitsCoordinate[objects.Coordinate{ X: units[j].X, Y: units[j].Y}] = units[j]
 				}
 			}
 		}
+	} else {
+		return allCoordinate, unitsCoordinate, errors.New("no owned")
 	}
-	return allCoordinate
+	return allCoordinate, unitsCoordinate, nil
+}
+
+func findUnit(msg FieldMessage, ws *websocket.Conn) (*objects.Unit, bool) {
+	units := usersFieldWs[ws].Units
+	var findUnit objects.Unit
+	for _, unit := range units {
+		//hostileUnit := unit.WatchUnit
+		if msg.X == strconv.Itoa(unit.X) && msg.Y == strconv.Itoa(unit.Y) {
+			return &unit, true
+			break
+		}
+		/*for _, hostile := range hostileUnit {
+			if msg.X == strconv.Itoa(hostile.X) && msg.Y == strconv.Itoa(hostile.Y) {
+				return &hostile, true // TODO: если раскоментировать то юниты теряют все внутрение свойства :\
+				break
+			}
+		}*/
+	}
+
+	return &findUnit, false
+}
+
+func SendWatchCoordinate(ws *websocket.Conn, unit objects.Unit){
+	for _, coordinate := range unit.Watch{
+		var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: strconv.Itoa(coordinate.X), Y: strconv.Itoa(coordinate.Y)}
+		fieldPipe <- emptyCoordinates
+	}
+	for _, unit := range unit.WatchUnit {
+		var unitsParametr = FieldResponse{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+			HP: strconv.Itoa(unit.Hp), UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: strconv.Itoa(unit.X), Y: strconv.Itoa(unit.Y)}
+		fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+	}
 }

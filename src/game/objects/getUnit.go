@@ -78,12 +78,13 @@ func GetUnitType(nameType string) (UnitType) {
 	return unitType
 }
 
-func GetUnitsCoordinate(units []Unit)([]Coordinate)  {
+func GetUnitsCoordinate(units map[Coordinate]Unit)([]Coordinate)  {
+
 	var coordinates []Coordinate
-	for i := 0; i < len(units); i++ {
+	for _ , unit := range units {
 		var coordinate Coordinate
-		coordinate.X = units[i].X
-		coordinate.Y = units[i].Y
+		coordinate.X = unit.X
+		coordinate.Y = unit.Y
 		coordinates = append(coordinates, coordinate)
 	}
 	return coordinates

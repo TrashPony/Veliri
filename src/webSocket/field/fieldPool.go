@@ -55,9 +55,9 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 			MoveUnit(msg, ws)
 		}
 		if msg.Event == "getPermittedCoordinates" {
-			//TODO хранить координаты и открытые обьекты внутри юнитов что бы не высчитывать каждый раз их заного
+
 			for _, unit := range usersFieldWs[ws].Units {
-				sendPermissionCoordinates(msg.IdGame, ws, unit)
+				SendWatchCoordinate(ws, unit)
 			}
 		}
 	}
@@ -82,8 +82,9 @@ func FieldReposeSender() {
 type Clients struct { // структура описывающая клиента ws соеденение
 	Login string
 	Id int
-	PermittedCoordinates []objects.Coordinate
-	Units []objects.Unit
+	Units map[objects.Coordinate]objects.Unit
+	//HostileUnit []objects.Unit
+	Map objects.Map
 	Respawn objects.Respawn
 	CreateZone []objects.Coordinate
 	GameStat objects.Game

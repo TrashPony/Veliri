@@ -1,7 +1,6 @@
 package mechanics
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
-	"log"
 	"math"
 	"strconv"
 	"../objects"
@@ -29,7 +28,7 @@ type Point struct {
 
 type Points map[string]Point
 
-func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles []objects.Coordinate)  {
+func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles []objects.Coordinate)([]objects.Coordinate)  {
 
 	START_POINT = Point{x: start.X, y: start.Y, state:START} // начальная точка
 	END_POINT = Point{x: end.X, y: end.Y, state:END} 		  // конечная точка
@@ -56,27 +55,22 @@ func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordin
 	for _, o := range obstacles {							  // ставим препятсвиям статус в точке Блокировано
 		matrix[o.X][o.Y].state = BLOCKED
 	}
-
+	var path []objects.Coordinate
 	for {
 		current := *MinF(openPoints)                          // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) {                         // если текущая точка и есть конец начинаем генерить путь
-			log.Println("Path is found")
-
-			log.Print("Points in path: ")
 			for !current.Equal(START_POINT) {				  // если текущая точка не стартовая точка то цикл крутиться путь мутиться
 				current = *current.parent					  // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT){				  // если текущая точка попрежнему не стартовая то
 					matrix[current.x][current.y].state = PATH // помечаем ее как часть пути
-					log.Print(matrix[current.x][current.y], " ")
+					path = append(path, objects.Coordinate{X:matrix[current.x][current.y].x, Y:matrix[current.x][current.y].y})
 				}
 			}
 			break
 		}
 		parseNeighbours(current, &matrix, &openPoints, &closePoints)
 	}
-
-	log.Println("Exited!")
-	//end
+	return path
 }
 
 func parseNeighbours(curr Point, m *[][]Point, open, close *Points) {
@@ -115,7 +109,7 @@ func GetH(a, b Point) int {                   // эвристическое пр
 
 func (current Point) GetG(target Point) int { // наименьшая стоимость пути в End из стартовой вершины
 	if target.x != current.x &&               // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
-		target.y != current.y {
+		target.y != current.y {				  // можно реализовывать стоимость пути по различной поверхности
 		return current.G + 14
 	}
 

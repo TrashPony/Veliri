@@ -20,6 +20,7 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 		}
 	}
 	mp := objects.GetMap(gameStat.IdMap)
+	usersFieldWs[ws].Map = mp
 	var mapParam= FieldResponse{Event: "InitMap", UserName: usersFieldWs[ws].Login, NameMap: mp.Name, TypeMap: mp.Type, XMap: strconv.Itoa(mp.Xsize), YMap: strconv.Itoa(mp.Ysize)}
 	fieldPipe <- mapParam // отправляем параметры карты
 
@@ -30,9 +31,8 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 
 	for i := 0; i < len(permitCoordinates); i++ {
 		if  !(permitCoordinates[i].X == respawn.X && permitCoordinates[i].Y == respawn.Y) {
-			usersFieldWs[ws].PermittedCoordinates = append(usersFieldWs[ws].PermittedCoordinates, permitCoordinates[i])
 			usersFieldWs[ws].CreateZone = append(usersFieldWs[ws].CreateZone, permitCoordinates[i])
-			var emptyCoordinates= FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: strconv.Itoa(permitCoordinates[i].X), Y: strconv.Itoa(permitCoordinates[i].Y)}
+			var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: strconv.Itoa(permitCoordinates[i].X), Y: strconv.Itoa(permitCoordinates[i].Y)}
 			fieldPipe <- emptyCoordinates
 		}
 	}
@@ -42,11 +42,15 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 	fieldPipe <- respawnParametr
 
 	units := objects.GetAllUnits(msg.IdGame)
+	usersFieldWs[ws].Units = make(map[objects.Coordinate]objects.Unit)
 	for i := 0; i < len(units); i++ {
-		unitPermissCoordinate := sendPermissionCoordinates(msg.IdGame, ws, units[i])
-		usersFieldWs[ws].Units = append(usersFieldWs[ws].Units, units[i])
-		for j := 0; j < len(unitPermissCoordinate); j++ {
-			usersFieldWs[ws].PermittedCoordinates = append(usersFieldWs[ws].PermittedCoordinates, unitPermissCoordinate[j])
+		var err error
+		units[i].Watch, units[i].WatchUnit, err = sendPermissionCoordinates(msg.IdGame, ws, units[i])
+		if err != nil {
+			continue
 		}
+		coor := objects.Coordinate{X:units[i].X, Y:units[i].Y}
+		usersFieldWs[ws].Units[coor] = units[i]
+		SendWatchCoordinate(ws, units[i])
 	}
 }

@@ -8,24 +8,16 @@ import (
 )
 
 func SelectUnit(msg FieldMessage, ws *websocket.Conn)  {
-	units := usersFieldWs[ws].Units
 	var resp FieldResponse
-	var owned = false
-	var unit objects.Unit
-	for i := 0; i < len(units); i++ {
-		if msg.X == strconv.Itoa(units[i].X) && msg.Y == strconv.Itoa(units[i].Y) {
-			owned = true
-			unit = units[i]
-			break
-		}
-	}
 
-	if owned {
+	unit, find := findUnit(msg, ws)
+
+	if find {
 		respawn := usersFieldWs[ws].Respawn
 
 		if usersFieldWs[ws].GameStat.Phase == "move" {
 			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-			unitsCoordinate := objects.GetUnitsCoordinate(units)
+			unitsCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].Units)
 			responseCoordinate := subtraction(coordinates, unitsCoordinate)
 
 			for i := 0; i < len(responseCoordinate); i++ {

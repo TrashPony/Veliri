@@ -22,6 +22,8 @@ type Unit struct {
 	Init int
 	RangeAttack int
 	WatchZone int
+	Watch []Coordinate
+	WatchUnit map[Coordinate]Unit
 	AreaAttack int
 	TypeAttack string
 	Price int
