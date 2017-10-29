@@ -79,7 +79,7 @@ func GetUnitType(nameType string) (UnitType) {
 	return unitType
 }
 
-func GetUnitsCoordinate(units map[*Coordinate]*Unit)([]Coordinate)  {
+func GetUnitsCoordinate(units map[string]*Unit)([]Coordinate)  {
 
 	var coordinates []Coordinate
 	for _ , unit := range units {

@@ -89,7 +89,7 @@ func FieldReposeSender() {
 type Clients struct { // структура описывающая клиента ws соеденение
 	Login string
 	Id int
-	Units map[*objects.Coordinate]*objects.Unit
+	Units map[string]*objects.Unit // KEY format X:Y
 	//HostileUnit []objects.Unit
 	Map objects.Map
 	Respawn objects.Respawn

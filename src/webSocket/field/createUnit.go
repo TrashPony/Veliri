@@ -4,7 +4,6 @@ import (
 	"websocket-master"
 	"strconv"
 	"../../game/mechanics"
-	"../../game/objects"
 )
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
@@ -41,7 +40,7 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
 					fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
 				}
 
-				usersFieldWs[ws].Units[&objects.Coordinate{X: unit.X, Y:unit.Y}] = unit
+				usersFieldWs[ws].Units[strconv.Itoa(unit.X) +":" + strconv.Itoa(unit.Y)] = unit
 			} else {
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
 				fieldPipe <- resp

@@ -37,9 +37,9 @@ func subtraction(slice1 []objects.Coordinate, slice2 []objects.Coordinate) []obj
 	return ab
 }
 
-func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Unit) ([]objects.Coordinate, map[*objects.Coordinate]*objects.Unit, error) {
+func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Unit) ([]objects.Coordinate, map[string]*objects.Unit, error) {
 	units := objects.GetAllUnits(idGame)
-	unitsCoordinate := make(map[*objects.Coordinate]*objects.Unit)
+	unitsCoordinate := make(map[string]*objects.Unit)
 	var allCoordinate []objects.Coordinate
 	login := usersFieldWs[ws].Login
 	respawn := usersFieldWs[ws].Respawn
@@ -52,7 +52,7 @@ func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Uni
 			}
 			for j := 0; j < len(units); j++ {
 				if (PermissCoordinates[i].X == units[j].X) && (PermissCoordinates[i].Y == units[j].Y) {
-					unitsCoordinate[&objects.Coordinate{ X: units[j].X, Y: units[j].Y}] = &units[j]
+					unitsCoordinate[strconv.Itoa(units[j].X) + ":" + strconv.Itoa(units[j].Y)] = &units[j]
 				}
 			}
 		}
