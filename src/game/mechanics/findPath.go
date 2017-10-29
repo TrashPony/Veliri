@@ -56,6 +56,7 @@ func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordin
 		matrix[o.X][o.Y].state = BLOCKED
 	}
 	var path []objects.Coordinate
+	var noSortedPath []objects.Coordinate
 	for {
 		current := *MinF(openPoints)                          // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) {                         // если текущая точка и есть конец начинаем генерить путь
@@ -63,13 +64,19 @@ func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordin
 				current = *current.parent					  // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT){				  // если текущая точка попрежнему не стартовая то
 					matrix[current.x][current.y].state = PATH // помечаем ее как часть пути
-					path = append(path, objects.Coordinate{X:matrix[current.x][current.y].x, Y:matrix[current.x][current.y].y})
+					noSortedPath = append(noSortedPath, objects.Coordinate{X:matrix[current.x][current.y].x, Y:matrix[current.x][current.y].y})
 				}
 			}
 			break
 		}
 		parseNeighbours(current, &matrix, &openPoints, &closePoints)
 	}
+
+	for i := len(noSortedPath); i > 0; i--{
+		path = append(path, noSortedPath[i-1])
+	}
+
+	path = append(path, end)
 	return path
 }
 

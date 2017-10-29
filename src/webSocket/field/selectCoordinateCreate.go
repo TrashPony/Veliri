@@ -2,7 +2,6 @@ package field
 
 import (
 	"websocket-master"
-	"strconv"
 	"../../game/objects"
 )
 
@@ -15,7 +14,7 @@ func SelectCoordinateCreate(ws *websocket.Conn)  {
 
 	for i := 0; i < len(responseCoordinate); i++ {
 		if !(responseCoordinate[i].X == respawn.X && responseCoordinate[i].Y == respawn.Y) {
-			var createCoordinates= FieldResponse{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].Login, X: strconv.Itoa(responseCoordinate[i].X), Y: strconv.Itoa(responseCoordinate[i].Y)}
+			var createCoordinates= FieldResponse{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].Login, X: responseCoordinate[i].X, Y: responseCoordinate[i].Y}
 			fieldPipe <- createCoordinates
 		}
 	}

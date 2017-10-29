@@ -23,7 +23,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn)  {
 			for i := 0; i < len(responseCoordinate); i++ {
 				if !(responseCoordinate[i].X == respawn.X && responseCoordinate[i].Y == respawn.Y) {
 					var createCoordinates= FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
-						X: strconv.Itoa(responseCoordinate[i].X), Y: strconv.Itoa(responseCoordinate[i].Y)}
+						X: responseCoordinate[i].X, Y: responseCoordinate[i].Y}
 					fieldPipe <- createCoordinates
 				}
 			}

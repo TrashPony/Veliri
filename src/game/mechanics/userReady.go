@@ -4,7 +4,7 @@ import (
 	"database/sql"
 )
 
-func UserReady(idUser int, idGame string) (string, error, bool)  {
+func UserReady(idUser int, idGame int) (string, error, bool)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		return "", err, false

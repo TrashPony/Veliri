@@ -23,7 +23,7 @@ type Unit struct {
 	RangeAttack int
 	WatchZone int
 	Watch []Coordinate
-	WatchUnit map[Coordinate]Unit
+	WatchUnit map[*Coordinate]*Unit
 	AreaAttack int
 	TypeAttack string
 	Price int

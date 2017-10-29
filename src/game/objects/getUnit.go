@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"errors"
+	"strconv"
 )
 
 func GetUnit(query string) ([]Unit)  {
@@ -37,13 +38,13 @@ func GetUnit(query string) ([]Unit)  {
 	return units
 }
 
-func GetAllUnits(idGame string)([]Unit)  {
-	units := GetUnit(" ag.id_game=" + idGame + " AND ag.id_type=t.id AND ag.id_user=u.id")
+func GetAllUnits(idGame int)([]Unit)  {
+	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id")
 	return units
 }
 
-func GetXYUnits(idGame string, x string, y string)(Unit, error)  {
-	units := GetUnit(" ag.id_game=" + idGame + " AND ag.id_type=t.id AND ag.id_user=u.id AND ag.x=" + x + "AND ag.y=" + y)
+func GetXYUnits(idGame int, x int, y int)(Unit, error)  {
+	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id AND ag.x=" + strconv.Itoa(x) + "AND ag.y=" + strconv.Itoa(y))
 	if len(units) > 0 {
 		return units[0], nil
 	} else {
@@ -78,7 +79,7 @@ func GetUnitType(nameType string) (UnitType) {
 	return unitType
 }
 
-func GetUnitsCoordinate(units map[Coordinate]Unit)([]Coordinate)  {
+func GetUnitsCoordinate(units map[*Coordinate]*Unit)([]Coordinate)  {
 
 	var coordinates []Coordinate
 	for _ , unit := range units {

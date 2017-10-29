@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func GetUserStat(idGame string) ([]UserStat)  {
+func GetUserStat(idGame int) ([]UserStat)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)

@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func GetRespawns(idUser int, idGame string)(Respawn)  {
+func GetRespawns(idUser int, idGame int)(Respawn)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)

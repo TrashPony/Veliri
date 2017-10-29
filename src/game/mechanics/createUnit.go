@@ -5,9 +5,10 @@ import (
 	"log"
 	"../objects"
 	"errors"
+	"strconv"
 )
 
-func CreateUnit(idGame string, idPlayer string, unitType string, x string, y string)(objects.Unit, int, error) {
+func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(*objects.Unit, int, error) {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 
 	if err != nil {
@@ -27,19 +28,19 @@ func CreateUnit(idGame string, idPlayer string, unitType string, x string, y str
 			}
 			unit, errFound := objects.GetXYUnits(idGame, x, y)
 			if errFound != nil {
-				return unit, 0, errFound
+				return &unit, 0, errFound
 			}
-			return unit, price, nil
+			return &unit, price, nil
 		} else {
-			return unit, 0, errors.New("no many")
+			return &unit, 0, errors.New("no many")
 		}
 	} else {
-		return unit, 0, errors.New("busy")
+		return &unit, 0, errors.New("busy")
 	}
-	return unit, 0, errors.New("unknown error")
+	return &unit, 0, errors.New("unknown error")
 }
 
-func Price(cost int, idGame string, idPlayer string) (bool, int) {
+func Price(cost int, idGame int, idPlayer string) (bool, int) {
 	var price int
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
@@ -47,7 +48,7 @@ func Price(cost int, idGame string, idPlayer string) (bool, int) {
 		log.Fatal(err)
 	}
 
-	rows, err := db.Query("Select price FROM action_game_user WHERE id_game=" + idGame + " AND id_user=" + idPlayer)
+	rows, err := db.Query("Select price FROM action_game_user WHERE id_game=" + strconv.Itoa(idGame) + " AND id_user=" + idPlayer)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +74,7 @@ func Price(cost int, idGame string, idPlayer string) (bool, int) {
 	return false, 0
 }
 
-func CheckPlace(idGame string, x string, y string)(bool)  {
+func CheckPlace(idGame int, x int, y int)(bool)  {
 	var id int
 
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд

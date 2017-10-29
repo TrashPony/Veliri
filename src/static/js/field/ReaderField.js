@@ -119,20 +119,71 @@ function ReadResponse(jsonMessage) {
 
         while (0 < moveCells.length) {
             if (moveCells[0]) {
-                moveCells[0].className = "fieldUnit"; // TODO: ставить реальные статусы ячеек
+                moveCells[0].className = "fieldUnit";
             }
         }
-
-        sock.send(JSON.stringify({
-            event: "getPermittedCoordinates",
-            id_game: idGame
-        }));
+        console.log("message: " + jsonMessage);
 
         error = JSON.parse(jsonMessage).error;
         if (error === "") {
-                                // TODO копировать ячейку в новую координату, а старую закрыть
+            x = JSON.parse(jsonMessage).x;
+            y = JSON.parse(jsonMessage).y;
+            var toX = JSON.parse(jsonMessage).to_x;
+            var toY = JSON.parse(jsonMessage).to_y;
+            var type = JSON.parse(jsonMessage).type_unit;
+            Move(x,y,toX,toY, type)             // TODO копировать ячейку в новую координату, а старую закрыть
         } else {
 
+        }
+    }
+}
+
+function Move(x,y,toX,toY,type) {
+    var newCoor_id = toX + ":" + toY;
+    var newCell = document.getElementById(newCoor_id);
+    newCell.onclick = function () {
+        SelectUnit(this.id)
+    };
+    if (type === "tank") newCell.className = "fieldUnit tank";
+    if (type === "scout") newCell.className = "fieldUnit scout";
+    if (type === "artillery") newCell.className = "fieldUnit artillery";
+
+    var oldCoor_id = x + ":" + y;
+    var oldCell = document.getElementById(oldCoor_id);
+    oldCell.onclick = function () {
+        reply_click(this.id);
+    };
+    oldCell.innerHTML = oldCoor_id;
+    oldCell.className = "fieldUnit";
+    oldCell.style.borderColor = "#404040";
+
+    var moveCells = document.getElementsByClassName("fieldUnit open");
+    while (0 < moveCells.length) {
+        if (moveCells[0]) {
+            moveCells[0].className = "fieldUnit";
+        }
+    }
+
+    DellUnit("fieldUnit open");
+    DellUnit("fieldUnit tank");
+    DellUnit("fieldUnit scout");
+    DellUnit("fieldUnit artillery");
+
+    sock.send(JSON.stringify({
+        event: "getPermittedCoordinates",
+        id_game: Number(idGame)
+    }));
+}
+
+function DellUnit(unit) {
+    var moveCells = document.getElementsByClassName(unit);
+    while (0 < moveCells.length) {
+        if (moveCells[0]) {
+            var id = moveCells[0].id;
+            var Cell = document.getElementById(id);
+            Cell.innerHTML = ""+id;
+            Cell.className = "fieldUnit";
+            Cell.style = null;
         }
     }
 }

@@ -44,10 +44,10 @@ function reply_click(clicked_id) {
         var unit_y = unit[1];
         sock.send(JSON.stringify({
             event: "MoveUnit",
-            x: unit_x,
-            y: unit_y,
-            to_x: x,
-            to_y: y
+            x: Number(unit_x),
+            y: Number(unit_y),
+            to_x: Number(x),
+            to_y: Number(y)
         }));
     } else {
         move = false;
@@ -57,9 +57,9 @@ function reply_click(clicked_id) {
         sock.send(JSON.stringify({
             event: "CreateUnit",
             type_unit: typeUnit,
-            id_game: idGame,
-            x: x,
-            y: y
+            id_game: Number(idGame),
+            x: Number(x),
+            y: Number(y)
         }));
     } else {
         typeUnit = null;
@@ -74,9 +74,9 @@ function mouse_over(unit_id) {
 
     sock.send(JSON.stringify({
         event: "MouseOver",
-        id_game: idGame,
-        x: x,
-        y: y
+        id_game: Number(idGame),
+        x: Number(x),
+        y: Number(y)
     }));
 }
 
@@ -94,14 +94,14 @@ function SelectUnit(id) {
     }
     sock.send(JSON.stringify({
         event: "SelectUnit",
-        x: x,
-        y: y
+        x: Number(x),
+        y: Number(y)
     }));
 }
 
 function Ready(){
     sock.send(JSON.stringify({
         event: "Ready",
-        id_game: idGame
+        id_game: Number(idGame)
     }));
 }

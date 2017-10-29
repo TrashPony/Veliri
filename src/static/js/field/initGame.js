@@ -43,7 +43,7 @@ function Field(xSize,ySize) {
 function sendInitGame(idGame) {
     sock.send(JSON.stringify({
         event: "InitGame",
-        id_game: idGame
+        id_game: Number(idGame)
     }));
 }
 

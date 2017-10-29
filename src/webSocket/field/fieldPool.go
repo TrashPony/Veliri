@@ -31,34 +31,41 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 
 		if msg.Event == "InitGame" {
 			InitGame(msg, ws)
+			continue
 		}
 
 		if msg.Event == "SelectCoordinateCreate" {
 			SelectCoordinateCreate(ws)
+			continue
 		}
 
 		if msg.Event == "CreateUnit" {
 			CreateUnit(msg, ws)
+			continue
 		}
 
 		if msg.Event == "MouseOver" {
 			MouseOver(msg, ws)
+			continue
 		}
 
 		if msg.Event == "Ready" {
 			Ready(msg, ws)
+			continue
 		}
 		if msg.Event == "SelectUnit" {
 			SelectUnit(msg, ws)
+			continue
 		}
 		if msg.Event == "MoveUnit" {
 			MoveUnit(msg, ws)
+			continue
 		}
 		if msg.Event == "getPermittedCoordinates" {
-
 			for _, unit := range usersFieldWs[ws].Units {
 				SendWatchCoordinate(ws, unit)
 			}
+			continue
 		}
 	}
 }
@@ -82,7 +89,7 @@ func FieldReposeSender() {
 type Clients struct { // структура описывающая клиента ws соеденение
 	Login string
 	Id int
-	Units map[objects.Coordinate]objects.Unit
+	Units map[*objects.Coordinate]*objects.Unit
 	//HostileUnit []objects.Unit
 	Map objects.Map
 	Respawn objects.Respawn
