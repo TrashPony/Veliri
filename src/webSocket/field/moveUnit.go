@@ -4,9 +4,9 @@ import (
 	"websocket-master"
 	"../../game/objects"
 	"../../game/mechanics"
-	"time"
 	"strconv"
 	"errors"
+	"time"
 )
 
 func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
@@ -79,13 +79,17 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 
 		unit.X = toX
 		unit.Y = toY
-		unit.Watch, unit.WatchUnit, err = sendPermissionCoordinates(idGame, ws, unit)
 
 		for _, unitWatch := range usersFieldWs[ws].Units {
-			// TODO 1) Move: костыль, надо хранить в ватч юнит ссылки на юнитов что бы были все связаны
-			unitWatch.Watch, unitWatch.WatchUnit, err = sendPermissionCoordinates(idGame, ws, unitWatch)
+			// удаляем юнита со старого места и добавляем в новое у всех союзных юнитов
+			_, ok := unitWatch.WatchUnit[strconv.Itoa(x) + ":" + strconv.Itoa(y)]
+			if ok {
+				delete(unitWatch.WatchUnit, strconv.Itoa(x) + ":" + strconv.Itoa(y))
+			}
+			unitWatch.WatchUnit[strconv.Itoa(toX) + ":" + strconv.Itoa(toY)] = unit
 		}
-		// TODO 4) Move: если на последней клетке стоит вражеский юнит то надо встать на предыдущую
+
+		unit.Watch, unit.WatchUnit, err = sendPermissionCoordinates(idGame, ws, unit) //TODO очень медленная функция
 
 		if err != nil {
 			break
@@ -94,7 +98,6 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: x, Y: y, ToX: toX, ToY: toY}
 		fieldPipe <- resp
 		time.Sleep(100 * time.Millisecond)
-
 	}
 	return nil
 }

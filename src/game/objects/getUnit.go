@@ -79,14 +79,13 @@ func GetUnitType(nameType string) (UnitType) {
 	return unitType
 }
 
-func GetUnitsCoordinate(units map[string]*Unit)([]Coordinate)  {
-
-	var coordinates []Coordinate
+func GetUnitsCoordinate(units map[string]*Unit)([]*Coordinate)  {
+	coordinates := make([]*Coordinate,0)
 	for _ , unit := range units {
 		var coordinate Coordinate
 		coordinate.X = unit.X
 		coordinate.Y = unit.Y
-		coordinates = append(coordinates, coordinate)
+		coordinates = append(coordinates, &coordinate)
 	}
 	return coordinates
 }

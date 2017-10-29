@@ -19,6 +19,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
+        console.log("message: " + jsonMessage);
         InitUnit(jsonMessage);
     }
 
@@ -122,7 +123,6 @@ function ReadResponse(jsonMessage) {
                 moveCells[0].className = "fieldUnit";
             }
         }
-        console.log("message: " + jsonMessage);
 
         error = JSON.parse(jsonMessage).error;
         if (error === "") {

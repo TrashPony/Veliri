@@ -43,8 +43,10 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 
 	units := objects.GetAllUnits(msg.IdGame)
 	usersFieldWs[ws].Units = make(map[string]*objects.Unit)
+
 	for i := 0; i < len(units); i++ {
 		var err error
+
 		units[i].Watch, units[i].WatchUnit, err = sendPermissionCoordinates(msg.IdGame, ws, &units[i])
 		if err != nil {
 			continue

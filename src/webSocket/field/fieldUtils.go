@@ -23,24 +23,24 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func subtraction(slice1 []objects.Coordinate, slice2 []objects.Coordinate) []objects.Coordinate  {
+func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) []objects.Coordinate  {
 	mb := map[objects.Coordinate]bool{}
 	for _, x := range slice2 {
-		mb[x] = true
+		mb[*x] = true
 	}
 	ab := []objects.Coordinate{}
 	for _, x := range slice1 {
-		if _, ok := mb[x]; !ok {
-			ab = append(ab, x)
+		if _, ok := mb[*x]; !ok {
+			ab = append(ab, *x)
 		}
 	}
 	return ab
 }
 
-func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Unit) ([]objects.Coordinate, map[string]*objects.Unit, error) {
+func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Unit) ( map[string]*objects.Coordinate, map[string]*objects.Unit, error) {
 	units := objects.GetAllUnits(idGame)
 	unitsCoordinate := make(map[string]*objects.Unit)
-	var allCoordinate []objects.Coordinate
+	allCoordinate :=  make(map[string]*objects.Coordinate)
 	login := usersFieldWs[ws].Login
 	respawn := usersFieldWs[ws].Respawn
 
@@ -48,7 +48,7 @@ func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Uni
 		PermissCoordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.WatchZone)
 		for i := 0; i < len(PermissCoordinates); i++ {
 			if !(PermissCoordinates[i].X == respawn.X && PermissCoordinates[i].Y == respawn.Y) {
-				allCoordinate = append(allCoordinate, PermissCoordinates[i])
+				allCoordinate[strconv.Itoa(PermissCoordinates[i].X) + ":" + strconv.Itoa(PermissCoordinates[i].Y)] = PermissCoordinates[i]
 			}
 			for j := 0; j < len(units); j++ {
 				if (PermissCoordinates[i].X == units[j].X) && (PermissCoordinates[i].Y == units[j].Y) {
@@ -81,10 +81,11 @@ func findUnit(msg FieldMessage, ws *websocket.Conn) (*objects.Unit, bool) {
 }
 
 func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){
-	for _, coordinate := range unit.Watch{
+	for _, coordinate := range unit.Watch {
 		var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
 		fieldPipe <- emptyCoordinates
 	}
+
 	for _, unit := range unit.WatchUnit {
 		var unitsParametr = FieldResponse{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}

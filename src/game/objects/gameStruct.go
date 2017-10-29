@@ -22,7 +22,7 @@ type Unit struct {
 	Init int
 	RangeAttack int
 	WatchZone int
-	Watch []Coordinate
+	Watch map[string]*Coordinate //KEY format X:Y
 	WatchUnit map[string]*Unit //KEY format X:Y
 	AreaAttack int
 	TypeAttack string

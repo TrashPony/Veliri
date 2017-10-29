@@ -93,7 +93,7 @@ type Clients struct { // структура описывающая клиент�
 	//HostileUnit []objects.Unit
 	Map objects.Map
 	Respawn objects.Respawn
-	CreateZone []objects.Coordinate
+	CreateZone []*objects.Coordinate
 	GameStat objects.Game
 	Players []objects.UserStat
 }

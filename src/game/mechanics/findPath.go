@@ -28,7 +28,7 @@ type Point struct {
 
 type Points map[string]Point
 
-func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles []objects.Coordinate)([]objects.Coordinate)  {
+func FindPath(gameMap objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles []*objects.Coordinate)([]objects.Coordinate)  {
 
 	START_POINT = Point{x: start.X, y: start.Y, state:START} // начальная точка
 	END_POINT = Point{x: end.X, y: end.Y, state:END} 		  // конечная точка
