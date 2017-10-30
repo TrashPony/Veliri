@@ -10,11 +10,9 @@ import (
 func SelectUnit(msg FieldMessage, ws *websocket.Conn)  {
 	var resp FieldResponse
 
-	unit, find := findUnit(msg, ws)
-
+	unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X) + ":" + strconv.Itoa(msg.Y)]
 	if find {
 		respawn := usersFieldWs[ws].Respawn
-
 		if usersFieldWs[ws].GameStat.Phase == "move" {
 			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			unitsCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].Units)

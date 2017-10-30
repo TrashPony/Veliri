@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func GetUnit(query string) ([]Unit)  {
+func GetUnit(query string) (map[string]*Unit)  {
 	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
 	if err != nil {
 		log.Fatal(err)
@@ -19,16 +19,16 @@ func GetUnit(query string) ([]Unit)  {
 	}
 	defer rows.Close()
 
-	var units = make([]Unit, 0)
-	var unit Unit
+	var units = make(map[string]*Unit)
 
 	for rows.Next() {
+		var unit Unit
 		err := rows.Scan(&unit.Id, &unit.IdGame, &unit.Damage, &unit.MoveSpeed, &unit.Init, &unit.RangeAttack, &unit.WatchZone, &unit.AreaAttack,
 			&unit.TypeAttack, &unit.Price, &unit.NameType, &unit.NameUser, &unit.Hp, &unit.Action, &unit.Target, &unit.X, &unit.Y)
 		if err != nil {
 			log.Fatal(err)
 		}
-		units = append(units, unit)
+		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = &unit
 	}
 
 	if err = rows.Err(); err != nil {
@@ -38,7 +38,7 @@ func GetUnit(query string) ([]Unit)  {
 	return units
 }
 
-func GetAllUnits(idGame int)([]Unit)  {
+func GetAllUnits(idGame int)(map[string]*Unit)  {
 	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id")
 	return units
 }
@@ -46,11 +46,15 @@ func GetAllUnits(idGame int)([]Unit)  {
 func GetXYUnits(idGame int, x int, y int)(Unit, error)  {
 	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id AND ag.x=" + strconv.Itoa(x) + "AND ag.y=" + strconv.Itoa(y))
 	if len(units) > 0 {
-		return units[0], nil
+		unit, ok := units[strconv.Itoa(x) + ":" + strconv.Itoa(y)]
+		if ok {
+			return *unit, nil
+		} else {
+			return *unit, errors.New("unit not found")
+		}
 	} else {
 		var unit Unit
-		units = append(units, unit)
-		return units[0], errors.New("unit not found")
+		return unit, errors.New("unit not found")
 	}
 }
 

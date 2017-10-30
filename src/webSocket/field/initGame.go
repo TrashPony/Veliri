@@ -43,15 +43,27 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 
 	units := objects.GetAllUnits(msg.IdGame)
 	usersFieldWs[ws].Units = make(map[string]*objects.Unit)
-
-	for i := 0; i < len(units); i++ {
+	usersFieldWs[ws].HostileUnits = make(map[string]*objects.Unit)
+	for _, unit := range units {
 		var err error
+		client, ok := usersFieldWs[ws]
+		if ok {
+			unit.Watch, unit.WatchUnit, err = PermissionCoordinates(*client, unit, units)
 
-		units[i].Watch, units[i].WatchUnit, err = sendPermissionCoordinates(msg.IdGame, ws, &units[i])
-		if err != nil {
-			continue
+			if err != nil {
+				continue
+			}
+
+			for _, hostile := range unit.WatchUnit {
+				if hostile.NameUser != usersFieldWs[ws].Login {
+					usersFieldWs[ws].HostileUnits[strconv.Itoa(hostile.X) + ":" + strconv.Itoa(hostile.Y)] = hostile
+				} else {
+					continue
+				}
+			}
+
+			usersFieldWs[ws].Units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
+			SendWatchCoordinate(ws, unit)
 		}
-		usersFieldWs[ws].Units[strconv.Itoa(units[i].X) + ":" + strconv.Itoa(units[i].Y)] = &units[i]
-		SendWatchCoordinate(ws, &units[i])
 	}
 }

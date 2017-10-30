@@ -90,7 +90,7 @@ type Clients struct { // структура описывающая клиент�
 	Login string
 	Id int
 	Units map[string]*objects.Unit // KEY format X:Y
-	//HostileUnit []objects.Unit
+	HostileUnits map[string]*objects.Unit // KEY format X:Y
 	Map objects.Map
 	Respawn objects.Respawn
 	CreateZone []*objects.Coordinate

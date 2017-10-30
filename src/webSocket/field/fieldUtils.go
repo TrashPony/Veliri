@@ -37,12 +37,11 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) []o
 	return ab
 }
 
-func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Unit) ( map[string]*objects.Coordinate, map[string]*objects.Unit, error) {
-	units := objects.GetAllUnits(idGame)
+func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]*objects.Unit) ( map[string]*objects.Coordinate, map[string]*objects.Unit, error) {
 	unitsCoordinate := make(map[string]*objects.Unit)
 	allCoordinate :=  make(map[string]*objects.Coordinate)
-	login := usersFieldWs[ws].Login
-	respawn := usersFieldWs[ws].Respawn
+	login := client.Login
+	respawn := client.Respawn
 
 	if login == unit.NameUser {
 		PermissCoordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.WatchZone)
@@ -50,34 +49,18 @@ func sendPermissionCoordinates(idGame int, ws *websocket.Conn, unit *objects.Uni
 			if !(PermissCoordinates[i].X == respawn.X && PermissCoordinates[i].Y == respawn.Y) {
 				allCoordinate[strconv.Itoa(PermissCoordinates[i].X) + ":" + strconv.Itoa(PermissCoordinates[i].Y)] = PermissCoordinates[i]
 			}
-			for j := 0; j < len(units); j++ {
-				if (PermissCoordinates[i].X == units[j].X) && (PermissCoordinates[i].Y == units[j].Y) {
-					unitsCoordinate[strconv.Itoa(units[j].X) + ":" + strconv.Itoa(units[j].Y)] = &units[j]
-				}
+			x := strconv.Itoa(PermissCoordinates[i].X)
+			y := strconv.Itoa(PermissCoordinates[i].Y)
+			unitInMap, ok := units[x + ":"+ y]
+			if ok {
+				unitsCoordinate[strconv.Itoa(PermissCoordinates[i].X)+":"+strconv.Itoa(PermissCoordinates[i].Y)] = unitInMap
+					//TODO добавлять откртых врагов в общий список крипов, и выдавать информацию через него
 			}
 		}
 	} else {
 		return allCoordinate, unitsCoordinate, errors.New("no owned")
 	}
 	return allCoordinate, unitsCoordinate, nil
-}
-
-func findUnit(msg FieldMessage, ws *websocket.Conn) (*objects.Unit, bool) {
-	var findUnit objects.Unit
-	for key, unit := range usersFieldWs[ws].Units {
-		//hostileUnit := unit.WatchUnit
-		if msg.X == unit.X && msg.Y == unit.Y {
-			return  usersFieldWs[ws].Units[key], true
-			break
-		}
-		/*for _, hostile := range hostileUnit {
-			if msg.X == strconv.Itoa(hostile.X) && msg.Y == strconv.Itoa(hostile.Y) {
-				return &hostile, true // TODO: если раскоментировать то юниты теряют все внутрение свойства :\
-				break
-			}
-		}*/
-	}
-	return &findUnit, false
 }
 
 func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){

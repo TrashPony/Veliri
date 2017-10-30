@@ -4,6 +4,7 @@ import (
 	"websocket-master"
 	"strconv"
 	"../../game/mechanics"
+	"../../game/objects"
 )
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
@@ -11,45 +12,51 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn)  {
 	coordinates := usersFieldWs[ws].CreateZone
 	respawn := usersFieldWs[ws].Respawn
 	var errorMsg bool = true
-	for i := 0; i < len(coordinates); i++ {
-		if coordinates[i].X == msg.X && coordinates[i].Y == msg.Y &&
-			!(msg.X == respawn.X && msg.Y == respawn.Y){
-			errorMsg = false
-			unit, price, createError := mechanics.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
+	client, ok := usersFieldWs[ws]
+	if !ok {
+		delete(usersFieldWs, ws)
+	} else {
+		for i := 0; i < len(coordinates); i++ {
+			if coordinates[i].X == msg.X && coordinates[i].Y == msg.Y &&
+				!(msg.X == respawn.X && msg.Y == respawn.Y) {
+				errorMsg = false
+				unit, price, createError := mechanics.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
 
-			if createError == nil {
-				for _, userStat := range usersFieldWs[ws].Players {
-					if userStat.Name == usersFieldWs[ws].Login {
-						resp = FieldResponse{Event: msg.Event, UserName: userStat.Name, PlayerPrice: price, X: unit.X, Y: unit.Y, TypeUnit: unit.NameType, UserOwned: usersFieldWs[ws].Login}
-						fieldPipe <- resp
+				if createError == nil {
+					for _, userStat := range usersFieldWs[ws].Players {
+						if userStat.Name == usersFieldWs[ws].Login {
+							resp = FieldResponse{Event: msg.Event, UserName: userStat.Name, PlayerPrice: price, X: unit.X, Y: unit.Y, TypeUnit: unit.NameType, UserOwned: usersFieldWs[ws].Login}
+							fieldPipe <- resp
+						}
 					}
-				}
-				var err error
-				unit.Watch, unit.WatchUnit, err = sendPermissionCoordinates(msg.IdGame, ws, unit)
-				if err != nil {
-					break
-				}
-				for _, coordinate := range unit.Watch{
-					var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
-					fieldPipe <- emptyCoordinates
-				}
+					var err error
+					units := objects.GetAllUnits(msg.IdGame)
+					unit.Watch, unit.WatchUnit, err = PermissionCoordinates(*client, unit, units)
+					if err != nil {
+						break
+					}
+					for _, coordinate := range unit.Watch {
+						var emptyCoordinates= FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
+						fieldPipe <- emptyCoordinates
+					}
 
-				for _, unit := range unit.WatchUnit {
-					var unitsParametr = FieldResponse{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-						HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
-					fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
-				}
+					for _, unit := range unit.WatchUnit {
+						var unitsParametr = FieldResponse{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+							HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
+						fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+					}
 
-				usersFieldWs[ws].Units[strconv.Itoa(unit.X) +":" + strconv.Itoa(unit.Y)] = unit
-			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
-				fieldPipe <- resp
+					usersFieldWs[ws].Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = unit
+				} else {
+					resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
+					fieldPipe <- resp
+				}
+				break
 			}
-			break
 		}
-	}
-	if errorMsg {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
-		fieldPipe <- resp
+		if errorMsg {
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+			fieldPipe <- resp
+		}
 	}
 }
