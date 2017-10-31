@@ -1,5 +1,7 @@
 package field
 
+import "../../game/objects"
+
 type FieldResponse struct {
 	Event    	  string `json:"event"`
 	UserName	  string `json:"user_name"`
@@ -31,7 +33,8 @@ type FieldResponse struct {
 	TypeAttack	  string `json:"type_attack"`
 	RespawnX      int `json:"respawn_x"`
 	RespawnY      int `json:"respawn_y"`
-	Error		 string   `json:"error"`
+	Error		  string   `json:"error"`
+	WatchZone     map[string]*objects.Coordinate `json:"watch_zone"`
 }
 
 

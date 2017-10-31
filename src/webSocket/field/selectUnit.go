@@ -16,6 +16,12 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn)  {
 		if usersFieldWs[ws].GameStat.Phase == "move" {
 			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			unitsCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].Units)
+			hostileCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].HostileUnits)
+
+			for _, hostile := range hostileCoordinate {
+				unitsCoordinate = append(unitsCoordinate, hostile)
+			}
+
 			responseCoordinate := subtraction(coordinates, unitsCoordinate)
 
 			for i := 0; i < len(responseCoordinate); i++ {

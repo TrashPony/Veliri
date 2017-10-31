@@ -47,15 +47,15 @@ func InitMove(unit *objects.Unit, msg FieldMessage, ws *websocket.Conn )  {
 		end := objects.Coordinate{X: toX, Y: toY}
 		path := mechanics.FindPath(usersFieldWs[ws].Map, start, end, obstacles)
 		errorMove := Move(unit, path, idGame, msg, ws, end)
-		if errorMove == nil || errorMove.Error() == "end cell is busy" || errorMove.Error() == "connect is lost"{
-			break
+		if errorMove != nil {
+			if errorMove.Error() != "cell is busy" { //TODO посмотреть работае или нет
+				break // если трубется пересчитать путь и пройти еще раз то остаемся в цикле
+			}
 		}
 	}
 }
 
 func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMessage, ws *websocket.Conn, end objects.Coordinate) (error) {
-	var resp FieldResponse
-
 	client, ok := usersFieldWs[ws]
 	if !ok {
 		return errors.New("connect is lost")
@@ -79,51 +79,102 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 
 		unit.X = pathNode.X
 		unit.Y = pathNode.Y
-
-		oldWatchZone := unit.WatchUnit
+		oldWatchUnit := unit.WatchUnit
 
 		mechanics.MoveUnit(idGame, unit, pathNode.X, pathNode.Y)
 		units := objects.GetAllUnits(client.GameStat.Id)
 
-		delete(client.Units,strconv.Itoa(x) + ":" + strconv.Itoa(y)) // удаляем в карте общий юнитов старое место расположение
-		client.Units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit // добавляем новое
+		delete(client.Units, strconv.Itoa(x)+":"+strconv.Itoa(y))          // удаляем в карте общий юнитов старое место расположение
+		client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = unit // добавляем новое
 
 		for _, unitWatch := range client.Units {
 			var err error
-			unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(*client, unitWatch, units) //обновляем зону видимости идущего моба TODO :/ не обновляются враги
-			if err != nil{
+			unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(*client, unitWatch, units) //обновляем зону видимости всех мобов
+
+			if err != nil {
 				continue
 			}
 		}
 
-		for _, hostile := range unit.WatchUnit { // добавляев новых открытых вражеских юнитов
-			if hostile.NameUser != client.Login {
-				_, ok := oldWatchZone[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
-				if !ok {
-					client.HostileUnits[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)] = hostile
-					continue
-				}
-			} else {
-				continue
-			}
-		}
+		go UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских унитов по мере их открытия закрытия
+		go UpdateWatchHostileUser(msg, *client, *unit, x, y) // добавляем и удаляем нашего юнита у врагов на карте
 
-		for _, oldHostile := range oldWatchZone { // удаляем старых закрытых вражеских юнитов
-			if oldHostile.NameUser != client.Login {
-				_, ok := unit.WatchUnit[strconv.Itoa(oldHostile.X)+":"+strconv.Itoa(oldHostile.Y)]
-				if !ok {
-					delete(client.HostileUnits, strconv.Itoa(oldHostile.X)+":"+strconv.Itoa(oldHostile.Y))
-					continue
-				} else {
-				}
-			} else {
-				continue
-			}
-		}
-
-		resp = FieldResponse{Event: msg.Event, UserName: client.Login, X: x, Y: y, ToX: unit.X, ToY: unit.Y}
+		resp := FieldResponse{Event: msg.Event, UserName: client.Login, X: x, Y: y, ToX: unit.X, ToY: unit.Y}
 		fieldPipe <- resp
 		time.Sleep(1 * time.Millisecond)
 	}
 	return nil
+}
+
+func UpdateWatchHostileUser(msg FieldMessage, client Clients, unit objects.Unit, x,y int)  {
+	for _, gameUser := range client.Players {
+		for _, user := range usersFieldWs {
+			if user.Login != client.Login {
+				if gameUser.Name == client.Login {
+					for _, userUnits := range user.Units {
+						_, okGetUnit := userUnits.WatchUnit[strconv.Itoa(x)+":"+strconv.Itoa(y)]
+						if okGetUnit {
+							delete(userUnits.WatchUnit, strconv.Itoa(x)+":"+strconv.Itoa(y))                       // если удалось взять вражеского юнита по старым координатам то удаляем его
+							userUnits.Watch[strconv.Itoa(x)+":"+strconv.Itoa(y)] = &objects.Coordinate{X: x, Y: y} // и добавлдяем на его место пустую зону
+							delete(user.HostileUnits, strconv.Itoa(x)+":"+strconv.Itoa(y))                         // и удаляем в общей карте вражеских юнитов
+							resp := FieldResponse{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y}       // и остылаем событие удаление юнита
+							fieldPipe <- resp
+						}
+						_, okGetXY := userUnits.Watch[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
+						if okGetXY { // если следующая клетка юнита в зоне видимости
+							delete(userUnits.Watch, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))     // удаляем пустую клетку
+							userUnits.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit // и добавляем юнита в видимость юнита
+							user.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit   // и в общую карту вражескию юнитов
+							var unitsParametr = FieldResponse{Event: "InitUnit", UserName: user.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+								HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+							fieldPipe <- unitsParametr
+						}
+						if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую
+							resp := FieldResponse{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y} // то остылаем событие удаление юнита
+							fieldPipe <- resp
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit objects.Unit) {
+	for _, hostile := range unit.WatchUnit { // добавляев новых открытых вражеских юнитов
+		if hostile.NameUser != client.Login {
+			_, ok := oldWatchUnit[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
+			if !ok {
+				client.HostileUnits[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)] = hostile                                                    // если появился новый враг
+				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
+					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: strconv.Itoa(hostile.Target), X: hostile.X, Y: hostile.Y} // остылаем событие добавления юнита
+				fieldPipe <- unitsParametr
+				continue
+			}
+		} else {
+			continue
+		}
+	}
+
+	for _, hostile := range oldWatchUnit {
+
+		deleteUnit := true
+
+		for _, userUnit := range client.Units {
+			if hostile.NameUser != client.Login {
+				_, ok := userUnit.WatchUnit[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
+				if ok {
+					deleteUnit = false
+					break
+				}
+			} else {
+				continue
+			}
+		}
+		if deleteUnit {
+			delete(client.HostileUnits, strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y))                   // если раньше видили врага а сейчас нет
+			resp := FieldResponse{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y} // то остылаем событие удаление юнита
+			fieldPipe <- resp
+		}
+	}
 }

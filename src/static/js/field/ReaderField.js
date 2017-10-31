@@ -19,7 +19,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitUnit") {
-        console.log("message: " + jsonMessage);
         InitUnit(jsonMessage);
     }
 
@@ -69,7 +68,6 @@ function ReadResponse(jsonMessage) {
     if (event === "Ready") {
         var error = JSON.parse(jsonMessage).error;
         phase = JSON.parse(jsonMessage).phase;
-        console.log(phase);
         if (error === "") {
             ready = document.getElementById("Ready");
             var phaseBlock = document.getElementById("phase");
@@ -97,7 +95,7 @@ function ReadResponse(jsonMessage) {
                 }
             }
         } else {
-            if (error === "not units"){
+            if (error === "not units") {
                 alert("У вас нет юнитов")
             }
         }
@@ -113,8 +111,27 @@ function ReadResponse(jsonMessage) {
         }
     }
 
+    if (event === "OpenCoordinate") {
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        var id = x + ":" + y;
+        OpenUnit(id)
+    }
+
+    if (event === "DellCoordinate") {
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        var id = x + ":" + y;
+        DelUnit(id)
+    }
+
     if (event === "MoveUnit") {
         move = null;
+
+        sock.send(JSON.stringify({
+            event: "getPermittedCoordinates",
+            id_game: Number(idGame)
+        }));
 
         var moveCells = document.getElementsByClassName("fieldUnit move");
 
@@ -126,64 +143,60 @@ function ReadResponse(jsonMessage) {
 
         error = JSON.parse(jsonMessage).error;
         if (error === "") {
-            x = JSON.parse(jsonMessage).x;
-            y = JSON.parse(jsonMessage).y;
-            var toX = JSON.parse(jsonMessage).to_x;
-            var toY = JSON.parse(jsonMessage).to_y;
-            var type = JSON.parse(jsonMessage).type_unit;
-            Move(x,y,toX,toY, type)             // TODO копировать ячейку в новую координату, а старую закрыть
-        } else {
-
+            Move()             // TODO копировать ячейку в новую координату, а старую закрыть
         }
     }
 }
 
-function Move(x,y,toX,toY,type) {
-    var newCoor_id = toX + ":" + toY;
-    var newCell = document.getElementById(newCoor_id);
-    newCell.onclick = function () {
-        SelectUnit(this.id)
-    };
-    if (type === "tank") newCell.className = "fieldUnit tank";
-    if (type === "scout") newCell.className = "fieldUnit scout";
-    if (type === "artillery") newCell.className = "fieldUnit artillery";
+function Move() {
+    AllDell("fieldUnit open");
+    AllDell("fieldUnit tank");
+    AllDell("fieldUnit scout");
+    AllDell("fieldUnit artillery");
+}
 
-    var oldCoor_id = x + ":" + y;
-    var oldCell = document.getElementById(oldCoor_id);
-    oldCell.onclick = function () {
+function OpenUnit(id) {
+
+    var classUnit = "fieldUnit open";
+    if (move != null) {
+        classUnit = "fieldUnit move"
+    }
+
+    var Cell = document.getElementById(id);
+    if (Cell) {
+        Cell.className = classUnit;
+        Cell.id = id;
+        Cell.innerHTML = id;
+        Cell.style.color = "#fbfdff";
+        Cell.style.borderColor = "#404040";
+        Cell.onclick = function () {
+            reply_click(this.id);
+        };
+        Cell.onmouseover = function () {
+            mouse_over(this.id);
+        };
+        Cell.onmouseout = function () {
+            mouse_out()
+        };
+    }
+}
+
+function AllDell(classUnit) {
+    var openCells = document.getElementsByClassName(classUnit);
+    while (0 < openCells.length) {
+        //if (openCells[0]) {
+            DelUnit(openCells[0].id);
+        //}
+    }
+}
+
+function DelUnit(id) {
+    var Cell = document.getElementById(id);
+    Cell.className = "fieldUnit";
+    Cell.innerHTML = id;
+    Cell.style.color = "#FBFDFF";
+    Cell.style.borderColor = "#404040";
+    Cell.onclick = function () {
         reply_click(this.id);
     };
-    oldCell.innerHTML = oldCoor_id;
-    oldCell.className = "fieldUnit";
-    oldCell.style.borderColor = "#404040";
-
-    var moveCells = document.getElementsByClassName("fieldUnit open");
-    while (0 < moveCells.length) {
-        if (moveCells[0]) {
-            moveCells[0].className = "fieldUnit";
-        }
-    }
-
-    DellUnit("fieldUnit open");
-    DellUnit("fieldUnit tank");
-    DellUnit("fieldUnit scout");
-    DellUnit("fieldUnit artillery");
-
-    sock.send(JSON.stringify({
-        event: "getPermittedCoordinates",
-        id_game: Number(idGame)
-    }));
-}
-
-function DellUnit(unit) {
-    var moveCells = document.getElementsByClassName(unit);
-    while (0 < moveCells.length) {
-        if (moveCells[0]) {
-            var id = moveCells[0].id;
-            var Cell = document.getElementById(id);
-            Cell.innerHTML = ""+id;
-            Cell.className = "fieldUnit";
-            Cell.style = null;
-        }
-    }
 }
