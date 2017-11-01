@@ -41,36 +41,43 @@ func InitMove(unit *objects.Unit, msg FieldMessage, ws *websocket.Conn )  {
 	idGame := usersFieldWs[ws].GameStat.Id
 	toX := msg.ToX
 	toY := msg.ToY
+
 	for {
 		obstacles := objects.GetUnitsCoordinate(unit.WatchUnit) // TODO: добавить еще не проходимые учатки когда добавлю непроходимые участки
 		start := objects.Coordinate{X: unit.X, Y: unit.Y}
 		end := objects.Coordinate{X: toX, Y: toY}
 		path := mechanics.FindPath(usersFieldWs[ws].Map, start, end, obstacles)
-		errorMove := Move(unit, path, idGame, msg, ws, end)
+		x, y, errorMove := Move(unit, path, idGame, msg, ws, end)
 		if errorMove != nil {
-			if errorMove.Error() != "cell is busy" { //TODO посмотреть работае или нет
-				break // если трубется пересчитать путь и пройти еще раз то остаемся в цикле
+			if errorMove.Error() != "cell is busy" {
+				mechanics.MoveUnit(idGame, unit, x, y)
+				break
 			}
+		} else {
+			mechanics.MoveUnit(idGame, unit, x, y)
+			break
 		}
 	}
 }
 
-func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMessage, ws *websocket.Conn, end objects.Coordinate) (error) {
+func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMessage, ws *websocket.Conn, end objects.Coordinate) (int, int, error) {
 	client, ok := usersFieldWs[ws]
 	if !ok {
-		return errors.New("connect is lost")
+		return 0,0, errors.New("connect is lost")
 	}
+
+	units := objects.GetAllUnits(client.GameStat.Id)
 
 	for _, pathNode := range path {
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			_, ok := unit.WatchUnit[strconv.Itoa(end.X)+":"+strconv.Itoa(end.Y)]
 			if ok {
-				return errors.New("end cell is busy")
+				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
 			_, ok := unit.WatchUnit[strconv.Itoa(pathNode.X)+":"+strconv.Itoa(pathNode.Y)]
 			if ok {
-				return errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
+				return 0,0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
 			}
 		}
 
@@ -79,34 +86,38 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 
 		unit.X = pathNode.X
 		unit.Y = pathNode.Y
-		oldWatchUnit := unit.WatchUnit
 
-		mechanics.MoveUnit(idGame, unit, pathNode.X, pathNode.Y)
-		units := objects.GetAllUnits(client.GameStat.Id)
+		oldWatchUnit := unit.WatchUnit // TODO А нахуя я вообще вношу изменния в бд каждую итерацию?! ретурном возвращаем значение и его уже вносим блять!
+
+		delete(units, strconv.Itoa(x) + ":" + strconv.Itoa(y))
+		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
+
+		UpdateWatchZone(*client, units)
+		go UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских унитов по мере их открытия закрытия
+		go UpdateWatchHostileUser(*client, *unit, x, y) // добавляем и удаляем нашего юнита у врагов на карте
 
 		delete(client.Units, strconv.Itoa(x)+":"+strconv.Itoa(y))          // удаляем в карте общий юнитов старое место расположение
 		client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = unit // добавляем новое
 
-		for _, unitWatch := range client.Units {
-			var err error
-			unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(*client, unitWatch, units) //обновляем зону видимости всех мобов
-
-			if err != nil {
-				continue
-			}
-		}
-
-		go UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских унитов по мере их открытия закрытия
-		go UpdateWatchHostileUser(msg, *client, *unit, x, y) // добавляем и удаляем нашего юнита у врагов на карте
-
 		resp := FieldResponse{Event: msg.Event, UserName: client.Login, X: x, Y: y, ToX: unit.X, ToY: unit.Y}
 		fieldPipe <- resp
-		time.Sleep(1 * time.Millisecond)
+		time.Sleep(300 * time.Millisecond)
 	}
-	return nil
+
+	return unit.X, unit.Y, nil
 }
 
-func UpdateWatchHostileUser(msg FieldMessage, client Clients, unit objects.Unit, x,y int)  {
+func UpdateWatchZone(client Clients, units map[string]*objects.Unit)  {
+	for _, unitWatch := range client.Units {
+		var err error
+		unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(client, unitWatch, units) //обновляем зону видимости всех мобов
+		if err != nil {
+			continue
+		}
+	}
+}
+
+func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
 	for _, gameUser := range client.Players {
 		for _, user := range usersFieldWs {
 			if user.Login != client.Login {
