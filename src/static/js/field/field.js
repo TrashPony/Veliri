@@ -86,10 +86,14 @@ function mouse_out() {
 }
 
 function SelectUnit(id) {
+    if (move !== null) {
+        DelMoveCell();
+    }
+    
     var xy = id.split(":");
     var x = xy[0];
     var y = xy[1];
-    if(phase === "move") {
+    if (phase === "move") {
         move = id;
     }
     sock.send(JSON.stringify({

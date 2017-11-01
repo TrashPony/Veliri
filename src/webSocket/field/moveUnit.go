@@ -103,7 +103,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 		UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских юнитов по мере их открытия/закрытия
 		go UpdateWatchHostileUser(*client, *unit, x, y)		 // добавляем и удаляем нашего юнита у врагов на карте
 
-		time.Sleep(250 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	return unit.X, unit.Y, nil

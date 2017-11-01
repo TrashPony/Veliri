@@ -25,12 +25,6 @@ function Field(xSize,ySize) {
             div.onclick = function () {
                 reply_click(this.id);
             };
-            div.onmouseover = function () {
-                mouse_over(this.id);
-            };
-            div.onmouseout = function () {
-                mouse_out()
-            };
             main.appendChild(div);
         }
         var nline = document.createElement('div');
@@ -78,6 +72,12 @@ function InitUnit(jsonMessage) {
     if (type === "artillery") cell.className = "fieldUnit artillery";
     cell.onclick = function () {
         SelectUnit(this.id)
+    };
+    cell.onmouseover = function () {
+        mouse_over(this.id);
+    };
+    cell.onmouseout = function () {
+        mouse_out()
     };
     cell.innerHTML = "hp: " + hp;
 
