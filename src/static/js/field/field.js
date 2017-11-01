@@ -50,7 +50,7 @@ function reply_click(clicked_id) {
             to_y: Number(y)
         }));
     } else {
-        move = false;
+        move = null;
     }
 
     if(phase === "Init" && typeUnit !== null && typeUnit !== undefined) {

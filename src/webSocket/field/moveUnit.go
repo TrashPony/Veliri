@@ -20,6 +20,8 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 		for _, coordinate := range coordinates{
 			if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
+					resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login}
+					fieldPipe <- resp
 					go InitMove(unit, msg, ws)
 					passed = true
 				}
@@ -87,27 +89,28 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 		unit.X = pathNode.X
 		unit.Y = pathNode.Y
 
+		oldWatchZone := unit.Watch
+
 		oldWatchUnit := unit.WatchUnit // TODO А нахуя я вообще вношу изменния в бд каждую итерацию?! ретурном возвращаем значение и его уже вносим блять!
 
 		delete(units, strconv.Itoa(x) + ":" + strconv.Itoa(y))
 		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
 
-		UpdateWatchZone(*client, units)
-		go UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских унитов по мере их открытия закрытия
-		go UpdateWatchHostileUser(*client, *unit, x, y) // добавляем и удаляем нашего юнита у врагов на карте
-
 		delete(client.Units, strconv.Itoa(x)+":"+strconv.Itoa(y))          // удаляем в карте общий юнитов старое место расположение
 		client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = unit // добавляем новое
 
-		resp := FieldResponse{Event: msg.Event, UserName: client.Login, X: x, Y: y, ToX: unit.X, ToY: unit.Y}
-		fieldPipe <- resp
-		time.Sleep(300 * time.Millisecond)
+		UpdateWatchZone(*client, *unit, units, oldWatchZone) // отправляем открытые ячейки, удаляем закрытые
+		UpdateHostile(*client, oldWatchUnit, *unit) 		 // добавляем и удаляем вражских юнитов по мере их открытия/закрытия
+		go UpdateWatchHostileUser(*client, *unit, x, y)		 // добавляем и удаляем нашего юнита у врагов на карте
+
+		time.Sleep(250 * time.Millisecond)
 	}
 
 	return unit.X, unit.Y, nil
 }
 
-func UpdateWatchZone(client Clients, units map[string]*objects.Unit)  {
+func UpdateWatchZone(client Clients, unitMove objects.Unit, units map[string]*objects.Unit, oldWatchZone map[string]*objects.Coordinate)  {
+	// TODO проверка клетки на ее изначальное состояние
 	for _, unitWatch := range client.Units {
 		var err error
 		unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(client, unitWatch, units) //обновляем зону видимости всех мобов
@@ -115,6 +118,40 @@ func UpdateWatchZone(client Clients, units map[string]*objects.Unit)  {
 			continue
 		}
 	}
+
+	unit := client.Units[strconv.Itoa(unitMove.X) + ":" + strconv.Itoa(unitMove.Y)]
+
+	for _, newCoordinate := range unit.Watch { // отправляем все новые поля
+		_, ok := unit.WatchUnit[strconv.Itoa(newCoordinate.X)+":"+strconv.Itoa(newCoordinate.Y)]
+		if !ok {
+			resp := FieldResponse{Event: "OpenCoordinate", UserName: client.Login, X: newCoordinate.X, Y: newCoordinate.Y}
+			fieldPipe <- resp
+		}
+	}
+
+	for _, oldCoordinate := range oldWatchZone {
+		deleteCell := true
+		for _, userUnit := range client.Units {
+			if userUnit.NameUser == client.Login {
+				_, ok := userUnit.Watch[strconv.Itoa(oldCoordinate.X)+":"+strconv.Itoa(oldCoordinate.Y)]
+				if ok {
+					deleteCell = false
+					break
+				}
+			} else {
+				deleteCell = false
+				continue
+			}
+		}
+		if deleteCell {
+			resp := FieldResponse{Event: "DellCoordinate", UserName: client.Login, X: oldCoordinate.X, Y: oldCoordinate.Y} // удаляем старое поле доступа
+			fieldPipe <- resp
+		}
+	}
+
+	var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+	fieldPipe <- unitsParametr
 }
 
 func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
@@ -168,9 +205,7 @@ func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit o
 	}
 
 	for _, hostile := range oldWatchUnit {
-
 		deleteUnit := true
-
 		for _, userUnit := range client.Units {
 			if hostile.NameUser != client.Login {
 				_, ok := userUnit.WatchUnit[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
@@ -179,6 +214,7 @@ func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit o
 					break
 				}
 			} else {
+				deleteUnit = false
 				continue
 			}
 		}

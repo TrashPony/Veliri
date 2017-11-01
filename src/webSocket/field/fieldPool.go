@@ -5,6 +5,7 @@ import (
 	"websocket-master"
 	"../../game/objects"
 	"strconv"
+	"sync"
 )
 
 var fieldPipe = make(chan FieldResponse)
@@ -73,6 +74,8 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 func FieldReposeSender() {
 	for {
 		resp := <- fieldPipe // TODO : разделить пайп на множество под каждую фазу
+		var mutex = &sync.Mutex{}
+		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {
 				err := ws.WriteJSON(resp)
@@ -83,6 +86,7 @@ func FieldReposeSender() {
 				}
 			}
 		}
+		mutex.Unlock()
 	}
 }
 
