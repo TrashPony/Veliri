@@ -89,7 +89,7 @@ function SelectUnit(id) {
     if (move !== null) {
         DelMoveCell();
     }
-    
+
     var xy = id.split(":");
     var x = xy[0];
     var y = xy[1];

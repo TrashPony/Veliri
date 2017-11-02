@@ -11,7 +11,7 @@ func MoveUnit(idGame int, unit *objects.Unit, toX int, toY int ) (int, int, erro
 		return 0, 0, err
 	}
 	// устанавливает фраг готовности пользователя в тру
-	_ , err = db.Query("UPDATE action_game_unit  SET x = $1, y = $2 WHERE id=$3 AND id_game=$4", toX, toY, unit.Id, idGame)
+	_ , err = db.Query("UPDATE action_game_unit  SET x = $1, y = $2, action = $5 WHERE id=$3 AND id_game=$4", toX, toY, unit.Id, idGame, false)
 	if err != nil {
 		return 0, 0, err
 	} else {

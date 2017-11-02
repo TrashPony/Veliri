@@ -54,7 +54,6 @@ func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]
 			unitInMap, ok := units[x + ":"+ y]
 			if ok {
 				unitsCoordinate[strconv.Itoa(PermissCoordinates[i].X)+":"+strconv.Itoa(PermissCoordinates[i].Y)] = unitInMap
-					//TODO добавлять откртых врагов в общий список крипов, и выдавать информацию через него
 			}
 		}
 	} else {

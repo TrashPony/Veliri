@@ -11,6 +11,7 @@ function ReadResponse(jsonMessage) {
     var x;
     var y;
     var userOwned;
+    var idDell;
 
     if (event === "InitPlayer") {
         InitPlayer(jsonMessage);
@@ -104,23 +105,28 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectUnit") {
+        console.log(jsonMessage);
+
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
-        coor_id = x + ":" + y;
-        cell = document.getElementById(coor_id);
-        if (cell) {
-            var Cell = {};
-            Cell.x = x;
-            Cell.y = y;
-            Cell.id = coor_id;
-            Cell.type = cell.className;
-            SelectCell.push(Cell);
-            cell.className = "fieldUnit move";
+        errorMove = JSON.parse(jsonMessage).error;
+        if (errorMove === "") {
+            coor_id = x + ":" + y;
+            cell = document.getElementById(coor_id);
+            if (cell) {
+                var Cell = {};
+                Cell.x = x;
+                Cell.y = y;
+                Cell.id = coor_id;
+                Cell.type = cell.className;
+                SelectCell.push(Cell);
+                cell.style.filter = "brightness(85%)";
+                cell.className = "fieldUnit move";
+            }
         }
     }
 
     if (event === "OpenCoordinate") {
-        console.log(jsonMessage);
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
         var idCell = x + ":" + y;
@@ -128,15 +134,23 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "DellCoordinate") {
-        console.log(jsonMessage);
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
-        var idDell = x + ":" + y;
+        idDell = x + ":" + y;
         DelUnit(idDell)
     }
 
     if (event === "MoveUnit") {
         var errorMove = JSON.parse(jsonMessage).error;
+        var action = JSON.parse(jsonMessage).unit_action;
+        if (action === "false") {
+            x = JSON.parse(jsonMessage).x;
+            y = JSON.parse(jsonMessage).y;
+            idDell = x + ":" + y;
+            var cell = document.getElementById(idDell);
+            cell.style.filter = "brightness(50%)";
+        }
+
         if (errorMove !== null) {
             DelMoveCell()
         }
@@ -144,7 +158,6 @@ function ReadResponse(jsonMessage) {
 }
 
 function OpenUnit(id) {
-
     var classUnit = "fieldUnit open";
     if (move != null) {
         classUnit = "fieldUnit move"
@@ -156,6 +169,8 @@ function OpenUnit(id) {
     Cell.innerHTML = id;
     Cell.style.color = "#fbfdff";
     Cell.style.borderColor = "#404040";
+    Cell.style.filter = "brightness(100%)";
+
     Cell.onclick = function () {
         reply_click(this.id);
     };
@@ -173,6 +188,8 @@ function DelUnit(id) {
     Cell.innerHTML = id;
     Cell.style.color = "#FBFDFF";
     Cell.style.borderColor = "#404040";
+    Cell.style.filter = "brightness(100%)";
+
     Cell.onclick = function () {
         reply_click(this.id);
     };

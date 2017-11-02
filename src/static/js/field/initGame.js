@@ -84,6 +84,11 @@ function InitUnit(jsonMessage) {
     if (JSON.parse(jsonMessage).user_name === userOwned) {
         cell.style.color = "#fbfdff";
         cell.style.borderColor = "#fbfdff";
+        if (action === "false") {
+            cell.style.filter = "brightness(50%)";
+        } else {
+            cell.style.filter = "brightness(100%)";
+        }
     } else {
         cell.style.color = "#FF0117";
         cell.style.borderColor = "#FF0117";

@@ -14,22 +14,27 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X) + ":" + strconv.Itoa(msg.Y)]
 	if find {
-		respawn := usersFieldWs[ws].Respawn
-		coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-		var passed bool
-		for _, coordinate := range coordinates{
-			if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
-				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
-					resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login}
-					fieldPipe <- resp
-					go InitMove(unit, msg, ws)
-					passed = true
+		if unit.Action {
+			respawn := usersFieldWs[ws].Respawn
+			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
+			var passed bool
+			for _, coordinate := range coordinates {
+				if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
+					if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
+						resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login}
+						fieldPipe <- resp
+						go InitMove(unit, msg, ws)
+						passed = true
+					}
 				}
 			}
-		}
 
-		if !passed {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+			if !passed {
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+				fieldPipe <- resp
+			}
+		} else {
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "unit already move"}
 			fieldPipe <- resp
 		}
 	} else {
@@ -74,6 +79,10 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			_, ok := unit.WatchUnit[strconv.Itoa(end.X)+":"+strconv.Itoa(end.Y)]
 			if ok {
+				unit.Action = false
+				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+				fieldPipe <- unitsParametr
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
@@ -89,9 +98,13 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 		unit.X = pathNode.X
 		unit.Y = pathNode.Y
 
+		if (end.X == pathNode.X) && (end.Y == pathNode.Y){
+			unit.Action = false
+		}
+
 		oldWatchZone := unit.Watch
 
-		oldWatchUnit := unit.WatchUnit // TODO А нахуя я вообще вношу изменния в бд каждую итерацию?! ретурном возвращаем значение и его уже вносим блять!
+		oldWatchUnit := unit.WatchUnit
 
 		delete(units, strconv.Itoa(x) + ":" + strconv.Itoa(y))
 		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
@@ -110,7 +123,6 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 }
 
 func UpdateWatchZone(client Clients, unitMove objects.Unit, units map[string]*objects.Unit, oldWatchZone map[string]*objects.Coordinate)  {
-	// TODO проверка клетки на ее изначальное состояние
 	for _, unitWatch := range client.Units {
 		var err error
 		unitWatch.Watch, unitWatch.WatchUnit, err = PermissionCoordinates(client, unitWatch, units) //обновляем зону видимости всех мобов
@@ -158,7 +170,7 @@ func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
 	for _, gameUser := range client.Players {
 		for _, user := range usersFieldWs {
 			if user.Login != client.Login {
-				if gameUser.Name == client.Login {
+				if gameUser.Name == user.Login && client.GameStat.Id == user.GameStat.Id {
 					for _, userUnits := range user.Units {
 						_, okGetUnit := userUnits.WatchUnit[strconv.Itoa(x)+":"+strconv.Itoa(y)]
 						if okGetUnit {
