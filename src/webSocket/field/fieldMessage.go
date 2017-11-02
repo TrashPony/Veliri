@@ -1,7 +1,5 @@
 package field
 
-import "../../game/objects"
-
 type FieldResponse struct {
 	Event    	  string `json:"event"`
 	UserName	  string `json:"user_name"`
@@ -21,6 +19,18 @@ type FieldResponse struct {
 	Phase		  string `json:"phase"`
 	UserReady	  string `json:"user_ready"`
 	UserOwned 	  string `json:"user_owned"`
+	RespawnX      int `json:"respawn_x"`
+	RespawnY      int `json:"respawn_y"`
+	Error		  string   `json:"error"`
+}
+
+type InitUnit struct {
+	Event    	  string `json:"event"`
+	UserName	  string `json:"user_name"`
+	X      		  int `json:"x"`
+	Y			  int `json:"y"`
+	TypeUnit 	  string `json:"type_unit"`
+	UserOwned 	  string `json:"user_owned"`
 	HP 			  int `json:"hp"`
 	UnitAction	  string `json:"unit_action"`
 	Target 		  string `json:"target"`
@@ -31,10 +41,14 @@ type FieldResponse struct {
 	RangeView	  string `json:"range_view"`
 	AreaAttack    string `json:"area_attack"`
 	TypeAttack	  string `json:"type_attack"`
-	RespawnX      int `json:"respawn_x"`
-	RespawnY      int `json:"respawn_y"`
 	Error		  string   `json:"error"`
-	WatchZone     map[string]*objects.Coordinate `json:"watch_zone"`
+}
+
+type Coordinate struct {
+	Event    	  string `json:"event"`
+	UserName	  string `json:"user_name"`
+	X      		  int `json:"x"`
+	Y			  int `json:"y"`
 }
 
 

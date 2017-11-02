@@ -9,7 +9,11 @@ import (
 )
 
 var fieldPipe = make(chan FieldResponse)
+var initUnit  = make(chan InitUnit)
+var coordiante = make(chan Coordinate)
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
+
+var mutex = &sync.Mutex{}
 
 func AddNewUser(ws *websocket.Conn, login string, id int)  {
 	CheckDoubleLogin(login, &usersFieldWs)
@@ -74,7 +78,42 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 func FieldReposeSender() {
 	for {
 		resp := <- fieldPipe // TODO : разделить пайп на множество под каждую фазу
-		var mutex = &sync.Mutex{}
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.Login == resp.UserName {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func InitUnitSender() {
+	for {
+		resp := <- initUnit
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.Login == resp.UserName {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func CoordinateSender() {
+	for {
+		resp := <- coordiante
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {

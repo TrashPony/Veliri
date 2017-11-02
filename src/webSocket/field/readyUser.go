@@ -26,9 +26,9 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 							}
 							for _, unit := range clients.Units {
 								unit.Action = true
-								var unitsParametr = FieldResponse{Event: "InitUnit", UserName: clients.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+								var unitsParametr = InitUnit{Event: "InitUnit", UserName: clients.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 									HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
-								fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+								initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 							}
 							break
 						}

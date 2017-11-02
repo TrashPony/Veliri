@@ -18,6 +18,8 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
 	go lobby.LobbyReposeSender()// запускается гарутина для рассылки сообщений, гуглить гарутины
 	go field.FieldReposeSender()
+	go field.InitUnitSender()
+	go field.CoordinateSender()
 	log.Println("http server started on :8080")
 	http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 }

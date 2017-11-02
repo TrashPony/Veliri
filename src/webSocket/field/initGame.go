@@ -32,8 +32,8 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 	for i := 0; i < len(permitCoordinates); i++ {
 		if  !(permitCoordinates[i].X == respawn.X && permitCoordinates[i].Y == respawn.Y) {
 			usersFieldWs[ws].CreateZone = append(usersFieldWs[ws].CreateZone, permitCoordinates[i])
-			var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: permitCoordinates[i].X, Y: permitCoordinates[i].Y}
-			fieldPipe <- emptyCoordinates
+			var emptyCoordinates = Coordinate{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: permitCoordinates[i].X, Y: permitCoordinates[i].Y}
+			coordiante <- emptyCoordinates
 		}
 	}
 

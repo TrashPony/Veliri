@@ -38,8 +38,8 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn)  {
 			}
 		}
 		if usersFieldWs[ws].GameStat.Phase == "targeting" {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase, RangeAttack: strconv.Itoa(unit.RangeAttack)}
-			fieldPipe <- resp
+			//resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase, RangeAttack: strconv.Itoa(unit.RangeAttack)}
+			//fieldPipe <- resp
 		}
 	}
 }

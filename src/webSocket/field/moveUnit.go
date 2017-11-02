@@ -80,9 +80,9 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 			_, ok := unit.WatchUnit[strconv.Itoa(end.X)+":"+strconv.Itoa(end.Y)]
 			if ok {
 				unit.Action = false
-				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-				fieldPipe <- unitsParametr
+				initUnit <- unitsParametr
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
@@ -136,8 +136,8 @@ func UpdateWatchZone(client Clients, unitMove objects.Unit, units map[string]*ob
 	for _, newCoordinate := range unit.Watch { // отправляем все новые поля
 		_, ok := unit.WatchUnit[strconv.Itoa(newCoordinate.X)+":"+strconv.Itoa(newCoordinate.Y)]
 		if !ok {
-			resp := FieldResponse{Event: "OpenCoordinate", UserName: client.Login, X: newCoordinate.X, Y: newCoordinate.Y}
-			fieldPipe <- resp
+			resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: newCoordinate.X, Y: newCoordinate.Y}
+			coordiante <- resp
 		}
 	}
 
@@ -156,14 +156,14 @@ func UpdateWatchZone(client Clients, unitMove objects.Unit, units map[string]*ob
 			}
 		}
 		if deleteCell {
-			resp := FieldResponse{Event: "DellCoordinate", UserName: client.Login, X: oldCoordinate.X, Y: oldCoordinate.Y} // удаляем старое поле доступа
-			fieldPipe <- resp
+			resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: oldCoordinate.X, Y: oldCoordinate.Y} // удаляем старое поле доступа
+			coordiante <- resp
 		}
 	}
 
-	var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+	var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-	fieldPipe <- unitsParametr
+	initUnit <- unitsParametr
 }
 
 func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
@@ -177,21 +177,21 @@ func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
 							delete(userUnits.WatchUnit, strconv.Itoa(x)+":"+strconv.Itoa(y))                       // если удалось взять вражеского юнита по старым координатам то удаляем его
 							userUnits.Watch[strconv.Itoa(x)+":"+strconv.Itoa(y)] = &objects.Coordinate{X: x, Y: y} // и добавлдяем на его место пустую зону
 							delete(user.HostileUnits, strconv.Itoa(x)+":"+strconv.Itoa(y))                         // и удаляем в общей карте вражеских юнитов
-							resp := FieldResponse{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y}       // и остылаем событие удаление юнита
-							fieldPipe <- resp
+							resp := Coordinate{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y}       // и остылаем событие удаление юнита
+							coordiante <- resp
 						}
 						_, okGetXY := userUnits.Watch[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
 						if okGetXY { // если следующая клетка юнита в зоне видимости
 							delete(userUnits.Watch, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))     // удаляем пустую клетку
 							userUnits.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit // и добавляем юнита в видимость юнита
 							user.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit   // и в общую карту вражескию юнитов
-							var unitsParametr = FieldResponse{Event: "InitUnit", UserName: user.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+							var unitsParametr = InitUnit{Event: "InitUnit", UserName: user.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 								HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-							fieldPipe <- unitsParametr
+							initUnit <- unitsParametr
 						}
 						if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую
-							resp := FieldResponse{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y} // то остылаем событие удаление юнита
-							fieldPipe <- resp
+							resp := Coordinate{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y} // то остылаем событие удаление юнита
+							coordiante <- resp
 						}
 					}
 				}
@@ -206,9 +206,9 @@ func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit o
 			_, ok := oldWatchUnit[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
 			if !ok {
 				client.HostileUnits[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)] = hostile                                                    // если появился новый враг
-				var unitsParametr = FieldResponse{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
+				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
 					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: strconv.Itoa(hostile.Target), X: hostile.X, Y: hostile.Y} // остылаем событие добавления юнита
-				fieldPipe <- unitsParametr
+				initUnit <- unitsParametr
 				continue
 			}
 		} else {
@@ -232,8 +232,8 @@ func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit o
 		}
 		if deleteUnit {
 			delete(client.HostileUnits, strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y))                   // если раньше видили врага а сейчас нет
-			resp := FieldResponse{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y} // то остылаем событие удаление юнита
-			fieldPipe <- resp
+			resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y} // то остылаем событие удаление юнита
+			coordiante <- resp
 		}
 	}
 }

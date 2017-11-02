@@ -106,29 +106,8 @@ function InitResp(jsonMessage) {
 
 function CreateUnit(jsonMessage) {
     if (JSON.parse(jsonMessage).error_type === "") {
-        var userOwned = JSON.parse(jsonMessage).user_owned;
-        var x = JSON.parse(jsonMessage).x;
-        var y = JSON.parse(jsonMessage).y;
-
-        var coor_id = x + ":" + y;
-        var cell = document.getElementById(coor_id);
-        cell.onclick = function () {
-            SelectUnit(this.id)
-        };
-        if (typeUnit === "tank") cell.className = "fieldUnit tank";
-        if (typeUnit === "scout") cell.className = "fieldUnit scout";
-        if (typeUnit === "artillery") cell.className = "fieldUnit artillery";
         var price = document.getElementsByClassName('fieldInfo price');
         price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
-
-        if (JSON.parse(jsonMessage).user_name === userOwned) {
-            cell.style.color = "#fbfdff";
-            cell.style.borderColor = "#fbfdff";
-        } else {
-            cell.style.color = "#FF0117";
-            cell.style.borderColor = "#FF0117";
-        }
-
     } else {
         var cells = document.getElementsByClassName("fieldUnit create");
         var log = document.getElementById('fieldLog');
@@ -140,7 +119,6 @@ function CreateUnit(jsonMessage) {
         if (JSON.parse(jsonMessage).error_type === "busy") {
             log.innerHTML = "Место занято"
         }
-
         if (JSON.parse(jsonMessage).error_type === "no many") {
             log.innerHTML = "Нет денег"
         }
@@ -149,4 +127,40 @@ function CreateUnit(jsonMessage) {
         }
     }
     typeUnit = null;
+}
+
+function Ready(jsonMessage) {
+    var error = JSON.parse(jsonMessage).error;
+    phase = JSON.parse(jsonMessage).phase;
+    if (error === "") {
+        ready = document.getElementById("Ready");
+        var phaseBlock = document.getElementById("phase");
+
+        if (phase === "") {
+            ready.innerHTML = "Ты готов!";
+            ready.style.backgroundColor = "#e1720f";
+        } else {
+            ready.innerHTML = "Готов!";
+            if (phase === "move") {
+                ready.style.backgroundColor = "#A8ADE1";
+            }
+            if (phase === "targeting") {
+                ready.style.backgroundColor = "#E1C7A6";
+            }
+            if (phase === "attack") {
+                ready.style.backgroundColor = "#E12D27";
+            }
+            phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
+            var cells = document.getElementsByClassName("fieldUnit create");
+            while (0 < cells.length) {
+                if (cells[0]) {
+                    cells[0].className = "fieldUnit open";
+                }
+            }
+        }
+    } else {
+        if (error === "not units") {
+            alert("У вас нет юнитов")
+        }
+    }
 }

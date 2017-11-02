@@ -64,13 +64,13 @@ func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]
 
 func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){
 	for _, coordinate := range unit.Watch {
-		var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
-		fieldPipe <- emptyCoordinates
+		var emptyCoordinates = InitUnit{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
+		initUnit <- emptyCoordinates
 	}
 
 	for _, unit := range unit.WatchUnit {
-		var unitsParametr = FieldResponse{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+		var unitsParametr = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
-		fieldPipe <- unitsParametr // отправляем параметры каждого юнита отдельно
+		initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 	}
 }
