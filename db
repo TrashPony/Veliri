@@ -22,9 +22,10 @@ CREATE TABLE action_game_unit(
     id_user int references users(id),
     hp int,
     action varchar(64),
-    target int,
+    target varchar(64),
     x int,
-    y int
+    y int,
+    queue_attack int
 );
 
 CREATE TABLE respawns(

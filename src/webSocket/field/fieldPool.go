@@ -66,12 +66,18 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 			MoveUnit(msg, ws)
 			continue
 		}
-		if msg.Event == "getPermittedCoordinates" {
+
+		if msg.Event == "TargetUnit" {
+			TargetUnit(msg, ws)
+			continue
+		}
+
+		/*if msg.Event == "getPermittedCoordinates" {
 			for _, unit := range usersFieldWs[ws].Units {
 				SendWatchCoordinate(ws, unit)
 			}
 			continue
-		}
+		}*/
 	}
 }
 
@@ -136,7 +142,7 @@ type Clients struct { // структура описывающая клиент�
 	HostileUnits map[string]*objects.Unit // KEY format X:Y
 	Map objects.Map
 	Respawn objects.Respawn
-	CreateZone []*objects.Coordinate
+	CreateZone map[string]*objects.Coordinate
 	GameStat objects.Game
 	Players []objects.UserStat
 }

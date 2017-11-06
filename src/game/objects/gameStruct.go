@@ -31,7 +31,7 @@ type Unit struct {
 	NameUser string
 	Hp int
 	Action bool
-	Target int
+	Target string
 	X int
 	Y int
 }

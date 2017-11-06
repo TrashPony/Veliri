@@ -2,15 +2,11 @@ var SelectCell = [];
 
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
-    var price;
     var cell;
-    var log;
-    var ready;
     var info;
     var coor_id;
     var x;
     var y;
-    var userOwned;
     var idDell;
 
     if (event === "InitPlayer") {
@@ -33,6 +29,13 @@ function ReadResponse(jsonMessage) {
         CreateUnit(jsonMessage);
     }
 
+    if (event === "Ready") {
+        ReadyReader(jsonMessage);
+    }
+
+    if (event === "SelectUnit") {
+        Select(jsonMessage);
+    }
     if (event === "emptyCoordinate") {
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
@@ -53,79 +56,6 @@ function ReadResponse(jsonMessage) {
         }
     }
 
-    if (event === "MouseOver") {
-        info = document.getElementById('unitInfo');
-        info.innerHTML = "Тип Юнита: " + JSON.parse(jsonMessage).type_unit + "<br>" +
-            "Владелец: " + JSON.parse(jsonMessage).user_owned + "<br>" +
-            "hp: " + JSON.parse(jsonMessage).hp + "<br>" +
-            "Ходил: " + JSON.parse(jsonMessage).unit_action + "<br>" +
-            "Цель " + JSON.parse(jsonMessage).target + "<br>" +
-            "Урон: " + JSON.parse(jsonMessage).damage + "<br>" +
-            "Скорость: " + JSON.parse(jsonMessage).move_speed + "<br>" +
-            "Инициатива: " + JSON.parse(jsonMessage).init + "<br>" +
-            "Дальность атаки: " + JSON.parse(jsonMessage).range_attack + "<br>" +
-            "Дальность обзора: " + JSON.parse(jsonMessage).range_view + "<br>" +
-            "Площадь атаки: " + JSON.parse(jsonMessage).area_attack + "<br>" +
-            "Тип атаки: " + JSON.parse(jsonMessage).type_attack
-    }
-    if (event === "Ready") {
-        var error = JSON.parse(jsonMessage).error;
-        phase = JSON.parse(jsonMessage).phase;
-        if (error === "") {
-            ready = document.getElementById("Ready");
-            var phaseBlock = document.getElementById("phase");
-
-            if (phase === "") {
-                ready.innerHTML = "Ты готов!";
-                ready.style.backgroundColor = "#e1720f";
-            } else {
-                ready.innerHTML = "Готов!";
-                if (phase === "move") {
-                    ready.style.backgroundColor = "#A8ADE1";
-                }
-                if (phase === "targeting") {
-                    ready.style.backgroundColor = "#E1C7A6";
-                }
-                if (phase === "attack") {
-                    ready.style.backgroundColor = "#E12D27";
-                }
-                phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
-                var cells = document.getElementsByClassName("fieldUnit create");
-                while (0 < cells.length) {
-                    if (cells[0]) {
-                        cells[0].className = "fieldUnit open";
-                    }
-                }
-            }
-        } else {
-            if (error === "not units") {
-                alert("У вас нет юнитов")
-            }
-        }
-    }
-
-    if (event === "SelectUnit") {
-        console.log(jsonMessage);
-
-        x = JSON.parse(jsonMessage).x;
-        y = JSON.parse(jsonMessage).y;
-        errorMove = JSON.parse(jsonMessage).error;
-        if (errorMove === "") {
-            coor_id = x + ":" + y;
-            cell = document.getElementById(coor_id);
-            if (cell) {
-                var Cell = {};
-                Cell.x = x;
-                Cell.y = y;
-                Cell.id = coor_id;
-                Cell.type = cell.className;
-                SelectCell.push(Cell);
-                cell.style.filter = "brightness(85%)";
-                cell.className = "fieldUnit move";
-            }
-        }
-    }
-
     if (event === "OpenCoordinate") {
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
@@ -140,6 +70,35 @@ function ReadResponse(jsonMessage) {
         DelUnit(idDell)
     }
 
+    if (event === "MouseOver") {
+        info = document.getElementById('unitInfo');
+        if (JSON.parse(jsonMessage).target !== "") {
+            var xy = JSON.parse(jsonMessage).target.split(":");
+            x = xy[0];
+            y = xy[1];
+            var idTarget = x + ":" + y;
+            targetCell = document.getElementById(idTarget);
+
+            var div = document.createElement('div');
+            div.className = "aim mouse";
+            targetCell.appendChild(div);
+        }
+
+        info.innerHTML = "Тип Юнита: " + JSON.parse(jsonMessage).type_unit + "<br>" +
+            "Владелец: " + JSON.parse(jsonMessage).user_owned + "<br>" +
+            "hp: " + JSON.parse(jsonMessage).hp + "<br>" +
+            "Ходил: " + JSON.parse(jsonMessage).unit_action + "<br>" +
+            "Цель " + JSON.parse(jsonMessage).target + "<br>" +
+            "Урон: " + JSON.parse(jsonMessage).damage + "<br>" +
+            "Скорость: " + JSON.parse(jsonMessage).move_speed + "<br>" +
+            "Инициатива: " + JSON.parse(jsonMessage).init + "<br>" +
+            "Дальность атаки: " + JSON.parse(jsonMessage).range_attack + "<br>" +
+            "Дальность обзора: " + JSON.parse(jsonMessage).range_view + "<br>" +
+            "Площадь атаки: " + JSON.parse(jsonMessage).area_attack + "<br>" +
+            "Тип атаки: " + JSON.parse(jsonMessage).type_attack
+
+    }
+
     if (event === "MoveUnit") {
         var errorMove = JSON.parse(jsonMessage).error;
         var action = JSON.parse(jsonMessage).unit_action;
@@ -147,12 +106,62 @@ function ReadResponse(jsonMessage) {
             x = JSON.parse(jsonMessage).x;
             y = JSON.parse(jsonMessage).y;
             idDell = x + ":" + y;
-            var cell = document.getElementById(idDell);
+            cell = document.getElementById(idDell);
             cell.style.filter = "brightness(50%)";
         }
 
         if (errorMove !== null) {
             DelMoveCell()
+        }
+    }
+
+    if (event === "TargetUnit") {
+        var targetCell = document.getElementsByClassName("aim");
+        while (targetCell.length > 0) {
+            targetCell[0].remove();
+        }
+    }
+}
+
+function Select(jsonMessage) {
+    var x = JSON.parse(jsonMessage).x;
+    var y = JSON.parse(jsonMessage).y;
+    var errorSelect = JSON.parse(jsonMessage).error;
+    var phase = JSON.parse(jsonMessage).phase;
+    var coor_id;
+    var cell;
+    var Cell;
+
+    if (errorSelect === "") {
+        if (phase === "move") {
+            coor_id = x + ":" + y;
+            cell = document.getElementById(coor_id);
+            if (cell) {
+                Cell = {};
+                Cell.x = x;
+                Cell.y = y;
+                Cell.id = coor_id;
+                Cell.type = cell.className;
+                SelectCell.push(Cell);
+                cell.style.filter = "brightness(85%)";
+                cell.className = "fieldUnit move";
+            }
+        } else {
+            if (phase === "targeting") {
+                coor_id = x + ":" + y;
+                cell = document.getElementById(coor_id);
+                if (cell) {
+                    Cell = {};
+                    Cell.x = x;
+                    Cell.y = y;
+                    Cell.id = coor_id;
+                    SelectCell.push(Cell);
+
+                    var div = document.createElement('div');
+                    div.className = "aim";
+                    cell.appendChild(div);
+                }
+            }
         }
     }
 }

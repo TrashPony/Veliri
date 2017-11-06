@@ -81,7 +81,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 			if ok {
 				unit.Action = false
 				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
 				initUnit <- unitsParametr
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
@@ -162,7 +162,7 @@ func UpdateWatchZone(client Clients, unitMove objects.Unit, units map[string]*ob
 	}
 
 	var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
 	initUnit <- unitsParametr
 }
 
@@ -186,7 +186,7 @@ func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int)  {
 							userUnits.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit // и добавляем юнита в видимость юнита
 							user.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit   // и в общую карту вражескию юнитов
 							var unitsParametr = InitUnit{Event: "InitUnit", UserName: user.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-								HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+								HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
 							initUnit <- unitsParametr
 						}
 						if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую
@@ -207,7 +207,7 @@ func UpdateHostile(client Clients, oldWatchUnit map[string]*objects.Unit, unit o
 			if !ok {
 				client.HostileUnits[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)] = hostile                                                    // если появился новый враг
 				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
-					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: strconv.Itoa(hostile.Target), X: hostile.X, Y: hostile.Y} // остылаем событие добавления юнита
+					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: hostile.Target, X: hostile.X, Y: hostile.Y} // остылаем событие добавления юнита
 				initUnit <- unitsParametr
 				continue
 			}

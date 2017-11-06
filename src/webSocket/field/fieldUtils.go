@@ -70,7 +70,7 @@ func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){
 
 	for _, unit := range unit.WatchUnit {
 		var unitsParametr = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
+			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
 		initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 	}
 }

@@ -18,6 +18,22 @@
     background-color: #d9d92e;
 }
 
+.aim {
+    width: 50px;
+    height: 50px;
+    background-image: url(/img/aim.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.aim.mouse {
+    width: 50px;
+    height: 50px;
+    background-image: url(/img/aim.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
 .fieldUnit {
     border: 1px solid #000000;
     border-radius: 4px;
@@ -30,6 +46,7 @@
     font-weight:bold;
     font-size: 18px;
     overflow: hidden;
+    opacity: 0.6;
 }
 .fieldUnit:hover {
     border: 1px solid #4a8af4;
@@ -38,34 +55,45 @@
 }
 .fieldUnit.tank{
     background-image: url(/img/tank.png);
-    background-size: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
 }
 .fieldUnit.scout{
     background-image: url(/img/scout.png);
-    background-size: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
+
 }
 .fieldUnit.artillery{
     background-image: url(/img/arta.png);
-    background-size: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 1;
 }
 
 .fieldUnit.respawn {
     background-color: #9c7f55;
     color: #d4d4d4;
+    opacity: 0.6;
 }
 
 .fieldUnit.create {
     background-color: #cefc46;
     color: #d4d4d4;
+    opacity: 0.6;
 }
 
 .fieldUnit.move {
     background-color: #98b0fc;
     color: #d4d4d4;
+    opacity: 0.6;
 }
 
 .fieldUnit.open {
     background-color: #749167;
+    opacity: 0.0;
 }
 
 .fieldInfo {
@@ -137,6 +165,7 @@
 
 .unitType.info.tank {
     background-image: url(/img/tank.png);
+
 }
 .unitType.info.scout {
     background-image: url(/img/scout.png);
@@ -194,7 +223,7 @@
 }
 
 #main {
-    background-color: #292929;
+    background-image: url(/img/terrain.jpg);
     display:inline-block;
     transform: rotateX(15deg) translate(100px, -250px);
     overflow:  auto;

@@ -28,10 +28,11 @@ func InitGame(msg FieldMessage, ws *websocket.Conn)  {
 	respawn := objects.GetRespawns(usersFieldWs[ws].Id, msg.IdGame)
 	usersFieldWs[ws].Respawn = respawn
 	permitCoordinates := mechanics.GetCoordinates(respawn.X, respawn.Y, 2)
+	usersFieldWs[ws].CreateZone = make(map[string]*objects.Coordinate)
 
 	for i := 0; i < len(permitCoordinates); i++ {
 		if  !(permitCoordinates[i].X == respawn.X && permitCoordinates[i].Y == respawn.Y) {
-			usersFieldWs[ws].CreateZone = append(usersFieldWs[ws].CreateZone, permitCoordinates[i])
+			usersFieldWs[ws].CreateZone[strconv.Itoa(permitCoordinates[i].X) + ":" + strconv.Itoa(permitCoordinates[i].Y)] = permitCoordinates[i]
 			var emptyCoordinates = Coordinate{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: permitCoordinates[i].X, Y: permitCoordinates[i].Y}
 			coordiante <- emptyCoordinates
 		}

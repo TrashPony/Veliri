@@ -20,8 +20,8 @@ func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(*obj
 		unitType := objects.GetUnitType(unitType)
 		success, price := Price(unitType.Price, idGame, idPlayer)
 		if success { // если хватило денег то вносим изменения , вероятно тут надо применить транзацию
-			rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-				idGame, unitType.Id, idPlayer, unitType.Hp, true, 0, x, y)
+			rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y, queue_attack) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+				idGame, unitType.Id, idPlayer, unitType.Hp, true, "", x, y, 0)
 			defer rows.Close()
 			if err != nil {
 				log.Fatal(err)

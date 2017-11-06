@@ -70,9 +70,7 @@ function InitUnit(jsonMessage) {
     if (type === "tank") cell.className = "fieldUnit tank";
     if (type === "scout") cell.className = "fieldUnit scout";
     if (type === "artillery") cell.className = "fieldUnit artillery";
-    cell.onclick = function () {
-        SelectUnit(this.id)
-    };
+
     cell.onmouseover = function () {
         mouse_over(this.id);
     };
@@ -84,6 +82,9 @@ function InitUnit(jsonMessage) {
     if (JSON.parse(jsonMessage).user_name === userOwned) {
         cell.style.color = "#fbfdff";
         cell.style.borderColor = "#fbfdff";
+        cell.onclick = function () {
+            SelectUnit(this.id)
+        };
         if (action === "false") {
             cell.style.filter = "brightness(50%)";
         } else {
@@ -92,6 +93,9 @@ function InitUnit(jsonMessage) {
     } else {
         cell.style.color = "#FF0117";
         cell.style.borderColor = "#FF0117";
+        cell.onclick = function () {
+            reply_click(this.id)
+        };
     }
 }
 
@@ -129,7 +133,7 @@ function CreateUnit(jsonMessage) {
     typeUnit = null;
 }
 
-function Ready(jsonMessage) {
+function ReadyReader(jsonMessage) {
     var error = JSON.parse(jsonMessage).error;
     phase = JSON.parse(jsonMessage).phase;
     if (error === "") {

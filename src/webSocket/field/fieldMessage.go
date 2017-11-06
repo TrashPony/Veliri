@@ -60,6 +60,8 @@ type FieldMessage struct {
 	TypeUnit string `json:"type_unit"`
 	X        int	`json:"x"`
 	Y 	     int	`json:"y"`
-	ToX	 int `json:"to_x"`
-	ToY	 int `json:"to_y"`
+	ToX	 	 int `json:"to_x"`
+	ToY	 	 int `json:"to_y"`
+	TargetX	 int `json:"target_x"`
+	TargetY	 int `json:"target_y"`
 }
