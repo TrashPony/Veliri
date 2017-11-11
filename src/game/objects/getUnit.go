@@ -8,7 +8,7 @@ import (
 
 func GetUnit(query string) (map[string]*Unit)  {
 
-	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.movespeed, t.init, t.rangeattack, t.rangeview, t.areaattack, t.typeattack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y FROM action_game_unit as ag, unittype as t, users as u WHERE " + query)
+	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.movespeed, t.init, t.rangeattack, t.rangeview, t.areaattack, t.typeattack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unittype as t, users as u WHERE " + query)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func GetUnit(query string) (map[string]*Unit)  {
 	for rows.Next() {
 		var unit Unit
 		err := rows.Scan(&unit.Id, &unit.IdGame, &unit.Damage, &unit.MoveSpeed, &unit.Init, &unit.RangeAttack, &unit.WatchZone, &unit.AreaAttack,
-			&unit.TypeAttack, &unit.Price, &unit.NameType, &unit.NameUser, &unit.Hp, &unit.Action, &unit.Target, &unit.X, &unit.Y)
+			&unit.TypeAttack, &unit.Price, &unit.NameType, &unit.NameUser, &unit.Hp, &unit.Action, &unit.Target, &unit.X, &unit.Y, &unit.Queue)
 		if err != nil {
 			log.Fatal(err)
 		}

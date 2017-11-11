@@ -2,14 +2,9 @@ package mechanics
 
 import (
 	"../objects"
-	"database/sql"
 )
 
 func MoveUnit(idGame int, unit *objects.Unit, toX int, toY int ) (int, int, error) {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		return 0, 0, err
-	}
 
 	rows, err := db.Query("Select  MAX(queue_attack) FROM action_game_unit WHERE id_game=$1", idGame)
 	if err != nil {

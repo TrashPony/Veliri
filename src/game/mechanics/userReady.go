@@ -1,14 +1,7 @@
 package mechanics
 
-import (
-	"database/sql"
-)
-
 func UserReady(idUser int, idGame int) (string, error, bool)  {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		return "", err, false
-	}
+
 	// устанавливает фраг готовности пользователя в тру
 	rows, err := db.Query("UPDATE action_game_user  SET ready = true WHERE id_user=$1 AND id_game=$2", idUser, idGame)
 	if err != nil {

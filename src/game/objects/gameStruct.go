@@ -34,6 +34,7 @@ type Unit struct {
 	Target string
 	X int
 	Y int
+	Queue int
 }
 
 type UserStat struct {

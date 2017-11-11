@@ -136,6 +136,7 @@ function CreateUnit(jsonMessage) {
 function ReadyReader(jsonMessage) {
     var error = JSON.parse(jsonMessage).error;
     phase = JSON.parse(jsonMessage).phase;
+
     if (error === "") {
         ready = document.getElementById("Ready");
         var phaseBlock = document.getElementById("phase");

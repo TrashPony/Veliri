@@ -74,3 +74,18 @@ func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){
 		initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 	}
 }
+
+func ActionGameUser(players []objects.UserStat)  (activeUser []*Clients) {
+	for _, clients := range usersFieldWs {
+		add := false
+		for _, userStat := range players {
+			if clients.Login == userStat.Name && clients.GameStat.Id == userStat.IdGame {
+				add = true
+			}
+		}
+		if add {
+			activeUser = append(activeUser, clients)
+		}
+	}
+	return
+}

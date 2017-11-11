@@ -139,6 +139,16 @@ function SelectUnit(id) {
 }
 
 function Ready(){
+
+    if (move !== null) {
+        DelMoveCell();
+    }
+
+    var targetCell = document.getElementsByClassName("aim");
+    while (targetCell.length > 0) {
+        targetCell[0].remove();
+    }
+
     sock.send(JSON.stringify({
         event: "Ready",
         id_game: Number(idGame)

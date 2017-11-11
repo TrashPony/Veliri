@@ -83,7 +83,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 
 func FieldReposeSender() {
 	for {
-		resp := <- fieldPipe // TODO : разделить пайп на множество под каждую фазу
+		resp := <- fieldPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {

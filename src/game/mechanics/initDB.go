@@ -1,4 +1,4 @@
-package objects
+package mechanics
 
 import (
 	"database/sql"

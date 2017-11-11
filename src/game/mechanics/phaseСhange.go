@@ -1,14 +1,6 @@
 package mechanics
 
-import (
-	"database/sql"
-)
-
 func PhaseСhange(idGame int)(string, error)  {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		return "", err
-	}
 
 	rows, err := db.Query("Select phase, step from action_games WHERE id=$1", idGame)
 	if err != nil {
