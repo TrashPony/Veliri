@@ -1,16 +1,11 @@
 package objects
 
 import (
-	"database/sql"
-	_ "github.com/lib/pq"
 	"log"
 )
 
 func GetGame(idGame int) (Game) {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	rows, err := db.Query("Select * FROM action_games WHERE id=$1", idGame)
 	if err != nil {
 		log.Fatal(err)

@@ -1,7 +1,6 @@
 package lobby
 
 import (
-	"database/sql"
 	"log"
 )
 
@@ -51,10 +50,7 @@ func InitNewGame(mapName string, game LobbyGames)(string) {
 }
 
 func SendToDB(Name string, idMap int)(string)  {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
-	if err != nil {
-		log.Fatal(err)
-	}
+	var err error
 
 	_ ,err = db.Exec("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5)",    // добавляем новую игру в БД
 		Name, idMap, 0, "Init", "") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
@@ -76,11 +72,8 @@ func SendToDB(Name string, idMap int)(string)  {
 }
 
 func UsersToDB(id string, usersAndRespId map[int]int)  {
+	var err error
 
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game")
-	if err != nil {
-		log.Fatal(err)
-	}
     for userId, respId :=range usersAndRespId {
 		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, respawns_id, price, ready) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
 			id, userId, respId, 100, "false") // id карты, 0 - ход, id респа,  Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена

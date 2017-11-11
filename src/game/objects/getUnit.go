@@ -1,17 +1,12 @@
 package objects
 
 import (
-	"database/sql"
 	"log"
 	"errors"
 	"strconv"
 )
 
 func GetUnit(query string) (map[string]*Unit)  {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.movespeed, t.init, t.rangeattack, t.rangeview, t.areaattack, t.typeattack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y FROM action_game_unit as ag, unittype as t, users as u WHERE " + query)
 	if err != nil {
@@ -60,11 +55,6 @@ func GetXYUnits(idGame int, x int, y int)(Unit, error)  {
 
 func GetUnitType(nameType string) (UnitType) {
 	var unitType UnitType
-
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	rows, err := db.Query("Select * From unittype WHERE type=$1", nameType)
 	if err != nil {

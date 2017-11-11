@@ -1,16 +1,11 @@
 package objects
 
 import (
-	"database/sql"
 	"log"
 	"strconv"
 )
 
 func GetMap(idMap int)(Map)  {
-	db, err := sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.95:5432/game") // подключаемся к нашей бд
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	rows, err := db.Query("Select * FROM map WHERE id =" + strconv.Itoa(idMap))
 	if err != nil {
