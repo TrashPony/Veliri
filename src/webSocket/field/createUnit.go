@@ -38,10 +38,8 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 						} else {
 							client.addHostileUnit(unit)
 						}
-						var unitsParameters = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-							HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-						initUnit <- unitsParameters
-
+						var unitsParameter InitUnit
+						unitsParameter.initUnit(unit, client.Login)
 					}
 				}
 

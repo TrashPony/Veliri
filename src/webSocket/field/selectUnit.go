@@ -40,27 +40,15 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		}
 
 		if client.GameStat.Phase == "targeting" {
-			// TODO атака может быть дальше чем видимость.
-
-			/*for _, xLine := range unit.WatchUnit {
-				for _, targetUnit := range xLine {
-					if targetUnit.NameUser != client.Login {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: client.GameStat.Phase,
-							X: targetUnit.X, Y: targetUnit.Y}
-						fieldPipe <- createCoordinates
-					}
-				}
-			}
-
-			unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
-			if find {
-				unitTarget, ok := unit.WatchUnit[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
-				if ok {
-					var createCoordinates = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
-						X: unitTarget.X, Y: unitTarget.Y}
+			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
+			for _, coordinate := range coordinates {
+				targetUnit, ok := client.HostileUnits[coordinate.X][coordinate.Y]
+				if ok && targetUnit.NameUser != client.Login {
+					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: client.GameStat.Phase,
+						X: targetUnit.X, Y: targetUnit.Y}
 					fieldPipe <- createCoordinates
 				}
-			}*/
+			}
 		}
 	}
 }

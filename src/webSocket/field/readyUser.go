@@ -1,6 +1,6 @@
 package field
 
-/*import (
+import (
 	"websocket-master"
 	"../../game/mechanics"
 	"../../game/objects"
@@ -59,9 +59,8 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 						unit.Target = ""
 					}
 
-					var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-						HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-					initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
+					var unitsParameter InitUnit
+					unitsParameter.initUnit(unit, client.Login)
 				}
 			}
 		}
@@ -91,56 +90,30 @@ func attack(sortUnits []objects.Unit, activeUser []*Clients) {
 						} else {
 							mechanics.UpdateUnit(sortUnits[i].Id, sortUnits[i].Hp)
 							// TODO оповещалка об атаки в сокет
-							// TODO есть бага с отнимаение хп
 							UpdateUnit(sortUnits[i], activeUser)
 						}
 					}
 				}
 			}
 		}
-		go mechanics.UpdateTarget(unit.Id)
+		mechanics.UpdateTarget(unit.Id) // TODO иногда не все цели сбрасываются
 	}
 }
 
-func UpdateUnit(unit objects.Unit, activeUser []*Clients)  {
+func UpdateUnit(unit objects.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
-			realUnit := client.Units[unit.X][unit.Y]
-			unit.WatchUnit = realUnit.WatchUnit
-			unit.Watch = realUnit.Watch
 
-			client.Units[unit.X][unit.Y] = &unit
+			client.addUnit(&unit)
+			var unitsParameter InitUnit
+			unitsParameter.initUnit(&unit, client.Login)
 
-			for yLine := range client.Units {
-				for _, units := range client.Units[yLine] {
-					_, ok := units.WatchUnit[unit.X][unit.Y]
-					if ok { // TODO вынести одинаковые метод по поиску юнитов в отдельный метод, а то чето пиздец
-						units.WatchUnit[unit.X][unit.Y] = &unit
-					}
-				}
-			}
-
-			var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-				HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-			initUnit <- unitsParametr
 		} else {
-
 			_, ok := client.HostileUnits[unit.X][unit.Y]
-
 			if ok {
-				client.HostileUnits[unit.X][unit.Y] = &unit
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-				initUnit <- unitsParametr
-			}
-
-			for yLine := range client.Units {
-				for _, units := range client.Units[yLine] {
-					_, ok := units.WatchUnit[unit.X][unit.Y]
-					if ok {
-						units.WatchUnit[unit.X][unit.Y] = &unit
-					}
-				}
+				client.addHostileUnit(&unit)
+				var unitsParameter InitUnit
+				unitsParameter.initUnit(&unit, client.Login)
 			}
 		}
 	}
@@ -150,80 +123,19 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
 			_, ok := client.Units[unit.X][unit.Y]
-
 			if ok {
-				WatchUnit := client.Units[unit.X][unit.Y].WatchUnit
-				Watch := client.Units[unit.X][unit.Y].Watch
-				unit.WatchUnit = WatchUnit
-				unit.Watch = Watch
 				delete(client.Units[unit.X], unit.Y)
-
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 				coordiante <- resp
-
-				for yLine := range client.Units {
-					for _, units := range client.Units[yLine] {
-						_, ok := units.WatchUnit[unit.X][unit.Y]
-						if ok {
-							delete(units.WatchUnit[unit.X], unit.Y)
-						}
-					}
-				}
-
-				for _, coor := range unit.Watch {
-					del := true
-					for yLine := range client.Units {
-						for _, units := range client.Units[yLine] {
-							_, ok := units.Watch[strconv.Itoa(coor.X)+":"+strconv.Itoa(coor.Y)]
-							if ok {
-								del = false
-								break
-							}
-						}
-					}
-					if del {
-						resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: coor.X, Y: coor.Y}
-						coordiante <- resp
-					}
-				}
-
-				for _, xLine := range unit.WatchUnit {
-					for _, hostile := range xLine {
-						del := true
-						for yLine := range client.Units {
-							for _, units := range client.Units[yLine] {
-								_, ok := units.Watch[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
-								if ok {
-									del = false
-									break
-								}
-							}
-						}
-						if del {
-							delete(client.HostileUnits[hostile.X], hostile.Y)
-							resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y}
-							coordiante <- resp
-						}
-					}
-				}
-			}
-		} else {
-			resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
-			coordiante <- resp
-
-			_, ok := client.HostileUnits[unit.X][unit.Y]
-			if ok {
-				delete(client.HostileUnits[unit.X], unit.Y)
-			}
-			for yLine := range client.Units {
-				for _, units := range client.Units[yLine] {
-					_, ok := units.WatchUnit[unit.X][unit.Y]
-					if ok {
-						delete(units.WatchUnit[unit.X], unit.Y)
-					}
+				// TODO обновление зоны видимости
+			} else {
+				_, ok := client.HostileUnits[unit.X][unit.Y]
+				if ok {
+					delete(client.HostileUnits[unit.X], unit.Y)
+					resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
+					coordiante <- resp
 				}
 			}
 		}
 	}
-}*/
-
+}

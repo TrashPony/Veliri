@@ -73,6 +73,8 @@ func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[string
 }
 
 func SendWatchCoordinate(client *Clients){
+	var unitsParameter InitUnit
+
 	for _, xLine := range client.Watch { // отправляем все открытые координаты
 		for _, coordinate :=range xLine {
 			var emptyCoordinates= InitUnit{Event: "emptyCoordinate", UserName: client.Login, X: coordinate.X, Y: coordinate.Y}
@@ -82,17 +84,13 @@ func SendWatchCoordinate(client *Clients){
 
 	for _, xLine := range client.Units { // отправляем параметры своих юнитов
 		for _, unit := range xLine{
-			var unitsParametr = InitUnit{Event: "InitUnit", UserName:client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-			initUnit <- unitsParametr
+			unitsParameter.initUnit(unit, client.Login)
 		}
 	}
 
 	for _, xLine := range client.HostileUnits { // отправляем параметры вражеских юнитов
 		for _, unit := range xLine{
-			var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-				HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-			initUnit <- unitsParametr
+			unitsParameter.initUnit(unit, client.Login)
 		}
 	}
 }

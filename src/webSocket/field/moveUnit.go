@@ -120,18 +120,13 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 }
 
 func UpdateWatchZone(client *Clients, unitMove objects.Unit, units map[string]*objects.Unit, oldWatchZone map[int]map[int]*objects.Coordinate, oldWatchUnit map[int]map[int]*objects.Unit) {
-
-	client.Watch = nil
-	client.HostileUnits = nil
-
 	client.getAllWatchObject(units)
 	updateOpenCoordinate(client, oldWatchZone)
 	updateHostileUnit(client, oldWatchUnit)
 
 	unit := client.Units[unitMove.X][unitMove.Y]                                                             // отсылаем новое место юнита
-	var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-	initUnit <- unitsParametr
+	var unitsParameter InitUnit
+	unitsParameter.initUnit(unit, client.Login)
 }
 
 func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUser []*Clients) {
@@ -152,9 +147,8 @@ func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUs
 			if okGetXY { // если следующая клетка юнита в зоне видимости
 				delete(user.Watch[unit.X], unit.Y)                                                                       // удаляем пустую клетку
 				user.addHostileUnit(&unit)                                                                               // и добавляем в общую карту вражеских юнитов
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: user.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-				initUnit <- unitsParametr
+				var unitsParameter InitUnit
+				unitsParameter.initUnit(&unit, client.Login)
 			}
 
 			if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую

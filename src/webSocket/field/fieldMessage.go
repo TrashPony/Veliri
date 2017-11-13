@@ -1,5 +1,9 @@
 package field
 
+import (
+	"strconv"
+	"../../game/objects")
+
 type FieldResponse struct {
 	Event    	  string `json:"event"`
 	UserName	  string `json:"user_name"`
@@ -42,6 +46,12 @@ type InitUnit struct {
 	AreaAttack    string `json:"area_attack"`
 	TypeAttack	  string `json:"type_attack"`
 	Error		  string   `json:"error"`
+}
+
+func (msg *InitUnit) initUnit(unit *objects.Unit, login string)  {
+	var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+	initUnit <- unitsParametr
 }
 
 type Coordinate struct {
