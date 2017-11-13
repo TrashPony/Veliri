@@ -1,6 +1,6 @@
 package field
 
-import (
+/*import (
 	"websocket-master"
 	"../../game/mechanics"
 	"../../game/objects"
@@ -225,5 +225,5 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 			}
 		}
 	}
-}
+}*/
 

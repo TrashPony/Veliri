@@ -10,14 +10,15 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
+	client, ok  := usersFieldWs[ws]
 
-	if find {
-		respawn := usersFieldWs[ws].Respawn
-		if usersFieldWs[ws].GameStat.Phase == "move" {
+	if find && ok{
+		respawn := client.Respawn
+		if client.GameStat.Phase == "move" {
 			if unit.Action {
 				coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-				unitsCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].Units)
-				hostileCoordinate := objects.GetUnitsCoordinate(usersFieldWs[ws].HostileUnits)
+				unitsCoordinate := objects.GetUnitsCoordinate(client.Units)
+				hostileCoordinate := objects.GetUnitsCoordinate(client.HostileUnits)
 
 				for _, hostile := range hostileCoordinate {
 					unitsCoordinate = append(unitsCoordinate, hostile)
@@ -27,31 +28,31 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for i := 0; i < len(responseCoordinate); i++ {
 					if !(responseCoordinate[i].X == respawn.X && responseCoordinate[i].Y == respawn.Y) {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: client.GameStat.Phase,
 							X: responseCoordinate[i].X, Y: responseCoordinate[i].Y}
 						fieldPipe <- createCoordinates
 					}
 				}
 			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Error: "unit already move"}
+				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Error: "unit already move"}
 				fieldPipe <- resp
 			}
 		}
 
-		if usersFieldWs[ws].GameStat.Phase == "targeting" {
+		if client.GameStat.Phase == "targeting" {
 			// TODO атака может быть дальше чем видимость.
 
-			for _, xLine := range unit.WatchUnit {
+			/*for _, xLine := range unit.WatchUnit {
 				for _, targetUnit := range xLine {
-					if targetUnit.NameUser != usersFieldWs[ws].Login {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
+					if targetUnit.NameUser != client.Login {
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: client.GameStat.Phase,
 							X: targetUnit.X, Y: targetUnit.Y}
 						fieldPipe <- createCoordinates
 					}
 				}
 			}
 
-			/*unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
+			unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
 			if find {
 				unitTarget, ok := unit.WatchUnit[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
 				if ok {

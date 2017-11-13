@@ -22,33 +22,31 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 			if createError == nil {
 
 				units := objects.GetAllUnits(msg.IdGame)
-				unit.Watch, unit.WatchUnit, _ = PermissionCoordinates(*client, unit, units)
+				watchCoordinate, WatchUnit, _ := PermissionCoordinates(client, unit, units)
+				client.addUnit(unit)
 
-				for _, coordinate := range unit.Watch {
+				for _, coordinate := range watchCoordinate {
+					client.addCoordinate(coordinate)
 					var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
 					fieldPipe <- emptyCoordinates
 				}
 
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
-				fieldPipe <- resp
-
-				/*for _, userStat := range usersFieldWs[ws].Players {
-					if userStat.Name == usersFieldWs[ws].Login {
-						var unitsParametr = InitUnit{Event: "InitUnit", UserName: userStat.Name, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-							HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target), X: unit.X, Y: unit.Y}
-						initUnit <- unitsParametr
-					}
-				}*/
-
-				for _, xLine := range unit.WatchUnit {
+				for _, xLine := range WatchUnit {
 					for _, unit := range xLine {
-						var unitsParametr = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+						if client.Login == unit.NameUser {
+							client.addUnit(unit)
+						} else {
+							client.addHostileUnit(unit)
+						}
+						var unitsParameters = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 							HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-						initUnit <- unitsParametr
+						initUnit <- unitsParameters
+
 					}
 				}
 
-				usersFieldWs[ws].addUnit(unit)
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
+				fieldPipe <- resp
 
 			} else {
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}

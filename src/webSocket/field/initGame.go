@@ -41,27 +41,7 @@ func InitGame(msg FieldMessage, ws *websocket.Conn) {
 	fieldPipe <- respawnParametr
 
 	units := objects.GetAllUnits(msg.IdGame)
-
-	for _, unit := range units {
-		var err error
-		client, ok := usersFieldWs[ws]
-		if ok {
-			unit.Watch, unit.WatchUnit, err = PermissionCoordinates(*client, unit, units)
-
-			if err != nil {
-				continue
-			}
-
-			for _, xLine := range unit.WatchUnit {
-				for _, hostile := range xLine {
-					if hostile.NameUser != usersFieldWs[ws].Login {
-						client.addHostileUnit(hostile)
-					}
-				}
-			}
-
-			client.addUnit(unit)
-			SendWatchCoordinate(ws, unit)
-		}
-	}
+	client, _ :=usersFieldWs[ws]
+	client.getAllWatchObject(units)
+	SendWatchCoordinate(usersFieldWs[ws])
 }
