@@ -2,7 +2,6 @@ package field
 
 import (
 	"websocket-master"
-	"strconv"
 	"../../game/objects"
 	"../../game/mechanics"
 )
@@ -10,7 +9,8 @@ import (
 func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 
-	unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
+	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
+
 	if find {
 		respawn := usersFieldWs[ws].Respawn
 		if usersFieldWs[ws].GameStat.Phase == "move" {
@@ -41,11 +41,13 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		if usersFieldWs[ws].GameStat.Phase == "targeting" {
 			// TODO атака может быть дальше чем видимость.
 
-			for _, targetUnit := range unit.WatchUnit {
-				if targetUnit.NameUser != usersFieldWs[ws].Login {
-					var createCoordinates = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
-						X: targetUnit.X, Y: targetUnit.Y}
-					fieldPipe <- createCoordinates
+			for _, xLine := range unit.WatchUnit {
+				for _, targetUnit := range xLine {
+					if targetUnit.NameUser != usersFieldWs[ws].Login {
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: usersFieldWs[ws].GameStat.Phase,
+							X: targetUnit.X, Y: targetUnit.Y}
+						fieldPipe <- createCoordinates
+					}
 				}
 			}
 

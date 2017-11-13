@@ -51,16 +51,18 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 				client.GameStat.Step += 1
 			}
 
-			for _, unit := range client.Units {
-				unit.Action = true
+			for yLine := range client.Units {
+				for _, unit := range client.Units[yLine] {
+					unit.Action = true
 
-				if phase == "move" {
-					unit.Target = ""
+					if phase == "move" {
+						unit.Target = ""
+					}
+
+					var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+						HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
+					initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 				}
-
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-				initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
 			}
 		}
 	} else {
@@ -103,16 +105,18 @@ func attack(sortUnits []objects.Unit, activeUser []*Clients) {
 func UpdateUnit(unit objects.Unit, activeUser []*Clients)  {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
-			realUnit := client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
+			realUnit := client.Units[unit.X][unit.Y]
 			unit.WatchUnit = realUnit.WatchUnit
 			unit.Watch = realUnit.Watch
 
-			client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit
+			client.Units[unit.X][unit.Y] = &unit
 
-			for _, units := range client.Units {
-				_, ok := units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
-				if ok { // TODO вынести одинаковые метод по поиску юнитов в отдельный метод, а то чето пиздец
-					units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit
+			for yLine := range client.Units {
+				for _, units := range client.Units[yLine] {
+					_, ok := units.WatchUnit[unit.X][unit.Y]
+					if ok { // TODO вынести одинаковые метод по поиску юнитов в отдельный метод, а то чето пиздец
+						units.WatchUnit[unit.X][unit.Y] = &unit
+					}
 				}
 			}
 
@@ -120,19 +124,22 @@ func UpdateUnit(unit objects.Unit, activeUser []*Clients)  {
 				HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
 			initUnit <- unitsParametr
 		} else {
-			_, ok := client.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
+
+			_, ok := client.HostileUnits[unit.X][unit.Y]
 
 			if ok {
-				client.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit
+				client.HostileUnits[unit.X][unit.Y] = &unit
 				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
 				initUnit <- unitsParametr
 			}
 
-			for _, units := range client.Units {
-				_, ok := units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
-				if ok {
-					units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)] = &unit
+			for yLine := range client.Units {
+				for _, units := range client.Units[yLine] {
+					_, ok := units.WatchUnit[unit.X][unit.Y]
+					if ok {
+						units.WatchUnit[unit.X][unit.Y] = &unit
+					}
 				}
 			}
 		}
@@ -142,32 +149,36 @@ func UpdateUnit(unit objects.Unit, activeUser []*Clients)  {
 func DelUnit(unit objects.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
-			_, ok := client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
+			_, ok := client.Units[unit.X][unit.Y]
 
 			if ok {
-				WatchUnit := client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)].WatchUnit
-				Watch := client.Units[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)].Watch
+				WatchUnit := client.Units[unit.X][unit.Y].WatchUnit
+				Watch := client.Units[unit.X][unit.Y].Watch
 				unit.WatchUnit = WatchUnit
 				unit.Watch = Watch
-				delete(client.Units, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))
+				delete(client.Units[unit.X], unit.Y)
 
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 				coordiante <- resp
 
-				for _, units := range client.Units {
-					_, ok := units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
-					if ok {
-						delete(units.WatchUnit, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))
+				for yLine := range client.Units {
+					for _, units := range client.Units[yLine] {
+						_, ok := units.WatchUnit[unit.X][unit.Y]
+						if ok {
+							delete(units.WatchUnit[unit.X], unit.Y)
+						}
 					}
 				}
 
 				for _, coor := range unit.Watch {
 					del := true
-					for _, units := range client.Units {
-						_, ok := units.Watch[strconv.Itoa(coor.X)+":"+strconv.Itoa(coor.Y)]
-						if ok {
-							del = false
-							break
+					for yLine := range client.Units {
+						for _, units := range client.Units[yLine] {
+							_, ok := units.Watch[strconv.Itoa(coor.X)+":"+strconv.Itoa(coor.Y)]
+							if ok {
+								del = false
+								break
+							}
 						}
 					}
 					if del {
@@ -176,19 +187,23 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 					}
 				}
 
-				for _, hostile := range unit.WatchUnit {
-					del := true
-					for _, units := range client.Units {
-						_, ok := units.Watch[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
-						if ok {
-							del = false
-							break
+				for _, xLine := range unit.WatchUnit {
+					for _, hostile := range xLine {
+						del := true
+						for yLine := range client.Units {
+							for _, units := range client.Units[yLine] {
+								_, ok := units.Watch[strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y)]
+								if ok {
+									del = false
+									break
+								}
+							}
 						}
-					}
-					if del {
-						delete(client.HostileUnits, strconv.Itoa(hostile.X)+":"+strconv.Itoa(hostile.Y))
-						resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y}
-						coordiante <- resp
+						if del {
+							delete(client.HostileUnits[hostile.X], hostile.Y)
+							resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y}
+							coordiante <- resp
+						}
 					}
 				}
 			}
@@ -196,14 +211,16 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 			resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 			coordiante <- resp
 
-			_, ok := client.HostileUnits[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
+			_, ok := client.HostileUnits[unit.X][unit.Y]
 			if ok {
-				delete(client.HostileUnits, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))
+				delete(client.HostileUnits[unit.X], unit.Y)
 			}
-			for _, units := range client.Units {
-				_, ok := units.WatchUnit[strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y)]
-				if ok {
-					delete(units.WatchUnit, strconv.Itoa(unit.X)+":"+strconv.Itoa(unit.Y))
+			for yLine := range client.Units {
+				for _, units := range client.Units[yLine] {
+					_, ok := units.WatchUnit[unit.X][unit.Y]
+					if ok {
+						delete(units.WatchUnit[unit.X], unit.Y)
+					}
 				}
 			}
 		}

@@ -6,9 +6,9 @@ import (
 )
 
 func MouseOver(msg FieldMessage, ws *websocket.Conn) {
-	unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X) + ":" + strconv.Itoa(msg.Y)]
+	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	if !find {
-		unit, find = usersFieldWs[ws].HostileUnits[strconv.Itoa(msg.X) + ":" + strconv.Itoa(msg.Y)]
+		unit, find = usersFieldWs[ws].HostileUnits[msg.X][msg.Y]
 	}
 
 	if find {

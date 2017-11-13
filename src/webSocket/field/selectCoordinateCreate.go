@@ -3,7 +3,6 @@ package field
 import (
 	"websocket-master"
 	"../../game/objects"
-	"strconv"
 )
 
 func SelectCoordinateCreate(ws *websocket.Conn)  {
@@ -11,7 +10,7 @@ func SelectCoordinateCreate(ws *websocket.Conn)  {
 	respawn := usersFieldWs[ws].Respawn
 
 	for _, coordinate := range usersFieldWs[ws].CreateZone {
-		_, ok := usersFieldWs[ws].Units[strconv.Itoa(coordinate.X) + ":" + strconv.Itoa(coordinate.Y)]
+		_, ok := usersFieldWs[ws].Units[coordinate.X][coordinate.Y]
 		if !ok {
 			coordinates = append(coordinates, coordinate)
 		}

@@ -23,12 +23,11 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) []objects.Coordinate  {
+func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab []objects.Coordinate)  {
 	mb := map[objects.Coordinate]bool{}
 	for _, x := range slice2 {
 		mb[*x] = true
 	}
-	ab := []objects.Coordinate{}
 	for _, x := range slice1 {
 		if _, ok := mb[*x]; !ok {
 			ab = append(ab, *x)
@@ -37,9 +36,9 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) []o
 	return ab
 }
 
-func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]*objects.Unit) ( map[string]*objects.Coordinate, map[string]*objects.Unit, error) {
-	unitsCoordinate := make(map[string]*objects.Unit)
-	allCoordinate :=  make(map[string]*objects.Coordinate)
+func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
+	allCoordinate = make(map[string]*objects.Coordinate)
+	unitsCoordinate =  make(map[int]map[int]*objects.Unit)
 	login := client.Login
 	respawn := client.Respawn
 
@@ -53,7 +52,12 @@ func PermissionCoordinates(client Clients, unit *objects.Unit, units map[string]
 			y := strconv.Itoa(PermissCoordinates[i].Y)
 			unitInMap, ok := units[x + ":"+ y]
 			if ok {
-				unitsCoordinate[strconv.Itoa(PermissCoordinates[i].X)+":"+strconv.Itoa(PermissCoordinates[i].Y)] = unitInMap
+				if unitsCoordinate[PermissCoordinates[i].X] != nil {
+					unitsCoordinate[PermissCoordinates[i].X][PermissCoordinates[i].Y] = unitInMap
+				} else {
+					unitsCoordinate[PermissCoordinates[i].X] = make(map[int]*objects.Unit)
+					unitsCoordinate[PermissCoordinates[i].X][PermissCoordinates[i].Y] = unitInMap
+				}
 			}
 		}
 	} else {
@@ -68,10 +72,12 @@ func SendWatchCoordinate(ws *websocket.Conn, unit *objects.Unit){
 		initUnit <- emptyCoordinates
 	}
 
-	for _, unit := range unit.WatchUnit {
-		var unitsParametr = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+	for _, xLine := range unit.WatchUnit {
+		for _, unit := range xLine{
+			var unitsParametr = InitUnit{Event: "InitUnit", UserName: usersFieldWs[ws].Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y}
-		initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
+			initUnit <- unitsParametr // отправляем параметры каждого юнита отдельно
+		}
 	}
 }
 

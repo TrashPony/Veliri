@@ -23,7 +23,7 @@ type Unit struct {
 	RangeAttack int
 	WatchZone int
 	Watch map[string]*Coordinate //KEY format X:Y
-	WatchUnit map[string]*Unit //KEY format X:Y
+	WatchUnit map[int]map[int]*Unit // map[X]map[Y]
 	AreaAttack int
 	TypeAttack string
 	Price int
@@ -35,6 +35,20 @@ type Unit struct {
 	X int
 	Y int
 	Queue int
+}
+
+func (unit *Unit) AddWatchUnit(watchUnit *Unit) {
+	if unit.WatchUnit != nil {
+		if unit.WatchUnit[watchUnit.X] != nil {
+			unit.WatchUnit[watchUnit.X][watchUnit.Y] = watchUnit
+		} else {
+			unit.WatchUnit[watchUnit.X] = make(map[int]*Unit)
+			unit.AddWatchUnit(watchUnit)
+		}
+	} else {
+		unit.WatchUnit = make(map[int]map[int]*Unit)
+		unit.AddWatchUnit(watchUnit)
+	}
 }
 
 type UserStat struct {

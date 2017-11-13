@@ -138,8 +138,8 @@ func CoordinateSender() {
 type Clients struct { // структура описывающая клиента ws соеденение
 	Login string
 	Id int
-	Units map[string]*objects.Unit // KEY format X:Y
-	HostileUnits map[string]*objects.Unit // KEY format X:Y
+	Units map[int]map[int]*objects.Unit // map[X]map[Y]
+	HostileUnits map[int]map[int]*objects.Unit // map[X]map[Y]
 	Map objects.Map
 	Respawn objects.Respawn
 	CreateZone map[string]*objects.Coordinate
@@ -147,3 +147,30 @@ type Clients struct { // структура описывающая клиент�
 	Players []objects.UserStat
 }
 
+func (client *Clients) addUnit(unit *objects.Unit) {
+	if client.Units != nil {
+		if client.Units[unit.X] != nil {
+			client.Units[unit.X][unit.Y] = unit
+		} else {
+			client.Units[unit.X] = make(map[int]*objects.Unit)
+			client.addUnit(unit)
+		}
+	} else {
+		client.Units = make(map[int]map[int]*objects.Unit)
+		client.addUnit(unit)
+	}
+}
+
+func (client *Clients) addHostileUnit(hostile *objects.Unit) {
+	if client.HostileUnits != nil {
+		if client.HostileUnits[hostile.X] != nil {
+			client.HostileUnits[hostile.X][hostile.Y] = hostile
+		} else {
+			client.HostileUnits[hostile.X] = make(map[int]*objects.Unit)
+			client.addHostileUnit(hostile)
+		}
+	} else {
+		client.HostileUnits = make(map[int]map[int]*objects.Unit)
+		client.addHostileUnit(hostile)
+	}
+}

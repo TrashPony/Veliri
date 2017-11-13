@@ -8,7 +8,7 @@ import (
 )
 
 func TargetUnit(msg FieldMessage, ws *websocket.Conn)  {
-	unit, find := usersFieldWs[ws].Units[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
+	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	client := usersFieldWs[ws]
 
 	if find {
@@ -16,7 +16,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn)  {
 		passed := false
 		for _, target := range coordinates {
 			if target.X == msg.TargetX && target.Y == msg.TargetY {
-				target, ok := client.HostileUnits[strconv.Itoa(msg.TargetX)+":"+strconv.Itoa(msg.TargetY)]
+				target, ok := client.HostileUnits[msg.TargetX][msg.TargetY]
 				if ok {
 					go mechanics.SetTarget(*unit, strconv.Itoa(target.X) + ":" + strconv.Itoa(target.Y), client.GameStat.Id)
 					unit.Target = strconv.Itoa(target.X) + ":" + strconv.Itoa(target.Y)
@@ -33,7 +33,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn)  {
 				for _, user := range usersFieldWs {
 					if user.Login != client.Login {
 						if gameUser.Name == user.Login && client.GameStat.Id == user.GameStat.Id {
-							hostileUnit, ok := user.HostileUnits[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
+							hostileUnit, ok := user.HostileUnits[msg.X][msg.Y]
 							if ok {
 								hostileUnit.Target = strconv.Itoa(msg.TargetX) + ":" + strconv.Itoa(msg.TargetY)
 							}
