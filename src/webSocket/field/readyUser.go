@@ -16,8 +16,8 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		game.Stat.Phase = phase
 	}
 	if phase == "attack" {
-		sortUnits := mechanics.AttackPhase(msg.IdGame) // TODO обновить информацию юнитов у всех юзеров в сети
-		attack(sortUnits, activeUser)				   // TODO настроить ссылки и очереди внутри игры не из бд
+		sortUnits := mechanics.AttackPhase(game.getUnits())
+		attack(sortUnits, activeUser)
 
 		for _, client := range activeUser {
 			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
@@ -72,7 +72,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 }
 
 
-func attack(sortUnits []objects.Unit, activeUser []*Clients) {
+func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
 			if unit.Target != nil {
@@ -93,36 +93,38 @@ func attack(sortUnits []objects.Unit, activeUser []*Clients) {
 			}
 		}
 		mechanics.UpdateTarget(unit.Id)
+		unit.Target = nil
+		unit.Queue  = 0
 	}
 }
 
-func UpdateUnit(unit objects.Unit, activeUser []*Clients) {
+func UpdateUnit(unit *objects.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
 
-			client.addUnit(&unit)
+			client.addUnit(unit)
 
 			var unitsParameter InitUnit
-			unitsParameter.initUnit(&unit, client.Login)
+			unitsParameter.initUnit(unit, client.Login)
 
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
 			if ok {
-				client.addHostileUnit(&unit)
+				client.addHostileUnit(unit)
 				var unitsParameter InitUnit
-				unitsParameter.initUnit(&unit, client.Login)
+				unitsParameter.initUnit(unit, client.Login)
 			}
 		}
 	}
 }
 
-func DelUnit(unit objects.Unit, activeUser []*Clients) {
+func DelUnit(unit *objects.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
 			_, ok := client.Units[unit.X][unit.Y]
 			if ok {
 				delete(client.Units[unit.X], unit.Y)
-				Games[client.GameID].delUnit(&unit)
+				Games[client.GameID].delUnit(unit)
 
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 				coordiante <- resp
@@ -131,8 +133,6 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 			}
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
-			println(ok)
-			println(client.Login)
 			if ok {
 				delete(client.HostileUnits[unit.X], unit.Y)
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}

@@ -13,7 +13,6 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	client, ok := usersFieldWs[ws]
-	// TODO
 	if find && ok {
 		if unit.Action {
 			respawn := client.Respawn
@@ -63,11 +62,13 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 		x, y, errorMove := Move(unit, path, client, end)
 		if errorMove != nil {
 			if errorMove.Error() != "cell is busy" {
-				mechanics.MoveUnit(idGame, unit, x, y)
+				queue := mechanics.MoveUnit(idGame, unit, x, y)
+				unit.Queue = queue
 				break
 			}
 		} else {
-			mechanics.MoveUnit(idGame, unit, x, y)
+			queue := mechanics.MoveUnit(idGame, unit, x, y)
+			unit.Queue = queue
 			break
 		}
 	}
@@ -109,7 +110,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 
 		game.addUnit(unit)
 
-		delete(client.Units[x], y)        // TODO проверить правильность ссылки вывести коорлдинату без изменения в этом поле
+		delete(client.Units[x], y)
 		client.addUnit(unit)              // добавляем новое
 
 		client.updateWatchZone(game.getUnits())       // отправляем открытые ячейки, удаляем закрытые

@@ -45,7 +45,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 		}
 
 		if msg.Event == "CreateUnit" {
-			CreateUnit(msg, ws) // TODO второй игрок не может сразу начать строить юнитов
+			CreateUnit(msg, ws)
 			continue
 		}
 

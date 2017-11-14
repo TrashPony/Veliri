@@ -5,18 +5,18 @@ import (
 	"sort"
 )
 
-func AttackPhase(idGame int) (sortUnits []objects.Unit){
-	Units := objects.GetAllUnits(idGame)
+func AttackPhase(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit){
+	//Units := objects.GetAllUnits(idGame)
 	sortUnits = createQueueAttack(Units)
 	return
 }
 
-func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []objects.Unit)  {
+func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []*objects.Unit)  {
 
 	for _, xLine := range Units {
 		for _, unit := range xLine {
 			unit.Init = unit.Init + unit.Queue
-			sortUnits = append(sortUnits, *unit)
+			sortUnits = append(sortUnits, unit)
 		}
 	}
 
