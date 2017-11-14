@@ -11,11 +11,13 @@ func AttackPhase(idGame int) (sortUnits []objects.Unit){
 	return
 }
 
-func createQueueAttack(Units map[string]*objects.Unit)(sortUnits []objects.Unit)  {
+func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []objects.Unit)  {
 
-	for _, unit := range Units {
-		unit.Init = unit.Init + unit.Queue
-		sortUnits = append(sortUnits, *unit)
+	for _, xLine := range Units {
+		for _, unit := range xLine {
+			unit.Init = unit.Init + unit.Queue
+			sortUnits = append(sortUnits, *unit)
+		}
 	}
 
 	sort.Slice(sortUnits, func(i, j int) bool {
@@ -40,8 +42,9 @@ func UpdateUnit(id int, hp int) {
 }
 
 func UpdateTarget(id int)  {
-	_, err := db.Exec("UPDATE action_game_unit SET target=$2 WHERE id=$1", id, "")
+	_, err := db.Exec("UPDATE action_game_unit SET target=$2, queue_attack=$3 WHERE id=$1", id, "", 0)
 	if err != nil {
 		println("нет такого юнита") // TODO
 	}
+
 }

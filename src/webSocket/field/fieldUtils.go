@@ -36,22 +36,16 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab
 	return ab
 }
 
-func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[string]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
+func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]map[int]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
 	allCoordinate = make(map[string]*objects.Coordinate)
 	unitsCoordinate =  make(map[int]map[int]*objects.Unit)
 	login := client.Login
 	respawn := client.Respawn
 
 	if login == unit.NameUser {
-
 		PermissCoordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.WatchZone)
-
 		for i := 0; i < len(PermissCoordinates); i++ {
-
-			x := strconv.Itoa(PermissCoordinates[i].X)
-			y := strconv.Itoa(PermissCoordinates[i].Y)
-
-			unitInMap, ok := units[x + ":"+ y]
+			unitInMap, ok := units[PermissCoordinates[i].X][PermissCoordinates[i].Y]
 
 			if ok {
 				if unitsCoordinate[PermissCoordinates[i].X] != nil {
@@ -95,11 +89,11 @@ func SendWatchCoordinate(client *Clients){
 	}
 }
 
-func ActionGameUser(players []objects.UserStat)  (activeUser []*Clients) {
+func ActionGameUser(players []*objects.UserStat)  (activeUser []*Clients) {
 	for _, clients := range usersFieldWs {
 		add := false
 		for _, userStat := range players {
-			if clients.Login == userStat.Name && clients.GameStat.Id == userStat.IdGame {
+			if clients.Login == userStat.Name && clients.GameID == userStat.IdGame {
 				add = true
 			}
 		}

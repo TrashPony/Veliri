@@ -12,6 +12,7 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 	coordinates := usersFieldWs[ws].CreateZone
 	respawn := usersFieldWs[ws].Respawn
 	client, ok := usersFieldWs[ws]
+	game := Games[client.GameID]
 	if !ok {
 		delete(usersFieldWs, ws)
 	} else {
@@ -24,6 +25,7 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 				units := objects.GetAllUnits(msg.IdGame)
 				watchCoordinate, WatchUnit, _ := PermissionCoordinates(client, unit, units)
 				client.addUnit(unit)
+				game.addUnit(unit)
 
 				for _, coordinate := range watchCoordinate {
 					client.addCoordinate(coordinate)
@@ -33,8 +35,8 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for _, xLine := range WatchUnit {
 					for _, unit := range xLine {
-						if client.Login == unit.NameUser {
-							client.addUnit(unit)
+						if client.Login != unit.NameUser {
+							//client.addUnit(unit)
 						} else {
 							client.addHostileUnit(unit)
 						}

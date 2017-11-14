@@ -11,6 +11,7 @@ var fieldPipe = make(chan FieldResponse)
 var initUnit  = make(chan InitUnit)
 var coordiante = make(chan Coordinate)
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
+var Games = make(map[int]*ActiveGame)
 
 var mutex = &sync.Mutex{}
 

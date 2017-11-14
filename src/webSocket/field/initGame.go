@@ -8,20 +8,34 @@ import (
 )
 
 func InitGame(msg FieldMessage, ws *websocket.Conn) {
-	gameStat := objects.GetGame(msg.IdGame)
-	userStat := objects.GetUserStat(msg.IdGame)
-	usersFieldWs[ws].Players = userStat  // добавляем параметры всех игроков к обьекту пользователя
-	usersFieldWs[ws].GameStat = gameStat // добавляем информацию об игре
-	for _, userStat := range usersFieldWs[ws].Players {
+
+	Game, ok := Games[msg.IdGame]
+
+	if !ok {
+		var newGame ActiveGame
+		gameStat := objects.GetGame(msg.IdGame)
+		userStat := objects.GetUserStat(msg.IdGame)
+		mp := objects.GetMap(gameStat.IdMap)
+		units := objects.GetAllUnits(msg.IdGame)
+
+		newGame.addPlayers(userStat) // добавляем параметры всех игроков к обьекту игры
+		newGame.addStat(&gameStat)   // добавляем информацию об игре в обьект игры
+		newGame.addMap(&mp)          // добавляем информацию об карте
+		newGame.addUnits(units)
+
+		Games[newGame.Stat.Id] = &newGame   // добавляем новую игру в карту активных игор
+		Game = &newGame
+	}
+
+	for _, userStat := range Game.getPlayers() {
 		if userStat.Name == usersFieldWs[ws].Login {
 			var playersParam = FieldResponse{Event: "InitPlayer", UserName: usersFieldWs[ws].Login, PlayerPrice: userStat.Price,
-				GameStep: gameStat.Step, GamePhase: gameStat.Phase, UserReady: userStat.Ready}
+				GameStep: Game.Stat.Step, GamePhase: Game.Stat.Phase, UserReady: userStat.Ready}
 			fieldPipe <- playersParam // отправляет параметры игрока
 		}
 	}
-	mp := objects.GetMap(gameStat.IdMap)
-	usersFieldWs[ws].Map = mp
-	var mapParam = FieldResponse{Event: "InitMap", UserName: usersFieldWs[ws].Login, NameMap: mp.Name, TypeMap: mp.Type, XMap: mp.Xsize, YMap: mp.Ysize}
+
+	var mapParam = FieldResponse{Event: "InitMap", UserName: usersFieldWs[ws].Login, NameMap: Game.Map.Name, TypeMap: Game.Map.Type, XMap: Game.Map.Xsize, YMap: Game.Map.Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
 	respawn := objects.GetRespawns(usersFieldWs[ws].Id, msg.IdGame)
@@ -37,11 +51,11 @@ func InitGame(msg FieldMessage, ws *websocket.Conn) {
 		}
 	}
 
-	var respawnParametr= FieldResponse{Event: "InitResp", UserName: usersFieldWs[ws].Login, RespawnX: respawn.X, RespawnY: respawn.Y}
-	fieldPipe <- respawnParametr
+	var respawnParameter= FieldResponse{Event: "InitResp", UserName: usersFieldWs[ws].Login, RespawnX: respawn.X, RespawnY: respawn.Y}
+	fieldPipe <- respawnParameter
 
-	units := objects.GetAllUnits(msg.IdGame)
 	client, _ :=usersFieldWs[ws]
-	client.getAllWatchObject(units)
+	client.getAllWatchObject(Game.getUnits())
+	client.GameID = Game.Stat.Id // добавляем принадлежность игрока в игре
 	SendWatchCoordinate(usersFieldWs[ws])
 }

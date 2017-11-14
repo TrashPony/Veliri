@@ -29,7 +29,7 @@ type Unit struct {
 	NameUser string
 	Hp int
 	Action bool
-	Target string
+	Target *Coordinate
 	X int
 	Y int
 	Queue int

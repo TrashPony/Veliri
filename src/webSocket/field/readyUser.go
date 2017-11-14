@@ -4,23 +4,24 @@ import (
 	"websocket-master"
 	"../../game/mechanics"
 	"../../game/objects"
-	"strconv"
-	"strings"
 )
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 	phase, err, phaseChange := mechanics.UserReady(usersFieldWs[ws].Id, msg.IdGame)
-	activeUser := ActionGameUser(usersFieldWs[ws].Players)
-
+	game := Games[usersFieldWs[ws].GameID]
+	players := game.getPlayers()
+	activeUser := ActionGameUser(players)
+	if phase != "" { // TODO
+		game.Stat.Phase = phase
+	}
 	if phase == "attack" {
 		sortUnits := mechanics.AttackPhase(msg.IdGame) // TODO обновить информацию юнитов у всех юзеров в сети
-		attack(sortUnits, activeUser)
+		attack(sortUnits, activeUser)				   // TODO настроить ссылки и очереди внутри игры не из бд
 
 		for _, client := range activeUser {
 			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
 			fieldPipe <- resp
-			client.GameStat.Phase = phase
 		}
 
 		phaseChange = true
@@ -44,11 +45,11 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		for _, client := range activeUser {
 			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
 			fieldPipe <- resp
-			client.GameStat.Phase = phase
+			game.Stat.Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: client.GameStat.Step + 1}
-				client.GameStat.Step += 1
+				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: game.Stat.Step + 1}
+				game.Stat.Step += 1
 			}
 
 			for yLine := range client.Units {
@@ -56,7 +57,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 					unit.Action = true
 
 					if phase == "move" {
-						unit.Target = ""
+						unit.Target = nil
 					}
 
 					var unitsParameter InitUnit
@@ -74,14 +75,9 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 func attack(sortUnits []objects.Unit, activeUser []*Clients) {
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
-			if unit.Target != "" {
-				targetCoordinate := strings.Split(unit.Target, ":") // X:Y
-
-				x, _ := strconv.Atoi(targetCoordinate[0])
-				y, _ := strconv.Atoi(targetCoordinate[1])
-
+			if unit.Target != nil {
 				for i, target := range sortUnits {
-					if target.X == x && target.Y == y {
+					if target.X == unit.Target.X && target.Y == unit.Target.Y {
 						sortUnits[i].Hp = target.Hp - unit.Damage
 						if sortUnits[i].Hp <= 0 {
 							mechanics.DelUnit(sortUnits[i].Id)
@@ -96,7 +92,7 @@ func attack(sortUnits []objects.Unit, activeUser []*Clients) {
 				}
 			}
 		}
-		mechanics.UpdateTarget(unit.Id) // TODO иногда не все цели сбрасываются
+		mechanics.UpdateTarget(unit.Id)
 	}
 }
 
@@ -105,6 +101,7 @@ func UpdateUnit(unit objects.Unit, activeUser []*Clients) {
 		if unit.NameUser == client.Login {
 
 			client.addUnit(&unit)
+
 			var unitsParameter InitUnit
 			unitsParameter.initUnit(&unit, client.Login)
 
@@ -125,17 +122,21 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 			_, ok := client.Units[unit.X][unit.Y]
 			if ok {
 				delete(client.Units[unit.X], unit.Y)
+				Games[client.GameID].delUnit(&unit)
+
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 				coordiante <- resp
-				units := objects.GetAllUnits(client.GameStat.Id)
+				units := Games[client.GameID].getUnits()
 				client.updateWatchZone(units)
-			} else {
-				_, ok := client.HostileUnits[unit.X][unit.Y]
-				if ok {
-					delete(client.HostileUnits[unit.X], unit.Y)
-					resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
-					coordiante <- resp
-				}
+			}
+		} else {
+			_, ok := client.HostileUnits[unit.X][unit.Y]
+			println(ok)
+			println(client.Login)
+			if ok {
+				delete(client.HostileUnits[unit.X], unit.Y)
+				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
+				coordiante <- resp
 			}
 		}
 	}

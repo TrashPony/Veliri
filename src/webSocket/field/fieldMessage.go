@@ -49,9 +49,15 @@ type InitUnit struct {
 }
 
 func (msg *InitUnit) initUnit(unit *objects.Unit, login string)  {
-	var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-		HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-	initUnit <- unitsParametr
+	if unit.Target == nil {
+		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+		initUnit <- unitsParametr
+	} else {
+		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+		initUnit <- unitsParametr
+	}
 }
 
 type Coordinate struct {

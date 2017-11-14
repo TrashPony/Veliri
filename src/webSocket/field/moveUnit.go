@@ -4,7 +4,6 @@ import (
 	"websocket-master"
 	"../../game/objects"
 	"../../game/mechanics"
-	"strconv"
 	"errors"
 	"time"
 )
@@ -14,6 +13,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	client, ok := usersFieldWs[ws]
+	// TODO
 	if find && ok {
 		if unit.Action {
 			respawn := client.Respawn
@@ -46,7 +46,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 
-	idGame := client.GameStat.Id
+	idGame := client.GameID
 	toX := msg.ToX
 	toY := msg.ToY
 
@@ -55,7 +55,11 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 
 		start := objects.Coordinate{X: unit.X, Y: unit.Y}
 		end := objects.Coordinate{X: toX, Y: toY}
-		path := mechanics.FindPath(client.Map, start, end, obstacles)
+
+		mp := Games[client.GameID].getMap()
+
+		path := mechanics.FindPath(mp, start, end, obstacles)
+
 		x, y, errorMove := Move(unit, path, client, end)
 		if errorMove != nil {
 			if errorMove.Error() != "cell is busy" {
@@ -71,17 +75,17 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 
 func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end objects.Coordinate) (int, int, error) {
 
-	units := objects.GetAllUnits(client.GameStat.Id)
-	activeUser := ActionGameUser(client.Players)
+	game := Games[client.GameID]
+	players := Games[client.GameID].getPlayers()
+	activeUser := ActionGameUser(players)
 
 	for _, pathNode := range path {
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			_, ok := client.HostileUnits[end.X][end.Y]
 			if ok {
 				unit.Action = false
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-					HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: unit.Target, X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-				initUnit <- unitsParametr
+				var unitsParameter InitUnit
+				unitsParameter.initUnit(unit, client.Login)
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
@@ -90,6 +94,8 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 				return 0,0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
 			}
 		}
+
+		game.delUnit(unit) // TODO сделать интерфейс для юнита для ходьбы
 
 		x := unit.X
 		y := unit.Y
@@ -101,12 +107,12 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 			unit.Action = false
 		}
 
-		delete(units, strconv.Itoa(x) + ":" + strconv.Itoa(y))
-		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
+		game.addUnit(unit)
 
-		delete(client.Units[x], y)          // удаляем в карте старое место расположение юнита
-		client.addUnit(unit)                // добавляем новое
-		client.updateWatchZone(units)       // отправляем открытые ячейки, удаляем закрытые
+		delete(client.Units[x], y)        // TODO проверить правильность ссылки вывести коорлдинату без изменения в этом поле
+		client.addUnit(unit)              // добавляем новое
+
+		client.updateWatchZone(game.getUnits())       // отправляем открытые ячейки, удаляем закрытые
 		go updateWatchHostileUser(*client, *unit, x, y, activeUser)		 // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit

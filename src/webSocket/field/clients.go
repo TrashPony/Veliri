@@ -2,7 +2,6 @@ package field
 
 import (
 	"../../game/objects"
-	"strconv"
 )
 
 type Clients struct { // структура описывающая клиента ws соеденение
@@ -11,47 +10,46 @@ type Clients struct { // структура описывающая клиент�
 	Watch map[int]map[int]*objects.Coordinate  // map[X]map[Y]
 	Units map[int]map[int]*objects.Unit        // map[X]map[Y]
 	HostileUnits map[int]map[int]*objects.Unit // map[X]map[Y]
-	Map objects.Map
 	Respawn objects.Respawn
 	CreateZone map[string]*objects.Coordinate
-	GameStat objects.Game
-	Players []objects.UserStat
+	GameID int
 }
 
-func (client *Clients) getAllWatchObject(units map[string]*objects.Unit) {
-	client.Units = nil // TODO переделать на работу с сылками
-	client.HostileUnits = nil
-	client.Watch = nil
+func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
+	for _, xLine := range units {
+		for _, unit := range xLine {
+			watchCoordinate, watchUnit, err := PermissionCoordinates(client, unit, units)
 
-	for _, unit := range units {
+			if err != nil {
+				continue
+			}
 
-		watchCoordinate, watchUnit, err := PermissionCoordinates(client, unit, units)
-
-		if err != nil {
-			continue
-		}
-
-		for _, xLine := range watchUnit {
-			for _, hostile := range xLine {
-				if hostile.NameUser != client.Login {
-					client.addHostileUnit(hostile)
-				} else {
-					client.addUnit(unit)
+			for _, xLine := range watchUnit {
+				for _, hostile := range xLine {
+					if hostile.NameUser != client.Login {
+						client.addHostileUnit(hostile)
+					} else {
+						client.addUnit(unit)
+					}
 				}
 			}
-		}
 
-		for _, coordinate := range watchCoordinate {
-			client.addCoordinate(coordinate)
+			for _, coordinate := range watchCoordinate {
+				client.addCoordinate(coordinate)
+			}
 		}
 	}
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Clients) updateWatchZone(units map[string]*objects.Unit) {
+func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit) {
 
 	oldWatchZone := client.Watch
 	oldWatchUnit := client.HostileUnits
+
+	client.Units = nil
+	client.HostileUnits = nil
+	client.Watch = nil
 
 	client.getAllWatchObject(units)
 
@@ -89,9 +87,8 @@ func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Un
 			_, ok := oldWatchUnit[hostile.X][hostile.Y]
 			if !ok {
 				client.addHostileUnit(hostile)
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
-					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: hostile.Target, X: hostile.X, Y: hostile.Y}
-				initUnit <- unitsParametr
+				var unitsParameter InitUnit
+				unitsParameter.initUnit(hostile, client.Login)
 			}
 		}
 	}
