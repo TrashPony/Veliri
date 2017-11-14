@@ -56,7 +56,7 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 		start := objects.Coordinate{X: unit.X, Y: unit.Y}
 		end := objects.Coordinate{X: toX, Y: toY}
 		path := mechanics.FindPath(client.Map, start, end, obstacles)
-		x, y, errorMove := Move(unit, path, idGame, msg, client, end)
+		x, y, errorMove := Move(unit, path, client, end)
 		if errorMove != nil {
 			if errorMove.Error() != "cell is busy" {
 				mechanics.MoveUnit(idGame, unit, x, y)
@@ -69,7 +69,7 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
 	}
 }
 
-func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMessage, client *Clients, end objects.Coordinate) (int, int, error) {
+func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end objects.Coordinate) (int, int, error) {
 
 	units := objects.GetAllUnits(client.GameStat.Id)
 	activeUser := ActionGameUser(client.Players)
@@ -101,38 +101,28 @@ func Move(unit *objects.Unit, path []objects.Coordinate, idGame int, msg FieldMe
 			unit.Action = false
 		}
 
-		oldWatchZone := client.Watch
-		oldWatchUnit := client.HostileUnits
-
 		delete(units, strconv.Itoa(x) + ":" + strconv.Itoa(y))
 		units[strconv.Itoa(unit.X) + ":" + strconv.Itoa(unit.Y)] = unit
 
 		delete(client.Units[x], y)          // удаляем в карте старое место расположение юнита
 		client.addUnit(unit)                // добавляем новое
+		client.updateWatchZone(units)       // отправляем открытые ячейки, удаляем закрытые
+		go updateWatchHostileUser(*client, *unit, x, y, activeUser)		 // добавляем и удаляем нашего юнита у врагов на карте
 
-		UpdateWatchZone(client, *unit, units, oldWatchZone, oldWatchUnit) // отправляем открытые ячейки, удаляем закрытые
-		go UpdateWatchHostileUser(*client, *unit, x, y, activeUser)		 // добавляем и удаляем нашего юнита у врагов на карте
+		var unitsParameter InitUnit
+		unitsParameter.initUnit(unit, client.Login)  // отсылаем новое место юнита
 
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	return unit.X, unit.Y, nil
 }
 
-func UpdateWatchZone(client *Clients, unitMove objects.Unit, units map[string]*objects.Unit, oldWatchZone map[int]map[int]*objects.Coordinate, oldWatchUnit map[int]map[int]*objects.Unit) {
-	client.getAllWatchObject(units)
-	updateOpenCoordinate(client, oldWatchZone)
-	updateHostileUnit(client, oldWatchUnit)
-
-	unit := client.Units[unitMove.X][unitMove.Y]                                                             // отсылаем новое место юнита
+func updateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUser []*Clients) {
 	var unitsParameter InitUnit
-	unitsParameter.initUnit(unit, client.Login)
-}
 
-func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUser []*Clients) {
 	for _, user := range activeUser {
 		if user.Login != client.Login {
-
 			_, okGetUnit := user.HostileUnits[x][y]
 
 			if okGetUnit {
@@ -147,8 +137,7 @@ func UpdateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUs
 			if okGetXY { // если следующая клетка юнита в зоне видимости
 				delete(user.Watch[unit.X], unit.Y)                                                                       // удаляем пустую клетку
 				user.addHostileUnit(&unit)                                                                               // и добавляем в общую карту вражеских юнитов
-				var unitsParameter InitUnit
-				unitsParameter.initUnit(&unit, client.Login)
+				unitsParameter.initUnit(&unit, user.Login)
 			}
 
 			if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую
@@ -179,64 +168,5 @@ func getObstacles(client *Clients)([]*objects.Coordinate)  { // TODO: добав
 			coordinates = append(coordinates, &coordinate)
 		}
 	}
-
 	return coordinates
-}
-
-func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate)  {
-	for _, xLine := range client.Watch { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
-		for _, newCoordinate := range xLine {
-			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
-			if !ok {
-				client.addCoordinate(newCoordinate)
-				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: newCoordinate.X, Y: newCoordinate.Y}
-				coordiante <- resp
-			}
-		}
-	}
-
-	for _, xLine := range oldWatchZone { // удаляем старые координаты из зоны видимости
-		for _, oldCoordinate := range xLine {
-			find := findCoordinate(client, oldCoordinate)
-			if !find {
-				delete(client.Watch[oldCoordinate.X], oldCoordinate.Y)
-				resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: oldCoordinate.X, Y: oldCoordinate.Y} // удаляем старое поле доступа
-				coordiante <- resp
-			}
-		}
-	}
-}
-
-func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Unit)  {
-	for _, xLine := range client.HostileUnits { // добавляем новые вражеские юниты которых открыли
-		for _, hostile := range xLine {
-			_, ok := oldWatchUnit[hostile.X][hostile.Y]
-			if !ok {
-				client.addHostileUnit(hostile)
-				var unitsParametr = InitUnit{Event: "InitUnit", UserName: client.Login, TypeUnit: hostile.NameType, UserOwned: hostile.NameUser,
-					HP: hostile.Hp, UnitAction: strconv.FormatBool(hostile.Action), Target: hostile.Target, X: hostile.X, Y: hostile.Y}
-				initUnit <- unitsParametr
-			}
-		}
-	}
-
-	for _, xLine := range oldWatchUnit {
-		for _, hostile := range xLine {
-			find := findUnite(client, hostile)
-			if !find {
-				resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y} // удаляем старое поле доступа
-				coordiante <- resp
-			}
-		}
-	}
-}
-
-func findCoordinate(client *Clients, coordinate *objects.Coordinate) (find bool) {
-	_, find = client.Watch[coordinate.X][coordinate.Y]
-	return
-}
-
-func findUnite(client *Clients, unit *objects.Unit) (find bool) {
-	_, find = client.HostileUnits[unit.X][unit.Y]
-	return
 }

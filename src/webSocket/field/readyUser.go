@@ -127,7 +127,8 @@ func DelUnit(unit objects.Unit, activeUser []*Clients) {
 				delete(client.Units[unit.X], unit.Y)
 				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
 				coordiante <- resp
-				// TODO обновление зоны видимости
+				units := objects.GetAllUnits(client.GameStat.Id)
+				client.updateWatchZone(units)
 			} else {
 				_, ok := client.HostileUnits[unit.X][unit.Y]
 				if ok {
