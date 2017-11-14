@@ -52,7 +52,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 				game.Stat.Step += 1
 			}
 
-			for yLine := range client.Units {
+			for yLine := range client.Units { // TODO Нахера?
 				for _, unit := range client.Units[yLine] {
 					unit.Action = true
 

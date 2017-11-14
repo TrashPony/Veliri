@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(*objects.Unit, int, error) {
+func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(objects.Unit, int, error) {
 
 	var unit objects.Unit
 	checkPlace := CheckPlace(idGame, x, y)
@@ -23,16 +23,16 @@ func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(*obj
 			}
 			unit, errFound := objects.GetXYUnits(idGame, x, y)
 			if errFound != nil {
-				return &unit, 0, errFound
+				return unit, 0, errFound
 			}
-			return &unit, price, nil
+			return unit, price, nil
 		} else {
-			return &unit, 0, errors.New("no many")
+			return unit, 0, errors.New("no many")
 		}
 	} else {
-		return &unit, 0, errors.New("busy")
+		return unit, 0, errors.New("busy")
 	}
-	return &unit, 0, errors.New("unknown error")
+	return unit, 0, errors.New("unknown error")
 }
 
 func Price(cost int, idGame int, idPlayer string) (bool, int) {
