@@ -13,7 +13,7 @@ type ActiveGame struct {
 }
 
 func (game *ActiveGame) addPlayers(players []*objects.UserStat)  {
-		game.Players = players
+	game.Players = players
 }
 
 func (game *ActiveGame) addMap(mp *objects.Map)  {

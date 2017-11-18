@@ -20,23 +20,34 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
 		for _, unit := range xLine {
 			watchCoordinate, watchUnit, err := PermissionCoordinates(client, unit, units)
 
-			if err != nil {
+			if err != nil {  // если крип не мой то пропускаем дальнейшее действие
 				continue
-			}
+			} else {
+				client.addUnit(unit)
 
-			for _, xLine := range watchUnit {
-				for _, hostile := range xLine {
-					if hostile.NameUser != client.Login {
-						client.addHostileUnit(hostile)
-					} else {
-						client.addUnit(unit)
+				for _, xLine := range watchUnit {
+					for _, hostile := range xLine {
+						if hostile.NameUser != client.Login {
+							client.addHostileUnit(hostile)
+						}
 					}
 				}
-			}
 
-			for _, coordinate := range watchCoordinate {
-				client.addCoordinate(coordinate)
+				for _, coordinate := range watchCoordinate {
+					client.addCoordinate(coordinate)
+				}
 			}
+		}
+	}
+
+	for _, respCoordinate := range client.CreateZone { // зона видимости респауна
+		unit, ok := units[respCoordinate.X][respCoordinate.Y]
+		if ok {
+			if unit.NameUser != client.Login {
+				client.addHostileUnit(unit)
+			}
+		} else {
+			client.addCoordinate(respCoordinate)
 		}
 	}
 }
@@ -63,8 +74,7 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
 			if !ok {
 				client.addCoordinate(newCoordinate)
-				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: newCoordinate.X, Y: newCoordinate.Y}
-				coordiante <- resp
+				openCoordinate(client.Login, newCoordinate.X, newCoordinate.Y)
 			}
 		}
 	}
@@ -74,9 +84,17 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 			_, find := client.Watch[oldCoordinate.X][oldCoordinate.Y]
 			if !find {
 				delete(client.Watch[oldCoordinate.X], oldCoordinate.Y)
-				resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: oldCoordinate.X, Y: oldCoordinate.Y} // удаляем старое поле доступа
-				coordiante <- resp
+				closeCoordinate(client.Login, oldCoordinate.X, oldCoordinate.Y)
 			}
+		}
+	}
+
+	for _, respCoordinate := range client.CreateZone { // зона респауна
+		_, okUnit := client.Units[respCoordinate.X][respCoordinate.Y]
+		_, okHostile := client.HostileUnits[respCoordinate.X][respCoordinate.Y]
+		if !okUnit && !okHostile {
+			client.addCoordinate(respCoordinate)
+			openCoordinate(client.Login, respCoordinate.X, respCoordinate.Y)
 		}
 	}
 }
@@ -97,8 +115,7 @@ func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Un
 		for _, hostile := range xLine {
 			_, find := client.HostileUnits[hostile.X][hostile.Y]
 			if !find {
-				resp := Coordinate{Event: "DellCoordinate", UserName: client.Login, X: hostile.X, Y: hostile.Y} // удаляем старое поле доступа
-				coordiante <- resp
+				closeCoordinate(client.Login, hostile.X, hostile.Y)
 			}
 		}
 	}

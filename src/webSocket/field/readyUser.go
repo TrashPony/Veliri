@@ -126,8 +126,7 @@ func DelUnit(unit *objects.Unit, activeUser []*Clients) {
 				delete(client.Units[unit.X], unit.Y)
 				Games[client.GameID].delUnit(unit)
 
-				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
-				coordiante <- resp
+				openCoordinate(client.Login, unit.X, unit.Y)
 				units := Games[client.GameID].getUnits()
 				client.updateWatchZone(units)
 			}
@@ -135,8 +134,7 @@ func DelUnit(unit *objects.Unit, activeUser []*Clients) {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
 			if ok {
 				delete(client.HostileUnits[unit.X], unit.Y)
-				resp := Coordinate{Event: "OpenCoordinate", UserName: client.Login, X: unit.X, Y: unit.Y}
-				coordiante <- resp
+				openCoordinate(client.Login, unit.X, unit.Y)
 			}
 		}
 	}

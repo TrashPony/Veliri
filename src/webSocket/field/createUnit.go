@@ -24,32 +24,13 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 			unit, price, createError := mechanics.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
 
 			if createError == nil {
-
-				client.addUnit(&unit)
 				game.addUnit(&unit)
-
-				watchCoordinate, WatchUnit, _ := PermissionCoordinates(client, &unit, game.getUnits())
-
-				for _, coordinate := range watchCoordinate {
-					client.addCoordinate(coordinate) // TODO бага с тем что не затирается зона строительства если нехватает дальнссти видимости
-					var emptyCoordinates = FieldResponse{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: coordinate.X, Y: coordinate.Y}
-					fieldPipe <- emptyCoordinates
-				}
-
-				for _, xLine := range WatchUnit {    // TODO бага фазой хождения сразу после покупки юнитов что они становяться черным квадратом)
-					for _, unit := range xLine {
-						if client.Login != unit.NameUser {
-							client.addHostileUnit(unit)
-						}
-					}
-				}
-
-				var unitsParameter InitUnit
-				unitsParameter.initUnit(&unit, client.Login)
-
+				client.updateWatchZone(game.getUnits())
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
 				fieldPipe <- resp
 
+				var unitsParameter InitUnit
+				unitsParameter.initUnit(&unit, client.Login)
 			} else {
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
 				fieldPipe <- resp

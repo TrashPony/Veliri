@@ -135,8 +135,7 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUs
 			if okGetUnit {
 				user.Watch[x][y] = &objects.Coordinate{X: x, Y: y}                            // добавлдяем на место старого места юнита пустую зону
 				delete(user.HostileUnits[x], y)                                               // и удаляем в общей карте вражеских юнитов
-				resp := Coordinate{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y} // и остылаем событие удаление юнита
-				coordiante <- resp
+				openCoordinate(user.Login, x, y)                                            // и остылаем событие удаление юнита
 			}
 
 			_, okGetXY := user.Watch[unit.X][unit.Y]
@@ -145,11 +144,6 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUs
 				delete(user.Watch[unit.X], unit.Y)                                                                       // удаляем пустую клетку
 				user.addHostileUnit(&unit)                                                                               // и добавляем в общую карту вражеских юнитов
 				unitsParameter.initUnit(&unit, user.Login)
-			}
-
-			if okGetUnit && !okGetXY { // если удалось взять юнита по старым параметрам и не удалось взять координату открытую
-				resp := Coordinate{Event: "OpenCoordinate", UserName: user.Login, X: x, Y: y} // то остылаем событие удаление юнита
-				coordiante <- resp
 			}
 		}
 	}

@@ -100,8 +100,8 @@ function InitUnit(jsonMessage) {
 }
 
 function InitResp(jsonMessage) {
-    var x = JSON.parse(jsonMessage).respawn_x;
-    var y = JSON.parse(jsonMessage).respawn_y;
+    var x = JSON.parse(jsonMessage).x;
+    var y = JSON.parse(jsonMessage).y;
     var coor_id = x + ":" + y;
     var cell = document.getElementById(coor_id);
     cell.className = "fieldUnit respawn";

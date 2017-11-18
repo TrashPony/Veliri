@@ -23,8 +23,6 @@ type FieldResponse struct {
 	Phase		  string `json:"phase"`
 	UserReady	  string `json:"user_ready"`
 	UserOwned 	  string `json:"user_owned"`
-	RespawnX      int `json:"respawn_x"`
-	RespawnY      int `json:"respawn_y"`
 	Error		  string   `json:"error"`
 }
 
@@ -60,11 +58,21 @@ func (msg *InitUnit) initUnit(unit *objects.Unit, login string)  {
 	}
 }
 
-type Coordinate struct {
+type sendCoordinate struct {
 	Event    	  string `json:"event"`
 	UserName	  string `json:"user_name"`
 	X      		  int `json:"x"`
 	Y			  int `json:"y"`
+}
+
+func openCoordinate(login string, x,y int)  {
+	resp := sendCoordinate{Event: "OpenCoordinate", UserName: login, X: x, Y: y}
+	coordiante <- resp
+}
+
+func closeCoordinate(login string, x,y int)  {
+	resp := sendCoordinate{Event: "DellCoordinate", UserName: login, X: x, Y: y}
+	coordiante <- resp
 }
 
 

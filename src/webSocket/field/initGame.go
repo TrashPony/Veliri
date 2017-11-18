@@ -10,6 +10,7 @@ import (
 func InitGame(msg FieldMessage, ws *websocket.Conn) {
 
 	Game, ok := Games[msg.IdGame]
+	client, _ :=usersFieldWs[ws]
 
 	if !ok {
 		var newGame ActiveGame
@@ -28,34 +29,32 @@ func InitGame(msg FieldMessage, ws *websocket.Conn) {
 	}
 
 	for _, userStat := range Game.getPlayers() {
-		if userStat.Name == usersFieldWs[ws].Login {
-			var playersParam = FieldResponse{Event: "InitPlayer", UserName: usersFieldWs[ws].Login, PlayerPrice: userStat.Price,
+		if userStat.Name == client.Login {
+			var playersParam = FieldResponse{Event: "InitPlayer", UserName: client.Login, PlayerPrice: userStat.Price,
 				GameStep: Game.Stat.Step, GamePhase: Game.Stat.Phase, UserReady: userStat.Ready}
 			fieldPipe <- playersParam // отправляет параметры игрока
 		}
 	}
 
-	var mapParam = FieldResponse{Event: "InitMap", UserName: usersFieldWs[ws].Login, NameMap: Game.Map.Name, TypeMap: Game.Map.Type, XMap: Game.Map.Xsize, YMap: Game.Map.Ysize}
+	var mapParam = FieldResponse{Event: "InitMap", UserName: client.Login, NameMap: Game.Map.Name, TypeMap: Game.Map.Type, XMap: Game.Map.Xsize, YMap: Game.Map.Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
-	respawn := objects.GetRespawns(usersFieldWs[ws].Id, msg.IdGame)
-	usersFieldWs[ws].Respawn = respawn
+	respawn := objects.GetRespawns(client.Id, msg.IdGame)
+	client.Respawn = respawn
 	permitCoordinates := mechanics.GetCoordinates(respawn.X, respawn.Y, 2)
-	usersFieldWs[ws].CreateZone = make(map[string]*objects.Coordinate)
+	client.CreateZone = make(map[string]*objects.Coordinate)
 
-	for i := 0; i < len(permitCoordinates); i++ {
-		if !(permitCoordinates[i].X == respawn.X && permitCoordinates[i].Y == respawn.Y) {
-			usersFieldWs[ws].CreateZone[strconv.Itoa(permitCoordinates[i].X)+":"+strconv.Itoa(permitCoordinates[i].Y)] = permitCoordinates[i]
-			var emptyCoordinates= Coordinate{Event: "emptyCoordinate", UserName: usersFieldWs[ws].Login, X: permitCoordinates[i].X, Y: permitCoordinates[i].Y}
-			coordiante <- emptyCoordinates
+	for _, coordinate := range permitCoordinates {
+		if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
+			client.CreateZone[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
+			openCoordinate(client.Login, coordinate.X, coordinate.Y)
 		}
 	}
 
-	var respawnParameter= FieldResponse{Event: "InitResp", UserName: usersFieldWs[ws].Login, RespawnX: respawn.X, RespawnY: respawn.Y}
-	fieldPipe <- respawnParameter
+	var respawnParameter= sendCoordinate{Event: "InitResp", UserName: client.Login, X: respawn.X, Y: respawn.Y}
+	coordiante <- respawnParameter
 
-	client, _ :=usersFieldWs[ws]
-	client.getAllWatchObject(Game.getUnits())
+	client.updateWatchZone(Game.getUnits())
 	client.GameID = Game.Stat.Id // добавляем принадлежность игрока в игре
-	SendWatchCoordinate(usersFieldWs[ws])
+	SendWatchCoordinate(client)
 }
