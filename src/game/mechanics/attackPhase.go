@@ -6,7 +6,6 @@ import (
 )
 
 func AttackPhase(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit){
-	//Units := objects.GetAllUnits(idGame)
 	sortUnits = createQueueAttack(Units)
 	return
 }
@@ -26,6 +25,8 @@ func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []*objects
 
 	return
 }
+
+
 
 func DelUnit(id int)  {
 	_, err := db.Exec("DELETE FROM action_game_unit WHERE id=$1", id)

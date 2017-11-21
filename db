@@ -36,6 +36,15 @@ CREATE TABLE respawns(
     y int
 );
 
+CREATE TABLE map_constructor(
+   id serial primary key,
+   x int,
+   y int,
+   id_map int references map(id),
+   type varchar(64),
+   texture varchar(64)
+);
+
 INSERT INTO respawns (id_map, name, x, y) VALUES (1 , '1' , 0 ,0);
 INSERT INTO respawns (id_map, name, x, y) VALUES (1 , '2' , 9 ,9);
 INSERT INTO respawns (id_map, name, x, y) VALUES (2 , '1' , 0 ,0);

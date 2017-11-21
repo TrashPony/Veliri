@@ -8,7 +8,6 @@ import (
 )
 
 func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(objects.Unit, int, error) {
-
 	var unit objects.Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше

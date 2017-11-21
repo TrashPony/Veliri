@@ -10,6 +10,7 @@ import (
 var fieldPipe = make(chan FieldResponse)
 var initUnit  = make(chan InitUnit)
 var coordiante = make(chan sendCoordinate)
+
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
 var Games = make(map[int]*ActiveGame)
 
@@ -71,13 +72,6 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 			TargetUnit(msg, ws)
 			continue
 		}
-
-		/*if msg.Event == "getPermittedCoordinates" {
-			for _, unit := range usersFieldWs[ws].Units {
-				SendWatchCoordinate(ws, unit)
-			}
-			continue
-		}*/
 	}
 }
 

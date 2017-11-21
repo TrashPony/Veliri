@@ -36,6 +36,22 @@ function ReadResponse(jsonMessage) {
     if (event === "SelectUnit") {
         Select(jsonMessage);
     }
+
+    if (event === "Attack") {
+        var attackX = JSON.parse(jsonMessage).x;
+        var attackY = JSON.parse(jsonMessage).y;
+        var toX = JSON.parse(jsonMessage).to_x;
+        var toY = JSON.parse(jsonMessage).to_y;
+
+        var attackID = attackX + ":" + attackY;
+        cell = document.getElementById(attackID);
+        cell.innerHTML = "ПЫЩЬ1";
+
+        var targetID = toX + ":" + toY;
+        var targeCell = document.getElementById(targetID);
+        targeCell.innerHTML = "БдфЩь!";
+    }
+
     if (event === "emptyCoordinate") {
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;

@@ -53,7 +53,7 @@ func (msg *InitUnit) initUnit(unit *objects.Unit, login string)  {
 		initUnit <- unitsParametr
 	} else {
 		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y), X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y), X: unit.X, Y: unit.Y}
 		initUnit <- unitsParametr
 	}
 }
@@ -74,7 +74,6 @@ func closeCoordinate(login string, x,y int)  {
 	resp := sendCoordinate{Event: "DellCoordinate", UserName: login, X: x, Y: y}
 	coordiante <- resp
 }
-
 
 type FieldMessage struct {
 	Event    string `json:"event"`

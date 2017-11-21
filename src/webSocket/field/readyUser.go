@@ -4,6 +4,7 @@ import (
 	"websocket-master"
 	"../../game/mechanics"
 	"../../game/objects"
+	"time"
 )
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
@@ -81,11 +82,11 @@ func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 						sortUnits[i].Hp = target.Hp - unit.Damage
 						if sortUnits[i].Hp <= 0 {
 							mechanics.DelUnit(sortUnits[i].Id)
-							// TODO оповещалка об атаки в сокет
+							attackSender(unit, activeUser)
 							DelUnit(sortUnits[i], activeUser)
 						} else {
 							mechanics.UpdateUnit(sortUnits[i].Id, sortUnits[i].Hp)
-							// TODO оповещалка об атаки в сокет
+							attackSender(unit, activeUser)
 							UpdateUnit(sortUnits[i], activeUser)
 						}
 					}
@@ -95,6 +96,21 @@ func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 		mechanics.UpdateTarget(unit.Id)
 		unit.Target = nil
 		unit.Queue  = 0
+	}
+}
+
+func attackSender(unit *objects.Unit, activeUser []*Clients)  {
+
+	for _, client := range activeUser {
+		attackInfo := FieldResponse{Event: "Attack", UserName: client.Login, X: unit.X, Y: unit.Y, ToX:unit.Target.X, ToY:unit.Target.Y}
+		fieldPipe <- attackInfo
+	}
+
+	time.Sleep(2000 * time.Millisecond)
+
+	for _, client := range activeUser {
+		var unitsParameter InitUnit
+		unitsParameter.initUnit(unit, client.Login)
 	}
 }
 

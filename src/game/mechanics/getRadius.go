@@ -52,7 +52,7 @@ func xMaxMin(y int) (int, int) {
 
 func removeDuplicates(elements []*objects.Coordinate) []*objects.Coordinate {
 	encountered := map[objects.Coordinate]bool{}
-	result := []*objects.Coordinate{}
+	result := make([]*objects.Coordinate,0)
 
 	for v := range elements {
 		if encountered[*elements[v]] == true {
