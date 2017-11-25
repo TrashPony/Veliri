@@ -1,13 +1,13 @@
 package field
 
 import (
-	"websocket-master"
-	"strconv"
 	"../../game/mechanics"
 	"../../game/objects"
-	)
+	"github.com/gorilla/websocket"
+	"strconv"
+)
 
-func TargetUnit(msg FieldMessage, ws *websocket.Conn)  {
+func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	client := usersFieldWs[ws]
 	game := Games[client.GameID]
@@ -20,7 +20,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn)  {
 			if target.X == msg.TargetX && target.Y == msg.TargetY {
 				target, ok := client.HostileUnits[msg.TargetX][msg.TargetY]
 				if ok {
-					mechanics.SetTarget(*unit, strconv.Itoa(target.X) + ":" + strconv.Itoa(target.Y), game.Stat.Id)
+					mechanics.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), game.Stat.Id)
 					unit.Target = &objects.Coordinate{X: target.X, Y: target.Y}
 					passed = true
 					resp := FieldResponse{Event: msg.Event, UserName: client.Login}

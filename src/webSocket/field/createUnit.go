@@ -1,10 +1,10 @@
 package field
 
 import (
-	"websocket-master"
-	"strconv"
 	"../../game/mechanics"
 	"../../game/objects"
+	"github.com/gorilla/websocket"
+	"strconv"
 )
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
@@ -24,7 +24,7 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 			unit, price, createError := mechanics.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
 
 			if createError == nil {
-				game.addUnit(&unit)
+				game.setUnit(&unit)
 				client.updateWatchZone(game.getUnits())
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
 				fieldPipe <- resp

@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-func GetUsers(query string)(User)  {
+func GetUsers(query string) User {
 
 	rows, err := db.Query("Select id, name, mail FROM users " + query)
 	if err != nil {

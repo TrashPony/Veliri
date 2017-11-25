@@ -1,12 +1,12 @@
 package lobby
 
 import (
-	"log"
-	"websocket-master"
 	"../../lobby"
+	"errors"
+	"github.com/gorilla/websocket"
+	"log"
 	"strconv"
 	"sync"
-	"errors"
 )
 
 var mutex = &sync.Mutex{}
@@ -14,26 +14,26 @@ var mutex = &sync.Mutex{}
 var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
 var lobbyPipe = make(chan LobbyResponse)
 
-func AddNewUser(ws *websocket.Conn, login string, id int)  {
+func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersLobbyWs)
-	usersLobbyWs[ws] = &Clients{Login:login, Id:id} // Регистрируем нового Клиента
-	print("WS lobby Сессия: ") // просто смотрим новое подключение
+	usersLobbyWs[ws] = &Clients{Login: login, Id: id} // Регистрируем нового Клиента
+	print("WS lobby Сессия: ")                        // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 	LobbyReader(ws)
 }
-func LobbyReader(ws *websocket.Conn)  {
+func LobbyReader(ws *websocket.Conn) {
 	for {
 		var msg LobbyMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersLobbyWs, err)
 			break
 		}
 
 		if msg.Event == "MapView" {
-			var maps= lobby.GetMapList()
+			var maps = lobby.GetMapList()
 			for _, Map := range maps {
 				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameMap: Map.Name, NumOfPlayers: strconv.Itoa(Map.Respawns)}
 				lobbyPipe <- resp // Отправляет сообщение в тред
@@ -44,7 +44,7 @@ func LobbyReader(ws *websocket.Conn)  {
 			games := lobby.GetLobbyGames()
 			for _, game := range games {
 				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
-				Players: strconv.Itoa(len(game.Users)), NumOfPlayers:strconv.Itoa(len(game.Respawns))}
+					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
 				lobbyPipe <- resp
 			}
 		}
@@ -90,7 +90,7 @@ func LobbyReader(ws *websocket.Conn)  {
 								}
 							}
 						}
-						resp = LobbyResponse{Event: "JoinToLobby", UserName: usersLobbyWs[ws].Login, GameUser: user, Ready: strconv.FormatBool(ready), RespawnName:respown}
+						resp = LobbyResponse{Event: "JoinToLobby", UserName: usersLobbyWs[ws].Login, GameUser: user, Ready: strconv.FormatBool(ready), RespawnName: respown}
 						lobbyPipe <- resp
 					}
 				}
@@ -117,7 +117,7 @@ func LobbyReader(ws *websocket.Conn)  {
 			if errRespawn == nil {
 				lobby.UserReady(msg.GameName, usersLobbyWs[ws].Login)
 
-				for user:= range game.Users {
+				for user := range game.Users {
 					resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: usersLobbyWs[ws].Login, Ready: strconv.FormatBool(game.Users[usersLobbyWs[ws].Login]), RespawnName: respName}
 					lobbyPipe <- resp
 				}
@@ -149,19 +149,19 @@ func LobbyReader(ws *websocket.Conn)  {
 							lobbyPipe <- resp
 						}
 					} else {
-						var resp= LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("error ad to DB").Error()}
+						var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("error ad to DB").Error()}
 						lobbyPipe <- resp
 					}
 				} else {
-					var resp = LobbyResponse{Event: msg.Event, UserName:usersLobbyWs[ws].Login,  Error: errors.New("PlayerNotReady").Error()}
+					var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("PlayerNotReady").Error()}
 					lobbyPipe <- resp
 				}
 			} else {
-				var resp = LobbyResponse{Event: msg.Event, UserName:usersLobbyWs[ws].Login,  Error: errors.New("Players < 2").Error()}
+				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("Players < 2").Error()}
 				lobbyPipe <- resp
 			}
 		}
-		if msg.Event == "Respawn"{
+		if msg.Event == "Respawn" {
 			games := lobby.GetLobbyGames()
 			user := usersLobbyWs[ws].Login
 			for _, game := range games {
@@ -169,7 +169,7 @@ func LobbyReader(ws *websocket.Conn)  {
 					if user == player {
 						for respawn := range game.Respawns {
 							if game.Respawns[respawn] == "" {
-								var resp= LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Respawn: strconv.Itoa(respawn.Id) , RespawnName:respawn.Name}
+								var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
 								lobbyPipe <- resp
 							}
 						}
@@ -181,8 +181,8 @@ func LobbyReader(ws *websocket.Conn)  {
 		if msg.Event == "Logout" {
 			ws.Close()
 		}
-		if msg.Event == "InitLobby"{
-			var resp = LobbyResponse{Event: msg.Event, UserName:usersLobbyWs[ws].Login}
+		if msg.Event == "InitLobby" {
+			var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
 			lobbyPipe <- resp
 		}
 	}
@@ -209,5 +209,5 @@ func LobbyReposeSender() {
 
 type Clients struct { // структура описывающая клиента ws соеденение
 	Login string
-	Id int
+	Id    int
 }

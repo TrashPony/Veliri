@@ -1,14 +1,14 @@
 package lobby
 
 import (
-	"websocket-master"
-	"log"
 	"../../lobby"
+	"github.com/gorilla/websocket"
+	"log"
 	"strconv"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients)  {
-	for ws, client  := range *usersWs {
+func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
+	for ws, client := range *usersWs {
 		if client.Login == login {
 			ws.Close()
 			println(login + " Уже был в соеденениях")
@@ -34,7 +34,7 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func RefreshUsersList(nameGame string)  {
+func RefreshUsersList(nameGame string) {
 	games := lobby.GetLobbyGames()
 	for _, game := range games {
 		if game.Name == nameGame {
@@ -49,7 +49,7 @@ func RefreshUsersList(nameGame string)  {
 						}
 					}
 				}
-				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready), Respawn:strconv.Itoa(respown)}
+				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready), Respawn: strconv.Itoa(respown)}
 				lobbyPipe <- refresh
 			}
 			break
@@ -57,18 +57,18 @@ func RefreshUsersList(nameGame string)  {
 	}
 }
 
-func DiconnectLobby(users map[string]bool)  {
+func DiconnectLobby(users map[string]bool) {
 	for client := range users {
-		var refresh = LobbyResponse{Event: "DisconnectLobby",  UserName: client}
+		var refresh = LobbyResponse{Event: "DisconnectLobby", UserName: client}
 		lobbyPipe <- refresh
 	}
 }
-func RefreshLobbyGames(ws *websocket.Conn)  {
+func RefreshLobbyGames(ws *websocket.Conn) {
 	login := (usersLobbyWs)[ws].Login // TODO: // вываливается экзепшен при выходе главного игрока из лоби игры когда в игре кто то есть
 	games := lobby.GetLobbyGames()
-	for _, client  := range usersLobbyWs {
+	for _, client := range usersLobbyWs {
 		if client.Login != login {
-			var refresh = LobbyResponse{Event: "GameRefresh",  UserName: client.Login}
+			var refresh = LobbyResponse{Event: "GameRefresh", UserName: client.Login}
 			lobbyPipe <- refresh
 			for _, game := range games {
 				var resp = LobbyResponse{Event: "GameView", UserName: client.Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,

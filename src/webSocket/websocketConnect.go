@@ -1,17 +1,16 @@
 package webSocket
 
 import (
-	"websocket-master"
-	"net/http"
-	"log"
-	"./lobby"
 	"./field"
+	"./lobby"
+	"github.com/gorilla/websocket"
+	"log"
+	"net/http"
 )
 
 var upgrader = websocket.Upgrader{} // методами приема обычного HTTP-соединения и обновления его до WebSocket
 
-
-func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, pool string)  {
+func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, pool string) {
 
 	ws, err := upgrader.Upgrade(w, r, nil) // запрос GET для перехода на протокол websocket
 	if err != nil {

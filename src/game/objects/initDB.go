@@ -2,8 +2,8 @@ package objects
 
 import (
 	"database/sql"
-	"log"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 var db *sql.DB

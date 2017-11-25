@@ -1,13 +1,13 @@
 package mechanics
 
 import (
-	"log"
 	"../objects"
 	"errors"
+	"log"
 	"strconv"
 )
 
-func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int)(objects.Unit, int, error) {
+func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (objects.Unit, int, error) {
 	var unit objects.Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше
@@ -52,7 +52,7 @@ func Price(cost int, idGame int, idPlayer string) (bool, int) {
 
 	if cost <= price {
 		price = price - cost
-		_ , err := db.Exec("UPDATE action_game_user SET price = $1 WHERE id_game = $2 AND id_user = $3", price, idGame, idPlayer)
+		_, err := db.Exec("UPDATE action_game_user SET price = $1 WHERE id_game = $2 AND id_user = $3", price, idGame, idPlayer)
 		if err != nil {
 			log.Fatal(err)
 		} else {
@@ -63,7 +63,7 @@ func Price(cost int, idGame int, idPlayer string) (bool, int) {
 	return false, 0
 }
 
-func CheckPlace(idGame int, x int, y int)(bool)  {
+func CheckPlace(idGame int, x int, y int) bool {
 	var id int
 
 	rows, err := db.Query("Select id FROM action_game_unit WHERE x = $1 AND y = $2 AND id_game= $3", x, y, idGame)

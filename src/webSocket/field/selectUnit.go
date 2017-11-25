@@ -1,19 +1,19 @@
 package field
 
 import (
-	"websocket-master"
-	"../../game/objects"
 	"../../game/mechanics"
+	"../../game/objects"
+	"github.com/gorilla/websocket"
 )
 
 func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
-	client, ok  := usersFieldWs[ws]
+	client, ok := usersFieldWs[ws]
 	game, ok := Games[client.GameID]
 
-	if find && ok{
+	if find && ok {
 		respawn := client.Respawn
 		if game.Stat.Phase == "move" {
 			if unit.Action {

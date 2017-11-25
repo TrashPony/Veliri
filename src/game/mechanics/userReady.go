@@ -1,6 +1,6 @@
 package mechanics
 
-func UserReady(idUser int, idGame int) (string, error, bool)  {
+func UserReady(idUser int, idGame int) (string, error, bool) {
 
 	// устанавливает фраг готовности пользователя в тру
 	rows, err := db.Query("UPDATE action_game_user  SET ready = true WHERE id_user=$1 AND id_game=$2", idUser, idGame)
@@ -27,7 +27,9 @@ func UserReady(idUser int, idGame int) (string, error, bool)  {
 
 	var allReady bool
 	for i := 0; i < len(ready); i++ {
-		if i == 0 { allReady = ready[0] }
+		if i == 0 {
+			allReady = ready[0]
+		}
 		allReady = allReady && ready[i]
 	}
 

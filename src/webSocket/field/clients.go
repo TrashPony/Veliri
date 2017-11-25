@@ -5,14 +5,14 @@ import (
 )
 
 type Clients struct { // структура описывающая клиента ws соеденение
-	Login string
-	Id int
-	Watch map[int]map[int]*objects.Coordinate  // map[X]map[Y]
-	Units map[int]map[int]*objects.Unit        // map[X]map[Y]
-	HostileUnits map[int]map[int]*objects.Unit // map[X]map[Y]
-	Respawn objects.Respawn
-	CreateZone map[string]*objects.Coordinate
-	GameID int
+	Login        string
+	Id           int
+	Watch        map[int]map[int]*objects.Coordinate // map[X]map[Y]
+	Units        map[int]map[int]*objects.Unit       // map[X]map[Y]
+	HostileUnits map[int]map[int]*objects.Unit       // map[X]map[Y]
+	Respawn      objects.Respawn
+	CreateZone   map[string]*objects.Coordinate
+	GameID       int
 }
 
 func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
@@ -20,7 +20,7 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
 		for _, unit := range xLine {
 			watchCoordinate, watchUnit, err := PermissionCoordinates(client, unit, units)
 
-			if err != nil {  // если крип не мой то пропускаем дальнейшее действие
+			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
 			} else {
 				client.addUnit(unit)
@@ -68,7 +68,7 @@ func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit) {
 	updateHostileUnit(client, oldWatchUnit)
 }
 
-func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate)  {
+func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate) {
 	for _, xLine := range client.Watch { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
 		for _, newCoordinate := range xLine {
 			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
@@ -99,7 +99,7 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 	}
 }
 
-func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Unit)  {
+func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Unit) {
 	for _, xLine := range client.HostileUnits { // добавляем новые вражеские юниты которых открыли
 		for _, hostile := range xLine {
 			_, ok := oldWatchUnit[hostile.X][hostile.Y]

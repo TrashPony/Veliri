@@ -1,9 +1,9 @@
 package field
 
 import (
-	"websocket-master"
 	"../../game/mechanics"
 	"../../game/objects"
+	"github.com/gorilla/websocket"
 	"time"
 )
 
@@ -72,7 +72,6 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-
 func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
@@ -95,14 +94,14 @@ func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 		}
 		mechanics.UpdateTarget(unit.Id)
 		unit.Target = nil
-		unit.Queue  = 0
+		unit.Queue = 0
 	}
 }
 
-func attackSender(unit *objects.Unit, activeUser []*Clients)  {
+func attackSender(unit *objects.Unit, activeUser []*Clients) {
 
 	for _, client := range activeUser {
-		attackInfo := FieldResponse{Event: "Attack", UserName: client.Login, X: unit.X, Y: unit.Y, ToX:unit.Target.X, ToY:unit.Target.Y}
+		attackInfo := FieldResponse{Event: "Attack", UserName: client.Login, X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
 		fieldPipe <- attackInfo
 	}
 

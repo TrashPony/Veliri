@@ -1,13 +1,13 @@
 package objects
 
 import (
-	"log"
 	"errors"
+	"log"
 	"strconv"
 	"strings"
 )
 
-func GetUnit(query string) (map[int]map[int]*Unit)  {
+func GetUnit(query string) map[int]map[int]*Unit {
 
 	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.movespeed, t.init, t.rangeattack, t.rangeview, t.areaattack, t.typeattack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unittype as t, users as u WHERE " + query)
 	if err != nil {
@@ -52,12 +52,12 @@ func GetUnit(query string) (map[int]map[int]*Unit)  {
 	return units
 }
 
-func GetAllUnits(idGame int)(map[int]map[int]*Unit)  {
+func GetAllUnits(idGame int) map[int]map[int]*Unit {
 	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id")
 	return units
 }
 
-func GetXYUnits(idGame int, x int, y int)(Unit, error)  {
+func GetXYUnits(idGame int, x int, y int) (Unit, error) {
 	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id AND ag.x=" + strconv.Itoa(x) + "AND ag.y=" + strconv.Itoa(y))
 	if len(units) > 0 {
 		unit, ok := units[x][y]
@@ -72,7 +72,7 @@ func GetXYUnits(idGame int, x int, y int)(Unit, error)  {
 	}
 }
 
-func GetUnitType(nameType string) (UnitType) {
+func GetUnitType(nameType string) UnitType {
 	var unitType UnitType
 
 	rows, err := db.Query("Select * From unittype WHERE type=$1", nameType)
@@ -92,8 +92,8 @@ func GetUnitType(nameType string) (UnitType) {
 	return unitType
 }
 
-func GetUnitsCoordinate(units map[int]map[int]*Unit)([]*Coordinate)  {
-	coordinates := make([]*Coordinate,0)
+func GetUnitsCoordinate(units map[int]map[int]*Unit) []*Coordinate {
+	coordinates := make([]*Coordinate, 0)
 	for yLine := range units {
 		for _, unit := range units[yLine] {
 			var coordinate Coordinate

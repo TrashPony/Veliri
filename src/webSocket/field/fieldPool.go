@@ -1,14 +1,14 @@
 package field
 
 import (
+	"github.com/gorilla/websocket"
 	"log"
-	"websocket-master"
 	"strconv"
 	"sync"
 )
 
 var fieldPipe = make(chan FieldResponse)
-var initUnit  = make(chan InitUnit)
+var initUnit = make(chan InitUnit)
 var coordiante = make(chan sendCoordinate)
 
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
@@ -16,27 +16,27 @@ var Games = make(map[int]*ActiveGame)
 
 var mutex = &sync.Mutex{}
 
-func AddNewUser(ws *websocket.Conn, login string, id int)  {
+func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersFieldWs)
-	usersFieldWs[ws] = &Clients{Login:login, Id:id} // Регистрируем нового Клиента
-	print("WS field Сессия: ") // просто смотрим новое подключение
+	usersFieldWs[ws] = &Clients{Login: login, Id: id} // Регистрируем нового Клиента
+	print("WS field Сессия: ")                        // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 	fieldReader(ws, usersFieldWs)
 }
 
-func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )  {
+func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients) {
 	for {
 		var msg FieldMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			DelConn(ws, &usersFieldWs , err)
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+			DelConn(ws, &usersFieldWs, err)
 			break
 		}
 
 		if msg.Event == "InitGame" {
-			InitGame(msg, ws)
+			toGame(msg, ws)
 			continue
 		}
 
@@ -77,7 +77,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients )
 
 func FieldReposeSender() {
 	for {
-		resp := <- fieldPipe
+		resp := <-fieldPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {
@@ -95,7 +95,7 @@ func FieldReposeSender() {
 
 func InitUnitSender() {
 	for {
-		resp := <- initUnit
+		resp := <-initUnit
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {
@@ -113,7 +113,7 @@ func InitUnitSender() {
 
 func CoordinateSender() {
 	for {
-		resp := <- coordiante
+		resp := <-coordiante
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {
@@ -128,5 +128,3 @@ func CoordinateSender() {
 		mutex.Unlock()
 	}
 }
-
-

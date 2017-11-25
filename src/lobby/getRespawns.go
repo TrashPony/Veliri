@@ -4,9 +4,9 @@ import (
 	"log"
 )
 
-func GetRespawns(nameMap string)([]Respawn)  {
+func GetRespawns(nameMap string) []Respawn {
 
-	rows, err := db.Query("Select * FROM respawns WHERE id_map = (Select id from map WHERE name=$1)", nameMap)
+	rows, err := db.Query("Select id, x, y, id_map, type FROM map_constructor WHERE type like 'respawn__' AND id_map = (Select id from map WHERE name=$1)", nameMap)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -15,11 +15,19 @@ func GetRespawns(nameMap string)([]Respawn)  {
 	var resp Respawn
 
 	for rows.Next() {
-		err := rows.Scan(&resp.Id, &resp.Name,&resp.IdMap, &resp.X, &resp.Y)
+		err := rows.Scan(&resp.Id, &resp.X, &resp.Y, &resp.IdMap, &resp.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
 		respawns = append(respawns, resp)
 	}
 	return respawns
+}
+
+type Respawn struct {
+	Id    int
+	Name  string
+	IdMap int
+	X     int
+	Y     int
 }

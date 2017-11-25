@@ -4,9 +4,9 @@ import (
 	"log"
 )
 
-func StartNewGame(nameGame string) (string, bool)  {
+func StartNewGame(nameGame string) (string, bool) {
 	for game := range openGames {
-		if openGames[game].Name == nameGame && len(openGames[game].Users) > 1{
+		if openGames[game].Name == nameGame && len(openGames[game].Users) > 1 {
 			id := InitNewGame(openGames[game].Map, openGames[game])
 			if id != "" {
 				return id, true
@@ -18,14 +18,13 @@ func StartNewGame(nameGame string) (string, bool)  {
 	return "", false
 }
 
-func InitNewGame(mapName string, game LobbyGames)(string) {
+func InitNewGame(mapName string, game LobbyGames) string {
 	var maps = GetMapList()
 
 	var idMap int = 0
 
-
 	for _, mp := range maps {
-		if mp.Name == mapName{
+		if mp.Name == mapName {
 			idMap = mp.Id
 		}
 	}
@@ -49,10 +48,10 @@ func InitNewGame(mapName string, game LobbyGames)(string) {
 	}
 }
 
-func SendToDB(Name string, idMap int)(string)  {
+func SendToDB(Name string, idMap int) string {
 	var err error
 
-	_ ,err = db.Exec("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5)",    // добавляем новую игру в БД
+	_, err = db.Exec("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
 		Name, idMap, 0, "Init", "") // id карты, 0 - ход, Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 	if err != nil {
 		log.Fatal(err)
@@ -71,11 +70,11 @@ func SendToDB(Name string, idMap int)(string)  {
 	return id
 }
 
-func UsersToDB(id string, usersAndRespId map[int]int)  {
+func UsersToDB(id string, usersAndRespId map[int]int) {
 	var err error
 
-    for userId, respId :=range usersAndRespId {
-		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, respawns_id, price, ready) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
+	for userId, respId := range usersAndRespId {
+		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, start_structure, price, ready) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
 			id, userId, respId, 100, "false") // id карты, 0 - ход, id респа,  Фаза Инициализации (растановка войск), id первого, второго игрока, цена для покупку моба 1, 2 игрока, игра не завершена
 		if err != nil {
 			log.Fatal(err)

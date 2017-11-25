@@ -1,10 +1,10 @@
 package field
 
 import (
-	"websocket-master"
-	"../../game/objects"
 	"../../game/mechanics"
+	"../../game/objects"
 	"errors"
+	"github.com/gorilla/websocket"
 	"time"
 )
 
@@ -43,7 +43,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients )  {
+func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients) {
 
 	idGame := client.GameID
 	toX := msg.ToX
@@ -92,7 +92,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 		} else {
 			_, ok := client.HostileUnits[pathNode.X][pathNode.Y]
 			if ok {
-				return 0,0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
+				return 0, 0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
 			}
 		}
 
@@ -104,20 +104,20 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 		unit.X = pathNode.X
 		unit.Y = pathNode.Y
 
-		if (end.X == pathNode.X) && (end.Y == pathNode.Y){
+		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			unit.Action = false
 		}
 
-		game.addUnit(unit)
+		game.setUnit(unit)
 
 		delete(client.Units[x], y)
-		client.addUnit(unit)              // добавляем новое
+		client.addUnit(unit) // добавляем новое
 
-		client.updateWatchZone(game.getUnits())       // отправляем открытые ячейки, удаляем закрытые
-		go updateWatchHostileUser(*client, *unit, x, y, activeUser)		 // добавляем и удаляем нашего юнита у врагов на карте
+		client.updateWatchZone(game.getUnits())                     // отправляем открытые ячейки, удаляем закрытые
+		go updateWatchHostileUser(*client, *unit, x, y, activeUser) // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.Login)  // отсылаем новое место юнита
+		unitsParameter.initUnit(unit, client.Login) // отсылаем новое место юнита
 
 		time.Sleep(200 * time.Millisecond)
 	}
@@ -125,7 +125,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 	return unit.X, unit.Y, nil
 }
 
-func updateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUser []*Clients) {
+func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeUser []*Clients) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
@@ -133,24 +133,24 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x,y int, activeUs
 			_, okGetUnit := user.HostileUnits[x][y]
 
 			if okGetUnit {
-				user.Watch[x][y] = &objects.Coordinate{X: x, Y: y}                            // добавлдяем на место старого места юнита пустую зону
-				delete(user.HostileUnits[x], y)                                               // и удаляем в общей карте вражеских юнитов
-				openCoordinate(user.Login, x, y)                                            // и остылаем событие удаление юнита
+				user.Watch[x][y] = &objects.Coordinate{X: x, Y: y} // добавлдяем на место старого места юнита пустую зону
+				delete(user.HostileUnits[x], y)                    // и удаляем в общей карте вражеских юнитов
+				openCoordinate(user.Login, x, y)                   // и остылаем событие удаление юнита
 			}
 
 			_, okGetXY := user.Watch[unit.X][unit.Y]
 
 			if okGetXY { // если следующая клетка юнита в зоне видимости
-				delete(user.Watch[unit.X], unit.Y)                                                                       // удаляем пустую клетку
-				user.addHostileUnit(&unit)                                                                               // и добавляем в общую карту вражеских юнитов
+				delete(user.Watch[unit.X], unit.Y) // удаляем пустую клетку
+				user.addHostileUnit(&unit)         // и добавляем в общую карту вражеских юнитов
 				unitsParameter.initUnit(&unit, user.Login)
 			}
 		}
 	}
 }
 
-func getObstacles(client *Clients)([]*objects.Coordinate)  { // TODO: добавить еще не проходимые учатки когда добавлю непроходимые участки
-	coordinates := make([]*objects.Coordinate,0)
+func getObstacles(client *Clients) []*objects.Coordinate { // TODO: добавить еще не проходимые учатки когда добавлю непроходимые участки
+	coordinates := make([]*objects.Coordinate, 0)
 
 	for _, xLine := range client.Units {
 		for _, unit := range xLine {

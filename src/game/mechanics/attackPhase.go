@@ -5,12 +5,12 @@ import (
 	"sort"
 )
 
-func AttackPhase(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit){
+func AttackPhase(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit) {
 	sortUnits = createQueueAttack(Units)
 	return
 }
 
-func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []*objects.Unit)  {
+func createQueueAttack(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit) {
 
 	for _, xLine := range Units {
 		for _, unit := range xLine {
@@ -26,9 +26,7 @@ func createQueueAttack(Units map[int]map[int]*objects.Unit)(sortUnits []*objects
 	return
 }
 
-
-
-func DelUnit(id int)  {
+func DelUnit(id int) {
 	_, err := db.Exec("DELETE FROM action_game_unit WHERE id=$1", id)
 	if err != nil {
 		println("нет такого юнита") // TODO
@@ -42,7 +40,7 @@ func UpdateUnit(id int, hp int) {
 	}
 }
 
-func UpdateTarget(id int)  {
+func UpdateTarget(id int) {
 	_, err := db.Exec("UPDATE action_game_unit SET target=$2, queue_attack=$3 WHERE id=$1", id, "", 0)
 	if err != nil {
 		println("нет такого юнита") // TODO

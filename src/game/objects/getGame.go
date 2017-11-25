@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-func GetGame(idGame int) (Game) {
+func GetGame(idGame int) Game {
 
 	rows, err := db.Query("Select * FROM action_games WHERE id=$1", idGame)
 	if err != nil {
@@ -25,10 +25,10 @@ func GetGame(idGame int) (Game) {
 }
 
 type Game struct {
-	Id int
-	Name string
-	IdMap int
-	Step int
-	Phase string
+	Id     int
+	Name   string
+	IdMap  int
+	Step   int
+	Phase  string
 	Winner string
 }

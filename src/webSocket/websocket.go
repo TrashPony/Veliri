@@ -1,8 +1,8 @@
 package webSocket
 
 import (
-	"net/http"
 	"../auth"
+	"net/http"
 )
 
 func HandleConnections(w http.ResponseWriter, r *http.Request) {

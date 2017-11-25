@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"net/http"
-	"html/template"
-	"sessions-master"
-	"encoding/gob"
 	"../lobby"
+	"encoding/gob"
+	"html/template"
+	"net/http"
+	"sessions-master"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -16,7 +16,7 @@ type sesKey int // -
 
 const (
 	login sesKey = iota // -
-	id sesKey = iota // -
+	id    sesKey = iota // -
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +34,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		if user.Id != 0 && user.Name != "" {
 			//отправляет пользователя на получение токена подключения
-			GetCookie(w , r, user)
+			GetCookie(w, r, user)
 		} else {
 			println("Соеденение не разрешено: не авторизован")
 		}
@@ -51,7 +51,7 @@ func GetCookie(w http.ResponseWriter, r *http.Request, user lobby.User) {
 	}
 
 	ses.Values[login] = user.Name // ложит данные в сессию
-	ses.Values[id] = user.Id // ложит данные в сессию
+	ses.Values[id] = user.Id      // ложит данные в сессию
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)

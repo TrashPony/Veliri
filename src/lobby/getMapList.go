@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-func GetMapList()([]Map)  {
+func GetMapList() []Map {
 
 	rows, err := db.Query("Select * FROM map")
 	if err != nil {

@@ -1,22 +1,22 @@
 package main
 
 import (
-	"net/http"
-	"mux-master"
-	"log"
 	"./auth"
 	"./webSocket"
-	"./webSocket/lobby"
 	"./webSocket/field"
+	"./webSocket/lobby"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
+	router.HandleFunc("/login", auth.Login)                    // если заходят на /login то отрабатывает функция auth.Login
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
-	go lobby.LobbyReposeSender()// запускается гарутина для рассылки сообщений, гуглить гарутины
+	go lobby.LobbyReposeSender()                                               // запускается гарутина для рассылки сообщений, гуглить гарутины
 	go field.FieldReposeSender()
 	go field.InitUnitSender()
 	go field.CoordinateSender()

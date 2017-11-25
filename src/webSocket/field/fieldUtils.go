@@ -1,16 +1,16 @@
 package field
 
 import (
-	"websocket-master"
-	"log"
 	"../../game/mechanics"
 	"../../game/objects"
-	"strconv"
 	"errors"
+	"github.com/gorilla/websocket"
+	"log"
+	"strconv"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients)  {
-	for ws, client  := range *usersWs {
+func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
+	for ws, client := range *usersWs {
 		if client.Login == login {
 			ws.Close()
 			println(login + " Уже был в соеденениях")
@@ -23,7 +23,7 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab []objects.Coordinate)  {
+func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab []objects.Coordinate) {
 	mb := map[objects.Coordinate]bool{}
 	for _, x := range slice2 {
 		mb[*x] = true
@@ -38,7 +38,7 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab
 
 func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]map[int]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
 	allCoordinate = make(map[string]*objects.Coordinate)
-	unitsCoordinate =  make(map[int]map[int]*objects.Unit)
+	unitsCoordinate = make(map[int]map[int]*objects.Unit)
 	login := client.Login
 	respawn := client.Respawn
 
@@ -56,7 +56,7 @@ func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]ma
 				}
 			} else {
 				if !(PermissCoordinates[i].X == respawn.X && PermissCoordinates[i].Y == respawn.Y) {
-					allCoordinate[strconv.Itoa(PermissCoordinates[i].X) + ":" + strconv.Itoa(PermissCoordinates[i].Y)] = PermissCoordinates[i]
+					allCoordinate[strconv.Itoa(PermissCoordinates[i].X)+":"+strconv.Itoa(PermissCoordinates[i].Y)] = PermissCoordinates[i]
 				}
 			}
 		}
@@ -66,30 +66,30 @@ func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]ma
 	return allCoordinate, unitsCoordinate, nil
 }
 
-func SendWatchCoordinate(client *Clients){
+func SendWatchCoordinate(client *Clients) {
 	var unitsParameter InitUnit
 
 	for _, xLine := range client.Watch { // отправляем все открытые координаты
-		for _, coordinate :=range xLine {
-			var emptyCoordinates= InitUnit{Event: "emptyCoordinate", UserName: client.Login, X: coordinate.X, Y: coordinate.Y}
+		for _, coordinate := range xLine {
+			var emptyCoordinates = InitUnit{Event: "emptyCoordinate", UserName: client.Login, X: coordinate.X, Y: coordinate.Y}
 			initUnit <- emptyCoordinates
 		}
 	}
 
 	for _, xLine := range client.Units { // отправляем параметры своих юнитов
-		for _, unit := range xLine{
+		for _, unit := range xLine {
 			unitsParameter.initUnit(unit, client.Login)
 		}
 	}
 
 	for _, xLine := range client.HostileUnits { // отправляем параметры вражеских юнитов
-		for _, unit := range xLine{
+		for _, unit := range xLine {
 			unitsParameter.initUnit(unit, client.Login)
 		}
 	}
 }
 
-func ActionGameUser(players []*objects.UserStat)  (activeUser []*Clients) {
+func ActionGameUser(players []*objects.UserStat) (activeUser []*Clients) {
 	for _, clients := range usersFieldWs {
 		add := false
 		for _, userStat := range players {

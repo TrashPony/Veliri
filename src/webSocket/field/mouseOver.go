@@ -1,7 +1,7 @@
 package field
 
 import (
-	"websocket-master"
+	"github.com/gorilla/websocket"
 	"strconv"
 )
 
