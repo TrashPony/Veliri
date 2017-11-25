@@ -5,19 +5,20 @@ import (
 )
 
 type ActiveGame struct {
-	Map        *objects.Map
+	MapInfo    *objects.Map
 	Stat       *objects.Game
 	Players    []*objects.UserStat
 	Units      map[int]map[int]*objects.Unit
 	Coordinate map[int]map[int]*objects.Coordinate
+	//Map        map[int]map[int]*objects.Coordinate
 }
 
 func (game *ActiveGame) setPlayers(players []*objects.UserStat) {
 	game.Players = players
 }
 
-func (game *ActiveGame) setInfoMap(mp *objects.Map) {
-	game.Map = mp
+func (game *ActiveGame) setInfoMap(mapInfo *objects.Map) {
+	game.MapInfo = mapInfo
 }
 
 func (game *ActiveGame) setStat(stat *objects.Game) {
@@ -37,12 +38,16 @@ func (game *ActiveGame) setUnit(unit *objects.Unit) {
 	}
 }
 
+func (game *ActiveGame) setMap(coordinate map[int]map[int]*objects.Coordinate)  {
+	game.Coordinate = coordinate
+}
+
 func (game *ActiveGame) delUnit(unit *objects.Unit) {
 	delete(game.Units[unit.X], unit.Y)
 }
 
 func (game *ActiveGame) getMap() (mp *objects.Map) {
-	return game.Map
+	return game.MapInfo
 }
 
 func (game *ActiveGame) getUnits() (units map[int]map[int]*objects.Unit) {

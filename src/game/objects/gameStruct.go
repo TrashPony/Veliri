@@ -46,4 +46,6 @@ type UserStat struct {
 type Coordinate struct {
 	X int
 	Y int
+	Type string
+	Texture string
 }

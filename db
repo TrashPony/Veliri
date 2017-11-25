@@ -1,7 +1,36 @@
+CREATE TABLE unit_type(
+    id serial primary key,
+    type varchar(64),
+    damage int,
+    hp int,
+    move_speed int,
+    initiative int,
+    range_attack int,
+    range_view int,
+    area_attack int,
+    type_attack varchar(64),
+    price int
+);
+
+CREATE TABLE maps(
+    id serial primary key,
+    name varchar(64),
+    x_size int,
+    y_size int,
+    type varchar(64)
+);
+
+CREATE TABLE users(
+    id serial primary key,
+    name varchar(64),
+    password varchar(64),
+    mail varchar(64)
+);
+
 CREATE TABLE action_games(
    id serial primary key,
    name varchar(64),
-   id_map int references map(id),
+   id_map int references maps(id),
    step int,
    phase varchar(64),
    winner varchar(64)
@@ -18,7 +47,7 @@ CREATE TABLE action_game_user(
 CREATE TABLE action_game_unit(
     id serial primary key,
     id_game int references action_games(id),
-    id_type int references unittype(id),
+    id_type int references unit_type(id),
     id_user int references users(id),
     hp int,
     action varchar(64),
@@ -30,20 +59,35 @@ CREATE TABLE action_game_unit(
 
 CREATE TABLE map_constructor(
    id serial primary key,
-   id_map int references map(id),
+   id_map int references maps(id),
    type varchar(64),
+   name varchar(64),
    x int,
    y int,
    texture varchar(64)
 );
 
+/ ---------------------------- User -------------------------------------------------- /
+INSERT INTO users (name, password, mail) VALUES ('TrashPony', 'pass', 'trashpony13@gmail.com');
+INSERT INTO users (name, password, mail) VALUES ('user', 'pass', 'ololosha@gmail.com');
+INSERT INTO users (name, password, mail) VALUES ('user2', 'pass', 'test@test.com');
+
+/ ---------------------------- Map -------------------------------------------------- /
+INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test', 10, 10, 'test');
+INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test2', 10, 10, 'test');
+
+/ ---------------------------- Unit -------------------------------------------------- /
+INSERT INTO unit_type (type, damage, hp, move_speed, initiative, range_attack, range_view, area_attack, type_attack, price)  VALUES ('tank',      2, 100, 1, 1, 1, 2, 1, 'fire', 20);
+INSERT INTO unit_type (type, damage, hp, move_speed, initiative, range_attack, range_view, area_attack, type_attack, price)  VALUES ('scout',     2, 50,  3, 1, 2, 3, 1, 'fire', 15);
+INSERT INTO unit_type (type, damage, hp, move_speed, initiative, range_attack, range_view, area_attack, type_attack, price)  VALUES ('artillery', 7, 25,  1, 1, 3, 1, 1, 'fire', 25);
+
 / ---------------------------- RESPAWN -------------------------------------------------- /
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'respawn_1', 0 ,0, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'respawn_2', 9 ,9, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (2 , 'respawn_1', 0 ,0, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (2 , 'respawn_2', 9 ,0, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (2 , 'respawn_3', 0 ,9, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (2 , 'respawn_4', 9 ,9, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_1', 0 ,0, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_2', 9 ,9, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_1', 0 ,0, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_2', 9 ,0, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_3', 0 ,9, '');
+INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_4', 9 ,9, '');
 
 / ---------------------------- Obstacles -------------------------------------------------- /
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 4, '');

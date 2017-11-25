@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"html/template"
 	"net/http"
-	"sessions-master"
+	"github.com/gorilla/sessions"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования

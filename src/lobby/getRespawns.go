@@ -6,7 +6,7 @@ import (
 
 func GetRespawns(nameMap string) []Respawn {
 
-	rows, err := db.Query("Select id, x, y, id_map, type FROM map_constructor WHERE type like 'respawn__' AND id_map = (Select id from map WHERE name=$1)", nameMap)
+	rows, err := db.Query("Select id, x, y, id_map, name FROM map_constructor WHERE type='respawn' AND id_map = (Select id from map WHERE name=$1)", nameMap)
 	if err != nil {
 		log.Fatal(err)
 	}
