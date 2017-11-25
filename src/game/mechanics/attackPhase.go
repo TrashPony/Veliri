@@ -14,13 +14,13 @@ func createQueueAttack(Units map[int]map[int]*objects.Unit) (sortUnits []*object
 
 	for _, xLine := range Units {
 		for _, unit := range xLine {
-			unit.Init = unit.Init + unit.Queue
+			unit.Initiative = unit.Initiative + unit.Queue
 			sortUnits = append(sortUnits, unit)
 		}
 	}
 
 	sort.Slice(sortUnits, func(i, j int) bool {
-		return sortUnits[i].Init > sortUnits[j].Init
+		return sortUnits[i].Initiative > sortUnits[j].Initiative
 	})
 
 	return
@@ -29,7 +29,7 @@ func createQueueAttack(Units map[int]map[int]*objects.Unit) (sortUnits []*object
 func DelUnit(id int) {
 	_, err := db.Exec("DELETE FROM action_game_unit WHERE id=$1", id)
 	if err != nil {
-		println("нет такого юнита") // TODO
+		println("нет такого юнита") // TODO сбрасывать инициативу до дефолта
 	}
 }
 
@@ -45,5 +45,4 @@ func UpdateTarget(id int) {
 	if err != nil {
 		println("нет такого юнита") // TODO
 	}
-
 }

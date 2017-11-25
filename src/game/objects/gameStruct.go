@@ -19,7 +19,7 @@ type Unit struct {
 	IdGame      int
 	Damage      int
 	MoveSpeed   int
-	Init        int
+	Initiative  int
 	RangeAttack int
 	WatchZone   int
 	AreaAttack  int

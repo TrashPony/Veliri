@@ -7,7 +7,7 @@ import (
 
 func GetInfoMap(idMap int) Map {
 
-	rows, err := db.Query("Select * FROM map WHERE id =" + strconv.Itoa(idMap))
+	rows, err := db.Query("Select * FROM maps WHERE id =" + strconv.Itoa(idMap))
 	if err != nil {
 		log.Fatal(err)
 	}

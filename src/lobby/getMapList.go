@@ -6,7 +6,7 @@ import (
 
 func GetMapList() []Map {
 
-	rows, err := db.Query("Select * FROM map")
+	rows, err := db.Query("Select * FROM maps")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +20,7 @@ func GetMapList() []Map {
 		if err != nil {
 			log.Fatal(err)
 		}
-		row := db.QueryRow("SELECT COUNT(*) as Respawns FROM respawns WHERE id_map=$1", mp.Id)
+		row := db.QueryRow("SELECT COUNT(*) as Respawns FROM map_constructor WHERE type='respawn' AND id_map=$1", mp.Id)
 		errors := row.Scan(&mp.Respawns)
 		if errors != nil {
 			log.Fatal(errors)

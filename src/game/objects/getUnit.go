@@ -9,7 +9,7 @@ import (
 
 func GetUnit(query string) map[int]map[int]*Unit {
 
-	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.movespeed, t.init, t.rangeattack, t.rangeview, t.areaattack, t.typeattack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unittype as t, users as u WHERE " + query)
+	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.move_speed, t.initiative, t.range_attack, t.range_view, t.area_attack, t.type_attack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unit_type as t, users as u WHERE " + query)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +20,7 @@ func GetUnit(query string) map[int]map[int]*Unit {
 
 	for rows.Next() {
 		var unit Unit
-		err := rows.Scan(&unit.Id, &unit.IdGame, &unit.Damage, &unit.MoveSpeed, &unit.Init, &unit.RangeAttack, &unit.WatchZone, &unit.AreaAttack,
+		err := rows.Scan(&unit.Id, &unit.IdGame, &unit.Damage, &unit.MoveSpeed, &unit.Initiative, &unit.RangeAttack, &unit.WatchZone, &unit.AreaAttack,
 			&unit.TypeAttack, &unit.Price, &unit.NameType, &unit.NameUser, &unit.Hp, &unit.Action, &targetKey, &unit.X, &unit.Y, &unit.Queue)
 		if err != nil {
 			log.Fatal(err)
@@ -75,7 +75,7 @@ func GetXYUnits(idGame int, x int, y int) (Unit, error) {
 func GetUnitType(nameType string) UnitType {
 	var unitType UnitType
 
-	rows, err := db.Query("Select * From unittype WHERE type=$1", nameType)
+	rows, err := db.Query("Select * From unit_type WHERE type=$1", nameType)
 	if err != nil {
 		log.Fatal(err)
 	}
