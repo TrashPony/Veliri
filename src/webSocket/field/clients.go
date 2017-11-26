@@ -2,6 +2,7 @@ package field
 
 import (
 	"../../game/objects"
+	"strconv"
 )
 
 type Clients struct { // структура описывающая клиента ws соеденение
@@ -9,16 +10,17 @@ type Clients struct { // структура описывающая клиент�
 	Id           int
 	Watch        map[int]map[int]*objects.Coordinate // map[X]map[Y]
 	Units        map[int]map[int]*objects.Unit       // map[X]map[Y]
+	Structure    map[int]map[int]*objects.Structure  // map[X]map[Y]
 	HostileUnits map[int]map[int]*objects.Unit       // map[X]map[Y]
-	Respawn      objects.Respawn
+	Respawn      *objects.Structure
 	CreateZone   map[string]*objects.Coordinate
 	GameID       int
 }
 
-func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
+func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
 	for _, xLine := range units {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, err := PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := unit.Watch(client.Login, units, structures)//PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -33,6 +35,14 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
 					}
 				}
 
+				for _, xLine := range watchStructure {
+					for _, hostile := range xLine {
+						if hostile.NameUser != client.Login {
+							// TODO хостаил структуры
+						}
+					}
+				}
+
 				for _, coordinate := range watchCoordinate {
 					client.addCoordinate(coordinate)
 				}
@@ -40,20 +50,41 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit) {
 		}
 	}
 
-	for _, respCoordinate := range client.CreateZone { // зона видимости респауна
-		unit, ok := units[respCoordinate.X][respCoordinate.Y]
-		if ok {
-			if unit.NameUser != client.Login {
-				client.addHostileUnit(unit)
+	for _, xLine := range structures {
+		for _, structure := range xLine {
+			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, units, structures)//PermissionCoordinates(client, unit, units)
+
+			if err != nil { // если крип не мой то пропускаем дальнейшее действие
+				continue
+			} else {
+				client.addStructure(structure)
+
+				for _, xLine := range watchUnit {
+					for _, hostile := range xLine {
+						if hostile.NameUser != client.Login {
+							client.addHostileUnit(hostile)
+						}
+					}
+				}
+
+				for _, xLine := range watchStructure {
+					for _, hostile := range xLine {
+						if hostile.NameUser != client.Login {
+							// TODO хостаил структуры
+						}
+					}
+				}
+
+				for _, coordinate := range watchCoordinate {
+					client.addCoordinate(coordinate)
+				}
 			}
-		} else {
-			client.addCoordinate(respCoordinate)
 		}
 	}
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit) {
+func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
 
 	oldWatchZone := client.Watch
 	oldWatchUnit := client.HostileUnits
@@ -62,7 +93,7 @@ func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit) {
 	client.HostileUnits = nil
 	client.Watch = nil
 
-	client.getAllWatchObject(units)
+	client.getAllWatchObject(units, structures)
 
 	updateOpenCoordinate(client, oldWatchZone)
 	updateHostileUnit(client, oldWatchUnit)
@@ -86,15 +117,6 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 				delete(client.Watch[oldCoordinate.X], oldCoordinate.Y)
 				closeCoordinate(client.Login, oldCoordinate.X, oldCoordinate.Y)
 			}
-		}
-	}
-
-	for _, respCoordinate := range client.CreateZone { // зона респауна
-		_, okUnit := client.Units[respCoordinate.X][respCoordinate.Y]
-		_, okHostile := client.HostileUnits[respCoordinate.X][respCoordinate.Y]
-		if !okUnit && !okHostile {
-			client.addCoordinate(respCoordinate)
-			openCoordinate(client.Login, respCoordinate.X, respCoordinate.Y)
 		}
 	}
 }
@@ -161,4 +183,30 @@ func (client *Clients) addHostileUnit(hostile *objects.Unit) {
 		client.HostileUnits = make(map[int]map[int]*objects.Unit)
 		client.addHostileUnit(hostile)
 	}
+}
+
+func (client *Clients) addStructure(structure *objects.Structure) {
+	if client.Structure != nil {
+		if client.Structure[structure.X] != nil {
+			client.Structure[structure.X][structure.Y] = structure
+		} else {
+			client.Structure[structure.X] = make(map[int]*objects.Structure)
+			client.addStructure(structure)
+		}
+	} else {
+		client.Structure = make(map[int]map[int]*objects.Structure)
+		client.addStructure(structure)
+	}
+}
+
+func (client *Clients) setRespawn(respawn *objects.Structure)  {
+	PermCoordinates := objects.GetCoordinates(respawn.X, respawn.Y, respawn.WatchZone)
+	client.CreateZone = make(map[string]*objects.Coordinate)
+	for _, coordinate := range PermCoordinates {
+		if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
+			client.CreateZone[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
+		}
+	}
+
+	client.Respawn = respawn
 }

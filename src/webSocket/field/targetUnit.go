@@ -13,14 +13,14 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 	game := Games[client.GameID]
 
 	if find {
-		coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
+		coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 		passed := false
 
 		for _, target := range coordinates {
 			if target.X == msg.TargetX && target.Y == msg.TargetY {
 				target, ok := client.HostileUnits[msg.TargetX][msg.TargetY]
 				if ok {
-					mechanics.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), game.Stat.Id)
+					mechanics.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), game.stat.Id)
 					unit.Target = &objects.Coordinate{X: target.X, Y: target.Y}
 					passed = true
 					resp := FieldResponse{Event: msg.Event, UserName: client.Login}

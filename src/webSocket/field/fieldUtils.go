@@ -1,12 +1,9 @@
 package field
 
 import (
-	"../../game/mechanics"
 	"../../game/objects"
-	"errors"
 	"github.com/gorilla/websocket"
 	"log"
-	"strconv"
 )
 
 func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
@@ -36,7 +33,7 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab
 	return ab
 }
 
-func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]map[int]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
+/*func PermissionCoordinates(client *Clients, unit *objects.Unit, units map[int]map[int]*objects.Unit) (allCoordinate map[string]*objects.Coordinate, unitsCoordinate map[int]map[int]*objects.Unit, Err error) {
 	allCoordinate = make(map[string]*objects.Coordinate)
 	unitsCoordinate = make(map[int]map[int]*objects.Unit)
 	login := client.Login
@@ -87,7 +84,7 @@ func SendWatchCoordinate(client *Clients) {
 			unitsParameter.initUnit(unit, client.Login)
 		}
 	}
-}
+}*/
 
 func ActionGameUser(players []*objects.UserStat) (activeUser []*Clients) {
 	for _, clients := range usersFieldWs {

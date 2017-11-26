@@ -16,7 +16,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	if find && ok {
 		if unit.Action {
 			respawn := client.Respawn
-			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
+			coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			var passed bool
 			for _, coordinate := range coordinates {
 				if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
@@ -113,7 +113,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 		delete(client.Units[x], y)
 		client.addUnit(unit) // добавляем новое
 
-		client.updateWatchZone(game.getUnits())                     // отправляем открытые ячейки, удаляем закрытые
+		client.updateWatchZone(game.getUnits(), game.getStructure())                     // отправляем открытые ячейки, удаляем закрытые
 		go updateWatchHostileUser(*client, *unit, x, y, activeUser) // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit

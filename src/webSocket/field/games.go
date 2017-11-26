@@ -5,55 +5,63 @@ import (
 )
 
 type ActiveGame struct {
-	MapInfo    *objects.Map
-	Stat       *objects.Game
-	Players    []*objects.UserStat
-	Units      map[int]map[int]*objects.Unit
-	Coordinate map[int]map[int]*objects.Coordinate
-	//Map        map[int]map[int]*objects.Coordinate
+	mapInfo    *objects.Map
+	stat       *objects.Game
+	players    []*objects.UserStat
+	units      map[int]map[int]*objects.Unit
+	structure  map[int]map[int]*objects.Structure
+	coordinate map[int]map[int]*objects.Coordinate
+}
+
+func (game *ActiveGame) setStructure(structure map[int]map[int]*objects.Structure) {
+	game.structure = structure
 }
 
 func (game *ActiveGame) setPlayers(players []*objects.UserStat) {
-	game.Players = players
+	game.players = players
 }
 
 func (game *ActiveGame) setInfoMap(mapInfo *objects.Map) {
-	game.MapInfo = mapInfo
+	game.mapInfo = mapInfo
 }
 
 func (game *ActiveGame) setStat(stat *objects.Game) {
-	game.Stat = stat
+	game.stat = stat
 }
 
 func (game *ActiveGame) setUnits(unit map[int]map[int]*objects.Unit) {
-	game.Units = unit
+	game.units = unit
 }
 
 func (game *ActiveGame) setUnit(unit *objects.Unit) {
-	if game.Units[unit.X] != nil {
-		game.Units[unit.X][unit.Y] = unit
+	if game.units[unit.X] != nil {
+		game.units[unit.X][unit.Y] = unit
 	} else {
-		game.Units[unit.X] = make(map[int]*objects.Unit)
-		game.Units[unit.X][unit.Y] = unit
+		game.units[unit.X] = make(map[int]*objects.Unit)
+		game.units[unit.X][unit.Y] = unit
 	}
 }
 
 func (game *ActiveGame) setMap(coordinate map[int]map[int]*objects.Coordinate)  {
-	game.Coordinate = coordinate
+	game.coordinate = coordinate
 }
 
 func (game *ActiveGame) delUnit(unit *objects.Unit) {
-	delete(game.Units[unit.X], unit.Y)
+	delete(game.units[unit.X], unit.Y)
 }
 
 func (game *ActiveGame) getMap() (mp *objects.Map) {
-	return game.MapInfo
+	return game.mapInfo
 }
 
 func (game *ActiveGame) getUnits() (units map[int]map[int]*objects.Unit) {
-	return game.Units
+	return game.units
 }
 
 func (game *ActiveGame) getPlayers() (Players []*objects.UserStat) {
-	return game.Players
+	return game.players
+}
+
+func (game *ActiveGame) getStructure() (Structure map[int]map[int]*objects.Structure) {
+	return game.structure
 }

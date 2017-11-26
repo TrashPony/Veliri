@@ -1,7 +1,6 @@
 package field
 
 import (
-	"../../game/mechanics"
 	"../../game/objects"
 	"github.com/gorilla/websocket"
 )
@@ -15,9 +14,9 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	if find && ok {
 		respawn := client.Respawn
-		if game.Stat.Phase == "move" {
+		if game.stat.Phase == "move" {
 			if unit.Action {
-				coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
+				coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 				unitsCoordinate := objects.GetUnitsCoordinate(client.Units)
 				hostileCoordinate := objects.GetUnitsCoordinate(client.HostileUnits)
 
@@ -29,7 +28,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for i := 0; i < len(responseCoordinate); i++ {
 					if !(responseCoordinate[i].X == respawn.X && responseCoordinate[i].Y == respawn.Y) {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: game.Stat.Phase,
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: game.stat.Phase,
 							X: responseCoordinate[i].X, Y: responseCoordinate[i].Y}
 						fieldPipe <- createCoordinates
 					}
@@ -40,12 +39,12 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 
-		if game.Stat.Phase == "targeting" {
-			coordinates := mechanics.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
+		if game.stat.Phase == "targeting" {
+			coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
 				targetUnit, ok := client.HostileUnits[coordinate.X][coordinate.Y]
 				if ok && targetUnit.NameUser != client.Login {
-					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: game.Stat.Phase,
+					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: game.stat.Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
 					fieldPipe <- createCoordinates
 				}

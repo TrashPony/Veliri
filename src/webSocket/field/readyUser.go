@@ -14,7 +14,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	players := game.getPlayers()
 	activeUser := ActionGameUser(players)
 	if phase != "" { // TODO
-		game.Stat.Phase = phase
+		game.stat.Phase = phase
 	}
 	if phase == "attack" {
 		sortUnits := mechanics.AttackPhase(game.getUnits())
@@ -46,11 +46,11 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		for _, client := range activeUser {
 			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
 			fieldPipe <- resp
-			game.Stat.Phase = phase
+			game.stat.Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: game.Stat.Step + 1}
-				game.Stat.Step += 1
+				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: game.stat.Step + 1}
+				game.stat.Step += 1
 			}
 
 			for yLine := range client.Units { // TODO Нахера?
@@ -143,7 +143,8 @@ func DelUnit(unit *objects.Unit, activeUser []*Clients) {
 
 				openCoordinate(client.Login, unit.X, unit.Y)
 				units := Games[client.GameID].getUnits()
-				client.updateWatchZone(units)
+				structure := Games[client.GameID].getStructure()
+				client.updateWatchZone(units, structure)
 			}
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
