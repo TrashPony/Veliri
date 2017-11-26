@@ -87,7 +87,7 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
 
 	oldWatchZone := client.Watch
-	oldWatchUnit := client.HostileUnits
+	oldWatchHostile := client.HostileUnits
 
 	client.Units = nil
 	client.HostileUnits = nil
@@ -95,8 +95,19 @@ func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, stru
 
 	client.getAllWatchObject(units, structures)
 
+
+	updateMyUnit(client)
 	updateOpenCoordinate(client, oldWatchZone)
-	updateHostileUnit(client, oldWatchUnit)
+	updateHostileUnit(client, oldWatchHostile)
+}
+
+func updateMyUnit(client *Clients)  {
+	var unitsParameter InitUnit
+	for _, xLine := range client.Units { // отправляем параметры своих юнитов
+		for _, unit := range xLine {
+			unitsParameter.initUnit(unit, client.Login)
+		}
+	}
 }
 
 func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate) {
