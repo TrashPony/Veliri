@@ -36,7 +36,8 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 	for _, xLine := range oldWatchZone { // удаляем старые координаты из зоны видимости
 		for _, oldCoordinate := range xLine {
 			_, find := client.Watch[oldCoordinate.X][oldCoordinate.Y]
-			if !find {
+			_, findUnit := client.Units[oldCoordinate.X][oldCoordinate.Y]
+			if !find && !findUnit{
 				delete(client.Watch[oldCoordinate.X], oldCoordinate.Y)
 				closeCoordinate(client.Login, oldCoordinate.X, oldCoordinate.Y)
 			}

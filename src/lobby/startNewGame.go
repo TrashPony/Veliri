@@ -74,7 +74,6 @@ func UsersToDB(id string, usersAndResp map[User]Respawn) {
 	var err error
 
 	for user, resp := range usersAndResp {
-
 		_, err = db.Exec("INSERT INTO action_game_structure (id_game, id_type, id_user, x, y) VALUES ($1, $2, $3, $4, $5)",
 			id, 1, user.Id, resp.X, resp.Y)    // добавляем респаун игрока
 		if err != nil {

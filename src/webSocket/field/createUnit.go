@@ -19,7 +19,6 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 	} else {
 		_, ok := coordinates[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
 		if ok && !(msg.X == respawn.X && msg.Y == respawn.Y) {
-
 			var unit objects.Unit
 			unit, price, createError := mechanics.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
 
