@@ -6,15 +6,16 @@ import (
 )
 
 type Clients struct { // структура описывающая клиента ws соеденение
-	Login        string
-	Id           int
-	Watch        map[int]map[int]*objects.Coordinate // map[X]map[Y]
-	Units        map[int]map[int]*objects.Unit       // map[X]map[Y]
-	Structure    map[int]map[int]*objects.Structure  // map[X]map[Y]
-	HostileUnits map[int]map[int]*objects.Unit       // map[X]map[Y]
-	Respawn      *objects.Structure
-	CreateZone   map[string]*objects.Coordinate
-	GameID       int
+	Login        	  string
+	Id           	  int
+	Watch             map[int]map[int]*objects.Coordinate // map[X]map[Y]
+	Units        	  map[int]map[int]*objects.Unit       // map[X]map[Y]
+	Structure    	  map[int]map[int]*objects.Structure  // map[X]map[Y]
+	HostileStructure  map[int]map[int]*objects.Structure  // map[X]map[Y]
+	HostileUnits 	  map[int]map[int]*objects.Unit       // map[X]map[Y]
+	Respawn      	  *objects.Structure
+	CreateZone   	  map[string]*objects.Coordinate
+	GameID            int
 }
 
 func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
@@ -38,7 +39,7 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 				for _, xLine := range watchStructure {
 					for _, hostile := range xLine {
 						if hostile.NameUser != client.Login {
-							// TODO хостаил структуры
+							client.addHostileStructure(hostile)
 						}
 					}
 				}
@@ -52,9 +53,9 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 
 	for _, xLine := range structures {
 		for _, structure := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, units, structures)//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, units, structures)
 
-			if err != nil { // если крип не мой то пропускаем дальнейшее действие
+			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
 			} else {
 				client.addStructure(structure)
@@ -70,7 +71,7 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 				for _, xLine := range watchStructure {
 					for _, hostile := range xLine {
 						if hostile.NameUser != client.Login {
-							// TODO хостаил структуры
+							client.addHostileStructure(hostile)
 						}
 					}
 				}
@@ -87,71 +88,22 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
 
 	oldWatchZone := client.Watch
-	oldWatchHostile := client.HostileUnits
+	oldWatchHostileUnits := client.HostileUnits
+	oldWatchHostileStructure := client.HostileStructure
 
 	client.Units = nil
+	client.Structure = nil
 	client.HostileUnits = nil
+	client.HostileStructure = nil
 	client.Watch = nil
 
 	client.getAllWatchObject(units, structures)
 
-
 	updateMyUnit(client)
+	updateMyStructure(client)
+	updateHostileUnit(client, oldWatchHostileUnits)
+	updateHostileStrcuture(client, oldWatchHostileStructure)
 	updateOpenCoordinate(client, oldWatchZone)
-	updateHostileUnit(client, oldWatchHostile)
-}
-
-func updateMyUnit(client *Clients)  {
-	var unitsParameter InitUnit
-	for _, xLine := range client.Units { // отправляем параметры своих юнитов
-		for _, unit := range xLine {
-			unitsParameter.initUnit(unit, client.Login)
-		}
-	}
-}
-
-func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate) {
-	for _, xLine := range client.Watch { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
-		for _, newCoordinate := range xLine {
-			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
-			if !ok {
-				client.addCoordinate(newCoordinate)
-				openCoordinate(client.Login, newCoordinate.X, newCoordinate.Y)
-			}
-		}
-	}
-
-	for _, xLine := range oldWatchZone { // удаляем старые координаты из зоны видимости
-		for _, oldCoordinate := range xLine {
-			_, find := client.Watch[oldCoordinate.X][oldCoordinate.Y]
-			if !find {
-				delete(client.Watch[oldCoordinate.X], oldCoordinate.Y)
-				closeCoordinate(client.Login, oldCoordinate.X, oldCoordinate.Y)
-			}
-		}
-	}
-}
-
-func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Unit) {
-	for _, xLine := range client.HostileUnits { // добавляем новые вражеские юниты которых открыли
-		for _, hostile := range xLine {
-			_, ok := oldWatchUnit[hostile.X][hostile.Y]
-			if !ok {
-				client.addHostileUnit(hostile)
-				var unitsParameter InitUnit
-				unitsParameter.initUnit(hostile, client.Login)
-			}
-		}
-	}
-
-	for _, xLine := range oldWatchUnit {
-		for _, hostile := range xLine {
-			_, find := client.HostileUnits[hostile.X][hostile.Y]
-			if !find {
-				closeCoordinate(client.Login, hostile.X, hostile.Y)
-			}
-		}
-	}
 }
 
 func (client *Clients) addCoordinate(coordinate *objects.Coordinate) {
@@ -207,6 +159,20 @@ func (client *Clients) addStructure(structure *objects.Structure) {
 	} else {
 		client.Structure = make(map[int]map[int]*objects.Structure)
 		client.addStructure(structure)
+	}
+}
+
+func (client *Clients) addHostileStructure(structure *objects.Structure) {
+	if client.HostileStructure != nil {
+		if client.HostileStructure[structure.X] != nil {
+			client.HostileStructure[structure.X][structure.Y] = structure
+		} else {
+			client.HostileStructure[structure.X] = make(map[int]*objects.Structure)
+			client.addHostileStructure(structure)
+		}
+	} else {
+		client.HostileStructure = make(map[int]map[int]*objects.Structure)
+		client.addHostileStructure(structure)
 	}
 }
 

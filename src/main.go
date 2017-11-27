@@ -20,6 +20,7 @@ func main() {
 	go field.FieldReposeSender()
 	go field.InitUnitSender()
 	go field.CoordinateSender()
+	go field.InitStructureSender()
 	log.Println("http server started on :8080")
 	http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 }

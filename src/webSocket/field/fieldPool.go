@@ -9,6 +9,7 @@ import (
 
 var fieldPipe = make(chan FieldResponse)
 var initUnit = make(chan InitUnit)
+var initStructure = make(chan InitStructure)
 var coordiante = make(chan sendCoordinate)
 
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
@@ -96,6 +97,24 @@ func FieldReposeSender() {
 func InitUnitSender() {
 	for {
 		resp := <-initUnit
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.Login == resp.UserName {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func InitStructureSender()  {
+	for {
+		resp := <- initStructure
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.Login == resp.UserName {

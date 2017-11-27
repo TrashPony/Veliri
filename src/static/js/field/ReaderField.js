@@ -21,8 +21,8 @@ function ReadResponse(jsonMessage) {
         InitUnit(jsonMessage);
     }
 
-    if (event === "InitResp") {
-        InitResp(jsonMessage);
+    if (event === "InitStructure") {
+        InitStructure(jsonMessage);
     }
 
     if (event === "CreateUnit") {

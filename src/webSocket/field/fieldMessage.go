@@ -49,14 +49,29 @@ type InitUnit struct {
 
 func (msg *InitUnit) initUnit(unit *objects.Unit, login string) {
 	if unit.Target == nil {
-		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
+		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
-		initUnit <- unitsParametr
+		initUnit <- unitsParams
 	} else {
 		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y), X: unit.X, Y: unit.Y}
 		initUnit <- unitsParametr
 	}
+}
+
+type InitStructure struct {
+	Event      		 string `json:"event"`
+	UserName  		 string `json:"user_name"`
+	X      		     int    `json:"x"`
+	Y          		 int    `json:"y"`
+	TypeStructure    string `json:"type_structure"`
+	UserOwned   	 string `json:"user_owned"`
+	Error            string `json:"error"`
+}
+
+func (msg *InitStructure) initStructure(structure *objects.Structure, login string) {
+	var structureParams = InitStructure{Event: "InitStructure", UserName: login, TypeStructure: structure.Type, UserOwned: structure.NameUser, X: structure.X, Y: structure.Y} // остылаем событие добавления юнита
+	initStructure <- structureParams
 }
 
 type sendCoordinate struct {

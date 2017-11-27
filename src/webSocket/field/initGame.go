@@ -19,9 +19,6 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 
 			client.setRespawn(Game.structure[userStat.RespX][userStat.RespY])
 
-			var respawnParameter = sendCoordinate{Event: "InitResp", UserName: client.Login, X: client.Respawn.X, Y: client.Respawn.Y}
-			coordiante <- respawnParameter
-
 			var playersParam = FieldResponse{Event: "InitPlayer", UserName: client.Login, PlayerPrice: userStat.Price,
 				GameStep: Game.stat.Step, GamePhase: Game.stat.Phase, UserReady: userStat.Ready}
 			fieldPipe <- playersParam // отправляет параметры игрока
