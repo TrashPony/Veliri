@@ -121,6 +121,14 @@ function InitStructure(jsonMessage) {
     }
 }
 
+function InitObstacle(jsonMessage) {
+    var x = JSON.parse(jsonMessage).x;
+    var y = JSON.parse(jsonMessage).y;
+    var coor_id = x + ":" + y;
+    var cell = document.getElementById(coor_id);
+    cell.className = "obstacle"
+}
+
 function CreateUnit(jsonMessage) {
     if (JSON.parse(jsonMessage).error_type === "") {
         var price = document.getElementsByClassName('fieldInfo price');

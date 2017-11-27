@@ -25,7 +25,7 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 
 			if createError == nil {
 				game.setUnit(&unit)
-				client.updateWatchZone(game.getUnits(), game.getStructure())
+				client.updateWatchZone(game)
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
 				fieldPipe <- resp
 

@@ -18,10 +18,10 @@ type Clients struct { // структура описывающая клиент�
 	GameID            int
 }
 
-func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
-	for _, xLine := range units {
+func (client *Clients) getAllWatchObject(game *ActiveGame) {
+	for _, xLine := range game.getUnits() {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := unit.Watch(client.Login, units, structures)//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := unit.Watch(client.Login, game.getUnits(), game.getStructure())//PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -45,15 +45,18 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 				}
 
 				for _, coordinate := range watchCoordinate {
-					client.addCoordinate(coordinate)
+					_, ok := game.coordinate[coordinate.X][coordinate.Y]
+					if !ok {
+						client.addCoordinate(coordinate)
+					}
 				}
 			}
 		}
 	}
 
-	for _, xLine := range structures {
+	for _, xLine := range game.getStructure() {
 		for _, structure := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, units, structures)
+			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, game.getUnits(), game.getStructure())
 
 			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
@@ -77,7 +80,10 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 				}
 
 				for _, coordinate := range watchCoordinate {
-					client.addCoordinate(coordinate)
+					_, ok := game.coordinate[coordinate.X][coordinate.Y]
+					if !ok {
+						client.addCoordinate(coordinate)
+					}
 				}
 			}
 		}
@@ -85,7 +91,7 @@ func (client *Clients) getAllWatchObject(units map[int]map[int]*objects.Unit, st
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, structures map[int]map[int]*objects.Structure) {
+func (client *Clients) updateWatchZone(game *ActiveGame) {
 
 	oldWatchZone := client.Watch
 	oldWatchHostileUnits := client.HostileUnits
@@ -97,7 +103,7 @@ func (client *Clients) updateWatchZone(units map[int]map[int]*objects.Unit, stru
 	client.HostileStructure = nil
 	client.Watch = nil
 
-	client.getAllWatchObject(units, structures)
+	client.getAllWatchObject(game)
 
 	updateMyUnit(client)
 	updateMyStructure(client)

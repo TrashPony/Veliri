@@ -96,7 +96,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 			}
 		}
 
-		game.delUnit(unit) // TODO сделать интерфейс для юнита для ходьбы
+		game.delUnit(unit) // TODO сделать интерфейс для ходьбы
 
 		x := unit.X
 		y := unit.Y
@@ -113,8 +113,8 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 		delete(client.Units[x], y)
 		client.addUnit(unit) // добавляем новое
 
-		client.updateWatchZone(game.getUnits(), game.getStructure())                     // отправляем открытые ячейки, удаляем закрытые
-		go updateWatchHostileUser(*client, *unit, x, y, activeUser) // добавляем и удаляем нашего юнита у врагов на карте
+		client.updateWatchZone(game) // отправляем открытые ячейки, удаляем закрытые
+		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
 		unitsParameter.initUnit(unit, client.Login) // отсылаем новое место юнита
@@ -149,7 +149,7 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeU
 	}
 }
 
-func getObstacles(client *Clients) []*objects.Coordinate { // TODO: добавить еще не проходимые учатки когда добавлю непроходимые участки
+func getObstacles(client *Clients) []*objects.Coordinate { // TODO: это все очень странно
 	coordinates := make([]*objects.Coordinate, 0)
 
 	for _, xLine := range client.Units {
@@ -169,5 +169,35 @@ func getObstacles(client *Clients) []*objects.Coordinate { // TODO: добави
 			coordinates = append(coordinates, &coordinate)
 		}
 	}
+
+	for _, xLine := range client.Structure {
+		for _, structure := range xLine {
+			var coordinate objects.Coordinate
+			coordinate.X = structure.X
+			coordinate.Y = structure.Y
+			coordinates = append(coordinates, &coordinate)
+		}
+	}
+
+	for _, xLine := range client.HostileStructure {
+		for _, structure := range xLine {
+			var coordinate objects.Coordinate
+			coordinate.X = structure.X
+			coordinate.Y = structure.Y
+			coordinates = append(coordinates, &coordinate)
+		}
+	}
+
+	for _, xLine := range Games[client.GameID].coordinate {
+		for _, obstacles := range xLine {
+			if obstacles.Type == "obstacle" {
+				var coordinate objects.Coordinate
+				coordinate.X = obstacles.X
+				coordinate.Y = obstacles.Y
+				coordinates = append(coordinates, &coordinate)
+			}
+		}
+	}
+
 	return coordinates
 }

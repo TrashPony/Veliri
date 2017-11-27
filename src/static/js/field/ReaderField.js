@@ -25,6 +25,10 @@ function ReadResponse(jsonMessage) {
         InitStructure(jsonMessage);
     }
 
+    if (event === "InitObstacle") {
+        InitObstacle(jsonMessage);
+    }
+
     if (event === "CreateUnit") {
         CreateUnit(jsonMessage);
     }

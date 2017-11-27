@@ -41,11 +41,6 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients) 
 			continue
 		}
 
-		if msg.Event == "SelectCoordinateCreate" {
-			SelectCoordinateCreate(ws)
-			continue
-		}
-
 		if msg.Event == "CreateUnit" {
 			CreateUnit(msg, ws)
 			continue
@@ -60,7 +55,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients) 
 			Ready(msg, ws)
 			continue
 		}
-		if msg.Event == "SelectUnit" {
+		if msg.Event == "SelectUnit" || msg.Event == "SelectCoordinateCreate" {
 			SelectUnit(msg, ws)
 			continue
 		}

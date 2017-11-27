@@ -18,6 +18,21 @@
     background-color: #d9d92e;
 }
 
+.obstacle {
+    background-image: url(/img/obstacle.png);
+    border: 1px solid #000000;
+    border-radius: 4px;
+    width: 100px;
+    height: 100px;
+    display:inline-block;
+    text-shadow:1px 1px #000000;
+    color: #fbfdff;
+    font-weight:bold;
+    font-size: 18px;
+    overflow: hidden;
+    background-size: 100%;
+}
+
 .aim {
     width: 50px;
     height: 50px;

@@ -23,11 +23,11 @@ func updateMyStructure(client *Clients)  {
 }
 
 func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate) {
+
 	for _, xLine := range client.Watch { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
 		for _, newCoordinate := range xLine {
 			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
-			if !ok {
-				client.addCoordinate(newCoordinate)
+			if !ok && newCoordinate.X >= 0 && newCoordinate.Y >= 0 {
 				openCoordinate(client.Login, newCoordinate.X, newCoordinate.Y)
 			}
 		}
@@ -49,7 +49,6 @@ func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Un
 		for _, hostile := range xLine {
 			_, ok := oldWatchUnit[hostile.X][hostile.Y]
 			if !ok {
-				client.addHostileUnit(hostile)   // добавляем вражеского юнита в зону видимости
 				var unitsParameter InitUnit
 				unitsParameter.initUnit(hostile, client.Login)
 			}
@@ -71,7 +70,6 @@ func updateHostileStrcuture(client *Clients, oldWatchHostileStructure map[int]ma
 		for _, hostile := range xLine {
 			_, ok := oldWatchHostileStructure[hostile.X][hostile.Y]
 			if !ok {
-				client.addHostileStructure(hostile) // добавляем вражескую видимую структуру в зону видимости
 				var structureParams InitStructure
 				structureParams.initStructure(hostile, client.Login)
 			}
@@ -80,7 +78,7 @@ func updateHostileStrcuture(client *Clients, oldWatchHostileStructure map[int]ma
 
 	for _, xLine := range oldWatchHostileStructure {
 		for _, hostile := range xLine {
-			_, find := client.HostileUnits[hostile.X][hostile.Y]
+			_, find := client.HostileStructure[hostile.X][hostile.Y]
 			if !find {
 				closeCoordinate(client.Login, hostile.X, hostile.Y)
 			}

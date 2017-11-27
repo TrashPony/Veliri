@@ -142,9 +142,7 @@ func DelUnit(unit *objects.Unit, activeUser []*Clients) {
 				Games[client.GameID].delUnit(unit)
 
 				openCoordinate(client.Login, unit.X, unit.Y)
-				units := Games[client.GameID].getUnits()
-				structure := Games[client.GameID].getStructure()
-				client.updateWatchZone(units, structure)
+				client.updateWatchZone(Games[client.GameID])
 			}
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
