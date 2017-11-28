@@ -123,24 +123,37 @@ func getMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstacl
 
 func generateNeighboursCoord(curr *objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate) (res map[int]map[int]*objects.Coordinate) { // берет все соседние клетки от текущей
 	res = make(map[int]map[int]*objects.Coordinate)
-	//верх лево
-	addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
-	//верх центр
-	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
-	//верх право
-	addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
 
 	//строго лево
+	_, left := obstacles[curr.X-1][curr.Y]
 	addCoordIfValid(res, obstacles, curr.X-1, curr.Y)
 	//строго право
+	_, right := obstacles[curr.X-1][curr.Y]
 	addCoordIfValid(res, obstacles, curr.X+1, curr.Y)
-
-	//низ лево
-	addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
+	//верх центр
+	_, top := obstacles[curr.X-1][curr.Y]
+	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
 	//низ центр
+	_, bootom := obstacles[curr.X-1][curr.Y]
 	addCoordIfValid(res, obstacles, curr.X, curr.Y-1)
-	//низ право
-	addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
+
+
+	//верх лево/  если ЛЕВО И ВЕРХ препятсвие то пройти в эту клетку не удасться 
+	if !(left && top){
+		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
+	}
+	//верх право/  ПРАВО И ВЕРХ
+	if !(right && top) {
+		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
+	}
+	//низ лево/    ЛЕВО И НИЗ
+	if !(left && bootom) {
+		addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
+	}
+	//низ право/   ПРАВО И НИЗ
+	if !(right && bootom) {
+		addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
+	}
 
 	return
 }
