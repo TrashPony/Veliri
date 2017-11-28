@@ -16,9 +16,9 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		respawn := client.Respawn
 		if game.stat.Phase == "move" {
 			if unit.Action {
+
 				coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 				obstacles := getObstacles(client)
-
 				moveCoordinate := getMoveCoordinate(coordinates, unit, obstacles)
 
 				for i := 0; i < len(moveCoordinate); i++ {
@@ -73,9 +73,6 @@ func getMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstacl
 	closeCoordinate := make(map[int]map[int]*objects.Coordinate)
 	obstaclesMatrix := make(map[int]map[int]*objects.Coordinate)
 
-	startMatrix := generateNeighboursCoord(&start, obstaclesMatrix)
-
-
 	for _, obstacle := range obstacles{
 		if obstaclesMatrix[obstacle.X] != nil {
 			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
@@ -84,6 +81,8 @@ func getMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstacl
 			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
 		}
 	}
+
+	startMatrix := generateNeighboursCoord(&start, obstaclesMatrix)
 
 	for _, xline := range startMatrix {
 		for _, coordiante := range xline {
@@ -97,7 +96,10 @@ func getMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstacl
 				matrix := generateNeighboursCoord(coordinate, obstaclesMatrix)
 				for _, xline := range matrix {
 					for _, coordinate := range xline {
-						addCoordIfValid(closeCoordinate, obstaclesMatrix, coordinate.X, coordinate.Y)
+						_, ok := openCoordinate[coordinate.X][coordinate.Y]
+						if !ok {
+							addCoordIfValid(closeCoordinate, obstaclesMatrix, coordinate.X, coordinate.Y)
+						}
 					}
 				}
 			}
@@ -128,31 +130,31 @@ func generateNeighboursCoord(curr *objects.Coordinate, obstacles map[int]map[int
 	_, left := obstacles[curr.X-1][curr.Y]
 	addCoordIfValid(res, obstacles, curr.X-1, curr.Y)
 	//строго право
-	_, right := obstacles[curr.X-1][curr.Y]
+	_, right := obstacles[curr.X+1][curr.Y]
 	addCoordIfValid(res, obstacles, curr.X+1, curr.Y)
 	//верх центр
-	_, top := obstacles[curr.X-1][curr.Y]
-	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
-	//низ центр
-	_, bootom := obstacles[curr.X-1][curr.Y]
+	_, top := obstacles[curr.X][curr.Y-1]
 	addCoordIfValid(res, obstacles, curr.X, curr.Y-1)
+	//низ центр
+	_, bottom := obstacles[curr.X][curr.Y+1]
+	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
 
 
-	//верх лево/  если ЛЕВО И ВЕРХ препятсвие то пройти в эту клетку не удасться 
-	if !(left && top){
-		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
-	}
-	//верх право/  ПРАВО И ВЕРХ
-	if !(right && top) {
-		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
-	}
-	//низ лево/    ЛЕВО И НИЗ
-	if !(left && bootom) {
+	//верх лево/    ЛЕВО И верх
+	if !(left || top) {
 		addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
 	}
-	//низ право/   ПРАВО И НИЗ
-	if !(right && bootom) {
+	//верх право/   ПРАВО И верх
+	if !(right || top) {
 		addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
+	}
+	//низ лево/  если ЛЕВО И низ
+	if !(left || bottom) {
+		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
+	}
+	//низ право/  низ И ВЕРХ
+	if !(right || bottom) {
+		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
 	}
 
 	return
@@ -160,6 +162,7 @@ func generateNeighboursCoord(curr *objects.Coordinate, obstacles map[int]map[int
 
 func addCoordIfValid(res map[int]map[int]*objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate, x int, y int) {
 	coor := objects.Coordinate{X:x , Y:y}
+
 	_, ok := obstacles[x][y]
 	if !ok {
 		if res[x] != nil {
