@@ -18,10 +18,15 @@ type Clients struct { // структура описывающая клиент�
 	GameID            int
 }
 
+func (client *Clients) getLogin() string  {
+	return client.Login
+}
+
 func (client *Clients) getAllWatchObject(game *ActiveGame) {
+
 	for _, xLine := range game.getUnits() {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := unit.Watch(client.Login, game.getUnits(), game.getStructure())//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := objects.Watch(unit, client.Login, game.getUnits(), game.getStructure())//PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -56,7 +61,8 @@ func (client *Clients) getAllWatchObject(game *ActiveGame) {
 
 	for _, xLine := range game.getStructure() {
 		for _, structure := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := structure.Watch(client.Login, game.getUnits(), game.getStructure())
+
+			watchCoordinate, watchUnit, watchStructure, err := objects.Watch(structure, client.Login, game.getUnits(), game.getStructure())
 
 			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
