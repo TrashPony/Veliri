@@ -15,17 +15,18 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 	if find && ok {
 		if unit.Action {
-			respawn := client.Respawn
+
 			coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
+			obstacles := getObstacles(client)
+			moveCoordinate := mechanics.GetMoveCoordinate(coordinates, unit, obstacles)
+
 			var passed bool
-			for _, coordinate := range coordinates {
-				if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
-					if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
-						resp = FieldResponse{Event: msg.Event, UserName: client.Login}
-						fieldPipe <- resp
-						go InitMove(unit, msg, client)
-						passed = true
-					}
+			for _, coordinate := range moveCoordinate {
+				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
+					resp = FieldResponse{Event: msg.Event, UserName: client.Login}
+					fieldPipe <- resp
+					go InitMove(unit, msg, client)
+					passed = true
 				}
 			}
 
@@ -149,9 +150,11 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeU
 	}
 }
 
-func getObstacles(client *Clients) []*objects.Coordinate { // TODO: это все очень странно
+func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coordinate) { // TODO: это все очень странно
 	coordinates := make([]*objects.Coordinate, 0)
+	obstaclesMatrix = make(map[int]map[int]*objects.Coordinate)
 
+	// TODO переделать создание сразу в карту
 	for _, xLine := range client.Units {
 		for _, unit := range xLine {
 			var coordinate objects.Coordinate
@@ -199,5 +202,15 @@ func getObstacles(client *Clients) []*objects.Coordinate { // TODO: это вс�
 		}
 	}
 
-	return coordinates
+
+	for _, obstacle := range coordinates{
+		if obstaclesMatrix[obstacle.X] != nil {
+			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
+		} else {
+			obstaclesMatrix[obstacle.X] = make(map[int]*objects.Coordinate)
+			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
+		}
+	}
+
+	return
 }

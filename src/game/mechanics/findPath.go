@@ -26,10 +26,10 @@ type Point struct {
 	H, G, F     int
 	parent      *Point
 }
-
+// TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
 type Points map[string]Point
 
-func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles []*objects.Coordinate) []objects.Coordinate {
+func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate) []objects.Coordinate {
 
 	START_POINT = Point{x: start.X, y: start.Y, state: START} // начальная точка
 	END_POINT = Point{x: end.X, y: end.Y, state: END}         // конечная точка
@@ -53,9 +53,10 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 	matrix[START_POINT.x][START_POINT.y] = START_POINT // магия 	//set start & finish
 	matrix[END_POINT.x][END_POINT.y] = END_POINT       // магия
 
-	for _, o := range obstacles { // ставим препятсвиям статус в точке Блокировано
-		matrix[o.X][o.Y].state = BLOCKED
-	}
+	//for _, o := range obstacles { // ставим препятсвиям статус в точке Блокировано
+	//	matrix[o.X][o.Y].state = BLOCKED
+	//}
+
 	var path []objects.Coordinate
 	var noSortedPath []objects.Coordinate
 	for {
@@ -70,7 +71,7 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 			}
 			break
 		}
-		parseNeighbours(current, &matrix, &openPoints, &closePoints)
+		parseNeighbours(current, &matrix, &openPoints, &closePoints, obstacles)
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -81,11 +82,11 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 	return path
 }
 
-func parseNeighbours(curr Point, m *[][]Point, open, close *Points) {
+func parseNeighbours(curr Point, m *[][]Point, open, close *Points, obstacles map[int]map[int]*objects.Coordinate) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoord := generateNeighboursCoord(curr) // берем всех соседей этой клетки
+	nCoord := generateNeighboursPoint(curr, obstacles) // берем всех соседей этой клетки
 
 	for _, c := range nCoord {
 		tmpPoint := (*m)[c.x][c.y] // берем поинт из матрицы
@@ -152,34 +153,50 @@ func MinF(points Points) (min *Point) { // берет точку с минима
 	return
 }
 
-func addCoordIfValid(coords *[]Point, x, y int) {
+func addPointIfValid(coords *[]Point, obstacles map[int]map[int]*objects.Coordinate, x, y int) {
 
-	if x >= 0 && y >= 0 &&
-		x < WIDTH && y < HEIGHT {
-		*coords = append(*coords, Point{x: x, y: y})
+	_, ok := obstacles[x][y]
+
+	if !ok {
+		if x >= 0 && y >= 0 &&
+			x < WIDTH && y < HEIGHT {
+			*coords = append(*coords, Point{x: x, y: y})
+		}
 	}
 }
 
-func generateNeighboursCoord(curr Point) (res []Point) { // берет все соседние клетки от текущей
-
-	//верх лево
-	addCoordIfValid(&res, curr.x-1, curr.y+1)
-	//верх центр
-	addCoordIfValid(&res, curr.x, curr.y+1)
-	//верх право
-	addCoordIfValid(&res, curr.x+1, curr.y+1)
+func generateNeighboursPoint(curr Point, obstaclesMatrix map[int]map[int]*objects.Coordinate) (res []Point) { // берет все соседние клетки от текущей
 
 	//строго лево
-	addCoordIfValid(&res, curr.x-1, curr.y)
+	_, left := obstaclesMatrix[curr.x-1][curr.y]
+	addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y)
 	//строго право
-	addCoordIfValid(&res, curr.x+1, curr.y)
-
-	//низ лево
-	addCoordIfValid(&res, curr.x-1, curr.y-1)
+	_, right := obstaclesMatrix[curr.x+1][curr.y]
+	addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y)
+	//верх центр
+	_, top := obstaclesMatrix[curr.x][curr.y-1]
+	addPointIfValid(&res, obstaclesMatrix, curr.x, curr.y-1)
 	//низ центр
-	addCoordIfValid(&res, curr.x, curr.y-1)
-	//низ право
-	addCoordIfValid(&res, curr.x+1, curr.y-1)
+	_, bottom := obstaclesMatrix[curr.x][curr.y+1]
+	addPointIfValid(&res, obstaclesMatrix, curr.x, curr.y+1)
+
+
+	//верх лево/    ЛЕВО И верх
+	if !(left || top) {
+		addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y-1)
+	}
+	//верх право/   ПРАВО И верх
+	if !(right || top) {
+		addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y-1)
+	}
+	//низ лево/  если ЛЕВО И низ
+	if !(left || bottom) {
+		addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y+1)
+	}
+	//низ право/  низ И ВЕРХ
+	if !(right || bottom) {
+		addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y+1)
+	}
 
 	return
 }
