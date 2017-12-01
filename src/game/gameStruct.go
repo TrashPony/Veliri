@@ -1,4 +1,4 @@
-package objects
+package game
 
 type UnitType struct {
 	Id          int
@@ -21,12 +21,4 @@ type UserStat struct {
 	Ready  string
 	RespX int
 	RespY int
-}
-
-type Coordinate struct {
-	Type 	string
-	Texture string
-	X, Y, State int
-	H, G, F     int
-	Parent      *Coordinate
 }

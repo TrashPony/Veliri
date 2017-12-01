@@ -1,23 +1,22 @@
 package field
 
 import (
-	"../../game/mechanics"
-	"../../game/objects"
+	"../../game"
 	"github.com/gorilla/websocket"
 	"time"
 )
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
-	phase, err, phaseChange := mechanics.UserReady(usersFieldWs[ws].Id, msg.IdGame)
-	game := Games[usersFieldWs[ws].GameID]
-	players := game.getPlayers()
+	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].Id, msg.IdGame)
+	activeGame := Games[usersFieldWs[ws].GameID]
+	players := activeGame.getPlayers()
 	activeUser := ActionGameUser(players)
 	if phase != "" { // TODO
-		game.stat.Phase = phase
+		activeGame.stat.Phase = phase
 	}
 	if phase == "attack" {
-		sortUnits := mechanics.AttackPhase(game.getUnits())
+		sortUnits := game.AttackPhase(activeGame.getUnits())
 		attack(sortUnits, activeUser)
 
 		for _, client := range activeUser {
@@ -26,7 +25,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		}
 
 		phaseChange = true
-		phase, _ = mechanics.PhaseСhange(msg.IdGame)
+		phase, _ = game.PhaseСhange(msg.IdGame)
 	}
 
 	if err != nil {
@@ -46,11 +45,11 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		for _, client := range activeUser {
 			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
 			fieldPipe <- resp
-			game.stat.Phase = phase
+			activeGame.stat.Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: game.stat.Step + 1}
-				game.stat.Step += 1
+				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: activeGame.stat.Step + 1}
+				activeGame.stat.Step += 1
 			}
 
 			for yLine := range client.Units { // TODO Нахера?
@@ -72,7 +71,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
+func attack(sortUnits []*game.Unit, activeUser []*Clients) {
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
 			if unit.Target != nil {
@@ -80,11 +79,11 @@ func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 					if target.X == unit.Target.X && target.Y == unit.Target.Y {
 						sortUnits[i].Hp = target.Hp - unit.Damage
 						if sortUnits[i].Hp <= 0 {
-							mechanics.DelUnit(sortUnits[i].Id)
+							game.DelUnit(sortUnits[i].Id)
 							attackSender(unit, activeUser)
 							DelUnit(sortUnits[i], activeUser)
 						} else {
-							mechanics.UpdateUnit(sortUnits[i].Id, sortUnits[i].Hp)
+							game.UpdateUnit(sortUnits[i].Id, sortUnits[i].Hp)
 							attackSender(unit, activeUser)
 							UpdateUnit(sortUnits[i], activeUser)
 						}
@@ -92,13 +91,13 @@ func attack(sortUnits []*objects.Unit, activeUser []*Clients) {
 				}
 			}
 		}
-		mechanics.UpdateTarget(unit.Id)
+		game.UpdateTarget(unit.Id)
 		unit.Target = nil
 		unit.Queue = 0
 	}
 }
 
-func attackSender(unit *objects.Unit, activeUser []*Clients) {
+func attackSender(unit *game.Unit, activeUser []*Clients) {
 
 	for _, client := range activeUser {
 		attackInfo := FieldResponse{Event: "Attack", UserName: client.Login, X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
@@ -113,7 +112,7 @@ func attackSender(unit *objects.Unit, activeUser []*Clients) {
 	}
 }
 
-func UpdateUnit(unit *objects.Unit, activeUser []*Clients) {
+func UpdateUnit(unit *game.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
 
@@ -133,7 +132,7 @@ func UpdateUnit(unit *objects.Unit, activeUser []*Clients) {
 	}
 }
 
-func DelUnit(unit *objects.Unit, activeUser []*Clients) {
+func DelUnit(unit *game.Unit, activeUser []*Clients) {
 	for _, client := range activeUser {
 		if unit.NameUser == client.Login {
 			_, ok := client.Units[unit.X][unit.Y]

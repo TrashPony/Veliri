@@ -1,16 +1,15 @@
-package mechanics
+package game
 
 import (
-	"../objects"
 	"sort"
 )
 
-func AttackPhase(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit) {
+func AttackPhase(Units map[int]map[int]*Unit) (sortUnits []*Unit) {
 	sortUnits = createQueueAttack(Units)
 	return
 }
 
-func createQueueAttack(Units map[int]map[int]*objects.Unit) (sortUnits []*objects.Unit) {
+func createQueueAttack(Units map[int]map[int]*Unit) (sortUnits []*Unit) {
 
 	for _, xLine := range Units {
 		for _, unit := range xLine {

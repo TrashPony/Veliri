@@ -1,4 +1,4 @@
-package objects
+package game
 
 type Structure struct {
 	Type string

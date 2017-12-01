@@ -1,17 +1,16 @@
-package mechanics
+package game
 
 import (
-	"../objects"
 	"errors"
 	"log"
 	"strconv"
 )
 
-func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (objects.Unit, int, error) {
-	var unit objects.Unit
+func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (Unit, int, error) {
+	var unit Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше
-		unitType := objects.GetUnitType(unitType)
+		unitType := GetUnitType(unitType)
 		success, price := Price(unitType.Price, idGame, idPlayer)
 		if success { // если хватило денег то вносим изменения , вероятно тут надо применить транзацию
 			rows, err := db.Query("INSERT INTO action_game_unit (id_game, id_type, id_user, hp, action, target, x, y, queue_attack) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
@@ -20,7 +19,7 @@ func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (obj
 			if err != nil {
 				log.Fatal(err)
 			}
-			unit, errFound := objects.GetXYUnits(idGame, x, y)
+			unit, errFound := GetXYUnits(idGame, x, y)
 			if errFound != nil {
 				return unit, 0, errFound
 			}

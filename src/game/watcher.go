@@ -1,4 +1,4 @@
-package objects
+package game
 
 import (
 	"strconv"

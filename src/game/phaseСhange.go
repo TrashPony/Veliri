@@ -1,4 +1,4 @@
-package mechanics
+package game
 
 func PhaseСhange(idGame int) (string, error) {
 

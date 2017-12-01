@@ -1,14 +1,9 @@
-package mechanics
+package game
 
-import (
-	"../objects"
-)
-
-
-func GetMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstaclesMatrix map[int]map[int]*objects.Coordinate) (res []*objects.Coordinate) { // берет все соседние клетки от текущей
-	start := objects.Coordinate{X: unit.X, Y: unit.Y}
-	openCoordinate := make(map[int]map[int]*objects.Coordinate)
-	closeCoordinate := make(map[int]map[int]*objects.Coordinate)
+func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int]map[int]*Coordinate) (res []*Coordinate) { // берет все соседние клетки от текущей
+	start := Coordinate{X: unit.X, Y: unit.Y}
+	openCoordinate := make(map[int]map[int]*Coordinate)
+	closeCoordinate := make(map[int]map[int]*Coordinate)
 
 	startMatrix := generateNeighboursCoord(&start, obstaclesMatrix)
 
@@ -51,8 +46,8 @@ func GetMoveCoordinate(radius []*objects.Coordinate, unit *objects.Unit, obstacl
 	return
 }
 
-func generateNeighboursCoord(curr *objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate) (res map[int]map[int]*objects.Coordinate) { // берет все соседние клетки от текущей
-	res = make(map[int]map[int]*objects.Coordinate)
+func generateNeighboursCoord(curr *Coordinate, obstacles map[int]map[int]*Coordinate) (res map[int]map[int]*Coordinate) { // берет все соседние клетки от текущей
+	res = make(map[int]map[int]*Coordinate)
 
 	//строго лево
 	_, left := obstacles[curr.X-1][curr.Y]
@@ -88,22 +83,22 @@ func generateNeighboursCoord(curr *objects.Coordinate, obstacles map[int]map[int
 	return
 }
 
-func addCoordIfValid(res map[int]map[int]*objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate, x int, y int) {
-	coor := objects.Coordinate{X:x , Y:y}
+func addCoordIfValid(res map[int]map[int]*Coordinate, obstacles map[int]map[int]*Coordinate, x int, y int) {
+	coor := Coordinate{X:x , Y:y}
 
 	_, ok := obstacles[x][y]
 	if !ok && x >= 0 && y >= 0 {
 		if res[x] != nil {
 			res[x][y] = &coor
 		} else {
-			res[x] = make(map[int]*objects.Coordinate)
+			res[x] = make(map[int]*Coordinate)
 			res[x][y] = &coor
 		}
 	}
 }
 
 
-func MoveUnit(idGame int, unit *objects.Unit, toX int, toY int) int {
+func MoveUnit(idGame int, unit *Unit, toX int, toY int) int {
 
 	rows, err := db.Query("Select  MAX(queue_attack) FROM action_game_unit WHERE id_game=$1", idGame)
 	if err != nil {

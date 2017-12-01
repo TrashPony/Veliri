@@ -1,8 +1,7 @@
 package field
 
 import (
-	"../../game/mechanics"
-	"../../game/objects"
+	"../../game"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -10,18 +9,18 @@ import (
 func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
 	client := usersFieldWs[ws]
-	game := Games[client.GameID]
+	activeGame := Games[client.GameID]
 
 	if find {
-		coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
+		coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 		passed := false
 
 		for _, target := range coordinates {
 			if target.X == msg.TargetX && target.Y == msg.TargetY {
 				target, ok := client.HostileUnits[msg.TargetX][msg.TargetY]
 				if ok {
-					mechanics.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), game.stat.Id)
-					unit.Target = &objects.Coordinate{X: target.X, Y: target.Y}
+					game.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), activeGame.stat.Id)
+					unit.Target = &game.Coordinate{X: target.X, Y: target.Y}
 					passed = true
 					resp := FieldResponse{Event: msg.Event, UserName: client.Login}
 					fieldPipe <- resp

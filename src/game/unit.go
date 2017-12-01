@@ -1,4 +1,4 @@
-package objects
+package game
 
 
 type Unit struct {

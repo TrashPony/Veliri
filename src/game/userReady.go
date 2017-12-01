@@ -1,4 +1,4 @@
-package mechanics
+package game
 
 func UserReady(idUser int, idGame int) (string, error, bool) {
 

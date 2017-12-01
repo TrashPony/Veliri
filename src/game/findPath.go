@@ -1,8 +1,7 @@
-package mechanics
+package game
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
-	"../objects"
 	"math"
 	"strconv"
 )
@@ -21,17 +20,11 @@ var (
 	matrix                 [][]Coordinate
 )
 
-type Coordinate struct {
-	Type 	string
-	Texture string
-	X, Y, State int
-	H, G, F     int
-	Parent      *Coordinate
-}
+
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
 type Points map[string]Coordinate
 
-func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate) []objects.Coordinate {
+func FindPath(gameMap *Map, start Coordinate, end Coordinate, obstacles map[int]map[int]*Coordinate) []Coordinate {
 
 	START_POINT = Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
@@ -55,8 +48,8 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 	matrix[START_POINT.X][START_POINT.Y] = START_POINT // магия 	//set start & finish
 	matrix[END_POINT.X][END_POINT.Y] = END_POINT       // магия
 
-	var path []objects.Coordinate
-	var noSortedPath []objects.Coordinate
+	var path []Coordinate
+	var noSortedPath []Coordinate
 	for {
 		current := *MinF(openPoints)  // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) { // если текущая точка и есть конец начинаем генерить путь
@@ -64,7 +57,7 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 				current = *current.Parent        // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
-					noSortedPath = append(noSortedPath, objects.Coordinate{X: matrix[current.X][current.Y].X, Y: matrix[current.X][current.Y].Y})
+					noSortedPath = append(noSortedPath, Coordinate{X: matrix[current.X][current.Y].X, Y: matrix[current.X][current.Y].Y})
 				}
 			}
 			break
@@ -80,7 +73,7 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 	return path
 }
 
-func parseNeighbours(curr Coordinate, m *[][]Coordinate, open, close *Points, obstacles map[int]map[int]*objects.Coordinate) {
+func parseNeighbours(curr Coordinate, m *[][]Coordinate, open, close *Points, obstacles map[int]map[int]*Coordinate) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
@@ -151,7 +144,7 @@ func MinF(points Points) (min *Coordinate) { // берет точку с мин�
 	return
 }
 
-func addPointIfValid(coords *[]Coordinate, obstacles map[int]map[int]*objects.Coordinate, x, y int) {
+func addPointIfValid(coords *[]Coordinate, obstacles map[int]map[int]*Coordinate, x, y int) {
 
 	_, ok := obstacles[x][y]
 
@@ -163,7 +156,7 @@ func addPointIfValid(coords *[]Coordinate, obstacles map[int]map[int]*objects.Co
 	}
 }
 
-func generateNeighboursPoint(curr Coordinate, obstaclesMatrix map[int]map[int]*objects.Coordinate) (res []Coordinate) { // берет все соседние клетки от текущей
+func generateNeighboursPoint(curr Coordinate, obstaclesMatrix map[int]map[int]*Coordinate) (res []Coordinate) { // берет все соседние клетки от текущей
 
 	//строго лево
 	_, left := obstaclesMatrix[curr.X-1][curr.Y]

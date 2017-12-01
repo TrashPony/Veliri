@@ -1,7 +1,7 @@
 package field
 
 import (
-	"../../game/objects"
+	"../../game"
 	"github.com/gorilla/websocket"
 	"log"
 )
@@ -20,8 +20,8 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab []objects.Coordinate) {
-	mb := map[objects.Coordinate]bool{}
+func subtraction(slice1 []*game.Coordinate, slice2 []*game.Coordinate) (ab []game.Coordinate) {
+	mb := map[game.Coordinate]bool{}
 	for _, x := range slice2 {
 		mb[*x] = true
 	}
@@ -33,7 +33,7 @@ func subtraction(slice1 []*objects.Coordinate, slice2 []*objects.Coordinate) (ab
 	return ab
 }
 
-func ActionGameUser(players []*objects.UserStat) (activeUser []*Clients) {
+func ActionGameUser(players []*game.UserStat) (activeUser []*Clients) {
 	for _, clients := range usersFieldWs {
 		add := false
 		for _, userStat := range players {

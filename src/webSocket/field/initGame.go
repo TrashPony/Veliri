@@ -1,7 +1,7 @@
 package field
 
 import (
-	"../../game/objects"
+	"../../game"
 	"github.com/gorilla/websocket"
 )
 
@@ -44,12 +44,12 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 func initGame(msg FieldMessage) (newGame *ActiveGame) {
 	newGame = &ActiveGame{}
 
-	gameStat := objects.GetGame(msg.IdGame)
-	userStat := objects.GetUserStat(msg.IdGame)
-	infoMap := objects.GetInfoMap(gameStat.IdMap)
-	units := objects.GetAllUnits(msg.IdGame)
-	coordinate := objects.GetMap(infoMap.Id)
-	structure := objects.GetAllStrcuture(msg.IdGame)
+	gameStat := game.GetGame(msg.IdGame)
+	userStat := game.GetUserStat(msg.IdGame)
+	infoMap := game.GetInfoMap(gameStat.IdMap)
+	units := game.GetAllUnits(msg.IdGame)
+	coordinate := game.GetMap(infoMap.Id)
+	structure := game.GetAllStrcuture(msg.IdGame)
 
 	newGame.setPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
 	newGame.setStat(&gameStat)       // добавляем информацию об игре в обьект игры

@@ -1,4 +1,4 @@
-package objects
+package game
 
 var coordinates = make([]*Coordinate, 0)
 

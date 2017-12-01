@@ -1,67 +1,67 @@
 package field
 
 import (
-	"../../game/objects"
+	"../../game"
 )
 
 type ActiveGame struct {
-	mapInfo    *objects.Map
-	stat       *objects.Game
-	players    []*objects.UserStat
-	units      map[int]map[int]*objects.Unit
-	structure  map[int]map[int]*objects.Structure
-	coordinate map[int]map[int]*objects.Coordinate
+	mapInfo    *game.Map
+	stat       *game.Game
+	players    []*game.UserStat
+	units      map[int]map[int]*game.Unit
+	structure  map[int]map[int]*game.Structure
+	coordinate map[int]map[int]*game.Coordinate
 }
 
-func (game *ActiveGame) setStructure(structure map[int]map[int]*objects.Structure) {
-	game.structure = structure
+func (activeGame *ActiveGame) setStructure(structure map[int]map[int]*game.Structure) {
+	activeGame.structure = structure
 }
 
-func (game *ActiveGame) setPlayers(players []*objects.UserStat) {
-	game.players = players
+func (activeGame *ActiveGame) setPlayers(players []*game.UserStat) {
+	activeGame.players = players
 }
 
-func (game *ActiveGame) setInfoMap(mapInfo *objects.Map) {
-	game.mapInfo = mapInfo
+func (activeGame *ActiveGame) setInfoMap(mapInfo *game.Map) {
+	activeGame.mapInfo = mapInfo
 }
 
-func (game *ActiveGame) setStat(stat *objects.Game) {
-	game.stat = stat
+func (activeGame *ActiveGame) setStat(stat *game.Game) {
+	activeGame.stat = stat
 }
 
-func (game *ActiveGame) setUnits(unit map[int]map[int]*objects.Unit) {
-	game.units = unit
+func (activeGame *ActiveGame) setUnits(unit map[int]map[int]*game.Unit) {
+	activeGame.units = unit
 }
 
-func (game *ActiveGame) setUnit(unit *objects.Unit) {
-	if game.units[unit.X] != nil {
-		game.units[unit.X][unit.Y] = unit
+func (activeGame *ActiveGame) setUnit(unit *game.Unit) {
+	if activeGame.units[unit.X] != nil {
+		activeGame.units[unit.X][unit.Y] = unit
 	} else {
-		game.units[unit.X] = make(map[int]*objects.Unit)
-		game.units[unit.X][unit.Y] = unit
+		activeGame.units[unit.X] = make(map[int]*game.Unit)
+		activeGame.units[unit.X][unit.Y] = unit
 	}
 }
 
-func (game *ActiveGame) setMap(coordinate map[int]map[int]*objects.Coordinate)  {
-	game.coordinate = coordinate
+func (activeGame *ActiveGame) setMap(coordinate map[int]map[int]*game.Coordinate)  {
+	activeGame.coordinate = coordinate
 }
 
-func (game *ActiveGame) delUnit(unit *objects.Unit) {
-	delete(game.units[unit.X], unit.Y)
+func (activeGame *ActiveGame) delUnit(unit *game.Unit) {
+	delete(activeGame.units[unit.X], unit.Y)
 }
 
-func (game *ActiveGame) getMap() (mp *objects.Map) {
-	return game.mapInfo
+func (activeGame *ActiveGame) getMap() (mp *game.Map) {
+	return activeGame.mapInfo
 }
 
-func (game *ActiveGame) getUnits() (units map[int]map[int]*objects.Unit) {
-	return game.units
+func (activeGame *ActiveGame) getUnits() (units map[int]map[int]*game.Unit) {
+	return activeGame.units
 }
 
-func (game *ActiveGame) getPlayers() (Players []*objects.UserStat) {
-	return game.players
+func (activeGame *ActiveGame) getPlayers() (Players []*game.UserStat) {
+	return activeGame.players
 }
 
-func (game *ActiveGame) getStructure() (Structure map[int]map[int]*objects.Structure) {
-	return game.structure
+func (activeGame *ActiveGame) getStructure() (Structure map[int]map[int]*game.Structure) {
+	return activeGame.structure
 }

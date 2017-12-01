@@ -1,7 +1,7 @@
 package field
 
 import (
-	"../../game/objects"
+	"../../game"
 )
 
 func updateMyUnit(client *Clients)  {
@@ -22,7 +22,7 @@ func updateMyStructure(client *Clients)  {
 	}
 }
 
-func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects.Coordinate) {
+func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*game.Coordinate) {
 
 	for _, xLine := range client.Watch { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
 		for _, newCoordinate := range xLine {
@@ -45,7 +45,7 @@ func updateOpenCoordinate(client *Clients, oldWatchZone map[int]map[int]*objects
 	}
 }
 
-func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Unit) {
+func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*game.Unit) {
 	for _, xLine := range client.HostileUnits { // добавляем новые вражеские юниты которых открыли
 		for _, hostile := range xLine {
 			_, ok := oldWatchUnit[hostile.X][hostile.Y]
@@ -66,7 +66,7 @@ func updateHostileUnit(client *Clients, oldWatchUnit map[int]map[int]*objects.Un
 	}
 }
 
-func updateHostileStrcuture(client *Clients, oldWatchHostileStructure map[int]map[int]*objects.Structure)  {
+func updateHostileStrcuture(client *Clients, oldWatchHostileStructure map[int]map[int]*game.Structure)  {
 	for _, xLine := range client.HostileStructure { // добавляем новые вражеские структуры которых открыли
 		for _, hostile := range xLine {
 			_, ok := oldWatchHostileStructure[hostile.X][hostile.Y]

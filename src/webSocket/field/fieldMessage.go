@@ -1,7 +1,7 @@
 package field
 
 import (
-	"../../game/objects"
+	"../../game"
 	"strconv"
 )
 
@@ -47,7 +47,7 @@ type InitUnit struct {
 	Error       string `json:"error"`
 }
 
-func (msg *InitUnit) initUnit(unit *objects.Unit, login string) {
+func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
 	if unit.Target == nil {
 		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
 			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
@@ -69,7 +69,7 @@ type InitStructure struct {
 	Error            string `json:"error"`
 }
 
-func (msg *InitStructure) initStructure(structure *objects.Structure, login string) {
+func (msg *InitStructure) initStructure(structure *game.Structure, login string) {
 	var structureParams = InitStructure{Event: "InitStructure", UserName: login, TypeStructure: structure.Type, UserOwned: structure.NameUser, X: structure.X, Y: structure.Y} // остылаем событие добавления юнита
 	initStructure <- structureParams
 }

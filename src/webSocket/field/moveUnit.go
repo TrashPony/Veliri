@@ -1,8 +1,7 @@
 package field
 
 import (
-	"../../game/mechanics"
-	"../../game/objects"
+	"../../game"
 	"errors"
 	"github.com/gorilla/websocket"
 	"time"
@@ -16,9 +15,9 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	if find && ok {
 		if unit.Action {
 
-			coordinates := objects.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
+			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			obstacles := getObstacles(client)
-			moveCoordinate := mechanics.GetMoveCoordinate(coordinates, unit, obstacles)
+			moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
 
 			var passed bool
 			for _, coordinate := range moveCoordinate {
@@ -44,7 +43,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients) {
+func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
 
 	idGame := client.GameID
 	toX := msg.ToX
@@ -53,29 +52,29 @@ func InitMove(unit *objects.Unit, msg FieldMessage, client *Clients) {
 	for {
 		obstacles := getObstacles(client)
 
-		start := objects.Coordinate{X: unit.X, Y: unit.Y}
-		end := objects.Coordinate{X: toX, Y: toY}
+		start := game.Coordinate{X: unit.X, Y: unit.Y}
+		end := game.Coordinate{X: toX, Y: toY}
 
 		mp := Games[client.GameID].getMap()
 
-		path := mechanics.FindPath(mp, start, end, obstacles)
+		path := game.FindPath(mp, start, end, obstacles)
 
 		x, y, errorMove := Move(unit, path, client, end)
 		if errorMove != nil {
 			if errorMove.Error() != "cell is busy" {
-				queue := mechanics.MoveUnit(idGame, unit, x, y)
+				queue := game.MoveUnit(idGame, unit, x, y)
 				unit.Queue = queue
 				break
 			}
 		} else {
-			queue := mechanics.MoveUnit(idGame, unit, x, y)
+			queue := game.MoveUnit(idGame, unit, x, y)
 			unit.Queue = queue
 			break
 		}
 	}
 }
 
-func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end objects.Coordinate) (int, int, error) {
+func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coordinate) (int, int, error) {
 
 	game := Games[client.GameID]
 	players := Games[client.GameID].getPlayers()
@@ -126,7 +125,7 @@ func Move(unit *objects.Unit, path []objects.Coordinate, client *Clients, end ob
 	return unit.X, unit.Y, nil
 }
 
-func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeUser []*Clients) {
+func updateWatchHostileUser(client Clients, unit game.Unit, x, y int, activeUser []*Clients) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
@@ -134,7 +133,7 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeU
 			_, okGetUnit := user.HostileUnits[x][y]
 
 			if okGetUnit {
-				user.Watch[x][y] = &objects.Coordinate{X: x, Y: y} // добавлдяем на место старого места юнита пустую зону
+				user.Watch[x][y] = &game.Coordinate{X: x, Y: y} // добавлдяем на место старого места юнита пустую зону
 				delete(user.HostileUnits[x], y)                    // и удаляем в общей карте вражеских юнитов
 				openCoordinate(user.Login, x, y)                   // и остылаем событие удаление юнита
 			}
@@ -150,14 +149,14 @@ func updateWatchHostileUser(client Clients, unit objects.Unit, x, y int, activeU
 	}
 }
 
-func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coordinate) { // TODO: это все очень странно
-	coordinates := make([]*objects.Coordinate, 0)
-	obstaclesMatrix = make(map[int]map[int]*objects.Coordinate)
+func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*game.Coordinate) { // TODO: это все очень странно
+	coordinates := make([]*game.Coordinate, 0)
+	obstaclesMatrix = make(map[int]map[int]*game.Coordinate)
 
 	// TODO переделать создание сразу в карту
 	for _, xLine := range client.Units {
 		for _, unit := range xLine {
-			var coordinate objects.Coordinate
+			var coordinate game.Coordinate
 			coordinate.X = unit.X
 			coordinate.Y = unit.Y
 			coordinates = append(coordinates, &coordinate)
@@ -166,7 +165,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coo
 
 	for _, xLine := range client.HostileUnits {
 		for _, unit := range xLine {
-			var coordinate objects.Coordinate
+			var coordinate game.Coordinate
 			coordinate.X = unit.X
 			coordinate.Y = unit.Y
 			coordinates = append(coordinates, &coordinate)
@@ -175,7 +174,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coo
 
 	for _, xLine := range client.Structure {
 		for _, structure := range xLine {
-			var coordinate objects.Coordinate
+			var coordinate game.Coordinate
 			coordinate.X = structure.X
 			coordinate.Y = structure.Y
 			coordinates = append(coordinates, &coordinate)
@@ -184,7 +183,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coo
 
 	for _, xLine := range client.HostileStructure {
 		for _, structure := range xLine {
-			var coordinate objects.Coordinate
+			var coordinate game.Coordinate
 			coordinate.X = structure.X
 			coordinate.Y = structure.Y
 			coordinates = append(coordinates, &coordinate)
@@ -194,7 +193,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coo
 	for _, xLine := range Games[client.GameID].coordinate {
 		for _, obstacles := range xLine {
 			if obstacles.Type == "obstacle" {
-				var coordinate objects.Coordinate
+				var coordinate game.Coordinate
 				coordinate.X = obstacles.X
 				coordinate.Y = obstacles.Y
 				coordinates = append(coordinates, &coordinate)
@@ -207,7 +206,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*objects.Coo
 		if obstaclesMatrix[obstacle.X] != nil {
 			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
 		} else {
-			obstaclesMatrix[obstacle.X] = make(map[int]*objects.Coordinate)
+			obstaclesMatrix[obstacle.X] = make(map[int]*game.Coordinate)
 			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
 		}
 	}
