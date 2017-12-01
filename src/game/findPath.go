@@ -77,27 +77,29 @@ func parseNeighbours(curr Coordinate, m *[][]Coordinate, open, close *Points, ob
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoord := generateNeighboursPoint(&curr, obstacles) // берем всех соседей этой клетки
+	nCoord := generateNeighboursCoord(&curr, obstacles) // берем всех соседей этой клетки
 
 	for _, xLine := range nCoord {
 		for _, c := range xLine {
-			tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
+			if c.X < WIDTH && c.Y < HEIGHT {
+				tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
 
-			if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
-				continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
+				if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
+					continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
+				}
+
+				if _, inOpen := (*open)[tmpPoint.Key()]; inOpen {
+					continue // если ячейка уже добавленна в массив еще не посещенных то пропускаем
+				}
+
+				// считаем для поинта значения пути
+				tmpPoint.G = curr.GetG(tmpPoint)       // стоимость клетки
+				tmpPoint.H = GetH(tmpPoint, END_POINT) // приближение от точки до конечной цели.
+				tmpPoint.F = tmpPoint.GetF()           // длина пути до цели
+				tmpPoint.Parent = &curr                //ref is needed?
+
+				(*open)[tmpPoint.Key()] = tmpPoint // добавляем точку в масив не посещеных
 			}
-
-			if _, inOpen := (*open)[tmpPoint.Key()]; inOpen {
-				continue // если ячейка уже добавленна в массив еще не посещенных то пропускаем
-			}
-
-			// считаем для поинта значения пути
-			tmpPoint.G = curr.GetG(tmpPoint)       // стоимость клетки
-			tmpPoint.H = GetH(tmpPoint, END_POINT) // приближение от точки до конечной цели.
-			tmpPoint.F = tmpPoint.GetF()           // длина пути до цели
-			tmpPoint.Parent = &curr                //ref is needed?
-
-			(*open)[tmpPoint.Key()] = tmpPoint // добавляем точку в масив не посещеных
 		}
 	}
 }
@@ -150,7 +152,7 @@ func addCoordIfValid(res map[int]map[int]*Coordinate, obstacles map[int]map[int]
 	coor := Coordinate{X:x , Y:y}
 
 	_, ok := obstacles[x][y]
-	if !ok && x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT{
+	if !ok && (x >= 0 && y >= 0){
 		if res[x] != nil {
 			res[x][y] = &coor
 		} else {
@@ -160,7 +162,7 @@ func addCoordIfValid(res map[int]map[int]*Coordinate, obstacles map[int]map[int]
 	}
 }
 
-func generateNeighboursPoint(curr *Coordinate, obstacles map[int]map[int]*Coordinate) (res map[int]map[int]*Coordinate) { // берет все соседние клетки от текущей
+func generateNeighboursCoord(curr *Coordinate, obstacles map[int]map[int]*Coordinate) (res map[int]map[int]*Coordinate) { // берет все соседние клетки от текущей
 	res = make(map[int]map[int]*Coordinate)
 
 	//строго лево

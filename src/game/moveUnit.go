@@ -5,7 +5,7 @@ func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int
 	openCoordinate := make(map[int]map[int]*Coordinate)
 	closeCoordinate := make(map[int]map[int]*Coordinate)
 
-	startMatrix := generateNeighboursPoint(&start, obstaclesMatrix)
+	startMatrix := generateNeighboursCoord(&start, obstaclesMatrix)
 
 	for _, xline := range startMatrix {
 		for _, coordiante := range xline {
@@ -16,7 +16,7 @@ func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int
 	for i := 0; i < unit.MoveSpeed-1; i++ {
 		for _, xline := range openCoordinate {
 			for _, coordinate := range xline {
-				matrix := generateNeighboursPoint(coordinate, obstaclesMatrix)
+				matrix := generateNeighboursCoord(coordinate, obstaclesMatrix)
 				for _, xline := range matrix {
 					for _, coordinate := range xline {
 						_, ok := openCoordinate[coordinate.X][coordinate.Y]
