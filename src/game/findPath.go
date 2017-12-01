@@ -77,26 +77,28 @@ func parseNeighbours(curr Coordinate, m *[][]Coordinate, open, close *Points, ob
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoord := generateNeighboursPoint(curr, obstacles) // берем всех соседей этой клетки
+	nCoord := generateNeighboursPoint(&curr, obstacles) // берем всех соседей этой клетки
 
-	for _, c := range nCoord {
-		tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
+	for _, xLine := range nCoord {
+		for _, c := range xLine {
+			tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
 
-		if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
-			continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
+			if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
+				continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
+			}
+
+			if _, inOpen := (*open)[tmpPoint.Key()]; inOpen {
+				continue // если ячейка уже добавленна в массив еще не посещенных то пропускаем
+			}
+
+			// считаем для поинта значения пути
+			tmpPoint.G = curr.GetG(tmpPoint)       // стоимость клетки
+			tmpPoint.H = GetH(tmpPoint, END_POINT) // приближение от точки до конечной цели.
+			tmpPoint.F = tmpPoint.GetF()           // длина пути до цели
+			tmpPoint.Parent = &curr                //ref is needed?
+
+			(*open)[tmpPoint.Key()] = tmpPoint // добавляем точку в масив не посещеных
 		}
-
-		if _, inOpen := (*open)[tmpPoint.Key()]; inOpen {
-			continue // если ячейка уже добавленна в массив еще не посещенных то пропускаем
-		}
-
-		// считаем для поинта значения пути
-		tmpPoint.G = curr.GetG(tmpPoint)       // стоимость клетки
-		tmpPoint.H = GetH(tmpPoint, END_POINT) // приближение от точки до конечной цели.
-		tmpPoint.F = tmpPoint.GetF()           // длина пути до цели
-		tmpPoint.Parent = &curr                //ref is needed?
-
-		(*open)[tmpPoint.Key()] = tmpPoint // добавляем точку в масив не посещеных
 	}
 }
 
@@ -144,49 +146,52 @@ func MinF(points Points) (min *Coordinate) { // берет точку с мин�
 	return
 }
 
-func addPointIfValid(coords *[]Coordinate, obstacles map[int]map[int]*Coordinate, x, y int) {
+func addCoordIfValid(res map[int]map[int]*Coordinate, obstacles map[int]map[int]*Coordinate, x int, y int) {
+	coor := Coordinate{X:x , Y:y}
 
 	_, ok := obstacles[x][y]
-
-	if !ok {
-		if x >= 0 && y >= 0 &&
-			x < WIDTH && y < HEIGHT {
-			*coords = append(*coords, Coordinate{X: x, Y: y})
+	if !ok && x >= 0 && y >= 0 && x < WIDTH && y < HEIGHT{
+		if res[x] != nil {
+			res[x][y] = &coor
+		} else {
+			res[x] = make(map[int]*Coordinate)
+			res[x][y] = &coor
 		}
 	}
 }
 
-func generateNeighboursPoint(curr Coordinate, obstaclesMatrix map[int]map[int]*Coordinate) (res []Coordinate) { // берет все соседние клетки от текущей
+func generateNeighboursPoint(curr *Coordinate, obstacles map[int]map[int]*Coordinate) (res map[int]map[int]*Coordinate) { // берет все соседние клетки от текущей
+	res = make(map[int]map[int]*Coordinate)
 
 	//строго лево
-	_, left := obstaclesMatrix[curr.X-1][curr.Y]
-	addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y)
+	_, left := obstacles[curr.X-1][curr.Y]
+	addCoordIfValid(res, obstacles, curr.X-1, curr.Y)
 	//строго право
-	_, right := obstaclesMatrix[curr.X+1][curr.Y]
-	addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y)
+	_, right := obstacles[curr.X+1][curr.Y]
+	addCoordIfValid(res, obstacles, curr.X+1, curr.Y)
 	//верх центр
-	_, top := obstaclesMatrix[curr.X][curr.Y-1]
-	addPointIfValid(&res, obstaclesMatrix, curr.Y, curr.Y-1)
+	_, top := obstacles[curr.X][curr.Y-1]
+	addCoordIfValid(res, obstacles, curr.X, curr.Y-1)
 	//низ центр
-	_, bottom := obstaclesMatrix[curr.X][curr.Y+1]
-	addPointIfValid(&res, obstaclesMatrix, curr.X, curr.Y+1)
+	_, bottom := obstacles[curr.X][curr.Y+1]
+	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
 
 
 	//верх лево/    ЛЕВО И верх
 	if !(left || top) {
-		addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y-1)
+		addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
 	}
 	//верх право/   ПРАВО И верх
 	if !(right || top) {
-		addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y-1)
+		addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
 	}
 	//низ лево/  если ЛЕВО И низ
 	if !(left || bottom) {
-		addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y+1)
+		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
 	}
 	//низ право/  низ И ВЕРХ
 	if !(right || bottom) {
-		addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y+1)
+		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
 	}
 
 	return

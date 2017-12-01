@@ -5,7 +5,7 @@ func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int
 	openCoordinate := make(map[int]map[int]*Coordinate)
 	closeCoordinate := make(map[int]map[int]*Coordinate)
 
-	startMatrix := generateNeighboursCoord(&start, obstaclesMatrix)
+	startMatrix := generateNeighboursPoint(&start, obstaclesMatrix)
 
 	for _, xline := range startMatrix {
 		for _, coordiante := range xline {
@@ -16,7 +16,7 @@ func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int
 	for i := 0; i < unit.MoveSpeed-1; i++ {
 		for _, xline := range openCoordinate {
 			for _, coordinate := range xline {
-				matrix := generateNeighboursCoord(coordinate, obstaclesMatrix)
+				matrix := generateNeighboursPoint(coordinate, obstaclesMatrix)
 				for _, xline := range matrix {
 					for _, coordinate := range xline {
 						_, ok := openCoordinate[coordinate.X][coordinate.Y]
@@ -44,57 +44,6 @@ func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int
 	}
 
 	return
-}
-
-func generateNeighboursCoord(curr *Coordinate, obstacles map[int]map[int]*Coordinate) (res map[int]map[int]*Coordinate) { // берет все соседние клетки от текущей
-	res = make(map[int]map[int]*Coordinate)
-
-	//строго лево
-	_, left := obstacles[curr.X-1][curr.Y]
-	addCoordIfValid(res, obstacles, curr.X-1, curr.Y)
-	//строго право
-	_, right := obstacles[curr.X+1][curr.Y]
-	addCoordIfValid(res, obstacles, curr.X+1, curr.Y)
-	//верх центр
-	_, top := obstacles[curr.X][curr.Y-1]
-	addCoordIfValid(res, obstacles, curr.X, curr.Y-1)
-	//низ центр
-	_, bottom := obstacles[curr.X][curr.Y+1]
-	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
-
-
-	//верх лево/    ЛЕВО И верх
-	if !(left || top) {
-		addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
-	}
-	//верх право/   ПРАВО И верх
-	if !(right || top) {
-		addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
-	}
-	//низ лево/  если ЛЕВО И низ
-	if !(left || bottom) {
-		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
-	}
-	//низ право/  низ И ВЕРХ
-	if !(right || bottom) {
-		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
-	}
-
-	return
-}
-
-func addCoordIfValid(res map[int]map[int]*Coordinate, obstacles map[int]map[int]*Coordinate, x int, y int) {
-	coor := Coordinate{X:x , Y:y}
-
-	_, ok := obstacles[x][y]
-	if !ok && x >= 0 && y >= 0 {
-		if res[x] != nil {
-			res[x][y] = &coor
-		} else {
-			res[x] = make(map[int]*Coordinate)
-			res[x][y] = &coor
-		}
-	}
 }
 
 
