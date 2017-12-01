@@ -7,6 +7,20 @@ import (
 	"strings"
 )
 
+type UnitType struct {
+	Id          int
+	Type        string
+	Damage      int
+	Hp          int
+	MoveSpeed   int
+	Init        int
+	RangeAttack int
+	WatchZone   int
+	AreaAttack  int
+	TypeAttack  string
+	Price       int
+}
+
 func GetUnit(query string) map[int]map[int]*Unit {
 
 	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.move_speed, t.initiative, t.range_attack, t.range_view, t.area_attack, t.type_attack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unit_type as t, users as u WHERE " + query)
@@ -90,17 +104,4 @@ func GetUnitType(nameType string) UnitType {
 		}
 	}
 	return unitType
-}
-
-func GetUnitsCoordinate(units map[int]map[int]*Unit) []*Coordinate {
-	coordinates := make([]*Coordinate, 0)
-	for yLine := range units {
-		for _, unit := range units[yLine] {
-			var coordinate Coordinate
-			coordinate.X = unit.X
-			coordinate.Y = unit.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
-	return coordinates
 }

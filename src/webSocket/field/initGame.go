@@ -25,10 +25,10 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 		}
 	}
 
-	var mapParam = FieldResponse{Event: "InitMap", UserName: client.Login, NameMap: Game.mapInfo.Name, TypeMap: Game.mapInfo.Type, XMap: Game.mapInfo.Xsize, YMap: Game.mapInfo.Ysize}
+	var mapParam = FieldResponse{Event: "InitMap", UserName: client.Login, NameMap: Game.getMap().Name, TypeMap: Game.getMap().Type, XMap: Game.getMap().Xsize, YMap: Game.getMap().Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
-    for _, xline := range Game.coordinate {
+    for _, xline := range Game.getMap().OneLayerMap {
     	for _, coordinate := range xline {
     		if coordinate.Type == "obstacle"{
     			var obstacle = sendCoordinate{Event: "InitObstacle", UserName: client.Login, X: coordinate.X, Y: coordinate.Y}
@@ -46,16 +46,15 @@ func initGame(msg FieldMessage) (newGame *ActiveGame) {
 
 	gameStat := game.GetGame(msg.IdGame)
 	userStat := game.GetUserStat(msg.IdGame)
-	infoMap := game.GetInfoMap(gameStat.IdMap)
+	Map := game.GetMap(gameStat.IdMap)
 	units := game.GetAllUnits(msg.IdGame)
-	coordinate := game.GetMap(infoMap.Id)
 	structure := game.GetAllStrcuture(msg.IdGame)
 
 	newGame.setPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
 	newGame.setStat(&gameStat)       // добавляем информацию об игре в обьект игры
-	newGame.setInfoMap(&infoMap)     // добавляем информацию об карте
+	newGame.setInfoMap(&Map)     // добавляем информацию об карте
 	newGame.setUnits(units)          // добавляем имеющихся юнитов
-	newGame.setMap(coordinate)	     // добавляем 1 слой карты отвечающий за фон текстур, препятсвия и расположение респаунов
+	//newGame.setMap(Map.OneLayerMap)	     // добавляем 1 слой карты отвечающий за фон текстур, препятсвия и расположение респаунов
     newGame.setStructure(structure)  // добавляем в игру все структуры на карте
 
 	Games[newGame.stat.Id] = newGame // добавляем новую игру в карту активных игор

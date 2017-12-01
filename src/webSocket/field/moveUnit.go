@@ -190,7 +190,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*game.Coordi
 		}
 	}
 
-	for _, xLine := range Games[client.GameID].coordinate {
+	for _, xLine := range Games[client.GameID].getMap().OneLayerMap {
 		for _, obstacles := range xLine {
 			if obstacles.Type == "obstacle" {
 				var coordinate game.Coordinate

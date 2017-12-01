@@ -50,7 +50,7 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.coordinate[coordinate.X][coordinate.Y]
+					_, ok := activeGame.getMap().OneLayerMap[coordinate.X][coordinate.Y]
 					if !ok {
 						client.addCoordinate(coordinate)
 					}
@@ -86,7 +86,7 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.coordinate[coordinate.X][coordinate.Y]
+					_, ok := activeGame.getMap().OneLayerMap[coordinate.X][coordinate.Y]
 					if !ok {
 						client.addCoordinate(coordinate)
 					}

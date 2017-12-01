@@ -5,7 +5,39 @@ import (
 	"log"
 )
 
-func GetMap(idMap int) (oneLayerMap  map[int]map[int]*Coordinate)  {
+type Map struct {
+	Id	    	 int
+	Name  		 string
+	Xsize 		 int
+	Ysize 		 int
+	Type		 string
+	OneLayerMap  map[int]map[int]*Coordinate
+}
+
+func GetMap(idMap int) Map {
+
+	rows, err := db.Query("Select * FROM maps WHERE id =" + strconv.Itoa(idMap))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var mp Map
+	for rows.Next() {
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.Xsize, &mp.Ysize, &mp.Type)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	oneLayerMap := GetCoordinateMap(idMap)
+	mp.OneLayerMap = oneLayerMap
+
+	return mp
+}
+
+
+func GetCoordinateMap(idMap int) (oneLayerMap  map[int]map[int]*Coordinate)  {
 	oneLayerMap = make(map[int]map[int]*Coordinate)
 	rows, err := db.Query("Select x, y, type, texture FROM map_constructor WHERE id_map =" + strconv.Itoa(idMap))
 	if err != nil {

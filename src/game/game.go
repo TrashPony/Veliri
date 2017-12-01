@@ -4,6 +4,15 @@ import (
 	"log"
 )
 
+type Game struct {
+	Id     int
+	Name   string
+	IdMap  int
+	Step   int
+	Phase  string
+	Winner string
+}
+
 func GetGame(idGame int) Game {
 
 	rows, err := db.Query("Select * FROM action_games WHERE id=$1", idGame)
@@ -22,13 +31,4 @@ func GetGame(idGame int) Game {
 	}
 
 	return game
-}
-
-type Game struct {
-	Id     int
-	Name   string
-	IdMap  int
-	Step   int
-	Phase  string
-	Winner string
 }
