@@ -92,7 +92,7 @@ func addCoordIfValid(res map[int]map[int]*objects.Coordinate, obstacles map[int]
 	coor := objects.Coordinate{X:x , Y:y}
 
 	_, ok := obstacles[x][y]
-	if !ok {
+	if !ok && x >= 0 && y >= 0 {
 		if res[x] != nil {
 			res[x][y] = &coor
 		} else {

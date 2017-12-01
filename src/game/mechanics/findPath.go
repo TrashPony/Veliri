@@ -16,46 +16,44 @@ const (
 )
 
 var (
-	START_POINT, END_POINT Point
+	START_POINT, END_POINT Coordinate
 	WIDTH, HEIGHT          int
-	matrix                 [][]Point
+	matrix                 [][]Coordinate
 )
 
-type Point struct {
-	x, y, state int
+type Coordinate struct {
+	Type 	string
+	Texture string
+	X, Y, State int
 	H, G, F     int
-	parent      *Point
+	Parent      *Coordinate
 }
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
-type Points map[string]Point
+type Points map[string]Coordinate
 
 func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordinate, obstacles map[int]map[int]*objects.Coordinate) []objects.Coordinate {
 
-	START_POINT = Point{x: start.X, y: start.Y, state: START} // начальная точка
-	END_POINT = Point{x: end.X, y: end.Y, state: END}         // конечная точка
+	START_POINT = Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
+	END_POINT = Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
 	WIDTH = gameMap.Xsize                                     // ширина карты
 	HEIGHT = gameMap.Ysize                                    // высота карты
 
-	matrix = make([][]Point, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
+	matrix = make([][]Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {
-		matrix[i] = make([]Point, HEIGHT)
+		matrix[i] = make([]Coordinate, HEIGHT)
 	}
 
 	for x := 0; x < WIDTH; x++ { //заполняем матрицу координатами
 		for y := 0; y < HEIGHT; y++ {
-			matrix[x][y] = Point{x: x, y: y, state: FREE}
+			matrix[x][y] = Coordinate{X: x, Y: y, State: FREE}
 		}
 	}
 
 	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[START_POINT.Key()] = START_POINT   // кладем в карту посещенных точек стартовую точку
 
-	matrix[START_POINT.x][START_POINT.y] = START_POINT // магия 	//set start & finish
-	matrix[END_POINT.x][END_POINT.y] = END_POINT       // магия
-
-	//for _, o := range obstacles { // ставим препятсвиям статус в точке Блокировано
-	//	matrix[o.X][o.Y].state = BLOCKED
-	//}
+	matrix[START_POINT.X][START_POINT.Y] = START_POINT // магия 	//set start & finish
+	matrix[END_POINT.X][END_POINT.Y] = END_POINT       // магия
 
 	var path []objects.Coordinate
 	var noSortedPath []objects.Coordinate
@@ -63,10 +61,10 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 		current := *MinF(openPoints)  // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) { // если текущая точка и есть конец начинаем генерить путь
 			for !current.Equal(START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
-				current = *current.parent        // берем текущую точку и на ее место ставить ее родителя
+				current = *current.Parent        // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT) { // если текущая точка попрежнему не стартовая то
-					matrix[current.x][current.y].state = PATH // помечаем ее как часть пути
-					noSortedPath = append(noSortedPath, objects.Coordinate{X: matrix[current.x][current.y].x, Y: matrix[current.x][current.y].y})
+					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
+					noSortedPath = append(noSortedPath, objects.Coordinate{X: matrix[current.X][current.Y].X, Y: matrix[current.X][current.Y].Y})
 				}
 			}
 			break
@@ -82,16 +80,16 @@ func FindPath(gameMap *objects.Map, start objects.Coordinate, end objects.Coordi
 	return path
 }
 
-func parseNeighbours(curr Point, m *[][]Point, open, close *Points, obstacles map[int]map[int]*objects.Coordinate) {
+func parseNeighbours(curr Coordinate, m *[][]Coordinate, open, close *Points, obstacles map[int]map[int]*objects.Coordinate) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
 	nCoord := generateNeighboursPoint(curr, obstacles) // берем всех соседей этой клетки
 
 	for _, c := range nCoord {
-		tmpPoint := (*m)[c.x][c.y] // берем поинт из матрицы
+		tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
 
-		if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.state == BLOCKED {
+		if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
 			continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
 		}
 
@@ -103,22 +101,22 @@ func parseNeighbours(curr Point, m *[][]Point, open, close *Points, obstacles ma
 		tmpPoint.G = curr.GetG(tmpPoint)       // стоимость клетки
 		tmpPoint.H = GetH(tmpPoint, END_POINT) // приближение от точки до конечной цели.
 		tmpPoint.F = tmpPoint.GetF()           // длина пути до цели
-		tmpPoint.parent = &curr                //ref is needed?
+		tmpPoint.Parent = &curr                //ref is needed?
 
 		(*open)[tmpPoint.Key()] = tmpPoint // добавляем точку в масив не посещеных
 	}
 }
 
-func GetH(a, b Point) int { // эвристическое приближение стоимости пути от v до конечной цели.
-	tmp := math.Abs(float64(a.x - b.x)) // вычисляем разницу между точкой и концом пути по Х
-	tmp += math.Abs(float64(a.y - b.y)) // вычисляем разницу между точкой и концом пути по Y и сумируем с раницой по X
+func GetH(a, b Coordinate) int { // эвристическое приближение стоимости пути от v до конечной цели.
+	tmp := math.Abs(float64(a.X - b.X)) // вычисляем разницу между точкой и концом пути по Х
+	tmp += math.Abs(float64(a.Y - b.Y)) // вычисляем разницу между точкой и концом пути по Y и сумируем с раницой по X
 
 	return int(tmp)
 }
 
-func (current Point) GetG(target Point) int { // наименьшая стоимость пути в End из стартовой вершины
-	if target.x != current.x && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
-		target.y != current.y { // можно реализовывать стоимость пути по различной поверхности
+func (current Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины
+	if target.X != current.X && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
+		target.Y != current.Y { // можно реализовывать стоимость пути по различной поверхности
 		return current.G + 14
 	}
 
@@ -130,20 +128,20 @@ func (current Point) GetG(target Point) int { // наименьшая стоим
 по значению f(v). А* действует подобно алгоритму Дейкстры и просматривает среди всех маршрутов ведущих к цели сначала те, которые благодаря имеющейся информации
 (эвристическая функция) в данный момент являются наилучшими. */
 
-func (p Point) GetF() int { // длина пути до цели, которая складывается из пройденного расстояния g(v) и оставшегося расстояния h(v).
+func (p Coordinate) GetF() int { // длина пути до цели, которая складывается из пройденного расстояния g(v) и оставшегося расстояния h(v).
 	return p.G + p.H // складываем пройденое расстония и оставшееся
 }
 
-func (p Point) Key() string { //создает уникальный ключ для карты "X:Y"
-	return strconv.Itoa(p.x) + ":" + strconv.Itoa(p.y)
+func (p Coordinate) Key() string { //создает уникальный ключ для карты "X:Y"
+	return strconv.Itoa(p.X) + ":" + strconv.Itoa(p.Y)
 }
 
-func (a Point) Equal(b Point) bool { // сравнивает точки на одинаковость
-	return a.x == b.x && a.y == b.y
+func (a Coordinate) Equal(b Coordinate) bool { // сравнивает точки на одинаковость
+	return a.X == b.X && a.Y == b.Y
 }
 
-func MinF(points Points) (min *Point) { // берет точку с минимальной стоимостью пути из масива не посещеных
-	min = &Point{F: WIDTH*HEIGHT*10 + 1}
+func MinF(points Points) (min *Coordinate) { // берет точку с минимальной стоимостью пути из масива не посещеных
+	min = &Coordinate{F: WIDTH*HEIGHT*10 + 1}
 
 	for _, p := range points {
 		if p.F < min.F {
@@ -153,49 +151,49 @@ func MinF(points Points) (min *Point) { // берет точку с минима
 	return
 }
 
-func addPointIfValid(coords *[]Point, obstacles map[int]map[int]*objects.Coordinate, x, y int) {
+func addPointIfValid(coords *[]Coordinate, obstacles map[int]map[int]*objects.Coordinate, x, y int) {
 
 	_, ok := obstacles[x][y]
 
 	if !ok {
 		if x >= 0 && y >= 0 &&
 			x < WIDTH && y < HEIGHT {
-			*coords = append(*coords, Point{x: x, y: y})
+			*coords = append(*coords, Coordinate{X: x, Y: y})
 		}
 	}
 }
 
-func generateNeighboursPoint(curr Point, obstaclesMatrix map[int]map[int]*objects.Coordinate) (res []Point) { // берет все соседние клетки от текущей
+func generateNeighboursPoint(curr Coordinate, obstaclesMatrix map[int]map[int]*objects.Coordinate) (res []Coordinate) { // берет все соседние клетки от текущей
 
 	//строго лево
-	_, left := obstaclesMatrix[curr.x-1][curr.y]
-	addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y)
+	_, left := obstaclesMatrix[curr.X-1][curr.Y]
+	addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y)
 	//строго право
-	_, right := obstaclesMatrix[curr.x+1][curr.y]
-	addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y)
+	_, right := obstaclesMatrix[curr.X+1][curr.Y]
+	addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y)
 	//верх центр
-	_, top := obstaclesMatrix[curr.x][curr.y-1]
-	addPointIfValid(&res, obstaclesMatrix, curr.x, curr.y-1)
+	_, top := obstaclesMatrix[curr.X][curr.Y-1]
+	addPointIfValid(&res, obstaclesMatrix, curr.Y, curr.Y-1)
 	//низ центр
-	_, bottom := obstaclesMatrix[curr.x][curr.y+1]
-	addPointIfValid(&res, obstaclesMatrix, curr.x, curr.y+1)
+	_, bottom := obstaclesMatrix[curr.X][curr.Y+1]
+	addPointIfValid(&res, obstaclesMatrix, curr.X, curr.Y+1)
 
 
 	//верх лево/    ЛЕВО И верх
 	if !(left || top) {
-		addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y-1)
+		addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y-1)
 	}
 	//верх право/   ПРАВО И верх
 	if !(right || top) {
-		addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y-1)
+		addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y-1)
 	}
 	//низ лево/  если ЛЕВО И низ
 	if !(left || bottom) {
-		addPointIfValid(&res, obstaclesMatrix, curr.x-1, curr.y+1)
+		addPointIfValid(&res, obstaclesMatrix, curr.X-1, curr.Y+1)
 	}
 	//низ право/  низ И ВЕРХ
 	if !(right || bottom) {
-		addPointIfValid(&res, obstaclesMatrix, curr.x+1, curr.y+1)
+		addPointIfValid(&res, obstaclesMatrix, curr.X+1, curr.Y+1)
 	}
 
 	return

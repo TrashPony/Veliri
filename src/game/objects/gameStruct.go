@@ -24,9 +24,9 @@ type UserStat struct {
 }
 
 type Coordinate struct {
-	X int
-	Y int
-	Type string
+	Type 	string
 	Texture string
+	X, Y, State int
+	H, G, F     int
+	Parent      *Coordinate
 }
-
