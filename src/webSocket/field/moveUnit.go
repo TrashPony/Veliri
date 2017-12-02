@@ -55,7 +55,7 @@ func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
 		start := game.Coordinate{X: unit.X, Y: unit.Y}
 		end := game.Coordinate{X: toX, Y: toY}
 
-		mp := Games[client.GameID].getMap()
+		mp := Games[client.GameID].GetMap()
 
 		path := game.FindPath(mp, start, end, obstacles)
 
@@ -76,8 +76,8 @@ func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
 
 func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coordinate) (int, int, error) {
 
-	game := Games[client.GameID]
-	players := Games[client.GameID].getPlayers()
+	activeGame := Games[client.GameID]
+	players := Games[client.GameID].GetPlayers()
 	activeUser := ActionGameUser(players)
 
 	for _, pathNode := range path {
@@ -96,7 +96,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coo
 			}
 		}
 
-		game.delUnit(unit) // TODO сделать интерфейс для ходьбы
+		activeGame.DelUnit(unit) // TODO сделать интерфейс для ходьбы
 
 		x := unit.X
 		y := unit.Y
@@ -108,12 +108,12 @@ func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coo
 			unit.Action = false
 		}
 
-		game.setUnit(unit)
+		activeGame.SetUnit(unit)
 
 		delete(client.Units[x], y)
 		client.addUnit(unit) // добавляем новое
 
-		client.updateWatchZone(game) // отправляем открытые ячейки, удаляем закрытые
+		client.updateWatchZone(activeGame) // отправляем открытые ячейки, удаляем закрытые
 		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
@@ -133,14 +133,14 @@ func updateWatchHostileUser(client Clients, unit game.Unit, x, y int, activeUser
 			_, okGetUnit := user.HostileUnits[x][y]
 
 			if okGetUnit {
-				user.Watch[x][y] = &game.Coordinate{X: x, Y: y} // добавлдяем на место старого места юнита пустую зону
+				user.Watch[x][y] = &game.Coordinate{X: x, Y: y}    // добавлдяем на место старого места юнита пустую зону
 				delete(user.HostileUnits[x], y)                    // и удаляем в общей карте вражеских юнитов
 				openCoordinate(user.Login, x, y)                   // и остылаем событие удаление юнита
 			}
 
 			_, okGetXY := user.Watch[unit.X][unit.Y]
 
-			if okGetXY { // если следующая клетка юнита в зоне видимости
+			if okGetXY {                           // если следующая клетка юнита в зоне видимости
 				delete(user.Watch[unit.X], unit.Y) // удаляем пустую клетку
 				user.addHostileUnit(&unit)         // и добавляем в общую карту вражеских юнитов
 				unitsParameter.initUnit(&unit, user.Login)
@@ -190,7 +190,7 @@ func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*game.Coordi
 		}
 	}
 
-	for _, xLine := range Games[client.GameID].getMap().OneLayerMap {
+	for _, xLine := range Games[client.GameID].GetMap().OneLayerMap {
 		for _, obstacles := range xLine {
 			if obstacles.Type == "obstacle" {
 				var coordinate game.Coordinate

@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"sync"
+	"../../game"
 )
 
 var fieldPipe = make(chan FieldResponse)
@@ -13,7 +14,7 @@ var initStructure = make(chan InitStructure)
 var coordiante = make(chan sendCoordinate)
 
 var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
-var Games = make(map[int]*ActiveGame)
+var Games = make(map[int]*game.Game)
 
 var mutex = &sync.Mutex{}
 

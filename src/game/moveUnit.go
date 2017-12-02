@@ -1,5 +1,7 @@
 package game
 
+
+
 func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int]map[int]*Coordinate) (res []*Coordinate) { // берет все соседние клетки от текущей
 	start := Coordinate{X: unit.X, Y: unit.Y}
 	openCoordinate := make(map[int]map[int]*Coordinate)

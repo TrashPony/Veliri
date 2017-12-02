@@ -19,7 +19,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 			if target.X == msg.TargetX && target.Y == msg.TargetY {
 				target, ok := client.HostileUnits[msg.TargetX][msg.TargetY]
 				if ok {
-					game.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), activeGame.stat.Id)
+					game.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), activeGame.GetStat().Id)
 					unit.Target = &game.Coordinate{X: target.X, Y: target.Y}
 					passed = true
 					resp := FieldResponse{Event: msg.Event, UserName: client.Login}

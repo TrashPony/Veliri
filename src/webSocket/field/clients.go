@@ -22,11 +22,11 @@ func (client *Clients) getLogin() string  {
 	return client.Login
 }
 
-func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
+func (client *Clients) getAllWatchObject(activeGame *game.Game) {
 
-	for _, xLine := range activeGame.getUnits() {
+	for _, xLine := range activeGame.GetUnits() {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := game.Watch(unit, client.Login, activeGame.getUnits(), activeGame.getStructure())//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := game.Watch(unit, client.Login, activeGame.GetUnits(), activeGame.GetStructure())//PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -50,7 +50,7 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.getMap().OneLayerMap[coordinate.X][coordinate.Y]
+					_, ok := activeGame.GetMap().OneLayerMap[coordinate.X][coordinate.Y]
 					if !ok {
 						client.addCoordinate(coordinate)
 					}
@@ -59,10 +59,10 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 		}
 	}
 
-	for _, xLine := range activeGame.getStructure() {
+	for _, xLine := range activeGame.GetStructure() {
 		for _, structure := range xLine {
 
-			watchCoordinate, watchUnit, watchStructure, err := game.Watch(structure, client.Login, activeGame.getUnits(), activeGame.getStructure())
+			watchCoordinate, watchUnit, watchStructure, err := game.Watch(structure, client.Login, activeGame.GetUnits(), activeGame.GetStructure())
 
 			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
@@ -86,7 +86,7 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.getMap().OneLayerMap[coordinate.X][coordinate.Y]
+					_, ok := activeGame.GetMap().OneLayerMap[coordinate.X][coordinate.Y]
 					if !ok {
 						client.addCoordinate(coordinate)
 					}
@@ -97,7 +97,7 @@ func (client *Clients) getAllWatchObject(activeGame *ActiveGame) {
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Clients) updateWatchZone(game *ActiveGame) {
+func (client *Clients) updateWatchZone(game *game.Game) {
 
 	oldWatchZone := client.Watch
 	oldWatchHostileUnits := client.HostileUnits
