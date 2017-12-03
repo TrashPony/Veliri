@@ -25,5 +25,14 @@ func MouseOver(msg FieldMessage, ws *websocket.Conn) {
 				AreaAttack: strconv.Itoa(unit.AreaAttack), TypeAttack: unit.TypeAttack}
 			initUnit <- resp
 		}
+	} else {
+		structure, find := usersFieldWs[ws].Structure[msg.X][msg.Y]
+		if !find {
+			structure, find = usersFieldWs[ws].HostileStructure[msg.X][msg.Y]
+		}
+		if find {
+			resp := InitUnit{Event: msg.Event, UserName: usersFieldWs[ws].Login, TypeUnit: structure.Type, UserOwned:structure.NameUser, RangeView: strconv.Itoa(structure.WatchZone)}
+			initUnit <- resp
+		}
 	}
 }
