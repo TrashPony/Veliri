@@ -6,12 +6,13 @@ import (
 )
 
 func MouseOver(msg FieldMessage, ws *websocket.Conn) {
-	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	client, ok := usersFieldWs[ws]
+	unit, find := client.GetUnit(msg.X, msg.Y)
 	if !find {
-		unit, find = usersFieldWs[ws].HostileUnits[msg.X][msg.Y]
+		unit, find = client.GetHostileUnit(msg.X,msg.Y)
 	}
 
-	if find {
+	if find && ok{
 		if unit.Target == nil {
 			resp := InitUnit{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), TypeUnit: unit.NameType, UserOwned: unit.NameUser, HP: unit.Hp,
 				UnitAction: strconv.FormatBool(unit.Action), Target: "", Damage: strconv.Itoa(unit.Damage), MoveSpeed: strconv.Itoa(unit.MoveSpeed),
@@ -26,9 +27,9 @@ func MouseOver(msg FieldMessage, ws *websocket.Conn) {
 			initUnit <- resp
 		}
 	} else {
-		structure, find := usersFieldWs[ws].Structure[msg.X][msg.Y]
+		structure, find := usersFieldWs[ws].GetStructure(msg.X, msg.Y)
 		if !find {
-			structure, find = usersFieldWs[ws].HostileStructure[msg.X][msg.Y]
+			structure, find = usersFieldWs[ws].GetHostileStructure(msg.X, msg.Y)
 		}
 		if find {
 			resp := InitUnit{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), TypeUnit: structure.Type, UserOwned:structure.NameUser, RangeView: strconv.Itoa(structure.WatchZone)}

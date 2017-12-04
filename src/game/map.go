@@ -36,6 +36,11 @@ func GetMap(idMap int) Map {
 	return mp
 }
 
+func (mp *Map) GetCoordinate(x, y int) (coordinate *Coordinate, find bool)  {
+	coordinate, find = mp.OneLayerMap[x][y]
+	return
+}
+
 
 func GetCoordinateMap(idMap int) (oneLayerMap  map[int]map[int]*Coordinate)  {
 	oneLayerMap = make(map[int]map[int]*Coordinate)

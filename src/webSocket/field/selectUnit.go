@@ -11,9 +11,9 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
+	respawn := client.GetRespawn()
 
 	if find && ok {
-		respawn := client.Respawn
 		if activeGame.GetStat().Phase == "move" {
 			if unit.Action {
 
@@ -23,7 +23,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for i := 0; i < len(moveCoordinate); i++ {
 					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: activeGame.GetStat().Phase,
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 							X: moveCoordinate[i].X, Y: moveCoordinate[i].Y}
 						fieldPipe <- createCoordinates
 					}
@@ -37,8 +37,8 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		if activeGame.GetStat().Phase == "targeting" {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
-				targetUnit, ok := client.HostileUnits[coordinate.X][coordinate.Y]
-				if ok && targetUnit.NameUser != client.GetGameID() {
+				targetUnit, ok := client.GetHostileStructure(coordinate.X,coordinate.Y)
+				if ok && targetUnit.NameUser != client.GetLogin() {
 					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
 					fieldPipe <- createCoordinates
@@ -48,10 +48,9 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	} else {
 		if activeGame.GetStat().Phase == "Init"{
 			var coordinates []*game.Coordinate
-			respawn := usersFieldWs[ws].Respawn
 
-			for _, coordinate := range usersFieldWs[ws].CreateZone {
-				_, ok := usersFieldWs[ws].Units[coordinate.X][coordinate.Y]
+			for _, coordinate := range usersFieldWs[ws].GetCreateZone() {
+				_, ok := client.GetUnit(coordinate.X, coordinate.Y)
 				if !ok {
 					coordinates = append(coordinates, coordinate)
 				}

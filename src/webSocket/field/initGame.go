@@ -40,6 +40,6 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 		}
 	}
 
-	client.updateWatchZone(Game)
-	client.SetGameID = Game.GetStat().Id // добавляем принадлежность игрока в игре
+	UpdateWatchZone(client, Game)
+	client.SetGameID(Game.GetStat().Id)// добавляем принадлежность игрока в игре
 }

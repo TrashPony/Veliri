@@ -122,7 +122,7 @@ func UpdateUnit(unit *game.Unit, activeUser []*game.Player) {
 			unitsParameter.initUnit(unit, client.GetLogin())
 
 		} else {
-			_, ok := client.HostileUnits[unit.X][unit.Y]
+			_, ok := client.GetHostileUnit(unit.X, unit.Y)
 			if ok {
 				client.AddHostileUnit(unit)
 				var unitsParameter InitUnit
@@ -137,16 +137,16 @@ func DelUnit(unit *game.Unit, activeUser []*game.Player) {
 		if unit.NameUser == client.GetLogin() {
 			_, ok := client.GetUnit(unit.X, unit.Y)
 			if ok {
-				delete(client.Units[unit.X], unit.Y)
+				client.DelUnit(unit)
 				Games[client.GetGameID()].DelUnit(unit)
 
 				openCoordinate(client.GetLogin(), unit.X, unit.Y)
-				client.updateWatchZone(Games[client.GetGameID()])
+				UpdateWatchZone(client, Games[client.GetGameID()])
 			}
 		} else {
-			_, ok := client.HostileUnits[unit.X][unit.Y]
+			_, ok := client.GetHostileUnit(unit.X, unit.Y)
 			if ok {
-				delete(client.HostileUnits[unit.X], unit.Y)
+				client.DelUnit(unit)
 				openCoordinate(client.GetLogin(), unit.X, unit.Y)
 			}
 		}

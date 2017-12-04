@@ -1,7 +1,6 @@
 package game
 
 import (
-	"./"
 	"strconv"
 )
 
@@ -93,11 +92,11 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Player) updateWatchZone(game *Game) {
+func (client *Player) UpdateWatchZone(game *Game) (sendCloseCoordinate []*Coordinate, openCoordinate []*Coordinate, openUnit []*Unit, openStructure []*Structure) {
 
-	//oldWatchZone := client.Watch
-	//oldWatchHostileUnits := client.HostileUnits
-	//oldWatchHostileStructure := client.HostileStructure
+	oldWatchZone := client.GetWatchCoordinates()
+	oldWatchHostileUnits := client.GetHostileUnits()
+	oldWatchHostileStructure := client.GetHostileStructures()
 	// TODO
 	client.units = nil
 	client.structure = nil
@@ -107,11 +106,13 @@ func (client *Player) updateWatchZone(game *Game) {
 
 	client.GetAllWatchObject(game)
 
-	//updateMyUnit(client)
-	//updateMyStructure(client)
-	//updateHostileUnit(client, oldWatchHostileUnits)
-	//updateHostileStrcuture(client, oldWatchHostileStructure)
-	//updateOpenCoordinate(client, oldWatchZone)
+	openCoordinate, closeCoordinate := updateOpenCoordinate(client, oldWatchZone)
+	openUnit, closeUnit := updateHostileUnit(client, oldWatchHostileUnits)
+	openStructure, closeStructure := updateHostileStrcuture(client, oldWatchHostileStructure)
+
+	sendCloseCoordinate = parseCloseCoordinate(closeCoordinate, closeUnit, closeStructure, game)
+
+	return
 }
 
 func (client *Player) AddCoordinate(coordinate *Coordinate) {
@@ -196,6 +197,14 @@ func (client *Player) SetRespawn(respawn *Structure)  {
 	client.respawn = respawn
 }
 
+func (client *Player) GetCreateZone() (map[string]*Coordinate) {
+	return client.createZone
+}
+
+func (client *Player) GetRespawn()(respawn *Structure) {
+	return client.respawn
+}
+
 func (client *Player) SetLogin (login string) {
 	client.login = login
 }
@@ -227,4 +236,48 @@ func (client *Player) GetUnits() (unit map[int]map[int]*Unit)  {
 func (client *Player) GetUnit(x,y int) (unit *Unit, find bool)  {
 	unit, find = client.units[x][y]
 	return
+}
+
+func (client *Player) DelUnit(unit *Unit) {
+	delete(client.units[unit.X], unit.Y)
+}
+
+func (client *Player) GetHostileUnits() (unit map[int]map[int]*Unit)  {
+	return client.hostileUnits
+}
+
+func (client *Player) GetHostileUnit(x,y int) (unit *Unit, find bool)  {
+	unit, find = client.hostileUnits[x][y]
+	return
+}
+
+func (client *Player) GetStructures() (structure map[int]map[int]*Structure)  {
+	return client.structure
+}
+
+func (client *Player) GetStructure(x,y int) (structure *Structure, find bool)  {
+	structure, find = client.structure[x][y]
+	return
+}
+
+func (client *Player) GetHostileStructures() (structure map[int]map[int]*Structure)  {
+	return client.hostileStructure
+}
+
+func (client *Player) GetHostileStructure(x,y int) (structure *Structure, find bool)  {
+	structure, find = client.hostileStructure[x][y]
+	return
+}
+
+func (client *Player) GetWatchCoordinates() (coordinate map[int]map[int]*Coordinate)  {
+	return client.watch
+}
+
+func (client *Player) GetWatchCoordinate(x,y int) (coordinate *Coordinate, find bool)  {
+	coordinate, find = client.watch[x][y]
+	return
+}
+
+func (client *Player) DelWatchCoordinate(x,y int) {
+	delete(client.watch[x], y)
 }

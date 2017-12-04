@@ -82,7 +82,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 
 	for _, pathNode := range path {
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-			_, ok := client.HostileUnits[end.X][end.Y]
+			_, ok := client.GetHostileUnit(end.X,end.Y)
 			if ok {
 				unit.Action = false
 				var unitsParameter InitUnit
@@ -90,13 +90,14 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
-			_, ok := client.HostileUnits[pathNode.X][pathNode.Y]
+			_, ok := client.GetHostileUnit(pathNode.X, pathNode.Y)
 			if ok {
 				return 0, 0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
 			}
 		}
 
-		activeGame.DelUnit(unit) // TODO сделать интерфейс для ходьбы
+		activeGame.DelUnit(unit) // Удаляем юнита со старых позиций
+		client.DelUnit(unit)
 
 		x := unit.X
 		y := unit.Y
@@ -109,12 +110,10 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 		}
 
 		activeGame.SetUnit(unit)
+		client.AddUnit(unit) // добавляем новую позицию юнита
 
-		delete(client.Units[x], y)
-		client.AddUnit(unit) // добавляем новое
-
-		client.updateWatchZone(activeGame) // отправляем открытые ячейки, удаляем закрытые
-		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
+		UpdateWatchZone(client, activeGame)  // отправляем открытые ячейки, удаляем закрытые
+		go updateWatchHostileUser(activeGame, *client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
 		unitsParameter.initUnit(unit, client.GetLogin()) // отсылаем новое место юнита
@@ -125,24 +124,27 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 	return unit.X, unit.Y, nil
 }
 
-func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
+func updateWatchHostileUser(activeGame *game.Game, client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {
-			_, okGetUnit := user.HostileUnits[x][y]
+			hostileUnit, okGetUnit := user.GetHostileUnit(x,y)
 
 			if okGetUnit {
-				user.Watch[x][y] = &game.Coordinate{X: x, Y: y}    // добавлдяем на место старого места юнита пустую зону
-				delete(user.HostileUnits[x], y)                    // и удаляем в общей карте вражеских юнитов
-				openCoordinate(user.GetLogin(), x, y)                   // и остылаем событие удаление юнита
+				coordinate, find := activeGame.GetMap().GetCoordinate(x,y)
+				if find {
+					user.AddCoordinate(coordinate) // добавлдяем на место старого места юнита пустую зону
+				}
+				user.DelUnit(hostileUnit) 						   // и удаляем в общей карте вражеских юнитов
+				openCoordinate(user.GetLogin(), x, y)              // и остылаем событие удаление юнита
 			}
 
-			_, okGetXY := user.Watch[unit.X][unit.Y]
+			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)
 
-			if okGetXY {                           // если следующая клетка юнита в зоне видимости
-				delete(user.Watch[unit.X], unit.Y) // удаляем пустую клетку
-				user.addHostileUnit(&unit)         // и добавляем в общую карту вражеских юнитов
+			if okGetXY {                                 // если следующая клетка юнита в зоне видимости
+				user.DelWatchCoordinate(unit.X, unit.Y)  // удаляем пустую клетку
+				user.AddHostileUnit(&unit)               // и добавляем в общую карту вражеских юнитов
 				unitsParameter.initUnit(&unit, user.GetLogin())
 			}
 		}
@@ -154,7 +156,7 @@ func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Co
 	obstaclesMatrix = make(map[int]map[int]*game.Coordinate)
 
 	// TODO переделать создание сразу в карту
-	for _, xLine := range client.Units {
+	for _, xLine := range client.GetUnits() {
 		for _, unit := range xLine {
 			var coordinate game.Coordinate
 			coordinate.X = unit.X
@@ -163,7 +165,7 @@ func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Co
 		}
 	}
 
-	for _, xLine := range client.HostileUnits {
+	for _, xLine := range client.GetHostileUnits() {
 		for _, unit := range xLine {
 			var coordinate game.Coordinate
 			coordinate.X = unit.X
@@ -172,7 +174,7 @@ func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Co
 		}
 	}
 
-	for _, xLine := range client.Structure {
+	for _, xLine := range client.GetStructures() {
 		for _, structure := range xLine {
 			var coordinate game.Coordinate
 			coordinate.X = structure.X
@@ -181,7 +183,7 @@ func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Co
 		}
 	}
 
-	for _, xLine := range client.HostileStructure {
+	for _, xLine := range client.GetHostileStructures() {
 		for _, structure := range xLine {
 			var coordinate game.Coordinate
 			coordinate.X = structure.X
@@ -190,7 +192,7 @@ func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Co
 		}
 	}
 
-	for _, xLine := range Games[client.GameID].GetMap().OneLayerMap {
+	for _, xLine := range Games[client.GetGameID()].GetMap().OneLayerMap {
 		for _, obstacles := range xLine {
 			if obstacles.Type == "obstacle" {
 				var coordinate game.Coordinate

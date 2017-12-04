@@ -8,22 +8,25 @@ import (
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
-	coordinates := usersFieldWs[ws].CreateZone
-	respawn := usersFieldWs[ws].Respawn
 	client, ok := usersFieldWs[ws]
-	activeGame := Games[client.GameID]
 
 	if !ok {
 		delete(usersFieldWs, ws)
 	} else {
+		coordinates := client.GetCreateZone()
+		respawn :=	client.GetRespawn()
+		activeGame := Games[client.GetGameID()]
+
 		_, ok := coordinates[strconv.Itoa(msg.X)+":"+strconv.Itoa(msg.Y)]
 		if ok && !(msg.X == respawn.X && msg.Y == respawn.Y) {
 			var unit game.Unit
-			unit, price, createError := game.CreateUnit(msg.IdGame, strconv.Itoa(usersFieldWs[ws].Id), msg.TypeUnit, msg.X, msg.Y)
+			unit, price, createError := game.CreateUnit(msg.IdGame, strconv.Itoa(client.GetID()), msg.TypeUnit, msg.X, msg.Y)
 
 			if createError == nil {
 				activeGame.SetUnit(&unit)
-				client.updateWatchZone(activeGame)
+
+				UpdateWatchZone(client, activeGame)
+
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), PlayerPrice: price, X: unit.X, Y: unit.Y}
 				fieldPipe <- resp
 
