@@ -34,7 +34,7 @@ func subtraction(slice1 []*game.Coordinate, slice2 []*game.Coordinate) (ab []gam
 }
 
 func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
-	for _, clients := range usersFieldWs {
+	for _, clients := range usersFieldWs { // TODO в обьект игры сразу инициализировать всех игроков
 		add := false
 		for _, userStat := range players {
 			if clients.GetLogin() == userStat.Name && clients.GetGameID() == userStat.IdGame {
@@ -46,57 +46,4 @@ func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
 		}
 	}
 	return
-}
-
-func UpdateWatchZone(client *game.Player, activeGame *game.Game)  {
-	closeCoordinate, openCoordinate, openUnit, openStructure := client.UpdateWatchZone(activeGame)
-
-	updateMyUnit(client)
-	updateMyStructure(client)
-
-	sendNewHostileUnit(openUnit, client.GetLogin())
-	sendNewHostileStructure(openStructure, client.GetLogin())
-	UpdateOpenCoordinate(openCoordinate, closeCoordinate, client.GetLogin())
-}
-
-func updateMyUnit(client *game.Player)  {
-	var unitsParameter InitUnit
-	for _, xLine := range client.GetUnits() { // отправляем параметры своих юнитов
-		for _, unit := range xLine {
-			unitsParameter.initUnit(unit, client.GetLogin())
-		}
-	}
-}
-
-func updateMyStructure(client *game.Player)  {
-	var structureParameter InitStructure
-	for _, xLine := range client.GetStructures() { // отправляем параметры своих структур
-		for _, structure := range xLine {
-			structureParameter.initStructure(structure, client.GetLogin())
-		}
-	}
-}
-
-func sendNewHostileUnit(units []*game.Unit, login string )  {
-	var UnitParams InitUnit
-	for _, unit := range units {
-		UnitParams.initUnit(unit, login)
-	}
-}
-
-func sendNewHostileStructure(structures []*game.Structure, login string )  {
-	var StructureParams InitStructure
-	for _, structure := range structures {
-		StructureParams.initStructure(structure, login)
-	}
-}
-
-func UpdateOpenCoordinate(openCoordinates []*game.Coordinate, closeCoordinates []*game.Coordinate, login string)  {
-	for _, open := range openCoordinates {
-		openCoordinate(login, open.X, open.Y)
-	}
-
-	for _, closeCoor := range closeCoordinates {
-		closeCoordinate(login, closeCoor.X, closeCoor.Y)
-	}
 }

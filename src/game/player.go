@@ -97,7 +97,7 @@ func (client *Player) UpdateWatchZone(game *Game) (sendCloseCoordinate []*Coordi
 	oldWatchZone := client.GetWatchCoordinates()
 	oldWatchHostileUnits := client.GetHostileUnits()
 	oldWatchHostileStructure := client.GetHostileStructures()
-	// TODO
+
 	client.units = nil
 	client.structure = nil
 	client.hostileUnits = nil
@@ -238,8 +238,8 @@ func (client *Player) GetUnit(x,y int) (unit *Unit, find bool)  {
 	return
 }
 
-func (client *Player) DelUnit(unit *Unit) {
-	delete(client.units[unit.X], unit.Y)
+func (client *Player) DelUnit(x, y int) {
+	delete(client.units[x], y)
 }
 
 func (client *Player) GetHostileUnits() (unit map[int]map[int]*Unit)  {

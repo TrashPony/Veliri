@@ -137,7 +137,7 @@ func DelUnit(unit *game.Unit, activeUser []*game.Player) {
 		if unit.NameUser == client.GetLogin() {
 			_, ok := client.GetUnit(unit.X, unit.Y)
 			if ok {
-				client.DelUnit(unit)
+				client.DelUnit(unit.X, unit.Y)
 				Games[client.GetGameID()].DelUnit(unit)
 
 				openCoordinate(client.GetLogin(), unit.X, unit.Y)
@@ -146,7 +146,7 @@ func DelUnit(unit *game.Unit, activeUser []*game.Player) {
 		} else {
 			_, ok := client.GetHostileUnit(unit.X, unit.Y)
 			if ok {
-				client.DelUnit(unit)
+				client.DelUnit(unit.X, unit.Y)
 				openCoordinate(client.GetLogin(), unit.X, unit.Y)
 			}
 		}

@@ -97,7 +97,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 		}
 
 		activeGame.DelUnit(unit) // Удаляем юнита со старых позиций
-		client.DelUnit(unit)
+		client.DelUnit(unit.X, unit.Y)
 
 		x := unit.X
 		y := unit.Y
@@ -129,14 +129,16 @@ func updateWatchHostileUser(activeGame *game.Game, client game.Player, unit game
 
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {
-			hostileUnit, okGetUnit := user.GetHostileUnit(x,y)
+
+			_, okGetUnit := user.GetHostileUnit(x,y)
 
 			if okGetUnit {
-				coordinate, find := activeGame.GetMap().GetCoordinate(x,y)
-				if find {
-					user.AddCoordinate(coordinate) // добавлдяем на место старого места юнита пустую зону
-				}
-				user.DelUnit(hostileUnit) 						   // и удаляем в общей карте вражеских юнитов
+				//coordinate, _ := activeGame.GetMap().GetCoordinate(x,y)
+				//if find {  TODO полностью инициализировать карту
+				coordinate := game.Coordinate{X: x, Y: y}
+				user.AddCoordinate(&coordinate) // добавлдяем на место старого места юнита пустую зону
+				//}
+				user.DelUnit(x,y) 		 // TODO не удаляет		   // и удаляем в общей карте вражеских юнитов
 				openCoordinate(user.GetLogin(), x, y)              // и остылаем событие удаление юнита
 			}
 
