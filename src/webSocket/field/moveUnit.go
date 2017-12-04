@@ -113,7 +113,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 		client.AddUnit(unit) // добавляем новую позицию юнита
 
 		UpdateWatchZone(client, activeGame)  // отправляем открытые ячейки, удаляем закрытые
-		go updateWatchHostileUser(activeGame, *client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
+		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
 		unitsParameter.initUnit(unit, client.GetLogin()) // отсылаем новое место юнита
@@ -124,7 +124,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game
 	return unit.X, unit.Y, nil
 }
 
-func updateWatchHostileUser(activeGame *game.Game, client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
+func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
@@ -138,8 +138,9 @@ func updateWatchHostileUser(activeGame *game.Game, client game.Player, unit game
 				coordinate := game.Coordinate{X: x, Y: y}
 				user.AddCoordinate(&coordinate) // добавлдяем на место старого места юнита пустую зону
 				//}
-				user.DelUnit(x,y) 		 // TODO не удаляет		   // и удаляем в общей карте вражеских юнитов
+				user.DelHostileUnit(x,y) 		                   // и удаляем в общей карте вражеских юнитов
 				openCoordinate(user.GetLogin(), x, y)              // и остылаем событие удаление юнита
+
 			}
 
 			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)

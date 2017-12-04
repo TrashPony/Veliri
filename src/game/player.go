@@ -251,6 +251,10 @@ func (client *Player) GetHostileUnit(x,y int) (unit *Unit, find bool)  {
 	return
 }
 
+func (client *Player) DelHostileUnit(x, y int) {
+	delete(client.hostileUnits[x], y)
+}
+
 func (client *Player) GetStructures() (structure map[int]map[int]*Structure)  {
 	return client.structure
 }
