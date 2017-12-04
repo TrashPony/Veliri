@@ -10,7 +10,7 @@ import (
 func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 
-	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
+	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	if find && ok {
 		if unit.Action {
@@ -22,7 +22,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			var passed bool
 			for _, coordinate := range moveCoordinate {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
-					resp = FieldResponse{Event: msg.Event, UserName: client.Login}
+					resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
 					fieldPipe <- resp
 					go InitMove(unit, msg, client)
 					passed = true
@@ -30,22 +30,22 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 
 			if !passed {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not allow"}
 				fieldPipe <- resp
 			}
 		} else {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "unit already move"}
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "unit already move"}
 			fieldPipe <- resp
 		}
 	} else {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not found unit"}
+		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not found unit"}
 		fieldPipe <- resp
 	}
 }
 
-func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
+func InitMove(unit *game.Unit, msg FieldMessage, client *game.Player) {
 
-	idGame := client.GameID
+	idGame := client.GetGameID()
 	toX := msg.ToX
 	toY := msg.ToY
 
@@ -55,7 +55,7 @@ func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
 		start := game.Coordinate{X: unit.X, Y: unit.Y}
 		end := game.Coordinate{X: toX, Y: toY}
 
-		mp := Games[client.GameID].GetMap()
+		mp := Games[client.GetGameID()].GetMap()
 
 		path := game.FindPath(mp, start, end, obstacles)
 
@@ -74,10 +74,10 @@ func InitMove(unit *game.Unit, msg FieldMessage, client *Clients) {
 	}
 }
 
-func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coordinate) (int, int, error) {
+func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game.Coordinate) (int, int, error) {
 
-	activeGame := Games[client.GameID]
-	players := Games[client.GameID].GetPlayers()
+	activeGame := Games[client.GetGameID()]
+	players := Games[client.GetGameID()].GetPlayers()
 	activeUser := ActionGameUser(players)
 
 	for _, pathNode := range path {
@@ -86,7 +86,7 @@ func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coo
 			if ok {
 				unit.Action = false
 				var unitsParameter InitUnit
-				unitsParameter.initUnit(unit, client.Login)
+				unitsParameter.initUnit(unit, client.GetLogin())
 				return unit.X, unit.Y, errors.New("end cell is busy")
 			}
 		} else {
@@ -111,13 +111,13 @@ func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coo
 		activeGame.SetUnit(unit)
 
 		delete(client.Units[x], y)
-		client.addUnit(unit) // добавляем новое
+		client.AddUnit(unit) // добавляем новое
 
 		client.updateWatchZone(activeGame) // отправляем открытые ячейки, удаляем закрытые
 		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
 
 		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.Login) // отсылаем новое место юнита
+		unitsParameter.initUnit(unit, client.GetLogin()) // отсылаем новое место юнита
 
 		time.Sleep(200 * time.Millisecond)
 	}
@@ -125,17 +125,17 @@ func Move(unit *game.Unit, path []game.Coordinate, client *Clients, end game.Coo
 	return unit.X, unit.Y, nil
 }
 
-func updateWatchHostileUser(client Clients, unit game.Unit, x, y int, activeUser []*Clients) {
+func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
-		if user.Login != client.Login {
+		if user.GetLogin() != client.GetLogin() {
 			_, okGetUnit := user.HostileUnits[x][y]
 
 			if okGetUnit {
 				user.Watch[x][y] = &game.Coordinate{X: x, Y: y}    // добавлдяем на место старого места юнита пустую зону
 				delete(user.HostileUnits[x], y)                    // и удаляем в общей карте вражеских юнитов
-				openCoordinate(user.Login, x, y)                   // и остылаем событие удаление юнита
+				openCoordinate(user.GetLogin(), x, y)                   // и остылаем событие удаление юнита
 			}
 
 			_, okGetXY := user.Watch[unit.X][unit.Y]
@@ -143,13 +143,13 @@ func updateWatchHostileUser(client Clients, unit game.Unit, x, y int, activeUser
 			if okGetXY {                           // если следующая клетка юнита в зоне видимости
 				delete(user.Watch[unit.X], unit.Y) // удаляем пустую клетку
 				user.addHostileUnit(&unit)         // и добавляем в общую карту вражеских юнитов
-				unitsParameter.initUnit(&unit, user.Login)
+				unitsParameter.initUnit(&unit, user.GetLogin())
 			}
 		}
 	}
 }
 
-func getObstacles(client *Clients) (obstaclesMatrix map[int]map[int]*game.Coordinate) { // TODO: это все очень странно
+func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Coordinate) { // TODO: это все очень странно
 	coordinates := make([]*game.Coordinate, 0)
 	obstaclesMatrix = make(map[int]map[int]*game.Coordinate)
 

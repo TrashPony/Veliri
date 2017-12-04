@@ -13,14 +13,18 @@ var initUnit = make(chan InitUnit)
 var initStructure = make(chan InitStructure)
 var coordiante = make(chan sendCoordinate)
 
-var usersFieldWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
+var usersFieldWs = make(map[*websocket.Conn]*game.Player) // тут будут храниться наши подключения
 var Games = make(map[int]*game.Game)
 
 var mutex = &sync.Mutex{}
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersFieldWs)
-	usersFieldWs[ws] = &Clients{Login: login, Id: id} // Регистрируем нового Клиента
+	newPlayer := game.Player{}
+	newPlayer.SetLogin(login)
+	newPlayer.SetID(id)
+
+	usersFieldWs[ws] = &newPlayer // Регистрируем нового Клиента
 	print("WS field Сессия: ")                        // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
@@ -28,7 +32,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	fieldReader(ws, usersFieldWs)
 }
 
-func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*Clients) {
+func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Player) {
 	for {
 		var msg FieldMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
@@ -77,7 +81,7 @@ func FieldReposeSender() {
 		resp := <-fieldPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.Login == resp.UserName {
+			if client.GetLogin() == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
@@ -95,7 +99,7 @@ func InitUnitSender() {
 		resp := <-initUnit
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.Login == resp.UserName {
+			if client.GetLogin() == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
@@ -113,7 +117,7 @@ func InitStructureSender()  {
 		resp := <- initStructure
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.Login == resp.UserName {
+			if client.GetLogin() == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
@@ -131,7 +135,7 @@ func CoordinateSender() {
 		resp := <-coordiante
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.Login == resp.UserName {
+			if client.GetLogin() == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)

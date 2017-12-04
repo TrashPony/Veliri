@@ -8,9 +8,9 @@ import (
 func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 
-	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
+	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
-	activeGame, ok := Games[client.GameID]
+	activeGame, ok := Games[client.GetGameID()]
 
 	if find && ok {
 		respawn := client.Respawn
@@ -29,7 +29,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 					}
 				}
 			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Error: "unit already move"}
+				resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "unit already move"}
 				fieldPipe <- resp
 			}
 		}
@@ -38,8 +38,8 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
 				targetUnit, ok := client.HostileUnits[coordinate.X][coordinate.Y]
-				if ok && targetUnit.NameUser != client.Login {
-					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: activeGame.GetStat().Phase,
+				if ok && targetUnit.NameUser != client.GetGameID() {
+					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
 					fieldPipe <- createCoordinates
 				}
@@ -59,7 +59,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 			for i := 0; i < len(coordinates); i++ {
 				if !(coordinates[i].X == respawn.X && coordinates[i].Y == respawn.Y) {
-					var createCoordinates = FieldResponse{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].Login, X: coordinates[i].X, Y: coordinates[i].Y}
+					var createCoordinates = FieldResponse{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].GetLogin(), X: coordinates[i].X, Y: coordinates[i].Y}
 					fieldPipe <- createCoordinates
 				}
 			}

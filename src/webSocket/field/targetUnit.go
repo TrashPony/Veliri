@@ -7,9 +7,10 @@ import (
 )
 
 func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
-	unit, find := usersFieldWs[ws].Units[msg.X][msg.Y]
+
+	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client := usersFieldWs[ws]
-	activeGame := Games[client.GameID]
+	activeGame := Games[client.GetGameID()]
 
 	if find {
 		coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
@@ -22,7 +23,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 					game.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), activeGame.GetStat().Id)
 					unit.Target = &game.Coordinate{X: target.X, Y: target.Y}
 					passed = true
-					resp := FieldResponse{Event: msg.Event, UserName: client.Login}
+					resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
 					fieldPipe <- resp
 					break
 				}
@@ -30,11 +31,11 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 		}
 
 		if !passed {
-			resp := FieldResponse{Event: msg.Event, UserName: client.Login, Error: "not allow"}
+			resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "not allow"}
 			fieldPipe <- resp
 		}
 	} else {
-		resp := FieldResponse{Event: msg.Event, UserName: client.Login, Error: "unit not found"}
+		resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "unit not found"}
 		fieldPipe <- resp
 	}
 }

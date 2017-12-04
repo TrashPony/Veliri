@@ -24,17 +24,17 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 			if createError == nil {
 				activeGame.SetUnit(&unit)
 				client.updateWatchZone(activeGame)
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, PlayerPrice: price, X: unit.X, Y: unit.Y}
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), PlayerPrice: price, X: unit.X, Y: unit.Y}
 				fieldPipe <- resp
 
 				var unitsParameter InitUnit
-				unitsParameter.initUnit(&unit, client.Login)
+				unitsParameter.initUnit(&unit, client.GetLogin())
 			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
 				fieldPipe <- resp
 			}
 		} else {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not allow"}
 			fieldPipe <- resp
 		}
 	}

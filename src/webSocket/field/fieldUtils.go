@@ -6,16 +6,16 @@ import (
 	"log"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
+func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*game.Player) {
 	for ws, client := range *usersWs {
-		if client.Login == login {
+		if client.GetLogin() == login {
 			ws.Close()
 			println(login + " Уже был в соеденениях")
 		}
 	}
 }
 
-func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err error) {
+func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*game.Player, err error) {
 	log.Printf("error: %v", err)
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
@@ -33,11 +33,11 @@ func subtraction(slice1 []*game.Coordinate, slice2 []*game.Coordinate) (ab []gam
 	return ab
 }
 
-func ActionGameUser(players []*game.UserStat) (activeUser []*Clients) {
+func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
 	for _, clients := range usersFieldWs {
 		add := false
 		for _, userStat := range players {
-			if clients.Login == userStat.Name && clients.GameID == userStat.IdGame {
+			if clients.GetLogin() == userStat.Name && clients.GameID == userStat.IdGame {
 				add = true
 			}
 		}

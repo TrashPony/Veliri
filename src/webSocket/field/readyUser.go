@@ -8,8 +8,8 @@ import (
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
-	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].Id, msg.IdGame)
-	activeGame := Games[usersFieldWs[ws].GameID]
+	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].GetID(), msg.IdGame)
+	activeGame := Games[usersFieldWs[ws].GetGameID()]
 	players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
 	if phase != "" { // TODO
@@ -20,7 +20,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		attack(sortUnits, activeUser)
 
 		for _, client := range activeUser {
-			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
+			resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 		}
 
@@ -29,13 +29,13 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 
 	if err != nil {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Error: err.Error()}
+		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Error: err.Error()}
 		fieldPipe <- resp
 		return
 	}
 
-	if 0 == len(usersFieldWs[ws].Units) {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Error: "not units"}
+	if 0 == len(usersFieldWs[ws].GetUnits()) {
+		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Error: "not units"}
 		fieldPipe <- resp
 		// TODO добавить окончание игры
 		return
@@ -43,17 +43,17 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 
 	if phaseChange {
 		for _, client := range activeUser {
-			resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase}
+			resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: client.Login, Phase: phase, GameStep: activeGame.GetStat().Step + 1}
+				resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
 				activeGame.GetStat().Step += 1
 			}
 
-			for yLine := range client.Units { // TODO Нахера?
-				for _, unit := range client.Units[yLine] {
+			for yLine := range client.GetUnits() { // TODO Нахера?
+				for _, unit := range client.GetUnits()[yLine] {
 					unit.Action = true
 
 					if phase == "move" {
@@ -61,17 +61,17 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 					}
 
 					var unitsParameter InitUnit
-					unitsParameter.initUnit(unit, client.Login)
+					unitsParameter.initUnit(unit, client.GetLogin())
 				}
 			}
 		}
 	} else {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].Login, Phase: phase}
+		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Phase: phase}
 		fieldPipe <- resp
 	}
 }
 
-func attack(sortUnits []*game.Unit, activeUser []*Clients) {
+func attack(sortUnits []*game.Unit, activeUser []*game.Player) {
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
 			if unit.Target != nil {
@@ -97,10 +97,10 @@ func attack(sortUnits []*game.Unit, activeUser []*Clients) {
 	}
 }
 
-func attackSender(unit *game.Unit, activeUser []*Clients) {
+func attackSender(unit *game.Unit, activeUser []*game.Player) {
 
 	for _, client := range activeUser {
-		attackInfo := FieldResponse{Event: "Attack", UserName: client.Login, X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
+		attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
 		fieldPipe <- attackInfo
 	}
 
@@ -108,46 +108,46 @@ func attackSender(unit *game.Unit, activeUser []*Clients) {
 
 	for _, client := range activeUser {
 		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.Login)
+		unitsParameter.initUnit(unit, client.GetLogin())
 	}
 }
 
-func UpdateUnit(unit *game.Unit, activeUser []*Clients) {
+func UpdateUnit(unit *game.Unit, activeUser []*game.Player) {
 	for _, client := range activeUser {
-		if unit.NameUser == client.Login {
+		if unit.NameUser == client.GetLogin() {
 
-			client.addUnit(unit)
+			client.AddUnit(unit)
 
 			var unitsParameter InitUnit
-			unitsParameter.initUnit(unit, client.Login)
+			unitsParameter.initUnit(unit, client.GetLogin())
 
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
 			if ok {
-				client.addHostileUnit(unit)
+				client.AddHostileUnit(unit)
 				var unitsParameter InitUnit
-				unitsParameter.initUnit(unit, client.Login)
+				unitsParameter.initUnit(unit, client.GetLogin())
 			}
 		}
 	}
 }
 
-func DelUnit(unit *game.Unit, activeUser []*Clients) {
+func DelUnit(unit *game.Unit, activeUser []*game.Player) {
 	for _, client := range activeUser {
-		if unit.NameUser == client.Login {
-			_, ok := client.Units[unit.X][unit.Y]
+		if unit.NameUser == client.GetLogin() {
+			_, ok := client.GetUnit(unit.X, unit.Y)
 			if ok {
 				delete(client.Units[unit.X], unit.Y)
-				Games[client.GameID].DelUnit(unit)
+				Games[client.GetGameID()].DelUnit(unit)
 
-				openCoordinate(client.Login, unit.X, unit.Y)
-				client.updateWatchZone(Games[client.GameID])
+				openCoordinate(client.GetLogin(), unit.X, unit.Y)
+				client.updateWatchZone(Games[client.GetGameID()])
 			}
 		} else {
 			_, ok := client.HostileUnits[unit.X][unit.Y]
 			if ok {
 				delete(client.HostileUnits[unit.X], unit.Y)
-				openCoordinate(client.Login, unit.X, unit.Y)
+				openCoordinate(client.GetLogin(), unit.X, unit.Y)
 			}
 		}
 	}

@@ -18,28 +18,28 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 	structures := Game.GetStructure()
 
 	for _, userStat := range Game.GetPlayers() {
-		if userStat.Name == client.Login {
+		if userStat.Name == client.GetLogin() {
 
-			client.setRespawn(structures[userStat.RespX][userStat.RespY])
+			client.SetRespawn(structures[userStat.RespX][userStat.RespY])
 
-			var playersParam = FieldResponse{Event: "InitPlayer", UserName: client.Login, PlayerPrice: userStat.Price,
+			var playersParam = FieldResponse{Event: "InitPlayer", UserName: client.GetLogin(), PlayerPrice: userStat.Price,
 				GameStep: Game.GetStat().Step, GamePhase: Game.GetStat().Phase, UserReady: userStat.Ready}
 			fieldPipe <- playersParam // отправляет параметры игрока
 		}
 	}
 
-	var mapParam = FieldResponse{Event: "InitMap", UserName: client.Login, NameMap: Game.GetMap().Name, TypeMap: Game.GetMap().Type, XMap: Game.GetMap().Xsize, YMap: Game.GetMap().Ysize}
+	var mapParam = FieldResponse{Event: "InitMap", UserName: client.GetLogin(), NameMap: Game.GetMap().Name, TypeMap: Game.GetMap().Type, XMap: Game.GetMap().Xsize, YMap: Game.GetMap().Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
     for _, xline := range Game.GetMap().OneLayerMap {
     	for _, coordinate := range xline {
     		if coordinate.Type == "obstacle"{
-    			var obstacle = sendCoordinate{Event: "InitObstacle", UserName: client.Login, X: coordinate.X, Y: coordinate.Y}
+    			var obstacle = sendCoordinate{Event: "InitObstacle", UserName: client.GetLogin(), X: coordinate.X, Y: coordinate.Y}
 				coordiante <- obstacle
 			}
 		}
 	}
 
 	client.updateWatchZone(Game)
-	client.GameID = Game.GetStat().Id // добавляем принадлежность игрока в игре
+	client.SetGameID = Game.GetStat().Id // добавляем принадлежность игрока в игре
 }
