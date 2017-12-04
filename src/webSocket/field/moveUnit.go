@@ -16,7 +16,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 		if unit.Action {
 
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-			obstacles := getObstacles(client)
+			obstacles := game.GetObstacles(client, Games[client.GetGameID()])
 			moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
 
 			var passed bool
@@ -50,7 +50,7 @@ func InitMove(unit *game.Unit, msg FieldMessage, client *game.Player) {
 	toY := msg.ToY
 
 	for {
-		obstacles := getObstacles(client)
+		obstacles := game.GetObstacles(client, Games[idGame])
 
 		start := game.Coordinate{X: unit.X, Y: unit.Y}
 		end := game.Coordinate{X: toX, Y: toY}
@@ -154,67 +154,3 @@ func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, active
 	}
 }
 
-func getObstacles(client *game.Player) (obstaclesMatrix map[int]map[int]*game.Coordinate) { // TODO: это все очень странно
-	coordinates := make([]*game.Coordinate, 0)
-	obstaclesMatrix = make(map[int]map[int]*game.Coordinate)
-
-	// TODO переделать создание сразу в карту
-	for _, xLine := range client.GetUnits() {
-		for _, unit := range xLine {
-			var coordinate game.Coordinate
-			coordinate.X = unit.X
-			coordinate.Y = unit.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
-
-	for _, xLine := range client.GetHostileUnits() {
-		for _, unit := range xLine {
-			var coordinate game.Coordinate
-			coordinate.X = unit.X
-			coordinate.Y = unit.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
-
-	for _, xLine := range client.GetStructures() {
-		for _, structure := range xLine {
-			var coordinate game.Coordinate
-			coordinate.X = structure.X
-			coordinate.Y = structure.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
-
-	for _, xLine := range client.GetHostileStructures() {
-		for _, structure := range xLine {
-			var coordinate game.Coordinate
-			coordinate.X = structure.X
-			coordinate.Y = structure.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
-
-	for _, xLine := range Games[client.GetGameID()].GetMap().OneLayerMap {
-		for _, obstacles := range xLine {
-			if obstacles.Type == "obstacle" {
-				var coordinate game.Coordinate
-				coordinate.X = obstacles.X
-				coordinate.Y = obstacles.Y
-				coordinates = append(coordinates, &coordinate)
-			}
-		}
-	}
-
-
-	for _, obstacle := range coordinates{
-		if obstaclesMatrix[obstacle.X] != nil {
-			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
-		} else {
-			obstaclesMatrix[obstacle.X] = make(map[int]*game.Coordinate)
-			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
-		}
-	}
-
-	return
-}

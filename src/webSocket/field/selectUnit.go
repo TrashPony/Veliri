@@ -18,7 +18,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			if unit.Action {
 
 				coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-				obstacles := getObstacles(client)
+				obstacles := game.GetObstacles(client, activeGame)
 				moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
 
 				for i := 0; i < len(moveCoordinate); i++ {
