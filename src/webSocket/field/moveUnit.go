@@ -41,11 +41,11 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 							go updateWatchHostileUser(*client, &tmpUnit, msg.X, msg.Y, activeUser)
 						}
 
-						if i > 0 && i < len(pathNodes) - 2 {
+						if i > 0 && i < len(pathNodes) - 1 {
 							go updateWatchHostileUser(*client, &tmpUnit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
 						}
 
-						if i == len(pathNodes){
+						if i == len(pathNodes) - 1 {
 							unit, find := activeGame.GetUnit(tmpUnit.X, tmpUnit.Y)
 							if find {
 								go updateWatchHostileUser(*client, unit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
