@@ -141,7 +141,7 @@ func DelUnit(unit *game.Unit, activeUser []*game.Player) {
 				Games[client.GetGameID()].DelUnit(unit)
 
 				openCoordinate(client.GetLogin(), unit.X, unit.Y)
-				UpdateWatchZone(client, Games[client.GetGameID()])
+				UpdateWatchZone(client, Games[client.GetGameID()], nil)
 			}
 		} else {
 			_, ok := client.GetHostileUnit(unit.X, unit.Y)

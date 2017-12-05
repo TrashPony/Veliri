@@ -91,8 +91,15 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 	}
 }
 
+type UpdaterWatchZone struct {
+	CloseCoordinate []*Coordinate
+	OpenCoordinate  []*Coordinate
+	OpenUnit		[]*Unit
+	OpenStructure	[]*Structure
+}
+
 // отправляем открытые ячейки, удаляем закрытые
-func (client *Player) UpdateWatchZone(game *Game) (sendCloseCoordinate []*Coordinate, openCoordinate []*Coordinate, openUnit []*Unit, openStructure []*Structure) {
+func (client *Player) UpdateWatchZone(game *Game) (updaterWatchZone *UpdaterWatchZone) {
 
 	oldWatchZone := client.GetWatchCoordinates()
 	oldWatchHostileUnits := client.GetHostileUnits()
@@ -110,7 +117,12 @@ func (client *Player) UpdateWatchZone(game *Game) (sendCloseCoordinate []*Coordi
 	openUnit, closeUnit := updateHostileUnit(client, oldWatchHostileUnits)
 	openStructure, closeStructure := updateHostileStrcuture(client, oldWatchHostileStructure)
 
-	sendCloseCoordinate = parseCloseCoordinate(closeCoordinate, closeUnit, closeStructure, game)
+	sendCloseCoordinate := parseCloseCoordinate(closeCoordinate, closeUnit, closeStructure, game)
+
+	updaterWatchZone.CloseCoordinate = sendCloseCoordinate
+	updaterWatchZone.OpenCoordinate = openCoordinate
+	updaterWatchZone.OpenUnit = openUnit
+	updaterWatchZone.OpenStructure = openStructure
 
 	return
 }

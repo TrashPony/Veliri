@@ -1,5 +1,73 @@
 package game
 
+import (
+	"errors"
+)
+
+func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePath map[Coordinate]*UpdaterWatchZone, pathNodes []Coordinate) {
+	truePath = make(map[Coordinate]*UpdaterWatchZone)
+	pathNodes = make([]Coordinate,0)
+	idGame := client.GetGameID()
+
+	for {
+		obstacles := GetObstacles(client, game)
+
+		start := Coordinate{X: unit.X, Y: unit.Y}
+		end := Coordinate{X: toX, Y: toY}
+
+		mp := game.GetMap()
+
+		path := FindPath(mp, start, end, obstacles)
+		// создать пройденный путь
+		for _, pathNode := range path {
+
+			errorMove := Move(unit, pathNode, client, end, game)
+
+			if errorMove != nil && errorMove.Error() == "cell is busy" {
+				break
+			} else {
+				truePath[pathNode] = client.UpdateWatchZone(game)
+				pathNodes = append(pathNodes, pathNode)
+				// обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+			}
+		}
+
+		queue := MoveUnit(idGame, unit, end.X, end.Y)
+		unit.Queue = queue
+	}
+}
+
+func Move(unit *Unit, pathNode Coordinate, client *Player, end Coordinate, game *Game) (error) {
+
+		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
+			_, ok := client.GetHostileUnit(end.X,end.Y)
+			if ok {
+				unit.Action = false
+				return errors.New("end cell is busy")
+			}
+		} else {
+			_, ok := client.GetHostileUnit(pathNode.X, pathNode.Y)
+			if ok {
+				return errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
+			}
+		}
+
+		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
+			unit.Action = false
+		}
+
+		game.DelUnit(unit) // Удаляем юнита со старых позиций
+		client.DelUnit(unit.X, unit.Y)
+
+		unit.X = pathNode.X // даем новые координаты юниту
+		unit.Y = pathNode.Y
+
+		game.SetUnit(unit)
+		client.AddUnit(unit) // добавляем новую позицию юнита
+
+		return nil
+}
+
 
 
 func GetMoveCoordinate(radius []*Coordinate, unit *Unit, obstaclesMatrix map[int]map[int]*Coordinate) (res []*Coordinate) { // берет все соседние клетки от текущей

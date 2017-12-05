@@ -4,15 +4,18 @@ import (
 	"../../game"
 )
 
-func UpdateWatchZone(client *game.Player, activeGame *game.Game)  {
-	closeCoordinate, openCoordinate, openUnit, openStructure := client.UpdateWatchZone(activeGame)
+func UpdateWatchZone(client *game.Player, activeGame *game.Game, updaterWatchZone *game.UpdaterWatchZone)  {
+
+	if updaterWatchZone == nil {
+		updaterWatchZone = client.UpdateWatchZone(activeGame)
+	}
 
 	updateMyUnit(client)
 	updateMyStructure(client)
 
-	sendNewHostileUnit(openUnit, client.GetLogin())
-	sendNewHostileStructure(openStructure, client.GetLogin())
-	UpdateOpenCoordinate(openCoordinate, closeCoordinate, client.GetLogin())
+	sendNewHostileUnit(updaterWatchZone.OpenUnit, client.GetLogin())
+	sendNewHostileStructure(updaterWatchZone.OpenStructure, client.GetLogin())
+	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
 }
 
 func updateMyUnit(client *game.Player)  {

@@ -2,7 +2,6 @@ package field
 
 import (
 	"../../game"
-	"errors"
 	"github.com/gorilla/websocket"
 	"time"
 )
@@ -12,6 +11,9 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
+	activeGame, ok := Games[client.GetGameID()]
+	players := Games[client.GetGameID()].GetPlayers()
+	activeUser := ActionGameUser(players)
 	if find && ok {
 		if unit.Action {
 
@@ -24,7 +26,32 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
 					resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
 					fieldPipe <- resp
-					go InitMove(unit, msg, client)
+					truePath, pathNodes := game.InitMove(unit, msg.X, msg.Y, client, activeGame)
+					for i, pathNode := range pathNodes {
+
+						updateWatch, ok := truePath[pathNode]
+						if ok {
+							UpdateWatchZone(client, activeGame, updateWatch)
+							time.Sleep(200 * time.Millisecond)
+						}
+
+						tmpUnit := game.Unit{X: pathNode.X, Y: pathNode.Y}
+
+						if i == 0 {
+							go updateWatchHostileUser(*client, &tmpUnit, msg.X, msg.Y, activeUser)
+						}
+
+						if i > 0 && i < len(pathNodes) - 2 {
+							go updateWatchHostileUser(*client, &tmpUnit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
+						}
+
+						if i == len(pathNodes){
+							unit, find := activeGame.GetUnit(tmpUnit.X, tmpUnit.Y)
+							if find {
+								go updateWatchHostileUser(*client, unit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
+							}
+						}
+					}
 					passed = true
 				}
 			}
@@ -43,88 +70,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func InitMove(unit *game.Unit, msg FieldMessage, client *game.Player) {
-
-	idGame := client.GetGameID()
-	toX := msg.ToX
-	toY := msg.ToY
-
-	for {
-		obstacles := game.GetObstacles(client, Games[idGame])
-
-		start := game.Coordinate{X: unit.X, Y: unit.Y}
-		end := game.Coordinate{X: toX, Y: toY}
-
-		mp := Games[client.GetGameID()].GetMap()
-
-		path := game.FindPath(mp, start, end, obstacles)
-
-		x, y, errorMove := Move(unit, path, client, end)
-		if errorMove != nil {
-			if errorMove.Error() != "cell is busy" {
-				queue := game.MoveUnit(idGame, unit, x, y)
-				unit.Queue = queue
-				break
-			}
-		} else {
-			queue := game.MoveUnit(idGame, unit, x, y)
-			unit.Queue = queue
-			break
-		}
-	}
-}
-
-func Move(unit *game.Unit, path []game.Coordinate, client *game.Player, end game.Coordinate) (int, int, error) {
-
-	activeGame := Games[client.GetGameID()]
-	players := Games[client.GetGameID()].GetPlayers()
-	activeUser := ActionGameUser(players)
-
-	for _, pathNode := range path {
-		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-			_, ok := client.GetHostileUnit(end.X,end.Y)
-			if ok {
-				unit.Action = false
-				var unitsParameter InitUnit
-				unitsParameter.initUnit(unit, client.GetLogin())
-				return unit.X, unit.Y, errors.New("end cell is busy")
-			}
-		} else {
-			_, ok := client.GetHostileUnit(pathNode.X, pathNode.Y)
-			if ok {
-				return 0, 0, errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
-			}
-		}
-
-		activeGame.DelUnit(unit) // Удаляем юнита со старых позиций
-		client.DelUnit(unit.X, unit.Y)
-
-		x := unit.X
-		y := unit.Y
-
-		unit.X = pathNode.X
-		unit.Y = pathNode.Y
-
-		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-			unit.Action = false
-		}
-
-		activeGame.SetUnit(unit)
-		client.AddUnit(unit) // добавляем новую позицию юнита
-
-		UpdateWatchZone(client, activeGame)  // отправляем открытые ячейки, удаляем закрытые
-		go updateWatchHostileUser(*client, *unit, x, y, activeUser)  // добавляем и удаляем нашего юнита у врагов на карте
-
-		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.GetLogin()) // отсылаем новое место юнита
-
-		time.Sleep(200 * time.Millisecond)
-	}
-
-	return unit.X, unit.Y, nil
-}
-
-func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, activeUser []*game.Player) {
+func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activeUser []*game.Player) {
 	var unitsParameter InitUnit
 
 	for _, user := range activeUser {
@@ -147,10 +93,9 @@ func updateWatchHostileUser(client game.Player, unit game.Unit, x, y int, active
 
 			if okGetXY {                                 // если следующая клетка юнита в зоне видимости
 				user.DelWatchCoordinate(unit.X, unit.Y)  // удаляем пустую клетку
-				user.AddHostileUnit(&unit)               // и добавляем в общую карту вражеских юнитов
-				unitsParameter.initUnit(&unit, user.GetLogin())
+				user.AddHostileUnit(unit)               // и добавляем в общую карту вражеских юнитов
+				unitsParameter.initUnit(unit, user.GetLogin())
 			}
 		}
 	}
 }
-

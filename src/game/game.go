@@ -53,6 +53,11 @@ func (game *Game) GetUnits() (units map[int]map[int]*Unit) {
 	return game.units
 }
 
+func (game *Game) GetUnit(x,y int) (unit *Unit, find bool)  {
+	unit, find = game.units[x][y]
+	return
+}
+
 func (game *Game) GetPlayers() (Players []*UserStat) {
 	return game.players
 }
