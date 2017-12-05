@@ -8,6 +8,7 @@ func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePa
 	truePath = make(map[Coordinate]*UpdaterWatchZone)
 	pathNodes = make([]Coordinate,0)
 	idGame := client.GetGameID()
+	moveTrigger := true
 
 	for {
 		obstacles := GetObstacles(client, game)
@@ -18,22 +19,25 @@ func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePa
 		mp := game.GetMap()
 
 		path := FindPath(mp, start, end, obstacles)
-		// создать пройденный путь
+
 		for _, pathNode := range path {
 
 			errorMove := Move(unit, pathNode, client, end, game)
 
 			if errorMove != nil && errorMove.Error() == "cell is busy" {
+				moveTrigger = false
 				break
 			} else {
-				truePath[pathNode] = client.UpdateWatchZone(game)
-				pathNodes = append(pathNodes, pathNode)
-				// обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				truePath[pathNode] = client.UpdateWatchZone(game) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				pathNodes = append(pathNodes, pathNode)           // создать пройденный путь
 			}
 		}
 
-		queue := MoveUnit(idGame, unit, end.X, end.Y)
-		unit.Queue = queue
+		if moveTrigger {
+			queue := MoveUnit(idGame, unit, end.X, end.Y)
+			unit.Queue = queue
+			return
+		}
 	}
 }
 

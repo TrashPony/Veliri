@@ -22,35 +22,32 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
 
 			var passed bool
+
 			for _, coordinate := range moveCoordinate {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
+
 					resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
 					fieldPipe <- resp
-					truePath, pathNodes := game.InitMove(unit, msg.X, msg.Y, client, activeGame)
+
+					truePath, pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
+
 					for i, pathNode := range pathNodes {
-
 						updateWatch, ok := truePath[pathNode]
-						if ok {
+
+						unit.X = pathNode.X
+						unit.Y = pathNode.Y
+
+						if ok && i == 0 {
 							UpdateWatchZone(client, activeGame, updateWatch)
-							time.Sleep(200 * time.Millisecond)
+							go updateWatchHostileUser(*client, unit, msg.X, msg.Y, activeUser)
 						}
 
-						tmpUnit := game.Unit{X: pathNode.X, Y: pathNode.Y}
-
-						if i == 0 {
-							go updateWatchHostileUser(*client, &tmpUnit, msg.X, msg.Y, activeUser)
+						if ok && i > 0 {
+							UpdateWatchZone(client, activeGame, updateWatch)
+							go updateWatchHostileUser(*client, unit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
 						}
 
-						if i > 0 && i < len(pathNodes) - 1 {
-							go updateWatchHostileUser(*client, &tmpUnit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
-						}
-
-						if i == len(pathNodes) - 1 {
-							unit, find := activeGame.GetUnit(tmpUnit.X, tmpUnit.Y)
-							if find {
-								go updateWatchHostileUser(*client, unit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
-							}
-						}
+						time.Sleep(200 * time.Millisecond)
 					}
 					passed = true
 				}
@@ -82,7 +79,7 @@ func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activ
 				//coordinate, _ := activeGame.GetMap().GetCoordinate(x,y)
 				//if find {  TODO полностью инициализировать карту
 				coordinate := game.Coordinate{X: x, Y: y}
-				user.AddCoordinate(&coordinate) // добавлдяем на место старого места юнита пустую зону
+				user.AddCoordinate(&coordinate) // добавляем на место старого места юнита пустую зону
 				//}
 				user.DelHostileUnit(x,y) 		                   // и удаляем в общей карте вражеских юнитов
 				openCoordinate(user.GetLogin(), x, y)              // и остылаем событие удаление юнита

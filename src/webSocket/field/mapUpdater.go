@@ -12,7 +12,6 @@ func UpdateWatchZone(client *game.Player, activeGame *game.Game, updaterWatchZon
 
 	updateMyUnit(client)
 	updateMyStructure(client)
-
 	sendNewHostileUnit(updaterWatchZone.OpenUnit, client.GetLogin())
 	sendNewHostileStructure(updaterWatchZone.OpenStructure, client.GetLogin())
 	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
