@@ -31,11 +31,11 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 	var mapParam = FieldResponse{Event: "InitMap", UserName: client.GetLogin(), NameMap: Game.GetMap().Name, TypeMap: Game.GetMap().Type, XMap: Game.GetMap().Xsize, YMap: Game.GetMap().Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
-    for _, xline := range Game.GetMap().OneLayerMap {
-    	for _, coordinate := range xline {
-    		if coordinate.Type == "obstacle"{
-    			var obstacle = sendCoordinate{Event: "InitObstacle", UserName: client.GetLogin(), X: coordinate.X, Y: coordinate.Y}
-				coordiante <- obstacle
+    for _, xLine := range Game.GetMap().OneLayerMap {
+    	for _, obstacle := range xLine {
+    		if obstacle.Type == "obstacle"{
+    			var obstacleCoor = sendCoordinate{Event: "InitObstacle", UserName: client.GetLogin(), X: obstacle.X, Y: obstacle.Y}
+				coordinate <- obstacleCoor
 			}
 		}
 	}

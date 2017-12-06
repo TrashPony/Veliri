@@ -11,7 +11,7 @@ import (
 var fieldPipe = make(chan FieldResponse)
 var initUnit = make(chan InitUnit)
 var initStructure = make(chan InitStructure)
-var coordiante = make(chan sendCoordinate)
+var coordinate = make(chan sendCoordinate)
 
 var usersFieldWs = make(map[*websocket.Conn]*game.Player) // тут будут храниться наши подключения
 var Games = make(map[int]*game.Game)
@@ -132,7 +132,7 @@ func InitStructureSender()  {
 
 func CoordinateSender() {
 	for {
-		resp := <-coordiante
+		resp := <-coordinate
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName {

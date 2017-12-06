@@ -83,12 +83,12 @@ type sendCoordinate struct {
 
 func openCoordinate(login string, x, y int) {
 	resp := sendCoordinate{Event: "OpenCoordinate", UserName: login, X: x, Y: y}
-	coordiante <- resp
+	coordinate <- resp
 }
 
 func closeCoordinate(login string, x, y int) {
 	resp := sendCoordinate{Event: "DellCoordinate", UserName: login, X: x, Y: y}
-	coordiante <- resp
+	coordinate <- resp
 }
 
 type FieldMessage struct {
