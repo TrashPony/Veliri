@@ -29,15 +29,25 @@ func attack(activeGame *game.Game, activeUser []*game.Player, msg FieldMessage, 
 func attackSender(unit *game.Unit, activeUser []*game.Player) {
 
 	for _, client := range activeUser {
-		attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
-		fieldPipe <- attackInfo
+		_, ok := client.GetUnit(unit.X, unit.Y)
+		if ok {
+			attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
+			fieldPipe <- attackInfo
+		} else {
+			// TODO оповещение только об уроне
+			attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), ToX: unit.Target.X, ToY: unit.Target.Y}
+			fieldPipe <- attackInfo
+		}
 	}
 
 	time.Sleep(1000 * time.Millisecond)
 
 	for _, client := range activeUser {
-		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.GetLogin())
+		_, ok := client.GetUnit(unit.X, unit.Y)
+		if ok {
+			var unitsParameter InitUnit
+			unitsParameter.initUnit(unit, client.GetLogin())
+		}
 	}
 }
 
