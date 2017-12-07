@@ -37,7 +37,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		if activeGame.GetStat().Phase == "targeting" {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
-				targetUnit, ok := client.GetHostileStructure(coordinate.X,coordinate.Y)
+				targetUnit, ok := client.GetHostileUnit(coordinate.X,coordinate.Y)
 				if ok && targetUnit.NameUser != client.GetLogin() {
 					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
