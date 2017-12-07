@@ -4,9 +4,13 @@ import (
 	"sort"
 )
 
-func AttackPhase(Units map[int]map[int]*Unit) (resultBattle []ResultBattle) {
+func AttackPhase(game *Game, players []*Player) (resultBattle []ResultBattle) {
+
+	Units := game.GetUnits()
+
 	sortUnits := createQueueAttack(Units)
-	resultBattle = attack(sortUnits)
+	resultBattle = attack(sortUnits, game, players)
+
 	return
 }
 
@@ -16,10 +20,8 @@ type ResultBattle struct {
 	Delete bool
 }
 
-func attack(sortUnits []*Unit) (resultBattle []ResultBattle) {
+func attack(sortUnits []*Unit, game *Game, players []*Player) (resultBattle []ResultBattle) {
 	resultBattle = make([]ResultBattle, 0)
-
-// TODO добавить обьект оповещения боя
 
 	for _, unit := range sortUnits {
 		if unit.Hp > 0 {
@@ -32,6 +34,12 @@ func attack(sortUnits []*Unit) (resultBattle []ResultBattle) {
 						deleteUnit := false
 						if sortUnits[i].Hp <= 0 {
 							dbDelUnit(sortUnits[i].Id)
+							game.DelUnit(sortUnits[i])
+
+							for _, player := range players {
+								player.DelUnit(sortUnits[i].X, sortUnits[i].Y)
+							}
+
 							deleteUnit = true
 						} else {
 							dbUpdateHpUnit(sortUnits[i].Id, sortUnits[i].Hp)
@@ -43,6 +51,7 @@ func attack(sortUnits []*Unit) (resultBattle []ResultBattle) {
 				}
 			}
 		}
+
 		dbUpdateTargetUnit(unit.Id)
 		unit.Target = nil
 		unit.Queue = 0

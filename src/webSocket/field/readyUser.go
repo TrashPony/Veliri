@@ -3,7 +3,6 @@ package field
 import (
 	"../../game"
 	"github.com/gorilla/websocket"
-	"time"
 )
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
@@ -13,26 +12,14 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	activeGame := Games[client.GetGameID()]
 	players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
+
 	if phase != "" { // TODO
 		activeGame.GetStat().Phase = phase
 	}
 
 	if phase == "attack" {
-		resultBattle := game.AttackPhase(activeGame.GetUnits())
 
-		for _, player := range activeUser {
-			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
-			fieldPipe <- resp
-		}
-
-		for _, attack := range resultBattle {
-			attackSender(&attack.AttackUnit, activeUser)
-			if attack.Delete {
-				DelUnit(&attack.TargetUnit, activeUser)
-			} else {
-				UpdateUnit(&attack.TargetUnit, activeUser)
-			}
-		}
+		attack(activeGame, activeUser, msg, phase)
 
 		phaseChange = true
 		phase, _ = game.PhaseСhange(msg.IdGame)
@@ -81,60 +68,3 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-
-
-func attackSender(unit *game.Unit, activeUser []*game.Player) {
-
-	for _, client := range activeUser {
-		attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
-		fieldPipe <- attackInfo
-	}
-
-	time.Sleep(2000 * time.Millisecond)
-
-	for _, client := range activeUser {
-		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.GetLogin())
-	}
-}
-
-func UpdateUnit(unit *game.Unit, activeUser []*game.Player) {
-	for _, client := range activeUser {
-		if unit.NameUser == client.GetLogin() {
-
-			client.AddUnit(unit)
-
-			var unitsParameter InitUnit
-			unitsParameter.initUnit(unit, client.GetLogin())
-
-		} else {
-			_, ok := client.GetHostileUnit(unit.X, unit.Y)
-			if ok {
-				client.AddHostileUnit(unit)
-				var unitsParameter InitUnit
-				unitsParameter.initUnit(unit, client.GetLogin())
-			}
-		}
-	}
-}
-
-func DelUnit(unit *game.Unit, activeUser []*game.Player) {
-	for _, client := range activeUser {
-		if unit.NameUser == client.GetLogin() {
-			_, ok := client.GetUnit(unit.X, unit.Y)
-			if ok {
-				client.DelUnit(unit.X, unit.Y)
-				Games[client.GetGameID()].DelUnit(unit)
-
-				openCoordinate(client.GetLogin(), unit.X, unit.Y)
-				UpdateWatchZone(client, Games[client.GetGameID()], nil)
-			}
-		} else {
-			_, ok := client.GetHostileUnit(unit.X, unit.Y)
-			if ok {
-				client.DelUnit(unit.X, unit.Y)
-				openCoordinate(client.GetLogin(), unit.X, unit.Y)
-			}
-		}
-	}
-}
