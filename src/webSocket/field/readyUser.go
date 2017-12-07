@@ -9,19 +9,29 @@ import (
 func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
 	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].GetID(), msg.IdGame)
-	activeGame := Games[usersFieldWs[ws].GetGameID()]
+	client := usersFieldWs[ws]
+	activeGame := Games[client.GetGameID()]
 	players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
 	if phase != "" { // TODO
 		activeGame.GetStat().Phase = phase
 	}
-	if phase == "attack" {
-		sortUnits := game.AttackPhase(activeGame.GetUnits())
-		attack(sortUnits, activeUser)
 
-		for _, client := range activeUser {
-			resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase}
+	if phase == "attack" {
+		resultBattle := game.AttackPhase(activeGame.GetUnits())
+
+		for _, player := range activeUser {
+			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp
+		}
+
+		for _, attack := range resultBattle {
+			attackSender(&attack.AttackUnit, activeUser)
+			if attack.Delete {
+				DelUnit(&attack.TargetUnit, activeUser)
+			} else {
+				UpdateUnit(&attack.TargetUnit, activeUser)
+			}
 		}
 
 		phaseChange = true
@@ -29,31 +39,31 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 
 	if err != nil {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Error: err.Error()}
+		resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: err.Error()}
 		fieldPipe <- resp
 		return
 	}
 
 	if 0 == len(usersFieldWs[ws].GetUnits()) {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Error: "not units"}
+		resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "not units"}
 		fieldPipe <- resp
 		// TODO добавить окончание игры
 		return
 	}
 
 	if phaseChange {
-		for _, client := range activeUser {
-			resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase}
+		for _, player := range activeUser {
+			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
+				resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
 				activeGame.GetStat().Step += 1
 			}
 
-			for yLine := range client.GetUnits() { // TODO Нахера?
-				for _, unit := range client.GetUnits()[yLine] {
+			for yLine := range player.GetUnits() { // TODO Нахера?
+				for _, unit := range player.GetUnits()[yLine] {
 					unit.Action = true
 
 					if phase == "move" {
@@ -61,7 +71,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 					}
 
 					var unitsParameter InitUnit
-					unitsParameter.initUnit(unit, client.GetLogin())
+					unitsParameter.initUnit(unit, player.GetLogin())
 				}
 			}
 		}
@@ -71,31 +81,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func attack(sortUnits []*game.Unit, activeUser []*game.Player) {
-	for _, unit := range sortUnits {
-		if unit.Hp > 0 {
-			if unit.Target != nil {
-				for i, target := range sortUnits {
-					if target.X == unit.Target.X && target.Y == unit.Target.Y {
-						sortUnits[i].Hp = target.Hp - unit.Damage
-						if sortUnits[i].Hp <= 0 {
-							game.DelUnit(sortUnits[i].Id)
-							attackSender(unit, activeUser)
-							DelUnit(sortUnits[i], activeUser)
-						} else {
-							game.UpdateUnit(sortUnits[i].Id, sortUnits[i].Hp)
-							attackSender(unit, activeUser)
-							UpdateUnit(sortUnits[i], activeUser)
-						}
-					}
-				}
-			}
-		}
-		game.UpdateTarget(unit.Id)
-		unit.Target = nil
-		unit.Queue = 0
-	}
-}
+
 
 func attackSender(unit *game.Unit, activeUser []*game.Player) {
 
