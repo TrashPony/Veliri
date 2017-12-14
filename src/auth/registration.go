@@ -5,46 +5,61 @@ import (
 	"net/http"
 	"html/template"
 	"encoding/json"
-	"errors"
 )
+
+type response struct  {
+	Success bool	 `json:"success"`
+	Error   string	 `json:"error"`
+}
 
 func Registration(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("src/static/registration/registration.html")
 		t.Execute(w, nil)
-	} else {
+	}
+	if r.Method == "POST" {
 		r.ParseForm()
 		// берем из формы вбитые значения
-		login	 := r.Form.Get("username")
+		login := r.Form.Get("username")
+		email := r.Form.Get("email")
 		password := r.Form.Get("password")
-		confirm  := r.Form.Get("confirm_password")
-		email    := r.Form.Get("email")
+		confirm := r.Form.Get("confirm_password")
 
-		if confirm == password{
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-			checkLogin := checkAvailableLogin(login)
-			checkEmail := checkAvailableEmail(email)
-
-			if checkLogin && checkEmail {
-				SuccessRegistration(login, email, password)
-			} else {
-				if !checkLogin {
-					err := errors.New("login busy") // error "этот логин уже занят"
-					json.NewEncoder(w).Encode(err)
-				}
-				if !checkEmail {
-					err := errors.New("email busy") //error "этот e-mail уже занят"
-					json.NewEncoder(w).Encode(err)
-				}
-			}
+		if login == "" || email == "" || password == "" || confirm == "" {
+			resp := response{Success: false, Error: "form is empty"}
+			json.NewEncoder(w).Encode(resp)
 		} else {
-			err := errors.New("password error") //error "пароли не совпадают"
-			json.NewEncoder(w).Encode(err)
+			if confirm == password {
+
+				checkLogin := checkAvailableLogin(login)
+				checkEmail := checkAvailableEmail(email)
+
+				if checkLogin && checkEmail {
+					//SuccessRegistration(login, email, password)
+					resp := response{Success: true, Error: ""}
+					json.NewEncoder(w).Encode(resp)
+				} else {
+					if !checkLogin {
+						resp := response{Success: false, Error: "login busy"} // error "этот логин уже занят"
+						json.NewEncoder(w).Encode(resp)
+					}
+					if !checkEmail {
+						resp := response{Success: false, Error: "email busy"}
+						json.NewEncoder(w).Encode(resp)
+					}
+				}
+			} else {
+				resp := response{Success: false, Error: "password error"}
+				json.NewEncoder(w).Encode(resp)
+			}
 		}
 	}
 }
 
 func checkAvailableLogin(login string)(checkLogin bool)  {
+	// TODO неверно делает сравнение
 
 	user := lobby.GetUsers("WHERE name='" + login + "'")
 

@@ -3,19 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script>
+        function UserAction() {
+            var form = document.getElementById("formNewUser");
+            var formData = new FormData(form);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "http://" + window.location.host + "/registration", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(formData);
+
+            xhttp.onreadystatechange = function() {//Вызывает функцию при смене состояния.
+                if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
+                    var response = JSON.parse(xhttp.responseText);
+                    console.log(response.success + " " + response.error)
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-
-<form action="/registration" method="post">
+<iframe name="iframe1" style="position: absolute; left: -9999px;"></iframe>
+<form method="POST" id="formNewUser" target="iframe1">
 
     Логин:              <input type="text" name="username"> <br>
     Почта:              <input type="text" name="email"> <br>
     Пароль:             <input type="password" name="password"> <br>
     Подтвердите пароль: <input type="password" name="confirm_password"> <br>
 
-    <input type="submit" value="Login">
+    <input type="submit" value="Регистрация" onclick="UserAction()">
 
 </form>
-
 </body>
 </html>
