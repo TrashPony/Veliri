@@ -13,6 +13,7 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", auth.Login)                    // если заходят на /login то отрабатывает функция auth.Login
+	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
