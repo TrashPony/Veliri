@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"github.com/gorilla/sessions"
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -30,16 +30,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		r.ParseForm()
 		// берем из формы вбитые значения
+
+		r.ParseMultipartForm(0)
+		fmt.Println(r.FormValue("username"))
+
 		userName := r.Form.Get("username")
 		password := r.Form.Get("password")
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
 		user := lobby.GetUsers("WHERE name='" + userName + "' AND password='" + password + "'")
-		b, _ := ioutil.ReadAll(r.Body)
-		var msg message
-		json.Unmarshal(b, &msg)
 
-		println(userName, password)
-		println(b)
 		if user.Id != 0 && user.Name != "" {
 			//отправляет пользователя на получение токена подключения
 			GetCookie(w, r, user)

@@ -7,9 +7,9 @@
             var formData = new FormData(form);
 
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "http://" + window.location.host + "/login", true);
+            xhttp.open("POST", "http://642e0559eb9c.sn.mynetname.net:8080/login", true);
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(formData);
+            xhttp.send(form);
 
             xhttp.onreadystatechange = function() {//Вызывает функцию при смене состояния.
                 if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
