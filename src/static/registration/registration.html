@@ -33,7 +33,7 @@
                 // Далее будем использовать только JSON из тела ответа.
                 return response.json();
             }).then(function(data) {
-                ReadResponse(data)
+                ReadResponse(data, formData)
             }).catch(function(error) {
                 console.log(error)
             });

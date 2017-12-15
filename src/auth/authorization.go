@@ -34,10 +34,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
-		user := lobby.GetUsers("WHERE name='" + msg.Login + "' AND password='" + msg.Password + "'")
 
-		if user.Id != 0 && user.Name != "" {
+
+		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
+		user := lobby.GetUsers("WHERE name='" + msg.Login + "'")
+
+		passed := CheckPasswordHash(msg.Login, msg.Password, user.Password)
+
+		if passed {
 			//отправляет пользователя на получение токена подключения
 			GetCookie(w, r, user)
 		} else {

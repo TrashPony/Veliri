@@ -42,7 +42,7 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 				checkEmail := checkAvailableEmail(msg.Email)
 
 				if checkLogin && checkEmail {
-					//SuccessRegistration(login, email, password)
+					SuccessRegistration(msg.Login, msg.Email, msg.Password)
 					resp := response{Success: true, Error: ""}
 					json.NewEncoder(w).Encode(resp)
 				} else {
@@ -91,5 +91,9 @@ func checkAvailableEmail(email string)(checkEmail bool)  {
 }
 
 func SuccessRegistration(login, email, password string)  {
-	lobby.CreateUser(login, email, password)
+	hashPassword, err := HashPassword(login, password)
+	if err != nil {
+		panic(err)
+	}
+	lobby.CreateUser(login, email, hashPassword)
 }
