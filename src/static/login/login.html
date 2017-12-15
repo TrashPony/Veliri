@@ -3,11 +3,11 @@
     <title></title>
     <script>
         function UserLogin() {
-            var form = document.getElementById("formNewUser");
+            var form = document.getElementById("login");
             var formData = new FormData(form);
 
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "http://" + window.location.host + "/registration", true);
+            xhttp.open("POST", "http://" + window.location.host + "/login", true);
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send(formData);
 
@@ -35,8 +35,7 @@
 </head>
 
 <body>
-<iframe name="iframe1" style="position: absolute; left: -9999px;"></iframe>
-<form method="POST" id="login" target="iframe1">
+<form method="POST" id="login" onsubmit="return false;">
     <table align="center">
         <tr>
             <td> Логин: </td>
@@ -50,7 +49,7 @@
             <td> <input type="submit" value="Login" onclick="UserLogin()"> </td>
         </tr>
         <tr>
-            <div id="error"></div>
+            <td> <div id="error"></div> </td>
         </tr>
     </table>
 </form>

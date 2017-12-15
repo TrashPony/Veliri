@@ -12,6 +12,13 @@ type response struct  {
 	Error   string	 `json:"error"`
 }
 
+type message struct {
+	Login string `json:"username"`
+	Email string `json:"email"`
+	Password string `json:"password"`
+	Confirm string `json:"confirm_password"`
+}
+
 func Registration(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("src/static/registration/registration.html")
