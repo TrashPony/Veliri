@@ -1,14 +1,58 @@
 <html>
 <head>
     <title></title>
+    <script>
+        function UserLogin() {
+            var form = document.getElementById("formNewUser");
+            var formData = new FormData(form);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "http://" + window.location.host + "/registration", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(formData);
+
+            xhttp.onreadystatechange = function() {//Вызывает функцию при смене состояния.
+                if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
+                    var response = JSON.parse(xhttp.responseText);
+                    ReadResponse(response);
+                }
+            }
+        }
+
+        function ReadResponse(response) {
+            console.log(response.success + " " + response.error);
+            if (response.success) {
+                location.href = "../../lobby"
+            } else {
+                var errorDiv = document.getElementById("error");
+
+                if (response.error === "not allow") {
+                    errorDiv.innerHTML = "Не верный логин либо пароль"
+                }
+            }
+        }
+    </script>
 </head>
+
 <body>
-
-<form action="/login" method="post">
-    Username:<input type="text" name="username"> <br>
-    Password:<input type="password" name="password"> <br>
-    <input type="submit" value="Login"> <br>
+<iframe name="iframe1" style="position: absolute; left: -9999px;"></iframe>
+<form method="POST" id="login" target="iframe1">
+    <table align="center">
+        <tr>
+            <td> Логин: </td>
+            <td> <input type="text" name="username"> </td>
+        </tr>
+        <tr>
+            <td> Пароль: </td>
+            <td> <input type="password" name="password"> </td>
+        </tr>
+        <tr>
+            <td> <input type="submit" value="Login" onclick="UserLogin()"> </td>
+        </tr>
+        <tr>
+            <div id="error"></div>
+        </tr>
+    </table>
 </form>
-
 </body>
 </html>

@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"github.com/gorilla/sessions"
+	"encoding/json"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -36,6 +37,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			//отправляет пользователя на получение токена подключения
 			GetCookie(w, r, user)
 		} else {
+			resp := response{Success: false, Error: "not allow"}
+			json.NewEncoder(w).Encode(resp)
 			println("Соеденение не разрешено: не авторизован")
 		}
 	}
@@ -55,7 +58,11 @@ func GetCookie(w http.ResponseWriter, r *http.Request, user lobby.User) {
 
 	//возвращает ответ с сохранение сессии в браузере
 	err = cookieStore.Save(r, w, ses)
-	http.Redirect(w, r, "http://642e0559eb9c.sn.mynetname.net:8080/lobby/", 302)
+
+	//http.Redirect(w, r, "http://642e0559eb9c.sn.mynetname.net:8080/lobby/", 302)
+
+	resp := response{Success: true, Error: ""}
+	json.NewEncoder(w).Encode(resp)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
