@@ -16,7 +16,7 @@ type message struct {
 	Login string `json:"username"`
 	Email string `json:"email"`
 	Password string `json:"password"`
-	Confirm string `json:"confirm_password"`
+	Confirm string `json:"confirm"`
 }
 
 func Registration(w http.ResponseWriter, r *http.Request) {
@@ -25,23 +25,21 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	}
 	if r.Method == "POST" {
-		r.ParseForm()
-		// берем из формы вбитые значения
-		login := r.Form.Get("username")
-		email := r.Form.Get("email")
-		password := r.Form.Get("password")
-		confirm := r.Form.Get("confirm_password")
+		decoder := json.NewDecoder(r.Body)
+		var msg message
+		err := decoder.Decode(&msg)
+		if err != nil {
+			panic(err)
+		}
 
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-		if login == "" || email == "" || password == "" || confirm == "" {
+		if msg.Login == "" || msg.Email == "" || msg.Password == "" || msg.Confirm == "" {
 			resp := response{Success: false, Error: "form is empty"}
 			json.NewEncoder(w).Encode(resp)
 		} else {
-			if confirm == password {
+			if msg.Password == msg.Confirm {
 
-				checkLogin := checkAvailableLogin(login)
-				checkEmail := checkAvailableEmail(email)
+				checkLogin := checkAvailableLogin(msg.Login)
+				checkEmail := checkAvailableEmail(msg.Email)
 
 				if checkLogin && checkEmail {
 					//SuccessRegistration(login, email, password)

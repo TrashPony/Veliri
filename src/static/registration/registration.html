@@ -8,39 +8,66 @@
             var form = document.getElementById("formNewUser");
             var formData = new FormData(form);
 
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "http://" + window.location.host + "/registration", true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(formData);
-
-            xhttp.onreadystatechange = function() {//Вызывает функцию при смене состояния.
-                if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
-                    var response = JSON.parse(xhttp.responseText);
-                    ReadResponse(response, formData);
+            fetch('http://' + window.location.host + '/registration',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: "same-origin",
+                        body: JSON.stringify({
+                            username: formData.get("username"),
+                            email: formData.get("email"),
+                            password: formData.get("password"),
+                            confirm: formData.get("confirm")
+                        })
+                    }).then(function(response) {
+                // Стоит проверить код ответа.
+                if (!response.ok) {
+                    // Сервер вернул код ответа за границами диапазона [200, 299]
+                    return Promise.reject(new Error(
+                            'Response failed: ' + response.status + ' (' + response.statusText + ')'
+                    ));
                 }
-            }
+
+                // Далее будем использовать только JSON из тела ответа.
+                return response.json();
+            }).then(function(data) {
+                ReadResponse(data)
+            }).catch(function(error) {
+                console.log(error)
+            });
         }
 
         function ReadResponse(response, formData) {
             console.log(response.success + " " + response.error);
             if (response.success) {
-
-                var xhttp = new XMLHttpRequest();
-                xhttp.open("POST", "http://" + window.location.host + "/login", true);
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.send(formData);
-                var responseLogin = JSON.parse(xhttp.responseText);
-
-                if (responseLogin) {
+                fetch('http://' + window.location.host + '/login',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: "same-origin",
+                            body: JSON.stringify({
+                                username: formData.get("username"),
+                                password: formData.get("password")
+                            })
+                        }).then(function(response) {
+                    if (!response.ok) {
+                        return Promise.reject(new Error(
+                                'Response failed: ' + response.status + ' (' + response.statusText + ')'
+                        ));
+                    }
+                    return response.json();
+                }).then(function() {
                     var button = document.getElementById("button");
                     button.value = "Перейти в лобби";
                     button.onclick = function () {
                         location.href = "../../lobby"
                     }
-                }
-
+                });
             } else {
-
                 var errorDiv = document.getElementById("error");
 
                 if (response.error === "form is empty") {
@@ -62,7 +89,7 @@
 <body>
 <iframe name="iframe1" style="position: absolute; left: -9999px;"></iframe>
 
-<form method="POST" id="formNewUser" target="iframe1">
+<form method="POST" id="formNewUser" onsubmit="return false;">
 
     <table align="center">
         <tr>
@@ -79,7 +106,7 @@
         </tr>
         <tr>
             <td> Подтвердите пароль: </td>
-            <td> <input type="password" name="confirm_password"> </td>
+            <td> <input type="password" name="confirm"> </td>
         </tr>
         <tr>
             <td> <input id="button" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
