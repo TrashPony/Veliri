@@ -1,73 +1,29 @@
 <html>
 <head>
-    <title></title>
-    <script>
-        function UserLogin() {
-            var form = document.getElementById("login");
-            var formData = new FormData(form);
-
-            fetch('http://' + window.location.host + '/login',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: "same-origin",
-                body: JSON.stringify({
-                    username: formData.get("username"),
-                    password: formData.get("password")
-                })
-            }).then(function(response) {
-                // Стоит проверить код ответа.
-                if (!response.ok) {
-                    // Сервер вернул код ответа за границами диапазона [200, 299]
-                    return Promise.reject(new Error(
-                            'Response failed: ' + response.status + ' (' + response.statusText + ')'
-                    ));
-                }
-
-                // Далее будем использовать только JSON из тела ответа.
-                return response.json();
-            }).then(function(data) {
-                ReadResponse(data)
-            }).catch(function(error) {
-                console.log(error)
-            });
-        }
-
-        function ReadResponse(response) {
-            console.log(response.success + " " + response.error);
-            if (response.success) {
-                location.href = "../../lobby"
-            } else {
-                var errorDiv = document.getElementById("error");
-
-                if (response.error === "not allow") {
-                    errorDiv.innerHTML = "Не верный логин либо пароль"
-                }
-            }
-        }
-    </script>
+    <title>Login</title>
+    <link href="../css/login.css" rel="stylesheet">
+    <script src="../js/auth/login.js"></script>
 </head>
 
 <body>
+<div align="center">
 <form method="POST" id="login" onsubmit="return false;">
-    <table align="center">
+    <table id="loginTable">
         <tr>
-            <td> Логин: </td>
-            <td> <input type="text" name="username"> </td>
+            <th> Окно Логина </th>
         </tr>
         <tr>
-            <td> Пароль: </td>
-            <td> <input type="password" name="password"> </td>
+            <td> <input type="text" name="username" value="Login"> </td>
         </tr>
         <tr>
-            <td> <input type="submit" value="Login" onclick="UserLogin()"> </td>
+            <td> <input type="password" name="password" value="password"> </td>
         </tr>
-        <tr>
-            <td> <div id="error"></div> </td>
+        <tr id="buttonCell">
+            <td> <input type="submit" value="Login" id="loginButton" onclick="UserLogin()"> </td>
         </tr>
     </table>
+    <div id="error"></div>
 </form>
+</div>
 </body>
 </html>

@@ -3,120 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script>
-        function UserRegistration() {
-            var form = document.getElementById("formNewUser");
-            var formData = new FormData(form);
-
-            fetch('http://' + window.location.host + '/registration',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        credentials: "same-origin",
-                        body: JSON.stringify({
-                            username: formData.get("username"),
-                            email: formData.get("email"),
-                            password: formData.get("password"),
-                            confirm: formData.get("confirm")
-                        })
-                    }).then(function(response) {
-                // Стоит проверить код ответа.
-                if (!response.ok) {
-                    // Сервер вернул код ответа за границами диапазона [200, 299]
-                    return Promise.reject(new Error(
-                            'Response failed: ' + response.status + ' (' + response.statusText + ')'
-                    ));
-                }
-
-                // Далее будем использовать только JSON из тела ответа.
-                return response.json();
-            }).then(function(data) {
-                ReadResponse(data, formData)
-            }).catch(function(error) {
-                console.log(error)
-            });
-        }
-
-        function ReadResponse(response, formData) {
-            console.log(response.success + " " + response.error);
-            if (response.success) {
-                fetch('http://' + window.location.host + '/login',
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            credentials: "same-origin",
-                            body: JSON.stringify({
-                                username: formData.get("username"),
-                                password: formData.get("password")
-                            })
-                        }).then(function(response) {
-                    if (!response.ok) {
-                        return Promise.reject(new Error(
-                                'Response failed: ' + response.status + ' (' + response.statusText + ')'
-                        ));
-                    }
-                    return response.json();
-                }).then(function() {
-                    var button = document.getElementById("button");
-                    button.value = "Перейти в лобби";
-                    button.onclick = function () {
-                        location.href = "../../lobby"
-                    }
-                });
-            } else {
-                var errorDiv = document.getElementById("error");
-
-                if (response.error === "form is empty") {
-                    errorDiv.innerHTML = "Не все формы заполнены"
-                }
-                if (response.error === "login busy") {
-                    errorDiv.innerHTML = "Этот логин уже занят"
-                }
-                if (response.error === "email busy") {
-                    errorDiv.innerHTML = "Эта почта уже используется"
-                }
-                if (response.error === "password error") {
-                    errorDiv.innerHTML = "Пароли не совпадают"
-                }
-            }
-        }
-    </script>
+    <link href="../css/registration.css" rel="stylesheet">
+    <script src="../js/auth/registration.js"></script>
 </head>
 <body>
 <iframe name="iframe1" style="position: absolute; left: -9999px;"></iframe>
 
 <form method="POST" id="formNewUser" onsubmit="return false;">
-
-    <table align="center">
+<div align="center">
+    <table id="regTable" align="center">
         <tr>
-            <td> Логин: </td>
-            <td> <input type="text" name="username"> </td>
+            <th colspan="2"> Регистрация </th>
         </tr>
         <tr>
-            <td> Почта: </td>
-            <td> <input type="text" name="email"> </td>
+            <td align="right"> Логин: </td>
+            <td> <input type="text" name="username" value="Login"> </td>
         </tr>
         <tr>
-            <td> Пароль: </td>
-            <td> <input type="password" name="password"> </td>
+            <td align="right"> Почта: </td>
+            <td> <input type="text" name="email" value="E-mail"> </td>
         </tr>
         <tr>
-            <td> Подтвердите пароль: </td>
-            <td> <input type="password" name="confirm"> </td>
+            <td align="right"> Пароль: </td>
+            <td> <input type="password" name="password" value="password"> </td>
         </tr>
         <tr>
-            <td> <input id="button" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
+            <td align="right"> Подтвердите пароль: </td>
+            <td> <input type="password" name="confirm" value="password"> </td>
         </tr>
-        <tr>
-            <td> <div id="error"></div> </td>
+        <tr id="buttonCell">
+            <td colspan="2"> <input id="regButton" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
         </tr>
     </table>
-
+    <div id="error"></div>
+</div>
 </form>
-
 </body>
 </html>
