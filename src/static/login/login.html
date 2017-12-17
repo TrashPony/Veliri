@@ -1,6 +1,8 @@
 <html>
 <head>
     <title>Login</title>
+    <link href="../css/all.css" rel="stylesheet">
+    <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/login.css" rel="stylesheet">
     <script src="../js/auth/login.js"></script>
 </head>
@@ -8,7 +10,7 @@
 <body>
 <div align="center">
 <form method="POST" id="login" onsubmit="return false;">
-    <table id="loginTable">
+    <table class="animateTable">
         <tr>
             <th> Окно Логина </th>
         </tr>
@@ -19,10 +21,10 @@
             <td> <input type="password" name="password" value="password"> </td>
         </tr>
         <tr id="buttonCell">
-            <td> <input type="submit" value="Login" id="loginButton" onclick="UserLogin()"> </td>
+            <td> <input type="submit" value="Login" class="button" onclick="UserLogin()"> </td>
         </tr>
     </table>
-    <div id="error"></div>
+    <div class="error"></div>
 </form>
 </div>
 </body>

@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link href="../css/all.css" rel="stylesheet">
+    <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/lobby.css" rel="stylesheet">
     <title>Veliri</title>
     <script src="../js/Lobby/Lobby.js"></script>
@@ -10,13 +12,13 @@
 
 
 </head>
-<body>
-<div align="center">
+<body align="center" >
+<div id="main">
     <div id="lobby" align="left">
         <div class="NotGameLobby">
         <div class="Games" id="Games list">  Игры: </div>
         Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
-        <input type="button" value="Создать Игру" onclick="sendMapSelection()"> <p>
+        <input type="button" value="Создать Игру" class="button" onclick="sendMapSelection()"> <p>
         <div id="Games"></div>
         <div class="DontEndGame" id="DontEndGame"></div>
         </div>
@@ -24,7 +26,7 @@
     <div id="info" align="left">
         <div id="logout">
             <div id="login">Вы зашли как: </div>
-            <input type="button" value="Logout" onclick="Logout()">
+            <input type="button" class="button" value="Logout" onclick="Logout()">
         </div> <p>
         <div id="SelectInfo">
         </div>

@@ -1,12 +1,21 @@
 body{
-
+    background-color: #4c4c4c;
 }
+
+#main {
+    display:inline-block;
+    width: auto;
+}
+
 #lobby {
     padding: 5px;
     border: 1px solid #53b7c4;
     display:inline-block;
     width: 400px;
     height: 425px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    animation: menuAnimation 15000ms linear infinite;
 }
 #logout {
     padding: 5px;
@@ -26,6 +35,9 @@ body{
     border: 1px solid #53b7c4;
     width: 200px;
     height: 425px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    animation: menuAnimation 3000ms linear infinite;
 }
 
 #infoImage {

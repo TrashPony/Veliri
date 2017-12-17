@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="../css/all.css" rel="stylesheet">
+    <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/registration.css" rel="stylesheet">
     <script src="../js/auth/registration.js"></script>
 </head>
@@ -11,7 +13,7 @@
 
 <form method="POST" id="formNewUser" onsubmit="return false;">
 <div align="center">
-    <table id="regTable" align="center">
+    <table class="animateTable" align="center" >
         <tr>
             <th colspan="2"> Регистрация </th>
         </tr>
@@ -32,10 +34,10 @@
             <td> <input type="password" name="confirm" value="password"> </td>
         </tr>
         <tr id="buttonCell">
-            <td colspan="2"> <input id="regButton" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
+            <td colspan="2"> <input class="button" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
         </tr>
     </table>
-    <div id="error"></div>
+    <div class="error"></div>
 </div>
 </form>
 </body>
