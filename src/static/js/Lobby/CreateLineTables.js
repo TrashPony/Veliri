@@ -17,7 +17,7 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
     tr.onmouseout = funcOutMouse;
 
 
-    if (gameContent === "NotEndGame") {
+    if (list && gameContent === "NotEndGame") {
 
         tdName.appendChild(document.createTextNode(text.Name));
         tdID.appendChild(document.createTextNode(text.Id));
@@ -34,12 +34,12 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         list.appendChild(tr);
     }
 
-    if (gameContent === "Game") {
+    if (list && gameContent === "Game") {
         tdName.appendChild(document.createTextNode(text.Name));
         tdID.appendChild(document.createTextNode(text.Map));
         tdStep.appendChild(document.createTextNode(text.Creator));
-        tdPhase.appendChild(document.createTextNode(text.Copasity));
-        tdMyStep.appendChild(document.createTextNode(text.Players));
+        tdPhase.appendChild(document.createTextNode(text.Players));
+        tdMyStep.appendChild(document.createTextNode(text.Copasity));
 
         tr.appendChild(tdName);
         tr.appendChild(tdID);
@@ -50,7 +50,7 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         list.appendChild(tr);
     }
 
-    if (gameContent === "Map") {
+    if (list && gameContent === "Map") {
         tdName.appendChild(document.createTextNode(text.Name));
         tdPhase.appendChild(document.createTextNode(text.Copasity));
 
@@ -60,8 +60,18 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         list.appendChild(tr);
     }
 
+    if (list && gameContent === "User") {
 
+        tdName.appendChild(document.createTextNode(text.Name));
+        tdPhase.appendChild(document.createTextNode(text.Ready));
+        tdStep.appendChild(document.createTextNode(text.Respawn));
 
+        tr.appendChild(tdName);
+        tr.appendChild(tdPhase);
+        tr.appendChild(tdStep);
+
+        list.appendChild(tr);
+    }
 
     if (id === owned) {
         CreateSelectRespawn(id, text)
@@ -70,23 +80,35 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
 
 function CreateLobbyMenu(textButton, funcButton, id, error, hoster) {
     if (error === "") {
+
         DelElements("NotGameLobby");
-        var gameInfo = document.createElement('div');
-        gameInfo.className = "gameInfo";
+
+        var gameInfo = document.createElement('table');
+        gameInfo.width = "400px";
+        gameInfo.className = "table";
         gameInfo.id = "gameInfo";
+
         var parentElem = document.getElementById("lobby");
         parentElem.appendChild(gameInfo);
+
+        var br = document.createElement("p");
+        parentElem.appendChild(br);
+
         var cancel = document.createElement("input");
         cancel.type = "button";
+        cancel.className = "button";
         cancel.value = "Отменить";
         cancel.onclick = ReturnLobby;
-        gameInfo.appendChild(cancel);
+        parentElem.appendChild(cancel);
+
         var button = document.createElement("input");
         button.type = "button";
+        button.className = "button";
         button.value = textButton;
         button.onclick = funcButton;
         button.id = id;
-        gameInfo.appendChild(button);
+        parentElem.appendChild(button);
+
         if (hoster) {
             var ready = document.createElement("input");
             ready.type = "button";
@@ -97,12 +119,28 @@ function CreateLobbyMenu(textButton, funcButton, id, error, hoster) {
             ready.id = id;
             gameInfo.appendChild(ready);
         }
+
         createGame = true;
-        var parentElemDiv = document.getElementsByClassName("gameInfo");
-        var div3 = document.createElement('div');
-        div3.className = "User";
-        div3.appendChild(document.createTextNode("Подключенные Игроки"));
-        parentElemDiv[0].appendChild(div3);
+
+        var tr = document.createElement('tr');
+        gameInfo.appendChild(tr);
+
+        var th1 = document.createElement('th');
+        th1.className = "h";
+        th1.appendChild(document.createTextNode("Игроки"));
+
+        var th2 = document.createElement('th');
+        th2.className = "h";
+        th2.appendChild(document.createTextNode("Готовность"));
+
+        var th3 = document.createElement('th');
+        th3.className = "h";
+        th3.appendChild(document.createTextNode("Респаун"));
+
+        tr.appendChild(th1);
+        tr.appendChild(th2);
+        tr.appendChild(th3);
+
     } else {
         if (error === "lobby is full") {
             console.log("Игра полная");

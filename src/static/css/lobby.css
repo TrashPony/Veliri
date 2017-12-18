@@ -60,16 +60,6 @@ td {
     height: 190px;
 }
 
-.User {
-    margin: 2px;
-    padding: 0;
-    border: 1px solid #ebcd8d;
-    border-radius: 4px;
-    color: black;
-    background-color: #ebcd8d;
-    width: 300px;
-}
-
 .User.List{
     border: 1px solid #53b7c4;
     background-color: #12e6ff;
@@ -93,24 +83,9 @@ td {
 }
 
 .Select:hover {
+    width: 390px;
     border: 1px solid #4a8af4;
     background-color: #25a0e1;
-}
-
-.Select.Menu {
-    width: 380px;
-}
-
-.Select.Menu:hover {
-    width: 390px;
-}
-
-.Select.SubMenu{
-
-}
-
-.Select.SubMenu:hover {
-    width: 390px;
 }
 
 .gameInfo {

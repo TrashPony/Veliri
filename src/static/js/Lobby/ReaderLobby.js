@@ -1,12 +1,9 @@
 function ReaderLobby(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
-    var user;
     var func;
     var text;
     var textButton;
     var funcButton;
-    var funcMouse;
-    var funcOutMouse;
 
     if (event === "InitLobby") {
         var login = document.getElementById('login');
@@ -18,76 +15,43 @@ function ReaderLobby(jsonMessage) {
         location.reload()
     }
     if (event === "GameRefresh") {
-        DelElements("Select Game");
+        DelElements("Select Menu");
     }
     if (event === "DelUser") {
         DelElements("User List");
     }
 
     if (event === "UserRefresh" || event === "JoinToLobby") {
-        if (JSON.parse(jsonMessage).ready === "true") {
-            text = JSON.parse(jsonMessage).game_user + " Готов! Респаун: " + JSON.parse(jsonMessage).respawn_name;
-            CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, null, null, null, text, "");
-        } else {
-            text = JSON.parse(jsonMessage).game_user + " Не готов";
-            CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).game_user, null, null, null, text, JSON.parse(jsonMessage).user_name);
-        }
+
+        var user = new Object();
+        user.Name = JSON.parse(jsonMessage).game_user;
+        user.Ready = JSON.parse(jsonMessage).ready;
+        user.Respawn = JSON.parse(jsonMessage).respawn_name;
+
+        CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
+
     }
 
     if (event === "GameView") {
-        func = function () {
-            sendJoinToLobbyGame(this.id);
-        };
-
-        var newGame = new Object();
-
-        newGame.Name = JSON.parse(jsonMessage).name_game;
-        newGame.Map  = JSON.parse(jsonMessage).name_map;
-        newGame.Creator = JSON.parse(jsonMessage).creator;
-        newGame.Copasity = JSON.parse(jsonMessage).players;
-        newGame.Players = JSON.parse(jsonMessage).num_of_players;
-
-        CreateLobbyLine('Game', 'Menu', 'Select Menu', JSON.parse(jsonMessage).name_game, func, null, null, newGame, JSON.parse(jsonMessage).user_name);
+        GameView(jsonMessage)
     }
 
     if (event === "DontEndGamesList") {
-        func = function () {
-            JoinToGame(this.id);
-        };
-
-        var game = new Object();
-
-        game.Name = JSON.parse(jsonMessage).name_game;
-        game.Id = JSON.parse(jsonMessage).id_game;
-        game.Step = JSON.parse(jsonMessage).step_game;
-        game.Phase = JSON.parse(jsonMessage).phase_game;
-        game.Ready = !JSON.parse(jsonMessage).ready;
-
-        CreateLobbyLine('NotEndGame', 'SubMenu', 'Select SubMenu', JSON.parse(jsonMessage).id_game, func, null, null, game, JSON.parse(jsonMessage).user_name);
+        NotEndGame(jsonMessage)
     }
 
     if (event === "MapView") {
-        func = function () {
-            CreateLobbyGame(this.id);
-        };
-        funcMouse = function () {
-            MouseOverMap(this.id);
-        };
-        funcOutMouse = function () {
-            MouseOutMap()
-        };
-
-        var map = new Object();
-
-        map.Name = JSON.parse(jsonMessage).name_map;
-        map.Copasity = JSON.parse(jsonMessage).num_of_players;
-
-        CreateLobbyLine('Map', 'SubMenu', 'Select SubMenu', JSON.parse(jsonMessage).name_map, func, funcMouse, funcOutMouse, map, JSON.parse(jsonMessage).user_name);
+        MapView(jsonMessage);
     }
 
     if (event === "NewUser") {
-        text = JSON.parse(jsonMessage).new_user + " Не готов";
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).new_user, null, null, null, text, JSON.parse(jsonMessage).user_name);
+
+        var user = new Object();
+        user.Name = JSON.parse(jsonMessage).new_user;
+        user.Ready = " Не готов";
+        user.Respawn = JSON.parse(jsonMessage).respawn_name;
+
+        CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
     }
 
     if (event === "CreateLobbyGame") {
@@ -97,9 +61,12 @@ function ReaderLobby(jsonMessage) {
 
         CreateLobbyMenu(textButton, funcButton, JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, true);
 
-        text = JSON.parse(jsonMessage).user_name + " Не готов";
+        var user = new Object();
+        user.Name = JSON.parse(jsonMessage).user_name;
+        user.Ready = " Не готов";
+        user.Respawn = JSON.parse(jsonMessage).respawn_name;
 
-        CreateInLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).user_name, null, null, null, text, JSON.parse(jsonMessage).user_name);
+        CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
 
         Respawn();
 
@@ -150,22 +117,22 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Ready") {
-        var ready;
         var error = JSON.parse(jsonMessage).error;
-        user = JSON.parse(jsonMessage).game_user;
+        var user = new Object();
+
         if (error === "") {
-            if (JSON.parse(jsonMessage).ready === "true") {
-                ready = "Готов! Респаун: " + JSON.parse(jsonMessage).respawn_name;
-            } else {
-                ready = " Не готов ";
-            }
-            var userBlock = document.getElementById(user);
-            userBlock.innerHTML = user + " " + ready;
+
+            user.Name = JSON.parse(jsonMessage).game_user;
+            user.Ready = JSON.parse(jsonMessage).ready;
+            user.Respawn = JSON.parse(jsonMessage).respawn_name;
+
+            CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
+
             if (user === JSON.parse(jsonMessage).user_name && JSON.parse(jsonMessage).respawn_name === "") {
-                CreateSelectRespawn(user, user + " Не готов ");
+               //CreateSelectRespawn(user, user + " Не готов ");
             }
         } else {
-            CreateSelectRespawn(user, user + " Не готов ");
+            //CreateSelectRespawn(user, user + " Не готов ");
         }
         Respawn();
     }
