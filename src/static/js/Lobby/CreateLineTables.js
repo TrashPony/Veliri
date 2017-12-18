@@ -78,7 +78,7 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
     }
 }
 
-function CreateLobbyMenu(textButton, funcButton, id, error, hoster) {
+function CreateLobbyMenu(id, error, hoster) {
     if (error === "") {
 
         DelElements("NotGameLobby");
@@ -101,23 +101,26 @@ function CreateLobbyMenu(textButton, funcButton, id, error, hoster) {
         cancel.onclick = ReturnLobby;
         parentElem.appendChild(cancel);
 
-        var button = document.createElement("input");
-        button.type = "button";
-        button.className = "button";
-        button.value = textButton;
-        button.onclick = funcButton;
-        button.id = id;
-        parentElem.appendChild(button);
+        var ready = document.createElement("input");
+        ready.type = "button";
+        ready.style.marginLeft = "10px";
+        ready.className = "button";
+        ready.value = "Готов";
+        ready.onclick = function () {
+            sendReady(this.id)
+        };
+        ready.id = id;
+        parentElem.appendChild(ready);
 
         if (hoster) {
-            var ready = document.createElement("input");
-            ready.type = "button";
-            ready.value = "Готов";
-            ready.onclick = function () {
-                sendReady(this.id)
-            };
-            ready.id = id;
-            gameInfo.appendChild(ready);
+            var button = document.createElement("input");
+            button.type = "button";
+            button.style.marginLeft = "120px";
+            button.className = "button";
+            button.value = "Начать";
+            button.onclick = CreateNewGame;
+            button.id = id;
+            parentElem.appendChild(button);
         }
 
         createGame = true;

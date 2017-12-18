@@ -1,4 +1,3 @@
-var stompClient = null;
 var createGame = false;
 var createNameGame = "";
 var toField = false;
@@ -65,7 +64,7 @@ function MapSelection() {
     var cancel = document.createElement("input");
     cancel.type = "button";
     cancel.value = "Отменить";
-    cancel.className = "button"
+    cancel.className = "button";
     cancel.onclick = ReturnLobby;
     div.appendChild(cancel);
 

@@ -9,7 +9,7 @@ function MapView(jsonMessage) {
         MouseOutMap()
     };
 
-    var map = new Object();
+    var map = Object();
 
     map.Name = JSON.parse(jsonMessage).name_map;
     map.Copasity = JSON.parse(jsonMessage).num_of_players;
@@ -19,10 +19,10 @@ function MapView(jsonMessage) {
 
 function GameView(jsonMessage) {
     var func = function () {
-        sendJoinToLobbyGame(this.id);
+        //sendJoinToLobbyGame(this.id);
     };
 
-    var newGame = new Object();
+    var newGame = Object();
 
     newGame.Name = JSON.parse(jsonMessage).name_game;
     newGame.Map  = JSON.parse(jsonMessage).name_map;
@@ -38,7 +38,7 @@ function NotEndGame(jsonMessage) {
         JoinToGame(this.id);
     };
 
-    var game = new Object();
+    var game = Object();
 
     game.Name = JSON.parse(jsonMessage).name_game;
     game.Id = JSON.parse(jsonMessage).id_game;
