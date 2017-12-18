@@ -15,29 +15,29 @@
 <div align="center">
     <table class="animateTable" align="center" >
         <tr>
-            <th colspan="2"> Регистрация </th>
+            <th colspan="2" class="h"> Регистрация </th>
         </tr>
         <tr>
             <td align="right"> Логин: </td>
-            <td> <input type="text" name="username" value="Login"> </td>
+            <td> <input  type="text" name="username" placeholder="Login"> </td>
         </tr>
         <tr>
             <td align="right"> Почта: </td>
-            <td> <input type="text" name="email" value="E-mail"> </td>
+            <td> <input type="text" name="email" placeholder="E-mail"> </td>
         </tr>
         <tr>
             <td align="right"> Пароль: </td>
-            <td> <input type="password" name="password" value="password"> </td>
+            <td> <input type="password" name="password" placeholder="password"> </td>
         </tr>
         <tr>
             <td align="right"> Подтвердите пароль: </td>
-            <td> <input type="password" name="confirm" value="password"> </td>
+            <td> <input type="password" name="confirm" placeholder="password"> </td>
         </tr>
         <tr id="buttonCell">
-            <td colspan="2"> <input class="button" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
+            <td colspan="2"> <input class="button" id="regButton" type="submit" value="Регистрация" onclick="UserRegistration()"> </td>
         </tr>
     </table>
-    <div class="error"></div>
+    <div id="error"></div>
 </div>
 </form>
 </body>

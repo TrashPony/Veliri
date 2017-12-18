@@ -6,7 +6,10 @@
     <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/lobby.css" rel="stylesheet">
     <title>Veliri</title>
+    <script src="../js/Lobby/WebSocket.js"></script>
     <script src="../js/Lobby/Lobby.js"></script>
+    <script src="../js/Lobby/SendMessage.js"></script>
+    <script src="../js/Lobby/CreateLineTables.js"></script>
     <script src="../js/Lobby/ReaderLobby.js"></script>
     <script> ConnectLobby() </script>
 
@@ -16,13 +19,57 @@
 <div id="main">
     <div id="lobby" align="left">
         <div class="NotGameLobby">
-        <div class="Games" id="Games list">  Игры: </div>
-        Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
-        <input type="button" value="Создать Игру" class="button" onclick="sendMapSelection()"> <p>
-        <div id="Games"></div>
-        <div class="DontEndGame" id="DontEndGame"></div>
+            <div class="h">Новые игры: </div>
+                <table id="Menu" class="table" width="390">
+                    <tr align="center" class="h">
+                        <th>
+                            Имя игры
+                        </th>
+                        <th>
+                            Карта
+                        </th>
+                        <th>
+                            Создал
+                        </th>
+                        <th>
+                            Размер
+                        </th>
+                        <th>
+                            Игроков
+                        </th>
+                    </tr>
+                </table>
+            <p>
+
+            Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
+            <input type="button" value="Создать Игру" class="button" onclick="MapSelection()"> <p>
+            </p>
+
+            <div class="h" id="NotEndGame"> Недоиграные игры: </div>
+                <table id="SubMenu" class="table" width="390">
+                    <tr align="center" class="h">
+                        <th>
+                            Имя игры
+                        </th>
+                        <th>
+                            ID игры
+                        </th>
+                        <th>
+                            Шаг
+                        </th>
+                        <th>
+                            Фаза
+                        </th>
+                        <th>
+                            Мой ход
+                        </th>
+                    </tr>
+                </table>
+            <p>
+            <div class="h" id="cancel">  </div>
         </div>
     </div>
+
     <div id="info" align="left">
         <div id="logout">
             <div id="login">Вы зашли как: </div>

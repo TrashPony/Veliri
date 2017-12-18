@@ -12,19 +12,19 @@
 <form method="POST" id="login" onsubmit="return false;">
     <table class="animateTable">
         <tr>
-            <th> Окно Логина </th>
+            <th class="h"> Окно Логина </th>
         </tr>
         <tr>
-            <td> <input type="text" name="username" value="Login"> </td>
+            <td> <input type="text" name="username" placeholder="Login"> </td>
         </tr>
         <tr>
-            <td> <input type="password" name="password" value="password"> </td>
+            <td> <input type="password" name="password" placeholder="password"> </td>
         </tr>
         <tr id="buttonCell">
-            <td> <input type="submit" value="Login" class="button" onclick="UserLogin()"> </td>
+            <td> <input type="submit" class="button" onclick="UserLogin()"> </td>
         </tr>
     </table>
-    <div class="error"></div>
+    <div id="error"></div>
 </form>
 </div>
 </body>

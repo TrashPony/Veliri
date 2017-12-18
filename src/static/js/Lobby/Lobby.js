@@ -5,34 +5,6 @@ var toField = false;
 var sock;
 var respownId;
 
-function ConnectLobby() {
-     sock = new WebSocket("ws://" + window.location.host + "/wsLobby");
-     console.log("Websocket - status: " + sock.readyState);
-
-    var date = new Date(0);
-    document.cookie = "idGame=; path=/; expires=" + date.toUTCString();
-
-     sock.onopen = function(msg) {
-         console.log("CONNECTION opened..." + this.readyState);
-         InitLobby();
-         sendGameSelection();
-         sendDontEndGamesList();
-     };
-     sock.onmessage = function(msg) {
-         console.log("message: " + msg.data);
-         ReaderLobby(msg.data);
-     };
-     sock.onerror = function(msg) {
-         console.log("Error occured sending..." + msg.data);
-     };
-     sock.onclose = function(msg) {
-        console.log("Disconnected - status " + this.readyState);
-        if(!toField) {
-            location.href = "../../login";
-        }
-     };
-}
-
 function ReturnLobby() {
     location.reload();
 }
@@ -50,31 +22,53 @@ function CreateNewGame() {
     }
 }
 
-function JoinToLobbyGame(gameName) {
-    sendJoinToLobbyGame(gameName);
-}
-
 function JoinToGame(idGame) {
     toField = true;
     document.cookie = "idGame=" + idGame + "; path=/;";
     location.href = "http://" + window.location.host + "/field";
 }
 
-function sendMapSelection() {
-    DelElements("DontEndGame");
-    DelElements("Select Map");
-    DelElements("Maps");
-    var mapContent = document.getElementById('Games');
-    var div = document.createElement('div');
-    div.style.wordWrap = 'break-word';
-    div.appendChild(document.createTextNode("Карты:"));
-    div.className = "Maps";
-    div.id = "Maps";
-    mapContent.appendChild(div);
+function MapSelection() {
+
+    DelElements("Select SubMenu");
+
+    var SubMenu = document.getElementById("SubMenu");
+    var inputs = SubMenu.getElementsByTagName("th");
+    var tableH = document.getElementById("NotEndGame");
+
+    tableH.innerHTML = "Выберети карту";
+
+    var i = inputs.length;
+    while (i--) {
+        var input = inputs[i];
+        if (input) {
+            var th = input.parentNode.parentNode;
+            SubMenu.deleteRow(th.rowIndex);
+        }
+    }
+
+    var tr = document.createElement('tr');
+    SubMenu.appendChild(tr);
+
+    var thName = document.createElement('th');
+    thName.innerHTML = "Название карты";
+    var thPlayers =  document.createElement('th');
+    thPlayers.innerHTML = "Максимум игроков";
+    tr.appendChild(thName);
+    tr.appendChild(thPlayers);
 
     sock.send(JSON.stringify({
-            event: "MapView"
+        event: "MapView"
     }));
+
+    var div = document.getElementById("cancel");
+    var cancel = document.createElement("input");
+    cancel.type = "button";
+    cancel.value = "Отменить";
+    cancel.className = "button"
+    cancel.onclick = ReturnLobby;
+    div.appendChild(cancel);
+
 }
 
 function MouseOverMap(id) {
@@ -97,92 +91,6 @@ function MouseOutMap() {
     var info = document.getElementById('SelectInfo');
     info.innerHTML = "";
     DelElements("infoMap");
-}
-
-function sendGameSelection() {
-    sock.send(JSON.stringify({
-            event: "GameView"
-    }));
-}
-
-function sendCreateLobbyGame(mapName, gameName) {
-    createNameGame = gameName;
-    sock.send(JSON.stringify({
-        event: "CreateLobbyGame",
-        map_name: mapName,
-        game_name: gameName
-    }));
-}
-
-function sendJoinToLobbyGame(gameName) {
-    sock.send(JSON.stringify({
-        event: "JoinToLobbyGame",
-        game_name: gameName
-    }));
-}
-
-function sendDontEndGamesList () {
-    DelElements("Select DontEndGame");
-
-    var gamesContent = document.getElementById('DontEndGame');
-
-    var div = document.createElement('div');
-    div.style.wordWrap = 'break-word';
-    div.appendChild(document.createTextNode("Недоиграные игры:"));
-    div.className= "Games";
-    div.id = "DontEndGames";
-    gamesContent.appendChild(div);
-
-    sock.send(JSON.stringify({
-        event: "DontEndGamesList"
-    }));
-}
-
-function sendStartNewGame (gameName) {
-    sock.send(JSON.stringify({
-        event: "StartNewGame",
-        game_name: gameName
-    }));
-}
-
-function sendReady (gameName) {
-    var selectResp = document.getElementById("RespawnSelect");
-    if (selectResp) {
-        DelElements("RespawnSelect");
-        respownId = selectResp.value
-    }
-    if (selectResp) {
-        sock.send(JSON.stringify({
-            event: "Ready",
-            game_name: gameName,
-            respawn: selectResp.value
-        }));
-    } else {
-        sock.send(JSON.stringify({
-            event: "Ready",
-            game_name: gameName,
-            respawn: respownId
-        }));
-    }
-}
-
-function Logout() {
-    sock.send(JSON.stringify({
-        event: "Logout"
-    }));
-}
-
-function InitLobby() {
-    sock.send(JSON.stringify({
-        event: "InitLobby"
-    }));
-}
-
-function Respawn() {
-    DelElements("RespawnOption");
-    sock.send(JSON.stringify({
-        event: "Respawn"
-    }));
 }
 
 function DelElements(ClassElements) {
