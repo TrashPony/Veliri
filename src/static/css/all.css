@@ -11,6 +11,7 @@ input {
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
     background-size: 100% 2px, 4px 4px, cover;
     animation: menuAnimation 3000ms linear infinite;
+    -webkit-animation: WebKitMenuAnimation 3000ms linear infinite;
 }
 
 input:hover {
@@ -49,7 +50,7 @@ input:hover {
     border-radius: 10px;
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
-    animation: menuAnimation 3000ms linear infinite;
+    -webkit-animation: WebKitMenuAnimation 3000ms linear infinite;
     text-shadow: #28a5e4 0 0 4px;
     color:  #a5d5ef
 }

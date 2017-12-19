@@ -23,6 +23,7 @@ function InitLobbyGame(jsonMessage) {
 }
 
 function NewUser(jsonMessage) {
+
     var user = Object();
     user.Name = JSON.parse(jsonMessage).new_user;
     user.Ready = " Не готов";
