@@ -68,10 +68,11 @@ func LobbyReader(ws *websocket.Conn) {
 				resp = LobbyResponse{Event: "initLobbyGame", UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName, Error: err.Error()}
 				lobbyPipe <- resp
 			} else {
-				//все кто в лоби получают сообщение о том что подключился новйы игрок
+				// игрок инициализирует лобби меню на клиенте
 				resp = LobbyResponse{Event: "initLobbyGame", UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
 				lobbyPipe <- resp
 
+				//все кто в лоби получают сообщение о том что подключился новйы игрок
 				for user := range game.Users {
 					if user != usersLobbyWs[ws].Login {
 						resp = LobbyResponse{Event: "NewUser", UserName: user, NewUser: usersLobbyWs[ws].Login}

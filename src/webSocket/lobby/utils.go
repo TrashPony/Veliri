@@ -41,16 +41,18 @@ func RefreshUsersList(nameGame string) {
 			for player, ready := range game.Users {
 				var refresh = LobbyResponse{Event: "DelUser", UserName: player}
 				lobbyPipe <- refresh
-				var respown int
+				var respown string
 				if ready {
 					for respawns := range game.Respawns {
 						if game.Respawns[respawns] == player {
-							respown = respawns.Id
+							respown = respawns.Name
 						}
 					}
 				}
-				refresh = LobbyResponse{Event: "UserRefresh", UserName: player, GameUser: player, Ready: strconv.FormatBool(ready), Respawn: strconv.Itoa(respown)}
-				lobbyPipe <- refresh
+				for owner := range game.Users {
+					refresh = LobbyResponse{Event: "UserRefresh", UserName: owner, GameUser: player, Ready: strconv.FormatBool(ready), RespawnName: respown}
+					lobbyPipe <- refresh
+				}
 			}
 			break
 		}

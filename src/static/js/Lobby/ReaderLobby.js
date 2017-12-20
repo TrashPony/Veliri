@@ -14,7 +14,7 @@ function ReaderLobby(jsonMessage) {
         DelElements("Select Menu");
     }
     if (event === "DelUser") {
-        DelElements("User List");
+        DelElements("User");
     }
 
     if (event === "UserRefresh" || event === "JoinToLobby") {
@@ -46,7 +46,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Respawn") {
-        Respawn(jsonMessage);
+        RespawnInit(jsonMessage);
     }
 
     if (event === "StartNewGame") {

@@ -19,7 +19,7 @@ function MapView(jsonMessage) {
 
 function GameView(jsonMessage) {
     var func = function () {
-        //sendJoinToLobbyGame(this.id);
+        sendJoinToLobbyGame(this.id);
     };
 
     var newGame = Object();

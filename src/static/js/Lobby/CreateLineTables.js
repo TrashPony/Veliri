@@ -63,18 +63,25 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
     if (list && gameContent === "User") {
 
         tdName.appendChild(document.createTextNode(text.Name));
-        tdPhase.appendChild(document.createTextNode(text.Ready));
         tdStep.appendChild(document.createTextNode(text.Respawn));
+        tdPhase.appendChild(document.createTextNode(text.Ready));
+
+        if (text.Ready !== " Готов") {
+            tdPhase.className = "Failed";
+        } else {
+            tdPhase.className = "Success";
+        }
 
         tr.appendChild(tdName);
-        tr.appendChild(tdPhase);
         tr.appendChild(tdStep);
+        tr.appendChild(tdPhase);
 
         list.appendChild(tr);
-    }
 
-    if (id === owned) {
-        CreateSelectRespawn(id, text)
+        if (id === owned && text.Respawn === "") {
+            CreateSelectRespawn(id);
+            Respawn();
+        }
     }
 }
 
@@ -109,6 +116,7 @@ function CreateLobbyMenu(id, error, hoster) {
         ready.onclick = function () {
             sendReady(this.id)
         };
+
         ready.id = id;
         parentElem.appendChild(ready);
 
@@ -141,8 +149,8 @@ function CreateLobbyMenu(id, error, hoster) {
         th3.appendChild(document.createTextNode("Респаун"));
 
         tr.appendChild(th1);
-        tr.appendChild(th2);
         tr.appendChild(th3);
+        tr.appendChild(th2);
 
     } else {
         if (error === "lobby is full") {
@@ -156,9 +164,8 @@ function CreateLobbyMenu(id, error, hoster) {
     }
 }
 
-function CreateSelectRespawn(id, msg) {
-    var user = document.getElementById(id);
-    user.innerHTML = msg + " точка респауна: ";
+function CreateSelectRespawn(id) {
+    var user = document.getElementById(id).cells[1];
     var selectList = document.createElement("select");
     selectList.id = "RespawnSelect";
     selectList.className = "RespawnSelect";

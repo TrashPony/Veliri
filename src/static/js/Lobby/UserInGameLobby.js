@@ -1,24 +1,30 @@
 function CreateNewLobbyGame(jsonMessage) {
+    // создаем меню внутренниго лоби
     CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, true);
 
     var user = Object();
     user.Name = JSON.parse(jsonMessage).user_name;
     user.Ready = " Не готов";
     user.Respawn = JSON.parse(jsonMessage).respawn_name;
-
-    CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
+    // создаем в лоби строку с пользователем
+    CreateLobbyLine('User', 'gameInfo', "User", user.Name, null, null, null, user, user.Name);
 
     Respawn();
 }
 
 function InitLobbyGame(jsonMessage) {
-
+    // создаем меню внутренниго лоби
     CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, false);
 
     if (JSON.parse(jsonMessage).error === "") {
-        var text = JSON.parse(jsonMessage).user_name + " Не готов";
-        CreateLobbyLine('gameInfo', 'User List', JSON.parse(jsonMessage).user_name, null, null, null, text, JSON.parse(jsonMessage).user_name);
-        Respawn();
+
+        var user = Object();
+        user.Name = JSON.parse(jsonMessage).user_name;
+        user.Ready = " Не готов";
+        user.Respawn = JSON.parse(jsonMessage).respawn_name;
+
+        // создаем в лоби строку с пользователем
+        CreateLobbyLine('User', 'gameInfo', "User", user.Name, null, null, null, user, user.Name);
     }
 }
 
@@ -29,40 +35,61 @@ function NewUser(jsonMessage) {
     user.Ready = " Не готов";
     user.Respawn = JSON.parse(jsonMessage).respawn_name;
 
-    CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
+    CreateLobbyLine('User', 'gameInfo', "User", user.Name, null, null, null, user, JSON.parse(jsonMessage).user_name);
 }
 
 function JoinToLobby(jsonMessage) {
     var user = Object();
+
     user.Name = JSON.parse(jsonMessage).game_user;
-    user.Ready = JSON.parse(jsonMessage).ready;
+
+    if (user.Ready = JSON.parse(jsonMessage).ready === "false") {
+        user.Ready = " Не готов";
+    } else {
+        user.Ready = " Готов";
+    }
+
     user.Respawn = JSON.parse(jsonMessage).respawn_name;
 
-    CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
+    CreateLobbyLine('User', 'gameInfo', "User", user.Name, null, null, null, user, JSON.parse(jsonMessage).user_name);
 }
 
 function Ready(jsonMessage) {
     var error = JSON.parse(jsonMessage).error;
+    var ownedName = JSON.parse(jsonMessage).user_name;
     var user = Object();
+    user.Name = JSON.parse(jsonMessage).game_user;
+
+    var userRespawnCell = document.getElementById(user.Name).cells[1];
+    var userReadyCell = document.getElementById(user.Name).cells[2];
+
+    if (user.Ready = JSON.parse(jsonMessage).ready === "false") {
+        user.Ready = " Не готов";
+        userReadyCell.innerHTML = user.Ready;
+        userReadyCell.className = "Failed";
+    } else {
+        user.Ready = " Готов";
+        userReadyCell.innerHTML = user.Ready;
+        userReadyCell.className = "Success";
+    }
+
+    user.Respawn = JSON.parse(jsonMessage).respawn_name;
+
+    userRespawnCell.innerHTML = user.Respawn;
+
 
     if (error === "") {
-
-        user.Name = JSON.parse(jsonMessage).game_user;
-        user.Ready = JSON.parse(jsonMessage).ready;
-        user.Respawn = JSON.parse(jsonMessage).respawn_name;
-
-        CreateLobbyLine('User', 'gameInfo', null, null, null, null, null, user, JSON.parse(jsonMessage).user_name);
-
-        if (user === JSON.parse(jsonMessage).user_name && JSON.parse(jsonMessage).respawn_name === "") {
-            //CreateSelectRespawn(user, user + " Не готов ");
+        if (ownedName === user.Name && user.Respawn === "") {
+            CreateSelectRespawn(user.Name);
         }
     } else {
-        //CreateSelectRespawn(user, user + " Не готов ");
+        CreateSelectRespawn(user.Name);
     }
+
     Respawn();
 }
 
-function Respawn(jsonMessage) {
+function RespawnInit(jsonMessage) {
     //Create and append the options
     var select = document.getElementById("RespawnSelect");
     if (select) {

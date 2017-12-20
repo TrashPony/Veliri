@@ -1,5 +1,6 @@
 body{
     background-color: #4c4c4c;
+    text-align: center;
 }
 
 
@@ -15,11 +16,10 @@ td {
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
     animation: menuAnimation 7000ms linear infinite;
-    -webkit-animation: WebKitMenuAnimation 7000ms linear infinite;
     display:inline-block;
     width: auto;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef
+    color:  #a5d5ef;
 }
 
 #lobby {
