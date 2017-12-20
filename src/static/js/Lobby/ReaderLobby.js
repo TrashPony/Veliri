@@ -14,7 +14,8 @@ function ReaderLobby(jsonMessage) {
         DelElements("Select Menu");
     }
     if (event === "DelUser") {
-        DelElements("User");
+        var userTr = document.getElementById(JSON.parse(jsonMessage).game_user);
+        userTr.parentNode.removeChild(userTr);
     }
 
     if (event === "UserRefresh" || event === "JoinToLobby") {

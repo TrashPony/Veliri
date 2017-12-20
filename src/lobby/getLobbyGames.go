@@ -80,27 +80,28 @@ func SetRespawnUser(gameName string, userName string, respawnId string) (string,
 	return "", errors.New("respawn busy")
 }
 
-func DisconnectLobbyGame(userName string) (bool, string) {
-	var success bool = false
-	var nameGame string
-	for game := range openGames {
-		for client, ready := range openGames[game].Users {
+func DisconnectLobbyGame(userName string) (game *LobbyGames) {
+	for gameName := range openGames {
+		for client, ready := range openGames[gameName].Users {
 			if ready {
-				for respawns := range openGames[game].Respawns {
-					if openGames[game].Respawns[respawns] == userName {
-						openGames[game].Respawns[respawns] = ""
+				for respawns := range openGames[gameName].Respawns {
+					if openGames[gameName].Respawns[respawns] == userName {
+						openGames[gameName].Respawns[respawns] = ""
 					}
 				}
 			}
 
 			if userName == client {
-				nameGame = openGames[game].Name
-				delete(openGames[game].Users, client)
-				success = true
+				tmpGame, find := openGames[gameName]
+				delete(openGames[gameName].Users, client)
+				if find {
+					game = &tmpGame
+					return
+				}
 			}
 		}
 	}
-	return success, nameGame
+	return nil
 }
 
 func DelRespawnUser(gameName string, userName string) {
@@ -115,16 +116,17 @@ func DelRespawnUser(gameName string, userName string) {
 	}
 }
 
-func DelLobbyGame(nameCreator string) (bool, map[string]bool) {
-	var success bool = false
-	users := make(map[string]bool)
-	for game := range openGames {
-		if openGames[game].Creator == nameCreator {
-			users = openGames[game].Users
-			delete(openGames, game)
-			success = true
+func DelLobbyGame(nameCreator string) (game *LobbyGames) {
+	for gameName := range openGames {
+		if openGames[gameName].Creator == nameCreator {
+			tmpGame, find := openGames[gameName]
+			if find {
+				game = &tmpGame
+				delete(game.Users, nameCreator)
+				delete(openGames, gameName)
+				return
+			}
 		}
 	}
-
-	return success, users
+	return
 }

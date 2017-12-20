@@ -95,7 +95,7 @@ func LobbyReader(ws *websocket.Conn) {
 						lobbyPipe <- resp
 					}
 				}
-				RefreshLobbyGames(ws) // обновляет кол-во игроков и их характиристики в неигровом лоби
+				RefreshLobbyGames(usersLobbyWs[ws].Login) // обновляет кол-во игроков и их характиристики в неигровом лоби
 			}
 		}
 
@@ -104,7 +104,7 @@ func LobbyReader(ws *websocket.Conn) {
 			var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
 			lobbyPipe <- resp
 
-			RefreshLobbyGames(ws)
+			RefreshLobbyGames(usersLobbyWs[ws].Login)
 		}
 
 		if msg.Event == "Ready" {

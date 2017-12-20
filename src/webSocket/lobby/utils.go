@@ -18,44 +18,30 @@ func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
 
 func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err error) {
 	log.Printf("error: %v", err)
-	login := (*usersWs)[ws].Login
+	if (*usersWs)[ws] != nil{
+		login := (*usersWs)[ws].Login
 
-	delGame, users := lobby.DelLobbyGame(login)
-	diconnect, nameGame := lobby.DisconnectLobbyGame(login)
-	if delGame || diconnect {
-		if delGame {
-			DiconnectLobby(users)
+		delete(*usersWs, ws) // удаляем его из активных подключений
+
+		game := lobby.DisconnectLobbyGame(login) // получаем игру в которой он был
+
+		if game != nil { // если такая игра есть оповещаем других игроков о том что он вышел
+			DelUserInLobby(game, login)
 		}
-		if diconnect {
-			RefreshUsersList(nameGame)
+
+		delGame := lobby.DelLobbyGame(login)
+
+		if delGame != nil {
+			DiconnectLobby(delGame.Users)
+			RefreshLobbyGames(login)
 		}
-		RefreshLobbyGames(ws) //TODO: // вываливается экзепшен при выходе главного игрока из лоби игры когда в игре кто то есть
 	}
-	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func RefreshUsersList(nameGame string) {
-	games := lobby.GetLobbyGames()
-	for _, game := range games {
-		if game.Name == nameGame {
-			for player, ready := range game.Users {
-				var refresh = LobbyResponse{Event: "DelUser", UserName: player}
-				lobbyPipe <- refresh
-				var respown string
-				if ready {
-					for respawns := range game.Respawns {
-						if game.Respawns[respawns] == player {
-							respown = respawns.Name
-						}
-					}
-				}
-				for owner := range game.Users {
-					refresh = LobbyResponse{Event: "UserRefresh", UserName: owner, GameUser: player, Ready: strconv.FormatBool(ready), RespawnName: respown}
-					lobbyPipe <- refresh
-				}
-			}
-			break
-		}
+func DelUserInLobby(game *lobby.LobbyGames, delLogin string)  {
+	for user := range game.Users {
+		var message = LobbyResponse{Event: "DelUser", UserName: user, GameUser: delLogin}
+		lobbyPipe <- message
 	}
 }
 
@@ -65,8 +51,8 @@ func DiconnectLobby(users map[string]bool) {
 		lobbyPipe <- refresh
 	}
 }
-func RefreshLobbyGames(ws *websocket.Conn) {
-	login := (usersLobbyWs)[ws].Login // TODO: // вываливается экзепшен при выходе главного игрока из лоби игры когда в игре кто то есть
+
+func RefreshLobbyGames(login string) {
 	games := lobby.GetLobbyGames()
 	for _, client := range usersLobbyWs {
 		if client.Login != login {

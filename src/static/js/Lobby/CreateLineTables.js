@@ -25,6 +25,8 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         tdPhase.appendChild(document.createTextNode(text.Phase));
         tdMyStep.appendChild(document.createTextNode(text.Ready));
 
+        tdName.className = "Value";
+
         tr.appendChild(tdName);
         tr.appendChild(tdID);
         tr.appendChild(tdStep);
@@ -41,6 +43,8 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         tdPhase.appendChild(document.createTextNode(text.Players));
         tdMyStep.appendChild(document.createTextNode(text.Copasity));
 
+        tdName.className = "Value";
+
         tr.appendChild(tdName);
         tr.appendChild(tdID);
         tr.appendChild(tdStep);
@@ -54,6 +58,8 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         tdName.appendChild(document.createTextNode(text.Name));
         tdPhase.appendChild(document.createTextNode(text.Copasity));
 
+        tdName.className = "Value";
+
         tr.appendChild(tdName);
         tr.appendChild(tdPhase);
 
@@ -65,6 +71,8 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
         tdName.appendChild(document.createTextNode(text.Name));
         tdStep.appendChild(document.createTextNode(text.Respawn));
         tdPhase.appendChild(document.createTextNode(text.Ready));
+
+        tdName.className = "Value";
 
         if (text.Ready !== " Готов") {
             tdPhase.className = "Failed";
