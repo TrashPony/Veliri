@@ -1,35 +1,52 @@
+
 var SizeUnit = 70;
 var SizeText = 18;
+
 function SizeMap(params) {
-    var div = document.getElementsByClassName("fieldUnit");
-    if (params === 1){
-        SizeUnit = SizeUnit + 30;
-        SizeText = SizeText + 6;
-    }
-    if (SizeUnit > 45) {
-        if (params === 2){
-            SizeUnit = SizeUnit - 30;
-            SizeText = SizeText - 6;
-        }
 
+    var divs = document.getElementsByClassName("fieldUnit");
+
+    if (params === 1) {
+        SizeUnit = SizeUnit + 3;
+        SizeText = SizeText + 0.6;
     }
 
-    for (var i = 0; 0 < div.length; i++) {
-        if(div[i].style !== undefined) { // чет нехуя не работает
+    if (params === 2) {
+        SizeUnit = SizeUnit - 3;
+        SizeText = SizeText - 0.6;
+    }
+
+    for (var i in divs) {
+        var div = document.getElementById(divs[i].id);
+        if (div) {
             if (params === 1) {
-                div[i].style.height = SizeUnit + "px";
-                div[i].style.width = SizeUnit + "px";
-                div[i].style.fontSize = SizeText + "px";
+                div.style.height = SizeUnit + "px";
+                div.style.width = SizeUnit + "px";
+                div.style.fontSize = SizeText + "px";
             }
 
             if (params === 2) {
-                div[i].style.height = SizeUnit + "px";
-                div[i].style.width = SizeUnit + "px";
-                div[i].style.fontSize = SizeText + "px";
+                div.style.height = SizeUnit + "px";
+                div.style.width = SizeUnit + "px";
+                div.style.fontSize = SizeText + "px";
             }
         }
     }
 }
+
+function Wheel(e) {
+
+    var delta = e.deltaY || e.detail || e.wheelDelta;
+    // отмасштабируем при помощи CSS
+    if (delta > 0) {
+        SizeMap(1);
+    } else {
+        SizeMap(2);
+    }
+    // отменим прокрутку
+    e.preventDefault();
+}
+
 function Rotate(params) {
     var div = document.getElementById('main');
     if(params === 0) {
@@ -53,3 +70,47 @@ function Rotate(params) {
         div.style.transform = "rotate(270deg)";
     }
 }
+
+function moveWindow(event, id) {
+
+    var window = document.getElementById(id);
+
+    window.style.marginTop = "0px";
+
+    var coordinates = getCoordinates(window);
+
+    var shiftX = event.pageX - coordinates.left;
+    var shiftY = event.pageY - coordinates.top;
+
+    document.body.appendChild(window);
+    moveAt(event);
+
+    function moveAt(event) {
+        window.style.left = event.pageX - shiftX + 'px';
+        window.style.top = event.pageY - shiftY + 'px';
+    }
+
+    document.onmousemove = function(event) {
+        moveAt(event);
+    };
+
+    document.onmouseup = function() {
+        document.onmousemove = null;
+        window.onmouseup = null;
+    };
+
+    window.ondragstart = function() {
+        return false;
+    };
+
+    function getCoordinates(window) {
+        var box = window.getBoundingClientRect();
+        return {
+            top: box.top + pageYOffset,
+            left: box.left + pageXOffset
+        };
+    }
+}
+
+
+

@@ -10,7 +10,8 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].GetID(), msg.IdGame)
 	client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
-	players := activeGame.GetPlayers()
+	activeGame.SetUserReady(client.GetLogin(), "true") // TODO коректоно обновлять статус готовности игрока
+ 	players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
 
 	if phase != "" { // TODO

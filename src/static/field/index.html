@@ -22,8 +22,8 @@
 
 <div id="ControlPanel">
     <table class="animateTable" >
-        <tr align="center">
-            <th class="h" colspan="2"> Упарвелиние: </th>
+        <tr align="center" onmousedown="moveWindow(event,'ControlPanel')">
+            <th class="h" colspan="2"> Карта: </th>
         </tr>
         <tr align="center">
             <td> <input type="submit" class="button" onclick="SizeMap(1)" value="+"> </td>
@@ -37,21 +37,50 @@
             <td> <input type="submit" class="button" onclick="Rotate(180)" value="180"> </td>
             <td> <input type="submit" class="button" onclick="Rotate(270)" value="270"> </td>
         </tr>
-        <tr align="center">
-            <td colspan="2"> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!"> </td>
-        </tr>
     </table>
 </div>
 
-<div id="main" align="center" >
+<div id="main" align="center" onmousemove="moveTip(event)" onwheel="Wheel(event)">
 
 </div>
 
 <div class="info" align="center">
-    <div class="info subMenu" >
-        <div> Деньги: <font id="price" class="Value"> </font> </div>
-        <div> Ход № <font id="step" class="Value"> </font> </div>
-        <div> Фаза: <font id="phase" class="Value"> </font> </div>
+    <div class="info subMenu" id="subMenu">
+        <table class="table" >
+            <tr align="center" onmousedown="moveWindow(event, 'subMenu')">
+                <th class="h" colspan="2" width="160"> Информация: </th>
+            </tr>
+            <tr align="center">
+                <td> Деньги: </td>
+                <td> <font id="price" class="Value"> </font> </td>
+            </tr>
+            <tr align="center">
+                <td> Ход № </td>
+                <td> <font id="step" class="Value"> </font> </td>
+            </tr>
+            <tr align="center">
+                <td> Фаза: </td>
+                <td> <font id="phase" class="Value"> </font> </td>
+            </tr>
+        </table>
+        <br>
+        <table class="table" >
+            <tr align="center">
+                <th class="h" width="160"> Действия: </th>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Пропустить ход"> </td>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Способность"> </td>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Ремонт"> </td>
+            </tr>
+            <tr align="center">
+                <td colspan="2"> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!"> </td>
+            </tr>
+        </table>
     </div>
 </div>
 

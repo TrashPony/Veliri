@@ -43,7 +43,8 @@ input:hover {
     border-radius: 10px;
     padding: 5px 20px 4px;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef
+    color:  #a5d5ef;
+    z-index: 11;
 }
 
 .button:hover {
@@ -53,6 +54,19 @@ input:hover {
 .button:active {
     position: relative;
     top: 3px;
+}
+
+.button.noActive {
+    background-color: rgba(20, 81, 111, 0.5);
+    text-shadow: rgba(45, 122, 170, 0.55) 0 0 4px;
+    color: rgba(165, 213, 239, 0.67);
+}
+
+.button.noActive:hover {
+}
+
+.button.noActive:active {
+    top: 0;
 }
 
 .animateTable{

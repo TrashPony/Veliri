@@ -7,22 +7,25 @@ function ConnectField() {
     sock = new WebSocket("ws://" + window.location.host + "/wsField");
     console.log("Websocket - status: " + sock.readyState);
 
-    sock.onopen = function(msg) {
+    sock.onopen = function() {
         console.log("CONNECTION opened..." + this.readyState);
         InitGame();
     };
+
     sock.onmessage = function(msg) {
-        //console.log("message: " + msg.data);
+        console.log("message: " + msg.data);
         ReadResponse(msg.data);
     };
+
     sock.onerror = function(msg) {
         console.log("Error occured sending..." + msg.data);
     };
+
     sock.onclose = function(msg) {
-        // 1006 ошибка при выключение сервера 1001 - F5
+        // 1006 ошибка при выключение сервера или отказа, 1001 - F5
         console.log("Disconnected - status " + this.readyState);
         if (msg.code !== 1001) {
-            location.href = "../../login"
+            location.href = "../../login";
         }
     };
 
@@ -30,7 +33,7 @@ function ConnectField() {
 
 function Ready(){
     if (move !== null) {
-        DelMoveCell();
+        DelMoveCoordinate();
     }
 
     var targetCell = document.getElementsByClassName("aim");

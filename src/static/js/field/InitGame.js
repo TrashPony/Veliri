@@ -45,7 +45,7 @@ function InitPlayer(jsonMessage) {
 
     if (JSON.parse(jsonMessage).user_ready === "true") {
         var ready = document.getElementById("Ready");
-        ready.innerHTML = "Ты готов!";
+        ready.value = "Ты готов!";
         ready.style.backgroundColor = "#e1720f"
     }
 

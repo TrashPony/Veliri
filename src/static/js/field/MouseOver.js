@@ -35,8 +35,8 @@ function mouse_out() {
     }
 }
 
-document.onmousemove = moveTip;
 function moveTip(e) {
+
     var floatTipStyle = document.getElementById("floatTip").style;
     var w = 250; // Ширина слоя
     var x = e.pageX; // Координата X курсора
