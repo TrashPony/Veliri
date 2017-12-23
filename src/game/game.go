@@ -12,7 +12,7 @@ type Game struct {
 	structure  map[int]map[int]*Structure
 }
 
-func (game *Game) SetStructure(structure map[int]map[int]*Structure) {
+func (game *Game) SetStructures(structure map[int]map[int]*Structure) {
 	game.structure = structure
 }
 
@@ -62,8 +62,13 @@ func (game *Game) GetPlayers() (Players []*UserStat) {
 	return game.players
 }
 
-func (game *Game) GetStructure() (Structure map[int]map[int]*Structure) {
+func (game *Game) GetStructures() (structures map[int]map[int]*Structure) {
 	return game.structure
+}
+
+func (game *Game) GetStructure(x,y int) (structure *Structure, find bool)  {
+	structure, find = game.structure[x][y]
+	return
 }
 
 func (game *Game) GetStat() (stat *InfoGame) {
@@ -115,7 +120,7 @@ func InitGame(idGAme int) (newGame *Game) {
 	newGame.SetInfoMap(&Map)         // добавляем информацию об карте
 	newGame.SetUnits(units)          // добавляем имеющихся юнитов
 	//newGame.setMap(Map.OneLayerMap)// добавляем 1 слой карты отвечающий за фон текстур, препятсвия и расположение респаунов
-	newGame.SetStructure(structure)  // добавляем в игру все структуры на карте
+	newGame.SetStructures(structure)  // добавляем в игру все структуры на карте
 
 	return
 }

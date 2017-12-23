@@ -15,7 +15,7 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 		Games[Game.GetStat().Id] = Game // добавляем новую игру в карту активных игор
 	}
 
-	structures := Game.GetStructure()
+	structures := Game.GetStructures()
 
 	for _, userStat := range Game.GetPlayers() {
 		if userStat.Name == client.GetLogin() {

@@ -12,35 +12,38 @@ type Watcher interface {
 	getNameUser() string
 }
 
-func Watch(gameObject Watcher, login string, units map[int]map[int]*Unit, allStructures map[int]map[int]*Structure) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*Structure, Err error) {
+func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*Structure, Err error) {
 	allCoordinate = make(map[string]*Coordinate)
 	unitsCoordinate = make(map[int]map[int]*Unit)
 	structureCoordinate = make(map[int]map[int]*Structure)
 
 	if login == gameObject.getNameUser() {
-		PermCoordinates := GetCoordinates(gameObject.getX(), gameObject.getY(), gameObject.getWatchZone())
-		for i := 0; i < len(PermCoordinates); i++ {
-			unitInMap, ok := units[PermCoordinates[i].X][PermCoordinates[i].Y]
+
+		RadiusCoordinates := GetCoordinates(gameObject.getX(), gameObject.getY(), gameObject.getWatchZone())
+		PermCoordinates   := Filter(gameObject, RadiusCoordinates, game)
+
+		for _, coordinate := range PermCoordinates{
+			unitInMap, ok := game.GetUnit(coordinate.X,coordinate.Y)
 			if ok {
 
-				if unitsCoordinate[PermCoordinates[i].X] != nil {
-					unitsCoordinate[PermCoordinates[i].X][PermCoordinates[i].Y] = unitInMap
+				if unitsCoordinate[coordinate.X] != nil {
+					unitsCoordinate[coordinate.X][coordinate.Y] = unitInMap
 				} else {
-					unitsCoordinate[PermCoordinates[i].X] = make(map[int]*Unit)
-					unitsCoordinate[PermCoordinates[i].X][PermCoordinates[i].Y] = unitInMap
+					unitsCoordinate[coordinate.X] = make(map[int]*Unit)
+					unitsCoordinate[coordinate.X][coordinate.Y] = unitInMap
 				}
 			} else {
 				var structureInMap *Structure
-				structureInMap, ok = allStructures[PermCoordinates[i].X][PermCoordinates[i].Y]
+				structureInMap, ok = game.GetStructure(coordinate.X, coordinate.Y)
 				if ok {
-					if structureCoordinate[PermCoordinates[i].X] != nil {
-						structureCoordinate[PermCoordinates[i].X][PermCoordinates[i].Y] = structureInMap
+					if structureCoordinate[coordinate.X] != nil {
+						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
 					} else {
-						structureCoordinate[PermCoordinates[i].X] = make(map[int]*Structure)
-						structureCoordinate[PermCoordinates[i].X][PermCoordinates[i].Y] = structureInMap
+						structureCoordinate[coordinate.X] = make(map[int]*Structure)
+						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
 					}
 				} else {
-					allCoordinate[strconv.Itoa(PermCoordinates[i].X)+":"+strconv.Itoa(PermCoordinates[i].Y)] = PermCoordinates[i]
+					allCoordinate[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
 				}
 			}
 		}

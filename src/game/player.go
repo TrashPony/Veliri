@@ -21,7 +21,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 	for _, xLine := range activeGame.GetUnits() {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := Watch(unit, client.login, activeGame.GetUnits(), activeGame.GetStructure())//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := Watch(unit, client.login, activeGame)//PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -54,10 +54,10 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 		}
 	}
 
-	for _, xLine := range activeGame.GetStructure() {
+	for _, xLine := range activeGame.GetStructures() {
 		for _, structure := range xLine {
 
-			watchCoordinate, watchUnit, watchStructure, err := Watch(structure, client.login, activeGame.GetUnits(), activeGame.GetStructure())
+			watchCoordinate, watchUnit, watchStructure, err := Watch(structure, client.login, activeGame)
 
 			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
