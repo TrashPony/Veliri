@@ -1,6 +1,5 @@
 var typeUnit;
 var phase;
-var unitInfo;
 var move = null;
 var target = null;
 
@@ -20,39 +19,16 @@ function ConnectField() {
         console.log("Error occured sending..." + msg.data);
     };
     sock.onclose = function(msg) {
+        // 1006 ошибка при выключение сервера 1001 - F5
         console.log("Disconnected - status " + this.readyState);
-        location.href = "../../login"
+        if (msg.code !== 1001) {
+            location.href = "../../login"
+        }
     };
 
 }
 
-function mouse_over(unit_id) {
-    var xy = unit_id.split(":");
-
-    var x = xy[0];
-    var y = xy[1];
-
-    sock.send(JSON.stringify({
-        event: "MouseOver",
-        id_game: Number(idGame),
-        x: Number(x),
-        y: Number(y)
-    }));
-}
-
-function mouse_out() {
-    unitInfo = document.getElementById("unitInfo");
-    unitInfo.innerHTML = "";
-    var targetCell = document.getElementsByClassName("aim mouse");
-    while (targetCell.length > 0) {
-        targetCell[0].remove();
-    }
-}
-
-
-
 function Ready(){
-
     if (move !== null) {
         DelMoveCell();
     }

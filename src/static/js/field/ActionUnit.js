@@ -154,15 +154,15 @@ function MoveUnit(jsonMessage) {
     var errorMove = JSON.parse(jsonMessage).error;
     var action = JSON.parse(jsonMessage).unit_action;
     if (action === "false") {
-        x = JSON.parse(jsonMessage).x;
-        y = JSON.parse(jsonMessage).y;
-        idDell = x + ":" + y;
-        cell = document.getElementById(idDell);
+        var x = JSON.parse(jsonMessage).x;
+        var y = JSON.parse(jsonMessage).y;
+        var idDell = x + ":" + y;
+        var cell = document.getElementById(idDell);
         cell.style.filter = "brightness(50%)";
     }
 
     if (errorMove !== null) {
-        DelMoveCell()
+        DelMoveCoordinate()
     }
 }
 
@@ -180,7 +180,7 @@ function AttackUnit(jsonMessage) {
     var toY = JSON.parse(jsonMessage).to_y;
 
     var attackID = attackX + ":" + attackY;
-    cell = document.getElementById(attackID);
+    var cell = document.getElementById(attackID);
     cell.innerHTML = "ПЫЩЬ1";
 
     var targetID = toX + ":" + toY;

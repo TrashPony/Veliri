@@ -15,9 +15,10 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function FieldCreate(xSize,ySize) {
+function FieldCreate(jsonMessage) {
+    var xSize = JSON.parse(jsonMessage).x_map;
+    var ySize =JSON.parse(jsonMessage).y_map;
     var main = document.getElementById("main");
-    main.style.boxShadow = "25px 25px 20px rgba(0,0,0,0.5)";
 
     for (var y = 0; y < ySize; y++) {
         for (var x = 0; x < xSize; x++) {
@@ -36,11 +37,11 @@ function FieldCreate(xSize,ySize) {
 
 function InitPlayer(jsonMessage) {
     var price = document.getElementById('price');
-    price.innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
+    price.innerHTML = JSON.parse(jsonMessage).player_price;
     var step = document.getElementById('step');
-    step.innerHTML = "Ход № " + JSON.parse(jsonMessage).game_step;
+    step.innerHTML = JSON.parse(jsonMessage).game_step;
     var phaseGame = document.getElementById('phase');
-    phaseGame.innerHTML = "Фаза: " + JSON.parse(jsonMessage).game_phase;
+    phaseGame.innerHTML = JSON.parse(jsonMessage).game_phase;
 
     if (JSON.parse(jsonMessage).user_ready === "true") {
         var ready = document.getElementById("Ready");
@@ -70,8 +71,9 @@ function InitUnit(jsonMessage) {
         mouse_over(this.id);
     };
     cell.onmouseout = function () {
-        mouse_out()
+        mouse_out();
     };
+
     cell.innerHTML = "hp: " + hp;
 
     if (JSON.parse(jsonMessage).user_name === userOwned) {
@@ -106,7 +108,7 @@ function InitStructure(jsonMessage) {
         mouse_over(this.id);
     };
     cell.onmouseout = function () {
-        mouse_out()
+        mouse_out();
     };
 
     if (type === "respawn") {
