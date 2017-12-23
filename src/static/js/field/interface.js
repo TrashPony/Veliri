@@ -1,4 +1,4 @@
-var SizeUnit = 100;
+var SizeUnit = 70;
 var SizeText = 18;
 function SizeMap(params) {
     var div = document.getElementsByClassName("fieldUnit");
@@ -35,21 +35,21 @@ function Rotate(params) {
     if(params === 0) {
         div.style.transition = "5s all";
         div.style.boxShadow = "25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(0deg)";
+        div.style.transform = "rotate(0deg)";
     }
     if(params === 90) {
         div.style.transition = "5s all";
         div.style.boxShadow = "25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(90deg)";
+        div.style.transform = "rotate(90deg)";
     }
     if(params === 180) {
         div.style.transition = "5s all";
         div.style.boxShadow = "-25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(180deg)";
+        div.style.transform = "rotate(180deg)";
     }
     if(params === 270) {
         div.style.transition = "5s all";
         div.style.boxShadow = "-25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotateX(13deg) translate(0px, -250px) rotate(270deg)";
+        div.style.transform = "rotate(270deg)";
     }
 }

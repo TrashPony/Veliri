@@ -14,7 +14,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitMap") {
-        Field(JSON.parse(jsonMessage).x_map, JSON.parse(jsonMessage).y_map)
+        FieldCreate(JSON.parse(jsonMessage).x_map, JSON.parse(jsonMessage).y_map)
     }
 
     if (event === "InitUnit") {
@@ -38,22 +38,11 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectUnit") {
-        Select(jsonMessage);
+        setUnitAction(jsonMessage);
     }
 
     if (event === "Attack") {
-        var attackX = JSON.parse(jsonMessage).x;
-        var attackY = JSON.parse(jsonMessage).y;
-        var toX = JSON.parse(jsonMessage).to_x;
-        var toY = JSON.parse(jsonMessage).to_y;
-
-        var attackID = attackX + ":" + attackY;
-        cell = document.getElementById(attackID);
-        cell.innerHTML = "ПЫЩЬ1";
-
-        var targetID = toX + ":" + toY;
-        var targeCell = document.getElementById(targetID);
-        targeCell.innerHTML = "БдфЩь!";
+        AttackUnit(jsonMessage);
     }
 
     if (event === "emptyCoordinate") {
@@ -77,6 +66,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "OpenCoordinate") {
+        console.log(jsonMessage);
         x = JSON.parse(jsonMessage).x;
         y = JSON.parse(jsonMessage).y;
         var idCell = x + ":" + y;
@@ -92,6 +82,7 @@ function ReadResponse(jsonMessage) {
 
     if (event === "MouseOver") {
         info = document.getElementById('unitInfo');
+
         if (JSON.parse(jsonMessage).target !== "") {
             var xy = JSON.parse(jsonMessage).target.split(":");
             x = xy[0];
@@ -120,69 +111,11 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") {
-        var errorMove = JSON.parse(jsonMessage).error;
-        var action = JSON.parse(jsonMessage).unit_action;
-        if (action === "false") {
-            x = JSON.parse(jsonMessage).x;
-            y = JSON.parse(jsonMessage).y;
-            idDell = x + ":" + y;
-            cell = document.getElementById(idDell);
-            cell.style.filter = "brightness(50%)";
-        }
-
-        if (errorMove !== null) {
-            DelMoveCell()
-        }
+        MoveUnit(jsonMessage);
     }
 
     if (event === "TargetUnit") {
-        var targetCell = document.getElementsByClassName("aim");
-        while (targetCell.length > 0) {
-            targetCell[0].remove();
-        }
-    }
-}
-
-function Select(jsonMessage) {
-    var x = JSON.parse(jsonMessage).x;
-    var y = JSON.parse(jsonMessage).y;
-    var errorSelect = JSON.parse(jsonMessage).error;
-    var phase = JSON.parse(jsonMessage).phase;
-    var coor_id;
-    var cell;
-    var Cell;
-
-    if (errorSelect === "") {
-        if (phase === "move") {
-            coor_id = x + ":" + y;
-            cell = document.getElementById(coor_id);
-            if (cell) {
-                Cell = {};
-                Cell.x = x;
-                Cell.y = y;
-                Cell.id = coor_id;
-                Cell.type = cell.className;
-                SelectCell.push(Cell);
-                cell.style.filter = "brightness(85%)";
-                cell.className = "fieldUnit move";
-            }
-        } else {
-            if (phase === "targeting") {
-                coor_id = x + ":" + y;
-                cell = document.getElementById(coor_id);
-                if (cell) {
-                    Cell = {};
-                    Cell.x = x;
-                    Cell.y = y;
-                    Cell.id = coor_id;
-                    SelectCell.push(Cell);
-
-                    var div = document.createElement('div');
-                    div.className = "aim";
-                    cell.appendChild(div);
-                }
-            }
-        }
+        TargetUnit();
     }
 }
 
@@ -201,7 +134,7 @@ function OpenUnit(id) {
     Cell.style.filter = "brightness(100%)";
 
     Cell.onclick = function () {
-        reply_click(this.id);
+        SelectTarget(this.id);
     };
     Cell.onmouseover = function () {
         mouse_over(this.id);
@@ -220,7 +153,7 @@ function DelUnit(id) {
     Cell.style.filter = "brightness(100%)";
 
     Cell.onclick = function () {
-        reply_click(this.id);
+        SelectTarget(this.id);
     };
 }
 

@@ -2,43 +2,51 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link href="/css/field.css" rel="stylesheet">
+    <link href="../css/menuAnimation.css" rel="stylesheet">
+    <link href="../css/all.css" rel="stylesheet">
+    <link href="../css/field/units.css" rel="stylesheet">
+    <link href="../css/field/field.css" rel="stylesheet">
     <title>Veliri</title>
-    <script src="/js/field/field.js"></script>
-    <script src="/js/field/ReaderField.js"></script>
-    <script src="/js/field/initGame.js"></script>
-    <script src="/js/field/interface.js"></script>
+    <script src="../js/field/field.js"></script>
+    <script src="../js/field/ReaderField.js"></script>
+    <script src="../js/field/initGame.js"></script>
+    <script src="../js/field/interface.js"></script>
+    <script src="../js/field/actionUnit.js"></script>
+
     <script> ConnectField() </script>
 
 </head>
 <body>
-    <div class="fieldInfo" onclick="Rotate(0)"> 0 </div>
-    <div class="fieldInfo" onclick="Rotate(90)"> 90 </div>
-    <div class="fieldInfo" onclick="Rotate(180)"> 180 </div>
-    <div class="fieldInfo" onclick="Rotate(270)"> 270 </div>
-    <div class="fieldSize" onclick="SizeMap(1)"> + </div>
-    <div class="fieldSize" onclick="SizeMap(2)"> - </div>
-    <div class="fieldInfo price" >Твои Деньги: </div>
-    <div class="fieldInfo step" >Ход № </div>
-    <div id="phase" class="fieldInfo phase" >Фаза: </div>
 
-    <div id="Ready" onclick="Ready()"> Готов! </div>
+<div align="center">
+    <div class="info" align="left">
+        <input type="submit" class="button" onclick="Rotate(0)" value="0">
+        <input type="submit" class="button" onclick="Rotate(90)" value="90">
+        <input type="submit" class="button" onclick="Rotate(180)" value="180">
+        <input type="submit" class="button" onclick="Rotate(270)" value="270">
 
-    <br/>
-    <div class="unitType">
-        <div class="unitType info tank" onclick="createUnit('tank')">  </div> <br/>
-        <div class="unitType info scout" onclick="createUnit('scout')">  </div> <br/>
-        <div class="unitType info arta" onclick="createUnit('artillery')">  </div>
-    </div>
+        <input type="submit" class="button" onclick="SizeMap(1)" value="+">
+        <input type="submit" class="button" onclick="SizeMap(2)" value="-">
 
-    <div id="test">
+        <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!">
+
+        <br/>
+
         <div id="main" align="center" >
-        </div>
-        <div id="fieldLog">
-            Log:
-        </div>
-        <div id="unitInfo">
+
         </div>
     </div>
+
+    <div class="info" align="center">
+        <div class="info subMenu" id="fieldLog">
+            <div id="price" >Твои Деньги: </div> <br>
+            <div id="step" >Ход № </div>
+            <div id="phase">Фаза: </div>
+        </div>
+        <div class="info subMenu" id="unitInfo">
+
+        </div>
+    </div>
+</div>
 </body>
 </html>

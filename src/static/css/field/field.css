@@ -1,0 +1,47 @@
+.nline {
+
+}
+
+.aim {
+    width: 50px;
+    height: 50px;
+    background-image: url(/img/aim.png);
+    background-size: 100%;
+}
+
+.aim.mouse {
+    width: 50px;
+    height: 50px;
+    background-image: url(/img/aim.png);
+    background-size: 100%;
+}
+
+.info {
+    display:inline-block;
+    vertical-align:top;
+}
+
+.info.subMenu{
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    color:  #a5d5ef;
+    margin-top: 35px;
+    width: 300px;
+    height: 300px;
+    display:block;
+    position:relative;
+}
+
+#main {
+    margin-top: 10px;
+    white-space: nowrap;
+    background-image: url(/img/terrain.jpg);
+    display:inline-block;
+    overflow:  auto;
+    resize: both;
+    position:relative;
+}

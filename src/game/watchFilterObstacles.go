@@ -8,15 +8,15 @@ func Filter(gameObject Watcher, coordinates []*Coordinate, game *Game) (watch ma
 
 	for _, coordinate := range coordinates {
 		passedCoordinates := drawBresenhamLine(gameObject.getX(), gameObject.getY(), coordinate.X, coordinate.Y, game)
-		addCoordinateToMap(&watch, &passedCoordinates)
+		addCoordinateToMap(&watch, &passedCoordinates, game)
 	}
 
 	return
 }
 
-func addCoordinateToMap(watch *map[string]*Coordinate, new *[]*Coordinate)  {
+func addCoordinateToMap(watch *map[string]*Coordinate, new *[]*Coordinate, game *Game)  {
 	for _, coordinate := range *new {
-		if coordinate.X >= 0 && coordinate.Y >= 0 {
+		if (coordinate.X >= 0 && coordinate.Y >= 0) && (game.gameMap.Xsize > coordinate.X && game.gameMap.Ysize > coordinate.Y) {
 			(*watch)[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
 		}
 	}
@@ -72,7 +72,7 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *Game) (passed []*Co
 	x = xStart
 	y = yStart
 	err = el / 2
-	
+
 	coordinate, find := game.GetMap().GetCoordinate(x,y)
 	if find && coordinate.Type == "obstacle"{
 		return

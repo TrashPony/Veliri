@@ -2,7 +2,10 @@ var idGame;
 
 function InitGame() {
     idGame = getCookie("idGame");
-    sendInitGame(idGame);
+    sock.send(JSON.stringify({
+        event: "InitGame",
+        id_game: Number(idGame)
+    }));
 }
 
 function getCookie(name) {
@@ -12,7 +15,7 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function Field(xSize,ySize) {
+function FieldCreate(xSize,ySize) {
     var main = document.getElementById("main");
     main.style.boxShadow = "25px 25px 20px rgba(0,0,0,0.5)";
 
@@ -22,9 +25,6 @@ function Field(xSize,ySize) {
             div.className = "fieldUnit";
             div.id = x + ":" + y;
             div.innerHTML = x + ":" + y;
-            div.onclick = function () {
-                reply_click(this.id);
-            };
             main.appendChild(div);
         }
         var nline = document.createElement('div');
@@ -34,26 +34,20 @@ function Field(xSize,ySize) {
     }
 }
 
-function sendInitGame(idGame) {
-    sock.send(JSON.stringify({
-        event: "InitGame",
-        id_game: Number(idGame)
-    }));
-}
-
 function InitPlayer(jsonMessage) {
-    var price = document.getElementsByClassName('fieldInfo price');
-    price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
-    var step = document.getElementsByClassName('fieldInfo step');
-    step[0].innerHTML = "Ход № " + JSON.parse(jsonMessage).game_step;
-    var phaseGame = document.getElementsByClassName('fieldInfo phase');
-    phaseGame[0].innerHTML = "Фаза: " + JSON.parse(jsonMessage).game_phase;
+    var price = document.getElementById('price');
+    price.innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
+    var step = document.getElementById('step');
+    step.innerHTML = "Ход № " + JSON.parse(jsonMessage).game_step;
+    var phaseGame = document.getElementById('phase');
+    phaseGame.innerHTML = "Фаза: " + JSON.parse(jsonMessage).game_phase;
 
     if (JSON.parse(jsonMessage).user_ready === "true") {
-        ready = document.getElementById("Ready");
+        var ready = document.getElementById("Ready");
         ready.innerHTML = "Ты готов!";
         ready.style.backgroundColor = "#e1720f"
     }
+
     phase = JSON.parse(jsonMessage).game_phase;
 }
 
@@ -67,6 +61,7 @@ function InitUnit(jsonMessage) {
 
     var clicked_id = x + ":" + y;
     var cell = document.getElementById(clicked_id);
+
     if (type === "tank") cell.className = "fieldUnit tank";
     if (type === "scout") cell.className = "fieldUnit scout";
     if (type === "artillery") cell.className = "fieldUnit artillery";
@@ -94,7 +89,7 @@ function InitUnit(jsonMessage) {
         cell.style.color = "#FF0117";
         cell.style.borderColor = "#FF0117";
         cell.onclick = function () {
-            reply_click(this.id)
+            SelectTarget(this.id)
         };
     }
 }
@@ -134,34 +129,7 @@ function InitObstacle(jsonMessage) {
     var y = JSON.parse(jsonMessage).y;
     var coor_id = x + ":" + y;
     var cell = document.getElementById(coor_id);
-    cell.className = "obstacle"
-}
-
-function CreateUnit(jsonMessage) {
-    if (JSON.parse(jsonMessage).error_type === "") {
-        var price = document.getElementsByClassName('fieldInfo price');
-        price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
-    } else {
-        var log = document.getElementById('fieldLog');
-
-        if (JSON.parse(jsonMessage).error_type === "busy") {
-            log.innerHTML = "Место занято"
-        }
-        if (JSON.parse(jsonMessage).error_type === "no many") {
-            log.innerHTML = "Нет денег"
-        }
-        if (JSON.parse(jsonMessage).error_type === "not allow") {
-            log.innerHTML = "Не разрешено"
-        }
-    }
-
-    var cells = document.getElementsByClassName("fieldUnit create");
-    while (0 < cells.length) {
-        if (cells[0]) {
-            cells[0].className = "fieldUnit open";
-        }
-    }
-    typeUnit = null;
+    cell.className = "fieldUnit obstacle"
 }
 
 function ReadyReader(jsonMessage) {
@@ -169,14 +137,14 @@ function ReadyReader(jsonMessage) {
     phase = JSON.parse(jsonMessage).phase;
 
     if (error === "") {
-        ready = document.getElementById("Ready");
+        var ready = document.getElementById("Ready");
         var phaseBlock = document.getElementById("phase");
 
         if (phase === "") {
-            ready.innerHTML = "Ты готов!";
+            ready.value = "Ты готов!";
             ready.style.backgroundColor = "#e1720f";
         } else {
-            ready.innerHTML = "Готов!";
+            ready.value = "Готов!";
             if (phase === "move") {
                 ready.style.backgroundColor = "#A8ADE1";
             }
