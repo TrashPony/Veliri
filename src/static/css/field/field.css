@@ -18,6 +18,7 @@ body {
 .info {
     display: inline-block;
     vertical-align: top;
+    text-align: left;
 }
 
 .info.subMenu{
@@ -35,7 +36,6 @@ body {
     top: 1%;
     right: 20%;
     padding: 10px;
-
 }
 
 #ControlPanel {
@@ -45,6 +45,12 @@ body {
     position: absolute;
     top: 1%;
     left: 22.5%;
+}
+
+#chatBlock {
+    top: 16%;
+    left: 14.2%;
+    position: absolute;
 }
 
 #main {

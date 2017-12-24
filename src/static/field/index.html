@@ -6,7 +6,10 @@
     <link href="../css/all.css" rel="stylesheet">
     <link href="../css/field/units.css" rel="stylesheet">
     <link href="../css/field/field.css" rel="stylesheet">
+    <link href="../css/chat.css" rel="stylesheet">
+
     <title>Veliri</title>
+
     <script src="../js/field/Field.js"></script>
     <script src="../js/field/ReaderField.js"></script>
     <script src="../js/field/InitGame.js"></script>
@@ -14,6 +17,9 @@
     <script src="../js/field/ActionUnit.js"></script>
     <script src="../js/field/MouseOver.js"></script>
     <script src="../js/field/ActionCoordinate.js"></script>
+    <script src="../js/MoveWindow.js"></script>
+    <script src="../js/Chat.js"></script>
+
 
     <script> ConnectField() </script>
 
@@ -21,9 +27,9 @@
 <body>
 
 <div id="ControlPanel">
-    <table class="animateTable" >
-        <tr align="center" onmousedown="moveWindow(event,'ControlPanel')">
-            <th class="h" colspan="2"> Карта: </th>
+    <table class="animateTable">
+        <tr align="center">
+            <th class="h" colspan="2"> Карта: <font class="moveWindow" onmousedown="moveWindow(event,'ControlPanel')">⇵</font> </th>
         </tr>
         <tr align="center">
             <td> <input type="submit" class="button" onclick="SizeMap(1)" value="+"> </td>
@@ -40,6 +46,19 @@
     </table>
 </div>
 
+<div id="chatBlock">
+    <div id="chat">
+        <div id="chatMenu" align="right"> <span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span> </div>
+
+        <div id="chatBox"></div>
+
+        <form name="message" action="">
+            <input type="text" placeholder="message" id="chatInput" onkeypress="return chatMessage(event)">
+            <input type="button" value="Send" class="button" onclick="chatMessage(event)">
+        </form>
+    </div>
+</div>
+
 <div id="main" align="center" onmousemove="moveTip(event)" onwheel="Wheel(event)">
 
 </div>
@@ -47,8 +66,8 @@
 <div class="info" align="center">
     <div class="info subMenu" id="subMenu">
         <table class="table" >
-            <tr align="center" onmousedown="moveWindow(event, 'subMenu')">
-                <th class="h" colspan="2" width="160"> Информация: </th>
+            <tr align="center">
+                <th class="h" colspan="2" width="160"> Информация: <font class="moveWindow" onmousedown="moveWindow(event, 'subMenu')">⇵</font> </th>
             </tr>
             <tr align="center">
                 <td> Деньги: </td>

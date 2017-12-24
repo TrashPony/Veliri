@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link href="../css/all.css" rel="stylesheet">
     <link href="../css/menuAnimation.css" rel="stylesheet">
+    <link href="../css/chat.css" rel="stylesheet">
     <link href="../css/lobby.css" rel="stylesheet">
     <title>Veliri</title>
     <script src="../js/Lobby/WebSocket.js"></script>
@@ -13,32 +14,31 @@
     <script src="../js/Lobby/View.js"></script>
     <script src="../js/Lobby/UserInGameLobby.js"></script>
     <script src="../js/Lobby/ReaderLobby.js"></script>
+    <script src="../js/MoveWindow.js"></script>
+    <script src="../js/Chat.js"></script>
+
     <script> ConnectLobby() </script>
-
-
 </head>
 <body>
 <div id="main">
+    <div class="info" align="left">
+        <table class="table" id="UsersInLobby" width="200">
+            <tr align="center" class="h">
+                <th> Игроки в сети </th>
+            </tr>
+        </table>
+    </div>
+
     <div id="lobby" align="left">
         <div class="NotGameLobby">
             <div class="h">Новые игры: </div>
                 <table id="Menu" class="table" width="390">
                     <tr align="center" class="h">
-                        <th>
-                            Имя игры
-                        </th>
-                        <th>
-                            Карта
-                        </th>
-                        <th>
-                            Создал
-                        </th>
-                        <th>
-                            Размер
-                        </th>
-                        <th>
-                            Игроков
-                        </th>
+                        <th> Имя игры </th>
+                        <th> Карта </th>
+                        <th> Создал </th>
+                        <th> Размер </th>
+                        <th> Игроков </th>
                     </tr>
                 </table>
             <p>
@@ -50,21 +50,11 @@
             <div class="h" id="NotEndGame"> Недоиграные игры: </div>
                 <table id="SubMenu" class="table" width="390">
                     <tr align="center" class="h">
-                        <th>
-                            Имя игры
-                        </th>
-                        <th>
-                            ID игры
-                        </th>
-                        <th>
-                            Шаг
-                        </th>
-                        <th>
-                            Фаза
-                        </th>
-                        <th>
-                            Мой ход
-                        </th>
+                        <th> Имя игры </th>
+                        <th> ID игры </th>
+                        <th> Шаг </th>
+                        <th> Фаза </th>
+                        <th> Мой ход </th>
                     </tr>
                 </table>
             <p>
@@ -72,7 +62,7 @@
         </div>
     </div>
 
-    <div id="info" align="left">
+    <div class="info" align="left">
         <div id="logout">
             <div id="login">Вы зашли как: </div>
             <input type="button" class="button" value="Logout" onclick="Logout()">
@@ -81,5 +71,19 @@
         </div>
     </div>
 </div>
+
+<div id="chatBlock">
+    <div id="chat">
+        <div id="chatMenu" align="right"> <span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span> </div>
+
+        <div id="chatBox"></div>
+
+        <form name="message" action="">
+            <input type="text" placeholder="message" id="chatInput" onkeypress="return chatMessage(event)">
+            <input type="button" value="Send" class="button" onclick="chatMessage(event)">
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

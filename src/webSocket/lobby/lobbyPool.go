@@ -13,6 +13,7 @@ var mutex = &sync.Mutex{}
 
 var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
 var lobbyPipe = make(chan LobbyResponse)
+var commonChatPipe = make(chan LobbyResponse)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersLobbyWs)
@@ -21,6 +22,10 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
+
+	go NewLobbyUser(login, &usersLobbyWs)
+	go SentOnlineUser(login, &usersLobbyWs)
+
 	LobbyReader(ws)
 }
 func LobbyReader(ws *websocket.Conn) {
@@ -186,6 +191,10 @@ func LobbyReader(ws *websocket.Conn) {
 			var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
 			lobbyPipe <- resp
 		}
+		if msg.Event == "NewChatMessage" {
+			var resp = LobbyResponse{Event: msg.Event, Message: msg.Message, GameUser: usersLobbyWs[ws].Login}
+			commonChatPipe <- resp
+		}
 	}
 }
 
@@ -202,6 +211,23 @@ func LobbyReposeSender() {
 					ws.Close()
 					delete(usersLobbyWs, ws)
 				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func CommonChatSender()  {
+	for {
+		resp := <-commonChatPipe
+		mutex.Lock()
+		for ws, client := range usersLobbyWs {
+			err := ws.WriteJSON(resp)
+			if err != nil {
+				log.Printf("error: %v", err)
+				lobby.DelLobbyGame(client.Login)
+				ws.Close()
+				delete(usersLobbyWs, ws)
 			}
 		}
 		mutex.Unlock()

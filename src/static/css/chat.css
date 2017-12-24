@@ -1,0 +1,73 @@
+#chat {
+    position: absolute;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    animation: menuAnimation 7000ms linear infinite;
+    width: 300px;
+    height: 200px;
+    border: 1px solid #25a0e1;
+    z-index: 9;
+}
+
+#chatMenu {
+    margin-right: 20px;
+    height:17px;
+}
+
+#chatBox {
+    padding: 10px;
+    word-wrap: break-word;
+    overflow-y: scroll;
+    border-radius: 10px;
+    text-align:left;
+    margin:auto auto 5px auto;
+    background:rgba(172, 216, 240, 0.24);
+    width:260px;
+    height:125px;
+    border: 2px solid #25a0e1;
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 9pt;
+}
+
+.ChatUserName {
+    color: #00fffd;
+}
+
+.ChatText {
+    color:  #a5d5ef;
+}
+
+/* CUSTOM SCROLLBAR */
+body ::-webkit-scrollbar,
+body ::-webkit-scrollbar:horizontal {
+    width: 12px;
+}
+
+body ::-webkit-scrollbar {
+    border-radius: 10px;
+    background: #a5d5ef;
+    border: 1px solid #25a0e1;
+
+}
+
+/* DISABLED STATES */
+body ::-webkit-scrollbar:disabled {
+    border-radius: 10px;
+    background: #a5d5ef;
+}
+
+/* HANDLE */
+body ::-webkit-scrollbar-thumb,
+body ::-webkit-scrollbar-thumb:window-inactive,
+body ::-webkit-scrollbar-thumb:disabled {
+    border-radius: 10px;
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px, 4px 4px, cover;
+    animation: menuAnimation 3000ms linear infinite;
+}
+
+/*--------*/

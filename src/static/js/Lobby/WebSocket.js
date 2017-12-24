@@ -20,7 +20,7 @@ function ConnectLobby() {
     };
     sock.onclose = function(msg) {
         console.log("Disconnected - status " + this.readyState);
-        if(!toField) {
+        if(!toField && msg.code !== 1001) {
             location.href = "../../login";
         }
     };

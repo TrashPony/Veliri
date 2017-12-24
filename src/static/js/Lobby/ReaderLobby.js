@@ -57,4 +57,15 @@ function ReaderLobby(jsonMessage) {
     if (event === "Ready") {
         Ready(jsonMessage);
     }
+
+    if (event === "NewLobbyUser") {
+        NewLobbyUser(jsonMessage);
+    }
+
+    if (event === "DelLobbyUser") {
+        DelLobbyUser(jsonMessage);
+    }
+    if (event === "NewChatMessage"){
+        NewChatMessage(jsonMessage);
+    }
 }

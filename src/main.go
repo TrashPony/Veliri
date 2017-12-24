@@ -22,6 +22,7 @@ func main() {
 	go field.InitUnitSender()
 	go field.CoordinateSender()
 	go field.InitStructureSender()
+	go lobby.CommonChatSender()
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 	if err != nil {

@@ -1,5 +1,6 @@
 body{
     background-color: #4c4c4c;
+    text-align: center;
 }
 
 td {
@@ -43,7 +44,7 @@ tr td:last-child {
     border: 1px solid #25a0e1;
 }
 
-#info {
+.info {
     padding: 5px;
     display:inline-block;
     vertical-align:top;
@@ -64,4 +65,8 @@ tr td:last-child {
 .Select:hover>td {
     border: 1px solid #1b8cff;
     background-color: #25a0e1;
+}
+
+#chatBlock {
+    position:absolute;
 }

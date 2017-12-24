@@ -101,3 +101,12 @@ input:hover {
 .Value {
     color: #00fffd
 }
+
+.moveWindow {
+    text-shadow: #28a5e4 0 0 4px;
+    color:  #a5d5ef;
+}
+
+.moveWindow:hover {
+    color: #00fffd;
+}

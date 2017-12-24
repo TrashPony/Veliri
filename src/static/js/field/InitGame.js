@@ -46,7 +46,7 @@ function InitPlayer(jsonMessage) {
     if (JSON.parse(jsonMessage).user_ready === "true") {
         var ready = document.getElementById("Ready");
         ready.value = "Ты готов!";
-        ready.style.backgroundColor = "#e1720f"
+        ready.className = "button noActive"
     }
 
     phase = JSON.parse(jsonMessage).game_phase;
@@ -144,10 +144,12 @@ function ReadyReader(jsonMessage) {
 
         if (phase === "") {
             ready.value = "Ты готов!";
-            ready.style.backgroundColor = "#e1720f";
+            ready.className = "button noActive";
         } else {
             ready.value = "Готов!";
-            if (phase === "move") {
+            ready.className = "button";
+
+            /* if (phase === "move") {
                 ready.style.backgroundColor = "#A8ADE1";
             }
             if (phase === "targeting") {
@@ -155,7 +157,8 @@ function ReadyReader(jsonMessage) {
             }
             if (phase === "attack") {
                 ready.style.backgroundColor = "#E12D27";
-            }
+            } */
+
             phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
             var cells = document.getElementsByClassName("fieldUnit create");
             while (0 < cells.length) {

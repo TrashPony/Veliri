@@ -16,12 +16,36 @@ func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
 	}
 }
 
+func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*Clients)  {
+	for _, client := range *usersWs {
+		var resp = LobbyResponse{Event: "NewLobbyUser", UserName: client.Login, GameUser:login}
+		lobbyPipe <- resp
+	}
+}
+
+func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*Clients)  {
+	for _, client := range *usersWs {
+		if login != client.Login {
+			var resp= LobbyResponse{Event: "NewLobbyUser", UserName: login, GameUser: client.Login}
+			lobbyPipe <- resp
+		}
+	}
+}
+
+func DelLobbyUser(login string, usersWs *map[*websocket.Conn]*Clients)   {
+	for _, client := range *usersWs {
+		var resp = LobbyResponse{Event: "DelLobbyUser", UserName: client.Login, GameUser:login}
+		lobbyPipe <- resp
+	}
+}
+
 func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err error) {
 	log.Printf("error: %v", err)
 	if (*usersWs)[ws] != nil{
 		login := (*usersWs)[ws].Login
 
 		delete(*usersWs, ws) // удаляем его из активных подключений
+		DelLobbyUser(login, usersWs) // удаляем из общего списка игроков
 
 		game := lobby.DisconnectLobbyGame(login) // получаем игру в которой он был
 
