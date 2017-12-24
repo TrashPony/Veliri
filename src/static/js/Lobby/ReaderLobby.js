@@ -65,7 +65,4 @@ function ReaderLobby(jsonMessage) {
     if (event === "DelLobbyUser") {
         DelLobbyUser(jsonMessage);
     }
-    if (event === "NewChatMessage"){
-        NewChatMessage(jsonMessage);
-    }
 }

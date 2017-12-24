@@ -2,33 +2,33 @@ var typeUnit;
 var phase;
 var move = null;
 var target = null;
+var field;
 
 function ConnectField() {
-    sock = new WebSocket("ws://" + window.location.host + "/wsField");
-    console.log("Websocket - status: " + sock.readyState);
+    field = new WebSocket("ws://" + window.location.host + "/wsField");
+    console.log("Websocket field - status: " + field.readyState);
 
-    sock.onopen = function() {
-        console.log("CONNECTION opened..." + this.readyState);
+    field.onopen = function() {
+        console.log("CONNECTION field opened..." + this.readyState);
         InitGame();
     };
 
-    sock.onmessage = function(msg) {
-        console.log("message: " + msg.data);
+    field.onmessage = function(msg) {
+        //console.log("message: " + msg.data);
         ReadResponse(msg.data);
     };
 
-    sock.onerror = function(msg) {
-        console.log("Error occured sending..." + msg.data);
+    field.onerror = function(msg) {
+        console.log("Error field occured sending..." + msg.data);
     };
 
-    sock.onclose = function(msg) {
+    field.onclose = function(msg) {
         // 1006 ошибка при выключение сервера или отказа, 1001 - F5
-        console.log("Disconnected - status " + this.readyState);
+        console.log("Disconnected field - status " + this.readyState);
         if (msg.code !== 1001) {
             location.href = "../../login";
         }
     };
-
 }
 
 function Ready(){
@@ -41,7 +41,7 @@ function Ready(){
         targetCell[0].remove();
     }
 
-    sock.send(JSON.stringify({
+    field.send(JSON.stringify({
         event: "Ready",
         id_game: Number(idGame)
     }));

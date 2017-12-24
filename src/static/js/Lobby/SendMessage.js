@@ -5,13 +5,13 @@ function sendReady (gameName) {
         respownId = selectResp.value
     }
     if (selectResp) {
-        sock.send(JSON.stringify({
+        lobby.send(JSON.stringify({
             event: "Ready",
             game_name: gameName,
             respawn: selectResp.value
         }));
     } else {
-        sock.send(JSON.stringify({
+        lobby.send(JSON.stringify({
             event: "Ready",
             game_name: gameName,
             respawn: respownId
@@ -21,7 +21,7 @@ function sendReady (gameName) {
 
 function Respawn() {
     DelElements("RespawnOption");
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "Respawn"
     }));
 }
@@ -29,26 +29,26 @@ function Respawn() {
 function sendDontEndGamesList () {
     DelElements("Select.SubMenu");
 
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "DontEndGamesList"
     }));
 }
 
 function Logout() {
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "Logout"
     }));
 }
 
 function InitLobby() {
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "InitLobby"
     }));
 }
 
 function sendCreateLobbyGame(mapName, gameName) {
     createNameGame = gameName;
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "CreateLobbyGame",
         map_name: mapName,
         game_name: gameName
@@ -56,14 +56,14 @@ function sendCreateLobbyGame(mapName, gameName) {
 }
 
 function sendJoinToLobbyGame(gameName) {
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "JoinToLobbyGame",
         game_name: gameName
     }));
 }
 
 function sendStartNewGame (gameName) {
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "StartNewGame",
         game_name: gameName
     }));
@@ -71,7 +71,7 @@ function sendStartNewGame (gameName) {
 
 
 function sendGameSelection() {
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "GameView"
     }));
 }

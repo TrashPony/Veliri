@@ -28,6 +28,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	LobbyReader(ws)
 }
+
 func LobbyReader(ws *websocket.Conn) {
 	for {
 		var msg LobbyMessage
@@ -211,23 +212,6 @@ func LobbyReposeSender() {
 					ws.Close()
 					delete(usersLobbyWs, ws)
 				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
-
-func CommonChatSender()  {
-	for {
-		resp := <-commonChatPipe
-		mutex.Lock()
-		for ws, client := range usersLobbyWs {
-			err := ws.WriteJSON(resp)
-			if err != nil {
-				log.Printf("error: %v", err)
-				lobby.DelLobbyGame(client.Login)
-				ws.Close()
-				delete(usersLobbyWs, ws)
 			}
 		}
 		mutex.Unlock()

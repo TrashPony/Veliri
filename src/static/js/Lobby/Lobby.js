@@ -1,7 +1,7 @@
 var createGame = false;
 var createNameGame = "";
 var toField = false;
-var sock;
+var lobby;
 var respownId;
 
 function ReturnLobby() {
@@ -56,7 +56,7 @@ function MapSelection() {
     tr.appendChild(thName);
     tr.appendChild(thPlayers);
 
-    sock.send(JSON.stringify({
+    lobby.send(JSON.stringify({
         event: "MapView"
     }));
 

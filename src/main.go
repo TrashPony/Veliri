@@ -5,6 +5,7 @@ import (
 	"./webSocket"
 	"./webSocket/field"
 	"./webSocket/lobby"
+	"./webSocket/chat"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -16,13 +17,16 @@ func main() {
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
+	router.HandleFunc("/wsChat", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
-	go lobby.LobbyReposeSender()                                               // запускается гарутина для рассылки сообщений, гуглить гарутины
+
+	go lobby.LobbyReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
+	go chat.CommonChatSender()
 	go field.FieldReposeSender()
 	go field.InitUnitSender()
 	go field.CoordinateSender()
 	go field.InitStructureSender()
-	go lobby.CommonChatSender()
+
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
 	if err != nil {

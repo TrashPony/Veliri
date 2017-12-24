@@ -2,7 +2,7 @@ var idGame;
 
 function InitGame() {
     idGame = getCookie("idGame");
-    sock.send(JSON.stringify({
+    field.send(JSON.stringify({
         event: "InitGame",
         id_game: Number(idGame)
     }));

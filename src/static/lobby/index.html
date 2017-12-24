@@ -78,10 +78,9 @@
 
         <div id="chatBox"></div>
 
-        <form name="message" action="">
-            <input type="text" placeholder="message" id="chatInput" onkeypress="return chatMessage(event)">
-            <input type="button" value="Send" class="button" onclick="chatMessage(event)">
-        </form>
+        <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
+        <input type="button" value="Send" class="button" onclick="chatMessage()">
+        <script>ConnectChat()</script>
     </div>
 </div>
 

@@ -3,6 +3,7 @@ package webSocket
 import (
 	"./field"
 	"./lobby"
+	"./chat"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -22,5 +23,8 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	}
 	if pool == "/wsField" {
 		field.AddNewUser(ws, login, id)
+	}
+	if pool == "/wsChat" {
+		chat.AddNewUser(ws, login, id)
 	}
 }

@@ -47,7 +47,7 @@ function SelectUnit(id) {
         target = id;
     }
 
-    sock.send(JSON.stringify({
+    field.send(JSON.stringify({
         event: "SelectUnit",
         x: Number(x),
         y: Number(y)
@@ -111,7 +111,7 @@ function SelectTarget(clicked_id) {
         unit_x = unit[0];
         unit_y = unit[1];
 
-        sock.send(JSON.stringify({
+        field.send(JSON.stringify({
             event: "TargetUnit",
             x: Number(unit_x),
             y: Number(unit_y),
@@ -126,7 +126,7 @@ function SelectTarget(clicked_id) {
         unit = move.split(":");
         unit_x = unit[0];
         unit_y = unit[1];
-        sock.send(JSON.stringify({
+        field.send(JSON.stringify({
             event: "MoveUnit",
             x: Number(unit_x),
             y: Number(unit_y),
@@ -138,7 +138,7 @@ function SelectTarget(clicked_id) {
     }
 
     if(phase === "Init" && typeUnit !== null && typeUnit !== undefined) {
-        sock.send(JSON.stringify({
+        field.send(JSON.stringify({
             event: "CreateUnit",
             type_unit: typeUnit,
             id_game: Number(idGame),
