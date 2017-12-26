@@ -1,14 +1,14 @@
 package game
 
-func UserReady(idUser int, idGame int) (string, error, bool) {
+func UserReady(client *Player, game *Game) (string, error, bool) {
 
 	// устанавливает фраг готовности пользователя в тру
-	rows, err := db.Query("UPDATE action_game_user  SET ready = true WHERE id_user=$1 AND id_game=$2", idUser, idGame)
+	rows, err := db.Query("UPDATE action_game_user  SET ready = true WHERE id_user=$1 AND id_game=$2", client.GetID(), game.GetStat().Id)
 	if err != nil {
 		return "", err, false
 	}
 	// берем готовность всех пользователей
-	rows, err = db.Query("Select ready FROM action_game_user WHERE id_game=$1", idGame)
+	rows, err = db.Query("Select ready FROM action_game_user WHERE id_game=$1", game.GetStat().Id)
 	if err != nil {
 		return "", err, false
 	}
@@ -25,6 +25,9 @@ func UserReady(idUser int, idGame int) (string, error, bool) {
 		ready = append(ready, user)
 	}
 
+	// обновляем статус игрока в памяти
+	game.SetUserReady(client.GetLogin(), "true")
+
 	var allReady bool
 	for i := 0; i < len(ready); i++ {
 		if i == 0 {
@@ -36,7 +39,7 @@ func UserReady(idUser int, idGame int) (string, error, bool) {
 	var phase string
 	// если все игроки готовы то начинается смена фазы
 	if allReady {
-		phase, err = PhaseСhange(idGame)
+		phase, err = PhaseСhange(game)
 		if err != nil {
 			return "", err, false
 		} else {

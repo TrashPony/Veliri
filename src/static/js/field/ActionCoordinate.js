@@ -3,6 +3,10 @@ var SelectCell = [];
 function DelMoveCoordinate() {
     move = null;
 
+    var buttonSkip = document.getElementById("SkipButton");
+    buttonSkip.className = "button noActive";
+    buttonSkip.onclick = null;
+
     for (var i = 0; i < SelectCell.length; i++) {
         if (SelectCell[i].type === "fieldUnit open") {
             OpenCoordinate(SelectCell[i].id)

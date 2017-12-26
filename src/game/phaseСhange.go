@@ -1,14 +1,14 @@
 package game
 
-func PhaseСhange(idGame int) (string, error) {
+func PhaseСhange(game *Game) (string, error) {
 
-	rows, err := db.Query("Select phase, step from action_games WHERE id=$1", idGame)
+	rows, err := db.Query("Select phase, step from action_games WHERE id=$1", game.GetStat().Id)
 	if err != nil {
 		println("123")
 	}
 	defer rows.Close()
 
-	_, err = db.Query("UPDATE action_game_unit  SET action = $1 WHERE id_game=$2", true, idGame)
+	_, err = db.Query("UPDATE action_game_unit  SET action = $1 WHERE id_game=$2", true, game.GetStat().Id)
 	if err != nil {
 
 	}
@@ -22,11 +22,13 @@ func PhaseСhange(idGame int) (string, error) {
 	}
 
 	if phase == "attack" || phase == "Init" {
-		_, err := db.Query("UPDATE action_games SET phase=$2, step=$3 WHERE id=$1", idGame, "move", step+1)
-		if err != nil { // TODO : зарефакторить
+		// ставит новую фазу
+		_, err := db.Query("UPDATE action_games SET phase=$2, step=$3 WHERE id=$1", game.GetStat().Id, "move", step+1)
+		if err != nil {
 			return "", err
 		}
-		_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", idGame, false)
+		// сбрасывает всем пользователям готовность в игре
+		_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", game.GetStat().Id, false)
 		if errr != nil {
 			return "", errr
 		} else {
@@ -34,11 +36,11 @@ func PhaseСhange(idGame int) (string, error) {
 		}
 	} else {
 		if phase == "move" {
-			_, err := db.Query("UPDATE action_games SET phase=$2 WHERE id=$1", idGame, "targeting")
-			if err != nil { // TODO : зарефакторить
+			_, err := db.Query("UPDATE action_games SET phase=$2 WHERE id=$1", game.GetStat().Id, "targeting")
+			if err != nil {
 				return "", err
 			}
-			_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", idGame, false)
+			_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", game.GetStat().Id, false)
 			if errr != nil {
 				return "", errr
 			} else {
@@ -46,11 +48,11 @@ func PhaseСhange(idGame int) (string, error) {
 			}
 		} else {
 			if phase == "targeting" {
-				_, err := db.Query("UPDATE action_games SET phase=$2 WHERE id=$1", idGame, "attack")
-				if err != nil { // TODO : зарефакторить
+				_, err := db.Query("UPDATE action_games SET phase=$2 WHERE id=$1", game.GetStat().Id, "attack")
+				if err != nil {
 					return "", err
 				}
-				_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", idGame, false)
+				_, errr := db.Query("UPDATE action_game_user SET ready=$2 WHERE id_game=$1", game.GetStat().Id, false)
 				if errr != nil {
 					return "", errr
 				} else {

@@ -27,7 +27,7 @@ function CreateUnit(jsonMessage) {
 
 function SelectUnit(id) {
     if (move !== null) {
-        DelMoveCell();
+        DelMoveCoordinate();
     }
 
     var targetCell = document.getElementsByClassName("aim");
@@ -65,6 +65,20 @@ function setUnitAction(jsonMessage) {
 
     if (errorSelect === "") {
         if (phase === "move") {
+
+            var buttonSkip = document.getElementById("SkipButton");
+            buttonSkip.className = "button";
+            buttonSkip.onclick = function () {
+                var unit = move.split(":");
+                var unit_x = unit[0];
+                var unit_y = unit[1];
+                field.send(JSON.stringify({
+                    event: "SkipMoveUnit",
+                    x: Number(unit_x),
+                    y: Number(unit_y)
+                }));
+            };
+
             coordinate = x + ":" + y;
             cell = document.getElementById(coordinate);
             if (cell) {

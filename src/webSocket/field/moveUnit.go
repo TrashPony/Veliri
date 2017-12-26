@@ -14,6 +14,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	activeGame, ok := Games[client.GetGameID()]
 	players := Games[client.GetGameID()].GetPlayers()
 	activeUser := ActionGameUser(players)
+
 	if find && ok {
 		if unit.Action {
 
@@ -64,6 +65,24 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	} else {
 		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not found unit"}
 		fieldPipe <- resp
+	}
+}
+
+func skipMoveUnit(msg FieldMessage, ws *websocket.Conn)  {
+	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	client, ok := usersFieldWs[ws]
+	activeGame, ok := Games[client.GetGameID()]
+
+	if find && ok {
+		if unit.Action {
+			unit.Action = false
+
+			queue := game.MoveUnit(activeGame.GetStat().Id, unit, unit.X, unit.Y)
+			unit.Queue = queue
+
+			var unitsParameter InitUnit
+			unitsParameter.initUnit(unit, client.GetLogin())
+		}
 	}
 }
 

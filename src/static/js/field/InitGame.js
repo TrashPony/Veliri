@@ -26,6 +26,9 @@ function FieldCreate(jsonMessage) {
             div.className = "fieldUnit";
             div.id = x + ":" + y;
             div.innerHTML = x + ":" + y;
+            div.onclick = function () {
+                SelectTarget(this.id);
+            };
             main.appendChild(div);
         }
         var nline = document.createElement('div');

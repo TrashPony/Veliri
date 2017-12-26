@@ -7,14 +7,16 @@ import (
 
 func Ready(msg FieldMessage, ws *websocket.Conn) {
 	var resp FieldResponse
-	phase, err, phaseChange := game.UserReady(usersFieldWs[ws].GetID(), msg.IdGame)
+
 	client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
-	activeGame.SetUserReady(client.GetLogin(), "true") // TODO коректоно обновлять статус готовности игрока
+
+	phase, err, phaseChange := game.UserReady(client, activeGame)
+
  	players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
 
-	if phase != "" { // TODO
+	if phase != "" { // если произошла смена фазы то устанавливаем ее
 		activeGame.GetStat().Phase = phase
 	}
 
@@ -23,7 +25,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		attack(activeGame, activeUser, msg, phase)
 
 		phaseChange = true
-		phase, _ = game.PhaseСhange(msg.IdGame)
+		phase, _ = game.PhaseСhange(activeGame)
 	}
 
 	if err != nil {
@@ -44,8 +46,6 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
-
-			activeGame.SetUserReady(player.GetLogin(), "false") // TODO коректоно обновлять статус готовности игрока
 
 			if phase == "move" {
 				resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}

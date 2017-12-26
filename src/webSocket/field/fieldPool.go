@@ -69,6 +69,11 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Play
 			continue
 		}
 
+		if msg.Event == "SkipMoveUnit" {
+			skipMoveUnit(msg, ws)
+			continue
+		}
+
 		if msg.Event == "TargetUnit" {
 			TargetUnit(msg, ws)
 			continue
