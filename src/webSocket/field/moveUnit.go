@@ -16,7 +16,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	activeUser := ActionGameUser(players)
 
 	if find && ok {
-		if unit.Action && activeGame.GetUserReady(client.GetLogin()) {
+		if unit.Action && !activeGame.GetUserReady(client.GetLogin()) {
 
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			obstacles := game.GetObstacles(client, Games[client.GetGameID()])

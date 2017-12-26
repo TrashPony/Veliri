@@ -46,7 +46,7 @@ function InitPlayer(jsonMessage) {
     var phaseGame = document.getElementById('phase');
     phaseGame.innerHTML = JSON.parse(jsonMessage).game_phase;
 
-    if (JSON.parse(jsonMessage).user_ready === "true") {
+    if (JSON.parse(jsonMessage).user_ready === true) {
         var ready = document.getElementById("Ready");
         ready.value = "Ты готов!";
         ready.className = "button noActive";
@@ -57,6 +57,9 @@ function InitPlayer(jsonMessage) {
 }
 
 function InitUnit(jsonMessage) {
+
+    DelMoveCoordinate();
+
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var type = JSON.parse(jsonMessage).type_unit;
@@ -149,9 +152,11 @@ function ReadyReader(jsonMessage) {
         if (phase === "") {
             ready.value = "Ты готов!";
             ready.className = "button noActive";
+            ready.onclick = null;
         } else {
             ready.value = "Готов!";
             ready.className = "button";
+            ready.onclick = function () { Ready(); };
 
             /* if (phase === "move") {
                 ready.style.backgroundColor = "#A8ADE1";

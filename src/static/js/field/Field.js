@@ -14,7 +14,7 @@ function ConnectField() {
     };
 
     field.onmessage = function(msg) {
-        //console.log("message: " + msg.data);
+        console.log("message: " + msg.data);
         ReadResponse(msg.data);
     };
 
