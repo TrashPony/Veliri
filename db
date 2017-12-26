@@ -48,7 +48,7 @@ CREATE TABLE action_game_user(
    id_user int references users(id),
    start_structure int references action_game_structure(id),
    price int,
-   ready varchar(64)
+   ready varchar(64) //TODO надо переделать на булево поле
 );
 
 CREATE TABLE action_game_unit(

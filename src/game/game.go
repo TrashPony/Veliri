@@ -75,7 +75,15 @@ func (game *Game) GetStat() (stat *InfoGame) {
 	return game.stat
 }
 
-func (game *Game) SetUserReady(userName, readyParams string)  {
+func (game *Game) GetUserReady(userName string) bool {
+	for _, userStat := range game.players {
+		if userStat.Name == userName {
+			return userStat.Ready
+		}
+	}
+}
+
+func (game *Game) SetUserReady(userName string, readyParams bool)  {
 	for _, userStat := range game.players {
 		if userStat.Name == userName {
 			userStat.Ready = readyParams

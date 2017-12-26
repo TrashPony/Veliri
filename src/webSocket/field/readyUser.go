@@ -45,7 +45,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 		for _, player := range activeUser {
 
 			// обновляем статус игроков в памяти
-			activeGame.SetUserReady(player.GetLogin(), "false")
+			activeGame.SetUserReady(player.GetLogin(), false)
 
 			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp

@@ -8,7 +8,7 @@ type UserStat struct {
 	IdGame int
 	Name   string
 	Price  int
-	Ready  string
+	Ready  bool
 	RespX int
 	RespY int
 }

@@ -26,7 +26,7 @@ func UserReady(client *Player, game *Game) (string, error, bool) {
 	}
 
 	// обновляем статус игрока в памяти
-	game.SetUserReady(client.GetLogin(), "true")
+	game.SetUserReady(client.GetLogin(), true)
 
 	var allReady bool
 	for i := 0; i < len(ready); i++ {
