@@ -22,6 +22,3 @@ var dragHandler = {
         e.preventDefault();
     }
 };
-
-document.body.addEventListener('mousedown', dragHandler.start);
-document.body.addEventListener('mouseup', dragHandler.end);

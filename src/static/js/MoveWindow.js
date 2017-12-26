@@ -7,15 +7,16 @@ function moveWindow(event, id) {
 
     var coordinates = getCoordinates(window);
 
-    var shiftX = event.pageX - coordinates.left;
-    var shiftY = event.pageY - coordinates.top;
+    var shiftX = event.pageX - coordinates.left + document.body.scrollLeft;
+    var shiftY = event.pageY - coordinates.top + document.body.scrollTop;
 
     document.body.appendChild(window);
     moveAt(event);
 
     function moveAt(event) {
-        window.style.left = event.pageX - shiftX + 'px';
-        window.style.top = event.pageY - shiftY + 'px';
+        window.style.left = event.clientX - shiftX + 'px';
+        window.style.top = event.clientY - shiftY +  'px';
+        window.style.position = "fixed";
     }
 
     document.onmousemove = function(event) {

@@ -17,14 +17,12 @@
     <script src="../js/field/ActionUnit.js"></script>
     <script src="../js/field/MouseOver.js"></script>
     <script src="../js/field/ActionCoordinate.js"></script>
+    <script src="../js/field/GrabScroll.js"></script>
     <script src="../js/MoveWindow.js"></script>
     <script src="../js/Chat.js"></script>
 
-
-    <script> ConnectField() </script>
-
 </head>
-<body>
+<body oncontextmenu="return false;" onload="initInterface()">
 
 <div id="ControlPanel">
     <table class="animateTable">
@@ -54,7 +52,7 @@
 
         <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
         <input type="button" value="Send" class="button" onclick="chatMessage()">
-        <script>ConnectChat()</script>
+
     </div>
 </div>
 

@@ -1,6 +1,13 @@
-
 var SizeUnit = 70;
 var SizeText = 18;
+
+function initInterface() {
+    document.body.addEventListener('mousedown', dragHandler.start);
+    document.body.addEventListener('mouseup', dragHandler.end);
+    ConnectChat();
+    ConnectField();
+
+}
 
 function SizeMap(params) {
 
@@ -39,9 +46,9 @@ function Wheel(e) {
     var delta = e.deltaY || e.detail || e.wheelDelta;
     // отмасштабируем при помощи CSS
     if (delta > 0) {
-        SizeMap(1);
-    } else {
         SizeMap(2);
+    } else {
+        SizeMap(1);
     }
     // отменим прокрутку
     e.preventDefault();
@@ -49,22 +56,22 @@ function Wheel(e) {
 
 function Rotate(params) {
     var div = document.getElementById('main');
-    if(params === 0) {
+    if (params === 0) {
         div.style.transition = "5s all";
         div.style.boxShadow = "25px 25px 20px  rgba(0,0,0,0.5)";
         div.style.transform = "rotate(0deg)";
     }
-    if(params === 90) {
+    if (params === 90) {
         div.style.transition = "5s all";
         div.style.boxShadow = "25px -25px 20px  rgba(0,0,0,0.5)";
         div.style.transform = "rotate(90deg)";
     }
-    if(params === 180) {
+    if (params === 180) {
         div.style.transition = "5s all";
         div.style.boxShadow = "-25px -25px 20px  rgba(0,0,0,0.5)";
         div.style.transform = "rotate(180deg)";
     }
-    if(params === 270) {
+    if (params === 270) {
         div.style.transition = "5s all";
         div.style.boxShadow = "-25px 25px 20px  rgba(0,0,0,0.5)";
         div.style.transform = "rotate(270deg)";
