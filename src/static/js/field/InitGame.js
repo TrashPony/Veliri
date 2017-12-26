@@ -49,7 +49,8 @@ function InitPlayer(jsonMessage) {
     if (JSON.parse(jsonMessage).user_ready === "true") {
         var ready = document.getElementById("Ready");
         ready.value = "Ты готов!";
-        ready.className = "button noActive"
+        ready.className = "button noActive";
+        ready.onclick = null
     }
 
     phase = JSON.parse(jsonMessage).game_phase;

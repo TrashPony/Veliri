@@ -43,6 +43,10 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 
 	if phaseChange {
 		for _, player := range activeUser {
+
+			// обновляем статус игроков в памяти
+			activeGame.SetUserReady(player.GetLogin(), "false")
+
 			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
