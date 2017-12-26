@@ -22,7 +22,7 @@ type FieldResponse struct {
 	TypeUnit    string `json:"type_unit"`
 	ErrorType   string `json:"error_type"`
 	Phase       string `json:"phase"`
-	UserReady   string `json:"user_ready"`
+	UserReady   bool `json:"user_ready"`
 	UserOwned   string `json:"user_owned"`
 	Error       string `json:"error"`
 }

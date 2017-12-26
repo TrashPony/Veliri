@@ -81,6 +81,7 @@ func (game *Game) GetUserReady(userName string) bool {
 			return userStat.Ready
 		}
 	}
+	return false
 }
 
 func (game *Game) SetUserReady(userName string, readyParams bool)  {

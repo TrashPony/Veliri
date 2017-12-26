@@ -13,7 +13,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 	activeGame, ok := Games[client.GetGameID()]
 	respawn := client.GetRespawn()
 
-	if find && ok {
+	if find && ok && !activeGame.GetUserReady(client.GetLogin()) {
 		if activeGame.GetStat().Phase == "move" {
 			if unit.Action {
 
@@ -34,7 +34,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 
-		if activeGame.GetStat().Phase == "targeting" {
+		if activeGame.GetStat().Phase == "targeting"  {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
 				targetUnit, ok := client.GetHostileUnit(coordinate.X,coordinate.Y)
