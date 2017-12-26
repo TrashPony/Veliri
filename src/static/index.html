@@ -1,14 +1,158 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title> Veliri </title>
-    <script src="/js/app.js"></script>
-</head>
+    <title>Veliri</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
 
+    <link href="./css/menuAnimation.css" rel="stylesheet">
+    <link href="./css/all.css" rel="stylesheet">
+    <link href="./css/field/units.css" rel="stylesheet">
+    <link href="./css/field/field.css" rel="stylesheet">
+    <link href="./css/chat.css" rel="stylesheet">
+    <script src="./js/field/Field.js"></script>
+    <script src="./js/field/ReaderField.js"></script>
+    <script src="./js/field/InitGame.js"></script>
+    <script src="./js/field/Interface.js"></script>
+    <script src="./js/field/ActionUnit.js"></script>
+    <script src="./js/field/MouseOver.js"></script>
+    <script src="./js/field/ActionCoordinate.js"></script>
+    <script src="./js/MoveWindow.js"></script>
+    <script src="./js/Chat.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./web4blender/tank5.min.css?v=25122017234511">
+
+    <script type="text/javascript" src="./web4blender/b4w.min.js?v=25122017234511"></script>
+    <script type="text/javascript" src="./web4blender/tank5.js?v=25122017234511"></script>
+
+    <script> ConnectField() </script>
+</head>
 <body>
-    <button OnClick="Send()">
-        SendTest
-    </button>
+<div id="ControlPanel">
+    <table class="animateTable">
+        <tr align="center">
+            <th class="h" colspan="2"> Карта: <font class="moveWindow" onmousedown="moveWindow(event,'ControlPanel')">⇵</font> </th>
+        </tr>
+        <tr align="center">
+            <td> <input type="submit" class="button" onclick="SizeMap(1)" value="+"> </td>
+            <td> <input type="submit" class="button" onclick="SizeMap(2)" value="-"> </td>
+        </tr>
+        <tr align="center">
+            <td> <input type="submit" class="button" onclick="Rotate(0)" value="0"> </td>
+            <td> <input type="submit" class="button" onclick="Rotate(90)" value="90"> </td>
+        </tr>
+        <tr align="center">
+            <td> <input type="submit" class="button" onclick="Rotate(180)" value="180"> </td>
+            <td> <input type="submit" class="button" onclick="Rotate(270)" value="270"> </td>
+        </tr>
+    </table>
+</div>
+
+<div id="chatBlock">
+    <div id="chat">
+        <div id="chatMenu" align="right"> <span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span> </div>
+
+        <div id="chatBox"></div>
+
+        <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
+        <input type="button" value="Send" class="button" onclick="chatMessage()">
+        <script>ConnectChat()</script>
+    </div>
+</div>
+
+<div class="info" align="center">
+    <div class="info subMenu" id="subMenu">
+        <table class="table" >
+            <tr align="center">
+                <th class="h" colspan="2" width="160"> Информация: <font class="moveWindow" onmousedown="moveWindow(event, 'subMenu')">⇵</font> </th>
+            </tr>
+            <tr align="center">
+                <td> Деньги: </td>
+                <td> <font id="price" class="Value"> </font> </td>
+            </tr>
+            <tr align="center">
+                <td> Ход № </td>
+                <td> <font id="step" class="Value"> </font> </td>
+            </tr>
+            <tr align="center">
+                <td> Фаза: </td>
+                <td> <font id="phase" class="Value"> </font> </td>
+            </tr>
+        </table>
+        <br>
+        <table class="table" >
+            <tr align="center">
+                <th class="h" width="160"> Действия: </th>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Пропустить ход"> </td>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Способность"> </td>
+            </tr>
+            <tr align="center">
+                <td> <input type="submit" class="button noActive" onclick="" value="Ремонт"> </td>
+            </tr>
+            <tr align="center">
+                <td colspan="2"> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!"> </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="floatTip">
+    <table class="animateTable" >
+        <tr align="center">
+            <th class="h" colspan="2" id="tipUnit"></th>
+        </tr>
+        <tr align="center">
+            <td> Владелец </td>
+            <td id="tipOwned"> </td>
+        </tr>
+        <tr align="center">
+            <td> HP </td>
+            <td id="tipHP"> </td>
+        </tr>
+        <tr align="center">
+            <td> Действие </td>
+            <td id="tipAction"> </td>
+        </tr>
+        <tr align="center">
+            <td> Цель </td>
+            <td id="tipTarget"> </td>
+        </tr>
+        <tr align="center">
+            <td> Урон </td>
+            <td id="tipDamage"> </td>
+        </tr>
+        <tr align="center">
+            <td> Скорость </td>
+            <td id="tipMove"> </td>
+        </tr>
+        <tr align="center">
+            <td> Инициатива </td>
+            <td id="tipInit"> </td>
+        </tr>
+        <tr align="center">
+            <td> Дальность атаки </td>
+            <td id="tipRangeAttack"> </td>
+        </tr>
+        <tr align="center">
+            <td> Дальность обзора </td>
+            <td id="tipRangeView"> </td>
+        </tr>
+
+        <tr align="center">
+            <td> Площадь атаки </td>
+            <td id="tipArea"> </td>
+        </tr>
+        <tr align="center">
+            <td> Тип атаки </td>
+            <td id="tipTypeAttack"> </td>
+        </tr>
+    </table>
+</div>
+
+<div id="main_canvas_container"></div>
 </body>
 </html>

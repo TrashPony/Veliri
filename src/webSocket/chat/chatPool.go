@@ -2,7 +2,6 @@ package chat
 
 import (
 	"github.com/gorilla/websocket"
-	"strconv"
 	"sync"
 	"log"
 )

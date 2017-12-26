@@ -45,6 +45,8 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
 
+			activeGame.SetUserReady(player.GetLogin(), "false") // TODO коректоно обновлять статус готовности игрока
+
 			if phase == "move" {
 				resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
 				activeGame.GetStat().Step += 1
