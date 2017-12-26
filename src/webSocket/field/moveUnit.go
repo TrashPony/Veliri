@@ -68,7 +68,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func skipMoveUnit(msg FieldMessage, ws *websocket.Conn)  {
+func skipMoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
@@ -92,7 +92,7 @@ func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activ
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {
 
-			_, okGetUnit := user.GetHostileUnit(x,y)
+			_, okGetUnit := user.GetHostileUnit(x, y)
 
 			if okGetUnit {
 				//coordinate, _ := activeGame.GetMap().GetCoordinate(x,y)
@@ -100,15 +100,15 @@ func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activ
 				coordinate := game.Coordinate{X: x, Y: y}
 				user.AddCoordinate(&coordinate) // добавляем на место старого места юнита пустую зону
 				//}
-				user.DelHostileUnit(x,y) 		                   // и удаляем в общей карте вражеских юнитов
-				openCoordinate(user.GetLogin(), x, y)              // и остылаем событие удаление юнита
+				user.DelHostileUnit(x, y)             // и удаляем в общей карте вражеских юнитов
+				openCoordinate(user.GetLogin(), x, y) // и остылаем событие удаление юнита
 
 			}
 
 			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)
 
-			if okGetXY {                                 // если следующая клетка юнита в зоне видимости
-				user.DelWatchCoordinate(unit.X, unit.Y)  // удаляем пустую клетку
+			if okGetXY { // если следующая клетка юнита в зоне видимости
+				user.DelWatchCoordinate(unit.X, unit.Y) // удаляем пустую клетку
 				user.AddHostileUnit(unit)               // и добавляем в общую карту вражеских юнитов
 				unitsParameter.initUnit(unit, user.GetLogin())
 			}

@@ -14,13 +14,13 @@ function SizeMap(params) {
     var divs = document.getElementsByClassName("fieldUnit");
 
     if (params === 1) {
-        SizeUnit = SizeUnit + 3;
-        SizeText = SizeText + 0.6;
+        SizeUnit = SizeUnit + 6;
+        SizeText = SizeText + 1.2;
     }
 
     if (params === 2) {
-        SizeUnit = SizeUnit - 3;
-        SizeText = SizeText - 0.6;
+        SizeUnit = SizeUnit - 6;
+        SizeText = SizeText - 1.2;
     }
 
     for (var i in divs) {

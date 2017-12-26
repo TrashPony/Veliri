@@ -22,7 +22,7 @@ func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePa
 
 		for _, pathNode := range path {
 
-			errorMove := Move(unit, pathNode, client, end, game)
+			errorMove := Move(unit, &pathNode, client, end, game)
 
 			if errorMove != nil && errorMove.Error() == "cell is busy" {
 				moveTrigger = false
@@ -41,7 +41,7 @@ func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePa
 	}
 }
 
-func Move(unit *Unit, pathNode Coordinate, client *Player, end Coordinate, game *Game) (error) {
+func Move(unit *Unit, pathNode *Coordinate, client *Player, end Coordinate, game *Game) (error) {
 
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			_, ok := client.GetHostileUnit(end.X,end.Y)
@@ -62,6 +62,8 @@ func Move(unit *Unit, pathNode Coordinate, client *Player, end Coordinate, game 
 
 		game.DelUnit(unit) // Удаляем юнита со старых позиций
 		client.DelUnit(unit.X, unit.Y)
+
+	    findDirection(pathNode, unit)
 
 		unit.X = pathNode.X // даем новые координаты юниту
 		unit.Y = pathNode.Y
@@ -144,5 +146,43 @@ func MoveUnit(idGame int, unit *Unit, toX int, toY int) int {
 		return queue
 	} else {
 		return queue
+	}
+}
+
+func findDirection(pathNode *Coordinate, unit *Unit)  {
+	//TODO//////////// проверка направления юнита ///////////////
+
+	if pathNode.X < unit.X && pathNode.Y == unit.Y {
+		println("Идет ровно влево")
+	}
+
+	if pathNode.X > unit.X && pathNode.Y == unit.Y {
+		println("Идет ровно вправо")
+	}
+
+	if pathNode.X == unit.X && pathNode.Y > unit.Y {
+		println("Идет ровно вниз")
+	}
+
+	if pathNode.X == unit.X && pathNode.Y < unit.Y {
+		println("Идет ровно вверх")
+	}
+
+	//TODO///////////////////////////////////////////////////////
+
+	if pathNode.X < unit.X && pathNode.Y < unit.Y {
+		println("Идет верх влево")
+	}
+
+	if pathNode.X > unit.X && pathNode.Y < unit.Y {
+		println("Идет верх вправо")
+	}
+
+	if pathNode.X < unit.X && pathNode.Y > unit.Y {
+		println("Идет вниз влево")
+	}
+
+	if pathNode.X > unit.X && pathNode.Y > unit.Y {
+		println("Идет вниз вправо")
 	}
 }
