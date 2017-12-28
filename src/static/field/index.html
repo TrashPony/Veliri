@@ -21,8 +21,11 @@
     <script src="../js/MoveWindow.js"></script>
     <script src="../js/Chat.js"></script>
 
+
+    <script> ConnectField() </script>
+
 </head>
-<body oncontextmenu="return false;" onload="initInterface()">
+<body oncontextmenu="return false;">
 
 <div id="ControlPanel">
     <table class="animateTable">
@@ -52,7 +55,7 @@
 
         <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
         <input type="button" value="Send" class="button" onclick="chatMessage()">
-
+        <script>ConnectChat()</script>
     </div>
 </div>
 

@@ -37,7 +37,7 @@ body {
     top: 1%;
     right: 20%;
     padding: 10px;
-    z-index: 10;
+    z-index: 1000;
 }
 
 #ControlPanel {
@@ -47,14 +47,14 @@ body {
     position: fixed;
     top: 1%;
     left: 22.5%;
-    z-index: 10;
+    z-index: 1000;
 }
 
 #chatBlock {
     top: 16%;
     left: 14.2%;
     position: fixed;
-    z-index: 10;
+    z-index: 1000;
 }
 
 #main {
