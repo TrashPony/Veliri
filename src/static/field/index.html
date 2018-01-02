@@ -4,33 +4,32 @@
     <meta charset="utf-8">
     <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/all.css" rel="stylesheet">
-    <link href="../css/field/units.css" rel="stylesheet">
     <link href="../css/field/field.css" rel="stylesheet">
     <link href="../css/chat.css" rel="stylesheet">
 
     <title>Veliri</title>
 
-    <script src="../js/field/Field.js"></script>
+    <script src="../js/field/WebSocket.js"></script>
     <script src="../js/field/ReaderField.js"></script>
     <script src="../js/field/InitGame.js"></script>
     <script src="../js/field/Interface.js"></script>
     <script src="../js/field/ActionUnit.js"></script>
     <script src="../js/field/MouseOver.js"></script>
     <script src="../js/field/ActionCoordinate.js"></script>
-    <script src="../js/field/GrabScroll.js"></script>
     <script src="../js/MoveWindow.js"></script>
     <script src="../js/Chat.js"></script>
+    <script src="../lib/phaser.js"></script>
+    <script src="../js/field/game.js"></script>
 
 
-    <script> ConnectField() </script>
 
 </head>
-<body oncontextmenu="return false;">
+<body oncontextmenu="return false;" onload="openSockets()">
 
 <div id="ControlPanel">
     <table class="animateTable">
         <tr align="center">
-            <th class="h" colspan="2"> Карта: <font class="moveWindow" onmousedown="moveWindow(event,'ControlPanel')">⇵</font> </th>
+            <th class="h" colspan="2"> Карта: <span class="moveWindow" onmousedown="moveWindow(event,'ControlPanel')">⇵</span> </th>
         </tr>
         <tr align="center">
             <td> <input type="submit" class="button" onclick="SizeMap(1)" value="+"> </td>
@@ -55,7 +54,6 @@
 
         <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
         <input type="button" value="Send" class="button" onclick="chatMessage()">
-        <script>ConnectChat()</script>
     </div>
 </div>
 

@@ -1,12 +1,15 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
+    var x;
+    var y;
+
     if (event === "InitPlayer") {
         InitPlayer(jsonMessage);
     }
 
     if (event === "InitMap") {
-        FieldCreate(jsonMessage);
+        FieldCreate(jsonMessage)
     }
 
     if (event === "InitUnit") {
@@ -46,11 +49,17 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "OpenCoordinate") {
-        OpenCoordinate(jsonMessage)
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        var idCell = x + ":" + y;
+        OpenCoordinate(idCell)
     }
 
     if (event === "DellCoordinate") {
-        DelUnit(jsonMessage)
+        x = JSON.parse(jsonMessage).x;
+        y = JSON.parse(jsonMessage).y;
+        var idDell = x + ":" + y;
+        DelUnit(idDell)
     }
 
     if (event === "MouseOver") {
@@ -64,4 +73,5 @@ function ReadResponse(jsonMessage) {
     if (event === "TargetUnit") {
         TargetUnit();
     }
+
 }

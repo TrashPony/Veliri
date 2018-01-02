@@ -3,6 +3,7 @@ package field
 import (
 	"../../game"
 	"github.com/gorilla/websocket"
+	"time"
 )
 
 func toGame(msg FieldMessage, ws *websocket.Conn) {
@@ -39,6 +40,8 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 	}
+
+	time.Sleep(1000 * time.Millisecond)
 
 	UpdateWatchZone(client, Game, nil)
 	client.SetGameID(Game.GetStat().Id)// добавляем принадлежность игрока в игре

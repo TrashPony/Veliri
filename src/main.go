@@ -6,6 +6,7 @@ import (
 	"./webSocket/field"
 	"./webSocket/lobby"
 	"./webSocket/chat"
+	"./webSocket/globalMap"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ func main() {
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
+	router.HandleFunc("/wsGlobal", webSocket.HandleConnections)
 	router.HandleFunc("/wsChat", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
 
@@ -26,6 +28,8 @@ func main() {
 	go field.InitUnitSender()
 	go field.CoordinateSender()
 	go field.InitStructureSender()
+	go globalMap.GlobalReposeSender()
+	go globalMap.TimerSteep() // таймер сервер отвечает за синхронизацию всех игроков в сети, должен содержать в себе всю логику что бы все действия проводились через него
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

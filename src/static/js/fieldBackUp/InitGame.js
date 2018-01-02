@@ -16,9 +16,26 @@ function getCookie(name) {
 }
 
 function FieldCreate(jsonMessage) {
-    var x = JSON.parse(jsonMessage).x_map;
-    var y = JSON.parse(jsonMessage).y_map;
-    Game(Number(x), Number(y)) // создаем карту размером х:у
+    var xSize = JSON.parse(jsonMessage).x_map;
+    var ySize =JSON.parse(jsonMessage).y_map;
+    var main = document.getElementById("main");
+
+    for (var y = 0; y < ySize; y++) {
+        for (var x = 0; x < xSize; x++) {
+            var div = document.createElement('div');
+            div.className = "fieldUnit";
+            div.id = x + ":" + y;
+            div.innerHTML = x + ":" + y;
+            div.onclick = function () {
+                SelectTarget(this.id);
+            };
+            main.appendChild(div);
+        }
+        var nline = document.createElement('div');
+        nline.className = "nline";
+        nline.innerHTML = "";
+        main.appendChild(nline);
+    }
 }
 
 function InitPlayer(jsonMessage) {
@@ -41,35 +58,37 @@ function InitPlayer(jsonMessage) {
 
 function InitUnit(jsonMessage) {
 
+    DelMoveCoordinate();
+
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var type = JSON.parse(jsonMessage).type_unit;
-    var userOwned = JSON.parse(jsonMessage).user_owned;
-    var userName  = JSON.parse(jsonMessage).user_name;
-
-    var cell = cells[x + ":" + y];
-    var scout = game.add.tileSprite(cell.x, cell.y, 100, 100, type);
-    scout.inputEnabled = true; // включаем ивенты на спрайт
-    scout.id = x + ":" + y;
-    scout.events.onInputOver.add(mouse_over, this); // обрабатываем нажатие мышки
-    scout.events.onInputOut.add(mouse_out, this);     // обрабатываем нажатие мышки
-
-    if ( userName === userOwned) {
-        scout.events.onInputDown.add(SelectUnit, this);
-    }
-
-    cells[scout.id] = scout;
-    /*DelMoveCoordinate();
-
     var hp = JSON.parse(jsonMessage).hp;
     var action = JSON.parse(jsonMessage).unit_action;
+    var userOwned = JSON.parse(jsonMessage).user_owned;
+
+    var clicked_id = x + ":" + y;
+    var cell = document.getElementById(clicked_id);
+
+    if (type === "tank") cell.className = "fieldUnit tank";
+    if (type === "scout") cell.className = "fieldUnit scout";
+    if (type === "artillery") cell.className = "fieldUnit artillery";
+
+    cell.onmouseover = function () {
+        mouse_over(this.id);
+    };
+    cell.onmouseout = function () {
+        mouse_out();
+    };
 
     cell.innerHTML = "hp: " + hp;
 
-    if ( userName === userOwned) {
+    if (JSON.parse(jsonMessage).user_name === userOwned) {
         cell.style.color = "#fbfdff";
         cell.style.borderColor = "#fbfdff";
-
+        cell.onclick = function () {
+            SelectUnit(this.id)
+        };
         if (action === "false") {
             cell.style.filter = "brightness(50%)";
         } else {
@@ -81,11 +100,11 @@ function InitUnit(jsonMessage) {
         cell.onclick = function () {
             SelectTarget(this.id)
         };
-    }*/
+    }
 }
 
 function InitStructure(jsonMessage) {
-    /*var x = JSON.parse(jsonMessage).x;
+    var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var type = JSON.parse(jsonMessage).type_structure;
     var user = JSON.parse(jsonMessage).user_owned;
@@ -111,15 +130,15 @@ function InitStructure(jsonMessage) {
             cell.style.color = "#FF0117";
             cell.style.borderColor = "#FF0117";
         }
-    }*/
+    }
 }
 
 function InitObstacle(jsonMessage) {
-    /*var x = JSON.parse(jsonMessage).x;
+    var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var coor_id = x + ":" + y;
     var cell = document.getElementById(coor_id);
-    cell.className = "fieldUnit obstacle"*/
+    cell.className = "fieldUnit obstacle"
 }
 
 function ReadyReader(jsonMessage) {
@@ -138,6 +157,16 @@ function ReadyReader(jsonMessage) {
             ready.value = "Готов!";
             ready.className = "button";
             ready.onclick = function () { Ready(); };
+
+            /* if (phase === "move") {
+                ready.style.backgroundColor = "#A8ADE1";
+            }
+            if (phase === "targeting") {
+                ready.style.backgroundColor = "#E1C7A6";
+            }
+            if (phase === "attack") {
+                ready.style.backgroundColor = "#E12D27";
+            } */
 
             phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
             var cells = document.getElementsByClassName("fieldUnit create");

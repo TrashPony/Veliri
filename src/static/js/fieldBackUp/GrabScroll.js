@@ -16,7 +16,10 @@ var dragHandler = {
     drag: function (e) {
         var deltaX = e.clientX - dragHandler.lastClientX;
         var deltaY = e.clientY - dragHandler.lastClientY;
-        window.scrollTo(window.scrollX - deltaX, window.scrollY - deltaY);
+
+        game.camera.x = game.camera.x - deltaX;
+        game.camera.y = game.camera.y - deltaY;
+
         dragHandler.lastClientX = e.clientX;
         dragHandler.lastClientY = e.clientY;
         e.preventDefault();

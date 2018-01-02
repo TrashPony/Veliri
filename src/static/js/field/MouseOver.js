@@ -13,8 +13,8 @@ function ReadInfoMouseOver(jsonMessage) {
     toolTip(jsonMessage);
 }
 
-function mouse_over(unit_id) {
-    var xy = unit_id.split(":");
+function mouse_over(cell) {
+    var xy = cell.id.split(":");
 
     var x = xy[0];
     var y = xy[1];
@@ -28,7 +28,9 @@ function mouse_over(unit_id) {
 }
 
 function mouse_out() {
-    toolTip();
+    var floatTipStyle = document.getElementById("floatTip").style;
+    floatTipStyle.display = "none"; // Прячем слой
+
     var targetCell = document.getElementsByClassName("aim mouse");
     while (targetCell.length > 0) {
         targetCell[0].remove();
@@ -56,20 +58,18 @@ function moveTip(e) {
 function toolTip(jsonMessage) {
     var floatTipStyle = document.getElementById("floatTip").style;
     if (jsonMessage) {
-        document.getElementById("tipUnit").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).type_unit + "</font>";
-        document.getElementById("tipOwned").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).user_owned + "</font>";
-        document.getElementById("tipHP").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).hp + "</font>";
-        document.getElementById("tipAction").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).unit_action + "</font>";
-        document.getElementById("tipTarget").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).target + "</font>";
-        document.getElementById("tipDamage").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).damage + "</font>";
-        document.getElementById("tipMove").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).move_speed + "</font>";
-        document.getElementById("tipInit").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).init + "</font>";
-        document.getElementById("tipRangeAttack").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).range_attack + "</font>";
-        document.getElementById("tipRangeView").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).range_view + "</font>";
-        document.getElementById("tipArea").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).area_attack + "</font>";
-        document.getElementById("tipTypeAttack").innerHTML = "<font class='Value'>" + JSON.parse(jsonMessage).type_attack + "</font>";
+        document.getElementById("tipUnit").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).type_unit + "</spen>";
+        document.getElementById("tipOwned").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).user_owned + "</spen>";
+        document.getElementById("tipHP").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).hp + "</spen>";
+        document.getElementById("tipAction").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).unit_action + "</spen>";
+        document.getElementById("tipTarget").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).target + "</spen>";
+        document.getElementById("tipDamage").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).damage + "</spen>";
+        document.getElementById("tipMove").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).move_speed + "</spen>";
+        document.getElementById("tipInit").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).init + "</spen>";
+        document.getElementById("tipRangeAttack").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).range_attack + "</spen>";
+        document.getElementById("tipRangeView").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).range_view + "</spen>";
+        document.getElementById("tipArea").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).area_attack + "</spen>";
+        document.getElementById("tipTypeAttack").innerHTML = "<spen class='Value'>" + JSON.parse(jsonMessage).type_attack + "</spen>";
         floatTipStyle.display = "block"; // Показываем слой
-    } else {
-        floatTipStyle.display = "none"; // Прячем слой
     }
 }

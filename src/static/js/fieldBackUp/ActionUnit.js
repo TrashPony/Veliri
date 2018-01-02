@@ -25,7 +25,7 @@ function CreateUnit(jsonMessage) {
     typeUnit = null;
 }
 
-function SelectUnit(unit) {
+function SelectUnit(id) {
     if (move !== null) {
         DelMoveCoordinate();
     }
@@ -35,16 +35,16 @@ function SelectUnit(unit) {
         targetCell[0].remove();
     }
 
-    var xy = unit.id.split(":");
+    var xy = id.split(":");
     var x = xy[0];
     var y = xy[1];
 
     if (phase === "move") {
-        move = unit;
+        move = id;
     }
 
     if (phase === "targeting") {
-        target = unit;
+        target = id;
     }
 
     field.send(JSON.stringify({
@@ -111,8 +111,8 @@ function setUnitAction(jsonMessage) {
     }
 }
 
-function SelectTarget(clicked) {
-    var xy = clicked.id.split(":");
+function SelectTarget(clicked_id) {
+    var xy = clicked_id.split(":");
 
     var x = xy[0];
     var y = xy[1];
@@ -121,7 +121,7 @@ function SelectTarget(clicked) {
     var unit_y;
 
     if(phase === "targeting" && target !== null) {
-        unit = target.id.split(":");
+        unit = target.split(":");
         unit_x = unit[0];
         unit_y = unit[1];
 
@@ -137,7 +137,7 @@ function SelectTarget(clicked) {
     }
 
     if(phase === "move" && move !== null) {
-        unit = move.id.split(":");
+        unit = move.split(":");
         unit_x = unit[0];
         unit_y = unit[1];
         field.send(JSON.stringify({

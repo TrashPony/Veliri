@@ -1,13 +1,89 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <script type="text/javascript" src="test/crafty.js"></script>
-    <script type="text/javascript" src="test/crafty.hexametric.js"></script>
+    <script type="text/javascript" src="./lib/phaser.js"></script>
     <script type="text/javascript" src="test/game.js"></script>
-    <title>Iso</title>
+    <script type="text/javascript" src="test/WebSocket.js"></script>
+    <script type="text/javascript" src="test/Reader.js"></script>
+    <script type="text/javascript" src="test/MouseOverOut.js"></script>
+    <script type="text/javascript" src="./js/Chat.js"></script>
+    <script type="text/javascript" src="./js/MoveWindow.js"></script>
 
+    <link href="./css/all.css" rel="stylesheet">
+    <link href="./css/menuAnimation.css" rel="stylesheet">
+    <link href="./test/style.css" rel="stylesheet">
+    <link href="./css/chat.css" rel="stylesheet">
+
+    <title>Iso</title>
 </head>
-<body ONLOAD="FieldCreate()">
+<body ONLOAD="ConnectWS()" oncontextmenu="return false;">
+
+<div id="main" onmousemove="moveTip(event)" align="center"></div>
+
+<div id="chatBlock">
+    <div id="chat">
+        <div id="chatMenu" align="right"> <span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span> </div>
+
+        <div id="chatBox"></div>
+
+        <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
+        <input type="button" value="Send" class="button" onclick="chatMessage()">
+        <script>ConnectChat()</script>
+    </div>
+</div>
+
+<div id="floatTip">
+    <table class="animateTable" >
+        <tr align="center">
+            <th class="h" colspan="2" id="tipUnit"></th>
+        </tr>
+        <tr align="center">
+            <td> Владелец </td>
+            <td id="tipOwned"> </td>
+        </tr>
+        <tr align="center">
+            <td> HP </td>
+            <td id="tipHP"> </td>
+        </tr>
+        <tr align="center">
+            <td> Действие </td>
+            <td id="tipAction"> </td>
+        </tr>
+        <tr align="center">
+            <td> Цель </td>
+            <td id="tipTarget"> </td>
+        </tr>
+        <tr align="center">
+            <td> Урон </td>
+            <td id="tipDamage"> </td>
+        </tr>
+        <tr align="center">
+            <td> Скорость </td>
+            <td id="tipMove"> </td>
+        </tr>
+        <tr align="center">
+            <td> Инициатива </td>
+            <td id="tipInit"> </td>
+        </tr>
+        <tr align="center">
+            <td> Дальность атаки </td>
+            <td id="tipRangeAttack"> </td>
+        </tr>
+        <tr align="center">
+            <td> Дальность обзора </td>
+            <td id="tipRangeView"> </td>
+        </tr>
+
+        <tr align="center">
+            <td> Площадь атаки </td>
+            <td id="tipArea"> </td>
+        </tr>
+        <tr align="center">
+            <td> Тип атаки </td>
+            <td id="tipTypeAttack"> </td>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>

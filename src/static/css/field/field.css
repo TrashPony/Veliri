@@ -35,7 +35,7 @@ body {
     box-shadow: 0 0 30px 0 rgb(0, 164, 255);
     position:fixed;
     top: 1%;
-    right: 20%;
+    right: 5%;
     padding: 10px;
     z-index: 1000;
 }
@@ -46,13 +46,13 @@ body {
     margin-right: 15px;
     position: fixed;
     top: 1%;
-    left: 22.5%;
+    left: 3.5%;
     z-index: 1000;
 }
 
 #chatBlock {
-    top: 16%;
-    left: 14.2%;
+    bottom: 200px;
+    left: 3.2%;
     position: fixed;
     z-index: 1000;
 }
@@ -60,7 +60,6 @@ body {
 #main {
     display:inline-block;
     white-space: nowrap;
-    background-image: url(/img/terrain.jpg);
     overflow:  auto;
     resize: both;
     position:relative;

@@ -1,81 +1,30 @@
-var SizeUnit = 70;
-var SizeText = 18;
-
-function initInterface() {
-    document.body.addEventListener('mousedown', dragHandler.start);
-    document.body.addEventListener('mouseup', dragHandler.end);
+function openSockets() {
     ConnectChat();
     ConnectField();
+}
 
+function GrabCamera() {
+    if (game.input.activePointer.rightButton.isDown) { // ловит нажатие правой кнопки маши в игре
+        if (game.origDragPoint) {
+            game.camera.x += game.origDragPoint.x - game.input.activePointer.position.x; // перемещать камеру по сумме, перемещенную мышью с момента последнего обновления
+            game.camera.y += game.origDragPoint.y - game.input.activePointer.position.y;
+        }
+        game.origDragPoint = game.input.activePointer.position.clone(); // установите новое начало перетаскивания в текущую позицию
+    } else {
+        game.origDragPoint = null;
+    }
 }
 
 function SizeMap(params) {
 
-    var divs = document.getElementsByClassName("fieldUnit");
-
-    if (params === 1) {
-        SizeUnit = SizeUnit + 6;
-        SizeText = SizeText + 1.2;
-    }
-
-    if (params === 2) {
-        SizeUnit = SizeUnit - 6;
-        SizeText = SizeText - 1.2;
-    }
-
-    for (var i in divs) {
-        var div = document.getElementById(divs[i].id);
-        if (div) {
-            if (params === 1) {
-                div.style.height = SizeUnit + "px";
-                div.style.width = SizeUnit + "px";
-                div.style.fontSize = SizeText + "px";
-            }
-
-            if (params === 2) {
-                div.style.height = SizeUnit + "px";
-                div.style.width = SizeUnit + "px";
-                div.style.fontSize = SizeText + "px";
-            }
-        }
-    }
 }
 
 function Wheel(e) {
 
-    var delta = e.deltaY || e.detail || e.wheelDelta;
-    // отмасштабируем при помощи CSS
-    if (delta > 0) {
-        SizeMap(2);
-    } else {
-        SizeMap(1);
-    }
-    // отменим прокрутку
-    e.preventDefault();
 }
 
 function Rotate(params) {
-    var div = document.getElementById('main');
-    if (params === 0) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotate(0deg)";
-    }
-    if (params === 90) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotate(90deg)";
-    }
-    if (params === 180) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "-25px -25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotate(180deg)";
-    }
-    if (params === 270) {
-        div.style.transition = "5s all";
-        div.style.boxShadow = "-25px 25px 20px  rgba(0,0,0,0.5)";
-        div.style.transform = "rotate(270deg)";
-    }
+
 }
 
 
