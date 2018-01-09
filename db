@@ -114,3 +114,11 @@ INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle'
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 6 , 4, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 5, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 6, '');
+
+
+
+
+
+
+
+# update action_game_unit Set action=true;

@@ -12,6 +12,9 @@ var fieldPipe = make(chan FieldResponse)
 var initUnit = make(chan InitUnit)
 var initStructure = make(chan InitStructure)
 var coordinate = make(chan sendCoordinate)
+var move = make(chan Move)
+
+
 
 var usersFieldWs = make(map[*websocket.Conn]*game.Player) // тут будут храниться наши подключения
 var Games = make(map[int]*game.Game)
@@ -84,6 +87,24 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Play
 func FieldReposeSender() {
 	for {
 		resp := <-fieldPipe
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.GetLogin() == resp.UserName {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func MoveSender() {
+	for {
+		resp := <-move
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName {

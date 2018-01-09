@@ -1,8 +1,8 @@
 function ReadInfoMouseOver(jsonMessage) {
     if (JSON.parse(jsonMessage).target !== "") {
         var xy = JSON.parse(jsonMessage).target.split(":");
-        x = xy[0];
-        y = xy[1];
+        var x = xy[0];
+        var y = xy[1];
         var idTarget = x + ":" + y;
         var targetCell = document.getElementById(idTarget);
 

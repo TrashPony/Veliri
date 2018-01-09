@@ -59,6 +59,14 @@ func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
 	}
 }
 
+type Move struct {
+	Event       string `json:"event"`
+	UserName    string `json:"user_name"`
+	UnitX		int    `json:"unit_x"`
+	UnitY		int	   `json:"unit_y"`
+	PathNodes   []game.Coordinate `json:"path_nodes"`
+}
+
 type InitStructure struct {
 	Event      		 string `json:"event"`
 	UserName  		 string `json:"user_name"`

@@ -1,18 +1,15 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
-    var x;
-    var y;
-
-    if (event === "InitPlayer") {
+    if (event === "InitPlayer") { // +
         InitPlayer(jsonMessage);
     }
 
-    if (event === "InitMap") {
-        FieldCreate(jsonMessage)
+    if (event === "InitMap") {    // +
+        FieldCreate(jsonMessage);
     }
 
-    if (event === "InitUnit") {
+    if (event === "InitUnit") {   // +
         InitUnit(jsonMessage);
     }
 
@@ -20,7 +17,7 @@ function ReadResponse(jsonMessage) {
         InitStructure(jsonMessage);
     }
 
-    if (event === "InitObstacle") {
+    if (event === "InitObstacle") { // +
         InitObstacle(jsonMessage);
     }
 
@@ -28,11 +25,11 @@ function ReadResponse(jsonMessage) {
         CreateUnit(jsonMessage);
     }
 
-    if (event === "Ready") {
+    if (event === "Ready") {      // +
         ReadyReader(jsonMessage);
     }
 
-    if (event === "SelectUnit") {
+    if (event === "SelectUnit") {  // +-
         setUnitAction(jsonMessage);
     }
 
@@ -41,37 +38,31 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "emptyCoordinate") {
-        EmptyCoordinate(jsonMessage)
+        OpenCoordinate(jsonMessage)
     }
 
     if (event === "SelectCoordinateCreate") {
         SelectCoordinateCreate(jsonMessage)
     }
 
-    if (event === "OpenCoordinate") {
-        x = JSON.parse(jsonMessage).x;
-        y = JSON.parse(jsonMessage).y;
-        var idCell = x + ":" + y;
-        OpenCoordinate(idCell)
+    if (event === "OpenCoordinate") { +
+        OpenCoordinate(jsonMessage)
     }
 
-    if (event === "DellCoordinate") {
-        x = JSON.parse(jsonMessage).x;
-        y = JSON.parse(jsonMessage).y;
-        var idDell = x + ":" + y;
-        DelUnit(idDell)
+    if (event === "DellCoordinate") { +
+        DelUnit(jsonMessage)
     }
 
-    if (event === "MouseOver") {
+    if (event === "MouseOver") { +
         ReadInfoMouseOver(jsonMessage);
     }
 
     if (event === "MoveUnit") {
-        MoveUnit(jsonMessage);
+        console.log(jsonMessage);
+        InitMoveUnit(jsonMessage);
     }
 
     if (event === "TargetUnit") {
         TargetUnit();
     }
-
 }

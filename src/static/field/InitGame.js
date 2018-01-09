@@ -18,7 +18,7 @@ function getCookie(name) {
 function FieldCreate(jsonMessage) {
     var x = JSON.parse(jsonMessage).x_map;
     var y = JSON.parse(jsonMessage).y_map;
-    Game(Number(x), Number(y)) // создаем карту размером х:у
+    Game(Number(x), Number(y)) // создаем окно игры размером х:у
 }
 
 function InitPlayer(jsonMessage) {
@@ -41,47 +41,46 @@ function InitPlayer(jsonMessage) {
 
 function InitUnit(jsonMessage) {
 
+    DelMoveCoordinate();
+
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var type = JSON.parse(jsonMessage).type_unit;
     var userOwned = JSON.parse(jsonMessage).user_owned;
     var userName  = JSON.parse(jsonMessage).user_name;
+    var action = JSON.parse(jsonMessage).unit_action;
+    var hp = JSON.parse(jsonMessage).hp;
 
     var cell = cells[x + ":" + y];
-    var scout = game.add.tileSprite(cell.x, cell.y, 100, 100, type);
-    scout.inputEnabled = true; // включаем ивенты на спрайт
-    scout.id = x + ":" + y;
-    scout.events.onInputOver.add(mouse_over, this); // обрабатываем нажатие мышки
-    scout.events.onInputOut.add(mouse_out, this);     // обрабатываем нажатие мышки
+    var unit = game.add.sprite(cell.x + tileWidth / 2, cell.y + tileWidth / 2, type);
 
-    if ( userName === userOwned) {
-        scout.events.onInputDown.add(SelectUnit, this);
-    }
+    game.physics.arcade.enable(unit);
+    unit.inputEnabled = true;           // включаем ивенты на спрайт
+    unit.anchor.setTo(0.35, 0.5);        // устанавливаем центр спрайта
+    unit.scale.set(.32);                  // устанавливаем размер спрайта от оригинала
+    unit.body.collideWorldBounds = true; // границы страницы
 
-    cells[scout.id] = scout;
-    /*DelMoveCoordinate();
+    unit.id = x + ":" + y;
+    unit.events.onInputOver.add(mouse_over); // обрабатываем нажатие мышки
+    unit.events.onInputOut.add(mouse_out);     // обрабатываем нажатие мышки
 
-    var hp = JSON.parse(jsonMessage).hp;
-    var action = JSON.parse(jsonMessage).unit_action;
+    var style;
 
-    cell.innerHTML = "hp: " + hp;
-
-    if ( userName === userOwned) {
-        cell.style.color = "#fbfdff";
-        cell.style.borderColor = "#fbfdff";
-
+    if (userName === userOwned) {
+        style = { font: "52px Arial", fill: "#00ffff" };
+        unit.events.onInputDown.add(SelectUnit);
         if (action === "false") {
-            cell.style.filter = "brightness(50%)";
-        } else {
-            cell.style.filter = "brightness(100%)";
+            unit.tint = 0x757575; // накладывает фильтр со светом
         }
     } else {
-        cell.style.color = "#FF0117";
-        cell.style.borderColor = "#FF0117";
-        cell.onclick = function () {
-            SelectTarget(this.id)
-        };
-    }*/
+        style = { font: "52px Arial", fill: "#ff0000" };
+        unit.events.onInputDown.add(SelectTarget);
+    }
+
+    var label_score = game.add.text(x, y, "hp " + hp, style);
+    unit.addChild(label_score);
+
+    units[unit.id] = unit;
 }
 
 function InitStructure(jsonMessage) {
@@ -115,11 +114,11 @@ function InitStructure(jsonMessage) {
 }
 
 function InitObstacle(jsonMessage) {
-    /*var x = JSON.parse(jsonMessage).x;
+    var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
-    var coor_id = x + ":" + y;
-    var cell = document.getElementById(coor_id);
-    cell.className = "fieldUnit obstacle"*/
+
+    var cell = cells[x + ":" + y];
+    var obstacle = game.add.tileSprite(cell.x, cell.y, 100, 100, 'obstacle');
 }
 
 function ReadyReader(jsonMessage) {

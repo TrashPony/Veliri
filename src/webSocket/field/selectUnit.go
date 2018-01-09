@@ -22,7 +22,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 				moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
 
 				for i := 0; i < len(moveCoordinate); i++ {
-					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 {
+					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 && moveCoordinate[i].X < 10 && moveCoordinate[i].Y < 10 {
 						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 							X: moveCoordinate[i].X, Y: moveCoordinate[i].Y}
 						fieldPipe <- createCoordinates
@@ -34,10 +34,10 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 
-		if activeGame.GetStat().Phase == "targeting"  {
+		if activeGame.GetStat().Phase == "targeting" {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
 			for _, coordinate := range coordinates {
-				targetUnit, ok := client.GetHostileUnit(coordinate.X,coordinate.Y)
+				targetUnit, ok := client.GetHostileUnit(coordinate.X, coordinate.Y)
 				if ok && targetUnit.NameUser != client.GetLogin() {
 					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
@@ -46,7 +46,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 	} else {
-		if activeGame.GetStat().Phase == "Init"{
+		if activeGame.GetStat().Phase == "Init" {
 			var coordinates []*game.Coordinate
 
 			for _, coordinate := range usersFieldWs[ws].GetCreateZone() {
@@ -65,5 +65,3 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 		}
 	}
 }
-
-

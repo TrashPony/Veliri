@@ -60,7 +60,6 @@ function setUnitAction(jsonMessage) {
     var errorSelect = JSON.parse(jsonMessage).error;
     var phase = JSON.parse(jsonMessage).phase;
     var coordinate;
-    var cell;
     var Cell;
 
     if (errorSelect === "") {
@@ -79,18 +78,13 @@ function setUnitAction(jsonMessage) {
                 }));
             };
 
-            coordinate = x + ":" + y;
-            cell = document.getElementById(coordinate);
+            var cell = cells[x + ":" + y];
+            cell.tint = 0xb5b5ff;
+
             if (cell) {
-                Cell = {};
-                Cell.x = x;
-                Cell.y = y;
-                Cell.id = coordinate;
-                Cell.type = cell.className;
-                SelectCell.push(Cell);
-                cell.style.filter = "brightness(85%)";
-                cell.className = "fieldUnit move";
+                moveCell.push(cell); // кладем выделеные ячейки в масив что бы потом удалить
             }
+
         } else {
             if (phase === "targeting") {
                 coordinate = x + ":" + y;
@@ -120,7 +114,7 @@ function SelectTarget(clicked) {
     var unit_x;
     var unit_y;
 
-    if(phase === "targeting" && target !== null) {
+    if (phase === "targeting" && target !== null) {
         unit = target.id.split(":");
         unit_x = unit[0];
         unit_y = unit[1];
@@ -136,7 +130,7 @@ function SelectTarget(clicked) {
         target = null;
     }
 
-    if(phase === "move" && move !== null) {
+    if (phase === "move" && move !== null) {
         unit = move.id.split(":");
         unit_x = unit[0];
         unit_y = unit[1];
@@ -151,7 +145,7 @@ function SelectTarget(clicked) {
         move = null;
     }
 
-    if(phase === "Init" && typeUnit !== null && typeUnit !== undefined) {
+    if (phase === "Init" && typeUnit !== null && typeUnit !== undefined) {
         field.send(JSON.stringify({
             event: "CreateUnit",
             type_unit: typeUnit,
@@ -161,22 +155,6 @@ function SelectTarget(clicked) {
         }));
     } else {
         typeUnit = null;
-    }
-}
-
-function MoveUnit(jsonMessage) {
-    var errorMove = JSON.parse(jsonMessage).error;
-    var action = JSON.parse(jsonMessage).unit_action;
-    if (action === "false") {
-        var x = JSON.parse(jsonMessage).x;
-        var y = JSON.parse(jsonMessage).y;
-        var idDell = x + ":" + y;
-        var cell = document.getElementById(idDell);
-        cell.style.filter = "brightness(50%)";
-    }
-
-    if (errorMove !== null) {
-        DelMoveCoordinate()
     }
 }
 

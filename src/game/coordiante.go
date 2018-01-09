@@ -3,11 +3,13 @@ package game
 import "strconv"
 
 type Coordinate struct {
-	Type 	string
+	Type    string
 	Texture string
-	X, Y, State int
-	H, G, F     int
-	Parent      *Coordinate
+	X       int `json:"x"`
+	Y       int `json:"y"`
+	State   int
+	H, G, F int
+	Parent  *Coordinate
 }
 
 func (coor Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины

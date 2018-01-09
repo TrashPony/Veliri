@@ -3,7 +3,6 @@ package field
 import (
 	"../../game"
 	"github.com/gorilla/websocket"
-	"time"
 )
 
 func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
@@ -12,8 +11,7 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
-	players := Games[client.GetGameID()].GetPlayers()
-	activeUser := ActionGameUser(players)
+	//activeUser := ActionGameUser(Games[client.GetGameID()].GetPlayers())
 
 	if find && ok {
 		if unit.Action && !activeGame.GetUserReady(client.GetLogin()) {
@@ -27,44 +25,25 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			for _, coordinate := range moveCoordinate {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
 
-					resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
-					fieldPipe <- resp
+					_, pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
+					moves := Move{Event: msg.Event, UnitX:msg.X, UnitY:msg.Y, UserName:client.GetLogin(), PathNodes: pathNodes}
+					move <- moves
 
-					truePath, pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
-
-					for i, pathNode := range pathNodes {
-						updateWatch, ok := truePath[pathNode]
-
-						unit.X = pathNode.X
-						unit.Y = pathNode.Y
-
-						if ok && i == 0 {
-							UpdateWatchZone(client, activeGame, updateWatch)
-							go updateWatchHostileUser(*client, unit, msg.X, msg.Y, activeUser)
-						}
-
-						if ok && i > 0 {
-							UpdateWatchZone(client, activeGame, updateWatch)
-							go updateWatchHostileUser(*client, unit, pathNodes[i-1].X, pathNodes[i-1].Y, activeUser)
-						}
-
-						time.Sleep(200 * time.Millisecond)
-					}
 					passed = true
 				}
 			}
 
 			if !passed {
 				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not allow"}
-				fieldPipe <- resp
+				ws.WriteJSON(resp)
 			}
 		} else {
 			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "unit already move"}
-			fieldPipe <- resp
+			ws.WriteJSON(resp)
 		}
 	} else {
 		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not found unit"}
-		fieldPipe <- resp
+		ws.WriteJSON(resp)
 	}
 }
 
@@ -85,6 +64,17 @@ func skipMoveUnit(msg FieldMessage, ws *websocket.Conn) {
 		}
 	}
 }
+
+/*func Move(unit *game.Unit, client *game.Player, updaterWatchZone *game.UpdaterWatchZone, x, y int)  {
+
+	resp := FieldResponse{Event: "MoveUnit", UserName: client.GetLogin(), X: x, Y: y, ToX: unit.X, ToY:unit.Y}
+	fieldPipe <- resp
+
+
+	sendNewHostileUnit(updaterWatchZone.OpenUnit, client.GetLogin())
+	sendNewHostileStructure(updaterWatchZone.OpenStructure, client.GetLogin())
+	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
+}*/
 
 func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activeUser []*game.Player) {
 	var unitsParameter InitUnit

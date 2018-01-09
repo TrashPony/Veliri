@@ -32,7 +32,9 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 	var mapParam = FieldResponse{Event: "InitMap", UserName: client.GetLogin(), NameMap: Game.GetMap().Name, TypeMap: Game.GetMap().Type, XMap: Game.GetMap().Xsize, YMap: Game.GetMap().Ysize}
 	fieldPipe <- mapParam // отправляем параметры карты
 
-    for _, xLine := range Game.GetMap().OneLayerMap {
+	time.Sleep(1000 * time.Millisecond)
+
+	for _, xLine := range Game.GetMap().OneLayerMap {
     	for _, obstacle := range xLine {
     		if obstacle.Type == "obstacle"{
     			var obstacleCoor = sendCoordinate{Event: "InitObstacle", UserName: client.GetLogin(), X: obstacle.X, Y: obstacle.Y}
@@ -40,8 +42,6 @@ func toGame(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 	}
-
-	time.Sleep(1000 * time.Millisecond)
 
 	UpdateWatchZone(client, Game, nil)
 	client.SetGameID(Game.GetStat().Id)// добавляем принадлежность игрока в игре
