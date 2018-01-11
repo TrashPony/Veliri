@@ -26,7 +26,7 @@ function ConnectField() {
         // 1006 ошибка при выключение сервера или отказа, 1001 - F5
         console.log("Disconnected field - status " + this.readyState);
         if (msg.code !== 1001) {
-            location.href = "../login";
+            location.href = "../../login";
         }
     };
 }

@@ -2,10 +2,11 @@ package game
 
 import (
 	"errors"
+	"strconv"
 )
 
-func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePath map[Coordinate]*UpdaterWatchZone, pathNodes []Coordinate) {
-	truePath = make(map[Coordinate]*UpdaterWatchZone)
+func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (watchNode map[string]*UpdaterWatchZone, pathNodes []Coordinate) {
+	watchNode = make(map[string]*UpdaterWatchZone)
 	pathNodes = make([]Coordinate,0)
 	idGame := client.GetGameID()
 	moveTrigger := true
@@ -28,7 +29,7 @@ func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (truePa
 				moveTrigger = false
 				break
 			} else {
-				truePath[pathNode] = client.UpdateWatchZone(game) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				watchNode[strconv.Itoa(pathNode.X) + ":" + strconv.Itoa(pathNode.Y)] = client.UpdateWatchZone(game) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
 				pathNodes = append(pathNodes, pathNode)           // создать пройденный путь
 			}
 		}

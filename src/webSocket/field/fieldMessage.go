@@ -22,7 +22,7 @@ type FieldResponse struct {
 	TypeUnit    string `json:"type_unit"`
 	ErrorType   string `json:"error_type"`
 	Phase       string `json:"phase"`
-	UserReady   bool `json:"user_ready"`
+	UserReady   bool   `json:"user_ready"`
 	UserOwned   string `json:"user_owned"`
 	Error       string `json:"error"`
 }
@@ -60,21 +60,23 @@ func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
 }
 
 type Move struct {
-	Event       string `json:"event"`
-	UserName    string `json:"user_name"`
-	UnitX		int    `json:"unit_x"`
-	UnitY		int	   `json:"unit_y"`
-	PathNodes   []game.Coordinate `json:"path_nodes"`
+	Event     string                            `json:"event"`
+	UserName  string                            `json:"user_name"`
+	UnitX     int                               `json:"unit_x"`
+	UnitY     int                               `json:"unit_y"`
+	PathNodes []game.Coordinate                 `json:"path_nodes"`
+	WatchNode map[string]*game.UpdaterWatchZone `json:"watch_node"`
+	Error     string                            `json:"error"`
 }
 
 type InitStructure struct {
-	Event      		 string `json:"event"`
-	UserName  		 string `json:"user_name"`
-	X      		     int    `json:"x"`
-	Y          		 int    `json:"y"`
-	TypeStructure    string `json:"type_structure"`
-	UserOwned   	 string `json:"user_owned"`
-	Error            string `json:"error"`
+	Event         string `json:"event"`
+	UserName      string `json:"user_name"`
+	X             int    `json:"x"`
+	Y             int    `json:"y"`
+	TypeStructure string `json:"type_structure"`
+	UserOwned     string `json:"user_owned"`
+	Error         string `json:"error"`
 }
 
 func (msg *InitStructure) initStructure(structure *game.Structure, login string) {

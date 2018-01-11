@@ -25,8 +25,8 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			for _, coordinate := range moveCoordinate {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
 
-					_, pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
-					moves := Move{Event: msg.Event, UnitX:msg.X, UnitY:msg.Y, UserName:client.GetLogin(), PathNodes: pathNodes}
+					watchNode , pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
+					moves := Move{Event: msg.Event, UnitX:msg.X, UnitY:msg.Y, UserName:client.GetLogin(), PathNodes: pathNodes, WatchNode:watchNode}
 					move <- moves
 
 					passed = true

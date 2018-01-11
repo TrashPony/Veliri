@@ -13,6 +13,7 @@ type Watcher interface {
 }
 
 func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*Structure, Err error) {
+
 	allCoordinate = make(map[string]*Coordinate)
 	unitsCoordinate = make(map[int]map[int]*Unit)
 	structureCoordinate = make(map[int]map[int]*Structure)
@@ -24,8 +25,10 @@ func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[stri
 
 		for _, coordinate := range PermCoordinates{
 			unitInMap, ok := game.GetUnit(coordinate.X,coordinate.Y)
-			if ok {
 
+			allCoordinate[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
+
+			if ok {
 				if unitsCoordinate[coordinate.X] != nil {
 					unitsCoordinate[coordinate.X][coordinate.Y] = unitInMap
 				} else {
@@ -42,8 +45,6 @@ func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[stri
 						structureCoordinate[coordinate.X] = make(map[int]*Structure)
 						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
 					}
-				} else {
-					allCoordinate[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
 				}
 			}
 		}

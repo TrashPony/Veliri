@@ -4,24 +4,25 @@ import (
 	"strconv"
 )
 
-type Player struct { // структура описывающая клиента ws соеденение
-	login        	  string
-	id           	  int
-	watch             map[int]map[int]*Coordinate // map[X]map[Y]
-	units        	  map[int]map[int]*Unit       // map[X]map[Y]
-	structure    	  map[int]map[int]*Structure  // map[X]map[Y]
-	hostileStructure  map[int]map[int]*Structure  // map[X]map[Y]
-	hostileUnits 	  map[int]map[int]*Unit       // map[X]map[Y]
-	respawn      	  *Structure
-	createZone   	  map[string]*Coordinate
-	gameID            int
+type Player struct {
+	// структура описывающая клиента ws соеденение
+	login            string
+	id               int
+	watch            map[int]map[int]*Coordinate // map[X]map[Y]
+	units            map[int]map[int]*Unit       // map[X]map[Y]
+	structure        map[int]map[int]*Structure  // map[X]map[Y]
+	hostileStructure map[int]map[int]*Structure  // map[X]map[Y]
+	hostileUnits     map[int]map[int]*Unit       // map[X]map[Y]
+	respawn          *Structure
+	createZone       map[string]*Coordinate
+	gameID           int
 }
 
 func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 	for _, xLine := range activeGame.GetUnits() {
 		for _, unit := range xLine {
-			watchCoordinate, watchUnit, watchStructure, err := Watch(unit, client.login, activeGame)//PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, watchStructure, err := Watch(unit, client.login, activeGame) //PermissionCoordinates(client, unit, units)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -81,7 +82,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.GetMap().OneLayerMap	[coordinate.X][coordinate.Y]
+					_, ok := activeGame.GetMap().OneLayerMap    [coordinate.X][coordinate.Y]
 					if !ok {
 						client.AddCoordinate(coordinate)
 					}
@@ -92,10 +93,10 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 }
 
 type UpdaterWatchZone struct {
-	CloseCoordinate []*Coordinate
-	OpenCoordinate  []*Coordinate
-	OpenUnit		[]*Unit
-	OpenStructure	[]*Structure
+	CloseCoordinate []*Coordinate `json:"close_coordinate"`
+	OpenCoordinate  []*Coordinate `json:"open_coordinate"`
+	OpenUnit        []*Unit       `json:"open_unit"`
+	OpenStructure   []*Structure  `json:"open_structure"`
 }
 
 // отправляем открытые ячейки, удаляем закрытые
@@ -198,7 +199,7 @@ func (client *Player) AddHostileStructure(structure *Structure) {
 	}
 }
 
-func (client *Player) SetRespawn(respawn *Structure)  {
+func (client *Player) SetRespawn(respawn *Structure) {
 	PermCoordinates := GetCoordinates(respawn.X, respawn.Y, respawn.WatchZone)
 	client.createZone = make(map[string]*Coordinate)
 	for _, coordinate := range PermCoordinates {
@@ -214,39 +215,39 @@ func (client *Player) GetCreateZone() (map[string]*Coordinate) {
 	return client.createZone
 }
 
-func (client *Player) GetRespawn()(respawn *Structure) {
+func (client *Player) GetRespawn() (respawn *Structure) {
 	return client.respawn
 }
 
-func (client *Player) SetLogin (login string) {
+func (client *Player) SetLogin(login string) {
 	client.login = login
 }
 
-func (client *Player) GetLogin()(login string) {
+func (client *Player) GetLogin() (login string) {
 	return client.login
 }
 
-func (client *Player) SetID (id int) {
+func (client *Player) SetID(id int) {
 	client.id = id
 }
 
-func (client *Player) GetID () (id int) {
+func (client *Player) GetID() (id int) {
 	return client.id
 }
 
-func (client *Player) SetGameID (id int) {
+func (client *Player) SetGameID(id int) {
 	client.gameID = id
 }
 
-func (client *Player) GetGameID () (id int) {
+func (client *Player) GetGameID() (id int) {
 	return client.gameID
 }
 
-func (client *Player) GetUnits() (unit map[int]map[int]*Unit)  {
+func (client *Player) GetUnits() (unit map[int]map[int]*Unit) {
 	return client.units
 }
 
-func (client *Player) GetUnit(x,y int) (unit *Unit, find bool)  {
+func (client *Player) GetUnit(x, y int) (unit *Unit, find bool) {
 	unit, find = client.units[x][y]
 	return
 }
@@ -255,11 +256,11 @@ func (client *Player) DelUnit(x, y int) {
 	delete(client.units[x], y)
 }
 
-func (client *Player) GetHostileUnits() (unit map[int]map[int]*Unit)  {
+func (client *Player) GetHostileUnits() (unit map[int]map[int]*Unit) {
 	return client.hostileUnits
 }
 
-func (client *Player) GetHostileUnit(x,y int) (unit *Unit, find bool)  {
+func (client *Player) GetHostileUnit(x, y int) (unit *Unit, find bool) {
 	unit, find = client.hostileUnits[x][y]
 	return
 }
@@ -268,33 +269,33 @@ func (client *Player) DelHostileUnit(x, y int) {
 	delete(client.hostileUnits[x], y)
 }
 
-func (client *Player) GetStructures() (structure map[int]map[int]*Structure)  {
+func (client *Player) GetStructures() (structure map[int]map[int]*Structure) {
 	return client.structure
 }
 
-func (client *Player) GetStructure(x,y int) (structure *Structure, find bool)  {
+func (client *Player) GetStructure(x, y int) (structure *Structure, find bool) {
 	structure, find = client.structure[x][y]
 	return
 }
 
-func (client *Player) GetHostileStructures() (structure map[int]map[int]*Structure)  {
+func (client *Player) GetHostileStructures() (structure map[int]map[int]*Structure) {
 	return client.hostileStructure
 }
 
-func (client *Player) GetHostileStructure(x,y int) (structure *Structure, find bool)  {
+func (client *Player) GetHostileStructure(x, y int) (structure *Structure, find bool) {
 	structure, find = client.hostileStructure[x][y]
 	return
 }
 
-func (client *Player) GetWatchCoordinates() (coordinate map[int]map[int]*Coordinate)  {
+func (client *Player) GetWatchCoordinates() (coordinate map[int]map[int]*Coordinate) {
 	return client.watch
 }
 
-func (client *Player) GetWatchCoordinate(x,y int) (coordinate *Coordinate, find bool)  {
+func (client *Player) GetWatchCoordinate(x, y int) (coordinate *Coordinate, find bool) {
 	coordinate, find = client.watch[x][y]
 	return
 }
 
-func (client *Player) DelWatchCoordinate(x,y int) {
+func (client *Player) DelWatchCoordinate(x, y int) {
 	delete(client.watch[x], y)
 }

@@ -27,6 +27,26 @@ function OpenCoordinate(jsonMessage) {
     cells[x + ":" + y].tint = 0xffffff * 2;
 }
 
+function OpenCoordinates(coordinates) {
+    while (coordinates.length > 0) {
+        var coordinate = coordinates.shift();
+        cells[coordinate.x + ":" + coordinate.y].tint = 0xffffff * 2;
+    }
+}
+
+function DeleteCoordinates(coordinates) {
+    while (coordinates.length > 0) {
+        var coordinate = coordinates.shift();
+        var id = coordinate.x + ":" + coordinate.y;
+        cells[id].tint = 0x757575;
+
+        if (units.hasOwnProperty(id)) {
+            var unit = units[id];
+            delete units[id];
+            unit.destroy() // убиваем юнита
+        }
+    }
+}
 
 
 function SelectCoordinateCreate(jsonMessage) {
