@@ -14,6 +14,7 @@ function InitMoveUnit(jsonMessage) {
         unit.patchNodes = patchNodes;                            // добавляем юниту путь
         unit.watchNode = watchNode;                              // кладем туда видимост на каждую клетку для отрисовки
         unit.action = action;                                    // докидываем в него статус готовности
+
         MoveCell(unit);
     }
 }
@@ -67,10 +68,10 @@ function MoveUnit() {
                 unit.body.velocity.y = 0;
             } else {
 
-                var xTarget = Math.round(unit.movePoint.x + tileWidth / 2),
-                    yTarget = Math.round(unit.movePoint.y + tileWidth / 2);
-                var xUnit = Math.round(unit.x),
-                    yUnit = Math.round(unit.y);
+                var xTarget = unit.movePoint.x + tileWidth / 2,
+                    yTarget = unit.movePoint.y + tileWidth / 2;
+                var xUnit = unit.x,
+                    yUnit = unit.y;
 
                 if ((xUnit - TARGET_MOVE_RANGE < xTarget && xTarget < xUnit + TARGET_MOVE_RANGE) &&
                     (yUnit - TARGET_MOVE_RANGE < yTarget && yTarget < yUnit + TARGET_MOVE_RANGE)) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели

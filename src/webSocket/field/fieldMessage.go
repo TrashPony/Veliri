@@ -2,7 +2,6 @@ package field
 
 import (
 	"../../game"
-	"strconv"
 )
 
 type FieldResponse struct {
@@ -28,34 +27,18 @@ type FieldResponse struct {
 }
 
 type InitUnit struct {
-	Event       string `json:"event"`
-	UserName    string `json:"user_name"`
-	X           int    `json:"x"`
-	Y           int    `json:"y"`
-	TypeUnit    string `json:"type_unit"`
-	UserOwned   string `json:"user_owned"`
-	HP          int    `json:"hp"`
-	UnitAction  string `json:"unit_action"`
-	Target      string `json:"target"`
-	Damage      string `json:"damage"`
-	MoveSpeed   string `json:"move_speed"`
-	Init        string `json:"init"`
-	RangeAttack string `json:"range_attack"`
-	RangeView   string `json:"range_view"`
-	AreaAttack  string `json:"area_attack"`
-	TypeAttack  string `json:"type_attack"`
-	Error       string `json:"error"`
+	Event    string     `json:"event"`
+	UserName string     `json:"user_name"`
+	Unit     *game.Unit `json:"unit"`
 }
 
 func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
 	if unit.Target == nil {
-		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: "", X: unit.X, Y: unit.Y} // остылаем событие добавления юнита
+		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, Unit: unit} // остылаем событие добавления юнита
 		initUnit <- unitsParams
 	} else {
-		var unitsParametr = InitUnit{Event: "InitUnit", UserName: login, TypeUnit: unit.NameType, UserOwned: unit.NameUser,
-			HP: unit.Hp, UnitAction: strconv.FormatBool(unit.Action), Target: strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y), X: unit.X, Y: unit.Y}
-		initUnit <- unitsParametr
+		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, Unit: unit}
+		initUnit <- unitsParams
 	}
 }
 
@@ -70,17 +53,13 @@ type Move struct {
 }
 
 type InitStructure struct {
-	Event         string `json:"event"`
-	UserName      string `json:"user_name"`
-	X             int    `json:"x"`
-	Y             int    `json:"y"`
-	TypeStructure string `json:"type_structure"`
-	UserOwned     string `json:"user_owned"`
-	Error         string `json:"error"`
+	Event     string         `json:"event"`
+	UserName  string         `json:"user_name"`
+	Structure *game.Structure `json:"structure"`
 }
 
 func (msg *InitStructure) initStructure(structure *game.Structure, login string) {
-	var structureParams = InitStructure{Event: "InitStructure", UserName: login, TypeStructure: structure.Type, UserOwned: structure.NameUser, X: structure.X, Y: structure.Y} // остылаем событие добавления юнита
+	var structureParams = InitStructure{Event: "InitStructure", UserName: login, Structure: structure} // остылаем событие добавления юнита
 	initStructure <- structureParams
 }
 
