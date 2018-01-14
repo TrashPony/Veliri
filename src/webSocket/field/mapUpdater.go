@@ -21,7 +21,7 @@ func updateMyUnit(client *game.Player)  {
 	var unitsParameter InitUnit
 	for _, xLine := range client.GetUnits() { // отправляем параметры своих юнитов
 		for _, unit := range xLine {
-			unitsParameter.initUnit(unit, client.GetLogin())
+			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 		}
 	}
 }
@@ -38,7 +38,7 @@ func updateMyStructure(client *game.Player)  {
 func sendNewHostileUnit(units []*game.Unit, login string )  {
 	var UnitParams InitUnit
 	for _, unit := range units {
-		UnitParams.initUnit(unit, login)
+		UnitParams.initUnit("InitUnit", unit, login)
 	}
 }
 

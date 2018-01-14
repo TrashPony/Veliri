@@ -1,6 +1,6 @@
 var game;
 var tileWidth = 100; // ширина и высота спрайта в сетке грида
-var MyId;            // ид полученый от сервера текущего клиента
+var MY_ID;
 var countWidthGrid;
 var countHeightGrid;
 

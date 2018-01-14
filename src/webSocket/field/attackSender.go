@@ -46,7 +46,7 @@ func attackSender(unit *game.Unit, activeUser []*game.Player) {
 		_, ok := client.GetUnit(unit.X, unit.Y)
 		if ok {
 			var unitsParameter InitUnit
-			unitsParameter.initUnit(unit, client.GetLogin())
+			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 		}
 	}
 }
@@ -54,7 +54,7 @@ func attackSender(unit *game.Unit, activeUser []*game.Player) {
 func UpdateUnit(unit *game.Unit, activeUser []*game.Player) {
 	for _, client := range activeUser {
 		var unitsParameter InitUnit
-		unitsParameter.initUnit(unit, client.GetLogin())
+		unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 	}
 }
 

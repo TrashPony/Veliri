@@ -31,13 +31,13 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 				fieldPipe <- resp
 
 				var unitsParameter InitUnit
-				unitsParameter.initUnit(&unit, client.GetLogin())
+				unitsParameter.initUnit("InitUnit", &unit, client.GetLogin())
 			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: createError.Error()}
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: createError.Error()}
 				fieldPipe <- resp
 			}
 		} else {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
 			fieldPipe <- resp
 		}
 	}

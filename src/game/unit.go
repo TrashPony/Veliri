@@ -11,8 +11,8 @@ type Unit struct {
 	AreaAttack  int         `json:"area_attack"`
 	TypeAttack  string      `json:"type_attack"`
 	Price       int         `json:"price"`
-	NameType    string      `json:"name_type"`
-	NameUser    string      `json:"name_user"`
+	NameType    string      `json:"type"`
+	NameUser    string      `json:"owner"`
 	Hp          int         `json:"hp"`
 	Action      bool        `json:"action"`
 	Target      *Coordinate `json:"target"`

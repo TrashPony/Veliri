@@ -19,7 +19,6 @@ type FieldResponse struct {
 	TypeMap     string `json:"type_map"`
 	NameMap     string `json:"name_map"`
 	TypeUnit    string `json:"type_unit"`
-	ErrorType   string `json:"error_type"`
 	Phase       string `json:"phase"`
 	UserReady   bool   `json:"user_ready"`
 	UserOwned   string `json:"user_owned"`
@@ -32,12 +31,12 @@ type InitUnit struct {
 	Unit     *game.Unit `json:"unit"`
 }
 
-func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
+func (msg *InitUnit) initUnit(event string, unit *game.Unit, login string) {
 	if unit.Target == nil {
-		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, Unit: unit} // остылаем событие добавления юнита
+		var unitsParams = InitUnit{Event: event, UserName: login, Unit: unit} // остылаем событие добавления юнита
 		initUnit <- unitsParams
 	} else {
-		var unitsParams = InitUnit{Event: "InitUnit", UserName: login, Unit: unit}
+		var unitsParams = InitUnit{Event: event, UserName: login, Unit: unit}
 		initUnit <- unitsParams
 	}
 }
@@ -45,16 +44,15 @@ func (msg *InitUnit) initUnit(unit *game.Unit, login string) {
 type Move struct {
 	Event     string                            `json:"event"`
 	UserName  string                            `json:"user_name"`
-	UnitX     int                               `json:"unit_x"`
-	UnitY     int                               `json:"unit_y"`
+	Unit      *game.Unit                         `json:"unit"`
 	PathNodes []game.Coordinate                 `json:"path_nodes"`
 	WatchNode map[string]*game.UpdaterWatchZone `json:"watch_node"`
 	Error     string                            `json:"error"`
 }
 
 type InitStructure struct {
-	Event     string         `json:"event"`
-	UserName  string         `json:"user_name"`
+	Event     string          `json:"event"`
+	UserName  string          `json:"user_name"`
 	Structure *game.Structure `json:"structure"`
 }
 

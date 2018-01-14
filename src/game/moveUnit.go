@@ -7,9 +7,11 @@ import (
 
 func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (watchNode map[string]*UpdaterWatchZone, pathNodes []Coordinate) {
 	watchNode = make(map[string]*UpdaterWatchZone)
-	pathNodes = make([]Coordinate,0)
 	idGame := client.GetGameID()
 	moveTrigger := true
+
+	pathNodes = make([]Coordinate,0) // создаем пустую болванку для пути
+	pathNodes = append(pathNodes, Coordinate{X: unit.X, Y: unit.Y}) // кладем в него стартовую ячейку
 
 	for {
 		obstacles := GetObstacles(client, game)

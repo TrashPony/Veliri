@@ -11,7 +11,8 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
-	//activeUser := ActionGameUser(Games[client.GetGameID()].GetPlayers())
+
+	activeUser := ActionGameUser(Games[client.GetGameID()].GetPlayers())
 
 	if find && ok {
 		if unit.Action && !activeGame.GetUserReady(client.GetLogin()) {
@@ -25,24 +26,27 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			for _, coordinate := range moveCoordinate {
 				if coordinate.X == msg.ToX && coordinate.Y == msg.ToY {
 
-					watchNode , pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
-					moves := Move{Event: msg.Event, UnitX:msg.X, UnitY:msg.Y, UserName:client.GetLogin(), PathNodes: pathNodes, WatchNode:watchNode}
+					watchNode, pathNodes := game.InitMove(unit, msg.ToX, msg.ToY, client, activeGame)
+
+					moves := Move{Event: msg.Event, Unit: unit, UserName: client.GetLogin(), PathNodes: pathNodes, WatchNode: watchNode}
 					move <- moves
+
+					updateWatchHostileUser(msg ,client, activeUser, unit, pathNodes)
 
 					passed = true
 				}
 			}
 
 			if !passed {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not allow"}
+				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
 				ws.WriteJSON(resp)
 			}
 		} else {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "unit already move"}
+			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "unit already move"}
 			ws.WriteJSON(resp)
 		}
 	} else {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, ErrorType: "not found unit"}
+		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not found unit"}
 		ws.WriteJSON(resp)
 	}
 }
@@ -60,48 +64,53 @@ func skipMoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			unit.Queue = queue
 
 			var unitsParameter InitUnit
-			unitsParameter.initUnit(unit, client.GetLogin())
+			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 		}
 	}
 }
 
-/*func Move(unit *game.Unit, client *game.Player, updaterWatchZone *game.UpdaterWatchZone, x, y int)  {
-
-	resp := FieldResponse{Event: "MoveUnit", UserName: client.GetLogin(), X: x, Y: y, ToX: unit.X, ToY:unit.Y}
-	fieldPipe <- resp
-
-
-	sendNewHostileUnit(updaterWatchZone.OpenUnit, client.GetLogin())
-	sendNewHostileStructure(updaterWatchZone.OpenStructure, client.GetLogin())
-	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
-}*/
-
-func updateWatchHostileUser(client game.Player, unit *game.Unit, x, y int, activeUser []*game.Player) {
-	var unitsParameter InitUnit
+func updateWatchHostileUser(msg FieldMessage, client *game.Player, activeUser []*game.Player, unit *game.Unit, pathNodes []game.Coordinate) {
 
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {
 
-			_, okGetUnit := user.GetHostileUnit(x, y)
-
-			if okGetUnit {
-				//coordinate, _ := activeGame.GetMap().GetCoordinate(x,y)
-				//if find {  TODO полностью инициализировать карту
-				coordinate := game.Coordinate{X: x, Y: y}
-				user.AddCoordinate(&coordinate) // добавляем на место старого места юнита пустую зону
-				//}
-				user.DelHostileUnit(x, y)             // и удаляем в общей карте вражеских юнитов
-				openCoordinate(user.GetLogin(), x, y) // и остылаем событие удаление юнита
-
-			}
+			var truePath []game.Coordinate
 
 			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)
 
-			if okGetXY { // если следующая клетка юнита в зоне видимости
-				user.DelWatchCoordinate(unit.X, unit.Y) // удаляем пустую клетку
-				user.AddHostileUnit(unit)               // и добавляем в общую карту вражеских юнитов
-				unitsParameter.initUnit(unit, user.GetLogin())
+			if okGetXY { // если конечная точка пути видима то добавляем юнита
+				user.AddHostileUnit(unit)
 			}
+
+			tmpUnit := *unit
+
+			_, okGetUnit := user.GetHostileUnit(pathNodes[0].X, pathNodes[0].Y) // пытаемся взять юнита по начальной координате
+
+			if okGetUnit {
+				user.DelHostileUnit(pathNodes[0].X, pathNodes[0].Y) // если юзер видит юнита то удаляем его со строго места
+			} else {
+				tmpUnit.X = 999
+				tmpUnit.Y = 999
+			}
+
+
+			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
+			for i := range pathNodes {
+				node, okGetNode := user.GetWatchCoordinate(pathNodes[i].X, pathNodes[i].Y)
+				if okGetNode {
+					node.Type = "visible"
+					truePath = append(truePath, *node)
+				} else {
+					var fakeNode game.Coordinate
+					fakeNode.X = 999
+					fakeNode.Y = 999
+					fakeNode.Type = "hide"
+					truePath = append(truePath, fakeNode)
+				}
+			}
+
+			moves := Move{Event: msg.Event, Unit: &tmpUnit, UserName: user.GetLogin(), PathNodes: truePath}
+			move <- moves
 		}
 	}
 }

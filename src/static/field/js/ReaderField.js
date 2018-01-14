@@ -21,8 +21,8 @@ function ReadResponse(jsonMessage) {
         InitObstacle(jsonMessage);
     }
 
-    if (event === "CreateUnit") {
-        CreateUnit(jsonMessage);
+    if (event === "BuildUnit") {
+        BuildUnit(jsonMessage);
     }
 
     if (event === "Ready") {      // +
@@ -35,10 +35,6 @@ function ReadResponse(jsonMessage) {
 
     if (event === "Attack") {
         AttackUnit(jsonMessage);
-    }
-
-    if (event === "emptyCoordinate") {
-        OpenCoordinate(jsonMessage)
     }
 
     if (event === "SelectCoordinateCreate") {
@@ -57,7 +53,7 @@ function ReadResponse(jsonMessage) {
         ReadInfoMouseOver(jsonMessage);
     }
 
-    if (event === "MoveUnit") {
+    if (event === "MoveUnit") { + -
         console.log(jsonMessage);
         InitMoveUnit(jsonMessage);
     }

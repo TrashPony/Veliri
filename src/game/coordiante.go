@@ -3,7 +3,7 @@ package game
 import "strconv"
 
 type Coordinate struct {
-	Type    string
+	Type    string	`json:"type"`
 	Texture string
 	X       int `json:"x"`
 	Y       int `json:"y"`

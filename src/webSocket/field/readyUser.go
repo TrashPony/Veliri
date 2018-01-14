@@ -65,7 +65,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 					}
 
 					var unitsParameter InitUnit
-					unitsParameter.initUnit(unit, player.GetLogin())
+					unitsParameter.initUnit("InitUnit", unit, player.GetLogin())
 				}
 			}
 		}
