@@ -43,7 +43,7 @@ function preload() {
     game.load.image('floor', 'http://642e0559eb9c.sn.mynetname.net:8080/field/img/openCell.jpg');
     game.load.image('scout', 'http://642e0559eb9c.sn.mynetname.net:8080/field/img/tank.png');
     game.load.image('obstacle', 'http://642e0559eb9c.sn.mynetname.net:8080/field/img/obstacle.png');
-
+    game.load.image('MarkMoveLastCell', 'http://642e0559eb9c.sn.mynetname.net:8080/field/img/toMove.png');
     game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');
 }
 
@@ -69,6 +69,7 @@ function create() {
             floorSprite.tint = 0x757575;
             floorSprite.inputEnabled = true; // включаем ивенты на спрайт
             floorSprite.events.onInputDown.add(SelectTarget, this);
+            floorSprite.z = 0;
             cells[floorSprite.id] = floorSprite;
         }
     }

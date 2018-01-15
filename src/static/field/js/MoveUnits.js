@@ -20,6 +20,7 @@ function MoveHostileUnit(jsonMessage, owner) {
         var firstNode = patchNodes.shift();
         var unit;
         if (firstNode.type === "visible") {                  // ищем первую ячейку где мы видим юнита
+            var lastCell = patchNodes[patchNodes.length - 1];
             unit = units[firstNode.x + ":" + firstNode.y];
             if (unit) {
                 unit.patchNodes = patchNodes;                    // добавляем юниту путь
@@ -36,6 +37,7 @@ function MoveHostileUnit(jsonMessage, owner) {
                 unit.patchNodes = patchNodes;                    // добавляем юниту путь
                 unit.owner = owner;
             }
+            MarkLastPathCell(unit, lastCell);
             CheckPath(unit);
             break;
         }
@@ -47,8 +49,11 @@ function MoveMyUnit(jsonMessage, owner) {
     var watchNode = JSON.parse(jsonMessage).watch_node;      // берем карту с видимости на каждой точке пути
     var action = JSON.parse(jsonMessage).unit.action;
     var unitNode = patchNodes.shift();                       // первая ячейка пути это ячейка моба
-
     var unit = units[unitNode.x + ":" + unitNode.y];         // берем юнита
+
+    var lastCell = patchNodes[patchNodes.length - 1];
+    MarkLastPathCell(unit, lastCell);                              // помечаем ячейку куда идет моб
+
     unit.patchNodes = patchNodes;                            // добавляем юниту путь
     unit.watchNode = watchNode;                              // кладем туда видимост на каждую клетку для отрисовки
     unit.action = action;                                    // докидываем в него статус готовности
@@ -57,9 +62,35 @@ function MoveMyUnit(jsonMessage, owner) {
     CheckPath(unit);
 }
 
+function MarkLastPathCell(unit, cellState) {
+    unit.lastCell = cellState;
+
+    var x = cellState.x;
+    var y = cellState.y;
+
+    var mark = game.add.sprite(0, 0, 'MarkMoveLastCell'); // создаем метку
+    mark.scale.set(.32);
+    mark.z = 1;
+    if (cells[x + ":" + y]) {
+        cells[x + ":" + y].addChild(mark);
+    }
+}
+
+function DeleteMarkLastPathCell(cellState) {
+    var x = cellState.x;
+    var y = cellState.y;
+    var mark = cells[x + ":" + y].getChildAt(0);
+    mark.destroy();
+}
+
 function CheckPath(unit) {
     var firstNode = unit.patchNodes.shift();                      // берем первый пункт назначения
     var targetID;
+
+    if (unit.patchNodes.length === 0) {
+        DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
+        unit.lastCell = null;
+    }
 
     if (unit.owner === MY_ID) {
         targetID = firstNode.x + ":" + firstNode.y;
@@ -126,7 +157,7 @@ function UpdateWachZone(unit, targetID) {
         }
 
         if (openStructure) {
-
+            // TODO добавить структуры
         }
     }
 }
