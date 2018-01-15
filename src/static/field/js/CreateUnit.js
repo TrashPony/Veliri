@@ -22,8 +22,8 @@ function CreateUnit(unitStat) {
     unit.body.collideWorldBounds = true;  // границы страницы
 
     unit.id = x + ":" + y;
-    unit.events.onInputOver.add(mouse_over); // обрабатываем нажатие мышки
-    unit.events.onInputOut.add(mouse_out);   // обрабатываем нажатие мышки
+    unit.events.onInputOver.add(mouse_over); // обрабатываем наведение мышки
+    unit.events.onInputOut.add(mouse_out);   // обрабатываем убирание мышки
 
     var style;
 

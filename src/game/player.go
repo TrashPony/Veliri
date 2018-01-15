@@ -82,10 +82,10 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 				}
 
 				for _, coordinate := range watchCoordinate {
-					_, ok := activeGame.GetMap().OneLayerMap    [coordinate.X][coordinate.Y]
-					if !ok {
+					//_, ok := activeGame.GetMap().OneLayerMap[coordinate.X][coordinate.Y]
+					//if !ok { TODO инициализировать всю карту...
 						client.AddCoordinate(coordinate)
-					}
+					//
 				}
 			}
 		}

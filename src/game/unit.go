@@ -18,6 +18,7 @@ type Unit struct {
 	Target      *Coordinate `json:"target"`
 	X           int         `json:"x"`
 	Y           int         `json:"y"`
+	Rotate		int			`json:"rotate"`
 	Queue       int         `json:"queue"`
 }
 

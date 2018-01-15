@@ -1,5 +1,7 @@
 function ReadInfoMouseOver(jsonMessage) {
-    if (JSON.parse(jsonMessage).unit.target !== null) {
+    var unit = JSON.parse(jsonMessage).unit;
+
+    if (unit && unit.target !== null) {
         var xy = JSON.parse(jsonMessage).unit.target.split(":");
         var x = xy[0];
         var y = xy[1];
@@ -10,6 +12,7 @@ function ReadInfoMouseOver(jsonMessage) {
         div.className = "aim mouse";
         targetCell.appendChild(div);
     }
+
     toolTip(jsonMessage);
 }
 
@@ -57,8 +60,11 @@ function moveTip(e) {
 
 function toolTip(jsonMessage) {
     var floatTipStyle = document.getElementById("floatTip").style;
+
     var unit = JSON.parse(jsonMessage).unit;
-    if (jsonMessage) {
+    var structure = JSON.parse(jsonMessage).structure;
+
+    if (jsonMessage && unit) {
         document.getElementById("tipUnit").innerHTML = "<spen class='Value'>" + unit.type + "</spen>";
         document.getElementById("tipOwned").innerHTML = "<spen class='Value'>" + unit.owner + "</spen>";
         document.getElementById("tipHP").innerHTML = "<spen class='Value'>" + unit.hp + "</spen>";
@@ -72,5 +78,11 @@ function toolTip(jsonMessage) {
         document.getElementById("tipArea").innerHTML = "<spen class='Value'>" + unit.area_attack + "</spen>";
         document.getElementById("tipTypeAttack").innerHTML = "<spen class='Value'>" + unit.type_attack + "</spen>";
         floatTipStyle.display = "block"; // Показываем слой
+    } else {
+        if (jsonMessage && structure) {
+            document.getElementById("tipUnit").innerHTML = "<spen class='Value'>" + structure.type + "</spen>";
+            document.getElementById("tipOwned").innerHTML = "<spen class='Value'>" + structure.owner + "</spen>";
+            floatTipStyle.display = "block"; // Показываем слой
+        }
     }
 }

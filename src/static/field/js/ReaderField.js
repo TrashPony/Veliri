@@ -14,6 +14,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "InitStructure") {
+        console.log(jsonMessage);
         InitStructure(jsonMessage);
     }
 
@@ -54,7 +55,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") { + -
-        console.log(jsonMessage);
         InitMoveUnit(jsonMessage);
     }
 

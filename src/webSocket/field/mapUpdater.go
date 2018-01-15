@@ -30,7 +30,7 @@ func updateMyStructure(client *game.Player)  {
 	var structureParameter InitStructure
 	for _, xLine := range client.GetStructures() { // отправляем параметры своих структур
 		for _, structure := range xLine {
-			structureParameter.initStructure(structure, client.GetLogin())
+			structureParameter.initStructure("InitStructure", structure, client.GetLogin())
 		}
 	}
 }
@@ -45,7 +45,7 @@ func sendNewHostileUnit(units []*game.Unit, login string )  {
 func sendNewHostileStructure(structures []*game.Structure, login string )  {
 	var StructureParams InitStructure
 	for _, structure := range structures {
-		StructureParams.initStructure(structure, login)
+		StructureParams.initStructure("InitStructure", structure, login)
 	}
 }
 

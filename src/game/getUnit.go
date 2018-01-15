@@ -23,7 +23,7 @@ type UnitType struct {
 
 func GetUnit(query string) map[int]map[int]*Unit {
 
-	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.move_speed, t.initiative, t.range_attack, t.range_view, t.area_attack, t.type_attack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.queue_attack FROM action_game_unit as ag, unit_type as t, users as u WHERE " + query)
+	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.move_speed, t.initiative, t.range_attack, t.range_view, t.area_attack, t.type_attack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.rotate, ag.queue_attack FROM action_game_unit as ag, unit_type as t, users as u WHERE " + query)
 	if err != nil {
 		log.Fatal(err)
 	}

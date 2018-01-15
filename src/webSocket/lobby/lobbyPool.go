@@ -137,7 +137,7 @@ func LobbyReader(ws *websocket.Conn) {
 		if msg.Event == "StartNewGame" {
 			game, errGetName := lobby.GetGame(msg.GameName)
 			if errGetName != nil {
-				log.Panic(errGetName)
+				log.Panic(errGetName) //TODO no found this game
 			} // список игроков которым надо разослать данные взятые из обьекта игры
 			if len(game.Users) > 1 {
 				var readyAll = true

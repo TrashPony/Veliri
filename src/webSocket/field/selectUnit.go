@@ -23,7 +23,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for i := 0; i < len(moveCoordinate); i++ {
 					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 && moveCoordinate[i].X < 10 && moveCoordinate[i].Y < 10 {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
+						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase, // TODO не до 10ти а до края карты
 							X: moveCoordinate[i].X, Y: moveCoordinate[i].Y}
 						fieldPipe <- createCoordinates
 					}

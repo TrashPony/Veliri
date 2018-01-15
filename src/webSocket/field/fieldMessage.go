@@ -56,8 +56,8 @@ type InitStructure struct {
 	Structure *game.Structure `json:"structure"`
 }
 
-func (msg *InitStructure) initStructure(structure *game.Structure, login string) {
-	var structureParams = InitStructure{Event: "InitStructure", UserName: login, Structure: structure} // остылаем событие добавления юнита
+func (msg *InitStructure) initStructure(event string, structure *game.Structure, login string) {
+	var structureParams = InitStructure{Event: event, UserName: login, Structure: structure} // остылаем событие добавления юнита
 	initStructure <- structureParams
 }
 

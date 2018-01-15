@@ -76,7 +76,7 @@ func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, clos
 		//}
 	}
 
-	for _, structure := range closeStructure {
+	for _, structure := range closeStructure { // TODO я не понимаю что тут происходит >_<
 		coordinate, find := game.GetMap().GetCoordinate(structure.X, structure.Y)
 		if find {
 			closeCoordinate = append(closeCoordinate, coordinate)

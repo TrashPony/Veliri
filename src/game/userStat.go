@@ -9,10 +9,9 @@ type UserStat struct {
 	Name   string
 	Price  int
 	Ready  bool
-	RespX int
-	RespY int
+	RespX  int
+	RespY  int
 }
-
 
 func GetUserStat(idGame int) []*UserStat {
 

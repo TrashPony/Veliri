@@ -5,11 +5,11 @@ import (
 )
 
 type Game struct {
-	gameMap    *Map
-	stat       *InfoGame
-	players    []*UserStat
-	units      map[int]map[int]*Unit
-	structure  map[int]map[int]*Structure
+	gameMap   *Map
+	stat      *InfoGame
+	players   []*UserStat
+	units     map[int]map[int]*Unit
+	structure map[int]map[int]*Structure
 }
 
 func (game *Game) SetStructures(structure map[int]map[int]*Structure) {
@@ -53,7 +53,7 @@ func (game *Game) GetUnits() (units map[int]map[int]*Unit) {
 	return game.units
 }
 
-func (game *Game) GetUnit(x,y int) (unit *Unit, find bool)  {
+func (game *Game) GetUnit(x, y int) (unit *Unit, find bool) {
 	unit, find = game.units[x][y]
 	return
 }
@@ -66,7 +66,7 @@ func (game *Game) GetStructures() (structures map[int]map[int]*Structure) {
 	return game.structure
 }
 
-func (game *Game) GetStructure(x,y int) (structure *Structure, find bool)  {
+func (game *Game) GetStructure(x, y int) (structure *Structure, find bool) {
 	structure, find = game.structure[x][y]
 	return
 }
@@ -84,14 +84,13 @@ func (game *Game) GetUserReady(userName string) bool {
 	return false
 }
 
-func (game *Game) SetUserReady(userName string, readyParams bool)  {
+func (game *Game) SetUserReady(userName string, readyParams bool) {
 	for _, userStat := range game.players {
 		if userStat.Name == userName {
 			userStat.Ready = readyParams
 		}
 	}
 }
-
 
 type InfoGame struct {
 	Id     int
@@ -122,7 +121,6 @@ func GetInfoGame(idGame int) InfoGame {
 	return game
 }
 
-
 func InitGame(idGAme int) (newGame *Game) {
 	newGame = &Game{}
 
@@ -132,13 +130,12 @@ func InitGame(idGAme int) (newGame *Game) {
 	units := GetAllUnits(idGAme)
 	structure := GetAllStrcuture(idGAme)
 
-	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
-	newGame.SetStat(&gameStat)       // добавляем информацию об игре в обьект игры
-	newGame.SetInfoMap(&Map)         // добавляем информацию об карте
-	newGame.SetUnits(units)          // добавляем имеющихся юнитов
+	newGame.SetPlayers(userStat) // добавляем параметры всех игроков к обьекту игры
+	newGame.SetStat(&gameStat)   // добавляем информацию об игре в обьект игры
+	newGame.SetInfoMap(&Map)     // добавляем информацию об карте
+	newGame.SetUnits(units)      // добавляем имеющихся юнитов
 	//newGame.setMap(Map.OneLayerMap)// добавляем 1 слой карты отвечающий за фон текстур, препятсвия и расположение респаунов
-	newGame.SetStructures(structure)  // добавляем в игру все структуры на карте
+	newGame.SetStructures(structure) // добавляем в игру все структуры на карте
 
 	return
 }
-

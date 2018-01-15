@@ -21,7 +21,7 @@ func MouseOver(msg FieldMessage, ws *websocket.Conn) {
 		}
 		if find {
 			var resp InitStructure
-			resp.initStructure(structure, client.GetLogin())
+			resp.initStructure(msg.Event, structure, client.GetLogin())
 		}
 	}
 }

@@ -1,11 +1,11 @@
 package game
 
 type Structure struct {
-	Type string
-	NameUser    string
-	WatchZone   int
-	X int
-	Y int
+	Type      string `json:"type"`
+	NameUser  string `json:"owner"`
+	WatchZone int    `json:"watch_zone"`
+	X         int    `json:"x"`
+	Y         int    `json:"y"`
 }
 
 func (structure *Structure) getX() int {

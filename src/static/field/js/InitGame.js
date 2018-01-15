@@ -40,42 +40,14 @@ function InitPlayer(jsonMessage) {
     phase = JSON.parse(jsonMessage).game_phase;
 }
 
-function InitStructure(jsonMessage) {
-    /*var x = JSON.parse(jsonMessage).x;
-    var y = JSON.parse(jsonMessage).y;
-    var type = JSON.parse(jsonMessage).type_structure;
-    var user = JSON.parse(jsonMessage).user_owned;
-    var coor_id = x + ":" + y;
-    var cell = document.getElementById(coor_id);
-
-    cell.onmouseover = function () {
-        mouse_over(this.id);
-    };
-    cell.onmouseout = function () {
-        mouse_out();
-    };
-
-    if (type === "respawn") {
-        if (user === JSON.parse(jsonMessage).user_name) {
-            cell.style.color = "#fbfdff";
-            cell.style.borderColor = "#fbfdff";
-            cell.className = "fieldUnit respawn";
-            cell.innerHTML = "Resp: " + JSON.parse(jsonMessage).user_name;
-        } else {
-            cell.className = "fieldUnit respawn";
-            cell.innerHTML = "Resp: " + JSON.parse(jsonMessage).user_name;
-            cell.style.color = "#FF0117";
-            cell.style.borderColor = "#FF0117";
-        }
-    }*/
-}
-
 function InitObstacle(jsonMessage) {
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
 
     var cell = cells[x + ":" + y];
     var obstacle = game.add.tileSprite(cell.x, cell.y, 100, 100, 'obstacle');
+    obstacle.inputEnabled = true;
+    obstacle.events.onInputOut.add(mouse_out);
 }
 
 function ReadyReader(jsonMessage) {

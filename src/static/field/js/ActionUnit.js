@@ -60,7 +60,7 @@ function setUnitAction(jsonMessage) {
 
         } else {
             if (phase === "targeting") {
-                coordinate = x + ":" + y;
+                /*coordinate = x + ":" + y;
                 cell = document.getElementById(coordinate);
                 if (cell) {
                     Cell = {};
@@ -72,7 +72,7 @@ function setUnitAction(jsonMessage) {
                     var div = document.createElement('div');
                     div.className = "aim";
                     cell.appendChild(div);
-                }
+                }*/
             }
         }
     }
