@@ -13,8 +13,7 @@ function ReadResponse(jsonMessage) {
         InitUnit(jsonMessage);
     }
 
-    if (event === "InitStructure") {
-        console.log(jsonMessage);
+    if (event === "InitStructure") { // +
         InitStructure(jsonMessage);
     }
 
@@ -30,7 +29,7 @@ function ReadResponse(jsonMessage) {
         ReadyReader(jsonMessage);
     }
 
-    if (event === "SelectUnit") {  // +-
+    if (event === "SelectUnit") {  // + -
         setUnitAction(jsonMessage);
     }
 
@@ -42,19 +41,20 @@ function ReadResponse(jsonMessage) {
         SelectCoordinateCreate(jsonMessage)
     }
 
-    if (event === "OpenCoordinate") { +
+    if (event === "OpenCoordinate") { // +
         OpenCoordinate(jsonMessage)
     }
 
-    if (event === "DellCoordinate") { +
+    if (event === "DellCoordinate") { // +
         DelUnit(jsonMessage)
     }
 
-    if (event === "MouseOver") { +
+    if (event === "MouseOver") { // +
         ReadInfoMouseOver(jsonMessage);
     }
 
-    if (event === "MoveUnit") { + -
+    if (event === "MoveUnit") { // +
+
         InitMoveUnit(jsonMessage);
     }
 

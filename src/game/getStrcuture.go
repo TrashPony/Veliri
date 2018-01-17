@@ -16,7 +16,7 @@ func GetAllStrcuture(idGame int) (structures map[int]map[int]*Structure) {
 
 	for rows.Next() {
 		var structure Structure
-		err := rows.Scan(&structure.Type, &structure.NameUser, &structure.WatchZone, &structure.X, &structure.Y)
+		err := rows.Scan(&structure.Type, &structure.Owner, &structure.WatchZone, &structure.X, &structure.Y)
 		if err != nil {
 			log.Fatal(err)
 		}

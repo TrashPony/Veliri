@@ -1,9 +1,7 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
-	"strconv"
 )
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn) {

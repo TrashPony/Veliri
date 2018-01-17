@@ -1,6 +1,6 @@
 package lobby
 
-type LobbyMessage struct {
+type Message struct {
 	Event    string `json:"event"`
 	MapName  string `json:"map_name"`
 	UserName string `json:"user_name"`
@@ -9,7 +9,7 @@ type LobbyMessage struct {
 	Message  string `json:"message"`
 }
 
-type LobbyResponse struct {
+type Response struct {
 	Event        string `json:"event"`
 	UserName     string `json:"user_name"`
 	NameGame     string `json:"name_game"`

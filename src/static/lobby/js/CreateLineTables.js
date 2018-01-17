@@ -106,12 +106,14 @@ function CreateLobbyMenu(id, error, hoster) {
         var parentElem = document.getElementById("lobby");
         parentElem.appendChild(gameInfo);
 
+        CreateChoiceSquadBlock(parentElem);
+
         var br = document.createElement("p");
         parentElem.appendChild(br);
 
         var cancel = document.createElement("input");
         cancel.type = "button";
-        cancel.className = "button";
+        cancel.className = "lobbyButton";
         cancel.value = "Отменить";
         cancel.onclick = ReturnLobby;
         parentElem.appendChild(cancel);
@@ -119,7 +121,8 @@ function CreateLobbyMenu(id, error, hoster) {
         var ready = document.createElement("input");
         ready.type = "button";
         ready.style.marginLeft = "10px";
-        ready.className = "button";
+        ready.style.left = "95px";
+        ready.className = "lobbyButton";
         ready.value = "Готов";
         ready.onclick = function () {
             sendReady(this.id)
@@ -131,8 +134,9 @@ function CreateLobbyMenu(id, error, hoster) {
         if (hoster) {
             var button = document.createElement("input");
             button.type = "button";
+            button.style.right = "10px";
             button.style.marginLeft = "120px";
-            button.className = "button";
+            button.className = "lobbyButton";
             button.value = "Начать";
             button.onclick = CreateNewGame;
             button.id = id;

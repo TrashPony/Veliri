@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"../../lobby"
-	"errors"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -12,8 +11,7 @@ import (
 var mutex = &sync.Mutex{}
 
 var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
-var lobbyPipe = make(chan LobbyResponse)
-var commonChatPipe = make(chan LobbyResponse)
+var lobbyPipe = make(chan Response)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersLobbyWs)
@@ -26,14 +24,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	go NewLobbyUser(login, &usersLobbyWs)
 	go SentOnlineUser(login, &usersLobbyWs)
 
-	LobbyReader(ws)
+	Reader(ws)
 }
 
-func LobbyReader(ws *websocket.Conn) {
+func Reader(ws *websocket.Conn) {
 	for {
-		var msg LobbyMessage
+		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -41,133 +39,48 @@ func LobbyReader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var maps = lobby.GetMapList()
 			for _, Map := range maps {
-				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameMap: Map.Name, NumOfPlayers: strconv.Itoa(Map.Respawns)}
-				lobbyPipe <- resp // Отправляет сообщение в тред
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameMap: Map.Name, NumOfPlayers: strconv.Itoa(Map.Respawns)}
+				ws.WriteJSON(resp)
 			}
 		}
 
 		if msg.Event == "GameView" {
 			games := lobby.GetLobbyGames()
 			for _, game := range games {
-				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
 					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
-				lobbyPipe <- resp
+				ws.WriteJSON(resp)
 			}
 		}
 
 		if msg.Event == "DontEndGamesList" {
 			games := lobby.GetDontEndGames(usersLobbyWs[ws].Login)
 			for _, game := range games {
-				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
-				lobbyPipe <- resp
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
+				ws.WriteJSON(resp)
 			}
 		}
 
 		if msg.Event == "JoinToLobbyGame" {
-			var resp LobbyResponse
-			game, errGetName := lobby.GetGame(msg.GameName)
-			if errGetName != nil {
-				log.Panic(errGetName)
-			}
-			err := lobby.JoinToLobbyGame(msg.GameName, usersLobbyWs[ws].Login)
-			if err != nil {
-				resp = LobbyResponse{Event: "initLobbyGame", UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName, Error: err.Error()}
-				lobbyPipe <- resp
-			} else {
-				// игрок инициализирует лобби меню на клиенте
-				resp = LobbyResponse{Event: "initLobbyGame", UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
-				lobbyPipe <- resp
-
-				//все кто в лоби получают сообщение о том что подключился новйы игрок
-				for user := range game.Users {
-					if user != usersLobbyWs[ws].Login {
-						resp = LobbyResponse{Event: "NewUser", UserName: user, NewUser: usersLobbyWs[ws].Login}
-						lobbyPipe <- resp
-					}
-				}
-
-				// игрок получает список всех игроков в лоби и их респауны
-				for user, ready := range game.Users {
-					if user != usersLobbyWs[ws].Login {
-						var respown string
-						if ready {
-							for respawns := range game.Respawns {
-								if game.Respawns[respawns] == user {
-									respown = respawns.Name
-								}
-							}
-						}
-						resp = LobbyResponse{Event: "JoinToLobby", UserName: usersLobbyWs[ws].Login, GameUser: user, Ready: strconv.FormatBool(ready), RespawnName: respown}
-						lobbyPipe <- resp
-					}
-				}
-				RefreshLobbyGames(usersLobbyWs[ws].Login) // обновляет кол-во игроков и их характиристики в неигровом лоби
-			}
+			JoinToLobbyGame(msg, ws)
 		}
 
 		if msg.Event == "CreateLobbyGame" {
 			lobby.CreateNewLobbyGame(msg.GameName, msg.MapName, usersLobbyWs[ws].Login)
-			var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
-			lobbyPipe <- resp
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
+			ws.WriteJSON(resp)
 
 			RefreshLobbyGames(usersLobbyWs[ws].Login)
 		}
 
 		if msg.Event == "Ready" {
-			var resp LobbyResponse
-			game, errGetName := lobby.GetGame(msg.GameName)
-			if errGetName != nil {
-				log.Panic(errGetName)
-			}
-			respName, errRespawn := lobby.SetRespawnUser(msg.GameName, usersLobbyWs[ws].Login, msg.Respawn)
-
-			if errRespawn == nil {
-				lobby.UserReady(msg.GameName, usersLobbyWs[ws].Login)
-
-				for user := range game.Users {
-					resp = LobbyResponse{Event: msg.Event, UserName: user, GameUser: usersLobbyWs[ws].Login, Ready: strconv.FormatBool(game.Users[usersLobbyWs[ws].Login]), RespawnName: respName}
-					lobbyPipe <- resp
-				}
-			} else {
-				resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, GameUser: usersLobbyWs[ws].Login, Error: errRespawn.Error()}
-				lobbyPipe <- resp
-			}
+			Ready(msg, ws)
 		}
 
 		if msg.Event == "StartNewGame" {
-			game, errGetName := lobby.GetGame(msg.GameName)
-			if errGetName != nil {
-				log.Panic(errGetName) //TODO no found this game
-			} // список игроков которым надо разослать данные взятые из обьекта игры
-			if len(game.Users) > 1 {
-				var readyAll = true
-				for _, ready := range game.Users {
-					if !ready {
-						readyAll = false
-						break
-					}
-				}
-				if readyAll {
-					id, success := lobby.StartNewGame(msg.GameName)
-					if success {
-						lobby.DelLobbyGame(usersLobbyWs[ws].Login) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
-						for user := range game.Users {
-							var resp = LobbyResponse{Event: msg.Event, UserName: user, IdGame: id}
-							lobbyPipe <- resp
-						}
-					} else {
-						var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("error ad to DB").Error()}
-						lobbyPipe <- resp
-					}
-				} else {
-					var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("PlayerNotReady").Error()}
-					lobbyPipe <- resp
-				}
-			} else {
-				var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("Players < 2").Error()}
-				lobbyPipe <- resp
-			}
+			StartNewGame(msg, ws)
 		}
+
 		if msg.Event == "Respawn" {
 			games := lobby.GetLobbyGames()
 			user := usersLobbyWs[ws].Login
@@ -176,7 +89,7 @@ func LobbyReader(ws *websocket.Conn) {
 					if user == player {
 						for respawn := range game.Respawns {
 							if game.Respawns[respawn] == "" {
-								var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
+								var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
 								lobbyPipe <- resp
 							}
 						}
@@ -185,16 +98,14 @@ func LobbyReader(ws *websocket.Conn) {
 				}
 			}
 		}
+
 		if msg.Event == "Logout" {
 			ws.Close()
 		}
+
 		if msg.Event == "InitLobby" {
-			var resp = LobbyResponse{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
-			lobbyPipe <- resp
-		}
-		if msg.Event == "NewChatMessage" {
-			var resp = LobbyResponse{Event: msg.Event, Message: msg.Message, GameUser: usersLobbyWs[ws].Login}
-			commonChatPipe <- resp
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
+			ws.WriteJSON(resp)
 		}
 	}
 }
@@ -218,7 +129,8 @@ func LobbyReposeSender() {
 	}
 }
 
-type Clients struct { // структура описывающая клиента ws соеденение
+type Clients struct {
+	// структура описывающая клиента ws соеденение
 	Login string
 	Id    int
 }

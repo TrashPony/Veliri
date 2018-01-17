@@ -9,7 +9,7 @@ type Watcher interface {
 	getX() int
 	getY() int
 	getWatchZone() int
-	getNameUser() string
+	getOwnerUser() string
 }
 
 func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*Structure, Err error) {
@@ -18,7 +18,7 @@ func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[stri
 	unitsCoordinate = make(map[int]map[int]*Unit)
 	structureCoordinate = make(map[int]map[int]*Structure)
 
-	if login == gameObject.getNameUser() {
+	if login == gameObject.getOwnerUser() {
 
 		RadiusCoordinates := GetCoordinates(gameObject.getX(), gameObject.getY(), gameObject.getWatchZone())
 		PermCoordinates   := Filter(gameObject, RadiusCoordinates, game)

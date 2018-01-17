@@ -31,7 +31,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 				for _, xLine := range watchUnit {
 					for _, hostile := range xLine {
-						if hostile.NameUser != client.login {
+						if hostile.Owner != client.login {
 							client.AddHostileUnit(hostile)
 						}
 					}
@@ -39,7 +39,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 				for _, xLine := range watchStructure {
 					for _, hostile := range xLine {
-						if hostile.NameUser != client.login {
+						if hostile.Owner != client.login {
 							client.AddHostileStructure(hostile)
 						}
 					}
@@ -67,7 +67,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 				for _, xLine := range watchUnit {
 					for _, hostile := range xLine {
-						if hostile.NameUser != client.login {
+						if hostile.Owner != client.login {
 							client.AddHostileUnit(hostile)
 						}
 					}
@@ -75,7 +75,7 @@ func (client *Player) GetAllWatchObject(activeGame *Game) {
 
 				for _, xLine := range watchStructure {
 					for _, hostile := range xLine {
-						if hostile.NameUser != client.login {
+						if hostile.Owner != client.login {
 							client.AddHostileStructure(hostile)
 						}
 					}

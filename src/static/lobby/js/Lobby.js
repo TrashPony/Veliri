@@ -60,14 +60,19 @@ function MapSelection() {
         event: "MapView"
     }));
 
-    var div = document.getElementById("cancel");
-    var cancel = document.createElement("input");
-    cancel.type = "button";
-    cancel.value = "Отменить";
-    cancel.className = "button";
-    cancel.onclick = ReturnLobby;
-    div.appendChild(cancel);
 
+    var div = document.getElementById("cancel");
+    var cancel = document.getElementById("cancelButton");
+
+    if (!cancel) {
+        cancel = document.createElement("input");
+        cancel.type = "button";
+        cancel.value = "Отменить";
+        cancel.className = "button";
+        cancel.id = "cancelButton";
+        cancel.onclick = ReturnLobby;
+        div.appendChild(cancel);
+    }
 }
 
 function MouseOverMap(id) {
@@ -97,17 +102,4 @@ function DelElements(ClassElements) {
     while (SelectMap.length > 0) {
         SelectMap[0].parentNode.removeChild(SelectMap[0]);
     }
-}
-
-function NewChatMessage(jsonMessage) {
-    var chatBox = document.getElementById("chatBox");
-    var UserName = document.createElement("span");
-    UserName.className = "ChatUserName";
-    UserName.innerHTML = JSON.parse(jsonMessage).game_user + ":";
-    var TextMessage = document.createElement("span");
-    TextMessage.className = "ChatText";
-    TextMessage.innerHTML = JSON.parse(jsonMessage).message;
-    chatBox.appendChild(UserName);
-    chatBox.appendChild(TextMessage);
-    chatBox.appendChild(document.createElement("br"));
 }

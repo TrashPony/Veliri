@@ -18,7 +18,7 @@ func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
 
 func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*Clients) {
 	for _, client := range *usersWs {
-		var resp = LobbyResponse{Event: "NewLobbyUser", UserName: client.Login, GameUser: login}
+		var resp = Response{Event: "NewLobbyUser", UserName: client.Login, GameUser: login}
 		lobbyPipe <- resp
 	}
 }
@@ -26,7 +26,7 @@ func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*Clients) {
 func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*Clients) {
 	for _, client := range *usersWs {
 		if login != client.Login {
-			var resp = LobbyResponse{Event: "NewLobbyUser", UserName: login, GameUser: client.Login}
+			var resp = Response{Event: "NewLobbyUser", UserName: login, GameUser: client.Login}
 			lobbyPipe <- resp
 		}
 	}
@@ -34,7 +34,7 @@ func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*Clients) {
 
 func DelLobbyUser(login string, usersWs *map[*websocket.Conn]*Clients) {
 	for _, client := range *usersWs {
-		var resp = LobbyResponse{Event: "DelLobbyUser", UserName: client.Login, GameUser: login}
+		var resp = Response{Event: "DelLobbyUser", UserName: client.Login, GameUser: login}
 		lobbyPipe <- resp
 	}
 }
@@ -64,14 +64,14 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*Clients, err erro
 
 func DelUserInLobby(game *lobby.LobbyGames, delLogin string) {
 	for user := range game.Users {
-		var message = LobbyResponse{Event: "DelUser", UserName: user, GameUser: delLogin}
+		var message = Response{Event: "DelUser", UserName: user, GameUser: delLogin}
 		lobbyPipe <- message
 	}
 }
 
 func DiconnectLobby(users map[string]bool) {
 	for client := range users {
-		var refresh = LobbyResponse{Event: "DisconnectLobby", UserName: client}
+		var refresh = Response{Event: "DisconnectLobby", UserName: client}
 		lobbyPipe <- refresh
 	}
 }
@@ -80,10 +80,10 @@ func RefreshLobbyGames(login string) {
 	games := lobby.GetLobbyGames()
 	for _, client := range usersLobbyWs {
 		if client.Login != login {
-			var refresh = LobbyResponse{Event: "GameRefresh", UserName: client.Login}
+			var refresh = Response{Event: "GameRefresh", UserName: client.Login}
 			lobbyPipe <- refresh
 			for _, game := range games {
-				var resp = LobbyResponse{Event: "GameView", UserName: client.Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
+				var resp = Response{Event: "GameView", UserName: client.Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
 					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
 				lobbyPipe <- resp
 			}
