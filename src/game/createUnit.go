@@ -1,12 +1,10 @@
 package game
 
 import (
-	"errors"
-	"log"
-	"strconv"
+
 )
 
-func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (Unit, int, error) {
+/*func CreateUnit(idGame int, idPlayer string, unitType string, x int, y int) (Unit, int, error) {
 	var unit Unit
 	checkPlace := CheckPlace(idGame, x, y)
 	if checkPlace { // если место не занято то дидем дальше
@@ -83,4 +81,4 @@ func CheckPlace(idGame int, x int, y int) bool {
 	} else {
 		return false
 	}
-}
+}*/

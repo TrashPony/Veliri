@@ -10,12 +10,13 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
-	activeGame, ok := Games[client.GetGameID()]
-
-	activeUser := ActionGameUser(Games[client.GetGameID()].GetPlayers())
 
 	if find && ok {
-		if unit.Action && !activeGame.GetUserReady(client.GetLogin()) {
+
+		activeGame, okGetGame := Games[client.GetGameID()]
+		activeUser := ActionGameUser(Games[client.GetGameID()].GetPlayers())
+
+		if okGetGame && unit.Action && !activeGame.GetUserReady(client.GetLogin()) {
 
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
 			obstacles := game.GetObstacles(client, Games[client.GetGameID()])

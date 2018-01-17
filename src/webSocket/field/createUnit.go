@@ -7,7 +7,7 @@ import (
 )
 
 func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
-	var resp FieldResponse
+	/*var resp FieldResponse
 	client, ok := usersFieldWs[ws]
 
 	if !ok {
@@ -40,5 +40,5 @@ func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
 			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
 			fieldPipe <- resp
 		}
-	}
+	}*/
 }

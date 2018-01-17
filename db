@@ -1,15 +1,22 @@
-CREATE TABLE unit_type(
-    id serial primary key,
-    type varchar(64),
-    damage int,
-    hp int,
-    move_speed int,
-    initiative int,
-    range_attack int,
-    range_view int,
-    area_attack int,
-    type_attack varchar(64),
-    price int
+CREATE TABLE chassis_type (
+	id serial primary key,
+	type varchar(64),
+	hp int,
+	move_speed int,
+	initiative int,
+	size int,
+	max_weapon_size
+);
+
+CREATE TABLE weapon_type (
+	id serial primary key,
+	type varchar(64),
+	damage int,
+	range_attack int,
+	range_view int,
+	area_attack int,
+	type_attack varchar(64),
+	size int
 );
 
 CREATE TABLE structure_type(
@@ -34,6 +41,18 @@ CREATE TABLE users(
     mail varchar(64)
 );
 
+CREATE TABLE squads (
+	id serial primary key,
+	id_user int references users(id),
+);
+
+CREATE TABLE squads (
+	id serial primary key,
+	id_squads int references squads,
+	id_chassis int references chassis_type(id),
+	id_weapons int references weapons_type(id)
+);
+
 CREATE TABLE action_games(
    id serial primary key,
    name varchar(64),
@@ -52,17 +71,18 @@ CREATE TABLE action_game_user(
 );
 
 CREATE TABLE action_game_unit(
-    id serial primary key,
-    id_game int references action_games(id),
-    id_type int references unit_type(id),
-    id_user int references users(id),
-    hp int,
-    action varchar(64),
-    target varchar(64),
-    x int,
-    y int,
-    rotate int,
-    queue_attack int
+	id serial primary key,
+	id_game int references action_games(id),
+	id_chassis int references chassis_type(id),
+	id_weapons int references weapon_type(id),
+	id_user int references users(id),
+	hp int,
+	action varchar(64),
+	target varchar(64),
+	x int,
+	y int,
+	rotate int,
+	queue_attack int
 );
 
 CREATE TABLE  action_game_structure(

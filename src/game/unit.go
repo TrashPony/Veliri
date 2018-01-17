@@ -11,14 +11,15 @@ type Unit struct {
 	AreaAttack  int         `json:"area_attack"`
 	TypeAttack  string      `json:"type_attack"`
 	Price       int         `json:"price"`
-	NameType    string      `json:"type"`
-	NameUser    string      `json:"owner"`
+	ChassisType string      `json:"chassis_type"`
+	WeaponType  string      `json:"weapon_type"`
+	Owner       string      `json:"owner"`
 	Hp          int         `json:"hp"`
 	Action      bool        `json:"action"`
 	Target      *Coordinate `json:"target"`
 	X           int         `json:"x"`
 	Y           int         `json:"y"`
-	Rotate		int			`json:"rotate"`
+	Rotate      int         `json:"rotate"`
 	Queue       int         `json:"queue"`
 }
 
@@ -34,6 +35,6 @@ func (unit *Unit) getWatchZone() int {
 	return unit.WatchZone
 }
 
-func (unit *Unit) getNameUser() string {
-	return unit.NameUser
+func (unit *Unit) getOwnerUser() string {
+	return unit.Owner
 }
