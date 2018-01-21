@@ -1,3 +1,5 @@
+var lobby;
+
 function ConnectLobby() {
     lobby = new WebSocket("ws://" + window.location.host + "/wsLobby");
     console.log("Websocket lobby - status: " + lobby.readyState);
@@ -12,7 +14,6 @@ function ConnectLobby() {
         sendDontEndGamesList();
     };
     lobby.onmessage = function(msg) {
-        console.log("message: " + msg.data);
         ReaderLobby(msg.data);
     };
     lobby.onerror = function(msg) {

@@ -65,4 +65,9 @@ function ReaderLobby(jsonMessage) {
     if (event === "DelLobbyUser") {
         DelLobbyUser(jsonMessage);
     }
+
+    if (event === "GetMatherShips") {
+        console.log(jsonMessage);
+        MatherShipsParse(jsonMessage);
+    }
 }

@@ -1,0 +1,51 @@
+#sliderContent {
+    height: 90px;
+    width: 90px;
+    border: 1px solid #25a0e1;
+    position: absolute;
+    top: 5px;
+    left: 19px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+#infoMatherShip {
+    position: absolute;
+    top: 100px;
+    left: 19px;
+}
+
+#slideLeft {
+    cursor:pointer;
+    position: absolute;
+    left: 10px;
+    top: 5px;
+}
+
+#slideLeft:hover {
+    color: #00fffd;
+}
+
+#slideRight {
+    cursor:pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+#slideRight:hover {
+    color: #00fffd;
+}
+
+.boxUnit {
+    display: inline-block;
+    height: 35px;
+    line-height: 35px;
+    width: 35px;
+    border: 1px solid #25a0e1;
+}
+
+.boxUnit:hover {
+    color: #00fffd;
+    cursor:pointer;
+}

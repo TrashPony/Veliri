@@ -1,7 +1,6 @@
 var createGame = false;
 var createNameGame = "";
 var toField = false;
-var lobby;
 var respownId;
 
 function ReturnLobby() {

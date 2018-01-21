@@ -19,10 +19,13 @@ CREATE TABLE weapon_type (
 	size int
 );
 
-CREATE TABLE structure_type(
+CREATE TABLE mother_ship_type (
     id serial primary key,
-    name varchar(64),
     type varchar(64),
+    hp int,
+    armor int,
+    unit_slots int,
+    unit_slot_size int,
     range_view int
 );
 
@@ -32,6 +35,17 @@ CREATE TABLE maps(
     x_size int,
     y_size int,
     type varchar(64)
+);
+
+
+CREATE TABLE map_constructor(
+   id serial primary key,
+   id_map int references maps(id),
+   type varchar(64),
+   name varchar(64),
+   x int,
+   y int,
+   texture varchar(64)
 );
 
 CREATE TABLE users(
@@ -77,10 +91,10 @@ CREATE TABLE action_game_unit(
 	queue_attack int
 );
 
-CREATE TABLE  action_game_structure(
+CREATE TABLE  action_mother_ship(
     id serial primary key,
     id_game int references action_games(id),
-    id_type int references structure_type(id),
+    id_type int references mother_ship_type(id),
     id_user int references users(id),
     x int,
     y int
@@ -89,24 +103,16 @@ CREATE TABLE  action_game_structure(
 CREATE TABLE action_game_user(
    id_game int references action_games(id),
    id_user int references users(id),
-   start_structure int references action_game_structure(id),
+   id_mother_ship int references mother_ship_type(id),
    ready boolean
 );
 
-CREATE TABLE map_constructor(
-   id serial primary key,
-   id_map int references maps(id),
-   type varchar(64),
-   name varchar(64),
-   x int,
-   y int,
-   texture varchar(64)
-);
 
-#/ ---------------------------- Respawn ----------------------------------------------- /
-INSERT INTO structure_type (name, type, range_view) VALUES ('respawn', 'respawn', 2);
+#/ ---------------------------- mother_ship_type ----------------------------------------------- /
+INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, range_view) VALUES ('FuryRoad', 500, 5, 4, 5, 2);
+INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, range_view) VALUES ('MotherTrucker', 750, 6, 3, 4, 2);
 
-#/ ---------------------------- User -------------------------------------------------- /
+
 
 #/ ---------------------------- Map -------------------------------------------------- /
 INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test', 10, 10, 'test');

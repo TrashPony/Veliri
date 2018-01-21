@@ -107,6 +107,12 @@ func Reader(ws *websocket.Conn) {
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
 			ws.WriteJSON(resp)
 		}
+
+		if msg.Event == "GetMatherShips" {
+			var matherShips = lobby.GetMatherShips()
+			var resp = Response{Event: msg.Event, MatherShips: matherShips}
+			ws.WriteJSON(resp)
+		}
 	}
 }
 
