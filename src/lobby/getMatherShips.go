@@ -15,7 +15,7 @@ func GetMatherShips() []MatherShip {
 	var matherShip MatherShip
 
 	for rows.Next() {
-		err := rows.Scan(&matherShip.Id, &matherShip.Type, &matherShip.HP, &matherShip.Armor, &matherShip.UnitSlots, &matherShip.UnitSlotSize, &matherShip.RangeView)
+		err := rows.Scan(&matherShip.Id, &matherShip.Type, &matherShip.HP, &matherShip.Armor, &matherShip.UnitSlots, &matherShip.UnitSlotSize, &matherShip.EquipmentSlots, &matherShip.RangeView)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -26,11 +26,12 @@ func GetMatherShips() []MatherShip {
 }
 
 type MatherShip struct {
-	Id           int    `json:"id"`
-	Type         string `json:"type"`
-	HP           int    `json:"hp"`
-	Armor        int    `json:"armor"`
-	UnitSlots    int    `json:"unit_slots"`
-	UnitSlotSize int    `json:"unit_slot_size"`
-	RangeView    int    `json:"range_view"`
+	Id             int    `json:"id"`
+	Type           string `json:"type"`
+	HP             int    `json:"hp"`
+	Armor          int    `json:"armor"`
+	UnitSlots      int    `json:"unit_slots"`
+	UnitSlotSize   int    `json:"unit_slot_size"`
+	EquipmentSlots int    `json:"equipment_slots"`
+	RangeView      int    `json:"range_view"`
 }

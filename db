@@ -26,6 +26,7 @@ CREATE TABLE mother_ship_type (
     armor int,
     unit_slots int,
     unit_slot_size int,
+    equipment_slots int,
     range_view int
 );
 
@@ -36,7 +37,6 @@ CREATE TABLE maps(
     y_size int,
     type varchar(64)
 );
-
 
 CREATE TABLE map_constructor(
    id serial primary key,
@@ -108,23 +108,23 @@ CREATE TABLE action_game_user(
 );
 
 
-#/ ---------------------------- mother_ship_type ----------------------------------------------- /
-INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, range_view) VALUES ('FuryRoad', 500, 5, 4, 5, 2);
-INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, range_view) VALUES ('MotherTrucker', 750, 6, 3, 4, 2);
+/* ---------------------------- mother_ship_type ----------------------------------------------- */
+INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, equipment_slots, range_view) VALUES ('FuryRoad', 500, 5, 4, 5, 2, 2);
+INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, equipment_slots, range_view) VALUES ('MotherTrucker', 750, 6, 3, 4, 3, 2);
 
 
 
-#/ ---------------------------- Map -------------------------------------------------- /
+/*  ---------------------------- Map -------------------------------------------------- */
 INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test', 10, 10, 'test');
 INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test2', 10, 10, 'test');
 
-#/ ---------------------------- chassis_type ------------------------------------------ /
+/*  ---------------------------- chassis_type ------------------------------------------ */
 INSERT INTO chassis_type (type, hp, move_speed, initiative, size, max_weapon_size)  VALUES ('track', 100, 2, 2, 3, 3);
 
-#/ ---------------------------- weapon_type -------------------------------------------------- /
+/*  ---------------------------- weapon_type -------------------------------------------------- */
 INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('tank gun', 2, 2, 2, 1, 'fire', 3);
 
-#/ ---------------------------- RESPAWN -------------------------------------------------- /
+/*  ---------------------------- RESPAWN -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_1', 1 ,1, '');
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_2', 8 ,8, '');
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_1', 1 ,1, '');
@@ -132,7 +132,7 @@ INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'res
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_3', 1 ,8, '');
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_4', 8 ,8, '');
 
-#/ ---------------------------- Obstacles -------------------------------------------------- /
+/*  ---------------------------- Obstacles -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 4, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 5 , 4, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 6 , 4, '');

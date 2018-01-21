@@ -89,3 +89,30 @@ tr td:last-child {
     position: absolute;
     bottom: 12px;
 }
+
+.boxUnit {
+    display: inline-block;
+    height: 35px;
+    line-height: 35px;
+    width: 35px;
+    border: 1px solid #25a0e1;
+}
+
+.boxUnit:hover {
+    color: #00fffd;
+    cursor:pointer;
+}
+
+.boxEquip {
+    display: inline-block;
+    height: 15px;
+    line-height: 15px;
+    width: 15px;
+    margin-right: 5px;
+    border: 1px solid #25a0e1;
+}
+
+.boxEquip:hover {
+    color: #00fffd;
+    cursor:pointer;
+}
