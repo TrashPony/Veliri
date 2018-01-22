@@ -25,6 +25,7 @@ tr td:last-child {
     display:inline-block;
     text-shadow: #28a5e4 0 0 4px;
     color:  #a5d5ef;
+    position: relative;
 }
 
 #lobby {

@@ -35,13 +35,14 @@ function CreateNavigationSlider() {
 
 function SliderMoveLeft() {
     var sliderContent = document.getElementById("sliderContent");
-    RemoveUniBox();
+    RemoveUnitBox();
 
     var last = sliderContent.matherShips.pop();    // беру последний обьект
     sliderContent.matherShips.unshift(last);       // кладу его первым
 
     if (sliderContent.matherShips.length > 0) {
         NextSlide(sliderContent);
+        ConfigurationMatherShip();
     }
 }
 
@@ -54,6 +55,7 @@ function SliderMoveRight() {
 
     if (sliderContent.matherShips.length > 0) {
         NextSlide(sliderContent);
+        ConfigurationMatherShip();
     }
 }
 

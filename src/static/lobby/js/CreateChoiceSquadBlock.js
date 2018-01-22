@@ -65,13 +65,6 @@ function CreateMatherShipTD() {
     var matherShipInfo = CreateMatherShipInfo();
     matherShipTD.appendChild(matherShipInfo);
 
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "Настроить";
-    button.className = "button";
-    button.onclick = ConfigurationMatherShip;
-    matherShipInfo.appendChild(button);
-
     return matherShipTD;
 }
 

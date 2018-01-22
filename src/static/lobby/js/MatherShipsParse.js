@@ -5,6 +5,7 @@ function MatherShipsParse(jsonMessage) {
         sliderContent.matherShips = matherShips;
 
         NextSlide(sliderContent);
+        ConfigurationMatherShip();
     }
 }
 

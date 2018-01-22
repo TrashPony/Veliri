@@ -9,7 +9,7 @@
     width: 300px;
     height: 200px;
     border: 1px solid #25a0e1;
-    z-index: 9;
+    z-index: 999;
 }
 
 #chatMenu {
