@@ -134,4 +134,6 @@ tr td:last-child {
     font-family: sans-serif;
     font-size: 9pt;
     border-radius: 10px;
+    z-index: 999;
+    background-color: rgba(33, 176, 255, 0.6);
 }

@@ -11,13 +11,13 @@ function InitCreateUnit() {
         unitConstructor.id = "unitConstructor";
         lobbyMenu.appendChild(unitConstructor);
 
-        var chassisMenu = CreateChassisMenu();
-        var weaponMenu = CreateWeaponMenu();
         var unitMenu = CreateUnitMenu();
+        var unitParams =  CreateUnitParams();
+        var tabDetailMenu = CreateTabDetailMenu();
 
-        unitConstructor.appendChild(chassisMenu);
+        unitConstructor.appendChild(unitParams);
         unitConstructor.appendChild(unitMenu);
-        unitConstructor.appendChild(weaponMenu);
+        unitConstructor.appendChild(tabDetailMenu);
 
         lobby.send(JSON.stringify({
             event: "GetDetailOfUnits"
@@ -26,6 +26,68 @@ function InitCreateUnit() {
     } else {
         unitConstructor.style.display = "block";
     }
+}
+
+function CreateTabDetailMenu() {
+    var tabDetailMenu = document.createElement("div");
+    tabDetailMenu.id = "tabDetailMenu";
+
+    var chassisMenu = CreateChassisMenu();
+    var weaponMenu = CreateWeaponMenu();
+    var tabs = CreateTabs();
+
+    chassisMenu.style.display = "none";
+    weaponMenu.style.display = "none";
+
+    tabDetailMenu.appendChild(tabs);
+    tabDetailMenu.appendChild(chassisMenu);
+    tabDetailMenu.appendChild(weaponMenu);
+
+    return tabDetailMenu;
+}
+
+function CreateTabs() {
+    var tabs = document.createElement("ul");
+    tabs.id = "Tabs";
+    var chassisTab = document.createElement("li");
+    chassisTab.className = "SelectedTab";
+    chassisTab.innerHTML = "Шасси";
+
+    var weaponTab = document.createElement("li");
+    weaponTab.className = "Tab";
+    weaponTab.innerHTML = "Башни";
+
+    var radarTab = document.createElement("li");
+    radarTab.className = "Tab";
+    radarTab.innerHTML = "Радары";
+
+    var bodyTab = document.createElement("li");
+    bodyTab.className = "Tab";
+    bodyTab.innerHTML = "Корпуса";
+
+    tabs.appendChild(chassisTab);
+    tabs.appendChild(weaponTab);
+    tabs.appendChild(radarTab);
+    tabs.appendChild(bodyTab);
+
+    return tabs;
+}
+
+function CreateUnitParams() {
+    var unitParams = document.createElement("div");
+    unitParams.className = "ConstructorMenu";
+
+    var paramsSpan = document.createElement("div");
+    paramsSpan.innerHTML = "Unit params:";
+    unitParams.appendChild(paramsSpan);
+
+    var chassisTable = CreateChassisTable();
+    unitParams.appendChild(chassisTable);
+
+    var weaponTable = CreateWeaponTable();
+    unitParams.appendChild(weaponTable);
+
+    return unitParams
 }
 
 function CreateChassisMenu() {
@@ -61,27 +123,32 @@ function CreateUnitMenu() {
     unitMenu.id = "unitMenu";
 
     var unitSpan = document.createElement("span");
-    unitSpan.className = "Value";
     unitSpan.innerHTML = "Юнит";
     unitMenu.appendChild(unitSpan);
 
     var chassisUnitBox = document.createElement("div");
     chassisUnitBox.className = "ElementUnitBox left";
+    chassisUnitBox.id = "chassisElement";
     unitMenu.appendChild(chassisUnitBox);
 
     var weaponUnitBox = document.createElement("div");
     weaponUnitBox.className = "ElementUnitBox right";
+    weaponUnitBox.id = "weaponElement";
     unitMenu.appendChild(weaponUnitBox);
+
+    var radarUnitBox = document.createElement("div");
+    radarUnitBox.className = "ElementUnitBox left";
+    radarUnitBox.id = "radarElement";
+    unitMenu.appendChild(radarUnitBox);
+
+    var bodyUnitBox = document.createElement("div");
+    bodyUnitBox.className = "ElementUnitBox right";
+    bodyUnitBox.id = "bodyElement";
+    unitMenu.appendChild(bodyUnitBox);
 
     var picUnit = document.createElement("div");
     picUnit.id = "picUnit";
     unitMenu.appendChild(picUnit);
-
-    var chassisTable = CreateChassisTable();
-    unitMenu.appendChild(chassisTable);
-
-    var weaponTable = CreateWeaponTable();
-    unitMenu.appendChild(weaponTable);
 
     var acceptButton = document.createElement("input");
     acceptButton.type = "button";

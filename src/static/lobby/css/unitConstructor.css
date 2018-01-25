@@ -2,33 +2,44 @@
     border-radius: 10px;
     box-shadow: 0 0 30px 0 rgb(0, 164, 255);
     background-size: 100% 2px, 4px 4px, cover;
-    transition-property: background-image;
     animation: menuAnimation 7000ms linear infinite;
-    display:inline-block;
-    text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
     position: absolute;
     top: 0;
-    left: -40px;
+    left: -120px;
     z-index: 900;
+    height: 415px;
+
 }
 
 #unitMenu {
     padding-top: 10px;
     border-radius: 10px;
     display:inline-block;
-    width: 240px;
+    width: 200px;
     height: 405px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
+    top: -392px;
 }
 
 .ConstructorMenu {
     padding-top: 10px;
     border-radius: 10px;
     display:inline-block;
-    width: 100px;
+    width: 120px;
+    height: 405px;
+    border: 1px solid #25a0e1;
+    position: relative;
+    text-align: center;
+    top: -392px;
+}
+
+#tabDetailMenu {
+    padding-top: 10px;
+    border-radius: 10px;
+    display:inline-block;
+    width: 200px;
     height: 405px;
     border: 1px solid #25a0e1;
     position: relative;
@@ -74,13 +85,13 @@
 }
 
 #picUnit {
-    background-color:rgba(0,0,0,.4);
+    background-color:rgba(0, 0, 0, 0.4);
     height: 100px;
     width: 100px;
     border: 2px solid #25a0e1;
     position:absolute;
-    top: 140px;
-    left: 68px;
+    top: 100px;
+    left: 46px;
 }
 
 #picUnit:hover {
@@ -88,28 +99,21 @@
 }
 
 .table.params {
+    margin-right:auto;
+    margin-left:auto;
+    margin-top: 5px;
     font-size: 9pt;
-    position:absolute;
-    bottom: 35px;
     width: 100px;
-}
-
-.table.params.chassis {
-    left: 10px;
-}
-
-.table.params.weapon {
-    right: 10px;
 }
 
 #acceptButton {
     position:absolute;
-    right: 90px;
-    bottom: 5px;
+    right: 70px;
+    bottom: 15px;
 }
 
 #mask {
-    background-color:rgba(0,0,0,.7);
+    background-color:rgba(0, 0, 0, 0.7);
     height:100%;
     position:fixed;
     width:100%;
@@ -117,4 +121,12 @@
     left:0;
     z-index: 899;
     display: none;
+}
+
+#radarElement {
+    top: 210px;
+}
+
+#bodyElement {
+    top: 210px;
 }

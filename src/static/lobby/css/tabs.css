@@ -1,0 +1,38 @@
+ul#Tabs {
+    position:relative;
+    top: -20px;
+    left: -30px;
+    list-style-type: none;
+    width: 200px;
+}
+
+#Tabs li.Tab {
+    font-size: 9pt;
+    padding-left: 3px;
+    padding-right: 3px;
+    text-align: center;
+    vertical-align: center;
+    float: left;
+    border: 1px solid #a2b6cb;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+
+}
+
+#Tabs li.Tab:hover {
+    box-shadow: 0 0 15px 2px rgb(0, 195, 255);
+}
+
+#Tabs li.SelectedTab {
+    font-size: 9pt;
+    padding-left: 3px;
+    padding-right: 3px;
+    text-align: center;
+    vertical-align: center;
+    float: left;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-top: 1px solid #a2b6cb;
+    border-right: 1px solid #a2b6cb;
+    border-left: 1px solid #a2b6cb;
+}
