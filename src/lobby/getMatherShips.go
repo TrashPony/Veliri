@@ -5,6 +5,7 @@ import (
 )
 
 func GetMatherShips() []MatherShip {
+
 	rows, err := db.Query("select * from mother_ship_type")
 	if err != nil {
 		log.Fatal(err)

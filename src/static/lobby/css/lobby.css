@@ -97,6 +97,11 @@ tr td:last-child {
     line-height: 35px;
     width: 35px;
     border: 1px solid #25a0e1;
+    background-color:rgba(0,0,0,.4);
+}
+
+.boxUnit:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
 }
 
 .boxUnit:hover {
@@ -111,6 +116,11 @@ tr td:last-child {
     width: 15px;
     margin-right: 5px;
     border: 1px solid #25a0e1;
+    background-color:rgba(0,0,0,.4);
+}
+
+.boxEquip:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
 }
 
 .boxEquip:hover {

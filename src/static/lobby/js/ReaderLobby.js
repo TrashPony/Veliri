@@ -67,7 +67,11 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "GetMatherShips") {
-        console.log(jsonMessage);
         MatherShipsParse(jsonMessage);
+    }
+
+    if (event === "GetDetailOfUnits") {
+        console.log(jsonMessage);
+        DetailUnitParse(jsonMessage)
     }
 }

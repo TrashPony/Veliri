@@ -1,4 +1,4 @@
-#mainConstructor {
+#unitConstructor {
     border-radius: 10px;
     box-shadow: 0 0 30px 0 rgb(0, 164, 255);
     background-size: 100% 2px, 4px 4px, cover;
@@ -35,7 +35,24 @@
     text-align: center;
 }
 
+.Detail {
+    margin-right:auto;
+    margin-left:auto;
+    margin-top: 5px;
+    height: 75px;
+    width: 75px;
+    border: 1px solid #25a0e1;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-color:rgba(0,0,0,.4);
+}
+
+.Detail:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+}
+
 .ElementUnitBox {
+    background-color:rgba(0,0,0,.4);
     height: 50px;
     width: 50px;
     border: 2px solid #25a0e1;
@@ -43,6 +60,11 @@
     position: absolute;
     top: 40px;
 }
+
+.ElementUnitBox:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+}
+
 .ElementUnitBox.left {
     left: 20px;
 }
@@ -52,6 +74,7 @@
 }
 
 #picUnit {
+    background-color:rgba(0,0,0,.4);
     height: 100px;
     width: 100px;
     border: 2px solid #25a0e1;
@@ -60,10 +83,14 @@
     left: 68px;
 }
 
+#picUnit:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+}
+
 .table.params {
     font-size: 9pt;
     position:absolute;
-    bottom: 10px;
+    bottom: 35px;
     width: 100px;
 }
 
@@ -73,6 +100,12 @@
 
 .table.params.weapon {
     right: 10px;
+}
+
+#acceptButton {
+    position:absolute;
+    right: 90px;
+    bottom: 5px;
 }
 
 #mask {

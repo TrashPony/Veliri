@@ -113,6 +113,14 @@ func Reader(ws *websocket.Conn) {
 			var resp = Response{Event: msg.Event, MatherShips: matherShips}
 			ws.WriteJSON(resp)
 		}
+
+		if msg.Event == "GetDetailOfUnits" {
+			weapons := lobby.GetWeapons()
+			chassis := lobby.GetChassis()
+
+			var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis}
+			ws.WriteJSON(resp)
+		}
 	}
 }
 

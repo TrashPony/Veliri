@@ -120,9 +120,13 @@ INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test2', 10, 10, 'test');
 
 /*  ---------------------------- chassis_type ------------------------------------------ */
 INSERT INTO chassis_type (type, hp, move_speed, initiative, size, max_weapon_size)  VALUES ('track', 100, 2, 2, 3, 3);
+INSERT INTO chassis_type (type, hp, move_speed, initiative, size, max_weapon_size)  VALUES ('olol', 100, 2, 2, 3, 3);
+
 
 /*  ---------------------------- weapon_type -------------------------------------------------- */
-INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('tank gun', 2, 2, 2, 1, 'fire', 3);
+INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('tank_gun', 2, 2, 2, 1, 'fire', 3);
+INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('olololo', 2, 2, 2, 1, 'fire', 3);
+
 
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_1', 1 ,1, '');

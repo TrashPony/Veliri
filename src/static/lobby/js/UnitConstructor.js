@@ -2,19 +2,30 @@ function InitCreateUnit() {
     var mask = document.getElementById("mask");
     mask.style.display = "block";
 
-    var lobby = document.getElementById("lobby");
+    var lobbyMenu = document.getElementById("lobby");
 
-    var mainConstructor = document.createElement("div");
-    mainConstructor.id = "mainConstructor";
-    lobby.appendChild(mainConstructor);
+    var unitConstructor = document.getElementById("unitConstructor");
 
-    var chassisMenu = CreateChassisMenu();
-    var weaponMenu = CreateWeaponMenu();
-    var unitMenu = CreateUnitMenu();
+    if (!unitConstructor) {
+        unitConstructor = document.createElement("div");
+        unitConstructor.id = "unitConstructor";
+        lobbyMenu.appendChild(unitConstructor);
 
-    mainConstructor.appendChild(chassisMenu);
-    mainConstructor.appendChild(unitMenu);
-    mainConstructor.appendChild(weaponMenu);
+        var chassisMenu = CreateChassisMenu();
+        var weaponMenu = CreateWeaponMenu();
+        var unitMenu = CreateUnitMenu();
+
+        unitConstructor.appendChild(chassisMenu);
+        unitConstructor.appendChild(unitMenu);
+        unitConstructor.appendChild(weaponMenu);
+
+        lobby.send(JSON.stringify({
+            event: "GetDetailOfUnits"
+        }));
+
+    } else {
+        unitConstructor.style.display = "block";
+    }
 }
 
 function CreateChassisMenu() {
@@ -33,7 +44,7 @@ function CreateChassisMenu() {
 
 function CreateWeaponMenu() {
 
-    var weaponMenu  = document.createElement("div");
+    var weaponMenu = document.createElement("div");
     weaponMenu.id = "weaponMenu";
     weaponMenu.className = "ConstructorMenu";
 
@@ -72,20 +83,37 @@ function CreateUnitMenu() {
     var weaponTable = CreateWeaponTable();
     unitMenu.appendChild(weaponTable);
 
+    var acceptButton = document.createElement("input");
+    acceptButton.type = "button";
+    acceptButton.value = "Accept";
+    acceptButton.className = "lobbyButton";
+    acceptButton.id = "acceptButton";
+    acceptButton.onclick = BackToLobby;
+    unitMenu.appendChild(acceptButton);
+
+
     return unitMenu;
+}
+
+function BackToLobby() {
+    var mask = document.getElementById("mask");
+    mask.style.display = "none";
+
+    var unitConstructor = document.getElementById("unitConstructor");
+    unitConstructor.style.display = "none";
 }
 
 function CreateChassisTable() {
     var chassisTableParams = document.createElement("table");
     chassisTableParams.className = "table params chassis";
 
-    var hp = CreateTableRow("HP","HP");
+    var hp = CreateTableRow("HP", "HP");
     chassisTableParams.appendChild(hp);
 
-    var moveSpeed = CreateTableRow("Speed","Speed");
+    var moveSpeed = CreateTableRow("Speed", "Speed");
     chassisTableParams.appendChild(moveSpeed);
 
-    var initiative = CreateTableRow("Initiative","Initiative");
+    var initiative = CreateTableRow("Initiative", "Initiative");
     chassisTableParams.appendChild(initiative);
 
     return chassisTableParams;
@@ -95,19 +123,19 @@ function CreateWeaponTable() {
     var weaponTableParams = document.createElement("table");
     weaponTableParams.className = "table params weapon";
 
-    var damage = CreateTableRow("Damage","Damage");
+    var damage = CreateTableRow("Damage", "Damage");
     weaponTableParams.appendChild(damage);
 
-    var rangeAttack = CreateTableRow("RangeAttack","RangeAttack");
+    var rangeAttack = CreateTableRow("RangeAttack", "RangeAttack");
     weaponTableParams.appendChild(rangeAttack);
 
-    var rangeView = CreateTableRow("RangeView","RangeView");
+    var rangeView = CreateTableRow("RangeView", "RangeView");
     weaponTableParams.appendChild(rangeView);
 
-    var areaAttack = CreateTableRow("AreaAttack","AreaAttack");
+    var areaAttack = CreateTableRow("AreaAttack", "AreaAttack");
     weaponTableParams.appendChild(areaAttack);
 
-    var typeAttack = CreateTableRow("TypeAttack","TypeAttack");
+    var typeAttack = CreateTableRow("TypeAttack", "TypeAttack");
     weaponTableParams.appendChild(typeAttack);
 
     return weaponTableParams;
