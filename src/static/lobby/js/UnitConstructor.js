@@ -153,3 +153,26 @@ function CreateTableRow(id, value) {
 
     return tr;
 }
+
+function moveTip(e) {
+
+    var tipWeapon = document.getElementById("tipWeapon").style;
+    var tipChassis = document.getElementById("tipChassis").style;
+
+    var w = 250; // Ширина слоя
+    var x = e.pageX; // Координата X курсора
+    var y = e.pageY; // Координата Y курсора
+
+    if ((x + w + 10) < document.body.clientWidth) {
+        // Показывать слой справа от курсора
+        tipChassis.left = x + 'px';
+        tipWeapon.left = x + 'px';
+    } else {
+        // Показывать слой слева от курсора
+        tipChassis.left = x - w + 'px';
+        tipWeapon.left = x - w + 'px';
+    }
+    // Положение от верхнего края окна браузера
+    tipChassis.top = y + 20 + 'px';
+    tipWeapon.top = y + 20 + 'px';
+}

@@ -42,7 +42,7 @@
         </table>
     </div>
 
-    <div id="lobby" align="left">
+    <div id="lobby" align="left" onmousemove="moveTip(event)">
         <div class="NotGameLobby">
             <div class="h">Новые игры:</div>
             <table id="Menu" class="table" width="390">
@@ -98,6 +98,71 @@
         <script>ConnectChat()</script>
     </div>
 </div>
+
+
 <div id="mask"></div>
+
+<div class="tip" id="tipWeapon">
+    <table class="animateTable">
+        <tr>
+            <td>Type: </td>
+            <td id="typeWeapon"> </td>
+        </tr>
+        <tr>
+            <td>Damage: </td>
+            <td id="damage"> </td>
+        </tr>
+        <tr>
+            <td>Range Attack: </td>
+            <td id="rangeAttack"> </td>
+        </tr>
+        <tr>
+            <td>Range View: </td>
+            <td id="rangeView"> </td>
+        </tr>
+        <tr>
+            <td>Area Attack: </td>
+            <td id="areaAttack"> </td>
+        </tr>
+        <tr>
+            <td>Type Attack: </td>
+            <td id="typeAttack"> </td>
+        </tr>
+        <tr>
+            <td>Size: </td>
+            <td id="sizeWeapon"> </td>
+        </tr>
+    </table>
+</div>
+
+<div class="tip" id="tipChassis">
+    <table class="animateTable">
+        <tr>
+            <td>Type: </td>
+            <td id="typeChassis"> </td>
+        </tr>
+        <tr>
+            <td>HP: </td>
+            <td id="hp"> </td>
+        </tr>
+        <tr>
+            <td>Move Speed: </td>
+            <td id="moveSpeed"> </td>
+        </tr>
+        <tr>
+            <td>Initiative: </td>
+            <td id="initiative"> </td>
+        </tr>
+        <tr>
+            <td>Max Weapon Size: </td>
+            <td id="maxWeaponSize"> </td>
+        </tr>
+        <tr>
+            <td>Size: </td>
+            <td id="sizeChassis"> </td>
+        </tr>
+    </table>
+</div>
+
 </body>
 </html>

@@ -127,3 +127,11 @@ tr td:last-child {
     color: #00fffd;
     cursor:pointer;
 }
+
+.tip {
+    position: absolute;
+    display: none;
+    font-family: sans-serif;
+    font-size: 9pt;
+    border-radius: 10px;
+}

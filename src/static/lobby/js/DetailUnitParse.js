@@ -21,7 +21,12 @@ function ViewDetailUnit() {
         boxWeapon.style.backgroundImage = "url(/lobby/img/" + unitConstructor.weapons[i].type + ".png)";
         boxWeapon.weapon = unitConstructor.weapons[i];
         boxWeapon.onmouseover = function () {
-            WeaponMouseOver(this);
+            var tipWeapon = document.getElementById("tipWeapon").style;
+            tipWeapon.style.display = "block";
+        };
+        boxWeapon.onmouseout = function () {
+            var tipWeapon = document.getElementById("tipWeapon").style;
+            tipWeapon.style.display = "none";
         };
         weaponMenu.appendChild(boxWeapon);
     }
@@ -32,16 +37,13 @@ function ViewDetailUnit() {
         boxChassis.style.backgroundImage = "url(/lobby/img/" + unitConstructor.chassis[j].type + ".png)";
         boxChassis.chassis = unitConstructor.chassis[j];
         boxChassis.onmouseover = function () {
-            ChassisMouseOver(this);
+            var tipChassis = document.getElementById("tipChassis").style;
+            tipChassis.style.display = "block";
+        };
+        boxChassis.onmouseout = function () {
+            var tipChassis = document.getElementById("tipChassis").style;
+            tipChassis.style.display = "none";
         };
         chassisMenu.appendChild(boxChassis);
     }
-}
-
-function WeaponMouseOver(box) {
-    //console.log(box.weapon.type);
-}
-
-function ChassisMouseOver(box) {
-    //console.log(box.chassis.type);
 }
