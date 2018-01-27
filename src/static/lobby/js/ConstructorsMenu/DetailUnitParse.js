@@ -27,6 +27,9 @@ function ViewDetailUnit() {
             var tipWeapon = document.getElementById("tipWeapon");
             tipWeapon.style.display = "none";
         };
+        boxWeapon.onclick = function () {
+            SelectWeapon(this);
+        };
         weaponMenu.appendChild(boxWeapon);
     }
 
@@ -41,6 +44,9 @@ function ViewDetailUnit() {
         boxChassis.onmouseout = function () {
             var tipChassis = document.getElementById("tipChassis");
             tipChassis.style.display = "none";
+        };
+        boxChassis.onclick = function () {
+            SelectChassis(this);
         };
         chassisMenu.appendChild(boxChassis);
     }

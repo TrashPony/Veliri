@@ -21,6 +21,7 @@ ul#Tabs {
 
 #Tabs li.Tab:hover {
     box-shadow: 0 0 15px 2px rgb(0, 195, 255);
+    cursor: pointer;
 }
 
 #Tabs li.SelectedTab {
@@ -35,4 +36,16 @@ ul#Tabs {
     border-top: 1px solid #a2b6cb;
     border-right: 1px solid #a2b6cb;
     border-left: 1px solid #a2b6cb;
+    cursor: default;
+}
+
+.TabBlocks {
+    border-radius: 10px;
+    width: 180px;
+    height: 370px;
+    border: 1px solid #25a0e1;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
 }

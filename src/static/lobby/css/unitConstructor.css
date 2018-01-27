@@ -20,7 +20,7 @@
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
-    top: -392px;
+    top: -106px;
 }
 
 .ConstructorMenu {
@@ -32,7 +32,7 @@
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
-    top: -392px;
+    top: -106px;
 }
 
 #tabDetailMenu {
@@ -47,9 +47,8 @@
 }
 
 .Detail {
-    margin-right:auto;
-    margin-left:auto;
-    margin-top: 5px;
+    display: inline-block;
+    margin: 5px;
     height: 75px;
     width: 75px;
     border: 1px solid #25a0e1;

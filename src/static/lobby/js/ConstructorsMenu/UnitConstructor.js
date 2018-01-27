@@ -28,50 +28,6 @@ function InitCreateUnit() {
     }
 }
 
-function CreateTabDetailMenu() {
-    var tabDetailMenu = document.createElement("div");
-    tabDetailMenu.id = "tabDetailMenu";
-
-    var chassisMenu = CreateChassisMenu();
-    var weaponMenu = CreateWeaponMenu();
-    var tabs = CreateTabs();
-
-    chassisMenu.style.display = "none";
-    weaponMenu.style.display = "none";
-
-    tabDetailMenu.appendChild(tabs);
-    tabDetailMenu.appendChild(chassisMenu);
-    tabDetailMenu.appendChild(weaponMenu);
-
-    return tabDetailMenu;
-}
-
-function CreateTabs() {
-    var tabs = document.createElement("ul");
-    tabs.id = "Tabs";
-    var chassisTab = document.createElement("li");
-    chassisTab.className = "SelectedTab";
-    chassisTab.innerHTML = "Шасси";
-
-    var weaponTab = document.createElement("li");
-    weaponTab.className = "Tab";
-    weaponTab.innerHTML = "Башни";
-
-    var radarTab = document.createElement("li");
-    radarTab.className = "Tab";
-    radarTab.innerHTML = "Радары";
-
-    var bodyTab = document.createElement("li");
-    bodyTab.className = "Tab";
-    bodyTab.innerHTML = "Корпуса";
-
-    tabs.appendChild(chassisTab);
-    tabs.appendChild(weaponTab);
-    tabs.appendChild(radarTab);
-    tabs.appendChild(bodyTab);
-
-    return tabs;
-}
 
 function CreateUnitParams() {
     var unitParams = document.createElement("div");
@@ -88,34 +44,6 @@ function CreateUnitParams() {
     unitParams.appendChild(weaponTable);
 
     return unitParams
-}
-
-function CreateChassisMenu() {
-
-    var chassisMenu = document.createElement("div");
-    chassisMenu.id = "chassisMenu";
-    chassisMenu.className = "ConstructorMenu";
-
-    var chassisSpan = document.createElement("span");
-    chassisSpan.className = "Value";
-    chassisSpan.innerHTML = "Шасси:";
-    chassisMenu.appendChild(chassisSpan);
-
-    return chassisMenu;
-}
-
-function CreateWeaponMenu() {
-
-    var weaponMenu = document.createElement("div");
-    weaponMenu.id = "weaponMenu";
-    weaponMenu.className = "ConstructorMenu";
-
-    var weaponSpan = document.createElement("span");
-    weaponSpan.className = "Value";
-    weaponSpan.innerHTML = "Башня:";
-    weaponMenu.appendChild(weaponSpan);
-
-    return weaponMenu;
 }
 
 function CreateUnitMenu() {
