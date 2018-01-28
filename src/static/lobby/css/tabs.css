@@ -7,7 +7,7 @@ ul#Tabs {
 }
 
 #Tabs li.Tab {
-    font-size: 9pt;
+    font-size: 7pt;
     padding-left: 3px;
     padding-right: 3px;
     text-align: center;
@@ -25,7 +25,7 @@ ul#Tabs {
 }
 
 #Tabs li.SelectedTab {
-    font-size: 9pt;
+    font-size:7pt;
     padding-left: 3px;
     padding-right: 3px;
     text-align: center;

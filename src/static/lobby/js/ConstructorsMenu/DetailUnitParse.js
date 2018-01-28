@@ -15,24 +15,6 @@ function ViewDetailUnit() {
     var chassisMenu = document.getElementById("chassisMenu");
     var weaponMenu = document.getElementById("weaponMenu");
 
-    for (var i = 0; i < unitConstructor.weapons.length; i++) {
-        var boxWeapon = document.createElement("div");
-        boxWeapon.className = "Detail weapon";
-        boxWeapon.style.backgroundImage = "url(/lobby/img/" + unitConstructor.weapons[i].type + ".png)";
-        boxWeapon.weapon = unitConstructor.weapons[i];
-        boxWeapon.onmouseover = function () {
-            WeaponMouseOver(this.weapon);
-        };
-        boxWeapon.onmouseout = function () {
-            var tipWeapon = document.getElementById("tipWeapon");
-            tipWeapon.style.display = "none";
-        };
-        boxWeapon.onclick = function () {
-            SelectWeapon(this);
-        };
-        weaponMenu.appendChild(boxWeapon);
-    }
-
     for (var j = 0; j < unitConstructor.chassis.length; j++) {
         var boxChassis = document.createElement("div");
         boxChassis.className = "Detail weapon";
@@ -49,6 +31,24 @@ function ViewDetailUnit() {
             SelectChassis(this);
         };
         chassisMenu.appendChild(boxChassis);
+    }
+
+    for (var i = 0; i < unitConstructor.weapons.length; i++) {
+        var boxWeapon = document.createElement("div");
+        boxWeapon.className = "Detail weapon";
+        boxWeapon.style.backgroundImage = "url(/lobby/img/" + unitConstructor.weapons[i].type + ".png)";
+        boxWeapon.weapon = unitConstructor.weapons[i];
+        boxWeapon.onmouseover = function () {
+            WeaponMouseOver(this.weapon);
+        };
+        boxWeapon.onmouseout = function () {
+            var tipWeapon = document.getElementById("tipWeapon");
+            tipWeapon.style.display = "none";
+        };
+        boxWeapon.onclick = function () {
+            SelectWeapon(this);
+        };
+        weaponMenu.appendChild(boxWeapon);
     }
 }
 
