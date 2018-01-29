@@ -4,7 +4,7 @@ CREATE TABLE chassis_type (
 	hp int,
 	move_speed int,
 	initiative int,
-	size int,
+	size1 int,
 	max_weapon_size int
 );
 
