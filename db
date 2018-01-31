@@ -1,22 +1,59 @@
 CREATE TABLE chassis_type (
 	id serial primary key,
+	name varchar(64),
 	type varchar(64),
-	hp int,
-	move_speed int,
-	initiative int,
-	size1 int,
-	max_weapon_size int
+	carrying int,
+	Maneuverability int,
+	max_speed int
 );
 
 CREATE TABLE weapon_type (
 	id serial primary key,
+	name varchar(64),
 	type varchar(64),
+	weight int,
 	damage int,
-	range_attack int,
-	range_view int,
-	area_attack int,
-	type_attack varchar(64),
-	size int
+	min_attack_range int,
+	Accuracy int,
+	Area_covers int
+);
+
+CREATE TABLE tower_type (
+	id serial primary key,
+	name varchar(64),
+	type varchar(64),
+	weight	int,
+	hp int,
+	power_radar int,
+	armor int,
+	vulnerability_to_kinetics,
+	vulnerability_to_thermo,
+	vulnerability_to_em,
+	vulnerability_to_explosion
+);
+
+CREATE TABLE body_type (
+	id serial primary key,
+	name varchar(64),
+	type varchar(64),
+	weight	int,
+	hp int,
+	max_tower_weight,
+	armor int,
+	vulnerability_to_kinetics,
+	vulnerability_to_thermo,
+	vulnerability_to_em,
+	vulnerability_to_explosion
+);
+
+CREATE TABLE radar_type (
+	id serial primary key,
+	name varchar(64),
+	type varchar(64),
+	weight	int,
+	power int,
+	through bool,
+	analysis int
 );
 
 CREATE TABLE mother_ship_type (
@@ -77,18 +114,27 @@ CREATE TABLE action_games(
 );
 
 CREATE TABLE action_game_unit(
+
+	/* Методанные об игре и владельце */
+	id_user int references users(id),
 	id serial primary key,
 	id_game int references action_games(id),
+
+	/* Части юнита */
 	id_chassis int references chassis_type(id),
 	id_weapons int references weapon_type(id),
-	id_user int references users(id),
-	hp int,
+	id_tower int references tower_type(id),
+	id_body int references body_type(id),
+	id_radar int references radar_type(id),
+
+	/* Игровая статистика */
 	action varchar(64),
 	target varchar(64),
 	x int,
 	y int,
 	rotate int,
-	queue_attack int
+	queue_attack int,
+	hp int
 );
 
 CREATE TABLE  action_mother_ship(
