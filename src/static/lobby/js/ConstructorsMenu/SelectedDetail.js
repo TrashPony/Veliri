@@ -33,3 +33,15 @@ function SelectWeapon(weapon) {
 
     picUnit.appendChild(picWeapon);
 }
+
+function SelectTower() {
+    
+}
+
+function SelectBody() {
+    
+}
+
+function SelectRadar() {
+    
+}

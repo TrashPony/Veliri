@@ -29,6 +29,8 @@
     <script src="js/ConstructorsMenu/DetailUnitParse.js"></script>
     <script src="js/ConstructorsMenu/TabDetail.js"></script>
     <script src="js/ConstructorsMenu/SelectedDetail.js"></script>
+    <script src="js/ConstructorsMenu/DetailMouseOver.js"></script>
+
 
     <script src="../js/MoveWindow.js"></script>
     <script src="../js/Chat.js"></script>
@@ -89,6 +91,7 @@
         </div>
     </div>
 </div>
+
 <div id="chatBlock">
     <div id="chat">
         <div id="chatMenu" align="right"><span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span></div>
@@ -105,64 +108,179 @@
 
 <div id="mask"></div>
 
+<div class="tip" id="tipChassis">
+    <table class="animateTable">
+        <tr>
+            <td>Name: </td>
+            <td id="nameChassis"> </td>
+        </tr>
+        <tr>
+            <td>Type: </td>
+            <td id="typeChassis"> </td>
+        </tr>
+        <tr>
+            <td>Carrying: </td>
+            <td id="carryingChassis"> </td>
+        </tr>
+        <tr>
+            <td>Maneuverability: </td>
+            <td id="maneuverabilityChassis"> </td>
+        </tr>
+        <tr>
+            <td>Max Speed: </td>
+            <td id="maxSpeed"> </td>
+        </tr>
+    </table>
+</div>
+
 <div class="tip" id="tipWeapon">
     <table class="animateTable">
+        <tr>
+            <td>Name: </td>
+            <td id="nameWeapon"> </td>
+        </tr>
         <tr>
             <td>Type: </td>
             <td id="typeWeapon"> </td>
         </tr>
         <tr>
             <td>Damage: </td>
-            <td id="damage"> </td>
+            <td id="damageWeapon"> </td>
         </tr>
         <tr>
-            <td>Range Attack: </td>
-            <td id="rangeAttack"> </td>
+            <td>Min Attack Range: </td>
+            <td id="minAttackRange"> </td>
         </tr>
         <tr>
-            <td>Range View: </td>
-            <td id="rangeView"> </td>
+            <td>Accuracy: </td>
+            <td id="accuracy"> </td>
         </tr>
         <tr>
-            <td>Area Attack: </td>
-            <td id="areaAttack"> </td>
+            <td>Area Covers: </td>
+            <td id="areaCovers"> </td>
         </tr>
         <tr>
-            <td>Type Attack: </td>
-            <td id="typeAttack"> </td>
-        </tr>
-        <tr>
-            <td>Size: </td>
-            <td id="sizeWeapon"> </td>
+            <td>Weight: </td>
+            <td id="weightWeapon"> </td>
         </tr>
     </table>
 </div>
 
-<div class="tip" id="tipChassis">
+<div class="tip" id="tipTower">
     <table class="animateTable">
         <tr>
+            <td>Name: </td>
+            <td id="nameTower"> </td>
+        </tr>
+        <tr>
             <td>Type: </td>
-            <td id="typeChassis"> </td>
+            <td id="typeTower"> </td>
         </tr>
         <tr>
             <td>HP: </td>
-            <td id="hp"> </td>
+            <td id="hpTower"> </td>
         </tr>
         <tr>
-            <td>Move Speed: </td>
-            <td id="moveSpeed"> </td>
+            <td>Power Radar: </td>
+            <td id="powerTower"> </td>
         </tr>
         <tr>
-            <td>Initiative: </td>
-            <td id="initiative"> </td>
+            <td>Armor: </td>
+            <td id="armorTower"> </td>
         </tr>
         <tr>
-            <td>Max Weapon Size: </td>
-            <td id="maxWeaponSize"> </td>
+            <td>Vulnerability to kinetics: </td>
+            <td id="vulToKineticsTower"> </td>
         </tr>
         <tr>
-            <td>Size: </td>
-            <td id="sizeChassis"> </td>
+            <td>Vulnerability to thermo: </td>
+            <td id="vulToThermoTower"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to EM: </td>
+            <td id="vulToEMTower"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to explosion: </td>
+            <td id="vulToExplosionTower"> </td>
+        </tr>
+        <tr>
+            <td>Weight: </td>
+            <td id="weightTower"> </td>
+        </tr>
+    </table>
+</div>
+
+<div class="tip" id="tipBody">
+    <table class="animateTable">
+        <tr>
+            <td>Name: </td>
+            <td id="nameBody"> </td>
+        </tr>
+        <tr>
+            <td>Type: </td>
+            <td id="typeBody"> </td>
+        </tr>
+        <tr>
+            <td>HP: </td>
+            <td id="hpBody"> </td>
+        </tr>
+        <tr>
+            <td>Max Tower Weight: </td>
+            <td id="maxTowerWeightBody"> </td>
+        </tr>
+        <tr>
+            <td>Armor: </td>
+            <td id="armorBody"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to kinetics: </td>
+            <td id="vulToKineticsBody"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to thermo: </td>
+            <td id="vulToThermoBody"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to EM: </td>
+            <td id="vulToEMBody"> </td>
+        </tr>
+        <tr>
+            <td>Vulnerability to explosion: </td>
+            <td id="vulToExplosionBody"> </td>
+        </tr>
+        <tr>
+            <td>Weight: </td>
+            <td id="weightBody"> </td>
+        </tr>
+    </table>
+</div>
+
+<div class="tip" id="tipRadar">
+    <table class="animateTable">
+        <tr>
+            <td>Name: </td>
+            <td id="nameRadar"> </td>
+        </tr>
+        <tr>
+            <td>Type: </td>
+            <td id="typeRadar"> </td>
+        </tr>
+        <tr>
+            <td>Power: </td>
+            <td id="powerRadar"> </td>
+        </tr>
+        <tr>
+            <td>Through: </td>
+            <td id="throughRadar"> </td>
+        </tr>
+        <tr>
+            <td>Analysis: </td>
+            <td id="analysisRadar"> </td>
+        </tr>
+        <tr>
+            <td>Weight: </td>
+            <td id="weightRadar"> </td>
         </tr>
     </table>
 </div>

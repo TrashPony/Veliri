@@ -1,10 +1,17 @@
 function DetailUnitParse(jsonMessage) {
     var weapons = JSON.parse(jsonMessage).weapons;
     var chassis = JSON.parse(jsonMessage).chassis;
+    var towers = JSON.parse(jsonMessage).towers;
+    var bodies = JSON.parse(jsonMessage).bodies;
+    var radars = JSON.parse(jsonMessage).radars;
 
     var unitConstructor = document.getElementById("unitConstructor");
+
     unitConstructor.weapons = weapons;
     unitConstructor.chassis = chassis;
+    unitConstructor.towers = towers;
+    unitConstructor.bodies = bodies;
+    unitConstructor.radars = radars;
 
     ViewDetailUnit();
 }
@@ -13,81 +20,33 @@ function ViewDetailUnit() {
     var unitConstructor = document.getElementById("unitConstructor");
 
     var chassisMenu = document.getElementById("chassisMenu");
+    DetailBoxCreate(unitConstructor.chassis, chassisMenu, "Detail chassis", "tipChassis", ChassisMouseOver, SelectChassis);
     var weaponMenu = document.getElementById("weaponMenu");
+    DetailBoxCreate(unitConstructor.weapons, weaponMenu, "Detail weapon", "tipWeapon", WeaponMouseOver, SelectWeapon);
+    var towerMenu = document.getElementById("towerMenu");
+    DetailBoxCreate(unitConstructor.towers, towerMenu, "Detail towers", "tipTower", TowerMouseOver, SelectTower);
+    var bodyMenu = document.getElementById("bodyMenu");
+    DetailBoxCreate(unitConstructor.bodies, bodyMenu, "Detail bodies", "tipBody", BodyMouseOver, SelectBody);
+    var radarMenu = document.getElementById("radarMenu");
+    DetailBoxCreate(unitConstructor.radars, radarMenu, "Detail radars", "tipRadar", RadarMouseOver, SelectRadar);
+}
 
-    for (var j = 0; j < unitConstructor.chassis.length; j++) {
-        var boxChassis = document.createElement("div");
-        boxChassis.className = "Detail weapon";
-        boxChassis.style.backgroundImage = "url(/lobby/img/" + unitConstructor.chassis[j].type + ".png)";
-        boxChassis.chassis = unitConstructor.chassis[j];
-        boxChassis.onmouseover = function () {
-            ChassisMouseOver(this.chassis);
+function DetailBoxCreate(details, menu, className, tip, onMouse, Select) {
+    for (var j = 0; j < details.length; j++) {
+        var box = document.createElement("div");
+        box.className = className;
+        box.style.backgroundImage = "url(/lobby/img/" + details.type + ".png)";
+        box.chassis = details[j];
+        box.onmouseover = function () {
+            onMouse(this.chassis);
         };
-        boxChassis.onmouseout = function () {
-            var tipChassis = document.getElementById("tipChassis");
+        box.onmouseout = function () {
+            var tipChassis = document.getElementById(tip);
             tipChassis.style.display = "none";
         };
-        boxChassis.onclick = function () {
-            SelectChassis(this);
+        box.onclick = function () {
+            Select(this);
         };
-        chassisMenu.appendChild(boxChassis);
+        menu.appendChild(box);
     }
-
-    for (var i = 0; i < unitConstructor.weapons.length; i++) {
-        var boxWeapon = document.createElement("div");
-        boxWeapon.className = "Detail weapon";
-        boxWeapon.style.backgroundImage = "url(/lobby/img/" + unitConstructor.weapons[i].type + ".png)";
-        boxWeapon.weapon = unitConstructor.weapons[i];
-        boxWeapon.onmouseover = function () {
-            WeaponMouseOver(this.weapon);
-        };
-        boxWeapon.onmouseout = function () {
-            var tipWeapon = document.getElementById("tipWeapon");
-            tipWeapon.style.display = "none";
-        };
-        boxWeapon.onclick = function () {
-            SelectWeapon(this);
-        };
-        weaponMenu.appendChild(boxWeapon);
-    }
-}
-
-function ChassisMouseOver(chassis) {
-    var tipChassis = document.getElementById("tipChassis");
-    var tdTypeChassis = document.getElementById("typeChassis");
-    var tdHP = document.getElementById("hp");
-    var tdMoveSpeed = document.getElementById("moveSpeed");
-    var tdInitiative = document.getElementById("initiative");
-    var tdMaxWeaponSize = document.getElementById("maxWeaponSize");
-    var tdSizeChassis = document.getElementById("sizeChassis");
-
-    tipChassis.style.display = "block";
-
-    tdTypeChassis.innerHTML = chassis.type;
-    tdHP.innerHTML = chassis.hp;
-    tdMoveSpeed.innerHTML = chassis.move_speed;
-    tdInitiative.innerHTML = chassis.initiative;
-    tdMaxWeaponSize.innerHTML = chassis.max_weapon_size;
-    tdSizeChassis.innerHTML = chassis.size;
-}
-
-function WeaponMouseOver(weapon) {
-    var tipWeapon = document.getElementById("tipWeapon");
-    var tdTypeWeapon = document.getElementById("typeWeapon");
-    var tdDamage = document.getElementById("damage");
-    var tdRangeAttack = document.getElementById("rangeAttack");
-    var tdRangeView = document.getElementById("rangeView");
-    var tdAreaAttack = document.getElementById("areaAttack");
-    var tdTypeAttack = document.getElementById("typeAttack");
-    var tdSizeWeapon = document.getElementById("sizeWeapon");
-
-    tipWeapon.style.display = "block";
-
-    tdTypeWeapon.innerHTML = weapon.type;
-    tdDamage.innerHTML = weapon.damage;
-    tdRangeAttack.innerHTML = weapon.range_attack;
-    tdRangeView.innerHTML = weapon.range_view;
-    tdAreaAttack.innerHTML = weapon.area_attack;
-    tdTypeAttack.innerHTML = weapon.type_attack;
-    tdSizeWeapon.innerHTML = weapon.size;
 }

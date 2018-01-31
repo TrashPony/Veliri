@@ -27,7 +27,7 @@ func GetChassis() (chassiss []Chassis) {
 	for rows.Next() {
 		err := rows.Scan(&chassis.Id, &chassis.Name, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get chassiss" + err.Error())
 		}
 		chassiss = append(chassiss, chassis)
 	}
@@ -60,7 +60,7 @@ func GetWeapons() (weapons []Weapon) {
 	for rows.Next() {
 		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Accuracy, &weapon.AreaCovers)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get weapon" + err.Error())
 		}
 		weapons = append(weapons, weapon)
 	}
@@ -96,7 +96,7 @@ func GetTowers() (towers []Tower) {
 	for rows.Next() {
 		err := rows.Scan(&tower.Id, &tower.Name, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get towers" + err.Error())
 		}
 		towers = append(towers, tower)
 	}
@@ -132,7 +132,7 @@ func GetBodies() (bodies []Body) {
 	for rows.Next() {
 		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get bodies" + err.Error())
 		}
 		bodies = append(bodies, body)
 	}
@@ -164,7 +164,7 @@ func GetRadars() (radars []Radar) {
 	for rows.Next() {
 		err := rows.Scan(&radar.Id, &radar.Name, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get radar" + err.Error())
 		}
 		radars = append(radars, radar)
 	}
