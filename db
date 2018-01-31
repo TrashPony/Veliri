@@ -26,10 +26,10 @@ CREATE TABLE tower_type (
 	hp int,
 	power_radar int,
 	armor int,
-	vulnerability_to_kinetics,
-	vulnerability_to_thermo,
-	vulnerability_to_em,
-	vulnerability_to_explosion
+	vulnerability_to_kinetics int,
+	vulnerability_to_thermo int,
+	vulnerability_to_em int,
+	vulnerability_to_explosion int
 );
 
 CREATE TABLE body_type (
@@ -38,12 +38,12 @@ CREATE TABLE body_type (
 	type varchar(64),
 	weight	int,
 	hp int,
-	max_tower_weight,
+	max_tower_weight int,
 	armor int,
-	vulnerability_to_kinetics,
-	vulnerability_to_thermo,
-	vulnerability_to_em,
-	vulnerability_to_explosion
+	vulnerability_to_kinetics int,
+	vulnerability_to_thermo int,
+	vulnerability_to_em int,
+	vulnerability_to_explosion int
 );
 
 CREATE TABLE radar_type (
@@ -164,16 +164,6 @@ INSERT INTO mother_ship_type (type, hp, armor, unit_slots, unit_slot_size, equip
 INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test', 10, 10, 'test');
 INSERT INTO maps (name, x_size, y_size, type) VALUES ('Test2', 10, 10, 'test');
 
-/*  ---------------------------- chassis_type ------------------------------------------ */
-INSERT INTO chassis_type (type, hp, move_speed, initiative, size, max_weapon_size)  VALUES ('track', 100, 2, 2, 3, 3);
-INSERT INTO chassis_type (type, hp, move_speed, initiative, size, max_weapon_size)  VALUES ('olol', 100, 2, 2, 3, 3);
-
-
-/*  ---------------------------- weapon_type -------------------------------------------------- */
-INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('tank_gun', 2, 2, 2, 1, 'fire', 3);
-INSERT INTO weapon_type (type, damage, range_attack, range_view, area_attack, type_attack, size)  VALUES ('olololo', 2, 2, 2, 1, 'fire', 3);
-
-
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_1', 1 ,1, '');
 INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_2', 8 ,8, '');
@@ -188,6 +178,27 @@ INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle'
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 6 , 4, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 5, '');
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 6, '');
+
+
+/*  ---------------------------- chassis_type ------------------------------------------ */
+INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test', 'caterpillar', 80, 6, 3);
+INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test2', 'walking', 100, 3, 8);
+
+/*  ---------------------------- weapon_type -------------------------------------------------- */
+INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, Accuracy, Area_covers)  VALUES ('test1', 'kinetics', 10, 6, 0, 5, 0);
+INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, Accuracy, Area_covers)  VALUES ('test2', 'em', 20, 25, 3, 7, 2);
+
+/*  ---------------------------- tower_type -------------------------------------------------- */
+INSERT INTO tower_type (name, type, weight, hp, power_radar, armor, vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion)  VALUES ('test1', 'medium', 20, 20, 2, 3, 10, 10, 10, 10);
+INSERT INTO tower_type (name, type, weight, hp, power_radar, armor, vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion)  VALUES ('test2', 'large', 40, 65, 0, 6, 0, 0, 0, 0);
+
+/*  ---------------------------- body_type -------------------------------------------------- */
+INSERT INTO body_type (name, type, weight, hp, max_tower_weight, armor, vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion)  VALUES ('test1', 'medium', 25, 40, 25, 5, 15, 15, 15, 15);
+INSERT INTO body_type (name, type, weight, hp, max_tower_weight, armor, vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion)  VALUES ('test2', 'large', 50, 50, 40, 7, 0, 0, 0, 0);
+
+/*  ---------------------------- radar_type -------------------------------------------------- */
+INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test1', 'radar', 10, 4, FALSE, 3);
+INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test2', 'radar', 20, 6, TRUE, 5);
 
 
 # update action_game_unit Set action=true;
