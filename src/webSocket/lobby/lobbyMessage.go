@@ -30,6 +30,9 @@ type Response struct {
 	RespawnName  string             `json:"respawn_name"`
 	Message      string             `json:"message"`
 	MatherShips  []lobby.MatherShip `json:"mather_ships"`
-	Weapons		 []lobby.Weapon		`json:"weapons"`
-	Chassis		 []lobby.Chassis	`json:"chassis"`
+	Chassis      []lobby.Chassis    `json:"chassis"`
+	Weapons      []lobby.Weapon     `json:"weapons"`
+	Towers       []lobby.Tower      `json:"towers"`
+	Bodies       []lobby.Body       `json:"bodies"`
+	Radars       []lobby.Radar      `json:"radars"`
 }

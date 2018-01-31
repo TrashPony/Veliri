@@ -115,10 +115,14 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "GetDetailOfUnits" {
+
 			weapons := lobby.GetWeapons()
 			chassis := lobby.GetChassis()
+			towers := lobby.GetTowers()
+			bodies := lobby.GetBodies()
+			radars := lobby.GetRadars()
 
-			var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis}
+			var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis, Towers: towers, Bodies: bodies, Radars: radars}
 			ws.WriteJSON(resp)
 		}
 	}
