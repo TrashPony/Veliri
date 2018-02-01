@@ -114,6 +114,26 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 
+		if msg.Event == "CreateNewSquad" {
+			//TODO
+		}
+
+		if msg.Event == "SelectSquad" {
+			//TODO
+		}
+
+		if msg.Event == "SelectMatherShip" {
+			//TODO
+		}
+
+		if msg.Event == "AddEquipment" {
+			//TODO
+		}
+
+		if msg.Event == "AddNewUnit" {
+			//TODO
+		}
+
 		if msg.Event == "GetDetailOfUnits" {
 
 			weapons := lobby.GetWeapons()
@@ -149,6 +169,9 @@ func LobbyReposeSender() {
 
 type Clients struct {
 	// структура описывающая клиента ws соеденение
-	Login string
-	Id    int
+	Login       string
+	Id          int
+	SquadUnits  []lobby.UnitPrototype
+	SquadMatherShips lobby.MatherShip
+	//SquadEquipments  lobby.Equipment
 }

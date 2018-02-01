@@ -4,6 +4,14 @@ import (
 	"log"
 )
 
+type UnitPrototype struct {
+	chassis Chassis
+	weapon Weapon
+	tower Tower
+	body Body
+	radar Radar
+}
+
 type Chassis struct {
 	Id              int    `json:"id"`
 	Name            string `json:"name"`
