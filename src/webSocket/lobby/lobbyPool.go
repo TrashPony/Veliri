@@ -114,12 +114,13 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 
-		if msg.Event == "CreateNewSquad" {
-			//TODO
+		if msg.Event == "AddNewSquad" {
+			println(msg.SquadName)
+			//TODO добавить в базу новый отряд
 		}
 
-		if msg.Event == "SelectSquad" {
-			//TODO
+		if msg.Event == "GetListSquad" {
+			//TODO выдать доступный список отрядов для игрока
 		}
 
 		if msg.Event == "SelectMatherShip" {
@@ -131,6 +132,10 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "AddNewUnit" {
+			//TODO
+		}
+
+		if msg.Event == "SelectSquad" {
 			//TODO
 		}
 

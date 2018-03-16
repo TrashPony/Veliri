@@ -74,4 +74,12 @@ function ReaderLobby(jsonMessage) {
         console.log(jsonMessage);
         DetailUnitParse(jsonMessage)
     }
+
+    if (event === "GetListSquad") {
+        var selectSquad = document.getElementById("listSquad");
+        //var squad = document.createElement("option");
+        //squad.value = JSON.parse(jsonMessage).squad_name;
+        //squad.text = JSON.parse(jsonMessage).squad_name;
+        //selectSquad.appendChild(squad);
+    }
 }

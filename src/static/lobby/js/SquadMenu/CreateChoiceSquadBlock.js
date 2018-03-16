@@ -38,16 +38,37 @@ function CreateChoiceSquadBlock(parentElem) {
 }
 
 function CreateHeadTable() {
+
     var headTR = document.createElement("tr");
+
     var headTD = document.createElement("td");
-    headTD.colSpan = 2;
     headTD.style.textAlign = "center";
     var headSpan = document.createElement("span");
     headSpan.className = "Value";
-    headSpan.innerHTML = "Выберите отряд";
+    headSpan.innerHTML = "Выберите отряд: ";
     headTD.appendChild(headSpan);
-    headTR.appendChild(headTD);
 
+    var choiceTD = document.createElement("td");
+    choiceTD.style.textAlign = "center";
+    var selectSquad = document.createElement("select");
+    selectSquad.style.width = "150px";
+    selectSquad.id = "listSquad";
+
+    lobby.send(JSON.stringify({ // запрашиваем список имеющийся отрядов
+        event: "GetListSquad"
+    }));
+
+    var createSquad = document.createElement("button");
+    createSquad.className = "button";
+    createSquad.style.marginLeft = "5px";
+    createSquad.innerHTML = " Добавить";
+    createSquad.onclick = AddNewSquad;
+
+    choiceTD.appendChild(selectSquad);
+    choiceTD.appendChild(createSquad);
+
+    headTR.appendChild(headTD);
+    headTR.appendChild(choiceTD);
     return headTR;
 }
 
