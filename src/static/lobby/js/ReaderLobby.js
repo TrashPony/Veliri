@@ -71,15 +71,28 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "GetDetailOfUnits") {
-        console.log(jsonMessage);
         DetailUnitParse(jsonMessage)
     }
 
     if (event === "GetListSquad") {
-        var selectSquad = document.getElementById("listSquad");
-        //var squad = document.createElement("option");
-        //squad.value = JSON.parse(jsonMessage).squad_name;
-        //squad.text = JSON.parse(jsonMessage).squad_name;
-        //selectSquad.appendChild(squad);
+        AddListSquad(jsonMessage);
+    }
+    if (event === "AddNewSquad") {
+        console.log(jsonMessage);
+        AddListSquad(jsonMessage);
+    }
+}
+
+function AddListSquad(jsonMessage) {
+    var selectSquad = document.getElementById("listSquad");
+    var squad_names = JSON.parse(jsonMessage).squad_name;
+
+    for (var i = 0; i < squad_names.length; i++) {
+        var squadName = document.createElement("option");
+        squadName.value = squad_names[i];
+        squadName.text = squad_names[i];
+        squadName.id = squad_names[i];
+        selectSquad.appendChild(squadName);
+        selectSquad.value = squad_names[i];
     }
 }

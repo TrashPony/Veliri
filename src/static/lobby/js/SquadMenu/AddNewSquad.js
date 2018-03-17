@@ -37,8 +37,23 @@ function AddNewSquad() {
 
         };
 
+        var cancelButton = document.createElement("button");
+        cancelButton.className = "button";
+        cancelButton.style.margin = "5px";
+        cancelButton.innerHTML = "Отмена";
+        cancelButton.onclick = function () {
+            inputName.value = "";
+
+            var mask = document.getElementById("mask");
+            mask.style.display = "none";
+
+            var ChoiceNameSquad = document.getElementById("ChoiceNameSquad");
+            ChoiceNameSquad.style.display = "none";
+        };
+
         ChoiceNameSquad.appendChild(headSpan);
         ChoiceNameSquad.appendChild(inputName);
+        ChoiceNameSquad.appendChild(cancelButton);
         ChoiceNameSquad.appendChild(acceptButton);
     } else {
         ChoiceNameSquad.style.display = "block";

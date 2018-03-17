@@ -115,12 +115,33 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "AddNewSquad" {
-			println(msg.SquadName)
-			//TODO добавить в базу новый отряд
+			err := lobby.AddNewSquad(msg.SquadName, usersLobbyWs[ws].Id)
+
+			var resp Response
+
+			if err != nil {
+				resp = Response{Event: "AddNewSquad", Error: "error add squad"}
+				ws.WriteJSON(resp)
+			} else {
+				listNames := make([]string, 0)
+				listNames = append(listNames, msg.SquadName)
+				resp = Response{Event: "AddNewSquad", Error: "none", SquadName: listNames}
+				ws.WriteJSON(resp)
+			}
 		}
 
 		if msg.Event == "GetListSquad" {
-			//TODO выдать доступный список отрядов для игрока
+			names, err := lobby.GetListSquads(usersLobbyWs[ws].Id)
+
+			var resp Response
+
+			if err != nil {
+				resp = Response{Event: "GetListSquad", Error: "error get squads"}
+				ws.WriteJSON(resp)
+			} else {
+				resp = Response{Event: "GetListSquad", Error: "none", SquadName: names}
+				ws.WriteJSON(resp)
+			}
 		}
 
 		if msg.Event == "SelectMatherShip" {

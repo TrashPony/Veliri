@@ -36,4 +36,5 @@ type Response struct {
 	Towers       []lobby.Tower      `json:"towers"`
 	Bodies       []lobby.Body       `json:"bodies"`
 	Radars       []lobby.Radar      `json:"radars"`
+	SquadName    []string           `json:"squad_name"`
 }
