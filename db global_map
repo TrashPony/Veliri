@@ -1,0 +1,16 @@
+CREATE TABLE global_map (
+	id serial primary key
+);
+
+CREATE TABLE regions (
+    id serial primary key,
+	id_region int references maps(id),
+	x int,
+	y int,
+	type varchar(64)
+);
+
+----------------------
+INSERT INTO global_map DEFAULT VALUES;
+
+INSERT INTO regions (id_region, x, y, type) VALUES (1, 0, 0, "terrain");

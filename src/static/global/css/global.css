@@ -1,0 +1,86 @@
+body {
+    text-align: center;
+    vertical-align: center;
+}
+
+#main {
+    margin: auto;
+    height: 700px;
+    width: 1200px;
+}
+
+#topMenu {
+    margin: auto;
+    margin-bottom: 5px;
+    height: 40px;
+    width: 1190px;
+}
+
+#tableTopMenu {
+    height: 40px;
+    width: 1190px;
+}
+
+#map {
+    margin: auto;
+    display: inline-block;
+    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+}
+
+#menu {
+    margin: auto;
+    display: inline-block;
+    height: 600px;
+    width: 350px;
+}
+
+#tableMenu {
+    height: 600px;
+    width: 350px;
+}
+
+#botMenu {
+    margin: auto;
+    margin-top: 5px;
+    height: 30px;
+    width: 1190px;
+}
+
+#tableBotMenu {
+    height: 30px;
+    width: 1190px;
+}
+
+.arrow {
+    background: url("../assets/arrow.png") no-repeat 100%;
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    background-size: 100px 100px;
+}
+
+#topArrow {
+    transform: rotate(225deg);
+    top:100px;
+    left: 1200px;
+}
+
+#rightArrow {
+    transform: rotate(135deg);
+    top:100px;
+    left: 700px;
+}
+
+#bottomArrow {
+    transform: rotate(315deg);
+    top:500px;
+    left: 1200px;
+}
+
+#leftArrow {
+    transform: rotate(45deg);
+    top:500px;
+    left: 700px;
+}

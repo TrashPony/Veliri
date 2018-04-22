@@ -144,6 +144,10 @@ func Reader(ws *websocket.Conn) {
 			}
 		}
 
+		if msg.Event == "SelectSquad" {
+			//TODO
+		}
+
 		if msg.Event == "SelectMatherShip" {
 			//TODO
 		}
@@ -153,10 +157,6 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "AddNewUnit" {
-			//TODO
-		}
-
-		if msg.Event == "SelectSquad" {
 			//TODO
 		}
 
