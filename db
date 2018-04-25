@@ -95,6 +95,7 @@ CREATE TABLE users(
 CREATE TABLE squads (
 	id serial primary key,
 	name varchar(64),
+    id_type int references mother_ship_type(id),
 	id_user int references users(id)
 );
 
