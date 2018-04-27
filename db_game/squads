@@ -30,5 +30,6 @@ CREATE TABLE squad_mother_ship (
     id serial primary key,
 	id_squad int references squads(id),
 	id_mother_ship int references mother_ship_type(id)
-	// TODO дополнить базу настройками машины для сквада
 );
+
+// TODO дополнить базу настройками машины для сквада
