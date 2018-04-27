@@ -6,6 +6,7 @@ type Unit struct {
 	Tower   *Tower
 	Body    *Body
 	Radar   *Radar
+	Weight  int
 
 	// Движение
 	Speed      int
@@ -35,6 +36,7 @@ type Unit struct {
 
 func (unit *Unit) CalculateParametersUnit() {
 	weight := WeightUnit(unit)
+	unit.Weight = weight
 
 	// расчет шасси
 	if unit.Chassis != nil {
@@ -96,6 +98,103 @@ func (unit *Unit) CalculateParametersUnit() {
 		unit.Initiative = unit.Initiative + unit.Radar.Analysis
 		unit.Accuracy = unit.Accuracy + unit.Radar.Analysis
 	}
+}
+
+func (unit *Unit) DelChassis()  {
+	if unit.Chassis != nil {
+		unit.EvasionCritical = 0
+		unit.Initiative = unit.Initiative - unit.Chassis.Maneuverability
+		unit.Speed = 0
+
+		unit.Chassis = nil
+		unit.CalculateParametersUnit()
+	}
+}
+
+func (unit *Unit) DelWeapon()  {
+	if unit.Weapon != nil {
+		unit.TypeAttack = ""
+		unit.Damage = 0
+		unit.MinAttackRange = 0
+		unit.RangeAttack = 0
+		unit.AreaAttack = 0
+
+		unit.Accuracy = unit.Accuracy - unit.Weapon.Accuracy
+
+		unit.Weapon = nil
+		unit.CalculateParametersUnit()
+	}
+}
+
+func (unit *Unit) DelTower()  {
+	if unit.Tower != nil {
+		unit.HP = unit.HP - unit.Tower.HP
+		unit.RangeView = unit.RangeView - unit.Tower.PowerRadar
+
+		unit.VulEM = unit.VulEM - unit.Tower.VulToEM
+		unit.VulExplosive = unit.VulExplosive - unit.Tower.VulToExplosion
+		unit.VulKinetics = unit.VulKinetics - unit.Tower.VulToKinetics
+		unit.VulThermal = unit.VulThermal - unit.Tower.VulToThermo
+
+		unit.Armor = unit.Armor - unit.Tower.Armor
+
+		unit.Tower = nil
+		unit.CalculateParametersUnit()
+	}
+}
+
+func (unit *Unit) DelBody()  {
+	if unit.Body != nil {
+		unit.HP = unit.HP - unit.Body.HP
+
+		unit.VulEM = unit.VulEM - unit.Body.VulToEM
+		unit.VulExplosive = unit.VulExplosive - unit.Body.VulToExplosion
+		unit.VulKinetics = unit.VulKinetics - unit.Body.VulToKinetics
+		unit.VulThermal = unit.VulThermal - unit.Body.VulToThermo
+
+		unit.Armor = unit.Armor - unit.Body.Armor
+
+		unit.Body = nil
+		unit.CalculateParametersUnit()
+	}
+}
+
+func (unit *Unit) DelRadar()  {
+	if unit.Radar != nil {
+		unit.RangeView = unit.RangeView - unit.Radar.Power
+		unit.WallHack = false
+
+		unit.Initiative = unit.Initiative - unit.Radar.Analysis
+		unit.Accuracy = unit.Accuracy - unit.Radar.Analysis
+
+		unit.Radar = nil
+		unit.CalculateParametersUnit()
+	}
+}
+
+func (unit *Unit) SetChassis(chassis *Chassis)  {
+	unit.Chassis = chassis
+	unit.CalculateParametersUnit()
+}
+
+func (unit *Unit) SetWeapon(weapon *Weapon)  {
+	unit.Weapon = weapon
+	unit.CalculateParametersUnit()
+}
+
+func (unit *Unit) SetTower(tower *Tower)  {
+	unit.Tower = tower
+	unit.CalculateParametersUnit()
+}
+
+func (unit *Unit) SetBody(body *Body)  {
+	unit.Body = body
+	unit.CalculateParametersUnit()
+}
+
+func (unit *Unit) SetRadar(radar *Radar)  {
+	unit.Radar = radar
+	unit.CalculateParametersUnit()
 }
 
 func WeightUnit(unit *Unit) (weight int)  {
