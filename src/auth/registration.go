@@ -91,9 +91,9 @@ func checkAvailableEmail(email string)(checkEmail bool)  {
 }
 
 func SuccessRegistration(login, email, password string)  {
-	hashPassword, err := HashPassword(login, password)
+	/*hashPassword, err := HashPassword(login, password)
 	if err != nil {
 		panic(err)
 	}
-	lobby.CreateUser(login, email, hashPassword)
+	lobby.CreateUser(login, email, hashPassword)*/
 }

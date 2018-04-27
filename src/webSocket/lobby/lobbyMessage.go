@@ -1,6 +1,9 @@
 package lobby
 
-import "../../lobby"
+import (
+	"../../lobby"
+	"../../lobby/DetailUnit"
+	)
 
 type Message struct {
 	Event     string `json:"event"`
@@ -31,10 +34,10 @@ type Response struct {
 	RespawnName  string             `json:"respawn_name"`
 	Message      string             `json:"message"`
 	MatherShips  []lobby.MatherShip `json:"mather_ships"`
-	Chassis      []lobby.Chassis    `json:"chassis"`
-	Weapons      []lobby.Weapon     `json:"weapons"`
-	Towers       []lobby.Tower      `json:"towers"`
-	Bodies       []lobby.Body       `json:"bodies"`
-	Radars       []lobby.Radar      `json:"radars"`
+	Chassis      []DetailUnit.Chassis    `json:"chassis"`
+	Weapons      []DetailUnit.Weapon     `json:"weapons"`
+	Towers       []DetailUnit.Tower      `json:"towers"`
+	Bodies       []DetailUnit.Body       `json:"bodies"`
+	Radars       []DetailUnit.Radar      `json:"radars"`
 	Squads       []*lobby.Squad      `json:"squad_name"`
 }
