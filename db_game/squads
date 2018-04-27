@@ -18,6 +18,7 @@ CREATE TABLE squads (
 CREATE TABLE squad_units (
 	id serial primary key,
 	id_squad int references squads(id),
+	slot_in_mother_ship int,
 	id_chassis int references chassis_type(id),
 	id_weapon int references weapon_type(id),
 	id_tower int references tower_type(id),

@@ -3,38 +3,38 @@ package Squad
 import "../DetailUnit"
 
 type Unit struct {
-	Chassis *DetailUnit.Chassis
-	Weapon  *DetailUnit.Weapon
-	Tower   *DetailUnit.Tower
-	Body    *DetailUnit.Body
-	Radar   *DetailUnit.Radar
+	Chassis *DetailUnit.Chassis `json:"chassis"`
+	Weapon  *DetailUnit.Weapon  `json:"weapon"`
+	Tower   *DetailUnit.Tower   `json:"tower"`
+	Body    *DetailUnit.Body    `json:"body"`
+	Radar   *DetailUnit.Radar   `json:"radar"`
 
-	Weight  int
+	Weight int `json:"weight"`
 
 	// Движение
-	Speed      int
-	Initiative int
+	Speed      int `json:"speed"`
+	Initiative int `json:"initiative"`
 
 	// Атака
-	Damage         int
-	RangeAttack    int
-	MinAttackRange int
-	AreaAttack     int
-	TypeAttack     string
+	Damage         int    `json:"damage"`
+	RangeAttack    int    `json:"range_attack"`
+	MinAttackRange int    `json:"min_attack_range"`
+	AreaAttack     int    `json:"area_attack"`
+	TypeAttack     string `json:"type_attack"`
 
 	// Выживаемость
-	HP              int
-	Armor           int
-	EvasionCritical int
-	VulKinetics     int // Уязвимости
-	VulThermal      int
-	VulEM           int
-	VulExplosive    int
+	HP              int `json:"hp"`
+	Armor           int `json:"armor"`
+	EvasionCritical int `json:"evasion_critical"`
+	VulKinetics     int `json:"vul_kinetics"` // Уязвимости
+	VulThermal      int `json:"vul_thermal"`
+	VulEM           int `json:"vul_em"`
+	VulExplosive    int `json:"vul_explosive"`
 
 	// Навигация
-	RangeView int
-	Accuracy  int
-	WallHack  bool
+	RangeView int  `json:"range_view"`
+	Accuracy  int  `json:"accuracy"`
+	WallHack  bool `json:"wall_hack"`
 }
 
 func (unit *Unit) CalculateParametersUnit() {

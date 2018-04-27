@@ -6,10 +6,10 @@ import (
 )
 
 type Squad struct {
-	ID         int
-	Name       string
-	MatherShip MatherShip
-	Units      []*Unit
+	ID         int           `json:"id"`
+	Name       string        `json:"name"`
+	MatherShip MatherShip    `json:"mather_ship"`
+	Units      map[int]*Unit `json:"units"`
 }
 
 func AddNewSquad(name string, userID int) (err error) {
@@ -49,17 +49,19 @@ func GetUserSquads(userID int) (squads []*Squad, err error) {
 }
 
 func (squad *Squad) GetSquadUnits() {
-	rows, err := db.Query("Select id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
+	rows, err := db.Query("Select slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	var units = make([]*Unit, 0)
+	var units = make(map[int]*Unit)
 
 	for rows.Next() {
 
 		var unit Unit
+
+		var matherSlot int
 
 		var chassis DetailUnit.Chassis
 		var weapon DetailUnit.Weapon
@@ -67,7 +69,7 @@ func (squad *Squad) GetSquadUnits() {
 		var body DetailUnit.Body
 		var radar DetailUnit.Radar
 
-		err := rows.Scan(&chassis.Id, &weapon.Id, &tower.Id, &body.Id, &radar.Id)
+		err := rows.Scan(&matherSlot, &chassis.Id, &weapon.Id, &tower.Id, &body.Id, &radar.Id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -84,13 +86,13 @@ func (squad *Squad) GetSquadUnits() {
 		unit.SetBody(&body)
 		unit.SetRadar(&radar)
 
-		units = append(units, &unit)
+		units[matherSlot] = &unit
 	}
 
 	squad.Units = units
 }
 
-func (squad *Squad)GetSquadMatherShip()  {
+func (squad *Squad) GetSquadMatherShip() {
 
 	rows, err := db.Query("Select id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
 	if err != nil {
@@ -113,13 +115,34 @@ func (squad *Squad)GetSquadMatherShip()  {
 	squad.MatherShip = matherShip
 }
 
-func (squad *Squad) AddUnit(unit *Unit) {
-	if squad.MatherShip.UnitSlots > len(squad.Units) {
-		squad.Units = append(squad.Units, unit)
-		// TODO добавить его в базу
+func (squad *Squad) AddUnit(unit *Unit, slot int) {
+	if squad.MatherShip.UnitSlots > slot {
+
+		squad.Units[slot] = unit
+
+		_, err := db.Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, &7)", squad.ID, slot, unit.Chassis.Id, unit.Weapon.Id, unit.Tower.Id, unit.Body.Id, unit.Radar.Id)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
-func (squad *Squad) DelUnit(unit *Unit) {
-	//TODO удалить из масива и базы
+func (squad *Squad) DelUnit(slot int) {
+	if squad.MatherShip.UnitSlots > slot {
+
+		squad.Units[slot] = nil
+
+		_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1, slot_in_mother_ship=$2", squad.ID, slot)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func (squad *Squad) ReplaceUnit(unit *Unit, slot int)  {
+	if squad.MatherShip.UnitSlots > slot {
+		squad.DelUnit(slot)
+		squad.AddUnit(unit, slot)
+	}
 }
