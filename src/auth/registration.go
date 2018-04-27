@@ -5,18 +5,19 @@ import (
 	"net/http"
 	"html/template"
 	"encoding/json"
+	"log"
 )
 
-type response struct  {
-	Success bool	 `json:"success"`
-	Error   string	 `json:"error"`
+type response struct {
+	Success bool   `json:"success"`
+	Error   string `json:"error"`
 }
 
 type message struct {
-	Login string `json:"username"`
-	Email string `json:"email"`
+	Login    string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Confirm string `json:"confirm"`
+	Confirm  string `json:"confirm"`
 }
 
 func Registration(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +64,7 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func checkAvailableLogin(login string)(checkLogin bool)  {
+func checkAvailableLogin(login string) (checkLogin bool) {
 	// TODO неверно делает сравнение
 
 	user := lobby.GetUsers("WHERE name='" + login + "'")
@@ -77,7 +78,7 @@ func checkAvailableLogin(login string)(checkLogin bool)  {
 	return
 }
 
-func checkAvailableEmail(email string)(checkEmail bool)  {
+func checkAvailableEmail(email string) (checkEmail bool) {
 
 	user := lobby.GetUsers("WHERE mail='" + email + "'")
 
@@ -90,10 +91,15 @@ func checkAvailableEmail(email string)(checkEmail bool)  {
 	return
 }
 
-func SuccessRegistration(login, email, password string)  {
-	/*hashPassword, err := HashPassword(login, password)
+func SuccessRegistration(login, email, password string) {
+	hashPassword, err := HashPassword(login, password)
 	if err != nil {
 		panic(err)
 	}
-	lobby.CreateUser(login, email, hashPassword)*/
+
+	_, err = db.Exec("INSERT INTO users (name, password, mail) VALUES ($1, $2, $3)", login, hashPassword, email)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
