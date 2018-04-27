@@ -26,8 +26,8 @@ INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VAL
 INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test2', 'walking', 100, 3, 8);
 
 /*  ---------------------------- weapon_type -------------------------------------------------- */
-INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, Accuracy, Area_covers)  VALUES ('test1', 'kinetics', 10, 6, 0, 5, 0);
-INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, Accuracy, Area_covers)  VALUES ('test2', 'em', 20, 25, 3, 7, 2);
+INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, range_attack, accuracy, area_covers)  VALUES ('test1', 'kinetics', 10, 6, 0, 5, 5, 0);
+INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, range_attack, accuracy, area_covers)  VALUES ('test2', 'em', 20, 25, 3, 3, 7, 2);
 
 /*  ---------------------------- tower_type -------------------------------------------------- */
 INSERT INTO tower_type (name, type, weight, hp, power_radar, armor, vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion)  VALUES ('test1', 'medium', 20, 20, 2, 3, 10, 10, 10, 10);

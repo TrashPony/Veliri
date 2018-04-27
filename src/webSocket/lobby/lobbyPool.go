@@ -197,7 +197,6 @@ type Clients struct {
 	// структура описывающая клиента ws соеденение
 	Login       string
 	Id          int
-	SquadUnits  []lobby.UnitPrototype
-	SquadMatherShips lobby.MatherShip
+	Squad 		lobby.Squad
 	//SquadEquipments  lobby.Equipment
 }

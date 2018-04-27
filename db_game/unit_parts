@@ -14,8 +14,9 @@ CREATE TABLE weapon_type (
 	weight int,
 	damage int,
 	min_attack_range int,
-	Accuracy int,
-	Area_covers int
+	range_attack int,
+	accuracy int,
+	area_covers int
 );
 
 CREATE TABLE tower_type (

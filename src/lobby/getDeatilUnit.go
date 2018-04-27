@@ -4,14 +4,6 @@ import (
 	"log"
 )
 
-type UnitPrototype struct {
-	chassis Chassis
-	weapon Weapon
-	tower Tower
-	body Body
-	radar Radar
-}
-
 type Chassis struct {
 	Id              int    `json:"id"`
 	Name            string `json:"name"`
@@ -50,6 +42,7 @@ type Weapon struct {
 	Weight         int    `json:"weight"`
 	Damage         int    `json:"damage"`
 	MinAttackRange int    `json:"min_attack_range"`
+	Range		   int    `json:"range"`
 	Accuracy       int    `json:"accuracy"`
 	AreaCovers     int    `json:"area_covers"`
 }
@@ -66,7 +59,7 @@ func GetWeapons() (weapons []Weapon) {
 	var weapon Weapon
 
 	for rows.Next() {
-		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Accuracy, &weapon.AreaCovers)
+		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
 		if err != nil {
 			log.Fatal("get weapon" + err.Error())
 		}
