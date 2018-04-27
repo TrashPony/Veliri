@@ -26,7 +26,7 @@ func GetMatherShips() []MatherShip {
 	return matherShips
 }
 
-func GetMatherShip(id int) MatherShip {
+func GetMatherShip(id int) *MatherShip {
 
 	rows, err := db.Query("select * from mother_ship_type where id=$1", id)
 	if err != nil {
@@ -43,7 +43,7 @@ func GetMatherShip(id int) MatherShip {
 		}
 	}
 
-	return matherShip
+	return &matherShip
 }
 
 type MatherShip struct {

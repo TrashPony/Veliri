@@ -3,49 +3,66 @@ package Squad
 import (
 	"log"
 	"../DetailUnit"
+	"errors"
 )
 
 type Squad struct {
 	ID         int           `json:"id"`
 	Name       string        `json:"name"`
-	MatherShip MatherShip    `json:"mather_ship"`
+	MatherShip *MatherShip    `json:"mather_ship"`
 	Units      map[int]*Unit `json:"units"`
 }
 
-func AddNewSquad(name string, userID int) (err error) {
-	_, err = db.Exec("INSERT INTO squads (name, id_user) VALUES ($1, $2)", name, userID)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
 
-	return nil
-}
+func (squad *Squad) GetSquadMatherShip() {
 
-func GetUserSquads(userID int) (squads []*Squad, err error) {
-
-	rows, err := db.Query("Select id, name FROM squads WHERE id_user=$1", userID)
+	rows, err := db.Query("Select id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	squads = make([]*Squad, 0)
+	var matherShip *MatherShip
 
 	for rows.Next() {
-		var squad Squad
 
-		err := rows.Scan(&squad.ID, &squad.Name)
+		err := rows.Scan(&matherShip.Id)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		squad.GetSquadUnits()
-
-		squads = append(squads, &squad)
+		// TODO формировать полный обьект мазершипа включая его настройки и модули
+		matherShip = GetMatherShip(matherShip.Id)
 	}
 
-	return
+	squad.MatherShip = matherShip
+}
+
+func (squad *Squad) AddMatherShip(id int) () {
+
+	matherShip := GetMatherShip(id)
+	squad.MatherShip = matherShip
+
+	_, err := db.Exec("INSERT INTO squad_mother_ship (id_squad, id_mother_ship) "+
+							"VALUES ($1, $2)", squad.ID, matherShip.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (squad *Squad) DelMatherShip() () {
+
+	squad.MatherShip = nil
+
+	_, err := db.Exec("DELETE FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+func (squad *Squad) ReplaceMatherShip(id int) () {
+	squad.DelMatherShip()
+	squad.AddMatherShip(id)
 }
 
 func (squad *Squad) GetSquadUnits() {
@@ -92,29 +109,6 @@ func (squad *Squad) GetSquadUnits() {
 	squad.Units = units
 }
 
-func (squad *Squad) GetSquadMatherShip() {
-
-	rows, err := db.Query("Select id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	var matherShip MatherShip
-
-	for rows.Next() {
-
-		err := rows.Scan(&matherShip.Id)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// TODO формировать полный обьект мазершипа включая его настройки и модули
-		matherShip = GetMatherShip(matherShip.Id)
-	}
-
-	squad.MatherShip = matherShip
-}
-
 func (squad *Squad) AddUnit(unit *Unit, slot int) {
 	if squad.MatherShip.UnitSlots > slot {
 
@@ -128,7 +122,7 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 	}
 }
 
-func (squad *Squad) DelUnit(slot int) {
+func (squad *Squad) DelUnit(slot int) (error) {
 	if squad.MatherShip.UnitSlots > slot {
 
 		squad.Units[slot] = nil
@@ -136,7 +130,11 @@ func (squad *Squad) DelUnit(slot int) {
 		_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1, slot_in_mother_ship=$2", squad.ID, slot)
 		if err != nil {
 			log.Fatal(err)
+			return err
 		}
+		return nil
+	} else {
+		return errors.New("wrong slot")
 	}
 }
 
