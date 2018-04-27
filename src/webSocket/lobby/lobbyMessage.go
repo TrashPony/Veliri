@@ -1,9 +1,9 @@
 package lobby
 
 import (
-	"../../lobby"
 	"../../lobby/DetailUnit"
-	)
+	"../../lobby/Squad"
+)
 
 type Message struct {
 	Event     string `json:"event"`
@@ -33,11 +33,11 @@ type Response struct {
 	Respawn      string             `json:"respawn"`
 	RespawnName  string             `json:"respawn_name"`
 	Message      string             `json:"message"`
-	MatherShips  []lobby.MatherShip `json:"mather_ships"`
+	MatherShips  []Squad.MatherShip `json:"mather_ships"`
 	Chassis      []DetailUnit.Chassis    `json:"chassis"`
 	Weapons      []DetailUnit.Weapon     `json:"weapons"`
 	Towers       []DetailUnit.Tower      `json:"towers"`
 	Bodies       []DetailUnit.Body       `json:"bodies"`
 	Radars       []DetailUnit.Radar      `json:"radars"`
-	Squads       []*lobby.Squad      `json:"squad_name"`
+	Squads       []*Squad.Squad      `json:"squad_name"`
 }

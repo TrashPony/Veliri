@@ -3,6 +3,7 @@ package lobby
 import (
 	"../../lobby"
 	"../../lobby/DetailUnit"
+	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -110,13 +111,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "GetMatherShips" {
-			var matherShips = lobby.GetMatherShips()
+			var matherShips = Squad.GetMatherShips()
 			var resp = Response{Event: msg.Event, MatherShips: matherShips}
 			ws.WriteJSON(resp)
 		}
 
 		if msg.Event == "AddNewSquad" {
-			err := lobby.AddNewSquad(msg.SquadName, usersLobbyWs[ws].Id)
+			err := Squad.AddNewSquad(msg.SquadName, usersLobbyWs[ws].Id)
 
 			var resp Response
 
@@ -132,7 +133,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "GetListSquad" {
-			squad, err := lobby.GetUserSquads(usersLobbyWs[ws].Id)
+			squad, err := Squad.GetUserSquads(usersLobbyWs[ws].Id)
 
 			var resp Response
 
@@ -198,6 +199,6 @@ type Clients struct {
 	// структура описывающая клиента ws соеденение
 	Login       string
 	Id          int
-	Squad 		lobby.Squad
+	Squad 		Squad.Squad
 	//SquadEquipments  lobby.Equipment
 }

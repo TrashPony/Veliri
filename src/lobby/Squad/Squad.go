@@ -1,8 +1,8 @@
-package lobby
+package Squad
 
 import (
 	"log"
-	"./DetailUnit"
+	"../DetailUnit"
 )
 
 type Squad struct {

@@ -1,4 +1,4 @@
-package lobby
+package Squad
 
 import (
 	"log"
