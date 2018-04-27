@@ -20,7 +20,7 @@ CREATE TABLE mather_ships (
     id_type int references mother_ship_type(id)
 );
 
-CREATE TABLE user_paremetrs (
+CREATE TABLE user_parameters (
     id serial primary key,
     id_user int references users(id),
     experience int(64),
@@ -49,7 +49,4 @@ CREATE TABLE structure_type_in_map (
     id serial primary key
 );
 
-----------------------
-INSERT INTO global_map DEFAULT VALUES;
 
-INSERT INTO regions (id_region, x, y, type) VALUES (1, 0, 0, "terrain");

@@ -1,0 +1,17 @@
+CREATE TABLE maps(
+    id serial primary key,
+    name varchar(64),
+    x_size int,
+    y_size int,
+    type varchar(64)
+);
+
+CREATE TABLE map_constructor(
+   id serial primary key,
+   id_map int references maps(id),
+   type varchar(64),
+   name varchar(64),
+   x int,
+   y int,
+   texture varchar(64)
+);
