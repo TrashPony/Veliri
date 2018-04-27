@@ -78,21 +78,48 @@ function ReaderLobby(jsonMessage) {
         AddListSquad(jsonMessage);
     }
     if (event === "AddNewSquad") {
-        console.log(jsonMessage);
-        AddListSquad(jsonMessage);
+        AddNewSquadInList(jsonMessage);
     }
 }
 
 function AddListSquad(jsonMessage) {
     var selectSquad = document.getElementById("listSquad");
-    var squad_names = JSON.parse(jsonMessage).squad_name;
+    var squads = JSON.parse(jsonMessage).squads;
 
-    for (var i = 0; i < squad_names.length; i++) {
-        var squadName = document.createElement("option");
-        squadName.value = squad_names[i];
-        squadName.text = squad_names[i];
-        squadName.id = squad_names[i];
-        selectSquad.appendChild(squadName);
-        selectSquad.value = squad_names[i];
+    for (var i = 0; i < squads.length; i++) {
+        var squadSelect = document.createElement("option");
+
+        squadSelect.value = squads[i].name;
+        squadSelect.text = squads[i].name;
+        squadSelect.id = squads[i].id;
+        squadSelect.matherShip = squads[i].mather_ship;
+        squadSelect.units = squads[i].units;
+
+        squadSelect.onclick = function () {
+            SelectSquad(this)
+        };
+
+        selectSquad.appendChild(squadSelect);
+        selectSquad.value = "";
     }
+}
+
+function AddNewSquadInList(jsonMessage) {
+    var selectSquad = document.getElementById("listSquad");
+    var squad = JSON.parse(jsonMessage).squad;
+
+    var squadSelect = document.createElement("option");
+
+    squadSelect.value = squad.name;
+    squadSelect.text = squad.name;
+    squadSelect.id = squad.id;
+    squadSelect.matherShip = squad.mather_ship;
+    squadSelect.units = squad.units;
+
+    squadSelect.onclick = function () {
+        SelectSquad(this)
+    };
+
+    selectSquad.appendChild(squadSelect);
+    selectSquad.value = squad.name;
 }

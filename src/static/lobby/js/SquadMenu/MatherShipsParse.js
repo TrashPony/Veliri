@@ -3,15 +3,12 @@ function MatherShipsParse(jsonMessage) {
     if (matherShips.length > 0) {
         var sliderContent = document.getElementById("sliderContent");
         sliderContent.matherShips = matherShips;
-
-        NextSlide(sliderContent);
-        ConfigurationMatherShip();
     }
 }
 
-function ConfigurationMatherShip() {
+function ConfigurationMatherShip(matherShip) {
+
     var paramsTD = document.getElementById("paramsTD");
-    var matherShip = document.getElementById("sliderContent").matherShips[0];
 
     while (paramsTD.childNodes.length > 0) {
         paramsTD.removeChild(paramsTD.childNodes[0]);

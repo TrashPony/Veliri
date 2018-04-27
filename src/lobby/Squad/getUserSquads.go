@@ -21,6 +21,7 @@ func GetUserSquads(userID int) (squads []*Squad, err error) {
 		}
 
 		squad.GetSquadUnits()
+		squad.GetSquadMatherShip()
 
 		squads = append(squads, &squad)
 	}

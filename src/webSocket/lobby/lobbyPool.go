@@ -149,9 +149,9 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SelectSquad" {
 			for _, squad := range  usersLobbyWs[ws].Squads {
 				if squad.ID == msg.SquadID {
+					usersLobbyWs[ws].Squad = squad
 					resp := Response{Event: "SelectSquad", Error: "none", Squad: squad}
 					ws.WriteJSON(resp)
-					return
 				}
 			}
 		}
@@ -164,6 +164,7 @@ func Reader(ws *websocket.Conn) {
 					usersLobbyWs[ws].Squad.AddMatherShip(msg.MatherShipID)
 				}
 			}
+			// TODO возвращать машину что бы сразу добавить в необходимый отряд
 		}
 
 		if msg.Event == "AddEquipment" {

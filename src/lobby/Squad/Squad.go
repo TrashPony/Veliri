@@ -22,7 +22,7 @@ func (squad *Squad) GetSquadMatherShip() {
 	}
 	defer rows.Close()
 
-	var matherShip *MatherShip
+	matherShip := &MatherShip{}
 
 	for rows.Next() {
 

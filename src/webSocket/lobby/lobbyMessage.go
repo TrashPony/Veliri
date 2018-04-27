@@ -48,7 +48,7 @@ type Response struct {
 	Towers       []DetailUnit.Tower   `json:"towers"`
 	Bodies       []DetailUnit.Body    `json:"bodies"`
 	Radars       []DetailUnit.Radar   `json:"radars"`
-	Squads       []*Squad.Squad       `json:"squad_name"`
-	Squad        *Squad.Squad         `json:"squad_name"`
+	Squads       []*Squad.Squad       `json:"squads"`
+	Squad        *Squad.Squad         `json:"squad"`
 	UnitSlot     int                  `json:"slot"`
 }

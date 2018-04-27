@@ -22,7 +22,7 @@ function AddNewSquad() {
         acceptButton.style.margin = "5px";
         acceptButton.innerHTML = "Принять";
         acceptButton.onclick = function () {
-            lobby.send(JSON.stringify({ // запрашиваем список имеющийся отрядов
+            lobby.send(JSON.stringify({
                 event: "AddNewSquad",
                 squad_name: inputName.value
             }));
