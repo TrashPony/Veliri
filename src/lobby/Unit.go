@@ -1,11 +1,14 @@
 package lobby
 
+import "./DetailUnit"
+
 type Unit struct {
-	Chassis *Chassis
-	Weapon  *Weapon
-	Tower   *Tower
-	Body    *Body
-	Radar   *Radar
+	Chassis *DetailUnit.Chassis
+	Weapon  *DetailUnit.Weapon
+	Tower   *DetailUnit.Tower
+	Body    *DetailUnit.Body
+	Radar   *DetailUnit.Radar
+
 	Weight  int
 
 	// Движение
@@ -29,9 +32,9 @@ type Unit struct {
 	VulExplosive    int
 
 	// Навигация
-	RangeView       int
-	Accuracy		int
-	WallHack		bool
+	RangeView int
+	Accuracy  int
+	WallHack  bool
 }
 
 func (unit *Unit) CalculateParametersUnit() {
@@ -43,11 +46,11 @@ func (unit *Unit) CalculateParametersUnit() {
 		unit.EvasionCritical = unit.Chassis.Maneuverability * 2
 		unit.Initiative = unit.Initiative + unit.Chassis.Maneuverability
 
-		percentWeight := unit.Chassis.Carrying * (weight/100)
+		percentWeight := unit.Chassis.Carrying * (weight / 100)
 
 		if percentWeight > 75 {
 			percentWeight = percentWeight - 75
-			fine := (percentWeight/5) + 1
+			fine := (percentWeight / 5) + 1
 			unit.Speed = unit.Chassis.Speed - fine
 		} else {
 			unit.Speed = unit.Chassis.Speed
@@ -100,7 +103,7 @@ func (unit *Unit) CalculateParametersUnit() {
 	}
 }
 
-func (unit *Unit) DelChassis()  {
+func (unit *Unit) DelChassis() {
 	if unit.Chassis != nil {
 		unit.EvasionCritical = 0
 		unit.Initiative = unit.Initiative - unit.Chassis.Maneuverability
@@ -111,7 +114,7 @@ func (unit *Unit) DelChassis()  {
 	}
 }
 
-func (unit *Unit) DelWeapon()  {
+func (unit *Unit) DelWeapon() {
 	if unit.Weapon != nil {
 		unit.TypeAttack = ""
 		unit.Damage = 0
@@ -126,7 +129,7 @@ func (unit *Unit) DelWeapon()  {
 	}
 }
 
-func (unit *Unit) DelTower()  {
+func (unit *Unit) DelTower() {
 	if unit.Tower != nil {
 		unit.HP = unit.HP - unit.Tower.HP
 		unit.RangeView = unit.RangeView - unit.Tower.PowerRadar
@@ -143,7 +146,7 @@ func (unit *Unit) DelTower()  {
 	}
 }
 
-func (unit *Unit) DelBody()  {
+func (unit *Unit) DelBody() {
 	if unit.Body != nil {
 		unit.HP = unit.HP - unit.Body.HP
 
@@ -159,7 +162,7 @@ func (unit *Unit) DelBody()  {
 	}
 }
 
-func (unit *Unit) DelRadar()  {
+func (unit *Unit) DelRadar() {
 	if unit.Radar != nil {
 		unit.RangeView = unit.RangeView - unit.Radar.Power
 		unit.WallHack = false
@@ -172,32 +175,32 @@ func (unit *Unit) DelRadar()  {
 	}
 }
 
-func (unit *Unit) SetChassis(chassis *Chassis)  {
+func (unit *Unit) SetChassis(chassis *DetailUnit.Chassis) {
 	unit.Chassis = chassis
 	unit.CalculateParametersUnit()
 }
 
-func (unit *Unit) SetWeapon(weapon *Weapon)  {
+func (unit *Unit) SetWeapon(weapon *DetailUnit.Weapon) {
 	unit.Weapon = weapon
 	unit.CalculateParametersUnit()
 }
 
-func (unit *Unit) SetTower(tower *Tower)  {
+func (unit *Unit) SetTower(tower *DetailUnit.Tower) {
 	unit.Tower = tower
 	unit.CalculateParametersUnit()
 }
 
-func (unit *Unit) SetBody(body *Body)  {
+func (unit *Unit) SetBody(body *DetailUnit.Body) {
 	unit.Body = body
 	unit.CalculateParametersUnit()
 }
 
-func (unit *Unit) SetRadar(radar *Radar)  {
+func (unit *Unit) SetRadar(radar *DetailUnit.Radar) {
 	unit.Radar = radar
 	unit.CalculateParametersUnit()
 }
 
-func WeightUnit(unit *Unit) (weight int)  {
+func WeightUnit(unit *Unit) (weight int) {
 
 	if unit.Weapon != nil {
 		weight = weight + unit.Weapon.Weight

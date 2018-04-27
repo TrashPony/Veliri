@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"../../lobby"
+	"../../lobby/DetailUnit"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -122,16 +123,16 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				resp = Response{Event: "AddNewSquad", Error: "error add squad"}
 				ws.WriteJSON(resp)
-			} else {
-				listNames := make([]string, 0)
+			} else { // TODO отправлять ответ при добавление нового отряда
+				/*listNames := make([]string, 0)
 				listNames = append(listNames, msg.SquadName)
-				resp = Response{Event: "AddNewSquad", Error: "none", SquadName: listNames}
-				ws.WriteJSON(resp)
+				resp = Response{Event: "AddNewSquad", Error: "none", Squads: listNames}
+				ws.WriteJSON(resp)*/
 			}
 		}
 
 		if msg.Event == "GetListSquad" {
-			names, err := lobby.GetListSquads(usersLobbyWs[ws].Id)
+			squad, err := lobby.GetUserSquads(usersLobbyWs[ws].Id)
 
 			var resp Response
 
@@ -139,7 +140,7 @@ func Reader(ws *websocket.Conn) {
 				resp = Response{Event: "GetListSquad", Error: "error get squads"}
 				ws.WriteJSON(resp)
 			} else {
-				resp = Response{Event: "GetListSquad", Error: "none", SquadName: names}
+				resp = Response{Event: "GetListSquad", Error: "none", Squads: squad}
 				ws.WriteJSON(resp)
 			}
 		}
@@ -162,11 +163,11 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "GetDetailOfUnits" {
 
-			weapons := lobby.GetWeapons()
-			chassis := lobby.GetChassis()
-			towers := lobby.GetTowers()
-			bodies := lobby.GetBodies()
-			radars := lobby.GetRadars()
+			weapons := DetailUnit.GetWeapons()
+			chassis := DetailUnit.GetChassis()
+			towers := DetailUnit.GetTowers()
+			bodies := DetailUnit.GetBodies()
+			radars := DetailUnit.GetRadars()
 
 			var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis, Towers: towers, Bodies: bodies, Radars: radars}
 			ws.WriteJSON(resp)

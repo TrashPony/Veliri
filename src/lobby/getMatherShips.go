@@ -26,6 +26,26 @@ func GetMatherShips() []MatherShip {
 	return matherShips
 }
 
+func GetMatherShip(id int) MatherShip {
+
+	rows, err := db.Query("select * from mother_ship_type where id=$1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var matherShip MatherShip
+
+	for rows.Next() {
+		err := rows.Scan(&matherShip.Id, &matherShip.Type, &matherShip.HP, &matherShip.Armor, &matherShip.UnitSlots, &matherShip.UnitSlotSize, &matherShip.EquipmentSlots, &matherShip.RangeView)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return matherShip
+}
+
 type MatherShip struct {
 	Id             int    `json:"id"`
 	Type           string `json:"type"`
