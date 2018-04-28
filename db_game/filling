@@ -22,11 +22,11 @@ INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle'
 INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 6, '');
 
 /*  ---------------------------- chassis_type ------------------------------------------ */
-INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test', 'caterpillar', 80, 6, 3);
+INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('track', 'caterpillar', 80, 6, 3);
 INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test2', 'walking', 100, 3, 8);
 
 /*  ---------------------------- weapon_type -------------------------------------------------- */
-INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, range_attack, accuracy, area_covers)  VALUES ('test1', 'kinetics', 10, 6, 0, 5, 5, 0);
+INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, range_attack, accuracy, area_covers)  VALUES ('tank_gun', 'kinetics', 10, 6, 0, 5, 5, 0);
 INSERT INTO weapon_type (name, type, weight, damage, min_attack_range, range_attack, accuracy, area_covers)  VALUES ('test2', 'em', 20, 25, 3, 3, 7, 2);
 
 /*  ---------------------------- tower_type -------------------------------------------------- */
@@ -42,8 +42,8 @@ INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('
 INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test2', 'radar', 20, 6, TRUE, 5);
 
 /*  ---------------------------- Equipping_type -------------------------------------------------- */
-INSERT INTO equipping_type (type)  VALUES ('repair_kit');
-INSERT INTO equipping_type (type)  VALUES ('energy_shield');
+INSERT INTO equipping_type (type, specification)  VALUES ('repair_kit', 'ремонтный дроид который ремонтирует выбраного юнита на 50% в течение 3х ходов');
+INSERT INTO equipping_type (type, specification)  VALUES ('energy_shield', 'Поглащает 33% всего урона выбраного юнита в течение 5ти ходов');
 
 /* ------------------------------ Global Maps ------------------------------------------------ */
 INSERT INTO global_map DEFAULT VALUES;

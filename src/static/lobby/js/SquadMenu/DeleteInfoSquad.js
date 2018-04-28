@@ -17,6 +17,6 @@ function DeleteInfoSquad() {
     var sliderContent = document.getElementById("sliderContent");
 
     sliderContent.style.backgroundImage = "";
-    type.innerHTML = "<spen class='Value'>" + "" + "</spen>";
-    slotSize.innerHTML = "Размер доков:" + "<spen class='Value'>" + "" + "</spen>";
+    type.innerHTML = "";
+    slotSize.innerHTML = "";
 }

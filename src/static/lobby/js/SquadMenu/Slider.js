@@ -46,7 +46,6 @@ function SliderMoveLeft() {
     }));
 
     if (sliderContent.matherShips.length > 0) {
-        NextSlide(sliderContent);
         ConfigurationMatherShip(sliderContent.matherShips[0]);
     }
 }
@@ -64,25 +63,6 @@ function SliderMoveRight() {
     }));
 
     if (sliderContent.matherShips.length > 0) {
-        NextSlide(sliderContent);
         ConfigurationMatherShip(sliderContent.matherShips[0]);
-    }
-}
-
-function NextSlide(sliderContent) {
-    var type = document.getElementById("MatherShipType");
-    var slotSize = document.getElementById("MatherShipSlotSize");
-    var unitsTD = document.getElementById("unitsTD");
-
-    sliderContent.style.backgroundImage = "url(/lobby/img/" + sliderContent.matherShips[0].type + ".png)";
-    type.innerHTML = "<spen class='Value'>" + sliderContent.matherShips[0].type + "</spen>";
-    slotSize.innerHTML = "Размер доков:" + "<spen class='Value'>" + sliderContent.matherShips[0].unit_slot_size + "</spen>";
-
-    for (var i = 0; i < sliderContent.matherShips[0].unit_slots; i++) {
-        var boxUnit = document.createElement("div");
-        boxUnit.className = "boxUnit";
-        boxUnit.innerHTML = "+";
-        boxUnit.onclick = InitCreateUnit; // TODO создать метода добавления и создания юнитов
-        unitsTD.appendChild(boxUnit);
     }
 }

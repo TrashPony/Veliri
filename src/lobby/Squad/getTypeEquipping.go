@@ -14,7 +14,7 @@ func GetTypeEquipping() []Equipping {
 	var equip Equipping
 
 	for rows.Next() {
-		err := rows.Scan(&equip.Id, &equip.Type)
+		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -35,7 +35,7 @@ func GetTypeEquip(id int) Equipping {
 	var equip Equipping
 
 	for rows.Next() {
-		err := rows.Scan(&equip.Id, &equip.Type)
+		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -45,7 +45,7 @@ func GetTypeEquip(id int) Equipping {
 }
 
 type Equipping struct {
-	Id             int    `json:"id"`
-	Type           string `json:"type"`
+	Id            int    `json:"id"`
+	Type          string `json:"type"`
+	Specification string `json:"specification"`
 }
-

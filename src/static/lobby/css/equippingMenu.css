@@ -1,0 +1,43 @@
+#equippingMenu {
+    border-radius: 10px;
+    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
+    background-size: 100% 2px, 4px 4px, cover;
+    animation: menuAnimation 7000ms linear infinite;
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    z-index: 900;
+    height: 415px;
+    width: 350px;
+}
+
+#tableEquip {
+    top:5px;
+    margin: auto;
+    width: 340px;
+    text-align: center;
+    font-size: 9pt;
+}
+
+#EquipBackButton {
+    position:absolute;
+    right: 140px;
+    bottom: 10px;
+}
+
+.tdIconEquip {
+    width: 65px;
+    height: 65px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.EquipRow {
+
+}
+
+.EquipButton {
+    background-color: rgba(26, 169, 218, 0.5);
+    color:  #a5d5ef;
+    font-size: 7pt;
+}

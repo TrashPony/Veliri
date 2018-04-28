@@ -59,6 +59,12 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 		ws.WriteJSON(resp)
 	}
 
+	if msg.Event == "GetEquipping" {
+		var equipping = Squad.GetTypeEquipping()
+		var resp = Response{Event: msg.Event, Equipping: equipping}
+		ws.WriteJSON(resp)
+	}
+
 	if msg.Event == "GetListSquad" {
 		squads, err := Squad.GetUserSquads(usersLobbyWs[ws].Id)
 

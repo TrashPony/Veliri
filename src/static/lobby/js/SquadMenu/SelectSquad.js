@@ -21,7 +21,6 @@ function SelectSquad(select) {
                     sliderContent.matherShips[0] = sliderContent.matherShips[i];
                     sliderContent.matherShips[i] = tmpMatherShips;
 
-                    NextSlide(sliderContent);
                     ConfigurationMatherShip(sliderContent.matherShips[0]);
                 }
             }

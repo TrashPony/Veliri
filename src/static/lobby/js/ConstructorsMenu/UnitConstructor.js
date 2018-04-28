@@ -131,7 +131,6 @@ function CreateUnitMenu() {
     acceptButton.onclick = BackToLobby;
     unitMenu.appendChild(acceptButton);
 
-
     return unitMenu;
 }
 

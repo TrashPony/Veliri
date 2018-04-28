@@ -32,4 +32,6 @@ function AddNewSquadInList(jsonMessage) {
 
     selectSquad.appendChild(squadOption);
     selectSquad.value = squad.name;
+
+    SelectSquad(selectSquad)
 }

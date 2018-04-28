@@ -86,4 +86,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "UpdateSquad") {
         UpdateSquad(jsonMessage)
     }
+
+    if (event === "GetEquipping") {
+        EquippingParse(jsonMessage)
+    }
 }

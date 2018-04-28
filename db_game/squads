@@ -11,7 +11,8 @@ CREATE TABLE mother_ship_type (
 
 CREATE TABLE equipping_type (
     id serial primary key,
-    type varchar(64)
+    type varchar(64),
+    specification varchar(255)
 );
 
 CREATE TABLE squads (
