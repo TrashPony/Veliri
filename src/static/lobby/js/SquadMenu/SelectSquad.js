@@ -1,5 +1,7 @@
 function SelectSquad(squad) {
 
+    DeleteInfoSquad();
+
     var idParse = squad.id.split(':'); // "id:squad"
 
     lobby.send(JSON.stringify({
@@ -17,13 +19,18 @@ function SelectSquad(squad) {
                     sliderContent.matherShips[0] = sliderContent.matherShips[i];
                     sliderContent.matherShips[i] = tmpMatherShips;
 
-                    RemoveUnitBox();
                     NextSlide(sliderContent);
                     ConfigurationMatherShip(sliderContent.matherShips[0]);
                 }
             }
         }
-    } else {
-        // todo удаление параметров и картинок
+    }
+
+    if (squad.units !== null && squad.units.length > 0) {
+
+    }
+
+    if (squad.equip !== null && squad.equip.length > 0) {
+
     }
 }

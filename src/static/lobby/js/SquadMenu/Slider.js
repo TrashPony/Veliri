@@ -35,7 +35,7 @@ function CreateNavigationSlider() {
 
 function SliderMoveLeft() {
     var sliderContent = document.getElementById("sliderContent");
-    RemoveUnitBox();
+    DeleteInfoSquad();
 
     var last = sliderContent.matherShips.pop();    // беру последний обьект
     sliderContent.matherShips.unshift(last);       // кладу его первым
@@ -53,7 +53,7 @@ function SliderMoveLeft() {
 
 function SliderMoveRight() {
     var sliderContent = document.getElementById("sliderContent");
-    RemoveUnitBox();
+    DeleteInfoSquad();
 
     var first = sliderContent.matherShips.shift(); // беру перый обьект
     sliderContent.matherShips.push(first);         // кладу его последним
@@ -69,27 +69,12 @@ function SliderMoveRight() {
     }
 }
 
-function RemoveUnitBox() {
-    var paramsTD = document.getElementById("paramsTD");
-
-    while (paramsTD.childNodes.length > 0) {
-        paramsTD.removeChild(paramsTD.childNodes[0]);
-    }
-
-    var unitBoxs = document.getElementsByClassName("boxUnit");
-
-    while (unitBoxs.length > 0) {
-        unitBoxs[0].remove();
-    }
-}
-
 function NextSlide(sliderContent) {
     var type = document.getElementById("MatherShipType");
     var slotSize = document.getElementById("MatherShipSlotSize");
     var unitsTD = document.getElementById("unitsTD");
 
     sliderContent.style.backgroundImage = "url(/lobby/img/" + sliderContent.matherShips[0].type + ".png)";
-
     type.innerHTML = "<spen class='Value'>" + sliderContent.matherShips[0].type + "</spen>";
     slotSize.innerHTML = "Размер доков:" + "<spen class='Value'>" + sliderContent.matherShips[0].unit_slot_size + "</spen>";
 

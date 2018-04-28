@@ -10,10 +10,6 @@ function ConfigurationMatherShip(matherShip) {
 
     var paramsTD = document.getElementById("paramsTD");
 
-    while (paramsTD.childNodes.length > 0) {
-        paramsTD.removeChild(paramsTD.childNodes[0]);
-    }
-
     var hp = document.createElement("span");
     hp.innerHTML = "Hp: " + matherShip.hp + "<br>";
     var armor = document.createElement("span");

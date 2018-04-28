@@ -10,6 +10,8 @@ function AddListSquad(jsonMessage) {
         squadSelect.id = squads[i].id + ":squad";
         squadSelect.matherShip = squads[i].mather_ship;
         squadSelect.units = squads[i].units;
+        squadSelect.equip = squads[i].equip;
+
 
         squadSelect.onclick = function () {
             SelectSquad(this)
@@ -31,6 +33,7 @@ function AddNewSquadInList(jsonMessage) {
     squadSelect.id = squad.id + ":squad";
     squadSelect.matherShip = squad.mather_ship;
     squadSelect.units = squad.units;
+    squadSelect.equip = squad.equip;
 
     squadSelect.onclick = function () {
         SelectSquad(this)
