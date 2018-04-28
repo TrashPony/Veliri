@@ -26,6 +26,7 @@ function WeaponMouseOver(weapon) {
     var tdAccuracy = document.getElementById("accuracy");
     var tdAreaCovers = document.getElementById("areaCovers");
     var tdWeightWeapon = document.getElementById("weightWeapon");
+    var tdRangeWeapon = document.getElementById("RangeWeapon");
 
     tipWeapon.style.display = "block";
 
@@ -36,6 +37,7 @@ function WeaponMouseOver(weapon) {
     tdAccuracy.innerHTML = weapon.accuracy;
     tdAreaCovers.innerHTML = weapon.area_covers;
     tdWeightWeapon.innerHTML = weapon.weight;
+    tdRangeWeapon.innerHTML = weapon.range;
 }
 
 function TowerMouseOver(tower) {

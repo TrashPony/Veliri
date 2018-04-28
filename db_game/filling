@@ -41,6 +41,9 @@ INSERT INTO body_type (name, type, weight, hp, max_tower_weight, armor, vulnerab
 INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test1', 'radar', 10, 4, FALSE, 3);
 INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test2', 'radar', 20, 6, TRUE, 5);
 
+/*  ---------------------------- Equipping_type -------------------------------------------------- */
+INSERT INTO equipping_type (type)  VALUES ('repair_kit');
+INSERT INTO equipping_type (type)  VALUES ('energy_shield');
 
 /* ------------------------------ Global Maps ------------------------------------------------ */
 INSERT INTO global_map DEFAULT VALUES;
