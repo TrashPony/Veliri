@@ -40,9 +40,9 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 			} else {
 				usersLobbyWs[ws].Squad.AddMatherShip(msg.MatherShipID)
 			}
+			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
 		}
-		resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
-		ws.WriteJSON(resp)
 	}
 }
 
