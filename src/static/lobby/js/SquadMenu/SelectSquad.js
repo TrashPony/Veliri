@@ -1,7 +1,9 @@
-function SelectSquad(squad) {
+function SelectSquad(select) {
 
     DeleteInfoSquad();
 
+    var squad = select.options[select.selectedIndex];
+    console.log(squad);
     var idParse = squad.id.split(':'); // "id:squad"
 
     lobby.send(JSON.stringify({

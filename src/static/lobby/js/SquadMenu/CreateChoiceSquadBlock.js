@@ -54,6 +54,10 @@ function CreateHeadTable() {
     selectSquad.style.width = "150px";
     selectSquad.id = "listSquad";
 
+    selectSquad.onchange =  function () {
+        SelectSquad(this)
+    };
+
     lobby.send(JSON.stringify({ // запрашиваем список имеющийся отрядов
         event: "GetListSquad"
     }));
