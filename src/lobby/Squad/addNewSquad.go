@@ -12,7 +12,7 @@ func AddNewSquad(name string, userID int) (err error, squad *Squad) {
 		return err, nil
 	}
 
-	squad = &Squad{ID: int(id), Name:name}
+	squad = &Squad{ID: int(id), Name: name}
 
 	return nil, squad
 }

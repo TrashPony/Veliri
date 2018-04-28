@@ -7,12 +7,12 @@ import (
 )
 
 type Squad struct {
-	ID         int           `json:"id"`
-	Name       string        `json:"name"`
-	MatherShip *MatherShip    `json:"mather_ship"`
-	Units      map[int]*Unit `json:"units"`
+	ID         int                `json:"id"`
+	Name       string             `json:"name"`
+	MatherShip *MatherShip        `json:"mather_ship"`
+	Units      map[int]*Unit      `json:"units"`
+	Equip      map[int]*Equipping `json:"equip"`
 }
-
 
 func (squad *Squad) GetSquadMatherShip() {
 
@@ -30,8 +30,8 @@ func (squad *Squad) GetSquadMatherShip() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// TODO формировать полный обьект мазершипа включая его настройки и модули
-		matherShip = GetMatherShip(matherShip.Id)
+
+		matherShip = GetTypeMatherShip(matherShip.Id)
 	}
 
 	squad.MatherShip = matherShip
@@ -39,11 +39,11 @@ func (squad *Squad) GetSquadMatherShip() {
 
 func (squad *Squad) AddMatherShip(id int) () {
 
-	matherShip := GetMatherShip(id)
+	matherShip := GetTypeMatherShip(id)
 	squad.MatherShip = matherShip
 
 	_, err := db.Exec("INSERT INTO squad_mother_ship (id_squad, id_mother_ship) "+
-							"VALUES ($1, $2)", squad.ID, matherShip.Id)
+		"VALUES ($1, $2)", squad.ID, matherShip.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,15 +132,81 @@ func (squad *Squad) DelUnit(slot int) (error) {
 			log.Fatal(err)
 			return err
 		}
+
 		return nil
 	} else {
 		return errors.New("wrong slot")
 	}
 }
 
-func (squad *Squad) ReplaceUnit(unit *Unit, slot int)  {
+func (squad *Squad) ReplaceUnit(unit *Unit, slot int) {
 	if squad.MatherShip.UnitSlots > slot {
 		squad.DelUnit(slot)
 		squad.AddUnit(unit, slot)
+	}
+}
+
+func (squad *Squad) GetSquadEquip() {
+	rows, err := db.Query("Select slot_in_mother_ship, id_equipping FROM squad_equipping WHERE id_squad=$1", squad.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var equips = make(map[int]*Equipping)
+
+	for rows.Next() {
+
+		var matherSlot int
+
+		var equip Equipping
+
+		err := rows.Scan(&matherSlot, &equip.Id)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		equip = GetTypeEquip(equip.Id)
+
+		equips[matherSlot] = &equip
+	}
+
+	squad.Equip = equips
+}
+
+func (squad *Squad) AddEquip(equip *Equipping, slot int) {
+	if squad.MatherShip.EquipmentSlots > slot {
+
+		squad.Equip[slot] = equip
+
+		_, err := db.Exec("INSERT INTO squad_equipping (id_squad, slot_in_mother_ship, id_equipping) "+
+			"VALUES ($1, $2, $3)", squad.ID, slot, equip.Id)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+func (squad *Squad) DelEquip(slot int) (error){
+	if squad.MatherShip.EquipmentSlots > slot {
+
+		squad.Equip[slot] = nil
+
+		_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1, slot_in_mother_ship=$2", squad.ID, slot)
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+
+		return nil
+	} else {
+		return errors.New("wrong slot")
+	}
+}
+
+func (squad *Squad) ReplaceEquip(equip *Equipping, slot int) {
+	if squad.MatherShip.EquipmentSlots > slot {
+		squad.DelEquip(slot)
+		squad.AddEquip(equip, slot)
 	}
 }

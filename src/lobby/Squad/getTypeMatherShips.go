@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-func GetMatherShips() []MatherShip {
+func GetTypeMatherShips() []MatherShip {
 
 	rows, err := db.Query("select * from mother_ship_type")
 	if err != nil {
@@ -26,7 +26,7 @@ func GetMatherShips() []MatherShip {
 	return matherShips
 }
 
-func GetMatherShip(id int) *MatherShip {
+func GetTypeMatherShip(id int) *MatherShip {
 
 	rows, err := db.Query("select * from mother_ship_type where id=$1", id)
 	if err != nil {

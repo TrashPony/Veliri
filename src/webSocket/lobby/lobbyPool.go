@@ -111,7 +111,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "GetMatherShips" {
-			var matherShips = Squad.GetMatherShips()
+			var matherShips = Squad.GetTypeMatherShips()
 			var resp = Response{Event: msg.Event, MatherShips: matherShips}
 			ws.WriteJSON(resp)
 		}

@@ -70,7 +70,7 @@ func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, clos
 
 	for _, unit := range closeUnit {
 		//coordinate, find := game.GetMap().GetCoordinate(unit.X, unit.Y)
-		//if find { TODO полностью инициализировать карту
+		//if find { TODO полностью инициализировать карту.....
 		coordinate := Coordinate{X: unit.X, Y:unit.Y}
 		closeCoordinate = append(closeCoordinate, &coordinate)
 		//}
