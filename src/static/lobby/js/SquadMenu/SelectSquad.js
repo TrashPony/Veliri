@@ -1,7 +1,10 @@
 function SelectSquad(squad) {
+
+    var idParse = squad.id.split(':'); // "id:squad"
+
     lobby.send(JSON.stringify({
         event: "SelectSquad",
-        squad_id: Number(squad.id)
+        squad_id: Number(idParse[0])
     }));
 
     if (squad.matherShip !== null && squad.matherShip.id !== 0) {
@@ -22,6 +25,5 @@ function SelectSquad(squad) {
         }
     } else {
         // todo удаление параметров и картинок
-        console.log("123")
     }
 }
