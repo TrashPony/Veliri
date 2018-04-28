@@ -12,9 +12,11 @@ type Message struct {
 	GameName     string `json:"game_name"`
 	Respawn      string `json:"respawn"`
 	Message      string `json:"message"`
+
 	SquadName    string `json:"squad_name"`
 	SquadID      int    `json:"squad_id"`
 	UnitSlot     int    `json:"slot"`
+	EquipSlot	 int	`json:"equip_slot"`
 	MatherShipID int    `json:"mather_ship_id"`
 
 	ChassisID int `json:"chassis"`
@@ -42,13 +44,18 @@ type Response struct {
 	Respawn      string               `json:"respawn"`
 	RespawnName  string               `json:"respawn_name"`
 	Message      string               `json:"message"`
+
 	MatherShips  []Squad.MatherShip   `json:"mather_ships"`
+
 	Chassis      []DetailUnit.Chassis `json:"chassis"`
 	Weapons      []DetailUnit.Weapon  `json:"weapons"`
 	Towers       []DetailUnit.Tower   `json:"towers"`
 	Bodies       []DetailUnit.Body    `json:"bodies"`
 	Radars       []DetailUnit.Radar   `json:"radars"`
+
 	Squads       []*Squad.Squad       `json:"squads"`
 	Squad        *Squad.Squad         `json:"squad"`
+
+	EquipSlot	 int	`json:"equip_slot"`
 	UnitSlot     int                  `json:"slot"`
 }

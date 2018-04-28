@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"../../lobby"
-	"../../lobby/DetailUnit"
 	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 	"log"
@@ -110,118 +109,20 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 
-		if msg.Event == "GetMatherShips" {
-			var matherShips = Squad.GetTypeMatherShips()
-			var resp = Response{Event: msg.Event, MatherShips: matherShips}
-			ws.WriteJSON(resp)
+		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip"{
+			SquadSettings(ws, msg)
 		}
 
-		if msg.Event == "AddNewSquad" {
-			err, squad := Squad.AddNewSquad(msg.SquadName, usersLobbyWs[ws].Id)
-
-			var resp Response
-
-			if err != nil {
-				resp = Response{Event: "AddNewSquad", Error: err.Error()}
-				ws.WriteJSON(resp)
-			} else {
-				usersLobbyWs[ws].Squads = append(usersLobbyWs[ws].Squads, squad)
-				resp = Response{Event: "AddNewSquad", Error: "none", Squad: squad}
-				ws.WriteJSON(resp)
-			}
+		if msg.Event == "GetMatherShips" || msg.Event == "GetListSquad" || msg.Event == "GetDetailOfUnits" {
+			GetDetailSquad(ws, msg)
 		}
 
-		if msg.Event == "GetListSquad" {
-			squads, err := Squad.GetUserSquads(usersLobbyWs[ws].Id)
-
-			var resp Response
-
-			if err != nil {
-				resp = Response{Event: "GetListSquad", Error: err.Error()}
-				ws.WriteJSON(resp)
-			} else {
-				usersLobbyWs[ws].Squads = squads
-				resp = Response{Event: "GetListSquad", Error: "none", Squads: squads}
-				ws.WriteJSON(resp)
-			}
+		if msg.Event == "AddUnitInSquad" || msg.Event == "ReplaceUnitInSquad" || msg.Event == "RemoveUnitInSquad" {
+			UnitSquad(ws, msg)
 		}
 
-		if msg.Event == "SelectSquad" {
-			for _, squad := range  usersLobbyWs[ws].Squads {
-				if squad.ID == msg.SquadID {
-					usersLobbyWs[ws].Squad = squad
-					resp := Response{Event: "SelectSquad", Error: "none", Squad: squad}
-					ws.WriteJSON(resp)
-				}
-			}
-		}
-
-		if msg.Event == "SelectMatherShip" {
-			if usersLobbyWs[ws].Squad != nil {
-				if usersLobbyWs[ws].Squad.MatherShip != nil {
-					usersLobbyWs[ws].Squad.ReplaceMatherShip(msg.MatherShipID)
-				} else {
-					usersLobbyWs[ws].Squad.AddMatherShip(msg.MatherShipID)
-				}
-			}
-			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
-			ws.WriteJSON(resp)
-		}
-
-		if msg.Event == "AddEquipment" {
-			//TODO
-		}
-
-		if msg.Event == "AddUnitInSquad" || msg.Event == "ReplaceUnitInSquad" {
-			if usersLobbyWs[ws].Squad != nil {
-				var unit Squad.Unit
-
-				weapon := DetailUnit.GetWeapon(msg.WeaponID)
-				chassis := DetailUnit.GetChass(msg.ChassisID)
-				tower := DetailUnit.GetTower(msg.TowerID)
-				body := DetailUnit.GetBody(msg.BodyID)
-				radar := DetailUnit.GetRadar(msg.RadarID)
-
-				unit.SetChassis(&chassis)
-				unit.SetWeapon(&weapon)
-				unit.SetTower(&tower)
-				unit.SetBody(&body)
-				unit.SetRadar(&radar)
-
-				if msg.Event == "AddUnitInSquad" {
-					usersLobbyWs[ws].Squad.AddUnit(&unit, msg.UnitSlot)
-				} else {
-					usersLobbyWs[ws].Squad.ReplaceUnit(&unit, msg.UnitSlot)
-				}
-			}
-		}
-
-		if msg.Event == "RemoveUnitInSquad" {
-			if usersLobbyWs[ws].Squad != nil {
-				err := usersLobbyWs[ws].Squad.DelUnit(msg.UnitSlot)
-				if err == nil {
-					resp := Response{Event: "RemoveUnitInSquad", Error: "none", UnitSlot: msg.UnitSlot}
-					ws.WriteJSON(resp)
-				} else {
-					resp := Response{Event: "RemoveUnitInSquad", Error: err.Error(), UnitSlot: msg.UnitSlot}
-					ws.WriteJSON(resp)
-				}
-			} else {
-				resp := Response{Event: "RemoveUnitInSquad", Error: "No select squad"}
-				ws.WriteJSON(resp)
-			}
-		}
-
-		if msg.Event == "GetDetailOfUnits" {
-
-			weapons := DetailUnit.GetWeapons()
-			chassis := DetailUnit.GetChassis()
-			towers := DetailUnit.GetTowers()
-			bodies := DetailUnit.GetBodies()
-			radars := DetailUnit.GetRadars()
-
-			var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis, Towers: towers, Bodies: bodies, Radars: radars}
-			ws.WriteJSON(resp)
+		if msg.Event == "AddEquipment"  || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
+			EquipSquad(ws, msg)
 		}
 	}
 }
@@ -246,8 +147,8 @@ func LobbyReposeSender() {
 }
 
 type Clients struct {
-	Login       string
-	Id          int
-	Squad 		*Squad.Squad
-	Squads		[]*Squad.Squad
+	Login  string
+	Id     int
+	Squad  *Squad.Squad
+	Squads []*Squad.Squad
 }
