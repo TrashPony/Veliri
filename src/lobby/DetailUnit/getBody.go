@@ -38,13 +38,15 @@ func GetBodies() (bodies []Body) {
 	return bodies
 }
 
-func GetBody(id int) (body Body) {
+func GetBody(id int) (body *Body) {
 
 	rows, err := db.Query("select * from body_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	body = &Body{}
 
 	for rows.Next() {
 		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)

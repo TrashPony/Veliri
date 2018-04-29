@@ -33,13 +33,15 @@ func GetChassis() (chassiss []Chassis) {
 	return chassiss
 }
 
-func GetChass(id int) (chassis Chassis) {
+func GetChass(id int) (chassis *Chassis) {
 
 	rows, err := db.Query("select * from chassis_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	chassis = &Chassis{}
 
 	for rows.Next() {
 		err := rows.Scan(&chassis.Id, &chassis.Name, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)

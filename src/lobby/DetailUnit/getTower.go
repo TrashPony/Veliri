@@ -38,13 +38,15 @@ func GetTowers() (towers []Tower) {
 	return towers
 }
 
-func GetTower(id int) (tower Tower) {
+func GetTower(id int) (tower *Tower) {
 
 	rows, err := db.Query("select * from tower_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	tower = &Tower{}
 
 	for rows.Next() {
 		err := rows.Scan(&tower.Id, &tower.Name, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)

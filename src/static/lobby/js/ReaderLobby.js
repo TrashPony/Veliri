@@ -89,4 +89,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "GetEquipping") {
         EquippingParse(jsonMessage)
     }
+
+    if (event === "UnitConstructorUpdate") {
+        UpdateUnitInfo(jsonMessage);
+    }
 }

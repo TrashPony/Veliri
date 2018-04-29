@@ -48,6 +48,7 @@ type Response struct {
 
 	MatherShips []Squad.MatherShip `json:"mather_ships"`
 	Equipping   []Squad.Equipping  `json:"equipping"`
+	Unit        Squad.Unit       `json:"unit"`
 
 	Chassis []DetailUnit.Chassis `json:"chassis"`
 	Weapons []DetailUnit.Weapon  `json:"weapons"`

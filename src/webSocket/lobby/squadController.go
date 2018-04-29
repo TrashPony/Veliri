@@ -92,17 +92,27 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 		if usersLobbyWs[ws].Squad != nil {
 			var unit Squad.Unit
 
-			weapon := DetailUnit.GetWeapon(msg.WeaponID)
-			chassis := DetailUnit.GetChass(msg.ChassisID)
-			tower := DetailUnit.GetTower(msg.TowerID)
-			body := DetailUnit.GetBody(msg.BodyID)
-			radar := DetailUnit.GetRadar(msg.RadarID)
+			if msg.WeaponID != 0 {
+				unit.SetWeapon(DetailUnit.GetWeapon(msg.WeaponID))
+			}
 
-			unit.SetChassis(&chassis)
-			unit.SetWeapon(&weapon)
-			unit.SetTower(&tower)
-			unit.SetBody(&body)
-			unit.SetRadar(&radar)
+			if msg.ChassisID != 0 {
+				unit.SetChassis(DetailUnit.GetChass(msg.ChassisID))
+			}
+
+			if msg.TowerID != 0 {
+				unit.SetTower(DetailUnit.GetTower(msg.TowerID))
+			}
+
+			if msg.BodyID != 0 {
+				unit.SetBody(DetailUnit.GetBody(msg.BodyID))
+			}
+
+			if msg.RadarID != 0 {
+				unit.SetRadar(DetailUnit.GetRadar(msg.RadarID))
+			}
+
+			unit.CalculateParametersUnit()
 
 			if msg.Event == "AddUnitInSquad" {
 				usersLobbyWs[ws].Squad.AddUnit(&unit, msg.UnitSlot)

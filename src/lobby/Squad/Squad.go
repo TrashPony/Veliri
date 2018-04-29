@@ -80,11 +80,11 @@ func (squad *Squad) GetSquadUnits() {
 
 		var matherSlot int
 
-		var chassis DetailUnit.Chassis
-		var weapon DetailUnit.Weapon
-		var tower DetailUnit.Tower
-		var body DetailUnit.Body
-		var radar DetailUnit.Radar
+		var chassis *DetailUnit.Chassis
+		var weapon *DetailUnit.Weapon
+		var tower *DetailUnit.Tower
+		var body *DetailUnit.Body
+		var radar *DetailUnit.Radar
 
 		err := rows.Scan(&matherSlot, &chassis.Id, &weapon.Id, &tower.Id, &body.Id, &radar.Id)
 		if err != nil {
@@ -97,11 +97,11 @@ func (squad *Squad) GetSquadUnits() {
 		body = DetailUnit.GetBody(body.Id)
 		radar = DetailUnit.GetRadar(radar.Id)
 
-		unit.SetChassis(&chassis)
-		unit.SetWeapon(&weapon)
-		unit.SetTower(&tower)
-		unit.SetBody(&body)
-		unit.SetRadar(&radar)
+		unit.SetChassis(chassis)
+		unit.SetWeapon(weapon)
+		unit.SetTower(tower)
+		unit.SetBody(body)
+		unit.SetRadar(radar)
 
 		units[matherSlot] = &unit
 	}

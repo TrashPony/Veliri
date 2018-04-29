@@ -34,13 +34,15 @@ func GetRadars() (radars []Radar) {
 	return radars
 }
 
-func GetRadar(id int) (radar Radar) {
+func GetRadar(id int) (radar *Radar) {
 
 	rows, err := db.Query("select * from radar_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	radar = &Radar{}
 
 	for rows.Next() {
 		err := rows.Scan(&radar.Id, &radar.Name, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)

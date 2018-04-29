@@ -11,12 +11,14 @@ function CreateUnitMenu() {
     bodyUnitBox.className = "ElementUnitBox right";
     bodyUnitBox.id = "bodyElement";
     bodyUnitBox.onclick = function () {
+        this.detail = null;
         this.style.backgroundImage = "";
         this.body = null;
         var picBody = document.getElementById("picBody");
         if (picBody){
             picBody.remove();
         }
+        SendEventAddOrDelDetail()
     };
     unitMenu.appendChild(bodyUnitBox);
 
@@ -24,12 +26,14 @@ function CreateUnitMenu() {
     towerUnitBox.className = "ElementUnitBox right";
     towerUnitBox.id = "towerElement";
     towerUnitBox.onclick = function () {
+        this.detail = null;
         this.style.backgroundImage = "";
         this.body = null;
         var picTower = document.getElementById("picTower");
         if (picTower){
             picTower.remove();
         }
+        SendEventAddOrDelDetail()
     };
     unitMenu.appendChild(towerUnitBox);
 
@@ -37,12 +41,14 @@ function CreateUnitMenu() {
     chassisUnitBox.className = "ElementUnitBox left";
     chassisUnitBox.id = "chassisElement";
     chassisUnitBox.onclick = function () {
+        this.detail = null;
         this.style.backgroundImage = "";
         this.chassis = null;
         var picChassis = document.getElementById("picChassis");
         if (picChassis){
             picChassis.remove();
         }
+        SendEventAddOrDelDetail()
     };
     unitMenu.appendChild(chassisUnitBox);
 
@@ -50,12 +56,14 @@ function CreateUnitMenu() {
     weaponUnitBox.className = "ElementUnitBox weapon";
     weaponUnitBox.id = "weaponElement";
     weaponUnitBox.onclick = function () {
+        this.detail = null;
         this.style.backgroundImage = "";
         this.weapon = null;
         var picWeapon = document.getElementById("picWeapon");
         if (picWeapon){
             picWeapon.remove();
         }
+        SendEventAddOrDelDetail()
     };
     unitMenu.appendChild(weaponUnitBox);
 
@@ -63,12 +71,14 @@ function CreateUnitMenu() {
     radarUnitBox.className = "ElementUnitBox left";
     radarUnitBox.id = "radarElement";
     radarUnitBox.onclick = function () {
+        this.detail = null;
         this.style.backgroundImage = "";
         this.radar = null;
         var picRadar = document.getElementById("picRadar");
         if (picRadar){
             picRadar.remove();
         }
+        SendEventAddOrDelDetail();
     };
     unitMenu.appendChild(radarUnitBox);
 

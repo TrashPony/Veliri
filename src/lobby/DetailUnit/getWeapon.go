@@ -36,13 +36,15 @@ func GetWeapons() (weapons []Weapon) {
 	return weapons
 }
 
-func GetWeapon(id int) (weapon Weapon) {
+func GetWeapon(id int) (weapon *Weapon) {
 
 	rows, err := db.Query("select * from weapon_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
+
+	weapon = &Weapon{}
 
 	for rows.Next() {
 		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)

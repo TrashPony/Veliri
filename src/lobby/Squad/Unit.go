@@ -110,7 +110,6 @@ func (unit *Unit) DelChassis() {
 		unit.Speed = 0
 
 		unit.Chassis = nil
-		unit.CalculateParametersUnit()
 	}
 }
 
@@ -125,7 +124,6 @@ func (unit *Unit) DelWeapon() {
 		unit.Accuracy = unit.Accuracy - unit.Weapon.Accuracy
 
 		unit.Weapon = nil
-		unit.CalculateParametersUnit()
 	}
 }
 
@@ -142,7 +140,6 @@ func (unit *Unit) DelTower() {
 		unit.Armor = unit.Armor - unit.Tower.Armor
 
 		unit.Tower = nil
-		unit.CalculateParametersUnit()
 	}
 }
 
@@ -158,7 +155,6 @@ func (unit *Unit) DelBody() {
 		unit.Armor = unit.Armor - unit.Body.Armor
 
 		unit.Body = nil
-		unit.CalculateParametersUnit()
 	}
 }
 
@@ -171,33 +167,27 @@ func (unit *Unit) DelRadar() {
 		unit.Accuracy = unit.Accuracy - unit.Radar.Analysis
 
 		unit.Radar = nil
-		unit.CalculateParametersUnit()
 	}
 }
 
 func (unit *Unit) SetChassis(chassis *DetailUnit.Chassis) {
 	unit.Chassis = chassis
-	unit.CalculateParametersUnit()
 }
 
 func (unit *Unit) SetWeapon(weapon *DetailUnit.Weapon) {
 	unit.Weapon = weapon
-	unit.CalculateParametersUnit()
 }
 
 func (unit *Unit) SetTower(tower *DetailUnit.Tower) {
 	unit.Tower = tower
-	unit.CalculateParametersUnit()
 }
 
 func (unit *Unit) SetBody(body *DetailUnit.Body) {
 	unit.Body = body
-	unit.CalculateParametersUnit()
 }
 
 func (unit *Unit) SetRadar(radar *DetailUnit.Radar) {
 	unit.Radar = radar
-	unit.CalculateParametersUnit()
 }
 
 func WeightUnit(unit *Unit) (weight int) {

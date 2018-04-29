@@ -124,6 +124,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "AddEquipment"  || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
 			EquipSquad(ws, msg)
 		}
+
+		if msg.Event == "UnitConstructor" {
+			UnitConstructor(ws, msg)
+		}
 	}
 }
 

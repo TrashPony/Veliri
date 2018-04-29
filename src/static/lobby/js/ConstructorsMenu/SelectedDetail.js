@@ -1,8 +1,8 @@
-function SelectDetail(detail, unitElement, pic, picDetail) {
+function SelectDetail(boxDetail, unitElement, pic, picDetail) {
     var picUnit = document.getElementById("picUnit");
     var detailUnitBox = document.getElementById(unitElement);
-    detailUnitBox.detail = detail;
-    detailUnitBox.style.backgroundImage = detail.style.backgroundImage;
+    detailUnitBox.detail = boxDetail.detail;
+    detailUnitBox.style.backgroundImage = boxDetail.style.backgroundImage;
     // тут происходит магия ¯\_(ツ)_/¯
     var picDet = document.getElementById(pic);
 
@@ -10,8 +10,10 @@ function SelectDetail(detail, unitElement, pic, picDetail) {
         picDet = detailUnitBox.cloneNode(false);
         picDet.id = pic;
         picDet.className = picDetail;
-        picDet.style.backgroundImage = detail.style.backgroundImage;
+        picDet.style.backgroundImage = boxDetail.style.backgroundImage;
     }
 
     picUnit.appendChild(picDet);
+
+    SendEventAddOrDelDetail()
 }
