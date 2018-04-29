@@ -35,10 +35,21 @@ function SelectSquad(select) {
             var boxEquip= document.getElementById(key + ":equipSlot");
             if (boxEquip) {
                 boxEquip.equip = squad.equip[key];
-                boxEquip.innerHTML = "";
+                boxEquip.innerHTML = " ";
                 boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
             } else {
-                //todo Если ячейка не найдена значит размер корабля уменьшился в меньшую сторону надо это обработать, например создать такой же бокс но красного цвета
+                var equippingPanel = document.getElementById("equippingPanel");
+
+                var boxErrorEquip = document.createElement("div");
+
+                boxErrorEquip.equip = squad.equip[key];
+                boxErrorEquip.className = "boxEquip Error";
+                boxErrorEquip.innerHTML = "+";
+                boxErrorEquip.id = key+":equipSlot";
+                boxErrorEquip.innerHTML = " ";
+                boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
+
+                equippingPanel.appendChild(boxErrorEquip)
             }
         }
     }

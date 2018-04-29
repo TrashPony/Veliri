@@ -25,9 +25,13 @@ function ConfigurationMatherShip(matherShip) {
     var rangeView = document.createElement("span");
     rangeView.innerHTML = "RangeView: " + matherShip.range_view + "<br>";
 
+
     var equipmentSpan = document.createElement("span");
     equipmentSpan.innerHTML = "Модули: ";
     paramsTD.appendChild(equipmentSpan);
+
+    var equippingPanel = CreateEquippingPanel(matherShip);
+    paramsTD.appendChild(equippingPanel);
 
     for (var i = 0; i < sliderContent.matherShips[0].unit_slots; i++) {
         var boxUnit = document.createElement("div");
@@ -38,31 +42,29 @@ function ConfigurationMatherShip(matherShip) {
         // TODO передовать в параметры выбранный слот в шипе что бы знать куда положить/заменить модуль
     }
 
-    for (var j = 0; j < matherShip.equipment_slots; j++) {
-        var boxEqiup = document.createElement("div");
-
-        boxEqiup.style.textAlign = "center";
-        boxEqiup.className = "boxEquip";
-        boxEqiup.innerHTML = "+";
-        boxEqiup.id = j+":equipSlot";
-
-        boxEqiup.onclick = function () {
-            InitEquippingMenu(this);
-        };
-
-        paramsTD.appendChild(boxEqiup);
-    }
-
-    var button = document.createElement("input");
-    button.type = "button";
-    button.value = "Применить";
-    button.className = "lobbyButton";
-    button.style.position = "absolute";
-    button.style.right = "15px";
-
     paramsTD.appendChild(document.createElement("br"));
     paramsTD.appendChild(hp);
     paramsTD.appendChild(armor);
     paramsTD.appendChild(rangeView);
-    paramsTD.appendChild(button);
+}
+
+function CreateEquippingPanel(matherShip) {
+    var equippingPanel = document.createElement("div");
+    equippingPanel.id = "equippingPanel";
+
+    for (var j = 0; j < matherShip.equipment_slots; j++) {
+        var boxEquip = document.createElement("div");
+
+        boxEquip.className = "boxEquip";
+        boxEquip.innerHTML = "+";
+        boxEquip.id = j+":equipSlot";
+
+        boxEquip.onclick = function () {
+            InitEquippingMenu(this);
+        };
+
+        equippingPanel.appendChild(boxEquip);
+    }
+
+    return equippingPanel
 }

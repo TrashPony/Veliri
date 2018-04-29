@@ -109,24 +109,40 @@ tr td:last-child {
     cursor:pointer;
 }
 
+#equippingPanel {
+    display: inline-block;
+    width: 210px;
+    text-align: center;
+}
+
 .boxEquip {
+    text-align: center;
+    vertical-align: middle;
     display: inline-block;
     height: 25px;
     line-height: 25px;
     width: 25px;
-    margin-right: 5px;
+    margin-right: 10px;
     border: 1px solid #25a0e1;
     background-color:rgba(0,0,0,.4);
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
 
-.boxEquip:hover {
-    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+.boxEquip.Error{
+    border: 1px solid #e11e14;
+    background-color:rgba(0,0,0,.4);
 }
 
 .boxEquip:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
     color: #00fffd;
+    cursor:pointer;
+}
+
+.boxEquip.Error:hover {
+    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
+    color: #e11e14;
     cursor:pointer;
 }
 
