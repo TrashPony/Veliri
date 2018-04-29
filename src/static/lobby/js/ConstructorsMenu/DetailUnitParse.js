@@ -32,11 +32,14 @@ function ViewDetailUnit() {
 }
 
 function DetailBoxCreate(details, menu, className, tip, onMouse, Select) {
+    console.log(details);
     for (var j = 0; j < details.length; j++) {
+
         var box = document.createElement("div");
         box.className = className;
-        box.style.backgroundImage = "url(/lobby/img/" + details.type + ".png)";
+        box.style.backgroundImage = "url(/lobby/img/" + details[j].name + ".png)";
         box.chassis = details[j];
+
         box.onmouseover = function () {
             onMouse(this.chassis);
         };
@@ -44,9 +47,11 @@ function DetailBoxCreate(details, menu, className, tip, onMouse, Select) {
             var tipChassis = document.getElementById(tip);
             tipChassis.style.display = "none";
         };
+
         box.onclick = function () {
             Select(this);
         };
+
         menu.appendChild(box);
     }
 }
