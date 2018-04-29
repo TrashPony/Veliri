@@ -7,8 +7,17 @@
     top: 0;
     left: -120px;
     z-index: 900;
-    height: 415px;
+    height: 422px;
+}
 
+#constructorTable {
+    position: relative;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+}
+
+.ConstructorTD {
+    border: 0 solid #25a0e1;
 }
 
 #unitMenu {
@@ -16,11 +25,10 @@
     border-radius: 10px;
     display:inline-block;
     width: 200px;
-    height: 405px;
+    height: 403px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
-    top: -98px;
 }
 
 .ConstructorMenu {
@@ -28,11 +36,10 @@
     border-radius: 10px;
     display:inline-block;
     width: 120px;
-    height: 405px;
+    height: 403px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
-    top: -98px;
 }
 
 #tabDetailMenu {
@@ -40,7 +47,7 @@
     border-radius: 10px;
     display:inline-block;
     width: 200px;
-    height: 405px;
+    height: 403px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
