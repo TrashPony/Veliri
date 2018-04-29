@@ -7,7 +7,7 @@
     top: 0;
     left: -120px;
     z-index: 900;
-    height: 422px;
+    height: 452px;
 }
 
 #constructorTable {
@@ -25,7 +25,7 @@
     border-radius: 10px;
     display:inline-block;
     width: 200px;
-    height: 403px;
+    height: 433px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
@@ -36,7 +36,7 @@
     border-radius: 10px;
     display:inline-block;
     width: 120px;
-    height: 403px;
+    height: 433px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
@@ -47,7 +47,7 @@
     border-radius: 10px;
     display:inline-block;
     width: 200px;
-    height: 403px;
+    height: 433px;
     border: 1px solid #25a0e1;
     position: relative;
     text-align: center;
