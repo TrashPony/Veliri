@@ -133,15 +133,18 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 }
 
 func EquipSquad(ws *websocket.Conn, msg Message)  {
-	if msg.Event == "AddEquipInSquad" || msg.Event == "ReplaceEquipInSquad" {
+	if msg.Event == "AddEquipment" || msg.Event == "ReplaceEquipment" {
 		if usersLobbyWs[ws].Squad != nil {
-			equip := Squad.GetTypeEquip(msg.WeaponID)
+			equip := Squad.GetTypeEquip(msg.EquipID)
 
-			if msg.Event == "AddEquipInSquad" {
-				usersLobbyWs[ws].Squad.AddEquip(&equip, msg.UnitSlot)
+			if msg.Event == "AddEquipment" {
+				usersLobbyWs[ws].Squad.AddEquip(&equip, msg.EquipSlot)
 			} else {
-				usersLobbyWs[ws].Squad.ReplaceEquip(&equip, msg.UnitSlot)
+				usersLobbyWs[ws].Squad.ReplaceEquip(&equip, msg.EquipSlot)
 			}
+
+			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
 
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
@@ -149,7 +152,7 @@ func EquipSquad(ws *websocket.Conn, msg Message)  {
 		}
 	}
 
-	if msg.Event == "RemoveEquipInSquad" {
+	if msg.Event == "RemoveEquipment" {
 		if usersLobbyWs[ws].Squad != nil {
 			err := usersLobbyWs[ws].Squad.DelEquip(msg.EquipSlot)
 			if err == nil {
@@ -159,6 +162,9 @@ func EquipSquad(ws *websocket.Conn, msg Message)  {
 				resp := Response{Event: msg.Event, Error: err.Error(), UnitSlot: msg.EquipSlot}
 				ws.WriteJSON(resp)
 			}
+
+			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
 			ws.WriteJSON(resp)

@@ -17,6 +17,7 @@ type Message struct {
 	SquadID      int    `json:"squad_id"`
 	UnitSlot     int    `json:"slot"`
 	EquipSlot    int    `json:"equip_slot"`
+	EquipID      int    `json:"equip_id"`
 	MatherShipID int    `json:"mather_ship_id"`
 
 	ChassisID int `json:"chassis"`

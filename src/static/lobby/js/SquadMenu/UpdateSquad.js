@@ -1,17 +1,15 @@
 function UpdateSquad(jsonMessage) {
+    var selectSquad = document.getElementById("listSquad");
+
     var squad = JSON.parse(jsonMessage).squad;
+    var squadOption = document.getElementById(squad.id + ":squad");
 
-    var squadSelect = document.getElementById(squad.id + ":squad");
+    squadOption.value = squad.name;
+    squadOption.text = squad.name;
+    squadOption.id = squad.id + ":squad";
+    squadOption.matherShip = squad.mather_ship;
+    squadOption.units = squad.units;
+    squadOption.equip = squad.equip;
 
-    squadSelect.value = squad.name;
-    squadSelect.text = squad.name;
-    squadSelect.id = squad.id + ":squad";
-    squadSelect.matherShip = squad.mather_ship;
-    squadSelect.units = squad.units;
-
-    squadSelect.onclick = function () {
-        SelectSquad(this)
-    };
-
-
+    SelectSquad(selectSquad)
 }

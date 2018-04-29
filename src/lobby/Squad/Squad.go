@@ -192,8 +192,9 @@ func (squad *Squad) DelEquip(slot int) (error){
 
 		squad.Equip[slot] = nil
 
-		_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1, slot_in_mother_ship=$2", squad.ID, slot)
+		_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
 		if err != nil {
+			println( "DelEquip")
 			log.Fatal(err)
 			return err
 		}

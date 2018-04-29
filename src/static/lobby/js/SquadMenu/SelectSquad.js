@@ -3,7 +3,6 @@ function SelectSquad(select) {
     DeleteInfoSquad();
 
     var squad = select.options[select.selectedIndex];
-    console.log(squad);
     var idParse = squad.id.split(':'); // "id:squad"
 
     lobby.send(JSON.stringify({
@@ -28,10 +27,19 @@ function SelectSquad(select) {
     }
 
     if (squad.units !== null && squad.units.length > 0) {
-
+        //todo
     }
 
-    if (squad.equip !== null && squad.equip.length > 0) {
-
+    for (var key in squad.equip) {
+        if(squad.equip.hasOwnProperty(key)) {
+            var boxEquip= document.getElementById(key + ":equipSlot");
+            if (boxEquip) {
+                boxEquip.equip = squad.equip[key];
+                boxEquip.innerHTML = "";
+                boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
+            } else {
+                //todo Если ячейка не найдена значит размер корабля уменьшился в меньшую сторону надо это обработать, например создать такой же бокс но красного цвета
+            }
+        }
     }
 }

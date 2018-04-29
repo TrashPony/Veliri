@@ -111,12 +111,14 @@ tr td:last-child {
 
 .boxEquip {
     display: inline-block;
-    height: 15px;
-    line-height: 15px;
-    width: 15px;
+    height: 25px;
+    line-height: 25px;
+    width: 25px;
     margin-right: 5px;
     border: 1px solid #25a0e1;
     background-color:rgba(0,0,0,.4);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .boxEquip:hover {

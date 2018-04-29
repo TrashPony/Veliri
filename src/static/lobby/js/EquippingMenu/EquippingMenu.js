@@ -1,4 +1,4 @@
-function InitEquippingMenu() {
+function InitEquippingMenu(box) {
     var mask = document.getElementById("mask");
     mask.style.display = "block";
 
@@ -30,6 +30,10 @@ function InitEquippingMenu() {
     } else {
         equippingMenu.style.display = "block";
     }
+
+    var slotParse = box.id.split(':'); // "slot:equipSlot"
+    equippingMenu.equipSlot = slotParse[0];
+    equippingMenu.equip = box.equip;
 }
 
 function CreateTableEquip() {
@@ -52,6 +56,9 @@ function EquipBackToLobby() {
     var mask = document.getElementById("mask");
     mask.style.display = "none";
 
-    var unitConstructor = document.getElementById("equippingMenu");
-    unitConstructor.style.display = "none";
+    var equippingMenu = document.getElementById("equippingMenu");
+    equippingMenu.style.display = "none";
+
+    equippingMenu.equipSlot = null;
+    equippingMenu.equip = null;
 }

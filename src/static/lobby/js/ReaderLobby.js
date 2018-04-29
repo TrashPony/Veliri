@@ -71,7 +71,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "GetDetailOfUnits") {
-        console.log(jsonMessage);
         DetailUnitParse(jsonMessage)
     }
 

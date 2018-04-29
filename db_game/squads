@@ -13,6 +13,7 @@ CREATE TABLE equipping_type (
     id serial primary key,
     type varchar(64),
     specification varchar(255)
+    // todo время действия в раундах
 );
 
 CREATE TABLE squads (

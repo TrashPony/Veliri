@@ -1,7 +1,7 @@
 function InitCreateUnit() {
     var mask = document.getElementById("mask");
     mask.style.display = "block";
-
+    // TODO передалать конструктор в полную таблицу, а то дивы нахер расползаються
     var lobbyMenu = document.getElementById("lobby");
 
     var unitConstructor = document.getElementById("unitConstructor");

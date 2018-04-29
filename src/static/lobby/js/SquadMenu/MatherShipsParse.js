@@ -26,7 +26,7 @@ function ConfigurationMatherShip(matherShip) {
     rangeView.innerHTML = "RangeView: " + matherShip.range_view + "<br>";
 
     var equipmentSpan = document.createElement("span");
-    equipmentSpan.innerHTML = "Оборудование: ";
+    equipmentSpan.innerHTML = "Модули: ";
     paramsTD.appendChild(equipmentSpan);
 
     for (var i = 0; i < sliderContent.matherShips[0].unit_slots; i++) {
@@ -40,12 +40,17 @@ function ConfigurationMatherShip(matherShip) {
 
     for (var j = 0; j < matherShip.equipment_slots; j++) {
         var boxEqiup = document.createElement("div");
+
         boxEqiup.style.textAlign = "center";
         boxEqiup.className = "boxEquip";
         boxEqiup.innerHTML = "+";
-        boxEqiup.onclick = InitEquippingMenu;
+        boxEqiup.id = j+":equipSlot";
+
+        boxEqiup.onclick = function () {
+            InitEquippingMenu(this);
+        };
+
         paramsTD.appendChild(boxEqiup);
-        // TODO передовать в параметры выбранный слот в шипе что бы знать куда положить/заменить модуль
     }
 
     var button = document.createElement("input");
