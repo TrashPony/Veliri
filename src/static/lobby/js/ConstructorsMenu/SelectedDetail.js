@@ -1,47 +1,17 @@
-function SelectChassis(chassis) {
+function SelectDetail(detail, unitElement, pic, picDetail) {
     var picUnit = document.getElementById("picUnit");
-    var chassisUnitBox = document.getElementById("chassisElement");
-    chassisUnitBox.chassis = chassis.chassis;
-    chassisUnitBox.style.backgroundImage = chassis.style.backgroundImage;
+    var detailUnitBox = document.getElementById(unitElement);
+    detailUnitBox.detail = detail;
+    detailUnitBox.style.backgroundImage = detail.style.backgroundImage;
+    // тут происходит магия ¯\_(ツ)_/¯
+    var picDet = document.getElementById(pic);
 
-    var picChassis = document.getElementById("picChassis");
-
-    if (!picChassis){
-        picChassis = chassisUnitBox.cloneNode(false);
-        picChassis.id = "picChassis";
-        picChassis.className = "picDetail chassis";
-        picChassis.style.backgroundImage = chassis.style.backgroundImage;
+    if (!picDet){
+        picDet = detailUnitBox.cloneNode(false);
+        picDet.id = pic;
+        picDet.className = picDetail;
+        picDet.style.backgroundImage = detail.style.backgroundImage;
     }
 
-    picUnit.appendChild(picChassis);
-}
-
-function SelectWeapon(weapon) {
-    var picUnit = document.getElementById("picUnit");
-    var weaponUnitBox = document.getElementById("weaponElement");
-    weaponUnitBox.weapon = weapon.weapon;
-    weaponUnitBox.style.backgroundImage = weapon.style.backgroundImage;
-
-    var picWeapon = document.getElementById("picWeapon");
-
-    if (!picWeapon) {
-        picWeapon = weaponUnitBox.cloneNode(false);
-        picWeapon.id = "picWeapon";
-        picWeapon.className = "picDetail weapon";
-        picWeapon.style.backgroundImage = weapon.style.backgroundImage;
-    }
-
-    picUnit.appendChild(picWeapon);
-}
-
-function SelectTower() {
-    
-}
-
-function SelectBody() {
-    
-}
-
-function SelectRadar() {
-    
+    picUnit.appendChild(picDet);
 }

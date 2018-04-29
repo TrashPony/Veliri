@@ -16,5 +16,5 @@ function BackToLobby() {
     mask.style.display = "none";
 
     var unitConstructor = document.getElementById("unitConstructor");
-    unitConstructor.style.display = "none";
+    unitConstructor.remove();
 }

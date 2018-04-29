@@ -105,7 +105,7 @@ function CreateTableRow(id, value) {
     var tdName = document.createElement("td");
     tdName.innerHTML = value;
     var tdValue = document.createElement("td");
-    tdValue.innerHTML = "999";
+    tdValue.innerHTML = "0";
     tdValue.id = id;
     tr.appendChild(tdName);
     tr.appendChild(tdValue);
