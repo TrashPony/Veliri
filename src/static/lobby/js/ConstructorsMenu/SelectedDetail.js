@@ -1,4 +1,4 @@
-function SelectDetail(boxDetail, unitElement, pic, picDetail) {
+function SelectDetail(detail, unitElement, pic, picDetail) {
 
     var oldPic = document.getElementById(pic);
     if (oldPic){
@@ -7,8 +7,8 @@ function SelectDetail(boxDetail, unitElement, pic, picDetail) {
 
     var picUnit = document.getElementById("picUnit");
     var detailUnitBox = document.getElementById(unitElement);
-    detailUnitBox.detail = boxDetail.detail;
-    detailUnitBox.style.backgroundImage = boxDetail.style.backgroundImage;
+    detailUnitBox.detail = detail;
+    detailUnitBox.style.backgroundImage = "url(/lobby/img/" + detail.name + ".png)";
     // тут происходит магия ¯\_(ツ)_/¯
     var picDet = document.getElementById(pic);
 
@@ -16,7 +16,7 @@ function SelectDetail(boxDetail, unitElement, pic, picDetail) {
         picDet = detailUnitBox.cloneNode(false);
         picDet.id = pic;
         picDet.className = picDetail;
-        picDet.style.backgroundImage = boxDetail.style.backgroundImage;
+        picDet.style.backgroundImage = "url(/lobby/img/" + detail.name + ".png)";
     }
 
     picUnit.appendChild(picDet);

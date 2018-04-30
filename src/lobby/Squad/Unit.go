@@ -38,6 +38,8 @@ type Unit struct {
 }
 
 func (unit *Unit) CalculateParametersUnit() {
+	unit.ZeroingStats() // обнуляем стату юнита
+
 	weight := WeightUnit(unit)
 	unit.Weight = weight
 
@@ -101,6 +103,35 @@ func (unit *Unit) CalculateParametersUnit() {
 		unit.Initiative = unit.Initiative + unit.Radar.Analysis
 		unit.Accuracy = unit.Accuracy + unit.Radar.Analysis
 	}
+}
+
+func (unit *Unit) ZeroingStats() {
+	unit.Weight = 0
+	// todo это немного странно но другово решения я не нашел
+	// Движение
+	unit.Speed = 0
+	unit.Initiative = 0
+
+	// Атака
+	unit.Damage = 0
+	unit.RangeAttack = 0
+	unit.MinAttackRange = 0
+	unit.AreaAttack = 0
+	unit.TypeAttack = ""
+
+	// Выживаемость
+	unit.HP = 0
+	unit.Armor = 0
+	unit.EvasionCritical = 0
+	unit.VulKinetics = 0
+	unit.VulThermal = 0
+	unit.VulEM = 0
+	unit.VulExplosive = 0
+
+	// Навигация
+	unit.RangeView = 0
+	unit.Accuracy = 0
+	unit.WallHack = false
 }
 
 func (unit *Unit) DelChassis() {

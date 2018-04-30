@@ -1,5 +1,6 @@
 function SendEventAddOrDelDetail() {
     // берем все выбраные части и шлем на свервер для обсчета статы
+    var unitConstructor = document.getElementById("unitConstructor");
 
     lobby.send(JSON.stringify({
         event: "UnitConstructor",
@@ -7,7 +8,8 @@ function SendEventAddOrDelDetail() {
         weapon: Number(checkDetailID(document.getElementById("weaponElement").detail)),
         tower: Number(checkDetailID(document.getElementById("towerElement").detail)),
         body: Number(checkDetailID(document.getElementById("bodyElement").detail)),
-        radar: Number(checkDetailID(document.getElementById("radarElement").detail))
+        radar: Number(checkDetailID(document.getElementById("radarElement").detail)),
+        slot: Number(unitConstructor.unitSlot)
     }));
 }
 

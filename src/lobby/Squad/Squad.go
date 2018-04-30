@@ -114,6 +114,7 @@ func (squad *Squad) GetSquadUnits() {
 			unit.SetRadar(radar)
 		}
 
+		unit.CalculateParametersUnit()
 		units[matherSlot] = &unit
 	}
 

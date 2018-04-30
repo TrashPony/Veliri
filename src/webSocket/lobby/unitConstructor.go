@@ -7,7 +7,11 @@ import (
 )
 
 func UnitConstructor(ws *websocket.Conn, msg Message) {
-	var unit Squad.Unit
+
+	unit, ok := usersLobbyWs[ws].Squad.Units[msg.UnitSlot]
+	if !ok {
+		unit = &Squad.Unit{}
+	}
 
 	if msg.WeaponID != 0 {
 		unit.SetWeapon(DetailUnit.GetWeapon(msg.WeaponID))
@@ -31,6 +35,6 @@ func UnitConstructor(ws *websocket.Conn, msg Message) {
 
 	unit.CalculateParametersUnit()
 
-	resp := Response{Event: "UnitConstructorUpdate", Unit: unit}
+	resp := Response{Event: "UnitConstructorUpdate", Unit: *unit}
 	ws.WriteJSON(resp)
 }
