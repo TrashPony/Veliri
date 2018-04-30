@@ -35,7 +35,20 @@ function SelectSquad(select) {
                     boxUnit.innerHTML = " ";
                     boxUnit.style.backgroundImage = "url(/lobby/img/test1.png)"; // todo как то генерить картинку юнита
                 } else {
-                    // todo при смене мазершипа останеться стол юнита надо обработать как с эквипом
+
+                    var unitsTD = document.getElementById("unitsTD");
+
+                    var boxErrorUnit= document.createElement("div");
+
+                    boxErrorUnit.equip = squad.equip[unitSlot];
+                    boxErrorUnit.className = "boxUnit Error";
+                    boxErrorUnit.id = unitSlot + ":unitSlot";
+                    boxErrorUnit.innerHTML = " ";
+                    boxErrorUnit.style.backgroundImage = "url(/lobby/img/test1.png)";
+                    boxErrorUnit.onclick = function () {
+                        DeleteUnit(this, unitSlot)
+                    };
+                    unitsTD.appendChild(boxErrorUnit);
                 }
             }
         }
@@ -56,7 +69,6 @@ function SelectSquad(select) {
 
                     boxErrorEquip.equip = squad.equip[equipSlot];
                     boxErrorEquip.className = "boxEquip Error";
-                    boxErrorEquip.innerHTML = "+";
                     boxErrorEquip.id = equipSlot + ":equipSlot";
                     boxErrorEquip.innerHTML = " ";
                     boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[equipSlot].type + ".png)";

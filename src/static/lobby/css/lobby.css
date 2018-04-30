@@ -104,9 +104,20 @@ tr td:last-child {
     background-repeat: no-repeat;
 }
 
+.boxUnit.Error{
+    border: 1px solid #e11e14;
+    background-color:rgba(0,0,0,.4);
+    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
+    color: #e11e14;
+}
+
 .boxUnit:hover {
     box-shadow: 0 0 30px 4px rgb(0, 195, 255);
     color: #00fffd;
+    cursor:pointer;
+}
+
+.boxUnit.Error:hover {
     cursor:pointer;
 }
 
@@ -169,4 +180,18 @@ tr td:last-child {
     z-index: 900;
     height: 50px;
     width : 190px;
+}
+
+#DellUnit {
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
+    background-size: 100% 2px, 4px 4px, cover;
+    animation: menuAnimation 7000ms linear infinite;
+    position: absolute;
+    top: 175px;
+    left: 130px;
+    z-index: 900;
+    height: 50px;
+    width : 170px;
 }

@@ -131,13 +131,17 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "RemoveUnit" {
 		if usersLobbyWs[ws].Squad != nil {
 			err := usersLobbyWs[ws].Squad.DelUnit(msg.UnitSlot)
+
 			if err == nil {
-				resp := Response{Event: "RemoveUnitInSquad", Error: "none", UnitSlot: msg.UnitSlot}
+				resp := Response{Event: msg.Event, Error: "none", UnitSlot: msg.UnitSlot}
 				ws.WriteJSON(resp)
 			} else {
-				resp := Response{Event: "RemoveUnitInSquad", Error: err.Error(), UnitSlot: msg.UnitSlot}
+				resp := Response{Event: msg.Event, Error: err.Error(), UnitSlot: msg.UnitSlot}
 				ws.WriteJSON(resp)
 			}
+
+			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
 			ws.WriteJSON(resp)

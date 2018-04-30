@@ -3,7 +3,6 @@ package Squad
 import (
 	"log"
 	"../DetailUnit"
-	"errors"
 	"database/sql"
 )
 
@@ -162,21 +161,17 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 }
 
 func (squad *Squad) DelUnit(slot int) (error) {
-	if squad.MatherShip.UnitSlots > slot {
 
-		squad.Units[slot] = nil
+	squad.Units[slot] = nil
 
-		_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
-		if err != nil {
-			println("DelUnit")
-			log.Fatal(err)
-			return err
-		}
-
-		return nil
-	} else {
-		return errors.New("wrong slot")
+	_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
+	if err != nil {
+		println("DelUnit")
+		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 func (squad *Squad) ReplaceUnit(unit *Unit, slot int) {
