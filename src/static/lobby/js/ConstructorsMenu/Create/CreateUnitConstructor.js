@@ -33,4 +33,6 @@ function CreateUnitConstructor() {
     lobby.send(JSON.stringify({
         event: "GetDetailOfUnits"
     }));
+
+    return unitConstructor;
 }

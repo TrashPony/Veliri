@@ -80,11 +80,11 @@ func (squad *Squad) GetSquadUnits() {
 
 		var matherSlot int
 
-		var chassis *DetailUnit.Chassis
-		var weapon *DetailUnit.Weapon
-		var tower *DetailUnit.Tower
-		var body *DetailUnit.Body
-		var radar *DetailUnit.Radar
+		chassis := &DetailUnit.Chassis{}
+		weapon := &DetailUnit.Weapon{}
+		tower := &DetailUnit.Tower{}
+		body := &DetailUnit.Body{}
+		radar := &DetailUnit.Radar{}
 
 		err := rows.Scan(&matherSlot, &chassis.Id, &weapon.Id, &tower.Id, &body.Id, &radar.Id)
 		if err != nil {
@@ -115,7 +115,7 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 		squad.Units[slot] = unit
 
 		_, err := db.Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+
-			"VALUES ($1, $2, $3, $4, $5, $6, &7)", squad.ID, slot, unit.Chassis.Id, unit.Weapon.Id, unit.Tower.Id, unit.Body.Id, unit.Radar.Id)
+			"VALUES ($1, $2, $3, $4, $5, $6, $7)", squad.ID, slot, unit.Chassis.Id, unit.Weapon.Id, unit.Tower.Id, unit.Body.Id, unit.Radar.Id)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -127,8 +127,9 @@ func (squad *Squad) DelUnit(slot int) (error) {
 
 		squad.Units[slot] = nil
 
-		_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1, slot_in_mother_ship=$2", squad.ID, slot)
+		_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
 		if err != nil {
+			println("DelUnit")
 			log.Fatal(err)
 			return err
 		}

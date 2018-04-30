@@ -18,3 +18,28 @@ function checkDetailID(detail) {
         return 0;
     }
 }
+
+function SendEventSelectUnit() {
+
+    var unitConstructor = document.getElementById("unitConstructor");
+
+    var event;
+
+    if (unitConstructor.unit === undefined || unitConstructor.unit === null) {
+        event = "AddUnit"
+    } else {
+        event = "ReplaceUnit"
+    }
+
+    lobby.send(JSON.stringify({
+        event: event,
+        chassis: Number(checkDetailID(document.getElementById("chassisElement").detail)),
+        weapon: Number(checkDetailID(document.getElementById("weaponElement").detail)),
+        tower: Number(checkDetailID(document.getElementById("towerElement").detail)),
+        body: Number(checkDetailID(document.getElementById("bodyElement").detail)),
+        radar: Number(checkDetailID(document.getElementById("radarElement").detail)),
+        slot: Number(unitConstructor.unitSlot)
+    }));
+
+    BackToLobby();
+}

@@ -88,10 +88,10 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 }
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {
-	if msg.Event == "AddUnitInSquad" || msg.Event == "ReplaceUnitInSquad" {
+	if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" {
 		if usersLobbyWs[ws].Squad != nil {
 			var unit Squad.Unit
-
+			// todo проверка на занятость слота в который хотят добавить юнита
 			if msg.WeaponID != 0 {
 				unit.SetWeapon(DetailUnit.GetWeapon(msg.WeaponID))
 			}
@@ -114,18 +114,21 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 
 			unit.CalculateParametersUnit()
 
-			if msg.Event == "AddUnitInSquad" {
+			if msg.Event == "AddUnit" {
 				usersLobbyWs[ws].Squad.AddUnit(&unit, msg.UnitSlot)
 			} else {
 				usersLobbyWs[ws].Squad.ReplaceUnit(&unit, msg.UnitSlot)
 			}
+
+			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
 			ws.WriteJSON(resp)
 		}
 	}
 
-	if msg.Event == "RemoveUnitInSquad" {
+	if msg.Event == "RemoveUnit" {
 		if usersLobbyWs[ws].Squad != nil {
 			err := usersLobbyWs[ws].Squad.DelUnit(msg.UnitSlot)
 			if err == nil {

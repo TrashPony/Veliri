@@ -56,8 +56,16 @@ function CreateUnitMenu() {
     acceptButton.value = "Accept";
     acceptButton.className = "lobbyButton";
     acceptButton.id = "acceptButton";
-    acceptButton.onclick = BackToLobby;
+    acceptButton.onclick = SendEventSelectUnit;
     unitMenu.appendChild(acceptButton);
+
+    var cancelButton = document.createElement("input");
+    cancelButton.type = "button";
+    cancelButton.value = "Cancel";
+    cancelButton.className = "lobbyButton";
+    cancelButton.id = "cancelConstructorButton";
+    cancelButton.onclick = BackToLobby;
+    unitMenu.appendChild(cancelButton);
 
     return unitMenu;
 }

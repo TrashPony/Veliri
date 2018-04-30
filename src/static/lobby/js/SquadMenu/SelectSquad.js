@@ -26,31 +26,42 @@ function SelectSquad(select) {
         }
     }
 
-    if (squad.units !== null && squad.units.length > 0) {
-        //todo
+    for (var unitSlot in squad.units) {
+        if(squad.units.hasOwnProperty(unitSlot)) {
+            var boxUnit= document.getElementById(unitSlot + ":unitSlot");
+            if (squad.units[unitSlot] !== null) {
+                if (boxUnit) {
+                    boxUnit.unit = squad.units[unitSlot];
+                    boxUnit.innerHTML = " ";
+                    boxUnit.style.backgroundImage = "url(/lobby/img/test1.png)"; // todo как то генерить картинку юнита
+                } else {
+                    // todo при смене мазершипа останеться стол юнита надо обработать как с эквипом
+                }
+            }
+        }
     }
 
-    for (var slot in squad.equip) {
-        if(squad.equip.hasOwnProperty(slot)) {
-            var boxEquip= document.getElementById(slot + ":equipSlot");
-            if (squad.equip[slot] !== null) {
+    for (var equipSlot in squad.equip) {
+        if(squad.equip.hasOwnProperty(equipSlot)) {
+            var boxEquip= document.getElementById(equipSlot + ":equipSlot");
+            if (squad.equip[equipSlot] !== null) {
                 if (boxEquip) {
-                    boxEquip.equip = squad.equip[slot];
+                    boxEquip.equip = squad.equip[equipSlot];
                     boxEquip.innerHTML = " ";
-                    boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[slot].type + ".png)";
+                    boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[equipSlot].type + ".png)";
                 } else {
                     var equippingPanel = document.getElementById("equippingPanel");
 
                     var boxErrorEquip = document.createElement("div");
 
-                    boxErrorEquip.equip = squad.equip[slot];
+                    boxErrorEquip.equip = squad.equip[equipSlot];
                     boxErrorEquip.className = "boxEquip Error";
                     boxErrorEquip.innerHTML = "+";
-                    boxErrorEquip.id = slot + ":equipSlot";
+                    boxErrorEquip.id = equipSlot + ":equipSlot";
                     boxErrorEquip.innerHTML = " ";
-                    boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[slot].type + ".png)";
+                    boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[equipSlot].type + ".png)";
                     boxErrorEquip.onclick = function () {
-                        DeleteEquip(this, slot)
+                        DeleteEquip(this, equipSlot)
                     };
                     equippingPanel.appendChild(boxErrorEquip)
                 }

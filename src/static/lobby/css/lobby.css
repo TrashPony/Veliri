@@ -92,19 +92,20 @@ tr td:last-child {
 }
 
 .boxUnit {
+    text-align: center;
+    vertical-align: middle;
     display: inline-block;
     height: 35px;
     line-height: 35px;
     width: 35px;
     border: 1px solid #25a0e1;
     background-color:rgba(0,0,0,.4);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .boxUnit:hover {
     box-shadow: 0 0 30px 4px rgb(0, 195, 255);
-}
-
-.boxUnit:hover {
     color: #00fffd;
     cursor:pointer;
 }

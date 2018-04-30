@@ -117,7 +117,7 @@ func Reader(ws *websocket.Conn) {
 			GetDetailSquad(ws, msg)
 		}
 
-		if msg.Event == "AddUnitInSquad" || msg.Event == "ReplaceUnitInSquad" || msg.Event == "RemoveUnitInSquad" {
+		if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" || msg.Event == "RemoveUnit" {
 			UnitSquad(ws, msg)
 		}
 

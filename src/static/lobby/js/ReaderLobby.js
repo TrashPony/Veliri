@@ -75,6 +75,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "GetListSquad") {
+        console.log(jsonMessage);
         AddListSquad(jsonMessage);
     }
 

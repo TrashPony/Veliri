@@ -1,17 +1,23 @@
-function InitCreateUnit() {
+function InitCreateUnit(box) {
     var mask = document.getElementById("mask");
     mask.style.display = "block";
 
     var unitConstructor = document.getElementById("unitConstructor");
 
     if (!unitConstructor) {
-        CreateUnitConstructor();
+        unitConstructor = CreateUnitConstructor();
     } else {
         unitConstructor.style.display = "block";
     }
+
+    var slotParse = box.id.split(':'); // "slot:unitSlot"
+
+    unitConstructor.unitSlot = slotParse[0];
+    unitConstructor.unit = box.unit;
 }
 
 function BackToLobby() {
+
     var mask = document.getElementById("mask");
     mask.style.display = "none";
 

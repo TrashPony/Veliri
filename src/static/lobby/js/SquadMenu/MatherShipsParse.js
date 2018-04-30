@@ -35,11 +35,16 @@ function ConfigurationMatherShip(matherShip) {
 
     for (var i = 0; i < sliderContent.matherShips[0].unit_slots; i++) {
         var boxUnit = document.createElement("div");
+
         boxUnit.className = "boxUnit";
         boxUnit.innerHTML = "+";
-        boxUnit.onclick = InitCreateUnit; // TODO создать метода добавления и создания юнитов
+        boxUnit.id = i + ":unitSlot";
+
+        boxUnit.onclick = function () {
+            InitCreateUnit(this);
+        };
+
         unitsTD.appendChild(boxUnit);
-        // TODO передовать в параметры выбранный слот в шипе что бы знать куда положить/заменить модуль
     }
 
     paramsTD.appendChild(document.createElement("br"));
@@ -57,7 +62,7 @@ function CreateEquippingPanel(matherShip) {
 
         boxEquip.className = "boxEquip";
         boxEquip.innerHTML = "+";
-        boxEquip.id = j+":equipSlot";
+        boxEquip.id = j + ":equipSlot";
 
         boxEquip.onclick = function () {
             InitEquippingMenu(this);

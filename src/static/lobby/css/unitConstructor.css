@@ -116,8 +116,29 @@
 
 #acceptButton {
     position:absolute;
-    right: 70px;
+    right: 110px;
     bottom: 15px;
+}
+
+#acceptButton:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    color: #00fffd;
+    cursor:pointer;
+}
+
+#cancelConstructorButton {
+    position:absolute;
+    right: 30px;
+    bottom: 15px;
+    border: 1px solid #e11e14;
+    background-color:#e11e14;
+    box-shadow: 0 0 10px 1px rgb(255, 64, 20);
+}
+
+#cancelConstructorButton:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    color: #00fffd;
+    cursor:pointer;
 }
 
 #mask {
