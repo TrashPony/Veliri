@@ -1,4 +1,10 @@
 function SelectDetail(boxDetail, unitElement, pic, picDetail) {
+
+    var oldPic = document.getElementById(pic);
+    if (oldPic){
+        oldPic.remove();
+    }
+
     var picUnit = document.getElementById("picUnit");
     var detailUnitBox = document.getElementById(unitElement);
     detailUnitBox.detail = boxDetail.detail;

@@ -35,7 +35,7 @@
     padding-top: 10px;
     border-radius: 10px;
     display:inline-block;
-    width: 120px;
+    width: 170px;
     height: 433px;
     border: 1px solid #25a0e1;
     position: relative;
@@ -111,7 +111,7 @@
     margin-left:auto;
     margin-top: 5px;
     font-size: 9pt;
-    width: 100px;
+    width: 150px;
 }
 
 #acceptButton {
