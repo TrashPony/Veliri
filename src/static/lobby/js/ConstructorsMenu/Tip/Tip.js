@@ -33,3 +33,16 @@ function moveTip(e) {
     tipRadar.top = y + 20 + 'px';
     tipBody.top = y + 20 + 'px';
 }
+
+function TipOff() {
+    var tipChassis = document.getElementById("tipChassis");
+    tipChassis.style.display = "none";
+    var tipWeapon = document.getElementById("tipWeapon");
+    tipWeapon.style.display = "none";
+    var tipTower = document.getElementById("tipTower");
+    tipTower.style.display = "none";
+    var tipBody = document.getElementById("tipBody");
+    tipBody.style.display = "none";
+    var tipRadar = document.getElementById("tipRadar");
+    tipRadar.style.display = "none";
+}

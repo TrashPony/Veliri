@@ -1,4 +1,4 @@
-function SelectDetail(detail, unitElement, pic, picDetail) {
+function SelectDetail(detail, unitElement, pic, picDetail, onMouse) {
 
     var oldPic = document.getElementById(pic);
     if (oldPic){
@@ -9,6 +9,15 @@ function SelectDetail(detail, unitElement, pic, picDetail) {
     var detailUnitBox = document.getElementById(unitElement);
     detailUnitBox.detail = detail;
     detailUnitBox.style.backgroundImage = "url(/lobby/img/" + detail.name + ".png)";
+
+    detailUnitBox.onmouseover = function () {
+        onMouse(this.detail);
+    };
+
+    detailUnitBox.onmouseout = function () {
+        TipOff();
+    };
+
     // тут происходит магия ¯\_(ツ)_/¯
     var picDet = document.getElementById(pic);
 

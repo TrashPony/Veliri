@@ -74,10 +74,12 @@ function CreateUnitMenu() {
 function DeleteDetail(box, PicDetail) {
     box.detail = null;
     box.style.backgroundImage = "";
-    box.radar = null;
     var pic = document.getElementById(PicDetail);
     if (pic){
         pic.remove();
     }
+    TipOff();
+    box.onmouseover = null;
+    box.onmouseout = null;
     SendEventAddOrDelDetail();
 }
