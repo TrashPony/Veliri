@@ -25,10 +25,10 @@ function CreateMotionTable() {
     var chassisTableParams = document.createElement("table");
     chassisTableParams.className = "table params";
 
-    var moveSpeed = CreateTableRow("Speed", "Speed");
+    var moveSpeed = CreateTableRow("speed", "Speed");
     chassisTableParams.appendChild(moveSpeed);
 
-    var initiative = CreateTableRow("Initiative", "Initiative");
+    var initiative = CreateTableRow("initiative", "Initiative");
     chassisTableParams.appendChild(initiative);
 
     return chassisTableParams;
@@ -38,19 +38,19 @@ function CreateWeaponTable() {
     var weaponTableParams = document.createElement("table");
     weaponTableParams.className = "table params";
 
-    var damage = CreateTableRow("Damage", "Damage");
+    var damage = CreateTableRow("damage", "Damage");
     weaponTableParams.appendChild(damage);
 
-    var rangeAttack = CreateTableRow("RangeAttack", "RangeAttack");
+    var rangeAttack = CreateTableRow("range_attack", "RangeAttack");
     weaponTableParams.appendChild(rangeAttack);
 
-    var minAttackRange = CreateTableRow("MinAttackRange", "MinAttackRange");
+    var minAttackRange = CreateTableRow("min_attack_range", "MinAttackRange");
     weaponTableParams.appendChild(minAttackRange);
 
-    var areaAttack = CreateTableRow("AreaAttack", "AreaAttack");
+    var areaAttack = CreateTableRow("area_attack", "AreaAttack");
     weaponTableParams.appendChild(areaAttack);
 
-    var typeAttack = CreateTableRow("TypeAttack", "TypeAttack");
+    var typeAttack = CreateTableRow("type_attack", "TypeAttack");
     weaponTableParams.appendChild(typeAttack);
 
     return weaponTableParams;
@@ -60,25 +60,25 @@ function CreateSurvivalTable() {
     var survivalTableParams = document.createElement("table");
     survivalTableParams.className = "table params";
 
-    var hp = CreateTableRow("HP", "HP");
+    var hp = CreateTableRow("hp", "HP");
     survivalTableParams.appendChild(hp);
 
-    var armor = CreateTableRow("Armor", "Armor");
+    var armor = CreateTableRow("armor", "Armor");
     survivalTableParams.appendChild(armor);
 
-    var evasionCritical = CreateTableRow("EvasionCritical", "EvasionCritical");
+    var evasionCritical = CreateTableRow("evasion_critical", "EvasionCritical");
     survivalTableParams.appendChild(evasionCritical);
 
-    var vulKinetics = CreateTableRow("VulKinetics", "VulKinetics");
+    var vulKinetics = CreateTableRow("vul_kinetics", "VulKinetics");
     survivalTableParams.appendChild(vulKinetics);
 
-    var vulThermal = CreateTableRow("VulThermal", "VulThermal");
+    var vulThermal = CreateTableRow("vul_thermal", "VulThermal");
     survivalTableParams.appendChild(vulThermal);
 
-    var vulEM = CreateTableRow("VulEM", "VulEM");
+    var vulEM = CreateTableRow("vul_em", "VulEM");
     survivalTableParams.appendChild(vulEM);
 
-    var vulExplosive = CreateTableRow("VulExplosive", "VulExplosive");
+    var vulExplosive = CreateTableRow("vul_explosive", "VulExplosive");
     survivalTableParams.appendChild(vulExplosive);
 
     return survivalTableParams;
@@ -88,13 +88,13 @@ function CreateNavigationTable() {
     var navigationTableParams = document.createElement("table");
     navigationTableParams.className = "table params";
 
-    var rangeView = CreateTableRow("RangeView", "RangeView");
+    var rangeView = CreateTableRow("range_view", "RangeView");
     navigationTableParams.appendChild(rangeView);
 
-    var accuracy = CreateTableRow("Accuracy", "Accuracy");
+    var accuracy = CreateTableRow("accuracy", "Accuracy");
     navigationTableParams.appendChild(accuracy);
 
-    var wallHack = CreateTableRow("WallHack", "WallHack");
+    var wallHack = CreateTableRow("wall_hack", "WallHack");
     navigationTableParams.appendChild(wallHack);
 
     return navigationTableParams;

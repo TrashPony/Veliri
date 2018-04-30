@@ -132,6 +132,8 @@ tr td:last-child {
 .boxEquip.Error{
     border: 1px solid #e11e14;
     background-color:rgba(0,0,0,.4);
+    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
+    color: #e11e14;
 }
 
 .boxEquip:hover {
@@ -141,8 +143,6 @@ tr td:last-child {
 }
 
 .boxEquip.Error:hover {
-    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
-    color: #e11e14;
     cursor:pointer;
 }
 

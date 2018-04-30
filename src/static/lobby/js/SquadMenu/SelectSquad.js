@@ -50,6 +50,8 @@ function SelectSquad(select) {
                 boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
 
                 equippingPanel.appendChild(boxErrorEquip)
+
+                // TODO кнопка которуя будет предлагать удалить лишний эквип
             }
         }
     }
