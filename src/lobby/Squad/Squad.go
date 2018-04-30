@@ -4,6 +4,7 @@ import (
 	"log"
 	"../DetailUnit"
 	"errors"
+	"database/sql"
 )
 
 type Squad struct {
@@ -80,28 +81,38 @@ func (squad *Squad) GetSquadUnits() {
 
 		var matherSlot int
 
-		chassis := &DetailUnit.Chassis{}
-		weapon := &DetailUnit.Weapon{}
-		tower := &DetailUnit.Tower{}
-		body := &DetailUnit.Body{}
-		radar := &DetailUnit.Radar{}
+		chassisID := sql.NullInt64{}
+		weaponID := sql.NullInt64{}
+		towerID := sql.NullInt64{}
+		bodyID := sql.NullInt64{}
+		radarID := sql.NullInt64{}
 
-		err := rows.Scan(&matherSlot, &chassis.Id, &weapon.Id, &tower.Id, &body.Id, &radar.Id)
+		err := rows.Scan(&matherSlot, &chassisID, &weaponID, &towerID, &bodyID, &radarID)
 		if err != nil {
+			println("get unit")
 			log.Fatal(err)
 		}
 
-		chassis = DetailUnit.GetChass(chassis.Id)
-		weapon = DetailUnit.GetWeapon(weapon.Id)
-		tower = DetailUnit.GetTower(tower.Id)
-		body = DetailUnit.GetBody(body.Id)
-		radar = DetailUnit.GetRadar(radar.Id)
-
-		unit.SetChassis(chassis)
-		unit.SetWeapon(weapon)
-		unit.SetTower(tower)
-		unit.SetBody(body)
-		unit.SetRadar(radar)
+		if chassisID.Valid {
+			chassis := DetailUnit.GetChass(int(chassisID.Int64))
+			unit.SetChassis(chassis)
+		}
+		if weaponID.Valid {
+			weapon := DetailUnit.GetWeapon(int(weaponID.Int64))
+			unit.SetWeapon(weapon)
+		}
+		if towerID.Valid {
+			tower := DetailUnit.GetTower(int(towerID.Int64))
+			unit.SetTower(tower)
+		}
+		if bodyID.Valid {
+			body := DetailUnit.GetBody(int(bodyID.Int64))
+			unit.SetBody(body)
+		}
+		if radarID.Valid {
+			radar := DetailUnit.GetRadar(int(radarID.Int64))
+			unit.SetRadar(radar)
+		}
 
 		units[matherSlot] = &unit
 	}
@@ -114,8 +125,35 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 
 		squad.Units[slot] = unit
 
+		ChassisID := sql.NullInt64{}
+		WeaponID := sql.NullInt64{}
+		TowerID := sql.NullInt64{}
+		BodyID := sql.NullInt64{}
+		RadarID := sql.NullInt64{}
+
+		if unit.Chassis != nil {
+			ChassisID = sql.NullInt64{int64(unit.Chassis.Id), true}
+		}
+
+		if unit.Weapon != nil {
+			ChassisID = sql.NullInt64{int64(unit.Weapon.Id), true}
+		}
+
+		if unit.Tower != nil {
+			ChassisID = sql.NullInt64{int64(unit.Tower.Id), true}
+		}
+
+		if unit.Body != nil {
+			ChassisID = sql.NullInt64{int64(unit.Body.Id), true}
+		}
+
+		if unit.Radar != nil {
+			ChassisID = sql.NullInt64{int64(unit.Radar.Id), true}
+		}
+
 		_, err := db.Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+
-			"VALUES ($1, $2, $3, $4, $5, $6, $7)", squad.ID, slot, unit.Chassis.Id, unit.Weapon.Id, unit.Tower.Id, unit.Body.Id, unit.Radar.Id)
+			"VALUES ($1, $2, $3, $4, $5, $6, $7)", squad.ID, slot, ChassisID, WeaponID, TowerID, BodyID, RadarID)
+
 		if err != nil {
 			log.Fatal(err)
 		}
