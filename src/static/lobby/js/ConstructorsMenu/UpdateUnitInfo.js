@@ -1,6 +1,5 @@
-function UpdateUnitInfo(jsonMessage) {
+function UpdateUnitInfo(unit) {
 
-    var unit = JSON.parse(jsonMessage).unit;
 
     for (var parameter in unit) {
         if(unit.hasOwnProperty(parameter)) {

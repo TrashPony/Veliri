@@ -92,6 +92,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "UnitConstructorUpdate") {
-        UpdateUnitInfo(jsonMessage);
+        var unit = JSON.parse(jsonMessage).unit;
+        UpdateUnitInfo(unit);
     }
 }

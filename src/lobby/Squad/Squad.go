@@ -136,19 +136,19 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 		}
 
 		if unit.Weapon != nil {
-			ChassisID = sql.NullInt64{int64(unit.Weapon.Id), true}
+			WeaponID = sql.NullInt64{int64(unit.Weapon.Id), true}
 		}
 
 		if unit.Tower != nil {
-			ChassisID = sql.NullInt64{int64(unit.Tower.Id), true}
+			TowerID = sql.NullInt64{int64(unit.Tower.Id), true}
 		}
 
 		if unit.Body != nil {
-			ChassisID = sql.NullInt64{int64(unit.Body.Id), true}
+			BodyID = sql.NullInt64{int64(unit.Body.Id), true}
 		}
 
 		if unit.Radar != nil {
-			ChassisID = sql.NullInt64{int64(unit.Radar.Id), true}
+			RadarID = sql.NullInt64{int64(unit.Radar.Id), true}
 		}
 
 		_, err := db.Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+

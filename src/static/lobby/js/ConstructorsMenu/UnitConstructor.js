@@ -14,6 +14,8 @@ function InitCreateUnit(box) {
 
     unitConstructor.unitSlot = slotParse[0];
     unitConstructor.unit = box.unit;
+
+    UnitConfig(unitConstructor.unit)
 }
 
 function BackToLobby() {
