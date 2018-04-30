@@ -30,28 +30,30 @@ function SelectSquad(select) {
         //todo
     }
 
-    for (var key in squad.equip) {
-        if(squad.equip.hasOwnProperty(key)) {
-            var boxEquip= document.getElementById(key + ":equipSlot");
-            if (boxEquip) {
-                boxEquip.equip = squad.equip[key];
-                boxEquip.innerHTML = " ";
-                boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
-            } else {
-                var equippingPanel = document.getElementById("equippingPanel");
+    for (var slot in squad.equip) {
+        if(squad.equip.hasOwnProperty(slot)) {
+            var boxEquip= document.getElementById(slot + ":equipSlot");
+            if (squad.equip[slot] !== null) {
+                if (boxEquip) {
+                    boxEquip.equip = squad.equip[slot];
+                    boxEquip.innerHTML = " ";
+                    boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[slot].type + ".png)";
+                } else {
+                    var equippingPanel = document.getElementById("equippingPanel");
 
-                var boxErrorEquip = document.createElement("div");
+                    var boxErrorEquip = document.createElement("div");
 
-                boxErrorEquip.equip = squad.equip[key];
-                boxErrorEquip.className = "boxEquip Error";
-                boxErrorEquip.innerHTML = "+";
-                boxErrorEquip.id = key+":equipSlot";
-                boxErrorEquip.innerHTML = " ";
-                boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[key].type + ".png)";
-
-                equippingPanel.appendChild(boxErrorEquip)
-
-                // TODO кнопка которуя будет предлагать удалить лишний эквип
+                    boxErrorEquip.equip = squad.equip[slot];
+                    boxErrorEquip.className = "boxEquip Error";
+                    boxErrorEquip.innerHTML = "+";
+                    boxErrorEquip.id = slot + ":equipSlot";
+                    boxErrorEquip.innerHTML = " ";
+                    boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[slot].type + ".png)";
+                    boxErrorEquip.onclick = function () {
+                        DeleteEquip(this, slot)
+                    };
+                    equippingPanel.appendChild(boxErrorEquip)
+                }
             }
         }
     }

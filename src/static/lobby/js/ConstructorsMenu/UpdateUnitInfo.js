@@ -1,5 +1,4 @@
 function UpdateUnitInfo(jsonMessage) {
-    console.log(jsonMessage);
 
     var unit = JSON.parse(jsonMessage).unit;
 

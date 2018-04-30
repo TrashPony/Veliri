@@ -71,11 +71,9 @@ function CreateLobbyMenu(id, error, hoster) {
 
     } else {
         if (error === "lobby is full") {
-            console.log("Игра полная");
             alert("Игра полная")
         }
         if (error === "unknown error") {
-            console.log("unknown error");
             alert("unknown error")
         }
     }

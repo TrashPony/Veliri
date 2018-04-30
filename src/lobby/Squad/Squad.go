@@ -187,22 +187,17 @@ func (squad *Squad) AddEquip(equip *Equipping, slot int) {
 	}
 }
 
-func (squad *Squad) DelEquip(slot int) (error){
-	if squad.MatherShip.EquipmentSlots > slot {
+func (squad *Squad) DelEquip(slot int) (error) {
+	squad.Equip[slot] = nil
 
-		squad.Equip[slot] = nil
-
-		_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
-		if err != nil {
-			println( "DelEquip")
-			log.Fatal(err)
-			return err
-		}
-
-		return nil
-	} else {
-		return errors.New("wrong slot")
+	_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
+	if err != nil {
+		println("DelEquip")
+		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 func (squad *Squad) ReplaceEquip(equip *Equipping, slot int) {

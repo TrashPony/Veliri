@@ -2,13 +2,11 @@ var lobby;
 
 function ConnectLobby() {
     lobby = new WebSocket("ws://" + window.location.host + "/wsLobby");
-    console.log("Websocket lobby - status: " + lobby.readyState);
 
     var date = new Date(0);
     document.cookie = "idGame=; path=/; expires=" + date.toUTCString();
 
     lobby.onopen = function(msg) {
-        console.log("CONNECTION lobby opened..." + this.readyState);
         InitLobby();
         sendGameSelection();
         sendDontEndGamesList();

@@ -165,6 +165,7 @@ func EquipSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "RemoveEquipment" {
 		if usersLobbyWs[ws].Squad != nil {
 			err := usersLobbyWs[ws].Squad.DelEquip(msg.EquipSlot)
+
 			if err == nil {
 				resp := Response{Event: msg.Event, Error: "none", UnitSlot: msg.EquipSlot}
 				ws.WriteJSON(resp)

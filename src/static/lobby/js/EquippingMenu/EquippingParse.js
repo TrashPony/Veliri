@@ -3,8 +3,6 @@ function EquippingParse(jsonMessage) {
     var equipping = JSON.parse(jsonMessage).equipping;
     var tableEquip = document.getElementById("tableEquip");
 
-    console.log(equipping);
-
     for (var i = 0; i < equipping.length; i++) {
         var tr = CreateEquipRow(equipping[i].type, equipping[i].id, equipping[i].specification);
         tableEquip.appendChild(tr);

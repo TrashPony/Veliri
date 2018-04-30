@@ -83,11 +83,11 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "UpdateSquad") {
-        UpdateSquad(jsonMessage)
+        UpdateSquad(jsonMessage);
     }
 
     if (event === "GetEquipping") {
-        EquippingParse(jsonMessage)
+        EquippingParse(jsonMessage);
     }
 
     if (event === "UnitConstructorUpdate") {
