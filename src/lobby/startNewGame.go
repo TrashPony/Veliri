@@ -1,11 +1,8 @@
 package lobby
 
-import (
-	"log"
-)
-
 func StartNewGame(nameGame string) (string, bool) {
-	for game := range openGames {
+	return "", false
+/*	for game := range openGames {
 		if openGames[game].Name == nameGame && len(openGames[game].Users) > 1 {
 			id := InitNewGame(openGames[game].Map, openGames[game])
 			if id != "" {
@@ -96,4 +93,5 @@ func UsersToDB(id string, usersAndResp map[User]Respawn) {
 			log.Fatal(err)
 		}
 	}
+*/
 }

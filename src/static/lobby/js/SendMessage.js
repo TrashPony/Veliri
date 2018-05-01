@@ -46,11 +46,11 @@ function InitLobby() {
     }));
 }
 
-function sendCreateLobbyGame(mapName, gameName) {
+function sendCreateLobbyGame(mapId, gameName) {
     createNameGame = gameName;
     lobby.send(JSON.stringify({
         event: "CreateLobbyGame",
-        map_name: mapName,
+        map_id: Number(mapId),
         game_name: gameName
     }));
 }

@@ -16,57 +16,6 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
     tr.onmouseover = funcMouse;
     tr.onmouseout = funcOutMouse;
 
-
-    if (list && gameContent === "NotEndGame") {
-
-        tdName.appendChild(document.createTextNode(text.Name));
-        tdID.appendChild(document.createTextNode(text.Id));
-        tdStep.appendChild(document.createTextNode(text.Step));
-        tdPhase.appendChild(document.createTextNode(text.Phase));
-        tdMyStep.appendChild(document.createTextNode(text.Ready));
-
-        tdName.className = "Value";
-
-        tr.appendChild(tdName);
-        tr.appendChild(tdID);
-        tr.appendChild(tdStep);
-        tr.appendChild(tdPhase);
-        tr.appendChild(tdMyStep);
-
-        list.appendChild(tr);
-    }
-
-    if (list && gameContent === "Game") {
-        tdName.appendChild(document.createTextNode(text.Name));
-        tdID.appendChild(document.createTextNode(text.Map));
-        tdStep.appendChild(document.createTextNode(text.Creator));
-        tdPhase.appendChild(document.createTextNode(text.Players));
-        tdMyStep.appendChild(document.createTextNode(text.Copasity));
-
-        tdName.className = "Value";
-
-        tr.appendChild(tdName);
-        tr.appendChild(tdID);
-        tr.appendChild(tdStep);
-        tr.appendChild(tdPhase);
-        tr.appendChild(tdMyStep);
-
-        list.appendChild(tr);
-    }
-
-    if (list && gameContent === "Map") {
-        tdName.appendChild(document.createTextNode(text.Name));
-        tdPhase.appendChild(document.createTextNode(text.Respawns));
-
-        tdName.className = "Value";
-        tr.map = text;
-
-        tr.appendChild(tdName);
-        tr.appendChild(tdPhase);
-
-        list.appendChild(tr);
-    }
-
     if (list && gameContent === "User") {
 
         tdName.appendChild(document.createTextNode(text.Name));

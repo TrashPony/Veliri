@@ -8,11 +8,12 @@ import (
 
 type Message struct {
 	Event    string `json:"event"`
-	MapName  string `json:"map_name"`
 	UserName string `json:"user_name"`
 	GameName string `json:"game_name"`
 	Respawn  string `json:"respawn"`
 	Message  string `json:"message"`
+
+	MapID		int `json:"map_id"`
 
 	SquadName    string `json:"squad_name"`
 	SquadID      int    `json:"squad_id"`

@@ -83,7 +83,7 @@ func RefreshLobbyGames(login string) {
 			var refresh = Response{Event: "GameRefresh", UserName: client.Login}
 			lobbyPipe <- refresh
 			for _, game := range games {
-				var resp = Response{Event: "GameView", UserName: client.Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
+				var resp = Response{Event: "GameView", UserName: client.Login, NameGame: game.Name, Map: game.Map, Creator: game.Creator,
 					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
 				lobbyPipe <- resp
 			}

@@ -40,7 +40,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var maps = lobby.GetMapList()
 			for _, Map := range maps {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Map:Map}
+				var resp = Response{Event: msg.Event, Map:Map}
 				ws.WriteJSON(resp)
 			}
 		}
@@ -48,7 +48,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "GameView" {
 			games := lobby.GetLobbyGames()
 			for _, game := range games {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, NameMap: game.Map, Creator: game.Creator,
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, Map: game.Map, Creator: game.Creator,
 					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
 				ws.WriteJSON(resp)
 			}
@@ -67,7 +67,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "CreateLobbyGame" {
-			lobby.CreateNewLobbyGame(msg.GameName, msg.MapName, usersLobbyWs[ws].Login)
+			lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, usersLobbyWs[ws].Login)
+
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
 			ws.WriteJSON(resp)
 

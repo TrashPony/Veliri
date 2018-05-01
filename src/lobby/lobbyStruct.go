@@ -9,7 +9,7 @@ type User struct {
 
 type LobbyGames struct {
 	Name     string
-	Map      string
+	Map      Map
 	Creator  string
 	Respawns map[Respawn]string
 	Users    map[string]bool
@@ -18,7 +18,7 @@ type LobbyGames struct {
 type DontEndGames struct {
 	Id     string
 	Name   string
-	IdMap  string
+	Map    Map
 	Step   string
 	Phase  string
 	Winner string

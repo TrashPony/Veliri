@@ -29,3 +29,28 @@ func GetMapList() []Map {
 	}
 	return maps
 }
+
+func GetMap(id int) Map {
+
+	rows, err := db.Query("Select * FROM maps WHERE id=$1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var mp Map
+
+	for rows.Next() {
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type, &mp.Specification)
+		if err != nil {
+			log.Fatal(err)
+		}
+		row := db.QueryRow("SELECT COUNT(*) as Respawns FROM map_constructor WHERE type='respawn' AND id_map=$1", mp.Id)
+		errors := row.Scan(&mp.Respawns)
+		if errors != nil {
+			log.Fatal(errors)
+		}
+	}
+
+	return mp
+}

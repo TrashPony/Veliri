@@ -7,15 +7,17 @@ import (
 
 var openGames = make(map[string]LobbyGames)
 
-func CreateNewLobbyGame(nameGame string, nameMap string, nameCreator string) {
-	respawns := GetRespawns(nameMap)
+func CreateNewLobbyGame(nameGame string, mapID int, nameCreator string) {
+
+	respawns := GetRespawns(mapID)
+	mp := GetMap(mapID)
 	respswnsUser := make(map[Respawn]string)
 
 	for i := 0; i < len(respawns); i++ {
 		respswnsUser[respawns[i]] = ""
 	}
-
-	openGames[nameGame] = LobbyGames{Name: nameGame, Map: nameMap, Creator: nameCreator, Users: make(map[string]bool), Respawns: respswnsUser}
+	
+	openGames[nameGame] = LobbyGames{Name: nameGame, Map: mp, Creator: nameCreator, Users: make(map[string]bool), Respawns: respswnsUser}
 	openGames[nameGame].Users[nameCreator] = false
 }
 

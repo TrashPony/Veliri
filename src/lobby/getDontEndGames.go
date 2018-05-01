@@ -13,13 +13,20 @@ func GetDontEndGames(userName string) []DontEndGames {
 	}
 	defer rows.Close()
 	var games = make([]DontEndGames, 0)
-	var game DontEndGames
+
 
 	for rows.Next() {
-		err := rows.Scan(&game.Id, &game.Name, &game.IdMap, &game.Step, &game.Phase, &game.Winner, &game.Ready)
+		var game DontEndGames
+		var mapID int
+
+		err := rows.Scan(&game.Id, &game.Name, &mapID, &game.Step, &game.Phase, &game.Winner, &game.Ready)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		mp := GetMap(mapID)
+		game.Map = mp
+
 		games = append(games, game)
 	}
 
