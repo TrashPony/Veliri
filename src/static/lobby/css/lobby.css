@@ -195,3 +195,42 @@ tr td:last-child {
     height: 50px;
     width : 170px;
 }
+
+#ButtonDelSquad {
+    right: 15px;
+    position: absolute;
+    bottom: 15px;
+    outline: none;
+    border-radius: 10px;
+    padding: 2px 10px 2px;
+    z-index: 11;
+    color: #00fffd;
+    border: 1px solid #e11e14;
+    background-color:#e11e14;
+    box-shadow: 0 0 10px 1px rgb(255, 64, 20);
+}
+
+#ButtonDelSquad:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    color: #00fffd;
+    cursor:pointer;
+}
+
+#ButtonDelSquad:active {
+    position: absolute;
+    bottom: 12px;
+}
+
+#DellSquad {
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
+    background-size: 100% 2px, 4px 4px, cover;
+    animation: menuAnimation 7000ms linear infinite;
+    position: absolute;
+    top: 175px;
+    left: 130px;
+    z-index: 900;
+    height: 50px;
+    width : 170px;
+}

@@ -75,7 +75,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "GetListSquad") {
-        console.log(jsonMessage);
         AddListSquad(jsonMessage);
     }
 
@@ -85,6 +84,10 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "UpdateSquad") {
         UpdateSquad(jsonMessage);
+    }
+
+    if (event === "RemoveSquad") {
+        RemoveSquad(jsonMessage);
     }
 
     if (event === "GetEquipping") {

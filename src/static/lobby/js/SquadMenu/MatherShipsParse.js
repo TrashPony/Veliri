@@ -51,6 +51,16 @@ function ConfigurationMatherShip(matherShip) {
     paramsTD.appendChild(hp);
     paramsTD.appendChild(armor);
     paramsTD.appendChild(rangeView);
+
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = "Удалить";
+    button.id = "ButtonDelSquad";
+    button.onclick = function () {
+        DeleteSquad();
+    };
+
+    paramsTD.appendChild(button);
 }
 
 function CreateEquippingPanel(matherShip) {

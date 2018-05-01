@@ -33,6 +33,21 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 		}
 	}
 
+	if msg.Event == "DeleteSquad" {
+		if usersLobbyWs[ws].Squad != nil {
+
+			id := usersLobbyWs[ws].Squad.ID
+			Squad.DeleteSquad(id)
+			usersLobbyWs[ws].Squad = nil
+
+			resp := Response{Event: "RemoveSquad", SquadID: id}
+			ws.WriteJSON(resp)
+		} else {
+			resp := Response{Event: msg.Event, Error: "No select squad"}
+			ws.WriteJSON(resp)
+		}
+	}
+
 	if msg.Event == "SelectMatherShip" {
 		if usersLobbyWs[ws].Squad != nil {
 			if usersLobbyWs[ws].Squad.MatherShip != nil {
@@ -41,6 +56,9 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 				usersLobbyWs[ws].Squad.AddMatherShip(msg.MatherShipID)
 			}
 			resp := Response{Event: "UpdateSquad", Squad: usersLobbyWs[ws].Squad}
+			ws.WriteJSON(resp)
+		} else {
+			resp := Response{Event: msg.Event, Error: "No select squad"}
 			ws.WriteJSON(resp)
 		}
 	}

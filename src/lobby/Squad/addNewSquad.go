@@ -16,3 +16,4 @@ func AddNewSquad(name string, userID int) (err error, squad *Squad) {
 
 	return nil, squad
 }
+

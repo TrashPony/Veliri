@@ -58,6 +58,7 @@ type Response struct {
 
 	Squads []*Squad.Squad `json:"squads"`
 	Squad  *Squad.Squad   `json:"squad"`
+	SquadID      int    `json:"squad_id"`
 
 	EquipSlot int `json:"equip_slot"`
 	UnitSlot  int `json:"slot"`

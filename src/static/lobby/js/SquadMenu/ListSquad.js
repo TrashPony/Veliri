@@ -13,7 +13,7 @@ function AddListSquad(jsonMessage) {
         squadOption.equip = squads[i].equip;
 
         selectSquad.appendChild(squadOption);
-        selectSquad.value = "";
+        selectSquad.value = "Не выбрано";
     }
 }
 

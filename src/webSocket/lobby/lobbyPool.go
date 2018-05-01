@@ -109,7 +109,7 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 
-		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip"{
+		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {
 			SquadSettings(ws, msg)
 		}
 
