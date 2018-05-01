@@ -8,8 +8,6 @@ function CreateNewLobbyGame(jsonMessage) {
     user.Respawn = JSON.parse(jsonMessage).respawn_name;
     // создаем в лоби строку с пользователем
     CreateLobbyLine('User', 'gameInfo', "User", user.Name, null, null, null, user, user.Name);
-
-    Respawn();
 }
 
 function InitLobbyGame(jsonMessage) {

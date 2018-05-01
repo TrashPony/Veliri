@@ -40,7 +40,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var maps = lobby.GetMapList()
 			for _, Map := range maps {
-				var resp = Response{Event: msg.Event, Map:Map}
+				var resp = Response{Event: msg.Event, Map: Map}
 				ws.WriteJSON(resp)
 			}
 		}
@@ -84,18 +84,19 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "Respawn" {
+			// todo рефакторинг :\
 			games := lobby.GetLobbyGames()
 			user := usersLobbyWs[ws].Login
+
 			for _, game := range games {
 				for player := range game.Users {
 					if user == player {
 						for respawn := range game.Respawns {
 							if game.Respawns[respawn] == "" {
-								var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
-								lobbyPipe <- resp
+								var resp = Response{Event: msg.Event, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
+								ws.WriteJSON(resp)
 							}
 						}
-						break
 					}
 				}
 			}
@@ -122,7 +123,7 @@ func Reader(ws *websocket.Conn) {
 			UnitSquad(ws, msg)
 		}
 
-		if msg.Event == "AddEquipment"  || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
+		if msg.Event == "AddEquipment" || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
 			EquipSquad(ws, msg)
 		}
 

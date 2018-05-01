@@ -3,6 +3,14 @@ function GameView(jsonMessage) {
         sendJoinToLobbyGame(this.id);
     };
 
+    var onmouse = function () {
+        MouseOverMap(this.map);
+    };
+
+    var offmouse= function () {
+        MouseOutMap()
+    };
+
     var newGame = Object();
 
     newGame.Name = JSON.parse(jsonMessage).name_game;
@@ -16,7 +24,7 @@ function GameView(jsonMessage) {
         gameLine.remove();
     }
 
-    CreateGame('Game', 'Menu', 'Select Menu', JSON.parse(jsonMessage).name_game, func, null, null, newGame);
+    CreateGame('Game', 'Menu', 'Select Menu', JSON.parse(jsonMessage).name_game, func, onmouse, offmouse, newGame);
 }
 
 function NotEndGame(jsonMessage) {
@@ -51,6 +59,7 @@ function CreateGame(gameContent, menu, className, id, func, funcMouse, funcOutMo
     tr.onclick = func;
     tr.onmouseover = funcMouse;
     tr.onmouseout = funcOutMouse;
+    tr.map = game.Map;
 
     if (list && gameContent === "NotEndGame") {
         tdName.appendChild(document.createTextNode(game.Name));

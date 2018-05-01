@@ -14,9 +14,9 @@ func Ready(msg Message, ws *websocket.Conn)  {
 		log.Panic(errGetName)
 	}
 
-	respName, errRespawn := lobby.SetRespawnUser(msg.GameName, usersLobbyWs[ws].Login, msg.Respawn)
+	respName, err := lobby.SetRespawnUser(msg.GameName, usersLobbyWs[ws].Login, msg.Respawn)
 
-	if errRespawn == nil {
+	if err == nil {
 		lobby.UserReady(msg.GameName, usersLobbyWs[ws].Login)
 
 		for user := range game.Users {
@@ -25,7 +25,7 @@ func Ready(msg Message, ws *websocket.Conn)  {
 		}
 
 	} else {
-		resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, GameUser: usersLobbyWs[ws].Login, Error: errRespawn.Error()}
+		resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, GameUser: usersLobbyWs[ws].Login, Error: err.Error()}
 		lobbyPipe <- resp
 	}
 }

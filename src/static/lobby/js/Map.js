@@ -20,13 +20,14 @@ function CreateMapLine(map) {
     tr.className = 'Select SubMenu';
     tr.align = "center";
     tr.id = map.Id;
+    tr.map = map;
 
     tr.onclick = function () {
         CreateLobbyGame(this.id);
     };
 
     tr.onmouseover = function () {
-        MouseOverMap(this.id);
+        MouseOverMap(tr.map);
     };
 
     tr.onmouseout = function () {
@@ -37,7 +38,6 @@ function CreateMapLine(map) {
     tdPhase.appendChild(document.createTextNode(map.Respawns));
 
     tdName.className = "Value";
-    tr.map = map;
 
     tr.appendChild(tdName);
     tr.appendChild(tdPhase);
@@ -45,8 +45,7 @@ function CreateMapLine(map) {
     list.appendChild(tr);
 }
 
-function MouseOverMap(id) {
-    var map = document.getElementById(id).map;
+function MouseOverMap(map) {
 
     var info = document.getElementById('SelectInfo');
     info.innerHTML = "<span class='Value'>" + map.Name + "</span>";

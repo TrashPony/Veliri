@@ -47,6 +47,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Respawn") {
+        console.log(jsonMessage);
         RespawnInit(jsonMessage);
     }
 

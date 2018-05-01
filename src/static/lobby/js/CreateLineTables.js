@@ -3,10 +3,8 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
     var tr = document.createElement('tr');
         // todo это немного пиздец надо переделать)
     var tdName = document.createElement('td');
-    var tdID = document.createElement('td');
     var tdStep = document.createElement('td');
     var tdPhase = document.createElement('td');
-    var tdMyStep = document.createElement('td');
 
     tr.style.wordWrap = 'break-word';
     tr.className = className;
