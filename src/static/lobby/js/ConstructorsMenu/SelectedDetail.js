@@ -1,9 +1,4 @@
-function SelectDetail(detail, unitElement, pic, picDetail, onMouse) {
-
-    var oldPic = document.getElementById(pic);
-    if (oldPic){
-        oldPic.remove();
-    }
+function SelectDetail(detail, unitElement, onMouse) {
 
     var picUnit = document.getElementById("picUnit");
     var detailUnitBox = document.getElementById(unitElement);

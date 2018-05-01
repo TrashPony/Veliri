@@ -20,18 +20,18 @@ function ViewDetailUnit() {
     var unitConstructor = document.getElementById("unitConstructor");
 
     var chassisMenu = document.getElementById("chassisMenu");
-    DetailBoxCreate(unitConstructor.chassis, chassisMenu, "Detail chassis", ChassisMouseOver, "chassisElement", "picChassis", "picDetail chassis");
+    DetailBoxCreate(unitConstructor.chassis, chassisMenu, "Detail chassis", ChassisMouseOver, "chassisElement");
     var weaponMenu = document.getElementById("weaponMenu");
-    DetailBoxCreate(unitConstructor.weapons, weaponMenu, "Detail weapon", WeaponMouseOver, "weaponElement", "picWeapon", "picDetail weapon");
+    DetailBoxCreate(unitConstructor.weapons, weaponMenu, "Detail weapon", WeaponMouseOver, "weaponElement");
     var towerMenu = document.getElementById("towerMenu");
-    DetailBoxCreate(unitConstructor.towers, towerMenu, "Detail towers", TowerMouseOver, "towerElement", "picTower", "picDetail tower");
+    DetailBoxCreate(unitConstructor.towers, towerMenu, "Detail towers", TowerMouseOver, "towerElement");
     var bodyMenu = document.getElementById("bodyMenu");
-    DetailBoxCreate(unitConstructor.bodies, bodyMenu, "Detail bodies", BodyMouseOver, "bodyElement", "picBody", "picDetail body");
+    DetailBoxCreate(unitConstructor.bodies, bodyMenu, "Detail bodies", BodyMouseOver, "bodyElement");
     var radarMenu = document.getElementById("radarMenu");
-    DetailBoxCreate(unitConstructor.radars, radarMenu, "Detail radars", RadarMouseOver, "radarElement", "picRadar", "picDetail radar");
+    DetailBoxCreate(unitConstructor.radars, radarMenu, "Detail radars", RadarMouseOver, "radarElement");
 }
 
-function DetailBoxCreate(details, menu, className, onMouse, unitElement, pic, picDetail) {
+function DetailBoxCreate(details, menu, className, onMouse, unitElement) {
 
     for (var j = 0; j < details.length; j++) {
 
@@ -49,7 +49,7 @@ function DetailBoxCreate(details, menu, className, onMouse, unitElement, pic, pi
         };
 
         box.onclick = function () {
-            SelectDetail(this.detail, unitElement, pic, picDetail, onMouse);
+            SelectDetail(this.detail, unitElement, onMouse);
         };
 
         menu.appendChild(box);

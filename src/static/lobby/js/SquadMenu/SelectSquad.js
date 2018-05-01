@@ -27,6 +27,7 @@ function SelectSquad(select) {
     }
 
     for (var unitSlot in squad.units) {
+        // TODO впылающие окна на иконки юнитов
         if(squad.units.hasOwnProperty(unitSlot)) {
             var boxUnit= document.getElementById(unitSlot + ":unitSlot");
             if (squad.units[unitSlot] !== null) {
