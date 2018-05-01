@@ -37,7 +37,7 @@ function DetailBoxCreate(details, menu, className, onMouse, unitElement) {
 
         var box = document.createElement("div");
         box.className = className;
-        box.style.backgroundImage = "url(/lobby/img/" + details[j].name + ".png)";
+        box.style.backgroundImage = "url(/assets/" + details[j].name + ".png)";
         box.detail = details[j];
 
         box.onmouseover = function () {

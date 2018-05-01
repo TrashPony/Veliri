@@ -31,10 +31,11 @@ type ActiveGames struct {
 }
 
 type Map struct {
-	Id       int
-	Name     string
-	XSize    int
-	YSize    int
-	Type     string
-	Respawns int
+	Id            int
+	Name          string
+	XSize         int
+	YSize         int
+	Type          string
+	Respawns      int
+	Specification string
 }

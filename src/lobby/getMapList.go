@@ -16,7 +16,7 @@ func GetMapList() []Map {
 	var mp Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}

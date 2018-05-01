@@ -3,6 +3,7 @@ package lobby
 import (
 	"../../lobby/DetailUnit"
 	"../../lobby/Squad"
+	"../../lobby"
 )
 
 type Message struct {
@@ -45,6 +46,8 @@ type Response struct {
 	Respawn      string `json:"respawn"`
 	RespawnName  string `json:"respawn_name"`
 	Message      string `json:"message"`
+
+	Map 		lobby.Map `json:"map"`
 
 	MatherShips []Squad.MatherShip `json:"mather_ships"`
 	Equipping   []Squad.Equipping  `json:"equipping"`

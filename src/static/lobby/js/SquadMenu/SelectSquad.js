@@ -34,7 +34,7 @@ function SelectSquad(select) {
                 if (boxUnit) {
                     boxUnit.unit = squad.units[unitSlot];
                     boxUnit.innerHTML = " ";
-                    boxUnit.style.backgroundImage = "url(/lobby/img/test1.png)"; // todo как то генерить картинку юнита
+                    boxUnit.style.backgroundImage = "url(/assets/test1.png)"; // todo как то генерить картинку юнита
                 } else {
 
                     var unitsTD = document.getElementById("unitsTD");
@@ -45,7 +45,7 @@ function SelectSquad(select) {
                     boxErrorUnit.className = "boxUnit Error";
                     boxErrorUnit.id = unitSlot + ":unitSlot";
                     boxErrorUnit.innerHTML = " ";
-                    boxErrorUnit.style.backgroundImage = "url(/lobby/img/test1.png)";
+                    boxErrorUnit.style.backgroundImage = "url(/assets/test1.png)";
                     boxErrorUnit.onclick = function () {
                         DeleteUnit(this, unitSlot)
                     };
@@ -62,7 +62,7 @@ function SelectSquad(select) {
                 if (boxEquip) {
                     boxEquip.equip = squad.equip[equipSlot];
                     boxEquip.innerHTML = " ";
-                    boxEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[equipSlot].type + ".png)";
+                    boxEquip.style.backgroundImage = "url(/assets/" + squad.equip[equipSlot].type + ".png)";
                 } else {
                     var equippingPanel = document.getElementById("equippingPanel");
 
@@ -72,7 +72,7 @@ function SelectSquad(select) {
                     boxErrorEquip.className = "boxEquip Error";
                     boxErrorEquip.id = equipSlot + ":equipSlot";
                     boxErrorEquip.innerHTML = " ";
-                    boxErrorEquip.style.backgroundImage = "url(/lobby/img/" + squad.equip[equipSlot].type + ".png)";
+                    boxErrorEquip.style.backgroundImage = "url(/assets/" + squad.equip[equipSlot].type + ".png)";
                     boxErrorEquip.onclick = function () {
                         DeleteEquip(this, equipSlot)
                     };

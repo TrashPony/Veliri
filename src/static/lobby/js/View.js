@@ -9,12 +9,14 @@ function MapView(jsonMessage) {
         MouseOutMap()
     };
 
-    var map = Object();
+    var map = JSON.parse(jsonMessage).map;
+    var mapLine = document.getElementById(map.Name);
 
-    map.Name = JSON.parse(jsonMessage).name_map;
-    map.Copasity = JSON.parse(jsonMessage).num_of_players;
+    if (mapLine) {
+        mapLine.remove();
+    }
 
-    CreateLobbyLine('Map', 'SubMenu', 'Select SubMenu', JSON.parse(jsonMessage).name_map, func, funcMouse, funcOutMouse, map, JSON.parse(jsonMessage).user_name);
+    CreateLobbyLine('Map', 'SubMenu', 'Select SubMenu', map.Name, func, funcMouse, funcOutMouse, map, JSON.parse(jsonMessage).user_name);
 }
 
 function GameView(jsonMessage) {

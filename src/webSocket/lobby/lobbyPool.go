@@ -40,7 +40,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var maps = lobby.GetMapList()
 			for _, Map := range maps {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameMap: Map.Name, NumOfPlayers: strconv.Itoa(Map.Respawns)}
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Map:Map}
 				ws.WriteJSON(resp)
 			}
 		}

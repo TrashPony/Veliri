@@ -1,7 +1,7 @@
 function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, funcOutMouse, text, owned) {
     var list = document.getElementById(menu);
     var tr = document.createElement('tr');
-
+        // todo это немного пиздец надо переделать)
     var tdName = document.createElement('td');
     var tdID = document.createElement('td');
     var tdStep = document.createElement('td');
@@ -56,9 +56,10 @@ function CreateLobbyLine(gameContent, menu, className, id, func, funcMouse, func
 
     if (list && gameContent === "Map") {
         tdName.appendChild(document.createTextNode(text.Name));
-        tdPhase.appendChild(document.createTextNode(text.Copasity));
+        tdPhase.appendChild(document.createTextNode(text.Respawns));
 
         tdName.className = "Value";
+        tr.map = text;
 
         tr.appendChild(tdName);
         tr.appendChild(tdPhase);

@@ -3,7 +3,8 @@ CREATE TABLE maps(
     name varchar(64),
     x_size int,
     y_size int,
-    type varchar(64)
+    type varchar(64),
+    specification varchar(255)
 );
 
 CREATE TABLE map_constructor(

@@ -14,7 +14,7 @@ function CreateEquipRow(type, id, value) {
     tr.className = "EquipRow";
     var tdIcon = document.createElement("td");
     tdIcon.className = "tdIconEquip";
-    tdIcon.style.backgroundImage = "url(/lobby/img/" + type + ".png)";
+    tdIcon.style.backgroundImage = "url(/assets/" + type + ".png)";
 
     var tdSpecification = document.createElement("td");
     tdSpecification.innerHTML = "<spen class='Value'>" + type + "</spen><br>" + value + "<br>";

@@ -75,18 +75,23 @@ function MapSelection() {
 }
 
 function MouseOverMap(id) {
+    var map = document.getElementById(id).map;
+
     var info = document.getElementById('SelectInfo');
-    info.innerHTML = "Имя карты " + id;
+    info.innerHTML = "<span class='Value'>" + id + "</span>";
+
     var div = document.createElement('div');
     div.style.wordWrap = 'break-word';
-    div.appendChild(document.createTextNode("Невероятная картинка карты! В разработке"));
     div.className = "infoMap";
+    div.style.backgroundImage = "url(/assets/" + map.Name + ".png)";
     div.id = "infoImage";
     info.appendChild(div);
+
     var div2 = document.createElement('div');
     div2.style.wordWrap = 'break-word';
     div2.className = "infoMap";
-    div2.appendChild(document.createTextNode("Описание карты, в разработке"));
+    div2.innerHTML = "<span class='Value'>Описание: </span> <br>" + map.Specification;
+
     info.appendChild(div2);
 }
 

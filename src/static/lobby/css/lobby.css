@@ -62,6 +62,8 @@ tr td:last-child {
     border: 1px solid #53b7c4;
     width: 190px;
     height: 190px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .Select:hover>td {

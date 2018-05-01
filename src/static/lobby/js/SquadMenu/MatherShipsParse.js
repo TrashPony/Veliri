@@ -14,7 +14,7 @@ function ConfigurationMatherShip(matherShip) {
     var paramsTD = document.getElementById("paramsTD");
     var sliderContent = document.getElementById("sliderContent");
 
-    sliderContent.style.backgroundImage = "url(/lobby/img/" + sliderContent.matherShips[0].type + ".png)";
+    sliderContent.style.backgroundImage = "url(/assets/" + sliderContent.matherShips[0].type + ".png)";
     type.innerHTML = "<spen class='Value'>" + sliderContent.matherShips[0].type + "</spen>";
     slotSize.innerHTML = "Размер доков:" + "<spen class='Value'>" + sliderContent.matherShips[0].unit_slot_size + "</spen>";
 
