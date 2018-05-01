@@ -7,13 +7,13 @@ import (
 )
 
 type Message struct {
-	Event    string `json:"event"`
-	UserName string `json:"user_name"`
-	GameName string `json:"game_name"`
-	Respawn  string `json:"respawn"`
-	Message  string `json:"message"`
+	Event     string `json:"event"`
+	UserName  string `json:"user_name"`
+	GameName  string `json:"game_name"`
+	RespawnID int    `json:"respawn_id"`
+	Message   string `json:"message"`
 
-	MapID		int `json:"map_id"`
+	MapID int `json:"map_id"`
 
 	SquadName    string `json:"squad_name"`
 	SquadID      int    `json:"squad_id"`
@@ -37,22 +37,21 @@ type Response struct {
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
 	Ready        string `json:"ready"`
-	NameMap      string `json:"name_map"`
 	NumOfPlayers string `json:"num_of_players"`
 	Players      string `json:"players"`
 	Creator      string `json:"creator"`
 	NewUser      string `json:"new_user"`
 	GameUser     string `json:"game_user"`
 	Error        string `json:"error"`
-	Respawn      string `json:"respawn"`
-	RespawnName  string `json:"respawn_name"`
 	Message      string `json:"message"`
 
-	Map 		lobby.Map `json:"map"`
+	Respawn *lobby.Respawn    `json:"respawn"`
+	Game    lobby.LobbyGames `json:"game"`
+	Map     lobby.Map        `json:"map"`
 
 	MatherShips []Squad.MatherShip `json:"mather_ships"`
 	Equipping   []Squad.Equipping  `json:"equipping"`
-	Unit        Squad.Unit       `json:"unit"`
+	Unit        Squad.Unit         `json:"unit"`
 
 	Chassis []DetailUnit.Chassis `json:"chassis"`
 	Weapons []DetailUnit.Weapon  `json:"weapons"`
@@ -60,9 +59,9 @@ type Response struct {
 	Bodies  []DetailUnit.Body    `json:"bodies"`
 	Radars  []DetailUnit.Radar   `json:"radars"`
 
-	Squads []*Squad.Squad `json:"squads"`
-	Squad  *Squad.Squad   `json:"squad"`
-	SquadID      int    `json:"squad_id"`
+	Squads  []*Squad.Squad `json:"squads"`
+	Squad   *Squad.Squad   `json:"squad"`
+	SquadID int            `json:"squad_id"`
 
 	EquipSlot int `json:"equip_slot"`
 	UnitSlot  int `json:"slot"`

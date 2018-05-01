@@ -4,7 +4,6 @@ import (
 	"../../lobby"
 	"github.com/gorilla/websocket"
 	"log"
-	"strconv"
 )
 
 func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*Clients) {
@@ -83,8 +82,7 @@ func RefreshLobbyGames(login string) {
 			var refresh = Response{Event: "GameRefresh", UserName: client.Login}
 			lobbyPipe <- refresh
 			for _, game := range games {
-				var resp = Response{Event: "GameView", UserName: client.Login, NameGame: game.Name, Map: game.Map, Creator: game.Creator,
-					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
+				var resp = Response{Event: "GameView", UserName: client.Login, Game:game}
 				lobbyPipe <- resp
 			}
 		}

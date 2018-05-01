@@ -1,24 +1,3 @@
-function sendReady (gameName) {
-    var selectResp = document.getElementById("RespawnSelect");
-    if (selectResp) {
-        DelElements("RespawnSelect");
-        respownId = selectResp.value
-    }
-    if (selectResp) {
-        lobby.send(JSON.stringify({
-            event: "Ready",
-            game_name: gameName,
-            respawn: selectResp.value
-        }));
-    } else {
-        lobby.send(JSON.stringify({
-            event: "Ready",
-            game_name: gameName,
-            respawn: respownId
-        }));
-    }
-}
-
 function Respawn() {
     DelElements("RespawnOption");
     lobby.send(JSON.stringify({

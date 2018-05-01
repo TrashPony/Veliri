@@ -2,23 +2,19 @@ package lobby
 
 import (
 	"errors"
-	"strconv"
 )
 
 var openGames = make(map[string]LobbyGames)
 
-func CreateNewLobbyGame(nameGame string, mapID int, nameCreator string) {
+func CreateNewLobbyGame(nameGame string, mapID int, nameCreator string) LobbyGames{
 
 	respawns := GetRespawns(mapID)
 	mp := GetMap(mapID)
-	respswnsUser := make(map[Respawn]string)
 
-	for i := 0; i < len(respawns); i++ {
-		respswnsUser[respawns[i]] = ""
-	}
-	
-	openGames[nameGame] = LobbyGames{Name: nameGame, Map: mp, Creator: nameCreator, Users: make(map[string]bool), Respawns: respswnsUser}
+	openGames[nameGame] = LobbyGames{Name: nameGame, Map: mp, Creator: nameCreator, Users: make(map[string]bool), Respawns: respawns}
 	openGames[nameGame].Users[nameCreator] = false
+
+	return openGames[nameGame]
 }
 
 func JoinToLobbyGame(gameName string, userName string) error {
@@ -63,32 +59,32 @@ func GetGame(nameGame string) (LobbyGames, error) {
 	return getGame, errors.New("no found this game")
 }
 
-func SetRespawnUser(gameName string, userName string, respawnId string) (string, error) {
+func SetRespawnUser(gameName string, userName string, respawnId int) (*Respawn, error) {
 	for game := range openGames {
 		if game == gameName {
-			for respawn := range openGames[game].Respawns {
-				if strconv.Itoa(respawn.Id) == respawnId && (openGames[game].Respawns[respawn] == "" || openGames[game].Respawns[respawn] == userName) {
-					if openGames[game].Respawns[respawn] == userName {
-						openGames[game].Respawns[respawn] = ""
-						return "", nil
+			for _, respawn := range openGames[game].Respawns {
+				if respawn.Id == respawnId && (respawn.UserName == "" || respawn.UserName == userName) {
+					if respawn.UserName == userName {
+						respawn.UserName = ""
+						return nil, nil
 					} else {
-						openGames[game].Respawns[respawn] = userName
-						return respawn.Name, nil
+						respawn.UserName = userName
+						return respawn, nil
 					}
 				}
 			}
 		}
 	}
-	return "", errors.New("respawn busy")
+	return nil, errors.New("respawn busy")
 }
 
 func DisconnectLobbyGame(userName string) (game *LobbyGames) {
 	for gameName := range openGames {
 		for client, ready := range openGames[gameName].Users {
 			if ready {
-				for respawns := range openGames[gameName].Respawns {
-					if openGames[gameName].Respawns[respawns] == userName {
-						openGames[gameName].Respawns[respawns] = ""
+				for _, respawn := range openGames[gameName].Respawns {
+					if respawn.UserName == userName {
+						respawn.UserName = ""
 					}
 				}
 			}
@@ -109,9 +105,9 @@ func DisconnectLobbyGame(userName string) (game *LobbyGames) {
 func DelRespawnUser(gameName string, userName string) {
 	for game := range openGames {
 		if game == gameName {
-			for respawn := range openGames[game].Respawns {
-				if openGames[game].Respawns[respawn] == userName {
-					openGames[game].Respawns[respawn] = ""
+			for _, respawn := range openGames[game].Respawns {
+				if respawn.UserName == userName {
+					respawn.UserName = ""
 				}
 			}
 		}

@@ -11,7 +11,7 @@ type LobbyGames struct {
 	Name     string
 	Map      Map
 	Creator  string
-	Respawns map[Respawn]string
+	Respawns []*Respawn
 	Users    map[string]bool
 }
 

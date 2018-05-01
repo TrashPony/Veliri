@@ -1,32 +1,3 @@
-function GameView(jsonMessage) {
-    var func = function () {
-        sendJoinToLobbyGame(this.id);
-    };
-
-    var onmouse = function () {
-        MouseOverMap(this.map);
-    };
-
-    var offmouse= function () {
-        MouseOutMap()
-    };
-
-    var newGame = Object();
-
-    newGame.Name = JSON.parse(jsonMessage).name_game;
-    newGame.Map  = JSON.parse(jsonMessage).map;
-    newGame.Creator = JSON.parse(jsonMessage).creator;
-    newGame.Copasity = JSON.parse(jsonMessage).players;
-    newGame.Players = JSON.parse(jsonMessage).num_of_players;
-
-    var gameLine = document.getElementById(JSON.parse(jsonMessage).name_game);
-    if (gameLine) {
-        gameLine.remove();
-    }
-
-    CreateGame('Game', 'Menu', 'Select Menu', JSON.parse(jsonMessage).name_game, func, onmouse, offmouse, newGame);
-}
-
 function NotEndGame(jsonMessage) {
     var func = function () {
         JoinToGame(this.id);
@@ -67,16 +38,6 @@ function CreateGame(gameContent, menu, className, id, func, funcMouse, funcOutMo
         tdStep.appendChild(document.createTextNode(game.Step));
         tdPhase.appendChild(document.createTextNode(game.Phase));
         tdMyStep.appendChild(document.createTextNode(game.Ready));
-
-        tdName.className = "Value";
-    }
-
-    if (list && gameContent === "Game") {
-        tdName.appendChild(document.createTextNode(game.Name));
-        tdID.appendChild(document.createTextNode(game.Map.Name));
-        tdStep.appendChild(document.createTextNode(game.Creator));
-        tdPhase.appendChild(document.createTextNode(game.Players));
-        tdMyStep.appendChild(document.createTextNode(game.Copasity));
 
         tdName.className = "Value";
     }

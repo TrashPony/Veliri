@@ -1,6 +1,5 @@
 function ReaderLobby(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
-
     if (event === "InitLobby") {
         var login = document.getElementById('login');
         var userName = JSON.parse(jsonMessage).user_name;
@@ -47,7 +46,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Respawn") {
-        console.log(jsonMessage);
         RespawnInit(jsonMessage);
     }
 
@@ -56,6 +54,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Ready") {
+        console.log(jsonMessage);
         Ready(jsonMessage);
     }
 

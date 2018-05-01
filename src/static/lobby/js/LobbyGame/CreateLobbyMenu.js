@@ -29,11 +29,13 @@ function CreateLobbyMenu(id, error, hoster) {
         ready.style.left = "95px";
         ready.className = "lobbyButton";
         ready.value = "Готов";
+
+        ready.id = id + ":ready";
         ready.onclick = function () {
-            sendReady(this.id)
+            var readyID = this.id.split(":");
+            sendReady(readyID[0])
         };
 
-        ready.id = id;
         parentElem.appendChild(ready);
 
         if (hoster) {
@@ -44,7 +46,6 @@ function CreateLobbyMenu(id, error, hoster) {
             button.className = "lobbyButton";
             button.value = "Начать";
             button.onclick = CreateNewGame;
-            button.id = id;
             parentElem.appendChild(button);
         }
 

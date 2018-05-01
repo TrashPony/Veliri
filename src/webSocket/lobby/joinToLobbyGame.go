@@ -22,7 +22,7 @@ func JoinToLobbyGame(msg Message, ws *websocket.Conn)  {
 		resp = Response{Event: "initLobbyGame", UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
 		lobbyPipe <- resp
 
-		//все кто в лоби получают сообщение о том что подключился новйы игрок
+		//все кто в лоби получают сообщение о том что подключился новый игрок
 		for user := range game.Users {
 			if user != usersLobbyWs[ws].Login {
 				resp = Response{Event: "NewUser", UserName: user, NewUser: usersLobbyWs[ws].Login}
@@ -33,15 +33,15 @@ func JoinToLobbyGame(msg Message, ws *websocket.Conn)  {
 		// игрок получает список всех игроков в лоби и их респауны
 		for user, ready := range game.Users {
 			if user != usersLobbyWs[ws].Login {
-				var respown string
+				var respown lobby.Respawn
 				if ready {
-					for respawns := range game.Respawns {
-						if game.Respawns[respawns] == user {
-							respown = respawns.Name
+					for _, respawn := range game.Respawns {
+						if respawn.UserName == user {
+							respown = *respawn
 						}
 					}
 				}
-				resp = Response{Event: "JoinToLobby", UserName: usersLobbyWs[ws].Login, GameUser: user, Ready: strconv.FormatBool(ready), RespawnName: respown}
+				resp = Response{Event: "JoinToLobby", UserName: usersLobbyWs[ws].Login, GameUser: user, Ready: strconv.FormatBool(ready), Respawn: &respown}
 				lobbyPipe <- resp
 			}
 		}

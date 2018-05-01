@@ -48,31 +48,44 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "GameView" {
 			games := lobby.GetLobbyGames()
 			for _, game := range games {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, Map: game.Map, Creator: game.Creator,
-					Players: strconv.Itoa(len(game.Users)), NumOfPlayers: strconv.Itoa(len(game.Respawns))}
+				var resp = Response{Event: msg.Event, Game: game}
 				ws.WriteJSON(resp)
 			}
 		}
 
-		if msg.Event == "DontEndGamesList" {
-			games := lobby.GetDontEndGames(usersLobbyWs[ws].Login)
-			for _, game := range games {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
-				ws.WriteJSON(resp)
-			}
+		if msg.Event == "CreateLobbyGame" {
+			game := lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, usersLobbyWs[ws].Login)
+
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Game: game}
+			ws.WriteJSON(resp)
+
+			RefreshLobbyGames(usersLobbyWs[ws].Login)
 		}
 
 		if msg.Event == "JoinToLobbyGame" {
 			JoinToLobbyGame(msg, ws)
 		}
 
-		if msg.Event == "CreateLobbyGame" {
-			lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, usersLobbyWs[ws].Login)
-
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: msg.GameName}
+		if msg.Event == "InitLobby" {
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
 			ws.WriteJSON(resp)
+		}
 
-			RefreshLobbyGames(usersLobbyWs[ws].Login)
+		if msg.Event == "Respawn" {
+			games := lobby.GetLobbyGames()
+			user := usersLobbyWs[ws].Login
+			for _, game := range games {
+				for player := range game.Users {
+					if user == player {
+						for _, respawn := range game.Respawns {
+							if respawn.UserName == "" {
+								var resp = Response{Event: msg.Event, Respawn: respawn}
+								ws.WriteJSON(resp)
+							}
+						}
+					}
+				}
+			}
 		}
 
 		if msg.Event == "Ready" {
@@ -83,33 +96,14 @@ func Reader(ws *websocket.Conn) {
 			StartNewGame(msg, ws)
 		}
 
-		if msg.Event == "Respawn" {
-			// todo рефакторинг :\
-			games := lobby.GetLobbyGames()
-			user := usersLobbyWs[ws].Login
-
+		/*if msg.Event == "DontEndGamesList" {
+			games := lobby.GetDontEndGames(usersLobbyWs[ws].Login)
 			for _, game := range games {
-				for player := range game.Users {
-					if user == player {
-						for respawn := range game.Respawns {
-							if game.Respawns[respawn] == "" {
-								var resp = Response{Event: msg.Event, Respawn: strconv.Itoa(respawn.Id), RespawnName: respawn.Name}
-								ws.WriteJSON(resp)
-							}
-						}
-					}
-				}
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
+				ws.WriteJSON(resp)
 			}
-		}
-
-		if msg.Event == "Logout" {
-			ws.Close()
-		}
-
-		if msg.Event == "InitLobby" {
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
-			ws.WriteJSON(resp)
-		}
+		}//todo
+		*/
 
 		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {
 			SquadSettings(ws, msg)
@@ -129,6 +123,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "UnitConstructor" {
 			UnitConstructor(ws, msg)
+		}
+
+		if msg.Event == "Logout" {
+			ws.Close()
 		}
 	}
 }
