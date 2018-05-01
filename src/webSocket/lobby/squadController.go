@@ -18,6 +18,7 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 			ws.WriteJSON(resp)
 		} else {
 			usersLobbyWs[ws].Squads = append(usersLobbyWs[ws].Squads, squad)
+			usersLobbyWs[ws].Squad = squad
 			resp = Response{Event: "AddNewSquad", Error: "none", Squad: squad}
 			ws.WriteJSON(resp)
 		}

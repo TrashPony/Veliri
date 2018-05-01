@@ -13,6 +13,9 @@ func AddNewSquad(name string, userID int) (err error, squad *Squad) {
 	}
 
 	squad = &Squad{ID: int(id), Name: name}
+	squad.GetSquadUnits()
+	squad.GetSquadMatherShip()
+	squad.GetSquadEquip()
 
 	return nil, squad
 }
