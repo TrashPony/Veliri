@@ -95,6 +95,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "UnitConstructorUpdate") {
+        console.log(jsonMessage);
         var unit = JSON.parse(jsonMessage).unit;
         UpdateUnitInfo(unit);
     }

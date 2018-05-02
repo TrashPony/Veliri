@@ -59,7 +59,6 @@ function MapSelection() {
         event: "MapView"
     }));
 
-
     var div = document.getElementById("cancel");
     var cancel = document.getElementById("cancelButton");
 

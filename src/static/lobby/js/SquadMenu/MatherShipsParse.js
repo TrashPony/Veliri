@@ -10,7 +10,6 @@ function ConfigurationMatherShip(matherShip) {
 
     var type = document.getElementById("MatherShipType");
     var slotSize = document.getElementById("MatherShipSlotSize");
-    var unitsTD = document.getElementById("unitsTD");
     var paramsTD = document.getElementById("paramsTD");
     var sliderContent = document.getElementById("sliderContent");
 
@@ -33,19 +32,7 @@ function ConfigurationMatherShip(matherShip) {
     var equippingPanel = CreateEquippingPanel(matherShip);
     paramsTD.appendChild(equippingPanel);
 
-    for (var i = 0; i < sliderContent.matherShips[0].unit_slots; i++) {
-        var boxUnit = document.createElement("div");
-
-        boxUnit.className = "boxUnit";
-        boxUnit.innerHTML = "+";
-        boxUnit.id = i + ":unitSlot";
-
-        boxUnit.onclick = function () {
-            InitCreateUnit(this);
-        };
-
-        unitsTD.appendChild(boxUnit);
-    }
+    CreateUnitPanel(sliderContent.matherShips[0].unit_slots);
 
     paramsTD.appendChild(document.createElement("br"));
     paramsTD.appendChild(hp);
@@ -82,4 +69,30 @@ function CreateEquippingPanel(matherShip) {
     }
 
     return equippingPanel
+}
+
+function CreateUnitPanel(unit_slots) {
+    var unitsTD = document.getElementById("unitsTD");
+
+    for (var i = 0; i < unit_slots; i++) {
+        var boxUnit = document.createElement("div");
+
+        boxUnit.className = "boxUnit";
+        boxUnit.innerHTML = "+";
+        boxUnit.id = i + ":unitSlot";
+
+        boxUnit.onclick = function () {
+            InitCreateUnit(this);
+        };
+
+        boxUnit.onmouseover = function () {
+            UnitMouseOver(this.unit);
+        };
+
+        boxUnit.onmouseout = function () {
+            TipOff();
+        };
+
+        unitsTD.appendChild(boxUnit);
+    }
 }

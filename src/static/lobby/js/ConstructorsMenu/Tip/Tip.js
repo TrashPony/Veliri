@@ -5,6 +5,7 @@ function moveTip(e) {
     var tipTower = document.getElementById("tipTower").style;
     var tipBody = document.getElementById("tipBody").style;
     var tipRadar = document.getElementById("tipRadar").style;
+    var tipUnit = document.getElementById("tipUnit").style;
 
 
     var w = 250; // Ширина слоя
@@ -18,6 +19,9 @@ function moveTip(e) {
         tipTower.left = x + 'px';
         tipRadar.left = x + 'px';
         tipBody.left = x + 'px';
+        tipUnit.left = x + 'px';
+        tipUnit.left = (x + 20) + 'px';
+
     } else {
         // Показывать слой слева от курсора
         tipChassis.left = x - w + 'px';
@@ -25,6 +29,8 @@ function moveTip(e) {
         tipTower.left = x - w + 'px';
         tipRadar.left = x - w + 'px';
         tipBody.left = x - w + 'px';
+        tipUnit.left = (x - w + 20) + 'px';
+
     }
     // Положение от верхнего края окна браузера
     tipChassis.top = y + 20 + 'px';
@@ -32,6 +38,7 @@ function moveTip(e) {
     tipTower.top = y + 20 + 'px';
     tipRadar.top = y + 20 + 'px';
     tipBody.top = y + 20 + 'px';
+    tipUnit.top = y - 120 + 'px';
 }
 
 function TipOff() {
@@ -45,4 +52,6 @@ function TipOff() {
     tipBody.style.display = "none";
     var tipRadar = document.getElementById("tipRadar");
     tipRadar.style.display = "none";
+    var tipUnit = document.getElementById("tipUnit");
+    tipUnit.style.display = "none";
 }
