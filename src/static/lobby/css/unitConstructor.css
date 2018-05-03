@@ -98,12 +98,12 @@
 
 #picUnit {
     background-color:rgba(0, 0, 0, 0.4);
-    height: 100px;
-    width: 100px;
+    height: 180px;
+    width: 180px;
     border: 2px solid #25a0e1;
     position:absolute;
     top: 100px;
-    left: 46px;
+    left: 7px;
 }
 
 .table.params {
@@ -153,11 +153,11 @@
 }
 
 #radarElement {
-    top: 210px;
+    top: 290px;
 }
 
 #bodyElement {
-    top: 210px;
+    top: 290px;
 }
 
 .picDetail {
