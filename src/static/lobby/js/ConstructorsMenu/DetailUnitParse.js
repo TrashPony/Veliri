@@ -50,6 +50,7 @@ function DetailBoxCreate(details, menu, className, onMouse, unitElement) {
 
         box.onclick = function () {
             SelectDetail(this.detail, unitElement, onMouse);
+            SendEventAddOrDelDetail()
         };
 
         menu.appendChild(box);

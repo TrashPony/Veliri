@@ -11,6 +11,4 @@ function SelectDetail(detail, unitElement, onMouse) {
     detailUnitBox.onmouseout = function () {
         TipOff();
     };
-
-    SendEventAddOrDelDetail()
 }

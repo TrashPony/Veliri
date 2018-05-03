@@ -11,7 +11,7 @@ function CreateUnitMenu() {
     bodyUnitBox.className = "ElementUnitBox right";
     bodyUnitBox.id = "bodyElement";
     bodyUnitBox.onclick = function () {
-        DeleteDetail(this, "picBody")
+        DeleteDetail(this)
     };
     unitMenu.appendChild(bodyUnitBox);
 
@@ -19,7 +19,7 @@ function CreateUnitMenu() {
     towerUnitBox.className = "ElementUnitBox right";
     towerUnitBox.id = "towerElement";
     towerUnitBox.onclick = function () {
-        DeleteDetail(this, "picTower")
+        DeleteDetail(this)
     };
     unitMenu.appendChild(towerUnitBox);
 
@@ -27,7 +27,7 @@ function CreateUnitMenu() {
     chassisUnitBox.className = "ElementUnitBox left";
     chassisUnitBox.id = "chassisElement";
     chassisUnitBox.onclick = function () {
-        DeleteDetail(this, "picChassis")
+        DeleteDetail(this)
     };
     unitMenu.appendChild(chassisUnitBox);
 
@@ -35,7 +35,7 @@ function CreateUnitMenu() {
     weaponUnitBox.className = "ElementUnitBox weapon";
     weaponUnitBox.id = "weaponElement";
     weaponUnitBox.onclick = function () {
-        DeleteDetail(this, "picWeapon")
+        DeleteDetail(this)
     };
     unitMenu.appendChild(weaponUnitBox);
 
@@ -43,7 +43,7 @@ function CreateUnitMenu() {
     radarUnitBox.className = "ElementUnitBox left";
     radarUnitBox.id = "radarElement";
     radarUnitBox.onclick = function () {
-        DeleteDetail(this, "picRadar")
+        DeleteDetail(this)
     };
     unitMenu.appendChild(radarUnitBox);
 
@@ -71,15 +71,14 @@ function CreateUnitMenu() {
 }
 
 
-function DeleteDetail(box, PicDetail) {
-    box.detail = null;
+function DeleteDetail(box) {
+
     box.style.backgroundImage = "";
-    var pic = document.getElementById(PicDetail);
-    if (pic){
-        pic.remove();
-    }
+
     TipOff();
     box.onmouseover = null;
     box.onmouseout = null;
+    box.detail = null;
+
     SendEventAddOrDelDetail();
 }

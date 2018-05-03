@@ -7,4 +7,13 @@ function UpdateUnitInfo(unit) {
             }
         }
     }
+
+    UpdateUnitPicture(unit);
+}
+
+function UpdateUnitPicture(unit) {
+    var picUnit = document.getElementById("picUnit");
+    if (picUnit) {
+
+    }
 }
