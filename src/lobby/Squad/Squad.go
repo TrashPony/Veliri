@@ -2,8 +2,8 @@ package Squad
 
 import (
 	"log"
-	"../DetailUnit"
 	"database/sql"
+	"../DetailUnit"
 )
 
 type Squad struct {

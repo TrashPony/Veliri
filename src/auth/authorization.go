@@ -1,12 +1,12 @@
 package auth
 
 import (
-	"../lobby"
 	"encoding/gob"
 	"html/template"
 	"net/http"
 	"github.com/gorilla/sessions"
 	"encoding/json"
+	"log"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -34,10 +34,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 
-
-
 		// отправляет эти данные на проверку если прошло то возвращает пользователя и пропуск
-		user := lobby.GetUsers("WHERE name='" + msg.Login + "'")
+		user := GetUsers(msg.Login)
 
 		passed := CheckPasswordHash(msg.Login, msg.Password, user.Password)
 
@@ -52,7 +50,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetCookie(w http.ResponseWriter, r *http.Request, user lobby.User) {
+func GetCookie(w http.ResponseWriter, r *http.Request, user User) {
 	// берет сеанс из браузера пользователя
 	ses, err := cookieStore.Get(r, cookieName)
 	// если есть куки подписаные не правильным ключем то вылетает ошибка
@@ -97,4 +95,29 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 		return "", 0
 	}
 	return login, id
+}
+
+func GetUsers(name string) User{
+	rows, err := db.Query("Select id, name, mail, password FROM users WHERE name=$1", name)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var user User
+
+	for rows.Next() {
+		err := rows.Scan(&user.Id, &user.Name, &user.Mail, &user.Password)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return user
+}
+
+type User struct {
+	Id       int
+	Name     string
+	Mail     string
+	Password string
 }

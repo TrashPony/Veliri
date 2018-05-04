@@ -1,15 +1,19 @@
 function RespawnInit(jsonMessage) {
 
-    var respawn = JSON.parse(jsonMessage).respawn;
+    var respawns = JSON.parse(jsonMessage).respawns;
     var select = document.getElementById("RespawnSelect");
 
     if (select) {
-        var option = document.createElement("option");
-        option.className = "RespawnOption";
-        option.value = respawn.Name;
-        option.text = respawn.Name;
-        option.id = respawn.Id;
-        select.appendChild(option);
+        for (var i = 0; i < respawns.length; i++) {
+            if (respawns[i].UserName === "") {
+                var option = document.createElement("option");
+                option.className = "RespawnOption";
+                option.value = respawns[i].Name;
+                option.text = respawns[i].Name;
+                option.id = respawns[i].Id;
+                select.appendChild(option);
+            }
+        }
     }
 }
 

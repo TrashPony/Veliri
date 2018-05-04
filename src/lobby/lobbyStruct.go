@@ -1,20 +1,5 @@
 package lobby
 
-type User struct {
-	Id       int
-	Name     string
-	Password string
-	Mail     string
-}
-
-type LobbyGames struct {
-	Name     string
-	Map      Map
-	Creator  string
-	Respawns []*Respawn
-	Users    map[string]bool
-}
-
 type DontEndGames struct {
 	Id     string
 	Name   string

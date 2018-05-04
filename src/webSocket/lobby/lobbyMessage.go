@@ -41,13 +41,17 @@ type Response struct {
 	Players      string `json:"players"`
 	Creator      string `json:"creator"`
 	NewUser      string `json:"new_user"`
-	GameUser     string `json:"game_user"`
 	Error        string `json:"error"`
 	Message      string `json:"message"`
+	GameUser     string `json:"game_user"`
 
-	Respawn *lobby.Respawn    `json:"respawn"`
-	Game    lobby.LobbyGames `json:"game"`
-	Map     lobby.Map        `json:"map"`
+	User      *lobby.User   `json:"user"`
+	GameUsers []*lobby.User `json:"game_users"`
+
+	Respawn  *lobby.Respawn    `json:"respawn"`
+	Respawns []*lobby.Respawn  `json:"respawns"`
+	Game     *lobby.LobbyGames `json:"game"`
+	Map      *lobby.Map        `json:"map"`
 
 	MatherShips []Squad.MatherShip `json:"mather_ships"`
 	Equipping   []Squad.Equipping  `json:"equipping"`

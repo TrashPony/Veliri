@@ -1,7 +1,6 @@
 package globalMap
 
 import (
-	"../../lobby"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -68,11 +67,10 @@ func GlobalReposeSender() {
 	for {
 		resp := <-globalPipe
 		mutex.Lock()
-		for ws, client := range usersGlobalWs {
+		for ws, _ := range usersGlobalWs {
 			err := ws.WriteJSON(resp)
 			if err != nil {
 				log.Printf("error: %v", err)
-				lobby.DelLobbyGame(client.Login)
 				ws.Close()
 				delete(usersGlobalWs, ws)
 			}

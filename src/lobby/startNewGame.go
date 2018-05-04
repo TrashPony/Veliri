@@ -1,38 +1,21 @@
 package lobby
 
-func StartNewGame(nameGame string) (string, bool) {
-	return "", false
-/*	for game := range openGames {
-		if openGames[game].Name == nameGame && len(openGames[game].Users) > 1 {
-			id := InitNewGame(openGames[game].Map, openGames[game])
-			if id != "" {
-				return id, true
-			} else {
-				return "", false
-			}
-		}
-	}
-	return "", false
+import (
+
+)
+
+func StartNewGame(nameGame string) (int, bool) {
+
+	return 0, false
 }
 
-func InitNewGame(mapName string, game LobbyGames) string {
-	var maps = GetMapList()
-
-	var idMap = 0
-
-	for _, mp := range maps {
-		if mp.Name == mapName {
-			idMap = mp.Id
-		}
-	}
-	idGame := SendToDB(game.Name, idMap)
-
-	usersAndRespId := make(map[User]Respawn)
+/*func InitNewGame(mp Map, game LobbyGames) int {
+	idGame := SendToDB(game, mp)
 	for userName := range game.Users {
-		for respawns := range game.Respawns {
-			if game.Respawns[respawns] == userName {
+		for _, respawn := range game.Respawns {
+			if respawn.UserName == userName {
 				user := GetUsers("WHERE name='" + userName + "'")
-				usersAndRespId[user] = respawns
+				usersAndRespId[user] = respawn
 			}
 		}
 	}
@@ -45,7 +28,7 @@ func InitNewGame(mapName string, game LobbyGames) string {
 	}
 }
 
-func SendToDB(Name string, idMap int) string {
+func SendToDB(game LobbyGames, mp Map) string {
 	var err error
 
 	_, err = db.Exec("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5)", // добавляем новую игру в БД
@@ -93,5 +76,5 @@ func UsersToDB(id string, usersAndResp map[User]Respawn) {
 			log.Fatal(err)
 		}
 	}
-*/
 }
+*/

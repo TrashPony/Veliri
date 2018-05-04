@@ -2,29 +2,30 @@ package lobby
 
 import (
 	"github.com/gorilla/websocket"
-	"log"
 	"strconv"
-	"../../lobby"
 )
 
-func Ready(msg Message, ws *websocket.Conn)  {
+func Ready(msg Message, ws *websocket.Conn) {
 
-	game, errGetName := lobby.GetGame(msg.GameName)
-	if errGetName != nil {
-		log.Panic(errGetName)
-	}
+	game, ok := openGames[usersLobbyWs[ws].Game]
 
-	resawn, err := lobby.SetRespawnUser(msg.GameName, usersLobbyWs[ws].Login, msg.RespawnID)
+	if ok {
 
-	if err == nil {
-		lobby.UserReady(msg.GameName, usersLobbyWs[ws].Login)
+		respawn, err := game.SetRespawnUser(usersLobbyWs[ws], msg.RespawnID)
 
-		for user := range game.Users {
-			resp := Response{Event: msg.Event, UserName: user, GameUser: usersLobbyWs[ws].Login, Ready: strconv.FormatBool(game.Users[usersLobbyWs[ws].Login]), Respawn: resawn}
-			lobbyPipe <- resp
+		if err == nil {
+			game.UserReady(usersLobbyWs[ws], respawn)
+
+			for _, user := range game.Users {
+				resp := Response{Event: msg.Event, UserName: user.Name, GameUser: usersLobbyWs[ws].Name, Ready: strconv.FormatBool(usersLobbyWs[ws].Ready), Respawn: usersLobbyWs[ws].Respawn}
+				lobbyPipe <- resp
+			}
+		} else {
+			resp := Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, GameUser: usersLobbyWs[ws].Name, Error: err.Error()}
+			ws.WriteJSON(resp)
 		}
 	} else {
-		resp := Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, GameUser: usersLobbyWs[ws].Login, Error: err.Error()}
+		resp := Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, NameGame: msg.GameName, Error: "Game not find"}
 		ws.WriteJSON(resp)
 	}
 }

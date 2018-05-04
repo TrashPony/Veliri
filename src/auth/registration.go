@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"../lobby"
 	"net/http"
 	"html/template"
 	"encoding/json"
@@ -67,7 +66,7 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 func checkAvailableLogin(login string) (checkLogin bool) {
 	// TODO неверно делает сравнение
 
-	user := lobby.GetUsers("WHERE name='" + login + "'")
+	user := GetUsers("WHERE name='" + login + "'")
 
 	if user.Name != "" {
 		checkLogin = false
@@ -80,7 +79,7 @@ func checkAvailableLogin(login string) (checkLogin bool) {
 
 func checkAvailableEmail(email string) (checkEmail bool) {
 
-	user := lobby.GetUsers("WHERE mail='" + email + "'")
+	user := GetUsers("WHERE mail='" + email + "'")
 
 	if user.Mail != "" {
 		checkEmail = false

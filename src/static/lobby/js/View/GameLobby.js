@@ -39,10 +39,9 @@ function CreateLobyGame(game) {
 
         tdName.appendChild(document.createTextNode(game.Name));
         tdID.appendChild(document.createTextNode(game.Map.Name));
-        tdStep.appendChild(document.createTextNode(game.Creator));
+        tdStep.appendChild(document.createTextNode(game.Creator.Name));
         tdPhase.appendChild(document.createTextNode(game.Map.Respawns));
-        tdMyStep.appendChild(document.createTextNode(game.Users));
-        console.log(game.Users);// todo
+        tdMyStep.appendChild(document.createTextNode(game.Users.length));
 
         tdName.className = "Value";
 

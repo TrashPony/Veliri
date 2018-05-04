@@ -6,7 +6,7 @@ import (
 
 func GetUsers(query string) User {
 
-	rows, err := db.Query("Select id, name, mail, password FROM users " + query)
+	rows, err := db.Query("Select id, name FROM users " + query)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -15,7 +15,7 @@ func GetUsers(query string) User {
 	var user User
 
 	for rows.Next() {
-		err := rows.Scan(&user.Id, &user.Name, &user.Mail, &user.Password)
+		err := rows.Scan(&user.Id, &user.Name)
 		if err != nil {
 			log.Fatal(err)
 		}

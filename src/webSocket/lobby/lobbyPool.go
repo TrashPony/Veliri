@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"../../lobby"
-	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -11,13 +10,14 @@ import (
 
 var mutex = &sync.Mutex{}
 
-var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
+var usersLobbyWs = make(map[*websocket.Conn]*lobby.User) // тут будут храниться наши подключения
 var lobbyPipe = make(chan Response)
+var openGames = make(map[string]*lobby.LobbyGames)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersLobbyWs)
-	usersLobbyWs[ws] = &Clients{Login: login, Id: id} // Регистрируем нового Клиента
-	print("WS lobby Сессия: ")                        // просто смотрим новое подключение
+	usersLobbyWs[ws] = &lobby.User{Name: login, Id: id} // Регистрируем нового Клиента
+	print("WS lobby Сессия: ")                          // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
@@ -40,26 +40,29 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var maps = lobby.GetMapList()
 			for _, Map := range maps {
-				var resp = Response{Event: msg.Event, Map: Map}
+				var resp = Response{Event: msg.Event, Map: &Map}
 				ws.WriteJSON(resp)
 			}
 		}
 
 		if msg.Event == "GameView" {
-			games := lobby.GetLobbyGames()
-			for _, game := range games {
+			for _, game := range openGames {
 				var resp = Response{Event: msg.Event, Game: game}
 				ws.WriteJSON(resp)
 			}
 		}
 
 		if msg.Event == "CreateLobbyGame" {
-			game := lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, usersLobbyWs[ws].Login)
+			user := usersLobbyWs[ws]
+			game := lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, user)
 
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Game: game}
+			openGames[game.Name] = &game
+			user.Game = game.Name
+
+			var resp = Response{Event: msg.Event, UserName: user.Name, Game: &game}
 			ws.WriteJSON(resp)
 
-			RefreshLobbyGames(usersLobbyWs[ws].Login)
+			RefreshLobbyGames(usersLobbyWs[ws])
 		}
 
 		if msg.Event == "JoinToLobbyGame" {
@@ -67,21 +70,19 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "InitLobby" {
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login}
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name}
 			ws.WriteJSON(resp)
 		}
 
 		if msg.Event == "Respawn" {
-			games := lobby.GetLobbyGames()
-			user := usersLobbyWs[ws].Login
-			for _, game := range games {
-				for player := range game.Users {
-					if user == player {
-						for _, respawn := range game.Respawns {
-							if respawn.UserName == "" {
-								var resp = Response{Event: msg.Event, Respawn: respawn}
-								ws.WriteJSON(resp)
-							}
+			user := usersLobbyWs[ws]
+
+			for _, game := range openGames {
+				for _, player := range game.Users {
+					if player != nil {
+						if user.Name == player.Name {
+							var resp = Response{Event: msg.Event, Respawns: game.Respawns}
+							ws.WriteJSON(resp)
 						}
 					}
 				}
@@ -136,11 +137,10 @@ func LobbyReposeSender() {
 		resp := <-lobbyPipe
 		mutex.Lock()
 		for ws, client := range usersLobbyWs {
-			if client.Login == resp.UserName {
+			if client.Name == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
-					lobby.DelLobbyGame(client.Login)
 					ws.Close()
 					delete(usersLobbyWs, ws)
 				}
@@ -148,11 +148,4 @@ func LobbyReposeSender() {
 		}
 		mutex.Unlock()
 	}
-}
-
-type Clients struct {
-	Login  string
-	Id     int
-	Squad  *Squad.Squad
-	Squads []*Squad.Squad
 }

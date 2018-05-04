@@ -9,15 +9,17 @@ function ReaderLobby(jsonMessage) {
     if (event === "DisconnectLobby") {
         location.reload();
     }
+
     if (event === "GameRefresh") {
         DelElements("Select Menu");
     }
+
     if (event === "DelUser") {
         var userTr = document.getElementById(JSON.parse(jsonMessage).game_user);
-        userTr.parentNode.removeChild(userTr);
+        userTr.remove();
     }
 
-    if (event === "UserRefresh" || event === "JoinToLobby") {
+    if (event === "UserRefresh") {
         JoinToLobby(jsonMessage);
     }
 
@@ -46,6 +48,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Respawn") {
+        console.log(jsonMessage);
         RespawnInit(jsonMessage);
     }
 
@@ -54,7 +57,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Ready") {
-        console.log(jsonMessage);
         Ready(jsonMessage);
     }
 
@@ -95,7 +97,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "UnitConstructorUpdate") {
-        console.log(jsonMessage);
         var unit = JSON.parse(jsonMessage).unit;
         UpdateUnitInfo(unit);
     }

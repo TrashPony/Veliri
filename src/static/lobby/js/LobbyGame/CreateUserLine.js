@@ -1,4 +1,10 @@
 function CreateUserLine(user) {
+    var oldUser = document.getElementById(user.Name);
+
+    if (oldUser) {
+        return;
+    }
+
     var list = document.getElementById('gameInfo');
     var tr = document.createElement('tr');
     var tdName = document.createElement('td');
@@ -11,14 +17,16 @@ function CreateUserLine(user) {
     tr.id = user.Name;
 
     tdName.appendChild(document.createTextNode(user.Name));
-    tdReady.appendChild(document.createTextNode(user.Ready));
-
     tdName.className = "Value";
 
-    if (user.Ready !== " Готов") {
-        tdReady.className = "Failed";
-    } else {
+    if (user.Ready) {
+        tdReady.innerHTML = "Готов.";
         tdReady.className = "Success";
+        tdRespawn.innerHTML = user.Respawn.Name;
+    } else {
+        tdReady.innerHTML = "Не готов.";
+        tdReady.className = "Failed";
+        tdRespawn.innerHTML = "";
     }
 
     tr.appendChild(tdName);

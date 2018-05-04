@@ -1,25 +1,15 @@
 function NewUser(jsonMessage) {
     // говорит всем кто в игре кто подключился
-    var user = Object();
-    user.Name = JSON.parse(jsonMessage).new_user;
-    user.Ready = " Не готов";
-    user.Respawn = JSON.parse(jsonMessage).respawn_name;
+    var user = JSON.parse(jsonMessage).user;
 
     CreateUserLine(user);
 }
 
 function JoinToLobby(jsonMessage) {
-    var user = Object();
     // дает новому игроку данные по тем кто уже внутри
-    user.Name = JSON.parse(jsonMessage).game_user;
+    var users = JSON.parse(jsonMessage).game_users;
 
-    if (user.Ready = JSON.parse(jsonMessage).ready === "false") {
-        user.Ready = " Не готов";
-    } else {
-        user.Ready = " Готов";
+    for (var i = 0; i < users.length; i++) {
+        CreateUserLine(users[i]);
     }
-
-    user.Respawn = JSON.parse(jsonMessage).respawn_name;
-
-    CreateUserLine(user);
 }

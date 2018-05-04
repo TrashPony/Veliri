@@ -2,9 +2,7 @@ function CreateNewLobbyGame(jsonMessage) {
     var game = JSON.parse(jsonMessage).game;
     CreateLobbyMenu(game.Name, JSON.parse(jsonMessage).error, true);
 
-    var user = Object();
-    user.Name = JSON.parse(jsonMessage).user_name;
-    user.Ready = " Не готов";
+    var user = JSON.parse(jsonMessage).game.Creator;
 
     CreateUserLine(user);
     CreateSelectRespawn(user.Name);
@@ -14,14 +12,15 @@ function CreateNewLobbyGame(jsonMessage) {
 function InitLobbyGame(jsonMessage) {
     CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, false);
 
-    if (JSON.parse(jsonMessage).error === "") {
+    var user = JSON.parse(jsonMessage).user;
 
-        var user = Object();
-        user.Name = JSON.parse(jsonMessage).user_name;
-        user.Ready = " Не готов";
+    CreateUserLine(user);
+    CreateSelectRespawn(user.Name);
+    Respawn();
 
-        CreateUserLine(user);
-        CreateSelectRespawn(user.Name);
-        Respawn();
+    var users = JSON.parse(jsonMessage).game_users;
+
+    for (var i = 0; i < users.length; i++) {
+        CreateUserLine(users[i]);
     }
 }
