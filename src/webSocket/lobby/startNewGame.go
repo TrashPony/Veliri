@@ -10,9 +10,6 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 	game, ok := openGames[usersLobbyWs[ws].Game]
 
-	var resp = Response{Event: msg.Event, Game: game, Error: "dfd"}
-	ws.WriteJSON(resp)
-
 	if ok {
 		// список игроков которым надо разослать данные взятые из обьекта игры
 		if len(game.Users) > 1 {
@@ -21,7 +18,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 			if allReady {
 
-				/*id, success := lobby.StartNewGame(game)
+				id, success := lobby.StartNewGame(game)
 
 				if success {
 
@@ -34,7 +31,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 				} else {
 					var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("error ad to DB").Error()}
 					ws.WriteJSON(resp)
-				}*/
+				}
 			} else {
 				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("PlayerNotReady").Error()}
 				ws.WriteJSON(resp)

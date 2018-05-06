@@ -8,27 +8,48 @@ CREATE TABLE action_games(
 );
 
 CREATE TABLE action_game_unit(
+	id serial primary key,
 
 	/* Методанные об игре и владельце */
 	id_user int references users(id),
-	id serial primary key,
 	id_game int references action_games(id),
 
 	/* Части юнита */
-	id_chassis int references chassis_type(id),
-	id_weapons int references weapon_type(id),
-	id_tower int references tower_type(id),
-	id_body int references body_type(id),
-	id_radar int references radar_type(id),
+	id_chassis  int references chassis_type(id),
+	id_weapons  int references weapon_type(id),
+	id_tower    int references tower_type(id),
+	id_body     int references body_type(id),
+	id_radar    int references radar_type(id),
+
+	/* Позиция */
+	x       int,
+	y       int,
+	rotate  int,
 
 	/* Игровая статистика */
-	action varchar(64),
-	target varchar(64),
-	x int,
-	y int,
-	rotate int,
-	queue_attack int,
-	hp int
+	action        boolean,
+	target        int references action_game_unit(id),
+	queue_attack  int,
+
+	/* Характиристики */
+	Weight          int,
+    Speed           int,
+    Initiative      int,
+    Damage          int,
+    RangeAttack     int,
+    MinAttackRange  int,
+    AreaAttack      int,
+    TypeAttack      varchar(64),
+    HP              int,
+    Armor           int,
+    EvasionCritical int,
+    VulKinetics     int,
+    VulThermal      int,
+    VulEM           int,
+    VulExplosive    int,
+    RangeView       int,
+    Accuracy        int,
+    WallHack        boolean
 );
 
 CREATE TABLE  action_mother_ship(
@@ -36,13 +57,19 @@ CREATE TABLE  action_mother_ship(
     id_game int references action_games(id),
     id_type int references mother_ship_type(id),
     id_user int references users(id),
-    x int,
-    y int
+    x       int,
+    y       int
 );
 
 CREATE TABLE action_game_user(
+   id_game  int references action_games(id),
+   id_user  int references users(id),
+   ready    boolean
+);
+
+CREATE TABLE action_game_equipping(
    id_game int references action_games(id),
    id_user int references users(id),
-   id_mother_ship int references mother_ship_type(id),
-   ready boolean
+   id_type int references equipping_type(id),
+   used    boolean
 );
