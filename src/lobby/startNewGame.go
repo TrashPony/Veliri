@@ -4,7 +4,7 @@ import (
 
 )
 
-func StartNewGame(nameGame string) (int, bool) {
+func StartNewGame(game *LobbyGames) (int, bool) {
 
 	return 0, false
 }

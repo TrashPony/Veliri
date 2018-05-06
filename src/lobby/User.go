@@ -14,7 +14,21 @@ type User struct {
 	Game    string
 }
 
-func (user User) SetGame(game LobbyGames)  {
-	println(game.Name)
-	user.Game = game.Name
+func (user User) SetReady() bool {
+	if user.Squad != nil {
+		if CheckUnit(user.Squad) {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		return false
+	}
+}
+
+func CheckUnit(squad *Squad.Squad) bool {
+	if len(squad.Units) >= 1 {
+		return true
+	}
+	return false
 }

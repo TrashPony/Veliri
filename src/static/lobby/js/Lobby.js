@@ -1,5 +1,4 @@
 var createGame = false;
-var createNameGame = "";
 var toField = false;
 var respownId;
 
@@ -10,14 +9,6 @@ function ReturnLobby() {
 function CreateLobbyGame(mapId) {
     var gameName = document.querySelector('input[name="NameGame"]').value;
     sendCreateLobbyGame(mapId, gameName);
-}
-
-function CreateNewGame() {
-    if(createNameGame !== "") {
-        sendStartNewGame(createNameGame);
-    } else {
-        location.href = "../../login";
-    }
 }
 
 function JoinToGame(idGame) {

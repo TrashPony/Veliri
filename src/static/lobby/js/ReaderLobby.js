@@ -48,11 +48,11 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "Respawn") {
-        console.log(jsonMessage);
         RespawnInit(jsonMessage);
     }
 
     if (event === "StartNewGame") {
+        console.log(jsonMessage);
         StartNewGame(jsonMessage);
     }
 

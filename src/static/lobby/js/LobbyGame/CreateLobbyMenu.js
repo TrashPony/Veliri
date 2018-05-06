@@ -45,7 +45,7 @@ function CreateLobbyMenu(id, error, hoster) {
             button.style.marginLeft = "120px";
             button.className = "lobbyButton";
             button.value = "Начать";
-            button.onclick = CreateNewGame;
+            button.onclick =  sendStartNewGame;
             parentElem.appendChild(button);
         }
 

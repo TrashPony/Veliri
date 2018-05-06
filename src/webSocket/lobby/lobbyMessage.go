@@ -33,7 +33,7 @@ type Response struct {
 	Event        string `json:"event"`
 	UserName     string `json:"user_name"`
 	NameGame     string `json:"name_game"`
-	IdGame       string `json:"id_game"`
+	IdGame       int `json:"id_game"`
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
 	Ready        string `json:"ready"`

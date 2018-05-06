@@ -41,10 +41,9 @@ function sendJoinToLobbyGame(gameName) {
     }));
 }
 
-function sendStartNewGame (gameName) {
+function sendStartNewGame () {
     lobby.send(JSON.stringify({
-        event: "StartNewGame",
-        game_name: gameName
+        event: "StartNewGame"
     }));
 }
 

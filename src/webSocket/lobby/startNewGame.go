@@ -2,43 +2,59 @@ package lobby
 
 import (
 	"github.com/gorilla/websocket"
+	"errors"
+	"../../lobby"
 )
 
-func StartNewGame(msg Message, ws *websocket.Conn)  {
-	/*game, errGetName := lobby.GetGame(msg.GameName)
-	if errGetName != nil {
-		log.Panic(errGetName) //TODO no found this game
-	} // список игроков которым надо разослать данные взятые из обьекта игры
-	if len(game.Users) > 1 {
+func StartNewGame(msg Message, ws *websocket.Conn) {
 
-		var readyAll = true
-		for _, ready := range game.Users {
-			if !ready {
-				readyAll = false
-				break
-			}
-		}
+	game, ok := openGames[usersLobbyWs[ws].Game]
 
-		if readyAll {
-			id, success := lobby.StartNewGame(msg.GameName)
-			if success {
+	var resp = Response{Event: msg.Event, Game: game, Error: "dfd"}
+	ws.WriteJSON(resp)
 
-				lobby.DelLobbyGame(usersLobbyWs[ws].Login) // удаляем обьект игры из лоби, ищем его по имени создателя ¯\_(ツ)_/¯
-				for user := range game.Users {
-					var resp = Response{Event: msg.Event, UserName: user, IdGame: id}
-					lobbyPipe <- resp
-				}
+	if ok {
+		// список игроков которым надо разослать данные взятые из обьекта игры
+		if len(game.Users) > 1 {
 
+			allReady := CheckReady(game)
+
+			if allReady {
+
+				/*id, success := lobby.StartNewGame(game)
+
+				if success {
+
+					delete(openGames, game.Name) // удаляем обьект игры из лоби ¯\_(ツ)_/¯
+					for _, user := range game.Users {
+						var resp = Response{Event: msg.Event, UserName: user.Name, IdGame: id}
+						lobbyPipe <- resp
+					}
+
+				} else {
+					var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("error ad to DB").Error()}
+					ws.WriteJSON(resp)
+				}*/
 			} else {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("error ad to DB").Error()}
-				lobbyPipe <- resp
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("PlayerNotReady").Error()}
+				ws.WriteJSON(resp)
 			}
 		} else {
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("PlayerNotReady").Error()}
-			lobbyPipe <- resp
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("Players < 2").Error()}
+			ws.WriteJSON(resp)
 		}
 	} else {
-		var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, Error: errors.New("Players < 2").Error()}
-		lobbyPipe <- resp
-	}*/
+		var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("game not found").Error()}
+		ws.WriteJSON(resp)
+	}
+}
+
+func CheckReady(game *lobby.LobbyGames) bool  {
+	for _, user := range game.Users {
+		if !user.Ready {
+			return false
+			break
+		}
+	}
+	return true
 }
