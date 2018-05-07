@@ -5,24 +5,26 @@ import (
 )
 
 type FieldResponse struct {
-	Event       string `json:"event"`
-	UserName    string `json:"user_name"`
-	PlayerPrice int    `json:"player_price"`
-	GameStep    int    `json:"game_step"`
-	GamePhase   string `json:"game_phase"`
-	X           int    `json:"x"`
-	Y           int    `json:"y"`
-	ToX         int    `json:"to_x"`
-	ToY         int    `json:"to_y"`
-	XMap        int    `json:"x_map"`
-	YMap        int    `json:"y_map"`
-	TypeMap     string `json:"type_map"`
-	NameMap     string `json:"name_map"`
-	TypeUnit    string `json:"type_unit"`
-	Phase       string `json:"phase"`
-	UserReady   bool   `json:"user_ready"`
-	UserOwned   string `json:"user_owned"`
-	Error       string `json:"error"`
+	Event    string           `json:"event"`
+	UserName string           `json:"user_name"`
+	Users    []*game.UserStat `json:"user"`
+	Map      *game.Map
+
+	GameStep  int    `json:"game_step"`
+	GamePhase string `json:"game_phase"`
+	X         int    `json:"x"`
+	Y         int    `json:"y"`
+	ToX       int    `json:"to_x"`
+	ToY       int    `json:"to_y"`
+	XMap      int    `json:"x_map"`
+	YMap      int    `json:"y_map"`
+	TypeMap   string `json:"type_map"`
+	NameMap   string `json:"name_map"`
+	TypeUnit  string `json:"type_unit"`
+	Phase     string `json:"phase"`
+	UserReady bool   `json:"user_ready"`
+	UserOwned string `json:"user_owned"`
+	Error     string `json:"error"`
 }
 
 type InitUnit struct {
@@ -44,7 +46,7 @@ func (msg *InitUnit) initUnit(event string, unit *game.Unit, login string) {
 type Move struct {
 	Event     string                            `json:"event"`
 	UserName  string                            `json:"user_name"`
-	Unit      *game.Unit                         `json:"unit"`
+	Unit      *game.Unit                        `json:"unit"`
 	PathNodes []game.Coordinate                 `json:"path_nodes"`
 	WatchNode map[string]*game.UpdaterWatchZone `json:"watch_node"`
 	Error     string                            `json:"error"`

@@ -6,12 +6,13 @@ import (
 )
 
 type Map struct {
-	Id	    	 int
-	Name  		 string
-	Xsize 		 int
-	Ysize 		 int
-	Type		 string
-	OneLayerMap  map[int]map[int]*Coordinate
+	Id            int
+	Name          string
+	Xsize         int
+	Ysize         int
+	Type          string
+	Specification string
+	OneLayerMap   map[int]map[int]*Coordinate
 }
 
 func GetMap(idMap int) Map {
@@ -24,33 +25,33 @@ func GetMap(idMap int) Map {
 
 	var mp Map
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.Xsize, &mp.Ysize, &mp.Type)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.Xsize, &mp.Ysize, &mp.Type, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	oneLayerMap := GetCoordinateMap(idMap)
-	mp.OneLayerMap = oneLayerMap
+	mp.GetCoordinatesMap()
 
 	return mp
 }
 
-func (mp *Map) GetCoordinate(x, y int) (coordinate *Coordinate, find bool)  {
+func (mp *Map) GetCoordinate(x, y int) (coordinate *Coordinate, find bool) {
 	coordinate, find = mp.OneLayerMap[x][y]
 	return
 }
 
+func (mp *Map) GetCoordinatesMap() {
+	oneLayerMap := make(map[int]map[int]*Coordinate)
 
-func GetCoordinateMap(idMap int) (oneLayerMap  map[int]map[int]*Coordinate)  {
-	oneLayerMap = make(map[int]map[int]*Coordinate)
-	rows, err := db.Query("Select x, y, type, texture FROM map_constructor WHERE id_map =" + strconv.Itoa(idMap))
+	rows, err := db.Query("Select x, y, type, texture FROM map_constructor WHERE id_map =" + strconv.Itoa(mp.Id))
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer rows.Close()
 
-	for rows.Next() {
+	for rows.Next() { // заполняем карту значащами клетками
 		var coordinate Coordinate
 		err := rows.Scan(&coordinate.X, &coordinate.Y, &coordinate.Type, &coordinate.Texture)
 		if err != nil {
@@ -65,5 +66,16 @@ func GetCoordinateMap(idMap int) (oneLayerMap  map[int]map[int]*Coordinate)  {
 		}
 	}
 
-	return
+	for x := 0; x < mp.Xsize; x++ { // заполняем карту пустыми клетками
+		for y := 0; y < mp.Xsize; y++ {
+			_, find := oneLayerMap[x][y]
+			if !find {
+				var coordinate Coordinate
+				coordinate = Coordinate{X:x, Y:y}
+				oneLayerMap[x][y] = &coordinate
+			}
+		}
+	}
+
+	mp.OneLayerMap = oneLayerMap
 }
