@@ -4,7 +4,6 @@ import "log"
 
 type Radar struct {
 	Id       int    `json:"id"`
-	Name     string `json:"name"`
 	Type     string `json:"type"`
 	Weight   int    `json:"weight"`
 	Power    int    `json:"power"`
@@ -24,7 +23,7 @@ func GetRadars() (radars []Radar) {
 	var radar Radar
 
 	for rows.Next() {
-		err := rows.Scan(&radar.Id, &radar.Name, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)
+		err := rows.Scan(&radar.Id, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)
 		if err != nil {
 			log.Fatal("get radars" + err.Error())
 		}
@@ -45,7 +44,7 @@ func GetRadar(id int) (radar *Radar) {
 	radar = &Radar{}
 
 	for rows.Next() {
-		err := rows.Scan(&radar.Id, &radar.Name, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)
+		err := rows.Scan(&radar.Id, &radar.Type, &radar.Weight, &radar.Power, &radar.Through, &radar.Analysis)
 		if err != nil {
 			log.Fatal("get radar" + err.Error())
 		}

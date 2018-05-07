@@ -4,7 +4,6 @@ import "log"
 
 type Tower struct {
 	Id             int    `json:"id"`
-	Name           string `json:"name"`
 	Type           string `json:"type"`
 	Weight         int    `json:"weight"`
 	HP             int    `json:"hp"`
@@ -28,7 +27,7 @@ func GetTowers() (towers []Tower) {
 	var tower Tower
 
 	for rows.Next() {
-		err := rows.Scan(&tower.Id, &tower.Name, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)
+		err := rows.Scan(&tower.Id, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)
 		if err != nil {
 			log.Fatal("get towers" + err.Error())
 		}
@@ -49,7 +48,7 @@ func GetTower(id int) (tower *Tower) {
 	tower = &Tower{}
 
 	for rows.Next() {
-		err := rows.Scan(&tower.Id, &tower.Name, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)
+		err := rows.Scan(&tower.Id, &tower.Type, &tower.Weight, &tower.HP, &tower.PowerRadar, &tower.Armor, &tower.VulToKinetics, &tower.VulToThermo, &tower.VulToEM, &tower.VulToExplosion)
 		if err != nil {
 			log.Fatal("get tower" + err.Error())
 		}

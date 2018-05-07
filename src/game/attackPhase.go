@@ -24,15 +24,15 @@ func attack(sortUnits []*Unit, game *Game, players []*Player) (resultBattle []Re
 	resultBattle = make([]ResultBattle, 0)
 
 	for _, unit := range sortUnits {
-		if unit.Hp > 0 {
+		if unit.HP > 0 {
 			if unit.Target != nil {
 				for i, target := range sortUnits {
 					if target.X == unit.Target.X && target.Y == unit.Target.Y {
 
-						sortUnits[i].Hp = target.Hp - unit.Damage
+						sortUnits[i].HP = target.HP - unit.Damage
 
 						deleteUnit := false
-						if sortUnits[i].Hp <= 0 {
+						if sortUnits[i].HP <= 0 {
 							dbDelUnit(sortUnits[i].Id)
 							game.DelUnit(sortUnits[i])
 
@@ -42,7 +42,7 @@ func attack(sortUnits []*Unit, game *Game, players []*Player) (resultBattle []Re
 
 							deleteUnit = true
 						} else {
-							dbUpdateHpUnit(sortUnits[i].Id, sortUnits[i].Hp)
+							dbUpdateHpUnit(sortUnits[i].Id, sortUnits[i].HP)
 						}
 
 						result := ResultBattle{AttackUnit: *unit, TargetUnit: *sortUnits[i], Delete: deleteUnit}

@@ -8,8 +8,8 @@ import (
 type Map struct {
 	Id            int
 	Name          string
-	Xsize         int
-	Ysize         int
+	XSize         int
+	YSize         int
 	Type          string
 	Specification string
 	OneLayerMap   map[int]map[int]*Coordinate
@@ -25,7 +25,7 @@ func GetMap(idMap int) Map {
 
 	var mp Map
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.Xsize, &mp.Ysize, &mp.Type, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -66,8 +66,8 @@ func (mp *Map) GetCoordinatesMap() {
 		}
 	}
 
-	for x := 0; x < mp.Xsize; x++ { // заполняем карту пустыми клетками
-		for y := 0; y < mp.Xsize; y++ {
+	for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками
+		for y := 0; y < mp.YSize; y++ {
 			_, find := oneLayerMap[x][y]
 			if !find {
 				var coordinate Coordinate

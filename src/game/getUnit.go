@@ -1,43 +1,50 @@
 package game
 
 import (
-	"errors"
-	"log"
 	"strconv"
+	"log"
 	"strings"
+	"database/sql"
+	"../DetailUnit"
 )
 
-func GetUnit(query string) map[int]map[int]*Unit {
+func GetAllUnits(idGame int) map[int]map[int]*Unit {
 
-	rows, err := db.Query("Select ag.id, ag.id_game, t.damage, t.move_speed, t.initiative, t.range_attack, t.range_view, t.area_attack, t.type_attack, t.price, t.type, u.name, ag.hp, ag.action, ag.target, ag.x, ag.y, ag.rotate, ag.queue_attack FROM action_game_unit as ag, unit_type as t, users as u WHERE " + query)
-	if err != nil { // TODO неправильный запрос
+	rows, err := db.Query("Select ag.id, u.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
+		"ag.Weight, ag.Speed, ag.Initiative, ag.Damage, ag.RangeAttack, ag.MinAttackRange, ag.AreaAttack, "+
+		"ag.TypeAttack, ag.HP, ag.Armor, ag.EvasionCritical, ag.VulKinetics, ag.VulThermal, ag.VulEM, "+
+		"ag.VulExplosive, ag.RangeView, ag.Accuracy, ag.WallHack"+
+		"ag.id_chassis, ag.id_weapons, ag.id_tower, ag.id_body, ag.id_radar"+
+		"FROM action_game_unit as ag, users as u WHERE ag.id_game=$1 AND ag.id_type=t.id AND ag.id_user=u.id", idGame)
+	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
 	var units = make(map[int]map[int]*Unit)
+
 	var targetKey string
+
+	chassisID := sql.NullInt64{}
+	weaponID := sql.NullInt64{}
+	towerID := sql.NullInt64{}
+	bodyID := sql.NullInt64{}
+	radarID := sql.NullInt64{}
 
 	for rows.Next() {
 		var unit Unit
-		err := rows.Scan(&unit.Id, &unit.IdGame, &unit.Damage, &unit.MoveSpeed, &unit.Initiative, &unit.RangeAttack, &unit.WatchZone, &unit.AreaAttack,
-			&unit.TypeAttack, &unit.Price, &unit.ChassisType, &unit.WeaponType, &unit.Owner, &unit.Hp, &unit.Action, &targetKey, &unit.X, &unit.Y, &unit.Queue)
+		err := rows.Scan(&unit.Id, &unit.Owner, &unit.X, &unit.Y, &unit.Rotate, &unit.Action, &targetKey, &unit.Queue,
+			&unit.Weight, &unit.MoveSpeed, &unit.Initiative, &unit.Damage, &unit.RangeAttack, &unit.MinAttackRange, &unit.AreaAttack,
+			&unit.TypeAttack, &unit.HP, &unit.Armor, &unit.EvasionCritical, &unit.VulKinetics, &unit.VulThermal, &unit.VulEM,
+			&unit.VulExplosive, &unit.RangeView, &unit.Accuracy, &unit.WallHack, &chassisID, &weaponID, &towerID, &bodyID, &radarID)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		targ := strings.Split(targetKey, ":")
+		unit.Target = ParseUnitTarget(targetKey)
+		SetDetails(&unit, chassisID, weaponID, towerID, bodyID, radarID)
 
-		if len(targ) > 1 {
-			x, ok := strconv.Atoi(targ[0])
-			y, ok := strconv.Atoi(targ[1])
-			if ok == nil {
-				target := Coordinate{X: x, Y: y}
-				unit.Target = &target
-			}
-		}
-
-		if units[unit.X] != nil {
+		if units[unit.X] != nil { // кладем юнита в матрицу
 			units[unit.X][unit.Y] = &unit
 		} else {
 			units[unit.X] = make(map[int]*Unit)
@@ -52,22 +59,42 @@ func GetUnit(query string) map[int]map[int]*Unit {
 	return units
 }
 
-func GetAllUnits(idGame int) map[int]map[int]*Unit {
-	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id")
-	return units
-}
+func ParseUnitTarget(targetKey string) *Coordinate {
+	targetCell := strings.Split(targetKey, ":")
 
-func GetXYUnits(idGame int, x int, y int) (Unit, error) {
-	units := GetUnit(" ag.id_game=" + strconv.Itoa(idGame) + " AND ag.id_type=t.id AND ag.id_user=u.id AND ag.x=" + strconv.Itoa(x) + "AND ag.y=" + strconv.Itoa(y))
-	if len(units) > 0 {
-		unit, ok := units[x][y]
-		if ok {
-			return *unit, nil
+	if len(targetCell) > 1 { // устанавливаем таргет если он есть
+		x, ok := strconv.Atoi(targetCell[0])
+		y, ok := strconv.Atoi(targetCell[1])
+		if ok == nil {
+			target := Coordinate{X: x, Y: y}
+			return &target
 		} else {
-			return *unit, errors.New("unit not found")
+			return nil
 		}
 	} else {
-		var unit Unit
-		return unit, errors.New("unit not found")
+		return nil
+	}
+}
+
+func SetDetails(unit *Unit, chassisID, weaponID, towerID, bodyID, radarID sql.NullInt64)  {
+	if chassisID.Valid {
+		chassis := DetailUnit.GetChass(int(chassisID.Int64))
+		unit.SetChassis(chassis)
+	}
+	if weaponID.Valid {
+		weapon := DetailUnit.GetWeapon(int(weaponID.Int64))
+		unit.SetWeapon(weapon)
+	}
+	if towerID.Valid {
+		tower := DetailUnit.GetTower(int(towerID.Int64))
+		unit.SetTower(tower)
+	}
+	if bodyID.Valid {
+		body := DetailUnit.GetBody(int(bodyID.Int64))
+		unit.SetBody(body)
+	}
+	if radarID.Valid {
+		radar := DetailUnit.GetRadar(int(radarID.Int64))
+		unit.SetRadar(radar)
 	}
 }

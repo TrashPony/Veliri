@@ -1,6 +1,6 @@
 package Squad
 
-import "../DetailUnit"
+import "../../DetailUnit"
 
 type Unit struct {
 	Chassis *DetailUnit.Chassis `json:"chassis"`

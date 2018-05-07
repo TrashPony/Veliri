@@ -27,8 +27,8 @@ func FindPath(gameMap *Map, start Coordinate, end Coordinate, obstacles map[int]
 
 	START_POINT = Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
-	WIDTH = gameMap.Xsize                                     // ширина карты
-	HEIGHT = gameMap.Ysize                                    // высота карты
+	WIDTH = gameMap.XSize                                     // ширина карты
+	HEIGHT = gameMap.YSize                                    // высота карты
 
 	matrix = make([][]Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {

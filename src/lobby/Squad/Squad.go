@@ -3,7 +3,7 @@ package Squad
 import (
 	"log"
 	"database/sql"
-	"../DetailUnit"
+	"../../DetailUnit"
 )
 
 type Squad struct {

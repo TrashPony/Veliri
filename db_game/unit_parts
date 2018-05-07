@@ -1,6 +1,5 @@
 CREATE TABLE chassis_type (
 	id serial primary key,
-	name varchar(64),
 	type varchar(64),
 	carrying int,
 	Maneuverability int,
@@ -9,7 +8,6 @@ CREATE TABLE chassis_type (
 
 CREATE TABLE weapon_type (
 	id serial primary key,
-	name varchar(64),
 	type varchar(64),
 	weight int,
 	damage int,
@@ -21,7 +19,6 @@ CREATE TABLE weapon_type (
 
 CREATE TABLE tower_type (
 	id serial primary key,
-	name varchar(64),
 	type varchar(64),
 	weight	int,
 	hp int,
@@ -35,7 +32,6 @@ CREATE TABLE tower_type (
 
 CREATE TABLE body_type (
 	id serial primary key,
-	name varchar(64),
 	type varchar(64),
 	weight	int,
 	hp int,
@@ -49,7 +45,6 @@ CREATE TABLE body_type (
 
 CREATE TABLE radar_type (
 	id serial primary key,
-	name varchar(64),
 	type varchar(64),
 	weight	int,
 	power int,

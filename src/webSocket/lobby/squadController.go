@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../lobby/DetailUnit"
+	"../../DetailUnit"
 	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 )

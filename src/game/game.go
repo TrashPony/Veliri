@@ -5,7 +5,7 @@ import (
 )
 
 type Game struct {
-	gameMap   *Map
+	Map       *Map
 	stat      *InfoGame
 	players   []*UserStat
 	units     map[int]map[int]*Unit
@@ -20,8 +20,8 @@ func (game *Game) SetPlayers(players []*UserStat) {
 	game.players = players
 }
 
-func (game *Game) SetInfoMap(gameMap *Map) {
-	game.gameMap = gameMap
+func (game *Game) SetMap(gameMap *Map) {
+	game.Map = gameMap
 }
 
 func (game *Game) SetStat(stat *InfoGame) {
@@ -46,7 +46,7 @@ func (game *Game) DelUnit(unit *Unit) {
 }
 
 func (game *Game) GetMap() (mp *Map) {
-	return game.gameMap
+	return game.Map
 }
 
 func (game *Game) GetUnits() (units map[int]map[int]*Unit) {
@@ -130,11 +130,10 @@ func InitGame(idGAme int) (newGame *Game) {
 	units := GetAllUnits(idGAme)
 	structure := GetAllStrcuture(idGAme)
 
-	newGame.SetPlayers(userStat) // добавляем параметры всех игроков к обьекту игры
-	newGame.SetStat(&gameStat)   // добавляем информацию об игре в обьект игры
-	newGame.SetInfoMap(&Map)     // добавляем информацию об карте
-	newGame.SetUnits(units)      // добавляем имеющихся юнитов
-	//newGame.setMap(Map.OneLayerMap)// добавляем 1 слой карты отвечающий за фон текстур, препятсвия и расположение респаунов
+	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
+	newGame.SetStat(&gameStat)       // добавляем информацию об игре в обьект игры
+	newGame.SetMap(&Map)             // добавляем информацию об карте
+	newGame.SetUnits(units)          // добавляем имеющихся юнитов
 	newGame.SetStructures(structure) // добавляем в игру все структуры на карте
 
 	return

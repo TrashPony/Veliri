@@ -16,7 +16,7 @@ func Filter(gameObject Watcher, coordinates []*Coordinate, game *Game) (watch ma
 
 func addCoordinateToMap(watch *map[string]*Coordinate, new *[]*Coordinate, game *Game)  {
 	for _, coordinate := range *new {
-		if (coordinate.X >= 0 && coordinate.Y >= 0) && (game.gameMap.Xsize > coordinate.X && game.gameMap.Ysize > coordinate.Y) {
+		if (coordinate.X >= 0 && coordinate.Y >= 0) && (game.Map.XSize > coordinate.X && game.Map.YSize > coordinate.Y) {
 			(*watch)[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
 		}
 	}
