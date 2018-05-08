@@ -4,6 +4,7 @@ import "log"
 
 type Chassis struct {
 	Id              int    `json:"id"`
+	Name            string `json:"name"`
 	Type            string `json:"type"`
 	Carrying        int    `json:"carrying"`
 	Maneuverability int    `json:"maneuverability"`
@@ -22,7 +23,7 @@ func GetChassis() (chassiss []Chassis) {
 	var chassis Chassis
 
 	for rows.Next() {
-		err := rows.Scan(&chassis.Id, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)
+		err := rows.Scan(&chassis.Id, &chassis.Name, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)
 		if err != nil {
 			log.Fatal("get chassiss" + err.Error())
 		}
@@ -43,7 +44,7 @@ func GetChass(id int) (chassis *Chassis) {
 	chassis = &Chassis{}
 
 	for rows.Next() {
-		err := rows.Scan(&chassis.Id, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)
+		err := rows.Scan(&chassis.Id, &chassis.Name, &chassis.Type, &chassis.Carrying, &chassis.Maneuverability, &chassis.Speed)
 		if err != nil {
 			log.Fatal("get chass" + err.Error())
 		}

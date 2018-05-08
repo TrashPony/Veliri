@@ -4,6 +4,7 @@ import "log"
 
 type Body struct {
 	Id             int    `json:"id"`
+	Name           string `json:"name"`
 	Type           string `json:"type"`
 	Weight         int    `json:"weight"`
 	HP             int    `json:"hp"`
@@ -27,7 +28,7 @@ func GetBodies() (bodies []Body) {
 	var body Body
 
 	for rows.Next() {
-		err := rows.Scan(&body.Id, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
+		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
 		if err != nil {
 			log.Fatal("get bodies" + err.Error())
 		}
@@ -48,7 +49,7 @@ func GetBody(id int) (body *Body) {
 	body = &Body{}
 
 	for rows.Next() {
-		err := rows.Scan(&body.Id, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
+		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
 		if err != nil {
 			log.Fatal("get body" + err.Error())
 		}

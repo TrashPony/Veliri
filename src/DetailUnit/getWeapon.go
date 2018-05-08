@@ -4,6 +4,7 @@ import "log"
 
 type Weapon struct {
 	Id             int    `json:"id"`
+	Name		   string `json:"name"`
 	Type           string `json:"type"`
 	Weight         int    `json:"weight"`
 	Damage         int    `json:"damage"`
@@ -25,7 +26,7 @@ func GetWeapons() (weapons []Weapon) {
 	var weapon Weapon
 
 	for rows.Next() {
-		err := rows.Scan(&weapon.Id, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
+		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
 		if err != nil {
 			log.Fatal("get weapons" + err.Error())
 		}
@@ -46,7 +47,7 @@ func GetWeapon(id int) (weapon *Weapon) {
 	weapon = &Weapon{}
 
 	for rows.Next() {
-		err := rows.Scan(&weapon.Id, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
+		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
 		if err != nil {
 			log.Fatal("get weapon" + err.Error())
 		}
