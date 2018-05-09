@@ -10,10 +10,10 @@ type Player struct {
 	id               int
 	watch            map[int]map[int]*Coordinate // map[X]map[Y]
 	units            map[int]map[int]*Unit       // map[X]map[Y]
-	structure        map[int]map[int]*Structure  // map[X]map[Y]
-	hostileStructure map[int]map[int]*Structure  // map[X]map[Y]
+	structure        map[int]map[int]*MatherShip  // map[X]map[Y]
+	hostileStructure map[int]map[int]*MatherShip  // map[X]map[Y]
 	hostileUnits     map[int]map[int]*Unit       // map[X]map[Y]
-	respawn          *Structure
+	respawn          *MatherShip
 	createZone       map[string]*Coordinate
 	gameID           int
 }
@@ -96,7 +96,7 @@ type UpdaterWatchZone struct {
 	CloseCoordinate []*Coordinate `json:"close_coordinate"`
 	OpenCoordinate  []*Coordinate `json:"open_coordinate"`
 	OpenUnit        []*Unit       `json:"open_unit"`
-	OpenStructure   []*Structure  `json:"open_structure"`
+	OpenStructure   []*MatherShip  `json:"open_structure"`
 }
 
 // отправляем открытые ячейки, удаляем закрытые
@@ -171,36 +171,36 @@ func (client *Player) AddHostileUnit(hostile *Unit) {
 	}
 }
 
-func (client *Player) AddStructure(structure *Structure) {
+func (client *Player) AddStructure(structure *MatherShip) {
 	if client.structure != nil {
 		if client.structure[structure.X] != nil {
 			client.structure[structure.X][structure.Y] = structure
 		} else {
-			client.structure[structure.X] = make(map[int]*Structure)
+			client.structure[structure.X] = make(map[int]*MatherShip)
 			client.AddStructure(structure)
 		}
 	} else {
-		client.structure = make(map[int]map[int]*Structure)
+		client.structure = make(map[int]map[int]*MatherShip)
 		client.AddStructure(structure)
 	}
 }
 
-func (client *Player) AddHostileStructure(structure *Structure) {
+func (client *Player) AddHostileStructure(structure *MatherShip) {
 	if client.hostileStructure != nil {
 		if client.hostileStructure[structure.X] != nil {
 			client.hostileStructure[structure.X][structure.Y] = structure
 		} else {
-			client.hostileStructure[structure.X] = make(map[int]*Structure)
+			client.hostileStructure[structure.X] = make(map[int]*MatherShip)
 			client.AddHostileStructure(structure)
 		}
 	} else {
-		client.hostileStructure = make(map[int]map[int]*Structure)
+		client.hostileStructure = make(map[int]map[int]*MatherShip)
 		client.AddHostileStructure(structure)
 	}
 }
 
-func (client *Player) SetRespawn(respawn *Structure) {
-	PermCoordinates := GetCoordinates(respawn.X, respawn.Y, respawn.WatchZone)
+func (client *Player) SetRespawn(respawn *MatherShip) {
+	PermCoordinates := GetCoordinates(respawn.X, respawn.Y, respawn.RangeView)
 	client.createZone = make(map[string]*Coordinate)
 	for _, coordinate := range PermCoordinates {
 		if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
@@ -215,7 +215,7 @@ func (client *Player) GetCreateZone() (map[string]*Coordinate) {
 	return client.createZone
 }
 
-func (client *Player) GetRespawn() (respawn *Structure) {
+func (client *Player) GetRespawn() (respawn *MatherShip) {
 	return client.respawn
 }
 
@@ -269,20 +269,20 @@ func (client *Player) DelHostileUnit(x, y int) {
 	delete(client.hostileUnits[x], y)
 }
 
-func (client *Player) GetStructures() (structure map[int]map[int]*Structure) {
+func (client *Player) GetStructures() (structure map[int]map[int]*MatherShip) {
 	return client.structure
 }
 
-func (client *Player) GetStructure(x, y int) (structure *Structure, find bool) {
+func (client *Player) GetStructure(x, y int) (structure *MatherShip, find bool) {
 	structure, find = client.structure[x][y]
 	return
 }
 
-func (client *Player) GetHostileStructures() (structure map[int]map[int]*Structure) {
+func (client *Player) GetHostileStructures() (structure map[int]map[int]*MatherShip) {
 	return client.hostileStructure
 }
 
-func (client *Player) GetHostileStructure(x, y int) (structure *Structure, find bool) {
+func (client *Player) GetHostileStructure(x, y int) (structure *MatherShip, find bool) {
 	structure, find = client.hostileStructure[x][y]
 	return
 }

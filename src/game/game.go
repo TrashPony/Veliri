@@ -9,10 +9,10 @@ type Game struct {
 	stat      *InfoGame
 	players   []*UserStat
 	units     map[int]map[int]*Unit
-	structure map[int]map[int]*Structure
+	structure map[int]map[int]*MatherShip
 }
 
-func (game *Game) SetStructures(structure map[int]map[int]*Structure) {
+func (game *Game) SetStructures(structure map[int]map[int]*MatherShip) {
 	game.structure = structure
 }
 
@@ -62,11 +62,11 @@ func (game *Game) GetPlayers() (Players []*UserStat) {
 	return game.players
 }
 
-func (game *Game) GetStructures() (structures map[int]map[int]*Structure) {
+func (game *Game) GetStructures() (structures map[int]map[int]*MatherShip) {
 	return game.structure
 }
 
-func (game *Game) GetStructure(x, y int) (structure *Structure, find bool) {
+func (game *Game) GetStructure(x, y int) (structure *MatherShip, find bool) {
 	structure, find = game.structure[x][y]
 	return
 }
@@ -128,13 +128,13 @@ func InitGame(idGAme int) (newGame *Game) {
 	userStat := GetUserStat(idGAme)
 	Map := GetMap(gameStat.IdMap)
 	units := GetAllUnits(idGAme)
-	//structure := GetAllStrcuture(idGAme)
+	matherShips := GetMatherShips(idGAme)
 
 	newGame.SetStat(&gameStat)       // добавляем информацию об игре в обьект игры
 	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
 	newGame.SetMap(&Map)             // добавляем информацию об карте
 	newGame.SetUnits(units)          // добавляем имеющихся юнитов
-	//newGame.SetStructures(structure) // добавляем в игру все структуры на карте
+	newGame.SetStructures(matherShips) // добавляем в игру все структуры на карте
 
 	return
 }

@@ -55,10 +55,10 @@ type Move struct {
 type InitStructure struct {
 	Event     string          `json:"event"`
 	UserName  string          `json:"user_name"`
-	Structure *game.Structure `json:"structure"`
+	Structure *game.MatherShip `json:"structure"`
 }
 
-func (msg *InitStructure) initStructure(event string, structure *game.Structure, login string) {
+func (msg *InitStructure) initStructure(event string, structure *game.MatherShip, login string) {
 	var structureParams = InitStructure{Event: event, UserName: login, Structure: structure} // остылаем событие добавления юнита
 	initStructure <- structureParams
 }

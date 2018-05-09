@@ -12,11 +12,11 @@ type Watcher interface {
 	getOwnerUser() string
 }
 
-func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*Structure, Err error) {
+func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*MatherShip, Err error) {
 
 	allCoordinate = make(map[string]*Coordinate)
 	unitsCoordinate = make(map[int]map[int]*Unit)
-	structureCoordinate = make(map[int]map[int]*Structure)
+	structureCoordinate = make(map[int]map[int]*MatherShip)
 
 	if login == gameObject.getOwnerUser() {
 
@@ -36,13 +36,13 @@ func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[stri
 					unitsCoordinate[coordinate.X][coordinate.Y] = unitInMap
 				}
 			} else {
-				var structureInMap *Structure
+				var structureInMap *MatherShip
 				structureInMap, ok = game.GetStructure(coordinate.X, coordinate.Y)
 				if ok {
 					if structureCoordinate[coordinate.X] != nil {
 						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
 					} else {
-						structureCoordinate[coordinate.X] = make(map[int]*Structure)
+						structureCoordinate[coordinate.X] = make(map[int]*MatherShip)
 						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
 					}
 				}

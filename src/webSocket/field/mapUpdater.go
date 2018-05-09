@@ -42,7 +42,7 @@ func sendNewHostileUnit(units []*game.Unit, login string )  {
 	}
 }
 
-func sendNewHostileStructure(structures []*game.Structure, login string )  {
+func sendNewHostileStructure(structures []*game.MatherShip, login string )  {
 	var StructureParams InitStructure
 	for _, structure := range structures {
 		StructureParams.initStructure("InitStructure", structure, login)

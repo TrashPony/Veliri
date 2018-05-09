@@ -45,7 +45,7 @@ func updateHostileUnit(client *Player, oldWatchUnit map[int]map[int]*Unit) (open
 	return
 }
 
-func updateHostileStrcuture(client *Player, oldWatchHostileStructure map[int]map[int]*Structure) (openStructure []*Structure, closeStructure []*Structure) {
+func updateHostileStrcuture(client *Player, oldWatchHostileStructure map[int]map[int]*MatherShip) (openStructure []*MatherShip, closeStructure []*MatherShip) {
 	for _, xLine := range client.GetHostileStructures() { // добавляем новые вражеские структуры которых открыли
 		for _, hostile := range xLine {
 			_, ok := oldWatchHostileStructure[hostile.X][hostile.Y]
@@ -66,7 +66,7 @@ func updateHostileStrcuture(client *Player, oldWatchHostileStructure map[int]map
 	return
 }
 
-func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, closeStructure []*Structure, game *Game) ([]*Coordinate)  {
+func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, closeStructure []*MatherShip, game *Game) ([]*Coordinate)  {
 
 	for _, unit := range closeUnit {
 		//coordinate, find := game.GetMap().GetCoordinate(unit.X, unit.Y)
