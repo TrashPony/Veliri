@@ -40,9 +40,10 @@ type Unit struct {
 	WallHack  bool `json:"wall_hack"`
 
 	// Позиция
-	X      int `json:"x"`
-	Y      int `json:"y"`
-	Rotate int `json:"rotate"`
+	X      int  `json:"x"`
+	Y      int  `json:"y"`
+	Rotate int  `json:"rotate"`
+	OnMap  bool `json:"on_map"`
 
 	// Игровая статистика
 	Action bool        `json:"action"`

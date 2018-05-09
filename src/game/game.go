@@ -128,13 +128,13 @@ func InitGame(idGAme int) (newGame *Game) {
 	userStat := GetUserStat(idGAme)
 	Map := GetMap(gameStat.IdMap)
 	units := GetAllUnits(idGAme)
-	structure := GetAllStrcuture(idGAme)
+	//structure := GetAllStrcuture(idGAme)
 
-	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
 	newGame.SetStat(&gameStat)       // добавляем информацию об игре в обьект игры
+	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
 	newGame.SetMap(&Map)             // добавляем информацию об карте
 	newGame.SetUnits(units)          // добавляем имеющихся юнитов
-	newGame.SetStructures(structure) // добавляем в игру все структуры на карте
+	//newGame.SetStructures(structure) // добавляем в игру все структуры на карте
 
 	return
 }

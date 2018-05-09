@@ -66,13 +66,13 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 				"id_chassis, id_weapons, id_tower, id_body, id_radar, "+ // части тела
 				"Weight, Speed, Initiative, Damage, RangeAttack, MinAttackRange, AreaAttack, "+ // характиристики
 				"TypeAttack, HP, Armor, EvasionCritical, VulKinetics, VulThermal, VulEM, VulExplosive, "+
-				"RangeView, Accuracy, WallHack)"+ // TODO надо узнать как можно это сделать проще и лучше)
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)",
+				"RangeView, Accuracy, WallHack, action, target, queue_attack, rotate, x, y, on_map)"+ // TODO надо узнать как можно это сделать проще и лучше)
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32)",
 				user.Id, id, ChassisID, WeaponID, TowerID, BodyID, RadarID,
 				unit.Weight, unit.Speed, unit.Initiative, unit.Damage, unit.RangeAttack,
 				unit.MinAttackRange, unit.AreaAttack, unit.TypeAttack, unit.HP, unit.Armor,
 				unit.EvasionCritical, unit.VulKinetics, unit.VulThermal, unit.VulEM, unit.VulExplosive,
-				unit.RangeView, unit.Accuracy, unit.WallHack)
+				unit.RangeView, unit.Accuracy, unit.WallHack, false, "", 0, 0, 0, 0, false)
 			if err != nil {
 				println("add unit game error")
 				log.Fatal(err)

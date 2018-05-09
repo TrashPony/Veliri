@@ -10,13 +10,14 @@ import (
 
 func GetAllUnits(idGame int) map[int]map[int]*Unit {
 
-	rows, err := db.Query("Select ag.id, u.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
+	rows, err := db.Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
 		"ag.Weight, ag.Speed, ag.Initiative, ag.Damage, ag.RangeAttack, ag.MinAttackRange, ag.AreaAttack, "+
 		"ag.TypeAttack, ag.HP, ag.Armor, ag.EvasionCritical, ag.VulKinetics, ag.VulThermal, ag.VulEM, "+
-		"ag.VulExplosive, ag.RangeView, ag.Accuracy, ag.WallHack"+
-		"ag.id_chassis, ag.id_weapons, ag.id_tower, ag.id_body, ag.id_radar"+
-		"FROM action_game_unit as ag, users as u WHERE ag.id_game=$1 AND ag.id_type=t.id AND ag.id_user=u.id", idGame)
+		"ag.VulExplosive, ag.RangeView, ag.Accuracy, ag.WallHack, "+
+		"ag.id_chassis, ag.id_weapons, ag.id_tower, ag.id_body, ag.id_radar, ag.on_map "+
+		"FROM action_game_unit as ag, users WHERE ag.id_game=$1 AND ag.id_user=users.id", idGame)
 	if err != nil {
+		println("get game unit")
 		log.Fatal(err)
 	}
 	defer rows.Close()
@@ -36,8 +37,9 @@ func GetAllUnits(idGame int) map[int]map[int]*Unit {
 		err := rows.Scan(&unit.Id, &unit.Owner, &unit.X, &unit.Y, &unit.Rotate, &unit.Action, &targetKey, &unit.Queue,
 			&unit.Weight, &unit.MoveSpeed, &unit.Initiative, &unit.Damage, &unit.RangeAttack, &unit.MinAttackRange, &unit.AreaAttack,
 			&unit.TypeAttack, &unit.HP, &unit.Armor, &unit.EvasionCritical, &unit.VulKinetics, &unit.VulThermal, &unit.VulEM,
-			&unit.VulExplosive, &unit.RangeView, &unit.Accuracy, &unit.WallHack, &chassisID, &weaponID, &towerID, &bodyID, &radarID)
+			&unit.VulExplosive, &unit.RangeView, &unit.Accuracy, &unit.WallHack, &chassisID, &weaponID, &towerID, &bodyID, &radarID, &unit.OnMap)
 		if err != nil {
+			println("scan game unit")
 			log.Fatal(err)
 		}
 

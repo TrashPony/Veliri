@@ -25,10 +25,11 @@ CREATE TABLE action_game_unit(
 	x       int,
 	y       int,
 	rotate  int,
+	on_map  boolean,
 
 	/* Игровая статистика */
 	action        boolean,
-	target        int references action_game_unit(id),
+	target        varchar(64),
 	queue_attack  int,
 
 	/* Характиристики */
