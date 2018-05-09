@@ -15,13 +15,16 @@ func MouseOver(msg FieldMessage, ws *websocket.Conn) {
 		var resp InitUnit
 		resp.initUnit(msg.Event, unit, client.GetLogin())
 	} else {
-		structure, find := usersFieldWs[ws].GetStructure(msg.X, msg.Y)
-		if !find {
-			structure, find = usersFieldWs[ws].GetHostileStructure(msg.X, msg.Y)
-		}
-		if find {
+		matherShip := usersFieldWs[ws].GetMatherShip()
+		if matherShip == nil {
+			matherShip, find = usersFieldWs[ws].GetHostileMatherShip(msg.X, msg.Y)
+			if find {
+				var resp InitStructure
+				resp.initMatherShip(msg.Event, matherShip, client.GetLogin())
+			}
+		} else {
 			var resp InitStructure
-			resp.initStructure(msg.Event, structure, client.GetLogin())
+			resp.initMatherShip(msg.Event, matherShip, client.GetLogin())
 		}
 	}
 }

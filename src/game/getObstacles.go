@@ -4,7 +4,6 @@ func GetObstacles(client *Player, game *Game) (obstaclesMatrix map[int]map[int]*
 	coordinates := make([]*Coordinate, 0)
 	obstaclesMatrix = make(map[int]map[int]*Coordinate)
 
-	// TODO полностью инициализировать карту
 	for _, xLine := range client.GetUnits() {
 		for _, unit := range xLine {
 			var coordinate Coordinate
@@ -23,16 +22,12 @@ func GetObstacles(client *Player, game *Game) (obstaclesMatrix map[int]map[int]*
 		}
 	}
 
-	for _, xLine := range client.GetStructures() {
-		for _, structure := range xLine {
-			var coordinate Coordinate
-			coordinate.X = structure.X
-			coordinate.Y = structure.Y
-			coordinates = append(coordinates, &coordinate)
-		}
-	}
+	var coordinate Coordinate
+	coordinate.X = client.GetMatherShip().X
+	coordinate.Y = client.GetMatherShip().Y
+	coordinates = append(coordinates, &coordinate)
 
-	for _, xLine := range client.GetHostileStructures() {
+	for _, xLine := range client.GetHostileMatherShips() {
 		for _, structure := range xLine {
 			var coordinate Coordinate
 			coordinate.X = structure.X
@@ -52,8 +47,7 @@ func GetObstacles(client *Player, game *Game) (obstaclesMatrix map[int]map[int]*
 		}
 	}
 
-
-	for _, obstacle := range coordinates{
+	for _, obstacle := range coordinates {
 		if obstaclesMatrix[obstacle.X] != nil {
 			obstaclesMatrix[obstacle.X][obstacle.Y] = obstacle
 		} else {
@@ -63,4 +57,3 @@ func GetObstacles(client *Player, game *Game) (obstaclesMatrix map[int]map[int]*
 	}
 	return
 }
-

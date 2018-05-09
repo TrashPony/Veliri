@@ -58,9 +58,9 @@ type InitStructure struct {
 	Structure *game.MatherShip `json:"structure"`
 }
 
-func (msg *InitStructure) initStructure(event string, structure *game.MatherShip, login string) {
-	var structureParams = InitStructure{Event: event, UserName: login, Structure: structure} // остылаем событие добавления юнита
-	initStructure <- structureParams
+func (msg *InitStructure) initMatherShip(event string, structure *game.MatherShip, login string) {
+	var matherShipParameter = InitStructure{Event: event, UserName: login, Structure: structure} // остылаем событие добавления юнита
+	initStructure <- matherShipParameter
 }
 
 type sendCoordinate struct {

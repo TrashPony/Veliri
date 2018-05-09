@@ -12,11 +12,11 @@ type Watcher interface {
 	getOwnerUser() string
 }
 
-func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, structureCoordinate map[int]map[int]*MatherShip, Err error) {
+func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[string]*Coordinate, unitsCoordinate map[int]map[int]*Unit, matherShipCoordinate map[int]map[int]*MatherShip, Err error) {
 
 	allCoordinate = make(map[string]*Coordinate)
 	unitsCoordinate = make(map[int]map[int]*Unit)
-	structureCoordinate = make(map[int]map[int]*MatherShip)
+	matherShipCoordinate = make(map[int]map[int]*MatherShip)
 
 	if login == gameObject.getOwnerUser() {
 
@@ -36,22 +36,22 @@ func Watch(gameObject Watcher, login string, game *Game) (allCoordinate map[stri
 					unitsCoordinate[coordinate.X][coordinate.Y] = unitInMap
 				}
 			} else {
-				var structureInMap *MatherShip
-				structureInMap, ok = game.GetStructure(coordinate.X, coordinate.Y)
+				var matherShipInMap *MatherShip
+				matherShipInMap, ok = game.GetMatherShip(coordinate.X, coordinate.Y)
 				if ok {
-					if structureCoordinate[coordinate.X] != nil {
-						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
+					if matherShipCoordinate[coordinate.X] != nil {
+						matherShipCoordinate[coordinate.X][coordinate.Y] = matherShipInMap
 					} else {
-						structureCoordinate[coordinate.X] = make(map[int]*MatherShip)
-						structureCoordinate[coordinate.X][coordinate.Y] = structureInMap
+						matherShipCoordinate[coordinate.X] = make(map[int]*MatherShip)
+						matherShipCoordinate[coordinate.X][coordinate.Y] = matherShipInMap
 					}
 				}
 			}
 		}
 	} else {
-		return allCoordinate, unitsCoordinate, structureCoordinate, errors.New("no owned")
+		return allCoordinate, unitsCoordinate, matherShipCoordinate, errors.New("no owned")
 	}
-	return allCoordinate, unitsCoordinate, structureCoordinate, nil
+	return allCoordinate, unitsCoordinate, matherShipCoordinate, nil
 }
 
 

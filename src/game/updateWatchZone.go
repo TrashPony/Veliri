@@ -45,28 +45,28 @@ func updateHostileUnit(client *Player, oldWatchUnit map[int]map[int]*Unit) (open
 	return
 }
 
-func updateHostileStrcuture(client *Player, oldWatchHostileStructure map[int]map[int]*MatherShip) (openStructure []*MatherShip, closeStructure []*MatherShip) {
-	for _, xLine := range client.GetHostileStructures() { // добавляем новые вражеские структуры которых открыли
+func updateHostileStrcuture(client *Player, oldWatchHostileMatherShip map[int]map[int]*MatherShip) (openMatherShip []*MatherShip, closeMatherShip []*MatherShip) {
+	for _, xLine := range client.GetHostileMatherShips() { // добавляем новые вражеские структуры которых открыли
 		for _, hostile := range xLine {
-			_, ok := oldWatchHostileStructure[hostile.X][hostile.Y]
+			_, ok := oldWatchHostileMatherShip[hostile.X][hostile.Y]
 			if !ok {
-				openStructure = append(openStructure, hostile)
+				openMatherShip = append(openMatherShip, hostile)
 			}
 		}
 	}
 
-	for _, xLine := range oldWatchHostileStructure {
+	for _, xLine := range oldWatchHostileMatherShip {
 		for _, hostile := range xLine {
-			_, find := client.GetHostileStructure(hostile.X, hostile.Y)
+			_, find := client.GetHostileMatherShip(hostile.X, hostile.Y)
 			if !find {
-				closeStructure = append(closeStructure, hostile)
+				closeMatherShip = append(closeMatherShip, hostile)
 			}
 		}
 	}
 	return
 }
 
-func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, closeStructure []*MatherShip, game *Game) ([]*Coordinate)  {
+func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, closeMatherShip []*MatherShip, game *Game) ([]*Coordinate)  {
 
 	for _, unit := range closeUnit {
 		//coordinate, find := game.GetMap().GetCoordinate(unit.X, unit.Y)
@@ -76,8 +76,8 @@ func parseCloseCoordinate(closeCoordinate []*Coordinate, closeUnit []*Unit, clos
 		//}
 	}
 
-	for _, structure := range closeStructure { // TODO я не понимаю что тут происходит >_<
-		coordinate, find := game.GetMap().GetCoordinate(structure.X, structure.Y)
+	for _, matherShip := range closeMatherShip { // TODO я не понимаю что тут происходит >_<
+		coordinate, find := game.GetMap().GetCoordinate(matherShip.X, matherShip.Y)
 		if find {
 			closeCoordinate = append(closeCoordinate, coordinate)
 		}

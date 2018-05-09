@@ -5,15 +5,15 @@ import (
 )
 
 type Game struct {
-	Map       *Map
-	stat      *InfoGame
-	players   []*UserStat
-	units     map[int]map[int]*Unit
-	structure map[int]map[int]*MatherShip
+	Map         *Map
+	stat        *InfoGame
+	players     []*UserStat
+	units       map[int]map[int]*Unit
+	MatherShips map[int]map[int]*MatherShip
 }
 
-func (game *Game) SetStructures(structure map[int]map[int]*MatherShip) {
-	game.structure = structure
+func (game *Game) SetMatherShips(matherShips map[int]map[int]*MatherShip) {
+	game.MatherShips = matherShips
 }
 
 func (game *Game) SetPlayers(players []*UserStat) {
@@ -62,12 +62,12 @@ func (game *Game) GetPlayers() (Players []*UserStat) {
 	return game.players
 }
 
-func (game *Game) GetStructures() (structures map[int]map[int]*MatherShip) {
-	return game.structure
+func (game *Game) GetMatherShips() (matherShips map[int]map[int]*MatherShip) {
+	return game.MatherShips
 }
 
-func (game *Game) GetStructure(x, y int) (structure *MatherShip, find bool) {
-	structure, find = game.structure[x][y]
+func (game *Game) GetMatherShip(x, y int) (matherShip *MatherShip, find bool) {
+	matherShip, find = game.MatherShips[x][y]
 	return
 }
 
@@ -130,11 +130,11 @@ func InitGame(idGAme int) (newGame *Game) {
 	units := GetAllUnits(idGAme)
 	matherShips := GetMatherShips(idGAme)
 
-	newGame.SetStat(&gameStat)       // добавляем информацию об игре в обьект игры
-	newGame.SetPlayers(userStat)     // добавляем параметры всех игроков к обьекту игры
-	newGame.SetMap(&Map)             // добавляем информацию об карте
-	newGame.SetUnits(units)          // добавляем имеющихся юнитов
-	newGame.SetStructures(matherShips) // добавляем в игру все структуры на карте
+	newGame.SetStat(&gameStat)         // добавляем информацию об игре в обьект игры
+	newGame.SetPlayers(userStat)       // добавляем параметры всех игроков к обьекту игры
+	newGame.SetMap(&Map)               // добавляем информацию об карте
+	newGame.SetUnits(units)            // добавляем имеющихся юнитов
+	newGame.SetMatherShips(matherShips) // добавляем в игру все структуры на карте
 
 	return
 }
