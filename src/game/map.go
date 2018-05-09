@@ -72,7 +72,13 @@ func (mp *Map) GetCoordinatesMap() {
 			if !find {
 				var coordinate Coordinate
 				coordinate = Coordinate{X:x, Y:y}
-				oneLayerMap[x][y] = &coordinate
+
+				if oneLayerMap[coordinate.X] != nil {
+					oneLayerMap[coordinate.X][coordinate.Y] = &coordinate
+				} else {
+					oneLayerMap[coordinate.X] = make(map[int]*Coordinate)
+					oneLayerMap[coordinate.X][coordinate.Y] = &coordinate
+				}
 			}
 		}
 	}

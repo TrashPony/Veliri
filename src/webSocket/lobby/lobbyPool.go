@@ -97,14 +97,11 @@ func Reader(ws *websocket.Conn) {
 			StartNewGame(msg, ws)
 		}
 
-		/*if msg.Event == "DontEndGamesList" {
-			games := lobby.GetDontEndGames(usersLobbyWs[ws].Login)
-			for _, game := range games {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Login, NameGame: game.Name, IdGame: game.Id, PhaseGame: game.Phase, StepGame: game.Step, Ready: game.Ready}
-				ws.WriteJSON(resp)
-			}
-		}//todo
-		*/
+		if msg.Event == "DontEndGamesList" {
+			games := lobby.GetDontEndGames(usersLobbyWs[ws].Name)
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, DontEndGames: games}
+			ws.WriteJSON(resp)
+		}
 
 		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {
 			SquadSettings(ws, msg)

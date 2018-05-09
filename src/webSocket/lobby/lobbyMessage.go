@@ -69,4 +69,6 @@ type Response struct {
 
 	EquipSlot int `json:"equip_slot"`
 	UnitSlot  int `json:"slot"`
+
+	DontEndGames []lobby.DontEndGames `json:"dont_end_games"`
 }

@@ -66,6 +66,10 @@ tr td:last-child {
     background-repeat: no-repeat;
 }
 
+.Select {
+    text-align: center;
+}
+
 .Select:hover>td {
     border: 1px solid #1b8cff;
     background-color: #25a0e1;
