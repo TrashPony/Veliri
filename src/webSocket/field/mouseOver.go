@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func MouseOver(msg FieldMessage, ws *websocket.Conn) {
+func MouseOver(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 	unit, find := client.GetUnit(msg.X, msg.Y)
 	if !find {

@@ -73,15 +73,15 @@ function MarkLastPathCell(unit, cellState) {
     mark.alpha = 0.8;
     mark.z = 1;
 
-    if (cells[x + ":" + y]) {
-        cells[x + ":" + y].addChild(mark);
+    if (GameMap.OneLayerMap[x][y].sprite) {
+        GameMap.OneLayerMap[x][y].sprite.addChild(mark);
     }
 }
 
 function DeleteMarkLastPathCell(cellState) {
     var x = cellState.x;
     var y = cellState.y;
-    var mark = cells[x + ":" + y].getChildAt(0);
+    var mark = GameMap.OneLayerMap[x][y].sprite.getChildAt(0);
 
     mark.destroy();
 }
@@ -129,11 +129,11 @@ function CheckPath(unit) {
 }
 
 function MoveToCell(unit, targetID) {
-    unit.movePoint = cells[targetID];                             // берем спрайт пункта назначения и кладем в текущую ноду к которой идет юнит
-    unit.rotation = game.physics.arcade.angleToXY(unit, unit.movePoint.x + tileWidth / 2, unit.movePoint.y + tileWidth / 2); // поворачиваем юнита
-    console.log(unit.angle);
-    console.log(unit.rotation);
-    unit.body.velocity = game.physics.arcade.velocityFromAngle(unit.angle, UNIT_SPEED); // устанавливаем скорость
+    //unit.movePoint = cells[targetID];   todo                          // берем спрайт пункта назначения и кладем в текущую ноду к которой идет юнит
+    //unit.rotation = game.physics.arcade.angleToXY(unit, unit.movePoint.x + tileWidth / 2, unit.movePoint.y + tileWidth / 2); // поворачиваем юнита
+    //console.log(unit.angle);
+    //console.log(unit.rotation);
+    //unit.body.velocity = game.physics.arcade.velocityFromAngle(unit.angle, UNIT_SPEED); // устанавливаем скорость
 }
 
 function UpdateWachZone(unit, targetID) {

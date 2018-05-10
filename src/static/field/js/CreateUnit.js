@@ -12,7 +12,7 @@ function CreateUnit(unitStat) {
     var action = unitStat.action;
     var hp = unitStat.hp;
 
-    var cell = cells[x + ":" + y];
+    var cell = GameMap.OneLayerMap[x][y].sprite;
     var unit = game.add.sprite(cell.x + tileWidth / 2, cell.y + tileWidth / 2, type);
 
     game.physics.arcade.enable(unit);

@@ -4,11 +4,13 @@ import (
 	"../../game"
 )
 
-type FieldResponse struct {
-	Event    string           `json:"event"`
-	UserName string           `json:"user_name"`
-	Users    []*game.UserStat `json:"user"`
-	Map      *game.Map
+type Response struct {
+	Event    string `json:"event"`
+	UserName string `json:"user_name"`
+
+	User  *game.UserStat   `json:"user"`
+	Users []*game.UserStat `json:"users"`
+	Map   *game.Map
 
 	GameStep  int    `json:"game_step"`
 	GamePhase string `json:"game_phase"`
@@ -53,8 +55,8 @@ type Move struct {
 }
 
 type InitStructure struct {
-	Event     string          `json:"event"`
-	UserName  string          `json:"user_name"`
+	Event     string           `json:"event"`
+	UserName  string           `json:"user_name"`
 	Structure *game.MatherShip `json:"structure"`
 }
 
@@ -80,7 +82,7 @@ func closeCoordinate(login string, x, y int) {
 	coordinate <- resp
 }
 
-type FieldMessage struct {
+type Message struct {
 	Event    string `json:"event"`
 	IdGame   int    `json:"id_game"`
 	IdUnit   string `json:"id_unit"`

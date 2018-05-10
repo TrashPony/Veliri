@@ -5,8 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func Ready(msg FieldMessage, ws *websocket.Conn) {
-	var resp FieldResponse
+func Ready(msg Message, ws *websocket.Conn) {
 
 	client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
@@ -29,13 +28,13 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 	}
 
 	if err != nil {
-		resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: err.Error()}
+		resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: err.Error()}
 		fieldPipe <- resp
 		return
 	}
 
 	if 0 == len(usersFieldWs[ws].GetUnits()) {
-		resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "not units"}
+		resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "not units"}
 		fieldPipe <- resp
 		// TODO добавить окончание игры
 		return
@@ -47,12 +46,12 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 			// обновляем статус игроков в памяти
 			activeGame.SetUserReady(player.GetLogin(), false)
 
-			resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
+			resp := Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 			fieldPipe <- resp
 			activeGame.GetStat().Phase = phase
 
 			if phase == "move" {
-				resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
+				resp = Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
 				activeGame.GetStat().Step += 1
 			}
 
@@ -70,7 +69,7 @@ func Ready(msg FieldMessage, ws *websocket.Conn) {
 			}
 		}
 	} else {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Phase: phase}
+		resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Phase: phase}
 		fieldPipe <- resp
 	}
 }

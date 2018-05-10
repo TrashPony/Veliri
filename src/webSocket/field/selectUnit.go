@@ -5,8 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
-	var resp FieldResponse
+func SelectUnit(msg Message, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
@@ -23,13 +22,13 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 				for i := 0; i < len(moveCoordinate); i++ {
 					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 && moveCoordinate[i].X < 10 && moveCoordinate[i].Y < 10 {
-						var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase, // TODO не до 10ти а до края карты
+						var createCoordinates = Response{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase, // TODO не до 10ти а до края карты
 							X: moveCoordinate[i].X, Y: moveCoordinate[i].Y}
 						fieldPipe <- createCoordinates
 					}
 				}
 			} else {
-				resp = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "unit already move"}
+				resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "unit already move"}
 				fieldPipe <- resp
 			}
 		}
@@ -39,7 +38,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 			for _, coordinate := range coordinates {
 				targetUnit, ok := client.GetHostileUnit(coordinate.X, coordinate.Y)
 				if ok && targetUnit.Owner != client.GetLogin() {
-					var createCoordinates = FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
+					var createCoordinates = Response{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
 						X: targetUnit.X, Y: targetUnit.Y}
 					fieldPipe <- createCoordinates
 				}
@@ -58,7 +57,7 @@ func SelectUnit(msg FieldMessage, ws *websocket.Conn) {
 
 			for i := 0; i < len(coordinates); i++ {
 				if !(coordinates[i].X == respawn.X && coordinates[i].Y == respawn.Y) {
-					var createCoordinates = FieldResponse{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].GetLogin(), X: coordinates[i].X, Y: coordinates[i].Y}
+					var createCoordinates = Response{Event: "SelectCoordinateCreate", UserName: usersFieldWs[ws].GetLogin(), X: coordinates[i].X, Y: coordinates[i].Y}
 					fieldPipe <- createCoordinates
 				}
 			}

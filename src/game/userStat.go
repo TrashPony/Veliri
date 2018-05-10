@@ -63,7 +63,6 @@ func (user *UserStat) GetEquip() {
 			log.Fatal(err)
 		}
 
-		user.GetEquip()
 		equips = append(equips, &equip)
 	}
 

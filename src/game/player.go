@@ -16,6 +16,7 @@ type Player struct {
 	respawn            *MatherShip
 	createZone         map[string]*Coordinate
 	gameID             int
+	equips             []*Equip
 }
 
 func (client *Player) GetAllWatchObject(activeGame *Game) {
@@ -283,4 +284,12 @@ func (client *Player) GetWatchCoordinate(x, y int) (coordinate *Coordinate, find
 
 func (client *Player) DelWatchCoordinate(x, y int) {
 	delete(client.watch[x], y)
+}
+
+func (client *Player) SetEquip(equips []*Equip) {
+	client.equips = equips
+}
+
+func (client *Player) ПetEquip() []*Equip {
+	return client.equips
 }

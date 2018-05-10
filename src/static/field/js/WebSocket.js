@@ -14,7 +14,6 @@ function ConnectField() {
     };
 
     field.onmessage = function(msg) {
-        //console.log("message: " + msg.data);
         ReadResponse(msg.data);
     };
 
@@ -23,7 +22,7 @@ function ConnectField() {
     };
 
     field.onclose = function(msg) {
-        // 1006 ошибка при выключение сервера или отказа, 1001 - F5
+        // 1006 - ошибка при выключение сервера или отказа, 1001 - F5
         console.log("Disconnected field - status " + this.readyState);
         if (msg.code !== 1001) {
             location.href = "../../login";

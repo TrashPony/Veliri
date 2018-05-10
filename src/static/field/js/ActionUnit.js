@@ -51,7 +51,7 @@ function setUnitAction(jsonMessage) {
                 }));
             };
 
-            var cell = cells[x + ":" + y];
+            var cell = GameMap.OneLayerMap[x][y].sprite;
             cell.tint = 0xb5b5ff;
 
             if (cell) {

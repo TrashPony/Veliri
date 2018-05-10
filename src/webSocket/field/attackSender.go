@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-func attack(activeGame *game.Game, activeUser []*game.Player, msg FieldMessage, phase string)  {
-	var resp FieldResponse
+func attack(activeGame *game.Game, activeUser []*game.Player, msg Message, phase string)  {
+	var resp Response
 	for _, player := range activeUser {
-		resp = FieldResponse{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
+		resp = Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 		fieldPipe <- resp
 	}
 
@@ -31,11 +31,11 @@ func attackSender(unit *game.Unit, activeUser []*game.Player) {
 	for _, client := range activeUser {
 		_, ok := client.GetUnit(unit.X, unit.Y)
 		if ok {
-			attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
+			attackInfo := Response{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
 			fieldPipe <- attackInfo
 		} else {
 			// TODO оповещение только об уроне
-			attackInfo := FieldResponse{Event: "Attack", UserName: client.GetLogin(), ToX: unit.Target.X, ToY: unit.Target.Y}
+			attackInfo := Response{Event: "Attack", UserName: client.GetLogin(), ToX: unit.Target.X, ToY: unit.Target.Y}
 			fieldPipe <- attackInfo
 		}
 	}

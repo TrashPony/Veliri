@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
+func TargetUnit(msg Message, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client := usersFieldWs[ws]
@@ -23,7 +23,7 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 					game.SetTarget(*unit, strconv.Itoa(target.X)+":"+strconv.Itoa(target.Y), activeGame.GetStat().Id)
 					unit.Target = &game.Coordinate{X: target.X, Y: target.Y}
 					passed = true
-					resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin()}
+					resp := Response{Event: msg.Event, UserName: client.GetLogin()}
 					fieldPipe <- resp
 					break
 				}
@@ -31,11 +31,11 @@ func TargetUnit(msg FieldMessage, ws *websocket.Conn) {
 		}
 
 		if !passed {
-			resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "not allow"}
+			resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "not allow"}
 			fieldPipe <- resp
 		}
 	} else {
-		resp := FieldResponse{Event: msg.Event, UserName: client.GetLogin(), Error: "unit not found"}
+		resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "unit not found"}
 		fieldPipe <- resp
 	}
 }

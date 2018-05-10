@@ -15,39 +15,31 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function FieldCreate(jsonMessage) {
-    var x = JSON.parse(jsonMessage).x_map;
-    var y = JSON.parse(jsonMessage).y_map;
-    Game(Number(x), Number(y)) // создаем окно игры размером х:у
-}
+
 
 function InitPlayer(jsonMessage) {
-    var price = document.getElementById('price');
-    price.innerHTML = JSON.parse(jsonMessage).player_price;
-    var step = document.getElementById('step');
-    step.innerHTML = JSON.parse(jsonMessage).game_step;
-    var phaseGame = document.getElementById('phase');
-    phaseGame.innerHTML = JSON.parse(jsonMessage).game_phase;
-    MY_ID = JSON.parse(jsonMessage).user_name;
 
-    if (JSON.parse(jsonMessage).user_ready === true) {
+    var user = JSON.parse(jsonMessage).user;
+    User = user;
+
+    if (user.ready) {
         var ready = document.getElementById("Ready");
         ready.value = "Ты готов!";
         ready.className = "button noActive";
         ready.onclick = null
     }
-
-    phase = JSON.parse(jsonMessage).game_phase;
 }
 
-function InitObstacle(jsonMessage) {
-    var x = JSON.parse(jsonMessage).x;
-    var y = JSON.parse(jsonMessage).y;
+function GameInfo(jsonMessage) {
 
-    var cell = cells[x + ":" + y];
-    var obstacle = game.add.tileSprite(cell.x, cell.y, 100, 100, 'obstacle');
-    obstacle.inputEnabled = true;
-    obstacle.events.onInputOut.add(mouse_out);
+    var step = document.getElementById('step');
+    step.innerHTML = JSON.parse(jsonMessage).game_step;
+
+    var phaseGame = document.getElementById('phase');
+    phaseGame.innerHTML = JSON.parse(jsonMessage).game_phase;
+
+    phase = JSON.parse(jsonMessage).game_phase;
+
 }
 
 function ReadyReader(jsonMessage) {

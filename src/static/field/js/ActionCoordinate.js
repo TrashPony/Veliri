@@ -18,19 +18,19 @@ function DelMoveCoordinate() {
 function DelUnit(jsonMessage) {
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
-    cells[x + ":" + y].tint = 0x757575;
+    GameMap.OneLayerMap[x][y].sprite.tint = 0x757575;
 }
 
 function OpenCoordinate(jsonMessage) {
     var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
-    cells[x + ":" + y].tint = 0xffffff * 2;
+    GameMap.OneLayerMap[x][y].sprite.tint = 0xffffff * 2;
 }
 
 function OpenCoordinates(coordinates) {
     while (coordinates.length > 0) {
         var coordinate = coordinates.shift();
-        cells[coordinate.x + ":" + coordinate.y].tint = 0xffffff * 2;
+        GameMap.OneLayerMap[coordinate.x][coordinate.y].sprite.tint = 0xffffff * 2;
     }
 }
 
@@ -38,7 +38,8 @@ function DeleteCoordinates(coordinates) {
     while (coordinates.length > 0) {
         var coordinate = coordinates.shift();
         var id = coordinate.x + ":" + coordinate.y;
-        cells[id].tint = 0x757575;
+
+        GameMap.OneLayerMap[coordinate.x][coordinate.y].sprite.tint = 0x757575;
 
         if (units.hasOwnProperty(id)) {
             var unit = units[id];

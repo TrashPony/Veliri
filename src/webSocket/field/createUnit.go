@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func CreateUnit(msg FieldMessage, ws *websocket.Conn) {
+func CreateUnit(msg Message, ws *websocket.Conn) {
 	/*var resp FieldResponse
 	client, ok := usersFieldWs[ws]
 

@@ -5,8 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
-	var resp FieldResponse
+func MoveUnit(msg Message, ws *websocket.Conn) {
 
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
@@ -39,20 +38,20 @@ func MoveUnit(msg FieldMessage, ws *websocket.Conn) {
 			}
 
 			if !passed {
-				resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
+				resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
 				ws.WriteJSON(resp)
 			}
 		} else {
-			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "unit already move"}
+			resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "unit already move"}
 			ws.WriteJSON(resp)
 		}
 	} else {
-		resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not found unit"}
+		resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not found unit"}
 		ws.WriteJSON(resp)
 	}
 }
 
-func skipMoveUnit(msg FieldMessage, ws *websocket.Conn) {
+func skipMoveUnit(msg Message, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
@@ -70,7 +69,7 @@ func skipMoveUnit(msg FieldMessage, ws *websocket.Conn) {
 	}
 }
 
-func updateWatchHostileUser(msg FieldMessage, client *game.Player, activeUser []*game.Player, unit *game.Unit, pathNodes []game.Coordinate) {
+func updateWatchHostileUser(msg Message, client *game.Player, activeUser []*game.Player, unit *game.Unit, pathNodes []game.Coordinate) {
 
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {

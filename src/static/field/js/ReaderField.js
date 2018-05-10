@@ -1,7 +1,9 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
+
     if (event === "InitPlayer") { // +
+        console.log(jsonMessage);
         InitPlayer(jsonMessage);
     }
 
@@ -15,10 +17,6 @@ function ReadResponse(jsonMessage) {
 
     if (event === "InitStructure") { // +
         InitStructure(jsonMessage);
-    }
-
-    if (event === "InitObstacle") { // +
-        InitObstacle(jsonMessage);
     }
 
     if (event === "BuildUnit") {
@@ -54,7 +52,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") { // +
-
         InitMoveUnit(jsonMessage);
     }
 

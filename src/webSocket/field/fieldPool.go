@@ -8,13 +8,11 @@ import (
 	"../../game"
 )
 
-var fieldPipe = make(chan FieldResponse)
+var fieldPipe = make(chan Response)
 var initUnit = make(chan InitUnit)
 var initStructure = make(chan InitStructure)
 var coordinate = make(chan sendCoordinate)
 var move = make(chan Move)
-
-
 
 var usersFieldWs = make(map[*websocket.Conn]*game.Player) // тут будут храниться наши подключения
 var Games = make(map[int]*game.Game)
@@ -37,7 +35,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Player) {
 	for {
-		var msg FieldMessage
+		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersFieldWs, err)

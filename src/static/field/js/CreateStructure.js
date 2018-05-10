@@ -33,7 +33,7 @@ function CreateStructure(structureStat) {
     var label_score = game.add.text(170, 40, owner, style);
     structure.addChild(label_score);
 
-    if (cells[x + ":" + y]) {
-        cells[x + ":" + y].addChild(structure);
+    if (GameMap.OneLayerMap[x][y].sprite) {
+        GameMap.OneLayerMap[x][y].sprite.addChild(structure);
     }
 }
