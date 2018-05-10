@@ -26,7 +26,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	newPlayer := game.Player{}
 	newPlayer.SetLogin(login)
 	newPlayer.SetID(id)
-
+	// todo брать юзера из игры если уже такая есть
 	usersFieldWs[ws] = &newPlayer // Регистрируем нового Клиента
 	print("WS field Сессия: ")                        // просто смотрим новое подключение
 	print(ws)

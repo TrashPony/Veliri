@@ -10,7 +10,7 @@ type Player struct {
 	id                 int
 	watch              map[int]map[int]*Coordinate // map[X]map[Y]
 	units              map[int]map[int]*Unit       // map[X]map[Y]
-	MatherShip         *MatherShip
+	matherShip         *MatherShip
 	hostileMatherShips map[int]map[int]*MatherShip // map[X]map[Y]
 	hostileUnits       map[int]map[int]*Unit       // map[X]map[Y]
 	respawn            *MatherShip
@@ -108,7 +108,7 @@ func (client *Player) UpdateWatchZone(game *Game) (*UpdaterWatchZone) {
 	oldWatchHostileMatherShips := client.GetHostileMatherShips()
 
 	client.units = nil
-	client.MatherShip = nil
+	client.matherShip = nil
 	client.hostileUnits = nil
 	client.hostileMatherShips = nil
 	client.watch = nil
@@ -172,7 +172,7 @@ func (client *Player) AddHostileUnit(hostile *Unit) {
 }
 
 func (client *Player) AddMatherShips(matherShip *MatherShip) {
-	client.MatherShip = matherShip
+	client.matherShip = matherShip
 }
 
 func (client *Player) AddHostileMatherShip(matherShip *MatherShip) {
@@ -260,7 +260,7 @@ func (client *Player) DelHostileUnit(x, y int) {
 }
 
 func (client *Player) GetMatherShip() (*MatherShip) {
-	return client.MatherShip
+	return client.matherShip
 }
 
 func (client *Player) GetHostileMatherShips() (matherShip map[int]map[int]*MatherShip) {

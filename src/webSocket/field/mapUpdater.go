@@ -13,7 +13,7 @@ func UpdateWatchZone(client *game.Player, activeGame *game.Game, updaterWatchZon
 	updateMyUnit(client)
 	updateMyMatherShip(client)
 	sendNewHostileUnit(updaterWatchZone.OpenUnit, client.GetLogin())
-	sendNewHostileMatherShip(updaterWatchZone.OpenStructure, client.GetLogin())
+	sendNewHostileMatherShip(updaterWatchZone.OpenMatherShip, client.GetLogin())
 	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
 }
 
