@@ -1,8 +1,3 @@
-function openSockets() {
-    ConnectChat();
-    ConnectField();
-}
-
 function GrabCamera() {
     if (game.input.activePointer.rightButton.isDown) { // ловит нажатие правой кнопки маши в игре
         if (game.origDragPoint) {
@@ -14,16 +9,3 @@ function GrabCamera() {
         game.origDragPoint = null;
     }
 }
-
-function SizeMap(params) {
-
-}
-
-function Wheel(e) {
-
-}
-
-function Rotate(params) {
-
-}
-

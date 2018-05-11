@@ -1,6 +1,6 @@
 function InitUnit(jsonMessage) {
     var unitStat = JSON.parse(jsonMessage).unit;
-    DelMoveCoordinate();
+    RemoveSelectMoveCoordinate();
     CreateUnit(unitStat)
 }
 

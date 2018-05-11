@@ -1,11 +1,13 @@
 function InitMoveUnit(jsonMessage) {
 
-    DelMoveCoordinate(); // убираем выделение ячек
-    var errorMove = JSON.parse(jsonMessage).error;
-    if (errorMove === null || errorMove === "") {
+    RemoveSelectMoveCoordinate(); // убираем выделение ячек
+
+    var error = JSON.parse(jsonMessage).error;
+
+    if (error === null || error === "") {
         var owner = JSON.parse(jsonMessage).unit.owner;
 
-        if (owner === MY_ID) {
+        if (owner === MY_ID) { // todo это должен делать бекенд
             MoveMyUnit(jsonMessage, owner)
         } else {
             MoveHostileUnit(jsonMessage, owner)
@@ -23,7 +25,7 @@ function MoveHostileUnit(jsonMessage, owner) {
             var lastCell = patchNodes[patchNodes.length - 1];
             unit = units[firstNode.x + ":" + firstNode.y];
             if (unit) {
-                unit.patchNodes = patchNodes;                    // добавляем юниту путь
+                unit.patchNodes = patchNodes;                // добавляем юниту путь
                 unit.owner = owner;
             } else {
 
@@ -34,7 +36,7 @@ function MoveHostileUnit(jsonMessage, owner) {
                 CreateUnit(newUnit);
 
                 unit = units[firstNode.x + ":" + firstNode.y];
-                unit.patchNodes = patchNodes;                    // добавляем юниту путь
+                unit.patchNodes = patchNodes;                  // добавляем юниту путь
                 unit.owner = owner;
             }
             MarkLastPathCell(unit, lastCell);
@@ -52,7 +54,7 @@ function MoveMyUnit(jsonMessage, owner) {
     var unit = units[unitNode.x + ":" + unitNode.y];         // берем юнита
 
     var lastCell = patchNodes[patchNodes.length - 1];
-    MarkLastPathCell(unit, lastCell);                              // помечаем ячейку куда идет моб
+    MarkLastPathCell(unit, lastCell);                        // помечаем ячейку куда идет моб
 
     unit.patchNodes = patchNodes;                            // добавляем юниту путь
     unit.watchNode = watchNode;                              // кладем туда видимост на каждую клетку для отрисовки
@@ -98,7 +100,7 @@ function CheckPath(unit) {
     if (unit.owner === MY_ID) {
         targetID = firstNode.x + ":" + firstNode.y;
         MoveToCell(unit, targetID);
-        UpdateWachZone(unit, targetID);
+        UpdateWatchZone(unit, targetID);
     } else {
         if (firstNode.type === "hide") {
 
@@ -136,7 +138,7 @@ function MoveToCell(unit, targetID) {
     //unit.body.velocity = game.physics.arcade.velocityFromAngle(unit.angle, UNIT_SPEED); // устанавливаем скорость
 }
 
-function UpdateWachZone(unit, targetID) {
+function UpdateWatchZone(unit, targetID) {
     if (unit.watchNode.hasOwnProperty(targetID)) {
 
         var watch = unit.watchNode;
@@ -147,7 +149,7 @@ function UpdateWachZone(unit, targetID) {
         var openStructure = watch[targetID].open_structure;
 
         if (closeCoordinate) {
-            DeleteCoordinates(closeCoordinate);
+            CloseCoordinates(closeCoordinate);
         }
 
         if (openCoordinate) {

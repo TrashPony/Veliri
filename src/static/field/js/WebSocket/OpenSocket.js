@@ -1,0 +1,4 @@
+function openSockets() {
+    ConnectChat();
+    ConnectField();
+}

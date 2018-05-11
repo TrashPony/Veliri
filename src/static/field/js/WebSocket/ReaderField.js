@@ -28,7 +28,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectUnit") {  // + -
-        setUnitAction(jsonMessage);
+        SelectUnit(jsonMessage);
     }
 
     if (event === "Attack") {
@@ -36,7 +36,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectCoordinateCreate") {
-        SelectCoordinateCreate(jsonMessage)
+        SelectCoordinateUnitCreate(jsonMessage)
     }
 
     if (event === "OpenCoordinate") { // +
@@ -44,7 +44,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "DellCoordinate") { // +
-        DelUnit(jsonMessage)
+        CloseCoordinate(jsonMessage)
     }
 
     if (event === "MouseOver") { // +
@@ -55,7 +55,7 @@ function ReadResponse(jsonMessage) {
         InitMoveUnit(jsonMessage);
     }
 
-    if (event === "TargetUnit") {
+    /*if (event === "TargetUnit") {
         TargetUnit();
-    }
+    }*/
 }
