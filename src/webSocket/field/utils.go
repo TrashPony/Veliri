@@ -33,7 +33,7 @@ func subtraction(slice1 []*game.Coordinate, slice2 []*game.Coordinate) (ab []gam
 	return ab
 }
 
-func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
+/*func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
 	for _, clients := range usersFieldWs { // TODO в обьект игры сразу инициализировать всех игроков
 		add := false
 		for _, userStat := range players {
@@ -46,4 +46,4 @@ func ActionGameUser(players []*game.UserStat) (activeUser []*game.Player) {
 		}
 	}
 	return
-}
+}*/

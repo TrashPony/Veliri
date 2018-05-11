@@ -1,8 +1,11 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
+    if (event === "LoadGame") {
+        console.log(jsonMessage);
+    }
 
-    if (event === "InitPlayer") { // +
+    /*if (event === "InitPlayer") { // +
         console.log(jsonMessage);
         InitPlayer(jsonMessage);
     }
@@ -17,7 +20,7 @@ function ReadResponse(jsonMessage) {
 
     if (event === "InitStructure") { // +
         InitStructure(jsonMessage);
-    }
+    }*/
 
     if (event === "BuildUnit") {
         BuildUnit(jsonMessage);

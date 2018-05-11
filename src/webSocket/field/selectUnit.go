@@ -1,13 +1,12 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
 )
 
 func SelectUnit(msg Message, ws *websocket.Conn) {
 
-	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	/*unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
 	respawn := client.GetRespawn()
@@ -62,5 +61,5 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 				}
 			}
 		}
-	}
+	}*/
 }

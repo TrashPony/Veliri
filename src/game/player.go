@@ -8,15 +8,17 @@ type Player struct {
 	// структура описывающая клиента ws соеденение
 	login              string
 	id                 int
-	watch              map[int]map[int]*Coordinate // map[X]map[Y]
-	units              map[int]map[int]*Unit       // map[X]map[Y]
+	watch              map[string]map[string]*Coordinate // map[X]map[Y]
+	notGameUnit        []*Unit
+	units              map[string]map[string]*Unit // map[X]map[Y]
 	matherShip         *MatherShip
-	hostileMatherShips map[int]map[int]*MatherShip // map[X]map[Y]
-	hostileUnits       map[int]map[int]*Unit       // map[X]map[Y]
-	respawn            *MatherShip
+	hostileMatherShips map[string]map[string]*MatherShip // map[X]map[Y]
+	hostileUnits       map[string]map[string]*Unit       // map[X]map[Y]
+	respawn            *Coordinate
 	createZone         map[string]*Coordinate
 	gameID             int
 	equips             []*Equip
+	ready              bool
 }
 
 func (client *Player) GetAllWatchObject(activeGame *Game) {
@@ -132,42 +134,42 @@ func (client *Player) UpdateWatchZone(game *Game) (*UpdaterWatchZone) {
 
 func (client *Player) AddCoordinate(coordinate *Coordinate) {
 	if client.watch != nil {
-		if client.watch[coordinate.X] != nil {
-			client.watch[coordinate.X][coordinate.Y] = coordinate
+		if client.watch[strconv.Itoa(coordinate.X)] != nil {
+			client.watch[strconv.Itoa(coordinate.X)][strconv.Itoa(coordinate.Y)] = coordinate
 		} else {
-			client.watch[coordinate.X] = make(map[int]*Coordinate)
+			client.watch[strconv.Itoa(coordinate.X)] = make(map[string]*Coordinate)
 			client.AddCoordinate(coordinate)
 		}
 	} else {
-		client.watch = make(map[int]map[int]*Coordinate)
+		client.watch = make(map[string]map[string]*Coordinate)
 		client.AddCoordinate(coordinate)
 	}
 }
 
 func (client *Player) AddUnit(unit *Unit) {
 	if client.units != nil {
-		if client.units[unit.X] != nil {
-			client.units[unit.X][unit.Y] = unit
+		if client.units[strconv.Itoa(unit.X)] != nil {
+			client.units[strconv.Itoa(unit.X)][strconv.Itoa(unit.Y)] = unit
 		} else {
-			client.units[unit.X] = make(map[int]*Unit)
+			client.units[strconv.Itoa(unit.X)] = make(map[string]*Unit)
 			client.AddUnit(unit)
 		}
 	} else {
-		client.units = make(map[int]map[int]*Unit)
+		client.units = make(map[string]map[string]*Unit)
 		client.AddUnit(unit)
 	}
 }
 
 func (client *Player) AddHostileUnit(hostile *Unit) {
 	if client.hostileUnits != nil {
-		if client.hostileUnits[hostile.X] != nil {
-			client.hostileUnits[hostile.X][hostile.Y] = hostile
+		if client.hostileUnits[strconv.Itoa(hostile.X)] != nil {
+			client.hostileUnits[strconv.Itoa(hostile.X)][strconv.Itoa(hostile.Y)] = hostile
 		} else {
-			client.hostileUnits[hostile.X] = make(map[int]*Unit)
+			client.hostileUnits[strconv.Itoa(hostile.X)] = make(map[string]*Unit)
 			client.AddHostileUnit(hostile)
 		}
 	} else {
-		client.hostileUnits = make(map[int]map[int]*Unit)
+		client.hostileUnits = make(map[string]map[string]*Unit)
 		client.AddHostileUnit(hostile)
 	}
 }
@@ -178,27 +180,19 @@ func (client *Player) AddMatherShips(matherShip *MatherShip) {
 
 func (client *Player) AddHostileMatherShip(matherShip *MatherShip) {
 	if client.hostileMatherShips != nil {
-		if client.hostileMatherShips[matherShip.X] != nil {
-			client.hostileMatherShips[matherShip.X][matherShip.Y] = matherShip
+		if client.hostileMatherShips[strconv.Itoa(matherShip.X)] != nil {
+			client.hostileMatherShips[strconv.Itoa(matherShip.X)][strconv.Itoa(matherShip.Y)] = matherShip
 		} else {
-			client.hostileMatherShips[matherShip.X] = make(map[int]*MatherShip)
+			client.hostileMatherShips[strconv.Itoa(matherShip.X)] = make(map[string]*MatherShip)
 			client.AddHostileMatherShip(matherShip)
 		}
 	} else {
-		client.hostileMatherShips = make(map[int]map[int]*MatherShip)
+		client.hostileMatherShips = make(map[string]map[string]*MatherShip)
 		client.AddHostileMatherShip(matherShip)
 	}
 }
 
-func (client *Player) SetRespawn(respawn *MatherShip) {
-	PermCoordinates := GetCoordinates(respawn.X, respawn.Y, respawn.RangeView)
-	client.createZone = make(map[string]*Coordinate)
-	for _, coordinate := range PermCoordinates {
-		if !(coordinate.X == respawn.X && coordinate.Y == respawn.Y) {
-			client.createZone[strconv.Itoa(coordinate.X)+":"+strconv.Itoa(coordinate.Y)] = coordinate
-		}
-	}
-
+func (client *Player) SetRespawn(respawn *Coordinate) {
 	client.respawn = respawn
 }
 
@@ -206,7 +200,7 @@ func (client *Player) GetCreateZone() (map[string]*Coordinate) {
 	return client.createZone
 }
 
-func (client *Player) GetRespawn() (respawn *MatherShip) {
+func (client *Player) GetRespawn() (respawn *Coordinate) {
 	return client.respawn
 }
 
@@ -234,62 +228,88 @@ func (client *Player) GetGameID() (id int) {
 	return client.gameID
 }
 
-func (client *Player) GetUnits() (unit map[int]map[int]*Unit) {
+func (client *Player) GetUnits() (unit map[string]map[string]*Unit) {
 	return client.units
 }
 
 func (client *Player) GetUnit(x, y int) (unit *Unit, find bool) {
-	unit, find = client.units[x][y]
+	unit, find = client.units[strconv.Itoa(x)][strconv.Itoa(y)]
 	return
 }
 
 func (client *Player) DelUnit(x, y int) {
-	delete(client.units[x], y)
+	delete(client.units[strconv.Itoa(x)], strconv.Itoa(y))
 }
 
-func (client *Player) GetHostileUnits() (unit map[int]map[int]*Unit) {
+func (client *Player) GetHostileUnits() (unit map[string]map[string]*Unit) {
 	return client.hostileUnits
 }
 
 func (client *Player) GetHostileUnit(x, y int) (unit *Unit, find bool) {
-	unit, find = client.hostileUnits[x][y]
+	unit, find = client.hostileUnits[strconv.Itoa(x)][strconv.Itoa(y)]
 	return
 }
 
 func (client *Player) DelHostileUnit(x, y int) {
-	delete(client.hostileUnits[x], y)
+	delete(client.hostileUnits[strconv.Itoa(x)], strconv.Itoa(y))
 }
 
 func (client *Player) GetMatherShip() (*MatherShip) {
 	return client.matherShip
 }
 
-func (client *Player) GetHostileMatherShips() (matherShip map[int]map[int]*MatherShip) {
+func (client *Player) GetHostileMatherShips() (matherShip map[string]map[string]*MatherShip) {
 	return client.hostileMatherShips
 }
 
 func (client *Player) GetHostileMatherShip(x, y int) (matherShip *MatherShip, find bool) {
-	matherShip, find = client.hostileMatherShips[x][y]
+	matherShip, find = client.hostileMatherShips[strconv.Itoa(x)][strconv.Itoa(y)]
 	return
 }
 
-func (client *Player) GetWatchCoordinates() (coordinate map[int]map[int]*Coordinate) {
+func (client *Player) GetWatchCoordinates() (coordinate map[string]map[string]*Coordinate) {
 	return client.watch
 }
 
 func (client *Player) GetWatchCoordinate(x, y int) (coordinate *Coordinate, find bool) {
-	coordinate, find = client.watch[x][y]
+	coordinate, find = client.watch[strconv.Itoa(x)][strconv.Itoa(y)]
 	return
 }
 
 func (client *Player) DelWatchCoordinate(x, y int) {
-	delete(client.watch[x], y)
+	delete(client.watch[strconv.Itoa(x)], strconv.Itoa(y))
 }
 
 func (client *Player) SetEquip(equips []*Equip) {
 	client.equips = equips
 }
 
-func (client *Player) ПetEquip() []*Equip {
+func (client *Player) GetEquip() []*Equip {
 	return client.equips
+}
+
+func (client *Player) SetReady(ready bool) {
+	client.ready = ready
+}
+
+func (client *Player) GetReady() (bool) {
+	return client.ready
+}
+
+func (client *Player) SetNotGameUnits(units []*Unit) () {
+	client.notGameUnit = units
+}
+
+func (client *Player) GetNotGameUnits() (unit []*Unit) {
+	return client.notGameUnit
+}
+
+func (client *Player) GetNotGameUnit(id int) (unit *Unit, find bool) {
+	for _, unit := range client.GetNotGameUnits() {
+		if id == unit.Id {
+			return unit, true
+		}
+	}
+
+	return
 }

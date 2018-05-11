@@ -7,7 +7,7 @@ import (
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
 
-	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	/*unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 
 	if find && ok {
@@ -48,7 +48,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	} else {
 		resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not found unit"}
 		ws.WriteJSON(resp)
-	}
+	}*/
 }
 
 func skipMoveUnit(msg Message, ws *websocket.Conn) {

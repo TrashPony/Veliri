@@ -14,3 +14,7 @@ function getCookie(name) {
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
+
+function LoadGame(jsonMessage) {
+
+}

@@ -8,7 +8,7 @@ import (
 	"../DetailUnit"
 )
 
-func GetAllUnits(idGame int) map[int]map[int]*Unit {
+func GetAllUnits(idGame int) (map[int]map[int]*Unit, []*Unit ){
 
 	rows, err := db.Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
 		"ag.Weight, ag.Speed, ag.Initiative, ag.Damage, ag.RangeAttack, ag.MinAttackRange, ag.AreaAttack, "+
@@ -22,7 +22,13 @@ func GetAllUnits(idGame int) map[int]map[int]*Unit {
 	}
 	defer rows.Close()
 
+	/*
+
+	Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, ag.Weight, ag.Speed FROM action_game_unit as ag, users WHERE ag.id_game=1 AND ag.id_user=users.id;
+	 */
+
 	var units = make(map[int]map[int]*Unit)
+	var notGameUnits = make([]*Unit, 0)
 
 	var targetKey string
 
@@ -46,11 +52,15 @@ func GetAllUnits(idGame int) map[int]map[int]*Unit {
 		unit.Target = ParseUnitTarget(targetKey)
 		SetDetails(&unit, chassisID, weaponID, towerID, bodyID, radarID)
 
-		if units[unit.X] != nil { // кладем юнита в матрицу
-			units[unit.X][unit.Y] = &unit
+		if unit.OnMap {
+			if units[unit.X] != nil { // кладем юнита в матрицу
+				units[unit.X][unit.Y] = &unit
+			} else {
+				units[unit.X] = make(map[int]*Unit)
+				units[unit.X][unit.Y] = &unit
+			}
 		} else {
-			units[unit.X] = make(map[int]*Unit)
-			units[unit.X][unit.Y] = &unit
+			notGameUnits = append(notGameUnits, &unit)
 		}
 	}
 
@@ -58,7 +68,7 @@ func GetAllUnits(idGame int) map[int]map[int]*Unit {
 		log.Fatal(err)
 	}
 
-	return units
+	return units, notGameUnits
 }
 
 func ParseUnitTarget(targetKey string) *Coordinate {

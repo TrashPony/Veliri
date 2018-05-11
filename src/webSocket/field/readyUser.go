@@ -1,13 +1,12 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
 )
 
 func Ready(msg Message, ws *websocket.Conn) {
 
-	client := usersFieldWs[ws]
+	/*client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
 
 	phase, err, phaseChange := game.UserReady(client, activeGame)
@@ -71,6 +70,6 @@ func Ready(msg Message, ws *websocket.Conn) {
 	} else {
 		resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Phase: phase}
 		fieldPipe <- resp
-	}
+	}*/
 }
 

@@ -4,13 +4,24 @@ import (
 	"../../game"
 )
 
+type LoadGame struct {
+	Event        string                           `json:"event"`
+	UserName     string                           `json:"user_name"`
+	Ready        bool                             `json:"ready"`
+	Equip        []*game.Equip                    `json:"equip"`
+	Units        map[string]map[string]*game.Unit `json:"units"`
+	NotGameUnits []*game.Unit                     `json:"not_game_units"`
+	Map          *game.Map                        `json:"map"`
+	GameInfo     *game.InfoGame                   `json:"game_info"`
+	MatherShip   *game.MatherShip                 `json:"mather_ship"`
+}
+
 type Response struct {
 	Event    string `json:"event"`
 	UserName string `json:"user_name"`
 
-	User  *game.UserStat   `json:"user"`
-	Users []*game.UserStat `json:"users"`
-	Map   *game.Map
+	Player *game.Player `json:"player"`
+	Map    *game.Map
 
 	GameStep  int    `json:"game_step"`
 	GamePhase string `json:"game_phase"`

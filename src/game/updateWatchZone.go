@@ -1,9 +1,11 @@
 package game
 
-func updateOpenCoordinate(client *Player, oldWatchZone map[int]map[int]*Coordinate) (openCoordinate []*Coordinate, closeCoordinate []*Coordinate){
+import "strconv"
+
+func updateOpenCoordinate(client *Player, oldWatchZone map[string]map[string]*Coordinate) (openCoordinate []*Coordinate, closeCoordinate []*Coordinate){
 	for _, xLine := range client.GetWatchCoordinates() { // отправляем все новые координаты, и т.к. старая клетка юнита теперь тоже является координатой то и ее тоже обновляем
 		for _, newCoordinate := range xLine {
-			_, ok := oldWatchZone[newCoordinate.X][newCoordinate.Y]
+			_, ok := oldWatchZone[strconv.Itoa(newCoordinate.X)][strconv.Itoa(newCoordinate.Y)]
 			if !ok && newCoordinate.X >= 0 && newCoordinate.Y >= 0 {
 				openCoordinate = append(openCoordinate, newCoordinate)
 			}
@@ -23,10 +25,10 @@ func updateOpenCoordinate(client *Player, oldWatchZone map[int]map[int]*Coordina
 	return
 }
 
-func updateHostileUnit(client *Player, oldWatchUnit map[int]map[int]*Unit) (openUnit []*Unit, closeUnit []*Unit) {
+func updateHostileUnit(client *Player, oldWatchUnit map[string]map[string]*Unit) (openUnit []*Unit, closeUnit []*Unit) {
 	for _, xLine := range client.GetHostileUnits() { // добавляем новые вражеские юниты которых открыли
 		for _, hostile := range xLine {
-			_, ok := oldWatchUnit[hostile.X][hostile.Y]
+			_, ok := oldWatchUnit[strconv.Itoa(hostile.X)][strconv.Itoa(hostile.Y)]
 			if !ok {
 				openUnit = append(openUnit, hostile)
 			}
@@ -45,10 +47,10 @@ func updateHostileUnit(client *Player, oldWatchUnit map[int]map[int]*Unit) (open
 	return
 }
 
-func updateHostileStrcuture(client *Player, oldWatchHostileMatherShip map[int]map[int]*MatherShip) (openMatherShip []*MatherShip, closeMatherShip []*MatherShip) {
+func updateHostileStrcuture(client *Player, oldWatchHostileMatherShip map[string]map[string]*MatherShip) (openMatherShip []*MatherShip, closeMatherShip []*MatherShip) {
 	for _, xLine := range client.GetHostileMatherShips() { // добавляем новые вражеские структуры которых открыли
 		for _, hostile := range xLine {
-			_, ok := oldWatchHostileMatherShip[hostile.X][hostile.Y]
+			_, ok := oldWatchHostileMatherShip[strconv.Itoa(hostile.X)][strconv.Itoa(hostile.Y)]
 			if !ok {
 				openMatherShip = append(openMatherShip, hostile)
 			}
