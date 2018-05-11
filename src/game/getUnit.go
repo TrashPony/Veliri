@@ -28,7 +28,7 @@ func GetAllUnits(idGame int) (map[int]map[int]*Unit, []*Unit ){
 	 */
 
 	var units = make(map[int]map[int]*Unit)
-	var notGameUnits = make([]*Unit, 0)
+	var unitStorage = make([]*Unit, 0)
 
 	var targetKey string
 
@@ -60,7 +60,7 @@ func GetAllUnits(idGame int) (map[int]map[int]*Unit, []*Unit ){
 				units[unit.X][unit.Y] = &unit
 			}
 		} else {
-			notGameUnits = append(notGameUnits, &unit)
+			unitStorage = append(unitStorage, &unit)
 		}
 	}
 
@@ -68,7 +68,7 @@ func GetAllUnits(idGame int) (map[int]map[int]*Unit, []*Unit ){
 		log.Fatal(err)
 	}
 
-	return units, notGameUnits
+	return units, unitStorage
 }
 
 func ParseUnitTarget(targetKey string) *Coordinate {

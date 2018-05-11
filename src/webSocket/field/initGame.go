@@ -20,14 +20,18 @@ func toGame(msg Message, ws *websocket.Conn) {
 		}
 	}
 
-	var mapParam = LoadGame{
-		Event:        "LoadGame",
-		Ready:        newClient.GetReady(),
-		Equip:        newClient.GetEquip(),
-		Units:        newClient.GetUnits(),
-		NotGameUnits: newClient.GetNotGameUnits(),
-		Map:          loadGame.GetMap(),
-		GameInfo:     loadGame.GetStat(),
-		MatherShip:   newClient.GetMatherShip()}
-	ws.WriteJSON(mapParam)
+	var sendLoadGame = LoadGame{
+		Event:              "LoadGame",
+		UserName:           newClient.GetLogin(),
+		Ready:              newClient.GetReady(),
+		Equip:              newClient.GetEquip(),
+		Units:              newClient.GetUnits(),
+		HostileUnits:       newClient.GetHostileUnits(),
+		UnitStorage:        newClient.GetUnitsStorage(),
+		Map:                loadGame.GetMap(),
+		GameInfo:           loadGame.GetStat(),
+		MatherShip:         newClient.GetMatherShip(),
+		HostileMatherShips: newClient.GetHostileMatherShips(),
+		Watch:              newClient.GetWatchCoordinates()}
+	ws.WriteJSON(sendLoadGame)
 }

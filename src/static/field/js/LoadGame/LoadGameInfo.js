@@ -1,11 +1,10 @@
-function GameInfo(jsonMessage) {
+function GameInfo(gameInfo) {
 
     var step = document.getElementById('step');
-    step.innerHTML = JSON.parse(jsonMessage).game_step;
+    step.innerHTML = gameInfo.Step;
 
     var phaseGame = document.getElementById('phase');
-    phaseGame.innerHTML = JSON.parse(jsonMessage).game_phase;
+    phaseGame.innerHTML = gameInfo.Phase;
 
-    phase = JSON.parse(jsonMessage).game_phase;
-
+    phase = gameInfo.Phase;
 }

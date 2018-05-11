@@ -2,7 +2,7 @@ function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
     if (event === "LoadGame") {
-        console.log(jsonMessage);
+        LoadGame(jsonMessage)
     }
 
     /*if (event === "InitPlayer") { // +
@@ -42,9 +42,9 @@ function ReadResponse(jsonMessage) {
         SelectCoordinateUnitCreate(jsonMessage)
     }
 
-    if (event === "OpenCoordinate") { // +
+    /*if (event === "OpenCoordinate") { // +
         OpenCoordinate(jsonMessage)
-    }
+    }*/
 
     if (event === "DellCoordinate") { // +
         CloseCoordinate(jsonMessage)

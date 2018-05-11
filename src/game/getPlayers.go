@@ -29,7 +29,7 @@ func GetPlayer(game *Game) []*Player {
 
 		player.SetGameID(game.GetStat().Id)
 		player.SetEquip(equip)
-		player.SetNotGameUnits(units)
+		player.SetUnitsStorage(units)
 		player.UpdateWatchZone(game)
 
 		users = append(users, &player)
@@ -41,7 +41,7 @@ func GetPlayer(game *Game) []*Player {
 func GetNotGameUnits(player Player, game *Game) []*Unit {
 	units := make([]*Unit, 0)
 
-	for _, unit := range game.GetNotGameUnits() {
+	for _, unit := range game.GetUnitsStorage() {
 		if unit.Owner == player.login {
 			units = append(units, unit)
 		}

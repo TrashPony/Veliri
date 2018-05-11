@@ -1,5 +1,3 @@
-function FieldCreate(jsonMessage) {
-    var gameMap = JSON.parse(jsonMessage).Map;
-
+function FieldCreate(gameMap) {
     Game(gameMap) // создаем окно игры размером х:у
 }

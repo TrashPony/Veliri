@@ -8,7 +8,7 @@ type Game struct {
 	Map         *Map
 	stat        *InfoGame
 	players     []*Player
-	notGameUnit []*Unit
+	unitStorage []*Unit
 	units       map[int]map[int]*Unit
 	MatherShips map[int]map[int]*MatherShip
 }
@@ -33,8 +33,8 @@ func (game *Game) SetUnits(unit map[int]map[int]*Unit) {
 	game.units = unit
 }
 
-func (game *Game) SetNotGameUnits(unit []*Unit) {
-	game.notGameUnit = unit
+func (game *Game) SetUnitsStorage(unit []*Unit) {
+	game.unitStorage = unit
 }
 
 func (game *Game) SetUnit(unit *Unit) {
@@ -58,8 +58,8 @@ func (game *Game) GetUnits() (units map[int]map[int]*Unit) {
 	return game.units
 }
 
-func (game *Game) GetNotGameUnits() (units []*Unit) {
-	return game.notGameUnit
+func (game *Game) GetUnitsStorage() (units []*Unit) {
+	return game.unitStorage
 }
 
 func (game *Game) GetUnit(x, y int) (unit *Unit, find bool) {
@@ -118,13 +118,13 @@ func InitGame(idGAme int) (newGame *Game) {
 
 	gameStat := GetInfoGame(idGAme)
 	Map := GetMap(gameStat.IdMap)
-	units, notGameUnits := GetAllUnits(idGAme)
+	units, unitStorage := GetAllUnits(idGAme)
 	matherShips := GetMatherShips(idGAme)
 
-	newGame.SetStat(&gameStat)          // добавляем информацию об игре в обьект игры
-	newGame.SetMap(&Map)                // добавляем информацию об карте
-	newGame.SetUnits(units)             // добавляем имеющихся юнитов
-	newGame.SetNotGameUnits(notGameUnits)
+	newGame.SetStat(&gameStat) // добавляем информацию об игре в обьект игры
+	newGame.SetMap(&Map)       // добавляем информацию об карте
+	newGame.SetUnits(units)    // добавляем имеющихся юнитов
+	newGame.SetUnitsStorage(unitStorage)
 	newGame.SetMatherShips(matherShips) // добавляем в игру все структуры на карте
 
 	userStat := GetPlayer(newGame)

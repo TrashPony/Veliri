@@ -9,7 +9,7 @@ type Player struct {
 	login              string
 	id                 int
 	watch              map[string]map[string]*Coordinate // map[X]map[Y]
-	notGameUnit        []*Unit
+	unitStorage        []*Unit
 	units              map[string]map[string]*Unit // map[X]map[Y]
 	matherShip         *MatherShip
 	hostileMatherShips map[string]map[string]*MatherShip // map[X]map[Y]
@@ -296,16 +296,16 @@ func (client *Player) GetReady() (bool) {
 	return client.ready
 }
 
-func (client *Player) SetNotGameUnits(units []*Unit) () {
-	client.notGameUnit = units
+func (client *Player) SetUnitsStorage(units []*Unit) () {
+	client.unitStorage = units
 }
 
-func (client *Player) GetNotGameUnits() (unit []*Unit) {
-	return client.notGameUnit
+func (client *Player) GetUnitsStorage() (unit []*Unit) {
+	return client.unitStorage
 }
 
-func (client *Player) GetNotGameUnit(id int) (unit *Unit, find bool) {
-	for _, unit := range client.GetNotGameUnits() {
+func (client *Player) GetUnitStorage(id int) (unit *Unit, find bool) {
+	for _, unit := range client.GetUnitsStorage() {
 		if id == unit.Id {
 			return unit, true
 		}
