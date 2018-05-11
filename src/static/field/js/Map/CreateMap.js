@@ -10,7 +10,7 @@ function CreateMap() {
                 floorSprite.tint = 0x757575;
                 floorSprite.inputEnabled = true; // включаем ивенты на спрайт
                 floorSprite.events.onInputDown.add(SelectTarget, floorSprite);
-                floorSprite.events.onInputOut.add(mouse_out, floorSprite);
+                floorSprite.events.onInputOut.add(TipOff, floorSprite);
                 floorSprite.z = 0;
 
                 game.map.OneLayerMap[x][y].sprite = floorSprite;
@@ -19,7 +19,7 @@ function CreateMap() {
             if (game.map.OneLayerMap[x][y].type === "obstacle") { // препятсвие
                 var obstacle = game.add.tileSprite(x * game.tileSize, y * game.tileSize, game.tileSize, game.tileSize, 'obstacle');
                 obstacle.inputEnabled = true;
-                obstacle.events.onInputOut.add(mouse_out);
+                obstacle.events.onInputOut.add(TipOff);
 
                 game.map.OneLayerMap[x][y].sprite = obstacle;
             }

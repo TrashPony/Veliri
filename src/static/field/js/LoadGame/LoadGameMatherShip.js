@@ -5,9 +5,10 @@ function CreateMyMatherShip() {
 
     matherShip.gridX = game.matherShip.x;
     matherShip.gridY = game.matherShip.y;
+    matherShip.info = game.matherShip;
 
-    matherShip.events.onInputOver.add(mouse_over); // обрабатываем наведение мышки
-    matherShip.events.onInputOut.add(mouse_out);   // обрабатываем убирание мышки
+    matherShip.events.onInputOver.add(MatherShipTip, matherShip.info); // обрабатываем наведение мышки
+    matherShip.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
 
     //matherShip.scale.set(1);                  // устанавливаем размер спрайта от оригинала
 
@@ -38,9 +39,10 @@ function CreateHostileMatherShip(matherShipStat) {
 
     matherShip.gridX = matherShipStat.x;
     matherShip.gridY = matherShipStat.y;
+    matherShip.info = matherShipStat;
 
-    matherShip.events.onInputOver.add(mouse_over); // обрабатываем наведение мышки
-    matherShip.events.onInputOut.add(mouse_out);   // обрабатываем убирание мышки
+    matherShip.events.onInputOver.add(MatherShipTip, matherShip.info); // обрабатываем наведение мышки
+    matherShip.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
 
     var style = {font: "16px Arial", fill: "#bf0001"};
 

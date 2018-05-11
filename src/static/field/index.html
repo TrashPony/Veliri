@@ -5,7 +5,7 @@
     <link href="../css/menuAnimation.css" rel="stylesheet">
     <link href="../css/all.css" rel="stylesheet">
     <link href="../css/chat.css" rel="stylesheet">
-    <link href="../css/field/field.css" rel="stylesheet">
+    <link href="css/field.css" rel="stylesheet">
 
     <title>Veliri</title>
     <script src="js/Game/Create.js"></script>
@@ -24,6 +24,9 @@
 
     <script src="js/Interface/GrabCamera.js"></script>
     <script src="js/Interface/MouseOver.js"></script>
+    <script src="js/Interface/UnitTip.js"></script>
+    <script src="js/Interface/MatherShipTip.js"></script>
+    <script src="js/Interface/TipOff.js"></script>
     <script src="js/Interface/RotateMap.js"></script>
     <script src="js/Interface/SizeMap.js"></script>
     <script src="js/Interface/Wheel.js"></script>
@@ -35,6 +38,7 @@
     <script src="js/LoadGame/LoadGameUnit.js"></script>
     <script src="js/LoadGame/LoadGameMatherShip.js"></script>
     <script src="js/LoadGame/LoadOpenCoordinate.js"></script>
+    <script src="js/LoadGame/LoadHoldUnits.js"></script>
     <script src="js/LoadGame/GetSizeWindow.js"></script>
 
     <script src="js/Unit/SelectTarget.js"></script>
@@ -53,7 +57,7 @@
     <script src="../lib/phaser.js"></script>
 </head>
 
-<body oncontextmenu="return false;" onload="openSockets()">
+<body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveTip(event)">
 
 <div id="ControlPanel">
     <table class="animateTable">
@@ -86,7 +90,7 @@
     </div>
 </div>
 
-<div id="main" align="center" onmousemove="moveTip(event)" onwheel="Wheel(event)">
+<div id="main" align="center" onwheel="Wheel(event)">
 
 </div>
 
@@ -95,10 +99,6 @@
         <table class="table" >
             <tr align="center">
                 <th class="h" colspan="2" width="160"> Информация: <font class="moveWindow" onmousedown="moveWindow(event, 'subMenu')">⇵</font> </th>
-            </tr>
-            <tr align="center">
-                <td> Деньги: </td>
-                <td> <font id="price" class="Value"> </font> </td>
             </tr>
             <tr align="center">
                 <td> Ход № </td>
@@ -121,16 +121,19 @@
                 <td> <input type="submit" class="button noActive" onclick="" value="Способность"> </td>
             </tr>
             <tr align="center">
-                <td> <input type="submit" class="button noActive" onclick="" value="Ремонт"> </td>
-            </tr>
-            <tr align="center">
                 <td colspan="2"> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!"> </td>
+            </tr>
+        </table>
+
+        <table class="table units" id="holdUnits" >
+            <tr align="center">
+                <th class="h" width="160" colspan="3"> Юниты в трюме: </th>
             </tr>
         </table>
     </div>
 </div>
 
-<div id="floatTip">
+<div id="unitTip">
     <table class="animateTable" >
         <tr align="center">
             <th class="h" colspan="2" id="tipUnit"></th>
@@ -179,6 +182,30 @@
         <tr align="center">
             <td> Тип атаки </td>
             <td id="tipTypeAttack"> </td>
+        </tr>
+    </table>
+</div>
+
+<div id="matherShipTip">
+    <table class="animateTable" >
+        <tr align="center">
+            <th class="h" colspan="2" id="matherShipTipType"></th>
+        </tr>
+        <tr align="center">
+            <td> Броня </td>
+            <td id="matherShipArmor"> </td>
+        </tr>
+        <tr align="center">
+            <td> HP </td>
+            <td id="matherShipHP"> </td>
+        </tr>
+        <tr align="center">
+            <td> Владелец </td>
+            <td id="matherShipOwner"> </td>
+        </tr>
+        <tr align="center">
+            <td> Дальность обзора </td>
+            <td id="matherShipRangeView"> </td>
         </tr>
     </table>
 </div>

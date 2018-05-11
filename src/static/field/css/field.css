@@ -1,7 +1,8 @@
 body {
     user-select: none;
-    overflow:  hidden;
+    overflow: hidden;
 }
+
 .aim {
     width: 50px;
     height: 50px;
@@ -22,18 +23,18 @@ body {
     text-align: left;
 }
 
-.info.subMenu{
+.info.subMenu {
     animation: menuAnimation 3000ms linear infinite;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
+    color: #a5d5ef;
     width: 170px;
-    display:inline-block;
+    display: inline-block;
     box-shadow: 0 0 30px 0 rgb(0, 164, 255);
-    position:fixed;
+    position: fixed;
     top: 1%;
     right: 5%;
     padding: 10px;
@@ -41,8 +42,8 @@ body {
 }
 
 #ControlPanel {
-    display:inline-block;
-    vertical-align:top;
+    display: inline-block;
+    vertical-align: top;
     margin-right: 15px;
     position: fixed;
     top: 1%;
@@ -58,20 +59,59 @@ body {
 }
 
 #main {
-    display:inline-block;
+    display: inline-block;
     white-space: nowrap;
-    overflow:  auto;
+    overflow: auto;
     resize: both;
-    position:relative;
-    box-shadow: 25px 25px 20px rgba(0,0,0,0.5);
+    position: relative;
+    box-shadow: 25px 25px 20px rgba(0, 0, 0, 0.5);
     z-index: 0;
 }
 
-#floatTip {
+#unitTip {
     position: absolute;
     display: none;
     font-family: sans-serif;
     font-size: 9pt;
     border-radius: 10px;
     background-color: rgba(33, 176, 255, 0.6);
+}
+
+#matherShipTip {
+    position: absolute;
+    display: none;
+    font-family: sans-serif;
+    font-size: 9pt;
+    border-radius: 10px;
+    background-color: rgba(33, 176, 255, 0.6);
+}
+
+.table.units {
+    margin-top: 15px;
+}
+
+.boxUnit {
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    height: 35px;
+    line-height: 35px;
+    width: 35px;
+    border: 1px solid #25a0e1;
+    background-color: rgba(0, 0, 0, .4);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin: 5px;
+}
+
+.boxUnit:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    color: #00fffd;
+    cursor: pointer;
+}
+
+.UnitRow {
+    text-align: center;
+    vertical-align: middle;
+    width: 35px;
 }

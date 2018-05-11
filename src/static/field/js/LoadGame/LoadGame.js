@@ -30,4 +30,5 @@ function LoadGame(jsonMessage) {
 
     GameInfo();
     InitPlayer();
+    LoadHoldUnits();
 }
