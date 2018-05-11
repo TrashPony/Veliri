@@ -1,11 +1,4 @@
-function InitStructure(jsonMessage) {
-    //TODO {"event":"InitStructure","user_name":"user","structure":{"type":"respawn","name_user":"user","watch_zone":2,"x":0,"y":0}}
-
-    var structureStat = JSON.parse(jsonMessage).structure;
-    CreateStructure(structureStat)
-}
-
-function CreateStructure(structureStat) {
+function CreateMatherShip(structureStat) {
     var x = structureStat.x;
     var y = structureStat.y;
     var type = structureStat.type;

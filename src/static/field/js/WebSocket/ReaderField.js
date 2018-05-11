@@ -20,10 +20,10 @@ function ReadResponse(jsonMessage) {
 
     if (event === "InitStructure") { // +
         InitStructure(jsonMessage);
-    }*/
+    }
 
-    if (event === "BuildUnit") {
-        BuildUnit(jsonMessage);
+    if (event === "PlaceUnit") {
+        PlaceUnit(jsonMessage);
     }
 
     if (event === "Ready") {      // +
@@ -42,9 +42,9 @@ function ReadResponse(jsonMessage) {
         SelectCoordinateUnitCreate(jsonMessage)
     }
 
-    /*if (event === "OpenCoordinate") { // +
+    if (event === "OpenCoordinate") { // +
         OpenCoordinate(jsonMessage)
-    }*/
+    }
 
     if (event === "DellCoordinate") { // +
         CloseCoordinate(jsonMessage)
@@ -58,7 +58,7 @@ function ReadResponse(jsonMessage) {
         InitMoveUnit(jsonMessage);
     }
 
-    /*if (event === "TargetUnit") {
+    if (event === "TargetUnit") {
         TargetUnit();
     }*/
 }

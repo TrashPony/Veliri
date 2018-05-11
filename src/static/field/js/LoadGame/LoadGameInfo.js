@@ -1,10 +1,7 @@
-function GameInfo(gameInfo) {
-
+function GameInfo() {
     var step = document.getElementById('step');
-    step.innerHTML = gameInfo.Step;
+    step.innerHTML = game.gameInfo.Step;
 
     var phaseGame = document.getElementById('phase');
-    phaseGame.innerHTML = gameInfo.Phase;
-
-    phase = gameInfo.Phase;
+    phaseGame.innerHTML = game.gameInfo.Phase;
 }

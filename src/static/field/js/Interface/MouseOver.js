@@ -17,16 +17,10 @@ function ReadInfoMouseOver(jsonMessage) {
 }
 
 function mouse_over(cell) {
-    var xy = cell.id.split(":");
-
-    var x = xy[0];
-    var y = xy[1];
-
     field.send(JSON.stringify({
         event: "MouseOver",
-        id_game: Number(idGame),
-        x: Number(x),
-        y: Number(y)
+        x: Number(cell.gridX),
+        y: Number(cell.gridY)
     }));
 }
 
