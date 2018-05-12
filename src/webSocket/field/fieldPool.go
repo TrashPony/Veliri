@@ -42,16 +42,16 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Play
 		}
 
 		if msg.Event == "InitGame" {
-			toGame(msg, ws)
+			loadGame(msg, ws)
 			continue
 		}
 
-		if msg.Event == "CreateUnit" {
-			CreateUnit(msg, ws)
+		if msg.Event == "SelectStorageUnit" {
+			selectStorageUnit(msg, ws)
 			continue
 		}
 
-		if msg.Event == "MouseOver" {
+		/*if msg.Event == "MouseOver" {
 			MouseOver(msg, ws)
 			continue
 		}
@@ -77,7 +77,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Play
 		if msg.Event == "TargetUnit" {
 			TargetUnit(msg, ws)
 			continue
-		}
+		}*/
 	}
 }
 

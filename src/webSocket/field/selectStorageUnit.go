@@ -2,16 +2,23 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
+	"../../game"
 )
 
-func CreateUnit(msg Message, ws *websocket.Conn) {
-	/*var resp FieldResponse
+func selectStorageUnit(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 
 	if !ok {
 		delete(usersFieldWs, ws)
 	} else {
-		coordinates := client.GetCreateZone()
+		unit, find := client.GetUnitStorage(msg.UnitID)
+
+		if find {
+			resp := SelectStorageUnit{Event: msg.Event, Unit: unit, PlaceCoordinate: client.GetCreateZone()}
+			ws.WriteJSON(resp)
+		}
+
+		/*coordinates := client.GetCreateZone()
 		respawn :=	client.GetRespawn()
 		activeGame := Games[client.GetGameID()]
 
@@ -37,6 +44,12 @@ func CreateUnit(msg Message, ws *websocket.Conn) {
 		} else {
 			resp = FieldResponse{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), X: msg.X, Y: msg.Y, Error: "not allow"}
 			fieldPipe <- resp
-		}
-	}*/
+		}*/
+	}
+}
+
+type SelectStorageUnit struct {
+	Event           string             `json:"event"`
+	Unit            *game.Unit         `json:"unit"`
+	PlaceCoordinate []*game.Coordinate `json:"place_coordinate"`
 }

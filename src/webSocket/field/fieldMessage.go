@@ -4,21 +4,6 @@ import (
 	"../../game"
 )
 
-type LoadGame struct {
-	Event              string                                 `json:"event"`
-	UserName           string                                 `json:"user_name"`
-	Ready              bool                                   `json:"ready"`
-	Equip              []*game.Equip                          `json:"equip"`
-	Units              map[string]map[string]*game.Unit       `json:"units"`
-	HostileUnits       map[string]map[string]*game.Unit       `json:"hostile_units"`
-	UnitStorage        []*game.Unit                           `json:"unit_storage"`
-	Map                *game.Map                              `json:"map"`
-	GameInfo           *game.InfoGame                         `json:"game_info"`
-	MatherShip         *game.MatherShip                       `json:"mather_ship"`
-	HostileMatherShips map[string]map[string]*game.MatherShip `json:"hostile_mather_ships"`
-	Watch              map[string]map[string]*game.Coordinate `json:"watch"`
-}
-
 type Response struct {
 	Event    string `json:"event"`
 	UserName string `json:"user_name"`
@@ -99,7 +84,7 @@ func closeCoordinate(login string, x, y int) {
 type Message struct {
 	Event    string `json:"event"`
 	IdGame   int    `json:"id_game"`
-	IdUnit   string `json:"id_unit"`
+	UnitID   int `json:"unit_id"`
 	IdTarget string `json:"id_target"`
 	TypeUnit string `json:"type_unit"`
 	X        int    `json:"x"`

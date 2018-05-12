@@ -5,6 +5,10 @@ function ReadResponse(jsonMessage) {
         LoadGame(jsonMessage)
     }
 
+    if (event === "SelectStorageUnit") {
+        console.log(jsonMessage)
+    }
+
     /*if (event === "InitPlayer") { // +
         console.log(jsonMessage);
         InitPlayer(jsonMessage);

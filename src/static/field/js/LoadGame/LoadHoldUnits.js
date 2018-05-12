@@ -10,15 +10,19 @@ function LoadHoldUnits() {
                 tr = document.createElement("tr");
                 tr.className = "UnitRow";
             }
-
             if (game.unitStorage.hasOwnProperty(unit)) {
                 var td = document.createElement("td");
                 var boxUnit = document.createElement("div");
                 boxUnit.className = "boxUnit";
+
                 boxUnit.unit = game.unitStorage[unit];
+                boxUnit.id = game.unitStorage[unit].id;
 
                 boxUnit.onclick = function () {
-                    //InitCreateUnit(this); todo
+                    field.send(JSON.stringify({
+                        event: "SelectStorageUnit",
+                        unit_id: Number(this.unit.id)
+                    }));
                 };
 
                 boxUnit.onmouseover = function () {

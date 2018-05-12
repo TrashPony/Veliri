@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func toGame(msg Message, ws *websocket.Conn) {
+func loadGame(msg Message, ws *websocket.Conn) {
 	loadGame, ok := Games[msg.IdGame]
 	newClient, _ := usersFieldWs[ws]
 
@@ -16,22 +16,37 @@ func toGame(msg Message, ws *websocket.Conn) {
 
 	for _, player := range loadGame.GetPlayers() {
 		if (newClient.GetLogin() == player.GetLogin()) && (newClient.GetID() == player.GetID()) {
-			newClient = player
+			usersFieldWs[ws] = player
 		}
 	}
 
 	var sendLoadGame = LoadGame{
 		Event:              "LoadGame",
-		UserName:           newClient.GetLogin(),
-		Ready:              newClient.GetReady(),
-		Equip:              newClient.GetEquip(),
-		Units:              newClient.GetUnits(),
-		HostileUnits:       newClient.GetHostileUnits(),
-		UnitStorage:        newClient.GetUnitsStorage(),
+		UserName:           usersFieldWs[ws].GetLogin(),
+		Ready:              usersFieldWs[ws].GetReady(),
+		Equip:              usersFieldWs[ws].GetEquip(),
+		Units:              usersFieldWs[ws].GetUnits(),
+		HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
+		UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),
 		Map:                loadGame.GetMap(),
 		GameInfo:           loadGame.GetStat(),
-		MatherShip:         newClient.GetMatherShip(),
-		HostileMatherShips: newClient.GetHostileMatherShips(),
-		Watch:              newClient.GetWatchCoordinates()}
+		MatherShip:         usersFieldWs[ws].GetMatherShip(),
+		HostileMatherShips: usersFieldWs[ws].GetHostileMatherShips(),
+		Watch:              usersFieldWs[ws].GetWatchCoordinates()}
 	ws.WriteJSON(sendLoadGame)
+}
+
+type LoadGame struct {
+	Event              string                                 `json:"event"`
+	UserName           string                                 `json:"user_name"`
+	Ready              bool                                   `json:"ready"`
+	Equip              []*game.Equip                          `json:"equip"`
+	Units              map[string]map[string]*game.Unit       `json:"units"`
+	HostileUnits       map[string]map[string]*game.Unit       `json:"hostile_units"`
+	UnitStorage        []*game.Unit                           `json:"unit_storage"`
+	Map                *game.Map                              `json:"map"`
+	GameInfo           *game.InfoGame                         `json:"game_info"`
+	MatherShip         *game.MatherShip                       `json:"mather_ship"`
+	HostileMatherShips map[string]map[string]*game.MatherShip `json:"hostile_mather_ships"`
+	Watch              map[string]map[string]*game.Coordinate `json:"watch"`
 }
