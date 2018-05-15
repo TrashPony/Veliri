@@ -16,7 +16,9 @@ function LoadGame(jsonMessage) {
     game.user.ready = JSON.parse(jsonMessage).ready;
     game.user.equip = JSON.parse(jsonMessage).equip;
 
-    game.gameInfo = JSON.parse(jsonMessage).game_info;
+    game.Step = JSON.parse(jsonMessage).game_step;
+    game.Phase = JSON.parse(jsonMessage).game_phase;
+
     game.unitStorage = JSON.parse(jsonMessage).unit_storage;
     game.tileSize = tileSize;
 

@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../DetailUnit"
+	"../../detailUnit"
 	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 )
@@ -68,11 +68,11 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "GetDetailOfUnits" {
 
-		weapons := DetailUnit.GetWeapons()
-		chassis := DetailUnit.GetChassis()
-		towers := DetailUnit.GetTowers()
-		bodies := DetailUnit.GetBodies()
-		radars := DetailUnit.GetRadars()
+		weapons := detailUnit.GetWeapons()
+		chassis := detailUnit.GetChassis()
+		towers := detailUnit.GetTowers()
+		bodies := detailUnit.GetBodies()
+		radars := detailUnit.GetRadars()
 
 		var resp = Response{Event: msg.Event, Weapons: weapons, Chassis: chassis, Towers: towers, Bodies: bodies, Radars: radars}
 		ws.WriteJSON(resp)
@@ -112,23 +112,23 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 			var unit Squad.Unit
 			// todo проверка на занятость слота в который хотят добавить юнита
 			if msg.WeaponID != 0 {
-				unit.SetWeapon(DetailUnit.GetWeapon(msg.WeaponID))
+				unit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 			}
 
 			if msg.ChassisID != 0 {
-				unit.SetChassis(DetailUnit.GetChass(msg.ChassisID))
+				unit.SetChassis(detailUnit.GetChass(msg.ChassisID))
 			}
 
 			if msg.TowerID != 0 {
-				unit.SetTower(DetailUnit.GetTower(msg.TowerID))
+				unit.SetTower(detailUnit.GetTower(msg.TowerID))
 			}
 
 			if msg.BodyID != 0 {
-				unit.SetBody(DetailUnit.GetBody(msg.BodyID))
+				unit.SetBody(detailUnit.GetBody(msg.BodyID))
 			}
 
 			if msg.RadarID != 0 {
-				unit.SetRadar(DetailUnit.GetRadar(msg.RadarID))
+				unit.SetRadar(detailUnit.GetRadar(msg.RadarID))
 			}
 
 			unit.CalculateParametersUnit()

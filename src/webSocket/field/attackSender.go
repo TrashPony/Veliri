@@ -1,18 +1,13 @@
 package field
 
-import (
-	"../../game"
-	"time"
-)
-
-func attack(activeGame *game.Game, activeUser []*game.Player, msg Message, phase string)  {
+/*func attack(activeGame *Mechanics.Game, activeUser []*Mechanics.Player, msg Message, phase string)  {
 	var resp Response
 	for _, player := range activeUser {
 		resp = Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
 		fieldPipe <- resp
 	}
 
-	resultBattle := game.AttackPhase(activeGame, activeUser)
+	resultBattle := Mechanics.AttackPhase(activeGame, activeUser)
 
 	for _, attack := range resultBattle {
 		attackSender(&attack.AttackUnit, activeUser)
@@ -26,7 +21,7 @@ func attack(activeGame *game.Game, activeUser []*game.Player, msg Message, phase
 
 
 
-func attackSender(unit *game.Unit, activeUser []*game.Player) {
+func attackSender(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
 
 	for _, client := range activeUser {
 		_, ok := client.GetUnit(unit.X, unit.Y)
@@ -51,16 +46,16 @@ func attackSender(unit *game.Unit, activeUser []*game.Player) {
 	}
 }
 
-func UpdateUnit(unit *game.Unit, activeUser []*game.Player) {
+func UpdateUnit(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
 	for _, client := range activeUser {
 		var unitsParameter InitUnit
 		unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 	}
 }
 
-func DelUnit(unit *game.Unit, activeUser []*game.Player) {
+func DelUnit(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
 	for _, client := range activeUser {
 		openCoordinate(client.GetLogin(), unit.X, unit.Y)
 		UpdateWatchZone(client, Games[client.GetGameID()], nil)
 	}
-}
+}*/

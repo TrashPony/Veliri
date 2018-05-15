@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../DetailUnit"
+	"../../detailUnit"
 	"../../lobby/Squad"
 	"github.com/gorilla/websocket"
 )
@@ -14,31 +14,31 @@ func UnitConstructor(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.WeaponID != 0 {
-		unit.SetWeapon(DetailUnit.GetWeapon(msg.WeaponID))
+		unit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 	} else {
 		unit.DelWeapon()
 	}
 
 	if msg.ChassisID != 0 {
-		unit.SetChassis(DetailUnit.GetChass(msg.ChassisID))
+		unit.SetChassis(detailUnit.GetChass(msg.ChassisID))
 	} else {
 		unit.DelChassis()
 	}
 
 	if msg.TowerID != 0 {
-		unit.SetTower(DetailUnit.GetTower(msg.TowerID))
+		unit.SetTower(detailUnit.GetTower(msg.TowerID))
 	} else {
 		unit.DelTower()
 	}
 
 	if msg.BodyID != 0 {
-		unit.SetBody(DetailUnit.GetBody(msg.BodyID))
+		unit.SetBody(detailUnit.GetBody(msg.BodyID))
 	} else {
 		unit.DelBody()
 	}
 
 	if msg.RadarID != 0 {
-		unit.SetRadar(DetailUnit.GetRadar(msg.RadarID))
+		unit.SetRadar(detailUnit.GetRadar(msg.RadarID))
 	} else {
 		unit.DelRadar()
 	}

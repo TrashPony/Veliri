@@ -2,26 +2,27 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"log"
 	"strconv"
 	"sync"
-	"../../game"
+	"../../mechanics/player"
+	"../../mechanics/game"
+	"log"
 )
 
 var fieldPipe = make(chan Response)
 var initUnit = make(chan InitUnit)
 var initStructure = make(chan InitStructure)
-var coordinate = make(chan sendCoordinate)
+var senderCoordinate = make(chan sendCoordinate)
 var move = make(chan Move)
 
-var usersFieldWs = make(map[*websocket.Conn]*game.Player) // тут будут храниться наши подключения
+var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
 var Games = make(map[int]*game.Game)
 
 var mutex = &sync.Mutex{}
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersFieldWs)
-	newPlayer := game.Player{}
+	newPlayer := player.Player{}
 	newPlayer.SetLogin(login)
 	newPlayer.SetID(id)
 	usersFieldWs[ws] = &newPlayer // Регистрируем нового Клиента
@@ -32,7 +33,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	fieldReader(ws, usersFieldWs)
 }
 
-func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Player) {
+func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Player) {
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
@@ -48,6 +49,11 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*game.Play
 
 		if msg.Event == "SelectStorageUnit" {
 			selectStorageUnit(msg, ws)
+			continue
+		}
+
+		if msg.Event == "PlaceUnit" {
+			placeUnit(msg, ws)
 			continue
 		}
 
@@ -155,7 +161,7 @@ func InitStructureSender()  {
 
 func CoordinateSender() {
 	for {
-		resp := <-coordinate
+		resp := <-senderCoordinate
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName {

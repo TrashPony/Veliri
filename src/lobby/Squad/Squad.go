@@ -3,7 +3,7 @@ package Squad
 import (
 	"log"
 	"database/sql"
-	"../../DetailUnit"
+	"../../detailUnit"
 )
 
 type Squad struct {
@@ -93,23 +93,23 @@ func (squad *Squad) GetSquadUnits() {
 		}
 
 		if chassisID.Valid {
-			chassis := DetailUnit.GetChass(int(chassisID.Int64))
+			chassis := detailUnit.GetChass(int(chassisID.Int64))
 			unit.SetChassis(chassis)
 		}
 		if weaponID.Valid {
-			weapon := DetailUnit.GetWeapon(int(weaponID.Int64))
+			weapon := detailUnit.GetWeapon(int(weaponID.Int64))
 			unit.SetWeapon(weapon)
 		}
 		if towerID.Valid {
-			tower := DetailUnit.GetTower(int(towerID.Int64))
+			tower := detailUnit.GetTower(int(towerID.Int64))
 			unit.SetTower(tower)
 		}
 		if bodyID.Valid {
-			body := DetailUnit.GetBody(int(bodyID.Int64))
+			body := detailUnit.GetBody(int(bodyID.Int64))
 			unit.SetBody(body)
 		}
 		if radarID.Valid {
-			radar := DetailUnit.GetRadar(int(radarID.Int64))
+			radar := detailUnit.GetRadar(int(radarID.Int64))
 			unit.SetRadar(radar)
 		}
 

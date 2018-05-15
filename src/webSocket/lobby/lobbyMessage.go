@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../DetailUnit"
+	"../../detailUnit"
 	"../../lobby/Squad"
 	"../../lobby"
 )
@@ -57,11 +57,11 @@ type Response struct {
 	Equipping   []Squad.Equipping  `json:"equipping"`
 	Unit        Squad.Unit         `json:"unit"`
 
-	Chassis []DetailUnit.Chassis `json:"chassis"`
-	Weapons []DetailUnit.Weapon  `json:"weapons"`
-	Towers  []DetailUnit.Tower   `json:"towers"`
-	Bodies  []DetailUnit.Body    `json:"bodies"`
-	Radars  []DetailUnit.Radar   `json:"radars"`
+	Chassis []detailUnit.Chassis `json:"chassis"`
+	Weapons []detailUnit.Weapon  `json:"weapons"`
+	Towers  []detailUnit.Tower   `json:"towers"`
+	Bodies  []detailUnit.Body    `json:"bodies"`
+	Radars  []detailUnit.Radar   `json:"radars"`
 
 	Squads  []*Squad.Squad `json:"squads"`
 	Squad   *Squad.Squad   `json:"squad"`

@@ -1,7 +1,6 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
 )
 
@@ -51,7 +50,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}*/
 }
 
-func skipMoveUnit(msg Message, ws *websocket.Conn) {
+/*func skipMoveUnit(msg Message, ws *websocket.Conn) {
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
@@ -60,7 +59,7 @@ func skipMoveUnit(msg Message, ws *websocket.Conn) {
 		if unit.Action {
 			unit.Action = false
 
-			queue := game.MoveUnit(activeGame.GetStat().Id, unit, unit.X, unit.Y)
+			queue := Mechanics.MoveUnit(activeGame.GetStat().Id, unit, unit.X, unit.Y)
 			unit.Queue = queue
 
 			var unitsParameter InitUnit
@@ -69,12 +68,12 @@ func skipMoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateWatchHostileUser(msg Message, client *game.Player, activeUser []*game.Player, unit *game.Unit, pathNodes []game.Coordinate) {
+func updateWatchHostileUser(msg Message, client *Mechanics.Player, activeUser []*Mechanics.Player, unit *Mechanics.Unit, pathNodes []Mechanics.Coordinate) {
 
 	for _, user := range activeUser {
 		if user.GetLogin() != client.GetLogin() {
 
-			var truePath []game.Coordinate
+			var truePath []Mechanics.Coordinate
 
 			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)
 
@@ -101,7 +100,7 @@ func updateWatchHostileUser(msg Message, client *game.Player, activeUser []*game
 					node.Type = "visible"
 					truePath = append(truePath, *node)
 				} else {
-					var fakeNode game.Coordinate
+					var fakeNode Mechanics.Coordinate
 					fakeNode.X = 999
 					fakeNode.Y = 999
 					fakeNode.Type = "hide"
@@ -113,4 +112,4 @@ func updateWatchHostileUser(msg Message, client *game.Player, activeUser []*game
 			move <- moves
 		}
 	}
-}
+}*/

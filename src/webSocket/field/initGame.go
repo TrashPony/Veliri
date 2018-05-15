@@ -1,8 +1,13 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
+	"../../mechanics"
+	"../../mechanics/unit"
+	"../../mechanics/equip"
+	"../../mechanics/gameMap"
+	"../../mechanics/matherShip"
+	"../../mechanics/coordinate"
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
@@ -10,8 +15,8 @@ func loadGame(msg Message, ws *websocket.Conn) {
 	newClient, _ := usersFieldWs[ws]
 
 	if !ok {
-		loadGame = game.InitGame(msg.IdGame)
-		Games[loadGame.GetStat().Id] = loadGame // добавляем новую игру в карту активных игор
+		loadGame = mechanics.InitGame(msg.IdGame)
+		Games[loadGame.Id] = loadGame // добавляем новую игру в карту активных игор
 	}
 
 	for _, player := range loadGame.GetPlayers() {
@@ -29,24 +34,26 @@ func loadGame(msg Message, ws *websocket.Conn) {
 		HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
 		UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),
 		Map:                loadGame.GetMap(),
-		GameInfo:           loadGame.GetStat(),
 		MatherShip:         usersFieldWs[ws].GetMatherShip(),
 		HostileMatherShips: usersFieldWs[ws].GetHostileMatherShips(),
-		Watch:              usersFieldWs[ws].GetWatchCoordinates()}
+		Watch:              usersFieldWs[ws].GetWatchCoordinates(),
+		GameStep:           loadGame.GetStep(),
+		GamePhase:          loadGame.GetPhase()}
 	ws.WriteJSON(sendLoadGame)
 }
 
 type LoadGame struct {
-	Event              string                                 `json:"event"`
-	UserName           string                                 `json:"user_name"`
-	Ready              bool                                   `json:"ready"`
-	Equip              []*game.Equip                          `json:"equip"`
-	Units              map[string]map[string]*game.Unit       `json:"units"`
-	HostileUnits       map[string]map[string]*game.Unit       `json:"hostile_units"`
-	UnitStorage        []*game.Unit                           `json:"unit_storage"`
-	Map                *game.Map                              `json:"map"`
-	GameInfo           *game.InfoGame                         `json:"game_info"`
-	MatherShip         *game.MatherShip                       `json:"mather_ship"`
-	HostileMatherShips map[string]map[string]*game.MatherShip `json:"hostile_mather_ships"`
-	Watch              map[string]map[string]*game.Coordinate `json:"watch"`
+	Event              string                                       `json:"event"`
+	UserName           string                                       `json:"user_name"`
+	Ready              bool                                         `json:"ready"`
+	Equip              []*equip.Equip                               `json:"equip"`
+	Units              map[string]map[string]*unit.Unit             `json:"units"`
+	HostileUnits       map[string]map[string]*unit.Unit             `json:"hostile_units"`
+	UnitStorage        []*unit.Unit                                 `json:"unit_storage"`
+	Map                *gameMap.Map                                 `json:"map"`
+	MatherShip         *matherShip.MatherShip                       `json:"mather_ship"`
+	HostileMatherShips map[string]map[string]*matherShip.MatherShip `json:"hostile_mather_ships"`
+	Watch              map[string]map[string]*coordinate.Coordinate `json:"watch"`
+	GameStep           int                                          `json:"game_step"`
+	GamePhase          string                                       `json:"game_phase"`
 }

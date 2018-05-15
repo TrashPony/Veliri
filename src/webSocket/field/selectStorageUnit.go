@@ -2,21 +2,22 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../game"
+	"../../mechanics/unit"
+	"../../mechanics/coordinate"
 )
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {
-	client, ok := usersFieldWs[ws]
+	_, ok := usersFieldWs[ws]
 
 	if !ok {
 		delete(usersFieldWs, ws)
 	} else {
-		unit, find := client.GetUnitStorage(msg.UnitID)
+		//storageUnit, find := client.GetUnitStorage(msg.UnitID)
 
-		if find {
-			resp := SelectStorageUnit{Event: msg.Event, Unit: unit, PlaceCoordinate: client.GetCreateZone()}
+		/*if find {
+			resp := SelectStorageUnit{Event: msg.Event, Unit: storageUnit, PlaceCoordinate: client.GetCreateZone()}
 			ws.WriteJSON(resp)
-		}
+		}*/
 
 		/*coordinates := client.GetCreateZone()
 		respawn :=	client.GetRespawn()
@@ -49,7 +50,7 @@ func selectStorageUnit(msg Message, ws *websocket.Conn) {
 }
 
 type SelectStorageUnit struct {
-	Event           string             `json:"event"`
-	Unit            *game.Unit         `json:"unit"`
-	PlaceCoordinate []*game.Coordinate `json:"place_coordinate"`
+	Event           string                  `json:"event"`
+	Unit            *unit.Unit              `json:"unit"`
+	PlaceCoordinate []*coordinate.Coordinate `json:"place_coordinate"`
 }

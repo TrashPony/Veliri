@@ -1,13 +1,13 @@
 package Squad
 
-import "../../DetailUnit"
+import "../../detailUnit"
 
 type Unit struct {
-	Chassis *DetailUnit.Chassis `json:"chassis"`
-	Weapon  *DetailUnit.Weapon  `json:"weapon"`
-	Tower   *DetailUnit.Tower   `json:"tower"`
-	Body    *DetailUnit.Body    `json:"body"`
-	Radar   *DetailUnit.Radar   `json:"radar"`
+	Chassis *detailUnit.Chassis `json:"chassis"`
+	Weapon  *detailUnit.Weapon  `json:"weapon"`
+	Tower   *detailUnit.Tower   `json:"tower"`
+	Body    *detailUnit.Body    `json:"body"`
+	Radar   *detailUnit.Radar   `json:"radar"`
 
 	Weight int `json:"weight"`
 
@@ -201,23 +201,23 @@ func (unit *Unit) DelRadar() {
 	}
 }
 
-func (unit *Unit) SetChassis(chassis *DetailUnit.Chassis) {
+func (unit *Unit) SetChassis(chassis *detailUnit.Chassis) {
 	unit.Chassis = chassis
 }
 
-func (unit *Unit) SetWeapon(weapon *DetailUnit.Weapon) {
+func (unit *Unit) SetWeapon(weapon *detailUnit.Weapon) {
 	unit.Weapon = weapon
 }
 
-func (unit *Unit) SetTower(tower *DetailUnit.Tower) {
+func (unit *Unit) SetTower(tower *detailUnit.Tower) {
 	unit.Tower = tower
 }
 
-func (unit *Unit) SetBody(body *DetailUnit.Body) {
+func (unit *Unit) SetBody(body *detailUnit.Body) {
 	unit.Body = body
 }
 
-func (unit *Unit) SetRadar(radar *DetailUnit.Radar) {
+func (unit *Unit) SetRadar(radar *detailUnit.Radar) {
 	unit.Radar = radar
 }
 

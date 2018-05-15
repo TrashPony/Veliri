@@ -1,7 +1,7 @@
 function GameInfo() {
     var step = document.getElementById('step');
-    step.innerHTML = game.gameInfo.Step;
+    step.innerHTML = game.Step;
 
     var phaseGame = document.getElementById('phase');
-    phaseGame.innerHTML = game.gameInfo.Phase;
+    phaseGame.innerHTML = game.Phase;
 }

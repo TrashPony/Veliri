@@ -1,15 +1,15 @@
 package field
 
 import (
-	"../../game"
+	"../../mechanics/unit"
+	"../../mechanics/watchZone"
+	"../../mechanics/matherShip"
+	"../../mechanics/coordinate"
 )
 
 type Response struct {
 	Event    string `json:"event"`
 	UserName string `json:"user_name"`
-
-	Player *game.Player `json:"player"`
-	Map    *game.Map
 
 	GameStep  int    `json:"game_step"`
 	GamePhase string `json:"game_phase"`
@@ -31,10 +31,10 @@ type Response struct {
 type InitUnit struct {
 	Event    string     `json:"event"`
 	UserName string     `json:"user_name"`
-	Unit     *game.Unit `json:"unit"`
+	Unit     *unit.Unit `json:"unit"`
 }
 
-func (msg *InitUnit) initUnit(event string, unit *game.Unit, login string) {
+func (msg *InitUnit) initUnit(event string, unit *unit.Unit, login string) {
 	if unit.Target == nil {
 		var unitsParams = InitUnit{Event: event, UserName: login, Unit: unit} // остылаем событие добавления юнита
 		initUnit <- unitsParams
@@ -45,21 +45,21 @@ func (msg *InitUnit) initUnit(event string, unit *game.Unit, login string) {
 }
 
 type Move struct {
-	Event     string                            `json:"event"`
-	UserName  string                            `json:"user_name"`
-	Unit      *game.Unit                        `json:"unit"`
-	PathNodes []game.Coordinate                 `json:"path_nodes"`
-	WatchNode map[string]*game.UpdaterWatchZone `json:"watch_node"`
-	Error     string                            `json:"error"`
+	Event     string                                 `json:"event"`
+	UserName  string                                 `json:"user_name"`
+	Unit      *unit.Unit                             `json:"unit"`
+	PathNodes []coordinate.Coordinate                `json:"path_nodes"`
+	WatchNode map[string]*watchZone.UpdaterWatchZone `json:"watch_node"`
+	Error     string                                 `json:"error"`
 }
 
 type InitStructure struct {
-	Event     string           `json:"event"`
-	UserName  string           `json:"user_name"`
-	Structure *game.MatherShip `json:"structure"`
+	Event     string                 `json:"event"`
+	UserName  string                 `json:"user_name"`
+	Structure *matherShip.MatherShip `json:"structure"`
 }
 
-func (msg *InitStructure) initMatherShip(event string, structure *game.MatherShip, login string) {
+func (msg *InitStructure) initMatherShip(event string, structure *matherShip.MatherShip, login string) {
 	var matherShipParameter = InitStructure{Event: event, UserName: login, Structure: structure} // остылаем событие добавления юнита
 	initStructure <- matherShipParameter
 }
@@ -73,18 +73,18 @@ type sendCoordinate struct {
 
 func openCoordinate(login string, x, y int) {
 	resp := sendCoordinate{Event: "OpenCoordinate", UserName: login, X: x, Y: y}
-	coordinate <- resp
+	senderCoordinate <- resp
 }
 
 func closeCoordinate(login string, x, y int) {
 	resp := sendCoordinate{Event: "DellCoordinate", UserName: login, X: x, Y: y}
-	coordinate <- resp
+	senderCoordinate <- resp
 }
 
 type Message struct {
 	Event    string `json:"event"`
 	IdGame   int    `json:"id_game"`
-	UnitID   int `json:"unit_id"`
+	UnitID   int    `json:"unit_id"`
 	IdTarget string `json:"id_target"`
 	TypeUnit string `json:"type_unit"`
 	X        int    `json:"x"`

@@ -1,12 +1,13 @@
 package field
 
 import (
-	"../../game"
 	"github.com/gorilla/websocket"
 	"log"
+	"../../mechanics/player"
+	"../../mechanics/coordinate"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*game.Player) {
+func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	for ws, client := range *usersWs {
 		if client.GetLogin() == login {
 			ws.Close()
@@ -15,13 +16,13 @@ func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*game.Player) {
 	}
 }
 
-func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*game.Player, err error) {
+func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*player.Player, err error) {
 	log.Printf("error: %v", err)
 	delete(*usersWs, ws) // удаляем его из активных подключений
 }
 
-func subtraction(slice1 []*game.Coordinate, slice2 []*game.Coordinate) (ab []game.Coordinate) {
-	mb := map[game.Coordinate]bool{}
+func subtraction(slice1 []*coordinate.Coordinate, slice2 []*coordinate.Coordinate) (ab []coordinate.Coordinate) {
+	mb := map[coordinate.Coordinate]bool{}
 	for _, x := range slice2 {
 		mb[*x] = true
 	}

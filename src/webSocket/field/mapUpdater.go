@@ -1,13 +1,18 @@
 package field
 
 import (
-	"../../game"
+	"../../mechanics/unit"
+	"../../mechanics/player"
+	"../../mechanics/game"
+	"../../mechanics/watchZone"
+	"../../mechanics/matherShip"
+	"../../mechanics/coordinate"
 )
 
-func UpdateWatchZone(client *game.Player, activeGame *game.Game, updaterWatchZone *game.UpdaterWatchZone) {
+func UpdateWatchZone(client *player.Player, activeGame *game.Game, updaterWatchZone *watchZone.UpdaterWatchZone) {
 
 	if updaterWatchZone == nil {
-		updaterWatchZone = client.UpdateWatchZone(activeGame)
+		updaterWatchZone = watchZone.UpdateWatchZone(activeGame, client)
 	}
 
 	updateMyUnit(client)
@@ -17,7 +22,7 @@ func UpdateWatchZone(client *game.Player, activeGame *game.Game, updaterWatchZon
 	UpdateOpenCoordinate(updaterWatchZone.OpenCoordinate, updaterWatchZone.CloseCoordinate, client.GetLogin())
 }
 
-func updateMyUnit(client *game.Player) {
+func updateMyUnit(client *player.Player) {
 	var unitsParameter InitUnit
 	for _, xLine := range client.GetUnits() { // отправляем параметры своих юнитов
 		for _, unit := range xLine {
@@ -26,26 +31,26 @@ func updateMyUnit(client *game.Player) {
 	}
 }
 
-func updateMyMatherShip(client *game.Player) {
+func updateMyMatherShip(client *player.Player) {
 	var matherShipParameter InitStructure
 	matherShipParameter.initMatherShip("InitStructure", client.GetMatherShip(), client.GetLogin())
 }
 
-func sendNewHostileUnit(units []*game.Unit, login string) {
+func sendNewHostileUnit(units []*unit.Unit, login string) {
 	var UnitParams InitUnit
 	for _, unit := range units {
 		UnitParams.initUnit("InitUnit", unit, login)
 	}
 }
 
-func sendNewHostileMatherShip(structures []*game.MatherShip, login string) {
+func sendNewHostileMatherShip(structures []*matherShip.MatherShip, login string) {
 	var matherShipParameter InitStructure
 	for _, structure := range structures {
 		matherShipParameter.initMatherShip("InitStructure", structure, login)
 	}
 }
 
-func UpdateOpenCoordinate(openCoordinates []*game.Coordinate, closeCoordinates []*game.Coordinate, login string) {
+func UpdateOpenCoordinate(openCoordinates []*coordinate.Coordinate, closeCoordinates []*coordinate.Coordinate, login string) {
 	for _, closeCoor := range closeCoordinates {
 		closeCoordinate(login, closeCoor.X, closeCoor.Y)
 	}

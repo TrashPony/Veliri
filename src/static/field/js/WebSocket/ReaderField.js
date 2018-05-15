@@ -6,7 +6,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectStorageUnit") {
-        console.log(jsonMessage)
+        SelectCoordinateUnitCreate(jsonMessage)
     }
 
     /*if (event === "InitPlayer") { // +
