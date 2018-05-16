@@ -30,6 +30,8 @@ function LoadGame(jsonMessage) {
     game.hostileMatherShips = JSON.parse(jsonMessage).hostile_mather_ships;
     game.user.watch = JSON.parse(jsonMessage).watch;
 
+    game.map.selectSprites = [];
+
     GameInfo();
     InitPlayer();
     LoadHoldUnits();

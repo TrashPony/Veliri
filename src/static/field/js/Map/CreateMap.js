@@ -9,7 +9,7 @@ function CreateMap() {
                 var floorSprite = game.add.tileSprite(x * game.tileSize, y * game.tileSize, game.tileSize, game.tileSize, 'floor');
                 floorSprite.tint = 0x757575;
                 floorSprite.inputEnabled = true; // включаем ивенты на спрайт
-                floorSprite.events.onInputDown.add(SelectTarget, floorSprite);
+                //floorSprite.events.onInputDown.add(SelectTarget, floorSprite);
                 floorSprite.events.onInputOut.add(TipOff, floorSprite);
                 floorSprite.z = 0;
 

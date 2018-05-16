@@ -17,6 +17,7 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 	}
 
 	storageUnit, find := client.GetUnitStorage(msg.UnitID)
+	
 	if find {
 		for _, coordinate := range client.GetCreateZone() {
 			if coordinate.X == msg.X && coordinate.Y == msg.Y {
