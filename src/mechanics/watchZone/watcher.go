@@ -7,7 +7,6 @@ import (
 	"../matherShip"
 	"../unit"
 	"../coordinate"
-	"../../mechanics"
 )
 
 type Watcher interface {
@@ -25,7 +24,7 @@ func Watch(gameObject Watcher, login string, game *game.Game) (allCoordinate map
 
 	if login == gameObject.GetOwnerUser() {
 
-		RadiusCoordinates := mechanics.GetCoordinates(gameObject.GetX(), gameObject.GetY(), gameObject.GetWatchZone())
+		RadiusCoordinates := coordinate.GetCoordinatesRadius(gameObject.GetX(), gameObject.GetY(), gameObject.GetWatchZone())
 		PermCoordinates   := Filter(gameObject, RadiusCoordinates, game)
 
 		for _, gameCoordinate := range PermCoordinates{

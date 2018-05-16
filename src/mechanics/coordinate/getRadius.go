@@ -1,10 +1,8 @@
-package mechanics
+package coordinate
 
-import "./coordinate"
+var coordinates = make([]*Coordinate, 0)
 
-var coordinates = make([]*coordinate.Coordinate, 0)
-
-func GetCoordinates(xCenter int, yCenter int, WatchZone int) []*coordinate.Coordinate {
+func GetCoordinatesRadius(xCenter int, yCenter int, WatchZone int) []*Coordinate {
 	circle(xCenter, yCenter, WatchZone, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
 	circle(yCenter, xCenter, WatchZone, true)
 
@@ -15,7 +13,7 @@ func GetCoordinates(xCenter int, yCenter int, WatchZone int) []*coordinate.Coord
 		xMax, xMin := xMaxMin(y)
 		for x := zx; x <= (WatchZone*2+(WatchZone-1))+xCenter; x++ {
 			if xMin < x && xMax > x {
-				coordinates = append(coordinates, &coordinate.Coordinate{X: x, Y: y})
+				coordinates = append(coordinates, &Coordinate{X: x, Y: y})
 			}
 		}
 	}
@@ -47,9 +45,9 @@ func xMaxMin(y int) (int, int) {
 	return xMax, xMin
 }
 
-func removeDuplicates(elements []*coordinate.Coordinate) []*coordinate.Coordinate {
-	encountered := map[coordinate.Coordinate]bool{}
-	result := make([]*coordinate.Coordinate, 0)
+func removeDuplicates(elements []*Coordinate) []*Coordinate {
+	encountered := map[Coordinate]bool{}
+	result := make([]*Coordinate, 0)
 
 	for v := range elements {
 		if encountered[*elements[v]] == true {
@@ -85,15 +83,15 @@ func circle(xCenter, yCenter, radius int, invert bool) {
 
 func putCoordinates(x int, y int, xCenter int, yCenter int, invert bool) {
 	if !invert { // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
-		coordinates = append(coordinates, &coordinate.Coordinate{X: xCenter + x, Y: yCenter + y})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: xCenter + x, Y: yCenter - y})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: xCenter - x, Y: yCenter + y})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: xCenter - x, Y: yCenter - y})
+		coordinates = append(coordinates, &Coordinate{X: xCenter + x, Y: yCenter + y})
+		coordinates = append(coordinates, &Coordinate{X: xCenter + x, Y: yCenter - y})
+		coordinates = append(coordinates, &Coordinate{X: xCenter - x, Y: yCenter + y})
+		coordinates = append(coordinates, &Coordinate{X: xCenter - x, Y: yCenter - y})
 	} else {
-		coordinates = append(coordinates, &coordinate.Coordinate{X: yCenter + y, Y: xCenter + x})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: yCenter - y, Y: xCenter + x})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: yCenter + y, Y: xCenter - x})
-		coordinates = append(coordinates, &coordinate.Coordinate{X: yCenter - y, Y: xCenter - x})
+		coordinates = append(coordinates, &Coordinate{X: yCenter + y, Y: xCenter + x})
+		coordinates = append(coordinates, &Coordinate{X: yCenter - y, Y: xCenter + x})
+		coordinates = append(coordinates, &Coordinate{X: yCenter + y, Y: xCenter - x})
+		coordinates = append(coordinates, &Coordinate{X: yCenter - y, Y: xCenter - x})
 	}
 }
 

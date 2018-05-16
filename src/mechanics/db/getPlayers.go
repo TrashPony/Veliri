@@ -1,9 +1,10 @@
-package dbo
+package db
 
 import (
 	"../game"
 	"../player"
 	"../unit"
+	"../watchZone"
 	"log"
 )
 
@@ -42,7 +43,7 @@ func GetPlayer(game *game.Game) []*player.Player {
 		client.SetGameID(game.Id)
 		client.SetEquip(equip)
 		client.SetUnitsStorage(units)
-		//WatchZone.UpdateWatchZone(game, &client)
+		watchZone.UpdateWatchZone(game, &client)
 
 		users = append(users, &client)
 	}

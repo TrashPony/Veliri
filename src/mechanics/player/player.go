@@ -28,19 +28,19 @@ func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
 	client.respawn = respawn
 }
 
-/*func (client *Player) GetCreateZone() ([]*coordinate.Coordinate) {
-	tmpCoordiantes := Mechanics.GetCoordinates(client.matherShip.X, client.matherShip.Y, client.matherShip.RangeView)
+func (client *Player) GetCreateZone() ([]*coordinate.Coordinate) {
+	tmpCoordinates := coordinate.GetCoordinatesRadius(client.matherShip.X, client.matherShip.Y, client.matherShip.RangeView)
 
 	client.createZone = make([]*coordinate.Coordinate, 0)
 
-	for _, coordinate := range tmpCoordiantes {
-		if coordinate.X >= 0 && coordinate.Y >= 0 {
-			client.createZone = append(client.createZone, coordinate)
+	for _, gameCoordinate := range tmpCoordinates {
+		if gameCoordinate.X >= 0 && gameCoordinate.Y >= 0 {
+			client.createZone = append(client.createZone, gameCoordinate)
 		}
 	}
 
 	return client.createZone
-}*/
+}
 
 func (client *Player) GetRespawn() (respawn *coordinate.Coordinate) {
 	return client.respawn

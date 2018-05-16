@@ -7,17 +7,17 @@ import (
 )
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {
-	_, ok := usersFieldWs[ws]
+	client, ok := usersFieldWs[ws]
 
 	if !ok {
 		delete(usersFieldWs, ws)
 	} else {
-		//storageUnit, find := client.GetUnitStorage(msg.UnitID)
+		storageUnit, find := client.GetUnitStorage(msg.UnitID)
 
-		/*if find {
+		if find {
 			resp := SelectStorageUnit{Event: msg.Event, Unit: storageUnit, PlaceCoordinate: client.GetCreateZone()}
 			ws.WriteJSON(resp)
-		}*/
+		}
 
 		/*coordinates := client.GetCreateZone()
 		respawn :=	client.GetRespawn()
@@ -50,7 +50,7 @@ func selectStorageUnit(msg Message, ws *websocket.Conn) {
 }
 
 type SelectStorageUnit struct {
-	Event           string                  `json:"event"`
-	Unit            *unit.Unit              `json:"unit"`
+	Event           string                   `json:"event"`
+	Unit            *unit.Unit               `json:"unit"`
 	PlaceCoordinate []*coordinate.Coordinate `json:"place_coordinate"`
 }

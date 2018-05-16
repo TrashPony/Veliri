@@ -1,4 +1,4 @@
-package dbo
+package db
 
 import (
 	"database/sql"
