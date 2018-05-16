@@ -64,9 +64,9 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 
 			_, err = db.Exec("INSERT INTO action_game_unit (id_user, id_game, "+ // вносим методанные юнита
 				"id_chassis, id_weapons, id_tower, id_body, id_radar, "+ // части тела
-				"Weight, Speed, Initiative, Damage, RangeAttack, MinAttackRange, AreaAttack, "+ // характиристики
-				"TypeAttack, HP, Armor, EvasionCritical, VulKinetics, VulThermal, VulEM, VulExplosive, "+
-				"RangeView, Accuracy, WallHack, action, target, queue_attack, rotate, x, y, on_map)"+ // TODO надо узнать как можно это сделать проще и лучше)
+				"weight, speed, initiative, damage, range_attack, min_attack_range, area_attack, "+ // характиристики
+				"type_attack, hp, armor, evasion_critical, vul_kinetics, vul_thermal, vul_em, vul_explosive, "+
+				"range_view, accuracy, wall_hack, action, target, queue_attack, rotate, x, y, on_map)"+ // TODO надо узнать как можно это сделать проще и лучше)
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32)",
 				user.Id, id, ChassisID, WeaponID, TowerID, BodyID, RadarID,
 				unit.Weight, unit.Speed, unit.Initiative, unit.Damage, unit.RangeAttack,
