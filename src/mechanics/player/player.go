@@ -77,7 +77,3 @@ func (client *Player) SetReady(ready bool) {
 func (client *Player) GetReady() (bool) {
 	return client.ready
 }
-
-func (client *Player) PlaceUnit(unit *unit.Unit, x,y int)  {
-
-}

@@ -9,10 +9,7 @@ import (
 	"log"
 )
 
-var fieldPipe = make(chan Response)
-var initUnit = make(chan InitUnit)
-var initStructure = make(chan InitStructure)
-var senderCoordinate = make(chan sendCoordinate)
+var watchPipe = make(chan Watch)
 var move = make(chan Move)
 
 var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
@@ -87,9 +84,9 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 	}
 }
 
-func FieldReposeSender() {
+func WatchSender()  {
 	for {
-		resp := <-fieldPipe
+		resp := <- watchPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName {
@@ -108,60 +105,6 @@ func FieldReposeSender() {
 func MoveSender() {
 	for {
 		resp := <-move
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
-
-func InitUnitSender() {
-	for {
-		resp := <-initUnit
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
-
-func InitStructureSender()  {
-	for {
-		resp := <- initStructure
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
-
-func CoordinateSender() {
-	for {
-		resp := <-senderCoordinate
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName {

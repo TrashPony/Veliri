@@ -16,7 +16,7 @@ type Watcher interface {
 	GetOwnerUser() string
 }
 
-func Watch(gameObject Watcher, login string, game *game.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, matherShipCoordinate map[int]map[int]*matherShip.MatherShip, Err error) {
+func watch(gameObject Watcher, login string, game *game.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, matherShipCoordinate map[int]map[int]*matherShip.MatherShip, Err error) {
 
 	allCoordinate = make(map[string]*coordinate.Coordinate)
 	unitsCoordinate = make(map[int]map[int]*unit.Unit)
@@ -25,7 +25,7 @@ func Watch(gameObject Watcher, login string, game *game.Game) (allCoordinate map
 	if login == gameObject.GetOwnerUser() {
 
 		RadiusCoordinates := coordinate.GetCoordinatesRadius(gameObject.GetX(), gameObject.GetY(), gameObject.GetWatchZone())
-		PermCoordinates   := Filter(gameObject, RadiusCoordinates, game)
+		PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
 
 		for _, gameCoordinate := range PermCoordinates{
 			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.Y)

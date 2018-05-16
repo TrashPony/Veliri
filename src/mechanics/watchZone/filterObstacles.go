@@ -6,7 +6,7 @@ import (
 	"../coordinate"
 )
 
-func Filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *game.Game) (watch map[string]*coordinate.Coordinate)  {
+func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *game.Game) (watch map[string]*coordinate.Coordinate)  {
 
 	watch = make(map[string]*coordinate.Coordinate)
 

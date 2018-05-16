@@ -1,10 +1,6 @@
 package field
 
-import (
-	"github.com/gorilla/websocket"
-)
-
-func MouseOver(msg Message, ws *websocket.Conn) {
+/*func MouseOver(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 	unit, find := client.GetUnit(msg.X, msg.Y)
 	if !find {
@@ -27,4 +23,4 @@ func MouseOver(msg Message, ws *websocket.Conn) {
 			resp.initMatherShip(msg.Event, matherShip, client.GetLogin())
 		}
 	}
-}
+}*/

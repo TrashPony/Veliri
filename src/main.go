@@ -24,11 +24,10 @@ func main() {
 
 	go lobby.LobbyReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
 	go chat.CommonChatSender()
-	go field.FieldReposeSender()
-	go field.InitUnitSender()
-	go field.CoordinateSender()
-	go field.InitStructureSender()
+
+	go field.WatchSender()
 	go field.MoveSender()
+
 	go globalMap.GlobalReposeSender()
 	go globalMap.TimerSteep() // таймер сервер отвечает за синхронизацию всех игроков в сети, должен содержать в себе всю логику что бы все действия проводились через него
 

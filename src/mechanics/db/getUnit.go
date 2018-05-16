@@ -13,9 +13,9 @@ import (
 func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 
 	rows, err := db.Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
-		"ag.Weight, ag.Speed, ag.Initiative, ag.Damage, ag.RangeAttack, ag.MinAttackRange, ag.AreaAttack, "+
-		"ag.TypeAttack, ag.HP, ag.Armor, ag.EvasionCritical, ag.VulKinetics, ag.VulThermal, ag.VulEM, "+
-		"ag.VulExplosive, ag.RangeView, ag.Accuracy, ag.WallHack, "+
+		"ag.weight, ag.speed, ag.initiative, ag.damage, ag.range_attack, ag.min_attack_range, ag.area_attack, "+
+		"ag.type_attack, ag.hp, ag.armor, ag.evasion_critical, ag.vul_kinetics, ag.vul_thermal, ag.vul_em, "+
+		"ag.vul_explosive, ag.range_view, ag.accuracy, ag.wall_hack, "+
 		"ag.id_chassis, ag.id_weapons, ag.id_tower, ag.id_body, ag.id_radar, ag.on_map "+
 		"FROM action_game_unit as ag, users WHERE ag.id_game=$1 AND ag.id_user=users.id", idGame)
 	if err != nil {

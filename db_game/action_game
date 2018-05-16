@@ -33,24 +33,24 @@ CREATE TABLE action_game_unit(
 	queue_attack  int,
 
 	/* Характиристики */
-	Weight          int,
-    Speed           int,
-    Initiative      int,
-    Damage          int,
-    RangeAttack     int,
-    MinAttackRange  int,
-    AreaAttack      int,
-    TypeAttack      varchar(64),
-    HP              int,
-    Armor           int,
-    EvasionCritical int,
-    VulKinetics     int,
-    VulThermal      int,
-    VulEM           int,
-    VulExplosive    int,
-    RangeView       int,
-    Accuracy        int,
-    WallHack        boolean
+	weight           int,
+    speed            int,
+    initiative       int,
+    damage           int,
+    range_attack     int,
+    min_attack_range  int,
+    area_attack      int,
+    type_attack      varchar(64),
+    hp               int,
+    armor            int,
+    evasion_critical int,
+    vul_kinetics     int,
+    vul_thermal      int,
+    vul_em           int,
+    vul_explosive    int,
+    range_view       int,
+    accuracy         int,
+    wall_hack        boolean
 );
 
 CREATE TABLE  action_mother_ship(

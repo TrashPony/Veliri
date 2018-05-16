@@ -1,15 +1,6 @@
 package field
 
-import (
-	"../../mechanics/unit"
-	"../../mechanics/player"
-	"../../mechanics/game"
-	"../../mechanics/watchZone"
-	"../../mechanics/matherShip"
-	"../../mechanics/coordinate"
-)
-
-func UpdateWatchZone(client *player.Player, activeGame *game.Game, updaterWatchZone *watchZone.UpdaterWatchZone) {
+/*func UpdateWatchZone(client *player.Player, activeGame *game.Game, updaterWatchZone *watchZone.UpdaterWatchZone) {
 
 	if updaterWatchZone == nil {
 		updaterWatchZone = watchZone.UpdateWatchZone(activeGame, client)
@@ -58,4 +49,4 @@ func UpdateOpenCoordinate(openCoordinates []*coordinate.Coordinate, closeCoordin
 	for _, open := range openCoordinates {
 		openCoordinate(login, open.X, open.Y)
 	}
-}
+}*/

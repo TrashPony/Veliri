@@ -54,8 +54,16 @@ type Unit struct {
 	Queue  int                    `json:"queue"`
 }
 
+func (unit *Unit) SetX(x int) {
+	unit.X = x
+}
+
 func (unit *Unit) GetX() int {
 	return unit.X
+}
+
+func (unit *Unit) SetY(y int) {
+	unit.Y = y
 }
 
 func (unit *Unit) GetY() int {
@@ -68,6 +76,14 @@ func (unit *Unit) GetWatchZone() int {
 
 func (unit *Unit) GetOwnerUser() string {
 	return unit.Owner
+}
+
+func (unit *Unit) GetOnMap() bool  {
+	return unit.OnMap
+}
+
+func (unit *Unit) SetOnMap(bool bool)  {
+	unit.OnMap = bool
 }
 
 func (unit *Unit) SetChassis(chassis *detailUnit.Chassis) {
