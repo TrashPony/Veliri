@@ -3,13 +3,14 @@ package coordinate
 import "strconv"
 
 type Coordinate struct {
-	Type    string	`json:"type"`
-	Texture string
-	X       int `json:"x"`
-	Y       int `json:"y"`
-	State   int
-	H, G, F int
-	Parent  *Coordinate
+	Type          string `json:"type"`
+	TextureFlore  string `json:"texture_flore"`
+	TextureObject string `json:"texture_object"`
+	X             int    `json:"x"`
+	Y             int    `json:"y"`
+	State         int    `json:"state"`
+	H, G, F       int
+	Parent        *Coordinate
 }
 
 func (coor Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины

@@ -6,7 +6,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
     for (var i = 0; i < place_coordinate.length; i++) {
         var cellSprite = game.map.OneLayerMap[place_coordinate[i].x][place_coordinate[i].y].sprite;
-        var selectSprite = game.make.sprite(0, 0, 'selectCreate');
+        var selectSprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectCreate');
 
         selectSprite.PlaceX = place_coordinate[i].x;
         selectSprite.PlaceY = place_coordinate[i].y;
@@ -16,13 +16,12 @@ function SelectCoordinateUnitCreate(jsonMessage) {
         selectSprite.events.onInputDown.add(SelectPlaceCoordinate, selectSprite);
         selectSprite.events.onInputOut.add(TipOff);
 
-        cellSprite.addChild(selectSprite);
+        //cellSprite.addChild(selectSprite);
         game.map.selectSprites.push(selectSprite);
     }
 }
 
 function SelectPlaceCoordinate(selectSprite) {
-
     field.send(JSON.stringify({
         event: "PlaceUnit",
         unit_id: Number(selectSprite.UnitID),

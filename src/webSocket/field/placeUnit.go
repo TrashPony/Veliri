@@ -27,7 +27,7 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 
 				if !find && coordinate.Type != "obstacle" {
 
-					err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y)
+					err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
 
 					if err == nil {
 						UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)

@@ -91,3 +91,25 @@ func (game *Game) GetStep() int {
 func (game *Game) GetPhase() string {
 	return game.Phase
 }
+
+func (game *Game) DelUnitStorage(id int) (find bool) {
+	for _, storageUnit := range game.GetUnitsStorage() {
+		if id == storageUnit.Id {
+			game.unitStorage = remove(game.GetUnitsStorage(), storageUnit)
+			return true
+		}
+	}
+
+	return
+}
+
+func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {
+	for i, v := range units {
+		if v == item {
+			copy(units[i:], units[i+1:])
+			units[len(units)-1] = nil // обнуляем "хвост"
+			units = units[:len(units)-1]
+		}
+	}
+	return units
+}

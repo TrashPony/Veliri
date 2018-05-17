@@ -11,8 +11,8 @@ CREATE TABLE map_constructor(
    id serial primary key,
    id_map int references maps(id),
    type varchar(64),
-   name varchar(64),
    x int,
    y int,
-   texture varchar(64)
+   texture_flore varchar(64),
+   texture_object varchar(64)
 );

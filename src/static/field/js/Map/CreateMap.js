@@ -2,27 +2,59 @@ function CreateMap() {
     for (var x = 0; x < game.map.XSize; x++) {
         for (var y = 0; y < game.map.YSize; y++) {
 
-            //game.add.bitmapText(x * tileWidth + tileWidth / 2, y * tileWidth + tileWidth / 2, 'carrier_command', x + ":" + y, 12);
-            //console.log(GameMap.OneLayerMap[x][y].type + " " + x + ":" + y);
+            var floorSprite = game.floorLayer.create(x * game.tileSize, y * game.tileSize, 'floor');
+            floorSprite.tint = 0x757575;
+            floorSprite.inputEnabled = true; // включаем ивенты на спрайт
+            floorSprite.events.onInputOut.add(TipOff, floorSprite);
+            floorSprite.z = 0;
 
-            if (game.map.OneLayerMap[x][y].type === "" || game.map.OneLayerMap[x][y].type === "respawn") { // пустая клетка или респаун
-                var floorSprite = game.add.tileSprite(x * game.tileSize, y * game.tileSize, game.tileSize, game.tileSize, 'floor');
-                floorSprite.tint = 0x757575;
-                floorSprite.inputEnabled = true; // включаем ивенты на спрайт
-                //floorSprite.events.onInputDown.add(SelectTarget, floorSprite);
-                floorSprite.events.onInputOut.add(TipOff, floorSprite);
-                floorSprite.z = 0;
+            game.map.OneLayerMap[x][y].sprite = floorSprite;
 
-                game.map.OneLayerMap[x][y].sprite = floorSprite;
-            }
+            if (game.map.OneLayerMap[x][y].texture_object !== "") {
 
-            if (game.map.OneLayerMap[x][y].type === "obstacle") { // препятсвие
-                var obstacle = game.add.tileSprite(x * game.tileSize, y * game.tileSize, game.tileSize, game.tileSize, 'obstacle');
-                obstacle.inputEnabled = true;
-                obstacle.events.onInputOut.add(TipOff);
+                var shadow;
+                var object;
 
-                game.map.OneLayerMap[x][y].sprite = obstacle;
+                if (game.map.OneLayerMap[x][y].texture_object === "terrain_1") {
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.1, 0.95);
+                }
+
+                if (game.map.OneLayerMap[x][y].texture_object === "terrain_2") {
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.2, 0.95);
+                }
+
+                if (game.map.OneLayerMap[x][y].texture_object === "wall") {
+                    shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, game.map.OneLayerMap[x][y].texture_object);
+                    shadow.anchor.setTo(0, 0);
+                    shadow.tint = 0x000000;
+                    shadow.alpha = 0.6;
+
+                    object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, game.map.OneLayerMap[x][y].texture_object);
+                    object.inputEnabled = true;
+                    object.events.onInputOut.add(TipOff);
+                    //object.anchor.setTo(0, 0);
+                }
+
+
+                game.map.OneLayerMap[x][y].objectSprite = object;
             }
         }
     }
+}
+
+function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY) {
+    var shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, texture);
+    shadow.anchor.setTo(ShadowOffsetX, ShadowOffsetY);
+    shadow.tint = 0x000000;
+    shadow.alpha = 0.6;
+    shadow.angle = 45;
+
+    var object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, texture);
+    object.inputEnabled = true;
+    object.events.onInputOut.add(TipOff);
+    object.anchor.setTo(0, 0.5);
+
+    object.shadow = shadow;
+
+    return object
 }

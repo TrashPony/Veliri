@@ -10,7 +10,7 @@ import (
 func GetCoordinatesMap(mp *gameMap.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
-	rows, err := db.Query("Select x, y, type, texture FROM map_constructor WHERE id_map =" + strconv.Itoa(mp.Id))
+	rows, err := db.Query("Select x, y, type, texture_flore, texture_object FROM map_constructor WHERE id_map =" + strconv.Itoa(mp.Id))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func GetCoordinatesMap(mp *gameMap.Map) {
 
 	for rows.Next() { // заполняем карту значащами клетками
 		var gameCoordinate coordinate.Coordinate
-		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type, &gameCoordinate.Texture)
+		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject)
 		if err != nil {
 			log.Fatal(err)
 		}

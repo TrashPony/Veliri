@@ -20,7 +20,6 @@ function LoadGame(jsonMessage) {
     game.Phase = JSON.parse(jsonMessage).game_phase;
 
     game.unitStorage = JSON.parse(jsonMessage).unit_storage;
-    game.tileSize = tileSize;
 
     // Creates objects
     game.map = gameMap;
@@ -31,6 +30,10 @@ function LoadGame(jsonMessage) {
     game.user.watch = JSON.parse(jsonMessage).watch;
 
     game.map.selectSprites = [];
+
+    game.tileSize = tileSize;
+    game.shadowXOffset = 3;
+    game.shadowYOffset = -3;
 
     GameInfo();
     InitPlayer();

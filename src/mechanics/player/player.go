@@ -35,7 +35,9 @@ func (client *Player) GetCreateZone() ([]*coordinate.Coordinate) {
 
 	for _, gameCoordinate := range tmpCoordinates {
 		if gameCoordinate.X >= 0 && gameCoordinate.Y >= 0 {
-			client.createZone = append(client.createZone, gameCoordinate)
+			if gameCoordinate.X < 10 && gameCoordinate.Y < 10 { //todo кастыль
+				client.createZone = append(client.createZone, gameCoordinate)
+			}
 		}
 	}
 

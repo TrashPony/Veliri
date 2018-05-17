@@ -7,19 +7,29 @@ INSERT INTO maps (name, x_size, y_size, type, specification) VALUES ('Test', 10,
 INSERT INTO maps (name, x_size, y_size, type, specification) VALUES ('Test2', 10, 10, 'test', 'тестовая карта на 4 человека');
 
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_1', 1 ,1, '');
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (1 , 'respawn', 'respawn_2', 8 ,8, '');
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_1', 1 ,1, '');
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_2', 8 ,1, '');
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_3', 1 ,8, '');
-INSERT INTO map_constructor (id_map, type, name, x, y, texture) VALUES (2 , 'respawn', 'respawn_4', 8 ,8, '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'respawn', 1, 1, 'desert', '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'respawn', 8, 8, 'desert', '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (2 , 'respawn', 1, 1, 'desert', '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (2 , 'respawn', 8, 1, 'desert', '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (2 , 'respawn', 1, 8, 'desert', '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (2 , 'respawn', 8, 8, 'desert', '');
 
 /*  ---------------------------- Obstacles -------------------------------------------------- */
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 4, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 5 , 4, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 6 , 4, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 5, '');
-INSERT INTO map_constructor (id_map, type, x, y, texture) VALUES (1 , 'obstacle', 4 , 6, '');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'obstacle', 4, 4, 'desert', 'wall');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'obstacle', 5, 4, 'desert', 'wall');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'obstacle', 6, 4, 'desert', 'wall');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'obstacle', 4, 5, 'desert', 'wall');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'obstacle', 4, 6, 'desert', 'wall');
+
+/*  ---------------------------- Terrain -------------------------------------------------- */
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 5, 2, 'desert', 'terrain_1');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 0, 4, 'desert', 'terrain_1');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 1, 3, 'desert', 'terrain_2');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 8, 2, 'desert', 'terrain_1');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 7, 7, 'desert', 'terrain_2');
+INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 9, 6, 'desert', 'terrain_1');
+
+
 
 /*  ---------------------------- chassis_type ------------------------------------------ */
 INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('track', 'caterpillar', 80, 6, 3);

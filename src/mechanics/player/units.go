@@ -84,3 +84,25 @@ func (client *Player) GetUnitStorage(id int) (storageUnit *unit.Unit, find bool)
 
 	return
 }
+
+func (client *Player) DelUnitStorage(id int) (find bool) {
+	for _, storageUnit := range client.GetUnitsStorage() {
+		if id == storageUnit.Id {
+			client.unitStorage = remove(client.GetUnitsStorage(), storageUnit)
+			return true
+		}
+	}
+
+	return
+}
+
+func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {
+	for i, v := range units {
+		if v == item {
+			copy(units[i:], units[i+1:])
+			units[len(units)-1] = nil // обнуляем "хвост"
+			units = units[:len(units)-1]
+		}
+	}
+	return units
+}
