@@ -16,11 +16,11 @@ function CreateMap() {
                 var object;
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_1") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.1, 0.95);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.33, 0.70);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_2") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.2, 0.95);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.42, 0.75);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "wall") {
@@ -52,7 +52,7 @@ function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY) {
     var object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, texture);
     object.inputEnabled = true;
     object.events.onInputOut.add(TipOff);
-    object.anchor.setTo(0, 0.5);
+    object.anchor.setTo(0, 0.2);
 
     object.shadow = shadow;
 

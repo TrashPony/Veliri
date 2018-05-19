@@ -2,9 +2,19 @@ function preload() {
     game.stage.disableVisibilityChange = true; // не дает оставиться выполнения скрипта если окно скрыто
 
     // Select
-    game.load.image('selectCreate', 'http://' + window.location.host + '/assets/select/selectCreate.png');
-    game.load.image('selectMove', 'http://' + window.location.host + '/assets/select/selectMove.png');
-    game.load.image('selectTarget', 'http://' + window.location.host + '/assets/select/selectTarget.png');
+    game.load.image('selectPlace_1', 'http://' + window.location.host + '/assets/select/place1.png');
+    game.load.image('selectPlace_2', 'http://' + window.location.host + '/assets/select/place2.png');
+    game.load.image('selectPlace_3', 'http://' + window.location.host + '/assets/select/place3.png');
+
+    game.load.image('selectMove_1', 'http://' + window.location.host + '/assets/select/move1.png');
+    game.load.image('selectMove_2', 'http://' + window.location.host + '/assets/select/move3.png');
+    game.load.image('selectMove_3', 'http://' + window.location.host + '/assets/select/move3.png');
+
+    game.load.image('selectTarget_1', 'http://' + window.location.host + '/assets/select/target1.png');
+    game.load.image('selectTarget_2', 'http://' + window.location.host + '/assets/select/target2.png');
+    game.load.image('selectTarget_3', 'http://' + window.location.host + '/assets/select/target3.png');
+
+    game.load.image('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png');
 
     //MatherShips MotherTrucker
     game.load.image('MotherTrucker', 'http://' + window.location.host + '/assets/MotherTrucker.png');

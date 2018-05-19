@@ -5,6 +5,7 @@ import (
 	"../../mechanics"
 	"../../mechanics/game"
 	"../../mechanics/watchZone"
+	"strconv"
 )
 
 func placeUnit(msg Message, ws *websocket.Conn) {
@@ -19,28 +20,28 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 	storageUnit, find := client.GetUnitStorage(msg.UnitID)
 
 	if find {
-		for _, coordinate := range client.GetCreateZone() {
-			if coordinate.X == msg.X && coordinate.Y == msg.Y {
+		_, find = client.GetCreateZone()[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)]
 
-				_, find := actionGame.GetUnit(msg.X, msg.Y)
-				coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y)
+		if find {
+			_, find := actionGame.GetUnit(msg.X, msg.Y)
+			coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y)
 
-				if !find && coordinate.Type != "obstacle" {
+			if !find && coordinate.Type != "obstacle" {
 
-					err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
+				err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
 
-					if err == nil {
-						UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
-						return
-					} else {
-						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "add to db"} )
-					}
+				if err == nil {
+					UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
+					return
 				} else {
-					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is busy"} )
+					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "add to db"})
 				}
+			} else {
+				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is busy"})
 			}
+		} else {
+			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is not allow"})
 		}
-		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is not allow"} )
 	}
 }
 

@@ -1,7 +1,7 @@
 function ReadResponse(jsonMessage) {
     var event = JSON.parse(jsonMessage).event;
 
-    console.log(jsonMessage);
+    //console.log(jsonMessage);
 
     if (event === "LoadGame") {
         LoadGame(jsonMessage)

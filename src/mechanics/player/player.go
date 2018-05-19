@@ -18,7 +18,7 @@ type Player struct {
 	hostileMatherShips map[string]map[string]*matherShip.MatherShip // map[X]map[Y]
 	hostileUnits       map[string]map[string]*unit.Unit       // map[X]map[Y]
 	respawn            *coordinate.Coordinate
-	createZone         []*coordinate.Coordinate
+	createZone         map[string]map[string]*coordinate.Coordinate
 	gameID             int
 	equips             []*equip.Equip
 	ready              bool
@@ -28,19 +28,11 @@ func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
 	client.respawn = respawn
 }
 
-func (client *Player) GetCreateZone() ([]*coordinate.Coordinate) {
-	tmpCoordinates := coordinate.GetCoordinatesRadius(client.matherShip.X, client.matherShip.Y, client.matherShip.RangeView)
+func (client *Player) SetCreateZone(zone map[string]map[string]*coordinate.Coordinate) () {
+	client.createZone = zone
+}
 
-	client.createZone = make([]*coordinate.Coordinate, 0)
-
-	for _, gameCoordinate := range tmpCoordinates {
-		if gameCoordinate.X >= 0 && gameCoordinate.Y >= 0 {
-			if gameCoordinate.X < 10 && gameCoordinate.Y < 10 { //todo кастыль
-				client.createZone = append(client.createZone, gameCoordinate)
-			}
-		}
-	}
-
+func (client *Player) GetCreateZone() (map[string]map[string]*coordinate.Coordinate) {
 	return client.createZone
 }
 
