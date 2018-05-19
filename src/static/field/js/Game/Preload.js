@@ -14,7 +14,7 @@ function preload() {
     game.load.image('selectTarget_2', 'http://' + window.location.host + '/assets/select/target2.png');
     game.load.image('selectTarget_3', 'http://' + window.location.host + '/assets/select/target3.png');
 
-    game.load.image('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png');
+    game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 100, 100, 6);
 
     //MatherShips MotherTrucker
     game.load.image('MotherTrucker', 'http://' + window.location.host + '/assets/MotherTrucker.png');

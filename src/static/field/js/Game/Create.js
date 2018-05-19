@@ -11,8 +11,15 @@ function create() {
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.floorLayer = game.add.group();
-    game.floorObjectLayer = game.add.group();
+
     game.SelectLayer = game.add.group();
+    game.SelectLayer.alpha = 0.3;
+
+    game.SelectLineLayer = game.add.group();
+    game.SelectLineLayer.alpha = 0.7;
+
+    game.floorObjectLayer = game.add.group();
+
 
 
     CreateMap();

@@ -3,8 +3,6 @@ function SelectCoordinateUnitCreate(jsonMessage) {
     var placeCoordinate = JSON.parse(jsonMessage).place_coordinate;
     var unitID = JSON.parse(jsonMessage).unit.id;
 
-    console.log(placeCoordinate);
-
     for (var x in placeCoordinate) {
         if (placeCoordinate.hasOwnProperty(x)) {
             for (var y in placeCoordinate[x]) {
@@ -20,19 +18,14 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     selectSprite.inputEnabled = true;
                     selectSprite.events.onInputDown.add(SelectPlaceCoordinate, selectSprite);
-                    selectSprite.events.onInputOut.add(TipOff);
+                    selectSprite.events.onInputOver.add(animatePlaceCoordinate, selectSprite);
+                    selectSprite.events.onInputOut.add(stopAnimatePlaceCoordinate, selectSprite);
 
                     game.map.selectSprites.push(selectSprite);
                 }
             }
         }
     }
-
-   /*for (var i = 0; i < placeCoordinate.length; i++) {
-
-
-
-    }*/
 }
 
 function SelectPlaceCoordinate(selectSprite) {
@@ -44,6 +37,16 @@ function SelectPlaceCoordinate(selectSprite) {
     }));
 
     RemoveSelectCoordinateUnitCreate()
+}
+
+function animatePlaceCoordinate(coordinate) {
+    coordinate.animations.add('select');
+    coordinate.animations.play('select', 5, true);
+
+}
+
+function stopAnimatePlaceCoordinate(coordinate) {
+    coordinate.animations.getAnimation('select').stop(true);
 }
 
 function RemoveSelectCoordinateUnitCreate() {
