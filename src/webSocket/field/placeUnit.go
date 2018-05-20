@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics"
+	"../../mechanics/unit"
 	"../../mechanics/game"
 	"../../mechanics/watchZone"
 	"strconv"
@@ -27,10 +28,9 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 			coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y)
 
 			if !find && coordinate.Type != "obstacle" {
-
 				err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
 				if err == nil {
-
+					ws.WriteJSON(PlaceUnit{Event: "PlaceUnit", Unit: storageUnit})
 					UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
 					return
 				} else {
@@ -61,4 +61,9 @@ type Watch struct {
 	Event    string                      `json:"event"`
 	UserName string                      `json:"user_name"`
 	Update   *watchZone.UpdaterWatchZone `json:"update"`
+}
+
+type PlaceUnit struct {
+	Event string    `json:"event"`
+	Unit  *unit.Unit `json:"unit"`
 }

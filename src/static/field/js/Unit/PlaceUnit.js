@@ -1,7 +1,11 @@
 function PlaceUnit(jsonMessage) {
-    if (JSON.parse(jsonMessage).error === null) {
-        var price = document.getElementsByClassName('fieldInfo price');
-        price[0].innerHTML = "Твои Деньги: " + JSON.parse(jsonMessage).player_price;
+    if (JSON.parse(jsonMessage).error === null || JSON.parse(jsonMessage).error === undefined) {
+
+        CreateUnit(JSON.parse(jsonMessage).unit);
+
+        var boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);
+        boxUnit.remove();
+
     } else {
         var log = document.getElementById('fieldLog');
 
@@ -15,12 +19,4 @@ function PlaceUnit(jsonMessage) {
             log.innerHTML = "Не разрешено"
         }
     }
-
-    var cells = document.getElementsByClassName("fieldUnit create");
-    while (0 < cells.length) {
-        if (cells[0]) {
-            cells[0].className = "fieldUnit open";
-        }
-    }
-    typeUnit = null;
 }

@@ -138,37 +138,6 @@ function MoveToCell(unit, targetID) {
     //unit.body.velocity = game.physics.arcade.velocityFromAngle(unit.angle, UNIT_SPEED); // устанавливаем скорость
 }
 
-function UpdateWatchZone(unit, targetID) {
-    if (unit.watchNode.hasOwnProperty(targetID)) {
-
-        var watch = unit.watchNode;
-
-        var closeCoordinate = watch[targetID].close_coordinate;
-        var openCoordinate = watch[targetID].open_coordinate;
-        var openUnits = watch[targetID].open_unit;
-        var openStructure = watch[targetID].open_structure;
-
-        if (closeCoordinate) {
-            CloseCoordinates(closeCoordinate);
-        }
-
-        if (openCoordinate) {
-            OpenCoordinates(openCoordinate);
-        }
-
-        if (openUnits) {
-            while (openUnits.length > 0) {
-                var openUnit = openUnits.shift();
-                CreateUnit(openUnit)
-            }
-        }
-
-        if (openStructure) {
-            // TODO добавить структуры
-        }
-    }
-}
-
 function MoveUnit() {
     for (var unitID in units) {
         if (units.hasOwnProperty(unitID)) {

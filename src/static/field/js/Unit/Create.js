@@ -1,6 +1,4 @@
 function CreateUnit(unitStat) {
-    console.log(unitStat);
-
     var x = unitStat.x;
     var y = unitStat.y;
 
@@ -26,6 +24,28 @@ function CreateUnit(unitStat) {
 
 
     //game.units[unitStat.x][unitStat.y].spriteAngle = unit.rotate;
-    game.units[unitStat.x][unitStat.y].shadow = shadow;
-    game.units[unitStat.x][unitStat.y].sprite = unit;
+
+    if (game.units !== null && game.units !== undefined) {
+        if (game.units.hasOwnProperty(unitStat.x)) {
+            if (game.units[unitStat.x].hasOwnProperty(unitStat.y)) {
+                game.units[unitStat.x][unitStat.y].shadow = shadow;
+                game.units[unitStat.x][unitStat.y].sprite = unit;
+            } else {
+                game.units[unitStat.x][unitStat.y] = {};
+                game.units[unitStat.x][unitStat.y].shadow = shadow;
+                game.units[unitStat.x][unitStat.y].sprite = unit;
+            }
+        } else {
+            game.units[unitStat.x] = {};
+            game.units[unitStat.x][unitStat.y] = {};
+            game.units[unitStat.x][unitStat.y].shadow = shadow;
+            game.units[unitStat.x][unitStat.y].sprite = unit;
+        }
+    } else {
+        game.units = {};
+        game.units[unitStat.x] = {};
+        game.units[unitStat.x][unitStat.y] = {};
+        game.units[unitStat.x][unitStat.y].shadow = shadow;
+        game.units[unitStat.x][unitStat.y].sprite = unit;
+    }
 }
