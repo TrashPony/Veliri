@@ -109,6 +109,6 @@ function MarkZone(cellSprite, placeCoordinate, x, y) {
     if (!right && !left && !top && !bot) {
         game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_5');
     }
-    
+
     return sprite
 }

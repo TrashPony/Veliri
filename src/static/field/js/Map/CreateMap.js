@@ -3,12 +3,14 @@ function CreateMap() {
         for (var y = 0; y < game.map.YSize; y++) {
 
             var floorSprite = game.floorLayer.create(x * game.tileSize, y * game.tileSize, 'floor');
-            floorSprite.tint = 0x757575;
+            var fogSprite = game.fogOfWar.create(x * game.tileSize, y * game.tileSize, 'FogOfWar');
+
             floorSprite.inputEnabled = true; // включаем ивенты на спрайт
             floorSprite.events.onInputOut.add(TipOff, floorSprite);
             floorSprite.z = 0;
 
             game.map.OneLayerMap[x][y].sprite = floorSprite;
+            game.map.OneLayerMap[x][y].fogSprite = fogSprite;
 
             if (game.map.OneLayerMap[x][y].texture_object !== "") {
 
@@ -34,7 +36,6 @@ function CreateMap() {
                     object.events.onInputOut.add(TipOff);
                     //object.anchor.setTo(0, 0);
                 }
-
 
                 game.map.OneLayerMap[x][y].objectSprite = object;
             }

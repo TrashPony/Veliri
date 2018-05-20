@@ -20,7 +20,8 @@ function create() {
 
     game.floorObjectLayer = game.add.group();
 
-
+    game.fogOfWar = game.add.group();
+    game.fogOfWar.alpha = 0.8;
 
     CreateMap();
     CreateMyGameUnits();

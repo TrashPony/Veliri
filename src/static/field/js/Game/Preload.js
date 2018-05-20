@@ -36,6 +36,8 @@ function preload() {
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/tree2.png');
 
+    // fog
+    game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/fogOfWar.png');
 
     // Interface marks
     game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/toMove.png');
