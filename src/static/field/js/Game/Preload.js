@@ -5,6 +5,8 @@ function preload() {
     game.load.image('selectPlace_1', 'http://' + window.location.host + '/assets/select/place1.png');
     game.load.image('selectPlace_2', 'http://' + window.location.host + '/assets/select/place2.png');
     game.load.image('selectPlace_3', 'http://' + window.location.host + '/assets/select/place3.png');
+    game.load.image('selectPlace_4', 'http://' + window.location.host + '/assets/select/place4.png');
+    game.load.image('selectPlace_5', 'http://' + window.location.host + '/assets/select/place5.png');
 
     game.load.image('selectMove_1', 'http://' + window.location.host + '/assets/select/move1.png');
     game.load.image('selectMove_2', 'http://' + window.location.host + '/assets/select/move3.png');

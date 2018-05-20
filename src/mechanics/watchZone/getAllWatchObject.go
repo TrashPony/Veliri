@@ -35,7 +35,7 @@ func getAllWatchObject(activeGame *game.Game, client *player.Player) {
 
 				for _, gameCoordinate := range watchCoordinate {
 					_, ok := activeGame.GetMap().OneLayerMap[gameCoordinate.X][gameCoordinate.Y]
-					if !ok {
+					if ok {
 						client.AddCoordinate(gameCoordinate)
 					}
 				}
