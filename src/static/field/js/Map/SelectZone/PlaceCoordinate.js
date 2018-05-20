@@ -36,7 +36,7 @@ function SelectPlaceCoordinate(selectSprite) {
         y: Number(selectSprite.PlaceY)
     }));
 
-    RemoveSelectCoordinateUnitCreate()
+    RemoveSelect()
 }
 
 function animatePlaceCoordinate(coordinate) {
@@ -47,16 +47,4 @@ function animatePlaceCoordinate(coordinate) {
 
 function stopAnimatePlaceCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(true);
-}
-
-function RemoveSelectCoordinateUnitCreate() {
-    while (game.map.selectSprites.length > 0) {
-        var selectSprite = game.map.selectSprites.shift();
-        selectSprite.destroy();
-    }
-
-    while (game.SelectLineLayer.children.length > 0) {
-        var lineSprite = game.SelectLineLayer.children.shift();
-        lineSprite.destroy();
-    }
 }

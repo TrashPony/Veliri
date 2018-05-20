@@ -31,17 +31,9 @@ function ReadyReader(jsonMessage) {
 }
 
 function Ready(){
-    if (move !== null) {
-        RemoveSelectMoveCoordinate();
-    }
-
-    var targetCell = document.getElementsByClassName("aim");
-    while (targetCell.length > 0) {
-        targetCell[0].remove();
-    }
+    RemoveSelect();
 
     field.send(JSON.stringify({
-        event: "Ready",
-        id_game: Number(idGame)
+        event: "Ready"
     }));
 }

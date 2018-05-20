@@ -2,16 +2,17 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
+	"../../mechanics"
 )
 
 func Ready(msg Message, ws *websocket.Conn) {
 
-	/*client := usersFieldWs[ws]
+	client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
 
-	phase, err, phaseChange := game.UserReady(client, activeGame)
+	mechanics.UserReady(client, activeGame)
 
- 	players := activeGame.GetPlayers()
+ 	/*players := activeGame.GetPlayers()
 	activeUser := ActionGameUser(players)
 
 	if phase != "" { // если произошла смена фазы то устанавливаем ее
