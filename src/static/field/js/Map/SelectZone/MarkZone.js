@@ -110,5 +110,15 @@ function MarkZone(cellSprite, placeCoordinate, x, y) {
         game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_5');
     }
 
+    if (right && !left && !top && !bot) {
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+        line.anchor.setTo(1, 0);
+        line.angle = -90;
+    }
+
+    if (!right && !left && !top && bot) {
+        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+    }
+
     return sprite
 }

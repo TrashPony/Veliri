@@ -54,4 +54,9 @@ function RemoveSelectCoordinateUnitCreate() {
         var selectSprite = game.map.selectSprites.shift();
         selectSprite.destroy();
     }
+
+    while (game.SelectLineLayer.children.length > 0) {
+        var lineSprite = game.SelectLineLayer.children.shift();
+        lineSprite.destroy();
+    }
 }
