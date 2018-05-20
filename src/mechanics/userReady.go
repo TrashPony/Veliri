@@ -10,7 +10,7 @@ func UserReady(client *player.Player, actionGame *game.Game) () {
 	client.SetReady(true)
 	db.UpdatePlayer(client)
 
-	var allReady bool
+	allReady := true
 
 	for _, user := range actionGame.GetPlayers() {
 		if user.GetReady() == false {
@@ -32,12 +32,13 @@ func changeGamePhase(actionGame *game.Game) {
 			actionGame.Phase = "targeting"
 		} else {
 			if actionGame.Phase == "targeting" {
-				actionGame.Phase = "attack" // todo запуск фазы атаки
+				actionGame.Phase = "attack"
+				// todo запуск фазы атаки
+				actionGame.Step = actionGame.Step + 1
 			}
 		}
 	}
 
-	actionGame.Step = actionGame.Step + 1
 	db.UpdateGame(actionGame)
 
 	for _, user := range actionGame.GetPlayers() {
