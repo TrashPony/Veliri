@@ -22,8 +22,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "ChangePhase") {
-        console.log(jsonMessage)
-        //ReadyReader(jsonMessage);
+        ChangePhase(jsonMessage);
     }
 
     /*

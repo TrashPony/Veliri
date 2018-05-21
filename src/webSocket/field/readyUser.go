@@ -39,6 +39,7 @@ func ChangePhase(actionGame *game.Game) {
 			GameID:    actionGame.Id,
 			Ready:     client.GetReady(),
 			Units:     client.GetUnits(),
+			GameStep:  actionGame.Step,
 			GamePhase: actionGame.Phase}
 
 		phasePipe <- phaseInfo
@@ -51,5 +52,6 @@ type PhaseInfo struct {
 	GameID    int                              `json:"game_id"`
 	Ready     bool                             `json:"ready"`
 	Units     map[string]map[string]*unit.Unit `json:"units"`
+	GameStep  int                              `json:"game_step"`
 	GamePhase string                           `json:"game_phase"`
 }

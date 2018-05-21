@@ -5,5 +5,11 @@ function InitPlayer() {
         ready.value = "Ты готов!";
         ready.className = "button noActive";
         ready.onclick = null
+    } else {
+        ready.value = "Готов!";
+        ready.className = "button";
+        ready.onclick = function () {
+            Ready();
+        };
     }
 }
