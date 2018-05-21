@@ -9,8 +9,10 @@ function preload() {
     game.load.image('selectPlace_5', 'http://' + window.location.host + '/assets/select/place5.png');
 
     game.load.image('selectMove_1', 'http://' + window.location.host + '/assets/select/move1.png');
-    game.load.image('selectMove_2', 'http://' + window.location.host + '/assets/select/move3.png');
+    game.load.image('selectMove_2', 'http://' + window.location.host + '/assets/select/move2.png');
     game.load.image('selectMove_3', 'http://' + window.location.host + '/assets/select/move3.png');
+    game.load.image('selectMove_4', 'http://' + window.location.host + '/assets/select/move4.png');
+    game.load.image('selectMove_5', 'http://' + window.location.host + '/assets/select/move5.png');
 
     game.load.image('selectTarget_1', 'http://' + window.location.host + '/assets/select/target1.png');
     game.load.image('selectTarget_2', 'http://' + window.location.host + '/assets/select/target2.png');

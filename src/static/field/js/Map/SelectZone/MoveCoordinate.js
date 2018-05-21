@@ -1,5 +1,5 @@
-function SelectMoveCoordinateCreate() {
-    var moveCoordinate = JSON.parse(jsonMessage).place_coordinate;
+function SelectMoveCoordinateCreate(jsonMessage) {
+    var moveCoordinate = JSON.parse(jsonMessage).move;
 
     for (var x in moveCoordinate) {
         if (moveCoordinate.hasOwnProperty(x)) {

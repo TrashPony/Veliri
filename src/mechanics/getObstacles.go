@@ -44,7 +44,7 @@ func GetObstacles(client *player.Player, game *game.Game) (obstaclesMatrix map[i
 
 	for _, xLine := range game.GetMap().OneLayerMap {
 		for _, obstacles := range xLine {
-			if obstacles.Type == "obstacle" {
+			if obstacles.Type == "obstacle" || obstacles.Type == "terrain" {
 				var gameCoordinate coordinate.Coordinate
 				gameCoordinate.X = obstacles.X
 				gameCoordinate.Y = obstacles.Y

@@ -61,15 +61,16 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
+		if msg.Event == "SelectUnit" {
+			SelectUnit(msg, ws)
+			continue
+		}
 		/*if msg.Event == "MouseOver" {
 			MouseOver(msg, ws)
 			continue
 		}
 
-		if msg.Event == "SelectUnit" || msg.Event == "SelectCoordinateCreate" {
-			SelectUnit(msg, ws)
-			continue
-		}
+
 		if msg.Event == "MoveUnit" {
 			MoveUnit(msg, ws)
 			continue

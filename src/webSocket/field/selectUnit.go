@@ -2,22 +2,28 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
+	"../../mechanics"
+	"../../mechanics/player"
+	"../../mechanics/coordinate"
+	"../../mechanics/game"
+	"../../mechanics/unit"
 )
 
 func SelectUnit(msg Message, ws *websocket.Conn) {
 
-	/*unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
-	client, ok := usersFieldWs[ws]
-	activeGame, ok := Games[client.GetGameID()]
-	respawn := client.GetRespawn()
+	client, findClient := usersFieldWs[ws]
+	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	activeGame, findGame := Games[client.GetGameID()]
 
-	if find && ok && !activeGame.GetUserReady(client.GetLogin()) {
-		if activeGame.GetStat().Phase == "move" {
-			if unit.Action {
+	if findClient && findUnit && findGame {
+		if activeGame.Phase == "move" {
+			SelectMove(client, gameUnit, activeGame, ws)
+		}
+	}
 
-				coordinates := game.GetCoordinates(unit.X, unit.Y, unit.MoveSpeed)
-				obstacles := game.GetObstacles(client, activeGame)
-				moveCoordinate := game.GetMoveCoordinate(coordinates, unit, obstacles)
+	/*if find && ok && !activeGame.GetUserReady(client.GetLogin()) {
+
+
 
 				for i := 0; i < len(moveCoordinate); i++ {
 					if !(moveCoordinate[i].X == respawn.X && moveCoordinate[i].Y == respawn.Y) && moveCoordinate[i].X >= 0 && moveCoordinate[i].Y >= 0 && moveCoordinate[i].X < 10 && moveCoordinate[i].Y < 10 {
@@ -26,11 +32,8 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 						fieldPipe <- createCoordinates
 					}
 				}
-			} else {
-				resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "unit already move"}
-				fieldPipe <- resp
-			}
-		}
+
+
 
 		if activeGame.GetStat().Phase == "targeting" {
 			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
@@ -62,4 +65,17 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 			}
 		}
 	}*/
+}
+
+func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
+	if !gameUnit.Action {
+		ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Move: mechanics.GetMoveCoordinate(gameUnit, client, actionGame)})
+	} else {
+		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
+	}
+}
+
+type MoveCoordinate struct {
+	Event string                                       `json:"event"`
+	Move  map[string]map[string]*coordinate.Coordinate `json:"move"`
 }

@@ -1,8 +1,11 @@
 function SelectUnit(unit) {
 
+    RemoveSelect();
+
     field.send(JSON.stringify({
         event: "SelectUnit",
-        unit_id: Number(unit.info.id)
+        x: Number(unit.info.x),
+        y: Number(unit.info.y)
     }));
 
     /*var x = JSON.parse(jsonMessage).x;
