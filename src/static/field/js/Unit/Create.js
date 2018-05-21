@@ -12,18 +12,15 @@ function CreateUnit(unitStat) {
     var unit = game.floorObjectLayer.create(cell.x + game.tileSize / 2, cell.y + game.tileSize / 2, 'tank360', unitStat.rotate);
     game.physics.arcade.enable(unit);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
-    unit.anchor.setTo(0.5, 0.5);         // устанавливаем центр спрайта
+    unit.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
     unit.body.collideWorldBounds = true;  // границы страницы
+    unit.info = unitStat;
+    unit.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
+    unit.input.pixelPerfectClick = true;   // уберает ивенты кликов на пустую зону спрайта
 
-    //unit.animations.add('walk');
-    //unit.animations.play('walk', 500, true);
-    //unit.id = x + ":" + y;
-    // todo
-    //unit.events.onInputOver.add(mouse_over); // обрабатываем наведение мышки
-    //unit.events.onInputOut.add(mouse_out);   // обрабатываем убирание мышки
-
-
-    //game.units[unitStat.x][unitStat.y].spriteAngle = unit.rotate;
+    unit.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
+    unit.events.onInputOver.add(unitTip, unit); // обрабатываем наведение мышки
+    unit.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
 
     if (game.units !== null && game.units !== undefined) {
         if (game.units.hasOwnProperty(unitStat.x)) {

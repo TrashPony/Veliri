@@ -1,5 +1,11 @@
-function SelectUnit(jsonMessage) {
-    var x = JSON.parse(jsonMessage).x;
+function SelectUnit(unit) {
+
+    field.send(JSON.stringify({
+        event: "SelectUnit",
+        unit_id: Number(unit.info.id)
+    }));
+
+    /*var x = JSON.parse(jsonMessage).x;
     var y = JSON.parse(jsonMessage).y;
     var errorSelect = JSON.parse(jsonMessage).error;
     var phase = JSON.parse(jsonMessage).phase;
@@ -37,10 +43,10 @@ function SelectUnit(jsonMessage) {
                     var div = document.createElement('div');
                     div.className = "aim";
                     cell.appendChild(div);
-                }*/
+                }
             }
         }
-    }
+    }*/
 }
 
 /*function SelectUnit(unit) {

@@ -1,25 +1,37 @@
-var moveCell = [];
+function SelectMoveCoordinateCreate() {
+    var moveCoordinate = JSON.parse(jsonMessage).place_coordinate;
 
-function RemoveSelectMoveCoordinate() {
-    move = null;
+    for (var x in moveCoordinate) {
+        if (moveCoordinate.hasOwnProperty(x)) {
+            for (var y in moveCoordinate[x]) {
+                if (moveCoordinate[x].hasOwnProperty(y)) {
 
-    var buttonSkip = document.getElementById("SkipButton");
-    buttonSkip.className = "button noActive";
-    buttonSkip.onclick = null;
+                    var cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
+                    var selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move');
 
-    for (var i = 0; i < moveCell.length; i++) {
-        moveCell[i].tint = 0xffffff * 2;
-        delete moveCell[i];
+                    selectSprite.PlaceX = moveCoordinate[x][y].x;
+                    selectSprite.PlaceY = moveCoordinate[x][y].y;
+
+                    selectSprite.inputEnabled = true;
+
+                    selectSprite.events.onInputDown.add(SelectMoveCoordinate, selectSprite);
+                    selectSprite.events.onInputOver.add(animateCoordinate, selectSprite);
+                    selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
+
+                    game.map.selectSprites.push(selectSprite);
+                }
+            }
+        }
     }
-
-    moveCell = [];
 }
 
-function SelectMoveCoordinate(x,y) {
-    var cell = GameMap.OneLayerMap[x][y].sprite;
-    cell.tint = 0xb5b5ff;
+function SelectMoveCoordinate(selectSprite) {
+    /*field.send(JSON.stringify({
+        event: "PlaceUnit",
+        unit_id: Number(selectSprite.UnitID),
+        x: Number(selectSprite.PlaceX),
+        y: Number(selectSprite.PlaceY)
+    }));*/
 
-    if (cell) {
-        moveCell.push(cell); // кладем выделеные ячейки в масив что бы потом удалить
-    }
+    RemoveSelect()
 }

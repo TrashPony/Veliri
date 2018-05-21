@@ -9,6 +9,10 @@ function ReadResponse(jsonMessage) {
         SelectCoordinateUnitCreate(jsonMessage)
     }
 
+    if (event === "SelectMoveUnit") {
+        SelectMoveCoordinateCreate(jsonMessage)
+    }
+
     if (event === "UpdateWatchMap") {
         UpdateWatchZone(jsonMessage);
     }

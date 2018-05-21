@@ -1,4 +1,4 @@
-function MarkZone(cellSprite, placeCoordinate, x, y) {
+function MarkZone(cellSprite, placeCoordinate, x, y, selectClass) {
     var left = false;
     var right = false;
     var top = false;
@@ -40,84 +40,84 @@ function MarkZone(cellSprite, placeCoordinate, x, y) {
     //}
 
     if (right && left && !top && bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_1');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
     }
 
     if (right && !left && top && bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_1');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
         line.anchor.setTo(1, 0);
         line.angle = -90;
     }
 
     if (!right && left && top && bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_1');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
         line.anchor.setTo(0, 1);
         line.angle = 90;
     }
 
     if (right && left && top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_1');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
         line.anchor.setTo(0, 1);
         line.scale.y *= -1;
     }
 
     if (!right && left && top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_2');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
         line.anchor.setTo(0, 1);
         line.scale.y *= -1;
     }
 
     if (right && !left && !top && bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_2');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
         line.anchor.setTo(1, 0);
         line.angle = -90;
     }
 
     if (right && !left && top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_2');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
         line.anchor.setTo(1, 1);
         line.scale.x *= -1;
         line.scale.y *= -1;
     }
 
     if (!right && left && !top && bot) {
-        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_2');
+        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
     }
 
     if (right && left && !top && !bot) {
-        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_4');
+        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_4');
     }
 
     if (!right && !left && top && bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_4');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_4');
         line.anchor.setTo(1, 0);
         line.angle = -90;
     }
 
     if (!right && !left && top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
         line.anchor.setTo(1, 1);
         line.angle = -180;
     }
 
     if (!right && left && !top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
         line.anchor.setTo(0, 1);
         line.angle = 90;
     }
 
-    if (!right && !left && !top && !bot) {
-        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_5');
-    }
-
     if (right && !left && !top && !bot) {
-        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+        line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
         line.anchor.setTo(1, 0);
         line.angle = -90;
     }
 
     if (!right && !left && !top && bot) {
-        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'selectPlace_3');
+        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
+    }
+
+    if (!right && !left && !top && !bot) {
+        game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_5');
     }
 
     return sprite

@@ -7,10 +7,11 @@ function CreateMyMatherShip() {
     matherShip.gridY = game.matherShip.y;
     matherShip.info = game.matherShip;
 
-    matherShip.events.onInputOver.add(MatherShipTip, matherShip.info); // обрабатываем наведение мышки
-    matherShip.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
+    matherShip.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
+    matherShip.input.pixelPerfectClick = true;   // уберает ивенты кликов на пустую зону спрайта
 
-    //matherShip.scale.set(1);                  // устанавливаем размер спрайта от оригинала
+    matherShip.events.onInputOver.add(MatherShipTip, matherShip); // обрабатываем наведение мышки
+    matherShip.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
 
     var style = {font: "16px Arial", fill: "#00ffff"};
 

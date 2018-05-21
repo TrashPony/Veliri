@@ -10,7 +10,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     var cellSprite = game.map.OneLayerMap[placeCoordinate[x][y].x][placeCoordinate[x][y].y].sprite;
 
-                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y);
+                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place');
 
                     selectSprite.PlaceX = placeCoordinate[x][y].x;
                     selectSprite.PlaceY = placeCoordinate[x][y].y;
@@ -18,8 +18,8 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     selectSprite.inputEnabled = true;
                     selectSprite.events.onInputDown.add(SelectPlaceCoordinate, selectSprite);
-                    selectSprite.events.onInputOver.add(animatePlaceCoordinate, selectSprite);
-                    selectSprite.events.onInputOut.add(stopAnimatePlaceCoordinate, selectSprite);
+                    selectSprite.events.onInputOver.add(animateCoordinate, selectSprite);
+                    selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
 
                     game.map.selectSprites.push(selectSprite);
                 }
@@ -39,12 +39,12 @@ function SelectPlaceCoordinate(selectSprite) {
     RemoveSelect()
 }
 
-function animatePlaceCoordinate(coordinate) {
+function animateCoordinate(coordinate) {
     coordinate.animations.add('select');
     coordinate.animations.play('select', 5, true);
 
 }
 
-function stopAnimatePlaceCoordinate(coordinate) {
+function stopAnimateCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(true);
 }
