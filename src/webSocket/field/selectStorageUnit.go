@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/unit"
 	"../../mechanics/coordinate"
-	"../../mechanics"
+	"../../mechanics/Phases/placePhase"
 )
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {
@@ -15,7 +15,7 @@ func selectStorageUnit(msg Message, ws *websocket.Conn) {
 		if !ok {
 			delete(usersFieldWs, ws)
 		} else {
-			client.SetCreateZone(mechanics.GetGameZone(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, Games[client.GetGameID()]))
+			client.SetCreateZone(placePhase.GetPlaceCoordinate(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, Games[client.GetGameID()]))
 
 			storageUnit, find := client.GetUnitStorage(msg.UnitID)
 

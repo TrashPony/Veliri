@@ -1,9 +1,9 @@
-package mechanics
+package movePhase
 
 import (
-	"./player"
-	"./game"
-	"./coordinate"
+	"../../player"
+	"../../game"
+	"../../coordinate"
 )
 
 func GetObstacles(client *player.Player, game *game.Game) (obstaclesMatrix map[int]map[int]*coordinate.Coordinate) { // TODO: это все очень странно

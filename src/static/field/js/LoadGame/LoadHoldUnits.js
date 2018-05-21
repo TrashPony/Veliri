@@ -15,13 +15,14 @@ function LoadHoldUnits() {
                 var boxUnit = document.createElement("div");
                 boxUnit.className = "boxUnit";
 
-                boxUnit.unit = game.unitStorage[unit];
+                boxUnit.unit = {};
+                boxUnit.unit.info = game.unitStorage[unit];
                 boxUnit.id = game.unitStorage[unit].id;
 
                 boxUnit.onclick = function () {
                     field.send(JSON.stringify({
                         event: "SelectStorageUnit",
-                        unit_id: Number(this.unit.id)
+                        unit_id: Number(this.unit.info.id)
                     }));
                 };
 

@@ -10,7 +10,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "SelectMoveUnit") {
-        console.log(jsonMessage);
         SelectMoveCoordinateCreate(jsonMessage)
     }
 

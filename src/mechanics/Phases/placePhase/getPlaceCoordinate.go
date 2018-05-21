@@ -1,19 +1,19 @@
-package mechanics
+package placePhase
 
 import (
-	"./coordinate"
-	"./game"
+	"../../coordinate"
+	"../../game"
 	"strconv"
 )
 
-func GetGameZone(xCenter, yCenter, watchRadius int, actionGame *game.Game) (zone map[string]map[string]*coordinate.Coordinate) {
+func GetPlaceCoordinate(xCenter, yCenter, watchRadius int, actionGame *game.Game) (zone map[string]map[string]*coordinate.Coordinate) {
 
 	tmpCoordinates := coordinate.GetCoordinatesRadius(xCenter, yCenter, watchRadius)
 
 	for _, zoneCoordinate := range tmpCoordinates {
 		gameCoordinate, find := actionGame.GetMap().GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
 
-		if find { //todo ваще для этого есть фильтр
+		if find {
 			if gameCoordinate.Type == "" {
 				_, find = actionGame.GetUnit(zoneCoordinate.X, zoneCoordinate.Y)
 				if !find {

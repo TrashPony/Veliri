@@ -1,10 +1,10 @@
-package mechanics
+package movePhase
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
 	"math"
-	"./gameMap"
-	"./coordinate"
+	"../../gameMap"
+	"../../coordinate"
 )
 
 const (
@@ -78,9 +78,9 @@ func parseNeighbours(curr coordinate.Coordinate, m *[][]coordinate.Coordinate, o
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoord := generateNeighboursCoord(&curr, obstacles) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(&curr, obstacles) // берем всех соседей этой клетки
 
-	for _, xLine := range nCoord {
+	for _, xLine := range nCoordinate {
 		for _, c := range xLine {
 			if c.X < WIDTH && c.Y < HEIGHT {
 				tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
@@ -125,52 +125,53 @@ func MinF(points Points) (min *coordinate.Coordinate) { // берет точку
 	return
 }
 
-func addCoordIfValid(res map[int]map[int]*coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate, x int, y int) {
-	coor := coordinate.Coordinate{X:x , Y:y}
+func addCoordinateIfValid(res map[int]map[int]*coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate, x int, y int) {
+	gameCoordinate := coordinate.Coordinate{X:x , Y:y}
 
 	_, ok := obstacles[x][y]
 	if !ok && (x >= 0 && y >= 0){
 		if res[x] != nil {
-			res[x][y] = &coor
+			res[x][y] = &gameCoordinate
 		} else {
 			res[x] = make(map[int]*coordinate.Coordinate)
-			res[x][y] = &coor
+			res[x][y] = &gameCoordinate
 		}
 	}
 }
 
-func generateNeighboursCoord(curr *coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate) (res map[int]map[int]*coordinate.Coordinate) { // берет все соседние клетки от текущей
+func generateNeighboursCoordinate(curr *coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate) (res map[int]map[int]*coordinate.Coordinate) {
+	// берет все соседние клетки от текущей
 	res = make(map[int]map[int]*coordinate.Coordinate)
 
 	//строго лево
 	_, left := obstacles[curr.X-1][curr.Y]
-	addCoordIfValid(res, obstacles, curr.X-1, curr.Y)
+	addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y)
 	//строго право
 	_, right := obstacles[curr.X+1][curr.Y]
-	addCoordIfValid(res, obstacles, curr.X+1, curr.Y)
+	addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y)
 	//верх центр
 	_, top := obstacles[curr.X][curr.Y-1]
-	addCoordIfValid(res, obstacles, curr.X, curr.Y-1)
+	addCoordinateIfValid(res, obstacles, curr.X, curr.Y-1)
 	//низ центр
 	_, bottom := obstacles[curr.X][curr.Y+1]
-	addCoordIfValid(res, obstacles, curr.X, curr.Y+1)
+	addCoordinateIfValid(res, obstacles, curr.X, curr.Y+1)
 
 
 	//верх лево/    ЛЕВО И верх
 	if !(left || top) {
-		addCoordIfValid(res, obstacles, curr.X-1, curr.Y-1)
+		addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y-1)
 	}
 	//верх право/   ПРАВО И верх
 	if !(right || top) {
-		addCoordIfValid(res, obstacles, curr.X+1, curr.Y-1)
+		addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y-1)
 	}
 	//низ лево/  если ЛЕВО И низ
 	if !(left || bottom) {
-		addCoordIfValid(res, obstacles, curr.X-1, curr.Y+1)
+		addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y+1)
 	}
 	//низ право/  низ И ВЕРХ
 	if !(right || bottom) {
-		addCoordIfValid(res, obstacles, curr.X+1, curr.Y+1)
+		addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y+1)
 	}
 
 	return

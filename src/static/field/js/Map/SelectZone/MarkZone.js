@@ -35,9 +35,7 @@ function MarkZone(cellSprite, placeCoordinate, x, y, selectClass) {
 
     console.log("----------------------");*/
 
-    //if (right && left && top && bot) {
     sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectEmpty');
-    //}
 
     if (right && left && !top && bot) {
         line = game.SelectLineLayer.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');

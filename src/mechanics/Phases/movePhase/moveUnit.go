@@ -1,4 +1,4 @@
-package mechanics
+package movePhase
 
 /*func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (watchNode map[string]*UpdaterWatchZone, pathNodes []Coordinate) {
 	watchNode = make(map[string]*UpdaterWatchZone)

@@ -1,4 +1,4 @@
-package mechanics
+package targetPhase
 
 /*func SetTarget(unit Unit, target string, idGame int) {
 	var err error

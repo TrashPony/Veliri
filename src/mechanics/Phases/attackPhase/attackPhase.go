@@ -1,4 +1,4 @@
-package mechanics
+package attackPhase
 
 /*func AttackPhase(game *Game, players []*Player) (resultBattle []ResultBattle) {
 

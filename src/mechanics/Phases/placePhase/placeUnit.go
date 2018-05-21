@@ -1,10 +1,10 @@
-package mechanics
+package placePhase
 
 import (
-	"./unit"
-	"./db"
-	"./game"
-	"./player"
+	"../../unit"
+	"../../db"
+	"../../game"
+	"../../player"
 )
 
 func PlaceUnit(gameUnit *unit.Unit, x,y int, actionGame *game.Game, client *player.Player) error {
