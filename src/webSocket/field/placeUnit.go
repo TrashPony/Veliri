@@ -13,35 +13,40 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 	actionGame, ok := Games[client.GetGameID()]
 
-	if !ok {
-		delete(usersFieldWs, ws)
-		return
-	}
+	if client.GetReady() == false {
 
-	storageUnit, find := client.GetUnitStorage(msg.UnitID)
+		if !ok {
+			delete(usersFieldWs, ws)
+			return
+		}
 
-	if find {
-		_, find = client.GetCreateZone()[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)]
+		storageUnit, find := client.GetUnitStorage(msg.UnitID)
 
 		if find {
-			_, find := actionGame.GetUnit(msg.X, msg.Y)
-			coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y)
+			_, find = client.GetCreateZone()[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)]
 
-			if !find && coordinate.Type != "obstacle" {
-				err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
-				if err == nil {
-					ws.WriteJSON(PlaceUnit{Event: "PlaceUnit", Unit: storageUnit})
-					UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
-					return
+			if find {
+				_, find := actionGame.GetUnit(msg.X, msg.Y)
+				coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y)
+
+				if !find && coordinate.Type != "obstacle" {
+					err := mechanics.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client)
+					if err == nil {
+						ws.WriteJSON(PlaceUnit{Event: "PlaceUnit", Unit: storageUnit})
+						UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
+						return
+					} else {
+						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "add to db"})
+					}
 				} else {
-					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "add to db"})
+					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is busy"})
 				}
 			} else {
-				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is busy"})
+				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is not allow"})
 			}
-		} else {
-			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "place is not allow"})
 		}
+	} else {
+		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
 	}
 }
 
@@ -52,7 +57,7 @@ func UpdatePlaceHostilePlayers(actionGame *game.Game, x, y int) {
 
 		if find {
 			updater := watchZone.UpdateWatchZone(actionGame, player)
-			watchPipe <- Watch{Event: "UpdateWatchMap", UserName: player.GetLogin(), Update: updater}
+			watchPipe <- Watch{Event: "UpdateWatchMap", UserName: player.GetLogin(), GameID: actionGame.Id, Update: updater}
 		}
 	}
 }
@@ -60,10 +65,11 @@ func UpdatePlaceHostilePlayers(actionGame *game.Game, x, y int) {
 type Watch struct {
 	Event    string                      `json:"event"`
 	UserName string                      `json:"user_name"`
+	GameID   int                         `json:"game_id"`
 	Update   *watchZone.UpdaterWatchZone `json:"update"`
 }
 
 type PlaceUnit struct {
-	Event string    `json:"event"`
+	Event string     `json:"event"`
 	Unit  *unit.Unit `json:"unit"`
 }

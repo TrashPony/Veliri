@@ -6,7 +6,7 @@ import (
 	"./db"
 )
 
-func UserReady(client *player.Player, actionGame *game.Game) () {
+func UserReady(client *player.Player, actionGame *game.Game) (bool) {
 	client.SetReady(true)
 	db.UpdatePlayer(client)
 
@@ -22,6 +22,8 @@ func UserReady(client *player.Player, actionGame *game.Game) () {
 	if allReady {
 		changeGamePhase(actionGame)
 	}
+
+	return allReady
 }
 
 func changeGamePhase(actionGame *game.Game) {

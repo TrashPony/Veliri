@@ -5,23 +5,27 @@ import (
 	"../../mechanics/unit"
 	"../../mechanics/coordinate"
 	"../../mechanics"
-
 )
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
 
-	if !ok {
-		delete(usersFieldWs, ws)
-	} else {
-		client.SetCreateZone(mechanics.GetGameZone(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, Games[client.GetGameID()]))
+	if client.GetReady() == false {
 
-		storageUnit, find := client.GetUnitStorage(msg.UnitID)
+		if !ok {
+			delete(usersFieldWs, ws)
+		} else {
+			client.SetCreateZone(mechanics.GetGameZone(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, Games[client.GetGameID()]))
 
-		if find {
-			resp := SelectStorageUnit{Event: msg.Event, Unit: storageUnit, PlaceCoordinate: client.GetCreateZone()}
-			ws.WriteJSON(resp)
+			storageUnit, find := client.GetUnitStorage(msg.UnitID)
+
+			if find {
+				resp := SelectStorageUnit{Event: msg.Event, Unit: storageUnit, PlaceCoordinate: client.GetCreateZone()}
+				ws.WriteJSON(resp)
+			}
 		}
+	} else {
+		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
 	}
 }
 

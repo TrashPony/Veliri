@@ -3,74 +3,52 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics"
+	"../../mechanics/game"
+	"../../mechanics/unit"
 )
 
-func Ready(msg Message, ws *websocket.Conn) {
+func Ready(ws *websocket.Conn) {
 
 	client := usersFieldWs[ws]
 	activeGame := Games[client.GetGameID()]
 
-	mechanics.UserReady(client, activeGame)
+	changePhase := mechanics.UserReady(client, activeGame)
 
- 	/*players := activeGame.GetPlayers()
-	activeUser := ActionGameUser(players)
+	if changePhase {
 
-	if phase != "" { // если произошла смена фазы то устанавливаем ее
-		activeGame.GetStat().Phase = phase
-	}
+		ChangePhase(activeGame)
 
-	if phase == "attack" {
-
-		attack(activeGame, activeUser, msg, phase)
-
-		phaseChange = true
-		phase, _ = game.PhaseСhange(activeGame)
-	}
-
-	if err != nil {
-		resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: err.Error()}
-		fieldPipe <- resp
-		return
-	}
-
-	if 0 == len(usersFieldWs[ws].GetUnits()) {
-		resp := Response{Event: msg.Event, UserName: client.GetLogin(), Error: "not units"}
-		fieldPipe <- resp
-		// TODO добавить окончание игры
-		return
-	}
-
-	if phaseChange {
-		for _, player := range activeUser {
-
-			// обновляем статус игроков в памяти
-			activeGame.SetUserReady(player.GetLogin(), false)
-
-			resp := Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
-			fieldPipe <- resp
-			activeGame.GetStat().Phase = phase
-
-			if phase == "move" {
-				resp = Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase, GameStep: activeGame.GetStat().Step + 1}
-				activeGame.GetStat().Step += 1
-			}
-
-			for yLine := range player.GetUnits() { // TODO Нахера?
-				for _, unit := range player.GetUnits()[yLine] {
-					unit.Action = true
-
-					if phase == "move" {
-						unit.Target = nil
-					}
-
-					var unitsParameter InitUnit
-					unitsParameter.initUnit("InitUnit", unit, player.GetLogin())
-				}
-			}
+		if activeGame.Phase == "attack" {
+			// todo бой
 		}
 	} else {
-		resp := Response{Event: msg.Event, UserName: usersFieldWs[ws].GetLogin(), Phase: phase}
-		fieldPipe <- resp
-	}*/
+		ws.WriteJSON(UserReady{Ready: client.GetReady()})
+	}
 }
 
+type UserReady struct {
+	Ready bool `json:"ready"`
+}
+
+func ChangePhase(actionGame *game.Game) {
+	for _, client := range actionGame.GetPlayers() {
+		phaseInfo := PhaseInfo{
+			Event:     "ChangePhase",
+			UserName:  client.GetLogin(),
+			GameID:    actionGame.Id,
+			Ready:     client.GetReady(),
+			Units:     client.GetUnits(),
+			GamePhase: actionGame.Phase}
+
+		phasePipe <- phaseInfo
+	}
+}
+
+type PhaseInfo struct {
+	Event     string                           `json:"event"`
+	UserName  string                           `json:"user_name"`
+	GameID    int                              `json:"game_id"`
+	Ready     bool                             `json:"ready"`
+	Units     map[string]map[string]*unit.Unit `json:"units"`
+	GamePhase string                           `json:"game_phase"`
+}

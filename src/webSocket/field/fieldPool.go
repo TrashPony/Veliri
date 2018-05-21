@@ -10,6 +10,8 @@ import (
 )
 
 var watchPipe = make(chan Watch)
+var phasePipe = make(chan PhaseInfo)
+
 var move = make(chan Move)
 
 var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
@@ -23,7 +25,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	newPlayer.SetLogin(login)
 	newPlayer.SetID(id)
 	usersFieldWs[ws] = &newPlayer // Регистрируем нового Клиента
-	print("WS field Сессия: ")                        // просто смотрим новое подключение
+	print("WS field Сессия: ")    // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
@@ -34,7 +36,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersFieldWs, err)
 			break
 		}
@@ -55,7 +57,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 		}
 
 		if msg.Event == "Ready" {
-			Ready(msg, ws)
+			Ready(ws)
 			continue
 		}
 
@@ -85,12 +87,30 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 	}
 }
 
-func WatchSender()  {
+func WatchSender() {
 	for {
-		resp := <- watchPipe
+		resp := <-watchPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName {
+			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func PhaseSender() {
+	for {
+		resp := <-phasePipe
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)

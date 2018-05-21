@@ -14,7 +14,7 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/login", auth.Login)                    // если заходят на /login то отрабатывает функция auth.Login
+	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
@@ -27,6 +27,7 @@ func main() {
 
 	go field.WatchSender()
 	go field.MoveSender()
+	go field.PhaseSender()
 
 	go globalMap.GlobalReposeSender()
 	go globalMap.TimerSteep() // таймер сервер отвечает за синхронизацию всех игроков в сети, должен содержать в себе всю логику что бы все действия проводились через него
