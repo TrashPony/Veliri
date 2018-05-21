@@ -11,8 +11,8 @@ function RemoveSelectLine() {
 }
 
 function RemoveSelectCoordinate() {
-    while (game.SelectLineLayer.children.length > 0) {
-        var lineSprite = game.SelectLineLayer.children.shift();
+    while (game.SelectLayer.children.length > 0) {
+        var lineSprite = game.SelectLayer.children.shift();
         lineSprite.destroy();
     }
 }

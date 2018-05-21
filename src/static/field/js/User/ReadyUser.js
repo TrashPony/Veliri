@@ -1,36 +1,27 @@
-function ReadyReader(jsonMessage) {
-    var error = JSON.parse(jsonMessage).error;
-    phase = JSON.parse(jsonMessage).phase;
+function ReadyUser(jsonMessage) {
 
-    if (error === "") {
+    console.log(jsonMessage);
+
+    if (JSON.parse(jsonMessage).error === null || JSON.parse(jsonMessage).error === undefined) {
         var ready = document.getElementById("Ready");
-        var phaseBlock = document.getElementById("phase");
 
-        if (phase === "") {
+        if (JSON.parse(jsonMessage).ready) {
             ready.value = "Ты готов!";
             ready.className = "button noActive";
             ready.onclick = null;
         } else {
             ready.value = "Готов!";
             ready.className = "button";
-            ready.onclick = function () { Ready(); };
-
-            phaseBlock.innerHTML = JSON.parse(jsonMessage).phase;
-            var cells = document.getElementsByClassName("fieldUnit create");
-            while (0 < cells.length) {
-                if (cells[0]) {
-                    cells[0].className = "fieldUnit open";
-                }
-            }
+            ready.onclick = function () {
+                Ready();
+            };
         }
     } else {
-        if (error === "not units") {
-            alert("У вас нет юнитов")
-        }
+        alert(JSON.parse(jsonMessage).error)
     }
 }
 
-function Ready(){
+function Ready() {
     RemoveSelect();
 
     field.send(JSON.stringify({

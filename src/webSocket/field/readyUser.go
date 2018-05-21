@@ -22,12 +22,13 @@ func Ready(ws *websocket.Conn) {
 			// todo бой
 		}
 	} else {
-		ws.WriteJSON(UserReady{Ready: client.GetReady()})
+		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
 	}
 }
 
 type UserReady struct {
-	Ready bool `json:"ready"`
+	Event string `json:"event"`
+	Ready bool   `json:"ready"`
 }
 
 func ChangePhase(actionGame *game.Game) {

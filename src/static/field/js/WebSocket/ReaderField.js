@@ -13,8 +13,17 @@ function ReadResponse(jsonMessage) {
         UpdateWatchZone(jsonMessage);
     }
 
-    if (event === "PlaceUnit") {    // +
+    if (event === "PlaceUnit") {
         PlaceUnit(jsonMessage);
+    }
+
+    if (event === "Ready") {
+        ReadyUser(jsonMessage);
+    }
+
+    if (event === "ChangePhase") {
+        console.log(jsonMessage)
+        //ReadyReader(jsonMessage);
     }
 
     /*
@@ -28,10 +37,6 @@ function ReadResponse(jsonMessage) {
 
        if (event === "PlaceUnit") {
            PlaceUnit(jsonMessage);
-       }
-
-       if (event === "Ready") {      // +
-           ReadyReader(jsonMessage);
        }
 
        if (event === "SelectUnit") {  // + -
