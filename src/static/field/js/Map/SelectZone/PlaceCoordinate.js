@@ -10,7 +10,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     var cellSprite = game.map.OneLayerMap[placeCoordinate[x][y].x][placeCoordinate[x][y].y].sprite;
 
-                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place');
+                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place', true, game.SelectLineLayer);
 
                     selectSprite.PlaceX = placeCoordinate[x][y].x;
                     selectSprite.PlaceY = placeCoordinate[x][y].y;
@@ -39,26 +39,4 @@ function SelectPlaceCoordinate(selectSprite) {
 
         RemoveSelect()
     }
-}
-
-function animateCoordinate(coordinate) {
-    coordinate.animations.add('select');
-    coordinate.animations.play('select', 5, true);
-
-    if (game.Phase === "move") {
-        field.send(JSON.stringify({
-            event: "GetTargetZone",
-            x: Number(coordinate.unitX),
-            y: Number(coordinate.unitY),
-            to_x: Number(coordinate.MoveX),
-            to_y: Number(coordinate.MoveY)
-        }));
-        game.SelectLineLayer.visible = false;
-    }
-}
-
-function stopAnimateCoordinate(coordinate) {
-    coordinate.animations.getAnimation('select').stop(true);
-    game.SelectLineLayer.visible = true;
-    RemoveTargetLine();
 }

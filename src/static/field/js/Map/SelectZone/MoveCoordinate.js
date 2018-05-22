@@ -11,7 +11,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
                 if (moveCoordinate[x].hasOwnProperty(y)) {
 
                     var cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
-                    var selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move');
+                    var selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move', true, game.SelectLineLayer);
 
                     selectSprite.MoveX = moveCoordinate[x][y].x;
                     selectSprite.MoveY = moveCoordinate[x][y].y;
