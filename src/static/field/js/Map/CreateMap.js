@@ -44,16 +44,26 @@ function CreateMap() {
 }
 
 function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY) {
+
+
     var shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, texture);
     shadow.anchor.setTo(ShadowOffsetX, ShadowOffsetY);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
     shadow.angle = 45;
 
+    shadow.inputEnabled = true;             // включаем ивенты на спрайт
+    shadow.input.pixelPerfectOver = true;
+    shadow.input.pixelPerfectClick = true;
+
     var object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, texture);
     object.inputEnabled = true;
     object.events.onInputOut.add(TipOff);
-    object.anchor.setTo(0, 0.2);
+    object.anchor.setTo(0, 0.2); // todo подгружать спрайт от невидимой границы
+
+    shadow.inputEnabled = true;
+    object.input.pixelPerfectOver = true;
+    object.input.pixelPerfectClick = true;
 
     object.shadow = shadow;
 

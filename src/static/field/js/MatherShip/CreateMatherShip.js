@@ -6,7 +6,10 @@ function CreateMatherShip(structureStat) {
 
     var structure = game.add.sprite(0, 0, type);
     game.physics.arcade.enable(structure);
+
     structure.inputEnabled = true;             // включаем ивенты на спрайт
+    structure.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
+    structure.input.pixelPerfectClick = true;   // уберает ивенты кликов на пустую зону спрайта
 
     structure.events.onInputOver.add(mouse_over); // обрабатываем наведение мышки
     structure.events.onInputOut.add(mouse_out);   // обрабатываем убирание мышки

@@ -5,7 +5,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
     var unitX = JSON.parse(jsonMessage).unit.x;
     var unitY = JSON.parse(jsonMessage).unit.y;
     game.SelectLineLayer.visible = true;
-    
+
     for (var x in moveCoordinate) {
         if (moveCoordinate.hasOwnProperty(x)) {
             for (var y in moveCoordinate[x]) {
@@ -16,6 +16,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
                     selectSprite.MoveX = moveCoordinate[x][y].x;
                     selectSprite.MoveY = moveCoordinate[x][y].y;
+
                     selectSprite.unitX = unitX;
                     selectSprite.unitY = unitY;
 
@@ -36,10 +37,12 @@ function SelectMoveCoordinate(selectSprite) {
     if (game.input.activePointer.leftButton.isDown) {
 
         /*field.send(JSON.stringify({
-            event: "PlaceUnit",
+            event: "MoveUnit",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.PlaceX),
-            y: Number(selectSprite.PlaceY)
+            x: Number(selectSprite.unitX),
+            y: Number(selectSprite.unitY),
+            to_x: Number(selectSprite.MoveX),
+            to_y: Number(selectSprite.MoveY)
         }));*/
 
         RemoveSelect()
