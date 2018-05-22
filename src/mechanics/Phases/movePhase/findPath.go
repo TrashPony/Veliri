@@ -5,10 +5,11 @@ import (
 	"math"
 	"../../gameMap"
 	"../../coordinate"
+	"../../player"
 )
 
 const (
-	FREE = iota
+	FREE    = iota
 	BLOCKED
 	START
 	END
@@ -21,16 +22,15 @@ var (
 	matrix                 [][]coordinate.Coordinate
 )
 
-
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
 type Points map[string]coordinate.Coordinate
 
-func FindPath(gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate) []coordinate.Coordinate {
+func FindPath(client *player.Player, gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.Coordinate) []coordinate.Coordinate {
 
 	START_POINT = coordinate.Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
-	WIDTH = gameMap.XSize                                     // ширина карты
-	HEIGHT = gameMap.YSize                                    // высота карты
+	WIDTH = gameMap.XSize                                                     // ширина карты
+	HEIGHT = gameMap.YSize                                                    // высота карты
 
 	matrix = make([][]coordinate.Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {
@@ -52,10 +52,10 @@ func FindPath(gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.
 	var path []coordinate.Coordinate
 	var noSortedPath []coordinate.Coordinate
 	for {
-		current := *MinF(openPoints)  // Берем точку с мин стоимостью пути
+		current := *MinF(openPoints) // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) { // если текущая точка и есть конец начинаем генерить путь
 			for !current.Equal(START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
-				current = *current.Parent        // берем текущую точку и на ее место ставить ее родителя
+				current = *current.Parent // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
 					noSortedPath = append(noSortedPath, coordinate.Coordinate{X: matrix[current.X][current.Y].X, Y: matrix[current.X][current.Y].Y})
@@ -63,7 +63,7 @@ func FindPath(gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.
 			}
 			break
 		}
-		parseNeighbours(current, &matrix, &openPoints, &closePoints, obstacles)
+		parseNeighbours(client, current, &matrix, &openPoints, &closePoints, gameMap)
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -74,11 +74,11 @@ func FindPath(gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.
 	return path
 }
 
-func parseNeighbours(curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, obstacles map[int]map[int]*coordinate.Coordinate) {
+func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *gameMap.Map) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoordinate := generateNeighboursCoordinate(&curr, obstacles) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(client, &curr, gameMap) // берем всех соседей этой клетки
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {
@@ -112,8 +112,6 @@ func GetH(a, b coordinate.Coordinate) int { // эвристическое при
 	return int(tmp)
 }
 
-
-
 func MinF(points Points) (min *coordinate.Coordinate) { // берет точку с минимальной стоимостью пути из масива не посещеных
 	min = &coordinate.Coordinate{F: WIDTH*HEIGHT*10 + 1}
 
@@ -122,57 +120,5 @@ func MinF(points Points) (min *coordinate.Coordinate) { // берет точку
 			*min = p
 		}
 	}
-	return
-}
-
-func addCoordinateIfValid(res map[int]map[int]*coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate, x int, y int) {
-	gameCoordinate := coordinate.Coordinate{X:x , Y:y}
-
-	_, ok := obstacles[x][y]
-	if !ok && (x >= 0 && y >= 0){
-		if res[x] != nil {
-			res[x][y] = &gameCoordinate
-		} else {
-			res[x] = make(map[int]*coordinate.Coordinate)
-			res[x][y] = &gameCoordinate
-		}
-	}
-}
-
-func generateNeighboursCoordinate(curr *coordinate.Coordinate, obstacles map[int]map[int]*coordinate.Coordinate) (res map[int]map[int]*coordinate.Coordinate) {
-	// берет все соседние клетки от текущей
-	res = make(map[int]map[int]*coordinate.Coordinate)
-
-	//строго лево
-	_, left := obstacles[curr.X-1][curr.Y]
-	addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y)
-	//строго право
-	_, right := obstacles[curr.X+1][curr.Y]
-	addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y)
-	//верх центр
-	_, top := obstacles[curr.X][curr.Y-1]
-	addCoordinateIfValid(res, obstacles, curr.X, curr.Y-1)
-	//низ центр
-	_, bottom := obstacles[curr.X][curr.Y+1]
-	addCoordinateIfValid(res, obstacles, curr.X, curr.Y+1)
-
-
-	//верх лево/    ЛЕВО И верх
-	if !(left || top) {
-		addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y-1)
-	}
-	//верх право/   ПРАВО И верх
-	if !(right || top) {
-		addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y-1)
-	}
-	//низ лево/  если ЛЕВО И низ
-	if !(left || bottom) {
-		addCoordinateIfValid(res, obstacles, curr.X-1, curr.Y+1)
-	}
-	//низ право/  низ И ВЕРХ
-	if !(right || bottom) {
-		addCoordinateIfValid(res, obstacles, curr.X+1, curr.Y+1)
-	}
-
 	return
 }
