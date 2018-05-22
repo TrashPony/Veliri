@@ -18,10 +18,13 @@ function create() {
     game.SelectLineLayer = game.add.group();
     game.SelectLineLayer.alpha = 0.7;
 
+    game.SelectTargetLineLayer = game.add.group();
+    game.SelectTargetLineLayer.alpha = 0.7;
+
     game.floorObjectLayer = game.add.group();
 
     game.fogOfWar = game.add.group();
-    game.fogOfWar.alpha = 0.8;
+    game.fogOfWar.alpha = 0.5;
 
     CreateMap();
     CreateMyGameUnits();

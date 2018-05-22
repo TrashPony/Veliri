@@ -13,6 +13,10 @@ function ReadResponse(jsonMessage) {
         SelectMoveCoordinateCreate(jsonMessage)
     }
 
+    if (event === "GetTargets") {
+        SelectTargetCoordinateCreate(jsonMessage);
+    }
+
     if (event === "UpdateWatchMap") {
         UpdateWatchZone(jsonMessage);
     }
@@ -28,6 +32,8 @@ function ReadResponse(jsonMessage) {
     if (event === "ChangePhase") {
         ChangePhase(jsonMessage);
     }
+
+
 
     /*
        if (event === "InitUnit") {   // +

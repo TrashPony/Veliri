@@ -1,18 +1,18 @@
 package movePhase
 
-/*func InitMove(unit *Unit, toX int, toY int , client *Player, game *Game) (watchNode map[string]*UpdaterWatchZone, pathNodes []Coordinate) {
-	watchNode = make(map[string]*UpdaterWatchZone)
-	idGame := client.GetGameID()
+/*func InitMove(unit *unit.Unit, toX int, toY int , client *player.Player, game *game.Game) (watchNode map[string]*watchZone.UpdaterWatchZone, pathNodes []coordinate.Coordinate) {
+	watchNode = make(map[string]*watchZone.UpdaterWatchZone)
+	//idGame := client.GetGameID()
 	moveTrigger := true
 
-	pathNodes = make([]Coordinate,0) // создаем пустую болванку для пути
-	pathNodes = append(pathNodes, Coordinate{X: unit.X, Y: unit.Y}) // кладем в него стартовую ячейку
+	pathNodes = make([]coordinate.Coordinate,0) // создаем пустую болванку для пути
+	pathNodes = append(pathNodes, coordinate.Coordinate{X: unit.X, Y: unit.Y}) // кладем в него стартовую ячейку
 
 	for {
 		obstacles := GetObstacles(client, game)
 
-		start := Coordinate{X: unit.X, Y: unit.Y}
-		end := Coordinate{X: toX, Y: toY}
+		start := coordinate.Coordinate{X: unit.X, Y: unit.Y}
+		end := coordinate.Coordinate{X: toX, Y: toY}
 
 		mp := game.GetMap()
 
@@ -26,20 +26,20 @@ package movePhase
 				moveTrigger = false
 				break
 			} else {
-				watchNode[strconv.Itoa(pathNode.X) + ":" + strconv.Itoa(pathNode.Y)] = client.UpdateWatchZone(game) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				watchNode[strconv.Itoa(pathNode.X) + ":" + strconv.Itoa(pathNode.Y)] = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
 				pathNodes = append(pathNodes, pathNode)           // создать пройденный путь
 			}
 		}
 
 		if moveTrigger {
-			queue := MoveUnit(idGame, unit, end.X, end.Y)
-			unit.Queue = queue
+			//queue := MoveUnit(idGame, unit, end.X, end.Y)
+			//unit.Queue = queue
 			return
 		}
 	}
 }
 
-func Move(unit *Unit, pathNode *Coordinate, client *Player, end Coordinate, game *Game) (error) {
+func Move(unit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end coordinate.Coordinate, game *game.Game) (error) {
 
 		if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 			_, ok := client.GetHostileUnit(end.X,end.Y)
@@ -74,7 +74,7 @@ func Move(unit *Unit, pathNode *Coordinate, client *Player, end Coordinate, game
 
 
 
-func MoveUnit(idGame int, unit *Unit, toX int, toY int) int {
+/*func MoveUnit(idGame int, unit *unit.Unit, toX int, toY int) int {
 
 	rows, err := db.Query("Select  MAX(queue_attack) FROM action_game_unit WHERE id_game=$1", idGame)
 	if err != nil {
@@ -91,6 +91,7 @@ func MoveUnit(idGame int, unit *Unit, toX int, toY int) int {
 		}
 	}
 	queue += 1
+
 	// устанавливает фраг готовности пользователя и ставить очередь
 	_, err = db.Query("UPDATE action_game_unit  SET x = $1, y = $2, action = $5, queue_attack = $6  WHERE id=$3 AND id_game=$4", toX, toY, unit.Id, idGame, false, queue)
 	if err != nil {
@@ -98,9 +99,9 @@ func MoveUnit(idGame int, unit *Unit, toX int, toY int) int {
 	} else {
 		return queue
 	}
-}
+}*/
 
-func findDirection(pathNode *Coordinate, unit *Unit)  {
+/*func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit)  {
 	//TODO//////////// проверка направления юнита ///////////////
 
 	if pathNode.X < unit.X && pathNode.Y == unit.Y {

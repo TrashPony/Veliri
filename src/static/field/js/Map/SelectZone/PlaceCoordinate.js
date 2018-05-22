@@ -29,22 +29,36 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 }
 
 function SelectPlaceCoordinate(selectSprite) {
-    field.send(JSON.stringify({
-        event: "PlaceUnit",
-        unit_id: Number(selectSprite.UnitID),
-        x: Number(selectSprite.PlaceX),
-        y: Number(selectSprite.PlaceY)
-    }));
+    if (game.input.activePointer.leftButton.isDown) {
+        field.send(JSON.stringify({
+            event: "PlaceUnit",
+            unit_id: Number(selectSprite.UnitID),
+            x: Number(selectSprite.PlaceX),
+            y: Number(selectSprite.PlaceY)
+        }));
 
-    RemoveSelect()
+        RemoveSelect()
+    }
 }
 
 function animateCoordinate(coordinate) {
     coordinate.animations.add('select');
     coordinate.animations.play('select', 5, true);
 
+    if (game.Phase === "move") {
+        field.send(JSON.stringify({
+            event: "GetTargetZone",
+            x: Number(coordinate.unitX),
+            y: Number(coordinate.unitY),
+            to_x: Number(coordinate.MoveX),
+            to_y: Number(coordinate.MoveY)
+        }));
+        game.SelectLineLayer.visible = false;
+    }
 }
 
 function stopAnimateCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(true);
+    game.SelectLineLayer.visible = true;
+    RemoveTargetLine();
 }

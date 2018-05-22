@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/Phases/movePhase"
+	"../../mechanics/Phases/targetPhase"
 	"../../mechanics/player"
 	"../../mechanics/coordinate"
 	"../../mechanics/game"
@@ -29,7 +30,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
 	if !client.GetReady() {
 		if !gameUnit.Action {
-			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame)})
+			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame)})
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
 		}
@@ -40,24 +41,23 @@ func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *game.Gam
 
 type MoveCoordinate struct {
 	Event string                                       `json:"event"`
+	Unit  *unit.Unit                                   `json:"unit"`
 	Move  map[string]map[string]*coordinate.Coordinate `json:"move"`
 }
 
 func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
-	/*
-			coordinates := game.GetCoordinates(unit.X, unit.Y, unit.RangeAttack)
-			for _, coordinate := range coordinates {
-				targetUnit, ok := client.GetHostileUnit(coordinate.X, coordinate.Y)
-				if ok && targetUnit.Owner != client.GetLogin() {
-					var createCoordinates = Response{Event: msg.Event, UserName: client.GetLogin(), Phase: activeGame.GetStat().Phase,
-						X: targetUnit.X, Y: targetUnit.Y}
-					fieldPipe <- createCoordinates
-				}
-			}
-	*/
+	if !client.GetReady() {
+		if !gameUnit.Action {
+			ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Targets: targetPhase.GetTargetCoordinate(gameUnit, client, actionGame)})
+		} else {
+			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
+		}
+	} else {
+		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
+	}
 }
 
 type TargetCoordinate struct {
-	Event  string                                       `json:"event"`
-	Target map[string]map[string]*coordinate.Coordinate `json:"target"`
+	Event   string                                       `json:"event"`
+	Targets map[string]map[string]*coordinate.Coordinate `json:"targets"`
 }

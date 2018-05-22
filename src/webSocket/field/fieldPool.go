@@ -65,6 +65,11 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			SelectUnit(msg, ws)
 			continue
 		}
+
+		if msg.Event == "GetTargetZone" {
+			GetTargetZone(msg, ws)
+		}
+
 		/*if msg.Event == "MouseOver" {
 			MouseOver(msg, ws)
 			continue

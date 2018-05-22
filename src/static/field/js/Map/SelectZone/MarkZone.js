@@ -6,8 +6,6 @@ function MarkZone(cellSprite, placeCoordinate, x, y, selectClass) {
     var sprite;
     var line;
 
-    console.log(placeCoordinate);
-
     if (placeCoordinate.hasOwnProperty(Number(x) + 1)) {
         if (placeCoordinate[Number(x) + 1].hasOwnProperty(y)) {
             right = true;
