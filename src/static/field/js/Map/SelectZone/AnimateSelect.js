@@ -16,7 +16,7 @@ function animateCoordinate(coordinate) {
 
 function stopAnimateCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(true);
-    
+
     if (game.Phase === "move") {
         game.SelectLineLayer.visible = true;
         RemoveTargetLine();

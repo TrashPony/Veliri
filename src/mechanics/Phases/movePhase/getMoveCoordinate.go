@@ -5,6 +5,7 @@ import (
 	"../../unit"
 	"../../player"
 	"../../game"
+	"../../Phases"
 	"strconv"
 )
 
@@ -21,7 +22,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *g
 		for _, gameCoordinate := range xLine {
 			_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
 			if find {
-				addCoordinate(openCoordinate, gameCoordinate)
+				Phases.AddCoordinate(openCoordinate, gameCoordinate)
 			}
 		}
 	}
@@ -36,7 +37,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *g
 						if !ok {
 							_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
 							if find {
-								addCoordinate(closeCoordinate, gameCoordinate)
+								Phases.AddCoordinate(closeCoordinate, gameCoordinate)
 							}
 						}
 					}
@@ -48,7 +49,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *g
 			for _, gameCoordinate := range xLine {
 				_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
 				if find {
-					addCoordinate(openCoordinate, gameCoordinate)
+					Phases.AddCoordinate(openCoordinate, gameCoordinate)
 				}
 			}
 		}

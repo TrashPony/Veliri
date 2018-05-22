@@ -1,11 +1,11 @@
-package movePhase
+package Phases
 
 import (
 	"strconv"
-	"../../coordinate"
+	"../coordinate"
 )
 
-func addCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {
+func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {
 	if res[strconv.Itoa(gameCoordinate.X)] != nil {
 		res[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
 	} else {

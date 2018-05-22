@@ -4,6 +4,7 @@ import (
 	"../../coordinate"
 	"../../gameMap"
 	"../../player"
+	"../../Phases"
 )
 
 func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *gameMap.Map) (res map[string]map[string]*coordinate.Coordinate) {
@@ -13,32 +14,32 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	//строго лево
 	leftCoordinate, left := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y)
 	if left {
-		addCoordinate(res, leftCoordinate)
+		Phases.AddCoordinate(res, leftCoordinate)
 	}
 
 	//строго право
 	rightCoordinate, right := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y)
 	if right {
-		addCoordinate(res, rightCoordinate)
+		Phases.AddCoordinate(res, rightCoordinate)
 	}
 
 	//верх центр
 	topCoordinate, top := checkValidForMoveCoordinate(client, gameMap, curr.X, curr.Y-1)
 	if top {
-		addCoordinate(res, topCoordinate)
+		Phases.AddCoordinate(res, topCoordinate)
 	}
 
 	//низ центр
 	bottomCoordinate, bottom := checkValidForMoveCoordinate(client, gameMap, curr.X, curr.Y+1)
 	if bottom {
-		addCoordinate(res, bottomCoordinate)
+		Phases.AddCoordinate(res, bottomCoordinate)
 	}
 
 	//верх лево
 	if !(left || top) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y-1)
 		if find {
-			addCoordinate(res, gameCoordinate)
+			Phases.AddCoordinate(res, gameCoordinate)
 		}
 	}
 
@@ -46,7 +47,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	if !(right || top) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y-1)
 		if find {
-			addCoordinate(res, gameCoordinate)
+			Phases.AddCoordinate(res, gameCoordinate)
 		}
 	}
 
@@ -54,7 +55,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	if !(left || bottom) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y+1)
 		if find {
-			addCoordinate(res, gameCoordinate)
+			Phases.AddCoordinate(res, gameCoordinate)
 		}
 	}
 
@@ -62,7 +63,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	if !(right || bottom) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y+1)
 		if find {
-			addCoordinate(res, gameCoordinate)
+			Phases.AddCoordinate(res, gameCoordinate)
 		}
 	}
 
