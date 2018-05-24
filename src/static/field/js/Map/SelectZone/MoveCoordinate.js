@@ -36,14 +36,14 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 function SelectMoveCoordinate(selectSprite) {
     if (game.input.activePointer.leftButton.isDown) {
 
-        /*field.send(JSON.stringify({
+        field.send(JSON.stringify({
             event: "MoveUnit",
             unit_id: Number(selectSprite.UnitID),
             x: Number(selectSprite.unitX),
             y: Number(selectSprite.unitY),
             to_x: Number(selectSprite.MoveX),
             to_y: Number(selectSprite.MoveY)
-        }));*/
+        }));
 
         RemoveSelect()
     }

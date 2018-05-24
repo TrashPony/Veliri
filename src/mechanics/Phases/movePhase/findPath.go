@@ -25,7 +25,7 @@ var (
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
 type Points map[string]coordinate.Coordinate
 
-func FindPath(client *player.Player, gameMap *gameMap.Map, start coordinate.Coordinate, end coordinate.Coordinate) []coordinate.Coordinate {
+func FindPath(client *player.Player, gameMap *gameMap.Map, start *coordinate.Coordinate, end *coordinate.Coordinate) []*coordinate.Coordinate {
 
 	START_POINT = coordinate.Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
@@ -49,8 +49,8 @@ func FindPath(client *player.Player, gameMap *gameMap.Map, start coordinate.Coor
 	matrix[START_POINT.X][START_POINT.Y] = START_POINT // магия 	//set start & finish
 	matrix[END_POINT.X][END_POINT.Y] = END_POINT       // магия
 
-	var path []coordinate.Coordinate
-	var noSortedPath []coordinate.Coordinate
+	var path []*coordinate.Coordinate
+	var noSortedPath []*coordinate.Coordinate
 	for {
 		current := *MinF(openPoints) // Берем точку с мин стоимостью пути
 		if current.Equal(END_POINT) { // если текущая точка и есть конец начинаем генерить путь
@@ -58,7 +58,11 @@ func FindPath(client *player.Player, gameMap *gameMap.Map, start coordinate.Coor
 				current = *current.Parent // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
-					noSortedPath = append(noSortedPath, coordinate.Coordinate{X: matrix[current.X][current.Y].X, Y: matrix[current.X][current.Y].Y})
+
+					gameCoordinate, find := gameMap.GetCoordinate(current.X, current.Y)
+					if find {
+						noSortedPath = append(noSortedPath, gameCoordinate)
+					}
 				}
 			}
 			break

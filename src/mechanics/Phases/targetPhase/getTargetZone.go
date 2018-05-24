@@ -27,7 +27,7 @@ func GetTargetCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame 
 		}
 	}
 
-	for i := 0; i < gameUnit.MoveSpeed-1; i++ {
+	for i := 0; i < gameUnit.RangeAttack - 1; i++ {
 		for _, xLine := range openCoordinate {
 			for _, gameCoordinate := range xLine {
 				matrix := generateNeighboursCoordinate(client, gameCoordinate, activeGame.Map)

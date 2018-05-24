@@ -18,7 +18,8 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "UpdateWatchMap") {
-        UpdateWatchZone(jsonMessage);
+        var watch = JSON.parse(jsonMessage).update;
+        UpdateWatchZone(watch);
     }
 
     if (event === "PlaceUnit") {
@@ -33,6 +34,10 @@ function ReadResponse(jsonMessage) {
         ChangePhase(jsonMessage);
     }
 
+    if (event === "MoveUnit") {
+        console.log(jsonMessage)
+        //InitMoveUnit(jsonMessage);
+    }
 
 
     /*
@@ -70,10 +75,6 @@ function ReadResponse(jsonMessage) {
 
        if (event === "MouseOver") { // +
            ReadInfoMouseOver(jsonMessage);
-       }
-
-       if (event === "MoveUnit") { // +
-           InitMoveUnit(jsonMessage);
        }
 
        if (event === "TargetUnit") {

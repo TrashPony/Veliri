@@ -1,20 +1,5 @@
 package field
 
-import (
-	"../../mechanics/unit"
-	"../../mechanics/watchZone"
-	"../../mechanics/coordinate"
-)
-
-type Move struct {
-	Event     string                                 `json:"event"`
-	UserName  string                                 `json:"user_name"`
-	Unit      *unit.Unit                             `json:"unit"`
-	PathNodes []coordinate.Coordinate                `json:"path_nodes"`
-	WatchNode map[string]*watchZone.UpdaterWatchZone `json:"watch_node"`
-	Error     string                                 `json:"error"`
-}
-
 type Message struct {
 	Event    string `json:"event"`
 	IdGame   int    `json:"id_game"`

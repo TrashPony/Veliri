@@ -1,6 +1,4 @@
-function UpdateWatchZone(jsonMessage) {
-
-    var watch = JSON.parse(jsonMessage).update;
+function UpdateWatchZone(watch) {
 
     var closeCoordinate = watch.close_coordinate;
     var openCoordinate = watch.open_coordinate;
