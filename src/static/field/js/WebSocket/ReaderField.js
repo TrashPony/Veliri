@@ -35,8 +35,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") {
-        console.log(jsonMessage)
-        //InitMoveUnit(jsonMessage);
+        InitMoveUnit(jsonMessage);
     }
 
 

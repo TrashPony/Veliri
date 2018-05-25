@@ -10,12 +10,12 @@ import (
 )
 
 type Move struct {
-	Event     string                                 `json:"event"`
-	UserName  string                                 `json:"user_name"`
-	Unit      *unit.Unit                             `json:"unit"`
-	PathNodes []*coordinate.Coordinate                `json:"path_nodes"`
-	WatchNode map[string]*watchZone.UpdaterWatchZone `json:"watch_node"`
-	Error     string                                 `json:"error"`
+	Event      string                                 `json:"event"`
+	UserName   string                                 `json:"user_name"`
+	Unit       *unit.Unit                             `json:"unit"`
+	PathNodes  []*coordinate.Coordinate               `json:"path_nodes"`
+	WatchNodes map[string]*watchZone.UpdaterWatchZone `json:"watch_nodes"`
+	Error      string                                 `json:"error"`
 }
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
@@ -33,10 +33,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 			if find {
 				watchNodes, pathNodes := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
 
-				println(watchNodes)
-				println(pathNodes)
-
-				moves := Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), PathNodes: pathNodes, WatchNode: watchNodes}
+				moves := Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), PathNodes: pathNodes, WatchNodes: watchNodes}
 				move <- moves
 
 				// todo updateWatchHostileUser(msg, client, activeUser, unit, pathNodes)
