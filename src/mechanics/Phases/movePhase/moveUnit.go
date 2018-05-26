@@ -6,139 +6,143 @@ import (
 	"../../player"
 	"../../game"
 	"../../watchZone"
-	"strconv"
+	"../../db"
 	"errors"
 )
 
-func InitMove(unit *unit.Unit, toX int, toY int, client *player.Player, game *game.Game) (watchNode map[string]*watchZone.UpdaterWatchZone, pathNodes []*coordinate.Coordinate) {
-	watchNode = make(map[string]*watchZone.UpdaterWatchZone)
+type TruePatchNode struct {
+	WatchNode  *watchZone.UpdaterWatchZone `json:"watch_node"`
+	PathNode   *coordinate.Coordinate      `json:"path_node"`
+	UnitRotate int                         `json:"unit_rotate"`
+}
+
+func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game *game.Game) (path []*TruePatchNode) {
 	moveTrigger := true
 
-	pathNodes = make([]*coordinate.Coordinate, 0)
+	path = make([]*TruePatchNode, 0)
 
 	for {
 		mp := game.GetMap()
 
-		start, _ := mp.GetCoordinate(unit.X, unit.Y)
+		start, _ := mp.GetCoordinate(gameUnit.X, gameUnit.Y)
 		end, _ := mp.GetCoordinate(toX, toY)
 
-		path := FindPath(client, mp, start, end)
+		pathNodes := FindPath(client, mp, start, end)
 
-		for _, pathNode := range path {
+		for _, pathNode := range pathNodes {
 
-			errorMove := Move(unit, pathNode, client, end, game)
+			errorMove, unitRotate := Move(gameUnit, pathNode, client, end, game)
 
 			if errorMove != nil && errorMove.Error() == "cell is busy" {
 				moveTrigger = false
 				break
 			} else {
-				watchNode[strconv.Itoa(pathNode.X)+":"+strconv.Itoa(pathNode.Y)] = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
-				pathNodes = append(pathNodes, pathNode)                                                                    // создать пройденный путь
+				truePatchNode := TruePatchNode{}
+
+				truePatchNode.WatchNode = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
+				truePatchNode.UnitRotate = unitRotate
+				gameUnit.Rotate = unitRotate
+
+				path = append(path, &truePatchNode)
+				moveTrigger = true
 			}
 		}
 
 		if moveTrigger {
-			//queue := MoveUnit(idGame, unit, end.X, end.Y)
-			//unit.Queue = queue
+
+			queue := Queue(game)
+			gameUnit.Queue = queue
+
+			db.UpdateUnit(gameUnit)
+
 			return
 		}
 	}
 }
 
-func Move(unit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *game.Game) (error) {
+func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *game.Game) (error, int) {
 
 	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 		_, ok := client.GetHostileUnit(end.X, end.Y)
 		if ok {
-			unit.Action = false
-			return errors.New("end cell is busy")
+			gameUnit.Action = true
+			return errors.New("end cell is busy"), 0
 		}
 	} else {
 		_, ok := client.GetHostileUnit(pathNode.X, pathNode.Y)
 		if ok {
-			return errors.New("cell is busy") // если клетка занято то выходит из этого пути и генерить новый
+			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 		}
 	}
 
 	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-		unit.Action = false
+		gameUnit.Action = true
 	}
 
-	game.DelUnit(unit) // Удаляем юнита со старых позиций
-	client.DelUnit(unit.X, unit.Y)
+	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
+	client.DelUnit(gameUnit.X, gameUnit.Y)
 
-	findDirection(pathNode, unit)
+	rotate := findDirection(pathNode, gameUnit)
 
-	unit.X = pathNode.X // даем новые координаты юниту
-	unit.Y = pathNode.Y
+	gameUnit.X = pathNode.X // даем новые координаты юниту
+	gameUnit.Y = pathNode.Y
 
-	game.SetUnit(unit)
-	client.AddUnit(unit) // добавляем новую позицию юнита
+	game.SetUnit(gameUnit)
+	client.AddUnit(gameUnit) // добавляем новую позицию юнита
 
-	return nil
+	return nil, rotate
 }
 
-/*func MoveUnit(idGame int, unit *unit.Unit, toX int, toY int) int {
+func Queue(game *game.Game) int {
+	queue := 0
 
-	rows, err := db.Query("Select  MAX(queue_attack) FROM action_game_unit WHERE id_game=$1", idGame)
-	if err != nil {
-		return 0
-	}
-	defer rows.Close()
-
-	var queue int
-
-	for rows.Next() {
-		err := rows.Scan(&queue)
-		if err != nil {
-			return 0
+	for _, xLine := range game.GetUnits() {
+		for _, gameUnit := range xLine {
+			if gameUnit.Action {
+				if gameUnit.Queue > queue {
+					queue = gameUnit.Queue
+				}
+			}
 		}
 	}
-	queue += 1
 
-	// устанавливает фраг готовности пользователя и ставить очередь
-	_, err = db.Query("UPDATE action_game_unit  SET x = $1, y = $2, action = $5, queue_attack = $6  WHERE id=$3 AND id_game=$4", toX, toY, unit.Id, idGame, false, queue)
-	if err != nil {
-		return queue
-	} else {
-		return queue
-	}
-}*/
+	return queue + 1
+}
 
-func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) {
-	//TODO//////////// проверка направления юнита ///////////////
+func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
 	if pathNode.X < unit.X && pathNode.Y == unit.Y {
-		println("Идет ровно влево")
+		return 180
 	}
 
 	if pathNode.X > unit.X && pathNode.Y == unit.Y {
-		println("Идет ровно вправо")
+		return 0
 	}
 
 	if pathNode.X == unit.X && pathNode.Y > unit.Y {
-		println("Идет ровно вниз")
+		return 90
 	}
 
 	if pathNode.X == unit.X && pathNode.Y < unit.Y {
-		println("Идет ровно вверх")
+		return 270
 	}
 
-	//TODO///////////////////////////////////////////////////////
-
 	if pathNode.X < unit.X && pathNode.Y < unit.Y {
-		println("Идет верх влево")
+		return 225
 	}
 
 	if pathNode.X > unit.X && pathNode.Y < unit.Y {
-		println("Идет верх вправо")
+		return 315
 	}
 
 	if pathNode.X < unit.X && pathNode.Y > unit.Y {
-		println("Идет вниз влево")
+		return 125
 	}
 
 	if pathNode.X > unit.X && pathNode.Y > unit.Y {
-		println("Идет вниз вправо")
+		return 45
 	}
+
+	return 0
 }

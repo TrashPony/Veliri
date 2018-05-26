@@ -1,16 +1,16 @@
 function CloseCoordinates(coordinates) {
-    /*while (coordinates.length > 0) {
+    while (coordinates.length > 0) {
         var coordinate = coordinates.shift();
-        var id = coordinate.x + ":" + coordinate.y;
+        game.map.OneLayerMap[coordinate.x][coordinate.y].fogSprite.hide = false;
 
-        GameMap.OneLayerMap[coordinate.x][coordinate.y].sprite.tint = 0x757575;
+        var unit = GetGameUnitXY(coordinate.x, coordinate.y);
 
-        if (units.hasOwnProperty(id)) {
-            var unit = units[id];
-            delete units[id];
-            unit.destroy() // убиваем юнита
+        if (unit) {
+            delete game.units[unit.x][unit.y];
+            unit.sprite.destroy();
+            unit.shadow.destroy();
         }
-    }*/
+    }
 }
 
 function CloseCoordinate(jsonMessage) {

@@ -5,17 +5,14 @@ import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/Phases/movePhase"
 	"../../mechanics/unit"
-	"../../mechanics/coordinate"
-	"../../mechanics/watchZone"
 )
 
 type Move struct {
-	Event      string                                 `json:"event"`
-	UserName   string                                 `json:"user_name"`
-	Unit       *unit.Unit                             `json:"unit"`
-	PathNodes  []*coordinate.Coordinate               `json:"path_nodes"`
-	WatchNodes map[string]*watchZone.UpdaterWatchZone `json:"watch_nodes"`
-	Error      string                                 `json:"error"`
+	Event    string                     `json:"event"`
+	UserName string                     `json:"user_name"`
+	Unit     *unit.Unit                 `json:"unit"`
+	Path     []*movePhase.TruePatchNode `json:"path"`
+	Error    string                     `json:"error"`
 }
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
@@ -31,9 +28,9 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 			_, find := moveCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
 
 			if find {
-				watchNodes, pathNodes := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
+				path := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
 
-				moves := Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), PathNodes: pathNodes, WatchNodes: watchNodes}
+				moves := Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path}
 				move <- moves
 
 				// todo updateWatchHostileUser(msg, client, activeUser, unit, pathNodes)
