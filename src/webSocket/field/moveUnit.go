@@ -90,6 +90,7 @@ func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUn
 				user.AddHostileUnit(gameUnit)
 			}
 
+			send := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
 			for _, pathNode := range pathNodes {
 				pathNode.WatchNode = nil
@@ -103,11 +104,16 @@ func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUn
 					fakeNode.Type = "hide"
 
 					pathNode.PathNode = &fakeNode
+				} else {
+					send = true
 				}
 			}
-
-			moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
-			move <- moves
+			
+			// отправляем только тем кто видит хотя бы 1 клетку пути
+			if send {
+				moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
+				move <- moves
+			}
 		}
 	}
 }
