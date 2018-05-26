@@ -66,7 +66,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
 		_, ok := client.GetHostileUnit(end.X, end.Y)
 		if ok {
-			gameUnit.Action = true
+			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 			return errors.New("end cell is busy"), 0
 		}
 	} else {
@@ -77,7 +77,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 	}
 
 	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-		gameUnit.Action = true
+		gameUnit.Action = false  // todo должно быть true но для тестов пока будет false
 	}
 
 	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций

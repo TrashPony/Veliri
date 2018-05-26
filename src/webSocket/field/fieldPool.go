@@ -134,7 +134,7 @@ func MoveSender() {
 		resp := <-move
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName {
+			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)

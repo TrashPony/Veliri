@@ -38,6 +38,10 @@ function ReadResponse(jsonMessage) {
         CreatePathToUnit(jsonMessage);
     }
 
+    if (event === "HostileUnitMove") {
+        MoveHostileUnit(jsonMessage)
+    }
+
 
     /*
        if (event === "InitUnit") {   // +

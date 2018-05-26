@@ -14,39 +14,82 @@ function CreatePathToUnit(jsonMessage) {
     }
 }
 
-/*function MoveHostileUnit(jsonMessage, owner) {
-    var patchNodes = JSON.parse(jsonMessage).path_nodes;     // берем масив данных очереди перемещения юнита
+function MoveHostileUnit(jsonMessage) {
+
+    console.log(jsonMessage);
+    var patchNodes = JSON.parse(jsonMessage).path;
+    var unit;
 
     while (patchNodes.length > 0) {
+
         var firstNode = patchNodes.shift();
-        var unit;
-        if (firstNode.type === "visible") {                  // ищем первую ячейку где мы видим юнита
-            var lastCell = patchNodes[patchNodes.length - 1];
-            unit = units[firstNode.x + ":" + firstNode.y];
+
+        // ищем первую ячейку где мы видим юнита
+        if (firstNode.path_node.type !== "hide") {
+
+            unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
+            console.log(unit);
             if (unit) {
-                unit.patchNodes = patchNodes;                // добавляем юниту путь
-                unit.owner = owner;
+                // добавляем юниту первый пункт и путь
+                unit.movePoint = firstNode.path_node;
+                unit.rotate = firstNode.unit_rotate;
+                unit.path = patchNodes;
             } else {
 
-                var newUnit = JSON.parse(jsonMessage).unit;
-                newUnit.x = firstNode.x;
-                newUnit.y = firstNode.y;
+                unit = JSON.parse(jsonMessage).unit;
+                unit.x = firstNode.path_node.x;
+                unit.y = firstNode.path_node.y;
 
-                CreateUnit(newUnit);
+                CreateUnit(unit);
 
-                unit = units[firstNode.x + ":" + firstNode.y];
-                unit.patchNodes = patchNodes;                  // добавляем юниту путь
-                unit.owner = owner;
+                unit.movePoint = firstNode.path_node;
+                unit.rotate = firstNode.unit_rotate;
+                unit.path = patchNodes;                // добавляем юниту путь
             }
-            MarkLastPathCell(unit, lastCell);
-            CheckPath(unit);
             break;
         }
+
+        if (patchNodes.length === 0){
+            unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
+
+            if (unit) {
+                unit.sprite.destroy();
+                unit.shadow.destroy();
+                delete game.units[unit.x][unit.y];
+            }
+        }
     }
-}*/
+}
 
 function CheckPath(unit) {
     var pathNode = unit.path.shift();   // берем первый пункт назначения
+
+    /*if (pathNode.path_node.type === "hide") {
+        StopUnit(unit);
+        unit.sprite.visible = false;
+        unit.shadow.visible = false;
+
+        while (unit.path.length > 0) {
+
+            pathNode = unit.path.shift();
+
+            if (pathNode.path_node.type !== "hide") {
+                unit.movePoint = pathNode.path_node;
+                unit.rotate = pathNode.unit_rotate;
+                unit.watch = pathNode.watch_node;
+                break
+            } else {
+                if (unit.path.length === 0) {
+                    unit.sprite.destroy();
+                    unit.shadow.destroy();
+                    delete game.units[unit.x][unit.y];
+                }
+            }
+        }
+    } else {
+        unit.sprite.visible = true;
+        unit.shadow.visible = true;
+    }*/
 
     if (unit.path.length === 0) {
         DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
@@ -58,33 +101,6 @@ function CheckPath(unit) {
         unit.rotate = pathNode.unit_rotate;
         unit.watch = pathNode.watch_node;
     }
-
-    /* else {
-        if (firstNode.type === "hide") {
-            if (firstNode.type === "hide") {
-                unit.visible = false;
-                if (unit.patchNodes.length === 0) {
-                    delete units[unit.id];
-                    unit.destroy();
-                }
-            }
-
-            while (unit.patchNodes.length > 0) {
-                firstNode = unit.patchNodes.shift();
-                console.log(unit.patchNodes.length);
-
-                if (firstNode.type === "visible") {
-                    targetID = firstNode.x + ":" + firstNode.y;
-                    MoveToCell(unit, targetID);
-                    break
-                }
-            }
-        } else {
-            unit.visible = true;
-            targetID = firstNode.x + ":" + firstNode.y;
-            MoveToCell(unit, targetID);
-        }
-    }*/
 }
 
 function MoveToCell(unit) {
@@ -134,6 +150,14 @@ function MoveUnit() {
 
                             unit.movePoint = null;
                             UpdateWatchZone(unit.watch);
+
+                            if (unit.movePoint === "hide") { // todo алгоритм поиска направленич что бы юнит уходил под туман войны и только потом изчезал если конечная точка то дестрой
+                                unit.sprite.visible = false;
+                                unit.shadow.visible = false;
+                            } else {
+                                unit.sprite.visible = true;
+                                unit.shadow.visible = true;
+                            }
 
                             if (unit.path.length > 0) {
                                 StopUnit(unit);

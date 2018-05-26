@@ -5,11 +5,15 @@ import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/Phases/movePhase"
 	"../../mechanics/unit"
+	"../../mechanics/game"
+	"../../mechanics/player"
+	"../../mechanics/coordinate"
 )
 
 type Move struct {
 	Event    string                     `json:"event"`
 	UserName string                     `json:"user_name"`
+	GameID   int                        `json:"game_id"`
 	Unit     *unit.Unit                 `json:"unit"`
 	Path     []*movePhase.TruePatchNode `json:"path"`
 	Error    string                     `json:"error"`
@@ -30,10 +34,9 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 			if find {
 				path := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
 
-				moves := Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path}
-				move <- moves
+				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
 
-				// todo updateWatchHostileUser(msg, client, activeUser, unit, pathNodes)
+				updateWatchHostileUser(client, activeGame, gameUnit, path)
 			} else {
 				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
 				ws.WriteJSON(resp)
@@ -48,7 +51,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-/*func skipMoveUnit(msg Message, ws *websocket.Conn) {
+/*func skipMoveUnit(msg Message, ws *websocket.Conn) { // todo
 	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, ok := usersFieldWs[ws]
 	activeGame, ok := Games[client.GetGameID()]
@@ -64,50 +67,47 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
 		}
 	}
-}
+}*/
 
-func updateWatchHostileUser(msg Message, client *Mechanics.Player, activeUser []*Mechanics.Player, unit *Mechanics.Unit, pathNodes []Mechanics.Coordinate) {
+func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
 
-	for _, user := range activeUser {
+	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 
-			var truePath []Mechanics.Coordinate
+			// пытаемся взять юнита по начальной координате
+			_, okGetUnit := user.GetHostileUnitByID(gameUnit.Id)
 
-			_, okGetXY := user.GetWatchCoordinate(unit.X, unit.Y)
-
-			if okGetXY { // если конечная точка пути видима то добавляем юнита
-				user.AddHostileUnit(unit)
-			}
-
-			tmpUnit := *unit
-
-			_, okGetUnit := user.GetHostileUnit(pathNodes[0].X, pathNodes[0].Y) // пытаемся взять юнита по начальной координате
-
+			// если юзер видит юнита то удаляем его со строго места
 			if okGetUnit {
-				user.DelHostileUnit(pathNodes[0].X, pathNodes[0].Y) // если юзер видит юнита то удаляем его со строго места
-			} else {
-				tmpUnit.X = 999
-				tmpUnit.Y = 999
+				user.DelHostileUnit(gameUnit.Id)
 			}
 
+			// пытаемся взять юнита по конечной координате
+			_, okGetEndXY := user.GetWatchCoordinate(gameUnit.X, gameUnit.Y)
+
+			// если конечная точка пути видима то добавляем юнита
+			if okGetEndXY {
+				user.AddHostileUnit(gameUnit)
+			}
 
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
-			for i := range pathNodes {
-				node, okGetNode := user.GetWatchCoordinate(pathNodes[i].X, pathNodes[i].Y)
-				if okGetNode {
-					node.Type = "visible"
-					truePath = append(truePath, *node)
-				} else {
-					var fakeNode Mechanics.Coordinate
-					fakeNode.X = 999
-					fakeNode.Y = 999
+			for _, pathNode := range pathNodes {
+				pathNode.WatchNode = nil
+
+				_, okGetNode := user.GetWatchCoordinate(pathNode.PathNode.X, pathNode.PathNode.Y)
+				// если юзер не видит координату то скрваем ее
+				if !okGetNode {
+					var fakeNode coordinate.Coordinate
+					fakeNode.X = 0
+					fakeNode.Y = 0
 					fakeNode.Type = "hide"
-					truePath = append(truePath, fakeNode)
+
+					pathNode.PathNode = &fakeNode
 				}
 			}
 
-			moves := Move{Event: msg.Event, Unit: &tmpUnit, UserName: user.GetLogin(), PathNodes: truePath}
+			moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
 			move <- moves
 		}
 	}
-}*/
+}

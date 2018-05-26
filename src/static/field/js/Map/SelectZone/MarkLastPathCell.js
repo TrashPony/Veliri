@@ -15,8 +15,10 @@ function MarkLastPathCell(unit, cellState) {
 }
 
 function DeleteMarkLastPathCell(cellState) {
-    var x = cellState.x;
-    var y = cellState.y;
-    var mark = game.map.OneLayerMap[x][y].sprite.getChildAt(0);
-    mark.destroy();
+    if (cellState) {
+        var x = cellState.x;
+        var y = cellState.y;
+        var mark = game.map.OneLayerMap[x][y].sprite.getChildAt(0);
+        mark.destroy();
+    }
 }

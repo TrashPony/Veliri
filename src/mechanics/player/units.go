@@ -63,8 +63,25 @@ func (client *Player) GetHostileUnit(x, y int) (gameUnit *unit.Unit, find bool) 
 	return
 }
 
-func (client *Player) DelHostileUnit(x, y int) {
-	delete(client.hostileUnits[strconv.Itoa(x)], strconv.Itoa(y))
+func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool) {
+	for _, xLine := range client.GetHostileUnits(){
+		for _, hostile := range xLine {
+			if hostile.Id == id {
+				return hostile, true
+			}
+		}
+	}
+	return
+}
+
+func (client *Player) DelHostileUnit(id int) {
+	for x, xLine := range client.GetHostileUnits(){
+		for y, hostile := range xLine {
+			if hostile.Id == id {
+				delete(client.hostileUnits[x], y)
+			}
+		}
+	}
 }
 
 func (client *Player) SetUnitsStorage(units []*unit.Unit) () {
