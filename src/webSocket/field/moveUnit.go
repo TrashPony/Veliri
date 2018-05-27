@@ -91,26 +91,49 @@ func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUn
 			}
 
 			send := false
+			okSecondNode := false
+			okEarlyNode := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
-			for _, pathNode := range pathNodes {
+			for i, pathNode := range pathNodes {
 				pathNode.WatchNode = nil
 
-				_, okGetNode := user.GetWatchCoordinate(pathNode.PathNode.X, pathNode.PathNode.Y)
+				_, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.X, pathNode.PathNode.Y)
+
+				if len(pathNodes) > i+1 {
+					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.X, pathNodes[i+1].PathNode.Y)
+				}
+				if 0 < i {
+					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.X, pathNodes[i-1].PathNode.Y)
+				}
+
 				// если юзер не видит координату то скрваем ее
-				if !okGetNode {
+				if !okFirstNode {
 					var fakeNode coordinate.Coordinate
-					fakeNode.X = 0
-					fakeNode.Y = 0
-					fakeNode.Type = "hide"
+
+					if okSecondNode {
+						fakeNode.Type = "outFog"
+						fakeNode.X = pathNode.PathNode.X
+						fakeNode.Y = pathNode.PathNode.Y
+					} else {
+						if (okGetUnit && i == 0) || okEarlyNode {
+							fakeNode.Type = "inToFog"
+							fakeNode.X = pathNode.PathNode.X
+							fakeNode.Y = pathNode.PathNode.Y
+						} else {
+							fakeNode.Type = "hide"
+							fakeNode.X = 0
+							fakeNode.Y = 0
+						}
+					}
 
 					pathNode.PathNode = &fakeNode
 				} else {
 					send = true
 				}
 			}
-			
+
 			// отправляем только тем кто видит хотя бы 1 клетку пути
-			if send {
+			if send || okGetUnit {
 				moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
 				move <- moves
 			}

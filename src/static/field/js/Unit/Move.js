@@ -16,9 +16,10 @@ function CreatePathToUnit(jsonMessage) {
 
 function MoveHostileUnit(jsonMessage) {
 
-    console.log(jsonMessage);
+ console.log(jsonMessage);
+
     var patchNodes = JSON.parse(jsonMessage).path;
-    var unit;
+    var unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
 
     while (patchNodes.length > 0) {
 
@@ -27,36 +28,21 @@ function MoveHostileUnit(jsonMessage) {
         // ищем первую ячейку где мы видим юнита
         if (firstNode.path_node.type !== "hide") {
 
-            unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
-            console.log(unit);
+            patchNodes.unshift(firstNode); // возвращаем точку
+
             if (unit) {
-                // добавляем юниту первый пункт и путь
-                unit.movePoint = firstNode.path_node;
-                unit.rotate = firstNode.unit_rotate;
                 unit.path = patchNodes;
             } else {
-
                 unit = JSON.parse(jsonMessage).unit;
                 unit.x = firstNode.path_node.x;
                 unit.y = firstNode.path_node.y;
-
                 CreateUnit(unit);
 
-                unit.movePoint = firstNode.path_node;
-                unit.rotate = firstNode.unit_rotate;
                 unit.path = patchNodes;                // добавляем юниту путь
             }
+
+            CheckPath(unit);
             break;
-        }
-
-        if (patchNodes.length === 0){
-            unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
-
-            if (unit) {
-                unit.sprite.destroy();
-                unit.shadow.destroy();
-                delete game.units[unit.x][unit.y];
-            }
         }
     }
 }
@@ -64,31 +50,38 @@ function MoveHostileUnit(jsonMessage) {
 function CheckPath(unit) {
     var pathNode = unit.path.shift();   // берем первый пункт назначения
 
-    /*if (pathNode.path_node.type === "hide") {
+    if (pathNode.path_node.type === "hide") {
         StopUnit(unit);
-        unit.sprite.visible = false;
-        unit.shadow.visible = false;
 
-        while (unit.path.length > 0) {
-
-            pathNode = unit.path.shift();
-
-            if (pathNode.path_node.type !== "hide") {
-                unit.movePoint = pathNode.path_node;
-                unit.rotate = pathNode.unit_rotate;
-                unit.watch = pathNode.watch_node;
-                break
-            } else {
-                if (unit.path.length === 0) {
-                    unit.sprite.destroy();
-                    unit.shadow.destroy();
-                    delete game.units[unit.x][unit.y];
-                }
-            }
+        if (unit.path.length === 0) {
+            unit.destroy = true;
         }
-    } else {
-        unit.sprite.visible = true;
-        unit.shadow.visible = true;
+
+        return
+    }
+
+    if (pathNode.path_node.type === "inToFog") {
+        if (unit.path.length === 0) {
+            unit.destroy = true;
+        }
+    }
+
+    //game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true); // плавно затемняет спрайт хз как работает)
+    //game.add.tween(unit.shadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true); // Tween позволяет изменять одно или несколько свойств целевого объекта в течение определенного периода времени
+
+    /*while (unit.path.length > 0) {
+
+        pathNode = unit.path.shift();
+
+        if (pathNode.path_node.type !== "hide") {
+            unit.movePoint = pathNode.path_node;
+            unit.rotate = pathNode.unit_rotate;
+            unit.watch = pathNode.watch_node;
+
+           // unit.sprite.visible = true;
+           // unit.shadow.visible = true;
+            break
+        }
     }*/
 
     if (unit.path.length === 0) {
@@ -148,16 +141,18 @@ function MoveUnit() {
 
                             addToGameUnit(unit);
 
+                            if (unit.movePoint.type === "inToFog") {
+                                game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+                                game.add.tween(unit.shadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+                            }
+
+                            if (unit.movePoint.type === "outFog") {
+                                game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+                                game.add.tween(unit.shadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+                            }
+
                             unit.movePoint = null;
                             UpdateWatchZone(unit.watch);
-
-                            if (unit.movePoint === "hide") { // todo алгоритм поиска направленич что бы юнит уходил под туман войны и только потом изчезал если конечная точка то дестрой
-                                unit.sprite.visible = false;
-                                unit.shadow.visible = false;
-                            } else {
-                                unit.sprite.visible = true;
-                                unit.shadow.visible = true;
-                            }
 
                             if (unit.path.length > 0) {
                                 StopUnit(unit);
