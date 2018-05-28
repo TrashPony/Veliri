@@ -19,13 +19,18 @@ type TruePatchNode struct {
 func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game *game.Game) (path []*TruePatchNode) {
 	moveTrigger := true
 
+	mp := game.GetMap()
+	start, _ := mp.GetCoordinate(gameUnit.X, gameUnit.Y)
+	end, _ := mp.GetCoordinate(toX, toY)
+
 	path = make([]*TruePatchNode, 0)
 
-	for {
-		mp := game.GetMap()
+	startPoint := TruePatchNode{WatchNode: nil, PathNode: start, UnitRotate: gameUnit.Rotate}
+	path = append(path, &startPoint)
 
-		start, _ := mp.GetCoordinate(gameUnit.X, gameUnit.Y)
-		end, _ := mp.GetCoordinate(toX, toY)
+	for {
+
+
 
 		pathNodes := FindPath(client, mp, start, end)
 

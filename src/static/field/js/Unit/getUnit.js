@@ -22,7 +22,6 @@ function GetGameUnitXY(xUnit,yUnit) {
         if (game.units.hasOwnProperty(x)) {
             for (var y in game.units[x]) {
                 if (game.units[x].hasOwnProperty(y)) {
-                    console.log(game.units[x][y]);
                     if (game.units[x][y].x === xUnit && game.units[x][y].y === yUnit) {
                         unit = game.units[x][y];
                         return unit
