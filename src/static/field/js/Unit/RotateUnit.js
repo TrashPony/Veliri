@@ -18,8 +18,8 @@ function RotateUnit() {
                         }
                     }
 
-                    unit.shadow.loadTexture('tank360', unit.spriteAngle + 224); //todo смещение для тестового спрайта
-                    unit.sprite.loadTexture('tank360', unit.spriteAngle + 224); //todo смещение для тестового спрайта
+                    unit.shadow.loadTexture('tank360', unit.spriteAngle);
+                    unit.sprite.loadTexture('tank360', unit.spriteAngle);
                 }
             }
         }

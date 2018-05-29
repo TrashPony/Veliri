@@ -4,13 +4,13 @@ function CreateUnit(unitStat) {
 
     var cell = game.map.OneLayerMap[x][y].sprite;
 
-    var shadow = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'tank360', unitStat.rotate + 224); //todo смещение для тестового спрайта
+    var shadow = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'tank360', unitStat.rotate);
     game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
 
-    var unit = game.floorObjectLayer.create(cell.x + game.tileSize / 2, cell.y + game.tileSize / 2, 'tank360', unitStat.rotate + 224); //todo смещение для тестового спрайта
+    var unit = game.floorObjectLayer.create(cell.x + game.tileSize / 2, cell.y + game.tileSize / 2, 'tank360', unitStat.rotate);
     game.physics.arcade.enable(unit);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
     unit.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
