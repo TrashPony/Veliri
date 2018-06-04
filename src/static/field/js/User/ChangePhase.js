@@ -17,6 +17,8 @@ function ChangePhase(jsonMessage) {
                         if (game.units[x].hasOwnProperty(y)) {
                             game.units[x][y].action = units[x][y].action;
                             game.units[x][y].target = units[x][y].target;
+
+                            ActivationUnit(game.units[x][y])
                         }
                     }
                 }
