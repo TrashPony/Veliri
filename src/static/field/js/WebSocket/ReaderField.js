@@ -35,6 +35,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") {
+        console.log(jsonMessage);
         CreatePathToUnit(jsonMessage);
     }
 

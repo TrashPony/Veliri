@@ -1,13 +1,10 @@
 package field
 
 import (
-	"strconv"
-	"github.com/gorilla/websocket"
 	"../../mechanics/Phases/movePhase"
 	"../../mechanics/unit"
-	"../../mechanics/game"
-	"../../mechanics/player"
-	"../../mechanics/coordinate"
+	"github.com/gorilla/websocket"
+	"strconv"
 )
 
 type Move struct {
@@ -18,6 +15,13 @@ type Move struct {
 	Path     []*movePhase.TruePatchNode `json:"path"`
 	Error    string                     `json:"error"`
 }
+
+/*
+TODO улучшить метод движения за счет общения бекенда и фронтенда
+TODO юниты при передвежение будет говорить бекенду свои координаты
+TODO и бекенд будет решать за счет этого кому из игроков говорить где и как двигается юнит
+TODO тогда беда с туманом войны и баг с проебом координаты решается на все 100%
+ */
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
 
@@ -51,23 +55,25 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-/*func skipMoveUnit(msg Message, ws *websocket.Conn) { // todo
-	unit, find := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
-	client, ok := usersFieldWs[ws]
-	activeGame, ok := Games[client.GetGameID()]
+func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
-	if find && ok {
-		if unit.Action {
-			unit.Action = false
+	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	client, findClient := usersFieldWs[ws]
+	activeGame, findGame := Games[client.GetGameID()]
 
-			queue := Mechanics.MoveUnit(activeGame.GetStat().Id, unit, unit.X, unit.Y)
-			unit.Queue = queue
-
-			var unitsParameter InitUnit
-			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
+	if findUnit && findClient && findGame {
+		if !gameUnit.Action {
+			movePhase.SkipMove(gameUnit, activeGame)
+			ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
+		} else {
+			resp := ErrorMessage{Event: "MoveUnit", Error: "unit already"}
+			ws.WriteJSON(resp)
 		}
+	} else {
+		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}
+		ws.WriteJSON(resp)
 	}
-}*/
+}
 
 func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
 

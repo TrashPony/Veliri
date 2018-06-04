@@ -26,5 +26,9 @@ function CreateUnit(unitStat) {
     unitStat.shadow = shadow;
     unitStat.sprite = unit;
 
+    if(unitStat.action && game.user.name === unitStat.owner){
+        DeactivationUnit(unitStat);
+    }
+
     addToGameUnit(unitStat);
 }

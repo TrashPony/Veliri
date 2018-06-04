@@ -2,21 +2,29 @@ function CreatePathToUnit(jsonMessage) {
     var error = JSON.parse(jsonMessage).error;
 
     if (error === null || error === "") {
-        var path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
 
+        var path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
         var unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);         // берем юнита
-        if (unit !== null) {
+        unit.action = JSON.parse(jsonMessage).unit.action;
+
+        if (unit !== null && path) {
+
             var lastCell = path[path.length - 1].path_node;
             MarkLastPathCell(unit, lastCell);        // помечаем ячейку куда идет моб
             unit.path = path;                        // добавляем юниту путь
             CheckPath(unit);
+
+        } else {
+
+            if (unit !== null && unit.action) {
+                DeactivationUnit(unit);
+                RemoveSelect();
+            }
         }
     }
 }
 
 function MoveHostileUnit(jsonMessage) {
-
- console.log(jsonMessage);
 
     var patchNodes = JSON.parse(jsonMessage).path;
     var unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
@@ -45,6 +53,11 @@ function MoveHostileUnit(jsonMessage) {
             break;
         }
     }
+
+    if (patchNodes[patchNodes.length - 1].path_node.type !== "hide" &&
+        patchNodes[patchNodes.length - 1].path_node.type !== "inToFog") {
+        MarkLastPathCell(unit, patchNodes[patchNodes.length - 1].path_node);        // помечаем ячейку куда идет моб
+    }
 }
 
 function CheckPath(unit) {
@@ -65,24 +78,6 @@ function CheckPath(unit) {
             unit.destroy = true;
         }
     }
-
-    //game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true); // плавно затемняет спрайт хз как работает)
-    //game.add.tween(unit.shadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true); // Tween позволяет изменять одно или несколько свойств целевого объекта в течение определенного периода времени
-
-    /*while (unit.path.length > 0) {
-
-        pathNode = unit.path.shift();
-
-        if (pathNode.path_node.type !== "hide") {
-            unit.movePoint = pathNode.path_node;
-            unit.rotate = pathNode.unit_rotate;
-            unit.watch = pathNode.watch_node;
-
-           // unit.sprite.visible = true;
-           // unit.shadow.visible = true;
-            break
-        }
-    }*/
 
     if (unit.path.length === 0) {
         DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
@@ -159,7 +154,7 @@ function MoveUnit() {
                                 CheckPath(unit);
                             } else {
                                 if (unit.action) {
-                                    unit.sprite.tint = 0x757575;
+                                    DeactivationUnit(unit);
                                 }
                             }
                         }

@@ -2,6 +2,7 @@ function RemoveSelect() {
     RemoveSelectLine();
     RemoveSelectCoordinate();
     RemoveTargetLine();
+    DeactiveSkipButton();
 }
 
 function RemoveSelectLine() {

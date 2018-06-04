@@ -4,6 +4,9 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
     var unitX = JSON.parse(jsonMessage).unit.x;
     var unitY = JSON.parse(jsonMessage).unit.y;
+
+    ActiveSkipButton(unitX, unitY);
+
     game.SelectLineLayer.visible = true;
 
     for (var x in moveCoordinate) {
