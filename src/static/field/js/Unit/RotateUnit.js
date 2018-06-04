@@ -10,11 +10,19 @@ function RotateUnit() {
                         unit.spriteAngle = unit.rotate;
                     }
 
-                    if (unit.spriteAngle < unit.rotate) {
-                        unit.spriteAngle += 1;
-                    } else {
-                        if (unit.spriteAngle > unit.rotate) {
-                            unit.spriteAngle -= 1;
+                    if (unit.spriteAngle !== unit.rotate) {
+                        if (directionRotate(unit.spriteAngle, unit.rotate)) {
+                            if (unit.spriteAngle >= 360) {
+                                unit.spriteAngle = 0;
+                            } else {
+                                unit.spriteAngle++;
+                            }
+                        } else {
+                            if (unit.spriteAngle <= 0) {
+                                unit.spriteAngle = 360;
+                            } else {
+                                unit.spriteAngle--;
+                            }
                         }
                     }
 
@@ -23,5 +31,31 @@ function RotateUnit() {
                 }
             }
         }
+    }
+}
+
+function directionRotate(spriteAngle, rotate) {
+    // true ++
+    // false --
+    var count = 0;
+    var direction;
+
+    if (spriteAngle < rotate) {
+        for (; spriteAngle < rotate; spriteAngle++) {
+            count++;
+            direction = true;
+        }
+    } else {
+        for (; spriteAngle > rotate; rotate++) {
+            count++;
+            direction = false;
+        }
+    }
+
+
+    if (direction) {
+        return count <= 180
+    } else {
+        return !(count <= 180)
     }
 }
