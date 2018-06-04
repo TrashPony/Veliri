@@ -3,6 +3,9 @@ package field
 import (
 	"../../mechanics/Phases/movePhase"
 	"../../mechanics/unit"
+	"../../mechanics/player"
+	"../../mechanics/game"
+	"../../mechanics/coordinate"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
