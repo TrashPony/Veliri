@@ -11,6 +11,7 @@ import (
 
 var watchPipe = make(chan Watch)
 var phasePipe = make(chan PhaseInfo)
+var targetPipe = make(chan Target)
 
 var move = make(chan Move)
 
@@ -80,21 +81,10 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		/*if msg.Event == "MouseOver" {
-			MouseOver(msg, ws)
+		if msg.Event == "SetTarget" {
+			SetTarget(msg, ws)
 			continue
 		}
-
-
-		if msg.Event == "SkipMoveUnit" {
-			skipMoveUnit(msg, ws)
-			continue
-		}
-
-		if msg.Event == "TargetUnit" {
-			TargetUnit(msg, ws)
-			continue
-		}*/
 	}
 }
 
@@ -137,6 +127,24 @@ func PhaseSender() {
 func MoveSender() {
 	for {
 		resp := <-move
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func TargetSender() {
+	for {
+		resp := <- targetPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {

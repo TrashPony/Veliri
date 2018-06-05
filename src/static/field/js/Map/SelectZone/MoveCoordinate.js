@@ -4,6 +4,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
     var unitX = JSON.parse(jsonMessage).unit.x;
     var unitY = JSON.parse(jsonMessage).unit.y;
+    var unitID = JSON.parse(jsonMessage).unit.id;
 
     ActiveSkipButton(unitX, unitY);
 
@@ -22,9 +23,9 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
                     selectSprite.unitX = unitX;
                     selectSprite.unitY = unitY;
+                    selectSprite.UnitID = unitID;
 
                     selectSprite.inputEnabled = true;
-
                     selectSprite.events.onInputDown.add(SelectMoveCoordinate, selectSprite);
                     selectSprite.events.onInputOver.add(animateCoordinate, selectSprite);
                     selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);

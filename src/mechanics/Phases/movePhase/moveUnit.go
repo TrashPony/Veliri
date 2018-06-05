@@ -8,6 +8,7 @@ import (
 	"../../watchZone"
 	"../../db"
 	"errors"
+	"math"
 )
 
 type TruePatchNode struct {
@@ -29,8 +30,6 @@ func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game
 	path = append(path, &startPoint)
 
 	for {
-
-
 
 		pathNodes := FindPath(client, mp, start, end)
 
@@ -101,37 +100,13 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
-	if pathNode.X < unit.X && pathNode.Y == unit.Y {
-		return 180
+	rotate := math.Atan2(float64(pathNode.Y - unit.Y), float64(pathNode.X - unit.X))
+
+	rotate = rotate * 180/math.Pi
+
+	if rotate < 0 {
+		rotate = 360 + rotate
 	}
 
-	if pathNode.X > unit.X && pathNode.Y == unit.Y {
-		return 0
-	}
-
-	if pathNode.X == unit.X && pathNode.Y > unit.Y {
-		return 90
-	}
-
-	if pathNode.X == unit.X && pathNode.Y < unit.Y {
-		return 270
-	}
-
-	if pathNode.X < unit.X && pathNode.Y < unit.Y {
-		return 225
-	}
-
-	if pathNode.X > unit.X && pathNode.Y < unit.Y {
-		return 315
-	}
-
-	if pathNode.X < unit.X && pathNode.Y > unit.Y {
-		return 125
-	}
-
-	if pathNode.X > unit.X && pathNode.Y > unit.Y {
-		return 45
-	}
-
-	return 0
+	return int(rotate)
 }

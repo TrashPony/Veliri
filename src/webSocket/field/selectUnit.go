@@ -47,8 +47,8 @@ type MoveCoordinate struct {
 
 func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
 	if !client.GetReady() {
-		if !gameUnit.Action {
-			ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Targets: targetPhase.GetTargetCoordinate(gameUnit, client, actionGame)})
+		if !gameUnit.Action { // todo улучшить фильтр координат, сейчас снаряды летят за препятвия :D
+			ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Unit: gameUnit, Targets: targetPhase.GetTargetCoordinate(gameUnit, client, actionGame)})
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
 		}
@@ -59,5 +59,6 @@ func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *game.G
 
 type TargetCoordinate struct {
 	Event   string                                       `json:"event"`
+	Unit  *unit.Unit                                   `json:"unit"`
 	Targets map[string]map[string]*coordinate.Coordinate `json:"targets"`
 }

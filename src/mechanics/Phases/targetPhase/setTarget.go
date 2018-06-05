@@ -1,9 +1,31 @@
 package targetPhase
 
-/*func SetTarget(unit Unit, target string, idGame int) {
-	var err error
-	_, err = db.Query("UPDATE action_game_unit  SET target = $1 WHERE id=$2 AND id_game=$3", target, unit.Id, idGame)
-	if err != nil {
+import (
+	"../../unit"
+	"../../game"
+	"../../db"
+	"math"
+)
 
+func SetTarget(gameUnit *unit.Unit, game *game.Game, targetX, targetY int) {
+
+	target, _ := game.Map.GetCoordinate(targetX, targetY)
+	rotate := rotateUnit(gameUnit, targetX, targetY)
+
+	gameUnit.Target = target
+	gameUnit.Rotate = rotate
+
+	db.UpdateUnit(gameUnit)
+}
+
+func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{
+	rotate := math.Atan2(float64(targetY - gameUnit.Y), float64(targetX - gameUnit.X))
+
+	rotate = rotate * 180/math.Pi
+
+	if rotate < 0 {
+		rotate = 360 + rotate
 	}
-}*/
+
+	return int(rotate)
+}

@@ -27,6 +27,7 @@ func main() {
 
 	go field.WatchSender()
 	go field.MoveSender()
+	go field.TargetSender()
 	go field.PhaseSender()
 
 	go globalMap.GlobalReposeSender()
