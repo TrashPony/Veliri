@@ -1,6 +1,5 @@
 function moveTip(e) {
-
-    var unitTip = document.getElementById("unitTip").style;
+    /*var unitTip = document.getElementById("unitTip").style;
     var matherShipTip = document.getElementById("matherShipTip").style;
 
     var w = 0; // Ширина слоя
@@ -18,5 +17,5 @@ function moveTip(e) {
     }
     // Положение от верхнего края окна браузера
     unitTip.top = y + 20 + 'px';
-    matherShipTip.top = y + 20 + 'px';
+    matherShipTip.top = y + 20 + 'px';*/
 }
