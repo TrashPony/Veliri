@@ -53,6 +53,5 @@ function SelectTarget(selectSprite) {
             to_y: Number(selectSprite.TargetY)
         }));
 
-        RemoveSelect()
     }
 }

@@ -18,6 +18,13 @@ func SetTarget(gameUnit *unit.Unit, game *game.Game, targetX, targetY int) {
 	db.UpdateUnit(gameUnit)
 }
 
+func DeleteTarget(gameUnit *unit.Unit) {
+
+	gameUnit.Target = nil
+
+	db.UpdateUnit(gameUnit)
+}
+
 func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{
 	rotate := math.Atan2(float64(targetY - gameUnit.Y), float64(targetX - gameUnit.X))
 

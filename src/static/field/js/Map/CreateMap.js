@@ -7,6 +7,7 @@ function CreateMap() {
 
             floorSprite.inputEnabled = true; // включаем ивенты на спрайт
             floorSprite.events.onInputOut.add(TipOff, floorSprite);
+            floorSprite.events.onInputDown.add(RemoveSelect);
             floorSprite.z = 0;
 
             game.map.OneLayerMap[x][y].sprite = floorSprite;
@@ -34,6 +35,8 @@ function CreateMap() {
                     object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, game.map.OneLayerMap[x][y].texture_object);
                     object.inputEnabled = true;
                     object.events.onInputOut.add(TipOff);
+                    object.events.onInputDown.add(RemoveSelect);
+
                     //object.anchor.setTo(0, 0);
                 }
 
@@ -59,6 +62,7 @@ function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY) {
     var object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, texture);
     object.inputEnabled = true;
     object.events.onInputOut.add(TipOff);
+    object.events.onInputDown.add(RemoveSelect);
     object.anchor.setTo(0, 0.2); // todo подгружать спрайт от невидимой границы
 
     shadow.inputEnabled = true;

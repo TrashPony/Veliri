@@ -81,8 +81,13 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "SetTarget" {
+		if msg.Event == "SetTarget"{
 			SetTarget(msg, ws)
+			continue
+		}
+
+		if msg.Event == "DeleteTarget" {
+			DeleteTarget(msg, ws)
 			continue
 		}
 	}

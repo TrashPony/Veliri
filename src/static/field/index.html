@@ -31,8 +31,7 @@
     <script src="js/Interface/RotateMap.js"></script>
     <script src="js/Interface/SizeMap.js"></script>
     <script src="js/Interface/Wheel.js"></script>
-    <script src="js/Interface/SkipButton.js"></script>
-
+    <script src="js/Interface/UnitSubMenu.js"></script>
 
     <script src="js/LoadGame/InitGame.js"></script>
     <script src="js/LoadGame/LoadGame.js"></script>
@@ -78,7 +77,7 @@
     <script src="../lib/phaser.js"></script>
 </head>
 
-<body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveTip(event)">
+<body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
 
 <div id="ControlPanel">
     <table class="animateTable">
@@ -135,9 +134,11 @@
             <tr align="center">
                 <th class="h" width="160"> Действия: </th>
             </tr>
+
             <tr align="center">
-                <td> <input type="submit" class="button noActive" id="SkipButton" onclick="" value="Пропустить ход"> </td>
+                <td> <input type="submit" class="button" id="SkipButton" onclick="" value="Пропустить ход"> </td>
             </tr>
+
             <tr align="center">
                 <td> <input type="submit" class="button noActive" onclick="" value="Способность"> </td>
             </tr>

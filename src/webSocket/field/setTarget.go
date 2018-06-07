@@ -30,6 +30,18 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 	}
 }
 
+func DeleteTarget(msg Message, ws *websocket.Conn) {
+	client, findClient := usersFieldWs[ws]
+	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	activeGame, findGame := Games[client.GetGameID()]
+
+	if findClient && findUnit && findGame && !client.GetReady() {
+		targetPhase.DeleteTarget(gameUnit)
+		ws.WriteJSON(Target{Event: "SetTarget", Unit: gameUnit})
+		updateTargetHostileUser(client, activeGame, gameUnit)
+	}
+}
+
 func updateTargetHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {

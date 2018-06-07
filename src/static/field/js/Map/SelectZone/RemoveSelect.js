@@ -2,7 +2,10 @@ function RemoveSelect() {
     RemoveSelectLine();
     RemoveSelectCoordinate();
     RemoveTargetLine();
-    DeactiveSkipButton();
+
+    if (document.getElementById("UnitSubMenu")) {
+        document.getElementById("UnitSubMenu").remove()
+    }
 }
 
 function RemoveSelectLine() {
