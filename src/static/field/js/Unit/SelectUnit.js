@@ -2,7 +2,6 @@ function SelectUnit(unit) {
 
     RemoveSelect();
 
-
     if (!unit.info.action && game.user.name === unit.info.owner) {
         CreateUnitSubMenu(unit);
     }

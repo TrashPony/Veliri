@@ -2,7 +2,7 @@ function LoadHoldUnits() {
     var holdTable = document.getElementById("holdUnits");
     var tr;
 
-    if (game.unitStorage !== null) {
+    if (game.unitStorage !== null && game.unitStorage.length !== 0) {
         var count = 0;
         for (var unit in game.unitStorage) {
 
@@ -44,5 +44,7 @@ function LoadHoldUnits() {
                 count = 0
             }
         }
+    } else {
+        holdTable.style.display = "none";
     }
 }

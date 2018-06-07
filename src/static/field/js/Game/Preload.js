@@ -22,6 +22,7 @@ function preload() {
 
 
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 100, 100, 6);
+    game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 100, 100, 6);
 
     //MatherShips MotherTrucker
     game.load.image('MotherTrucker', 'http://' + window.location.host + '/assets/MotherTrucker.png');
@@ -44,8 +45,8 @@ function preload() {
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/fogOfWar.png');
 
     // Interface marks
-    game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/toMove.png');
-    game.load.image('MarkTarget', 'http://' + window.location.host + '/assets/aim.png');
+    game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/select/toMove.png');
+    game.load.image('MarkTarget', 'http://' + window.location.host + '/assets/select/aim.png');
 
     // Fonts
     game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');

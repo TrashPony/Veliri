@@ -17,7 +17,10 @@ function DeleteMarkTarget(target) {
     if (target) {
         var x = target.x;
         var y = target.y;
-        var mark = game.map.OneLayerMap[x][y].sprite.getChildAt(0);
-        mark.destroy();
+
+        if (game.map.OneLayerMap[x][y].sprite.children.length > 0) {
+            var mark = game.map.OneLayerMap[x][y].sprite.getChildAt(0);
+            mark.destroy();
+        }
     }
 }

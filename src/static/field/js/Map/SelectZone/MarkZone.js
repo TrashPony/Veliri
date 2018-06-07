@@ -1,4 +1,4 @@
-function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, typeLine) {
+function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, typeLine, selector) {
     var left = false;
     var right = false;
     var top = false;
@@ -27,7 +27,8 @@ function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, type
     }
 
     if (addEmpty) {
-        sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectEmpty');
+        if (selector === "move") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectEmpty');
+        if (selector === "target") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectTarget');
     }
 
     if (right && left && !top && bot) {

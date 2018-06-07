@@ -19,7 +19,7 @@ func SetTarget(gameUnit *unit.Unit, game *game.Game, targetX, targetY int) {
 }
 
 func DeleteTarget(gameUnit *unit.Unit) {
-
+	// TODO если у юнита нет цели он должен на себя накладывать защитную ауру
 	gameUnit.Target = nil
 
 	db.UpdateUnit(gameUnit)
