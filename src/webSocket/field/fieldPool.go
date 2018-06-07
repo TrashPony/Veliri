@@ -11,7 +11,7 @@ import (
 
 var watchPipe = make(chan Watch)
 var phasePipe = make(chan PhaseInfo)
-var targetPipe = make(chan Target)
+var targetPipe = make(chan Unit)
 
 var move = make(chan Move)
 
@@ -86,8 +86,8 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "DeleteTarget" {
-			DeleteTarget(msg, ws)
+		if msg.Event == "Defend" {
+			DefendTarget(msg, ws)
 			continue
 		}
 	}
@@ -147,7 +147,7 @@ func MoveSender() {
 	}
 }
 
-func TargetSender() {
+func UnitSender() {
 	for {
 		resp := <- targetPipe
 		mutex.Lock()

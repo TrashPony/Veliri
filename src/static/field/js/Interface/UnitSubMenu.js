@@ -22,6 +22,10 @@ function CreateUnitSubMenu(unit) {
     }
 
     if (game.Phase === "targeting") {
+
+        unitSubMenu.style.width = "100px";
+        unitSubMenu.style.height = "65px";
+
         TargetingSubMenu(unitSubMenu, unit);
     }
 
@@ -78,27 +82,47 @@ function TargetingSubMenu(unitSubMenu, unit) {
 
     tr.appendChild(th);
 
-    var trSkip = document.createElement("tr");
-    var tdSkip = document.createElement("td");
-    tdSkip.style.alignContent = "center";
-    var skipButton = document.createElement("input");
-    skipButton.type = "button";
-    skipButton.value = "Отменить цель";
-    skipButton.className = "button subMenu";
+    var trDefend = document.createElement("tr");
+    var tdDefend = document.createElement("td");
+    tdDefend.style.alignContent = "center";
+    var defendButton = document.createElement("input");
+    defendButton.type = "button";
+    defendButton.value = "Защита";
+    defendButton.className = "button subMenu";
 
-    skipButton.onclick = function () {
+    defendButton.onclick = function () {
         field.send(JSON.stringify({
-            event: "DeleteTarget",
+            event: "Defend",
             x: Number(unit.info.x),
             y: Number(unit.info.y)
         }));
     };
 
-    tdSkip.appendChild(skipButton);
-    trSkip.appendChild(tdSkip);
+    tdDefend.appendChild(defendButton);
+    trDefend.appendChild(tdDefend);
+
+    var trEquip = document.createElement("tr");
+    var tdEquip = document.createElement("td");
+    tdEquip.style.alignContent = "center";
+    var equipButton = document.createElement("input");
+    equipButton.type = "button";
+    equipButton.value = "Инвентарь";
+    equipButton.className = "button subMenu";
+
+    equipButton.onclick = function () {
+        field.send(JSON.stringify({
+            event: "getEquip",
+            x: Number(unit.info.x),
+            y: Number(unit.info.y)
+        }));
+    };
+
+    tdEquip.appendChild(equipButton);
+    trEquip.appendChild(tdEquip);
 
     table.appendChild(tr);
-    table.appendChild(trSkip);
+    table.appendChild(trDefend);
+    table.appendChild(trEquip);
 
     unitSubMenu.appendChild(table);
 }

@@ -42,8 +42,8 @@ function ReadResponse(jsonMessage) {
         MoveHostileUnit(jsonMessage)
     }
 
-    if (event === "SetTarget") {
-        SetTarget(jsonMessage);
+    if (event === "UpdateUnit") {
+        UpdateUnit(jsonMessage);
     }
 
     if (event === "Error") {

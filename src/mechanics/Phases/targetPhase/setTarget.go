@@ -18,13 +18,6 @@ func SetTarget(gameUnit *unit.Unit, game *game.Game, targetX, targetY int) {
 	db.UpdateUnit(gameUnit)
 }
 
-func DeleteTarget(gameUnit *unit.Unit) {
-	// TODO если у юнита нет цели он должен на себя накладывать защитную ауру
-	gameUnit.Target = nil
-
-	db.UpdateUnit(gameUnit)
-}
-
 func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{
 	rotate := math.Atan2(float64(targetY - gameUnit.Y), float64(targetX - gameUnit.X))
 
