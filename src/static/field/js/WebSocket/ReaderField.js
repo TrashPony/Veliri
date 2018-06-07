@@ -13,7 +13,7 @@ function ReadResponse(jsonMessage) {
         SelectMoveCoordinateCreate(jsonMessage)
     }
 
-    if (event === "GetTargets") {
+    if (event === "GetTargets" || event === "GetFirstTargets") {
         SelectTargetCoordinateCreate(jsonMessage);
     }
 
@@ -35,7 +35,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "MoveUnit") {
-        console.log(jsonMessage);
         CreatePathToUnit(jsonMessage);
     }
 
@@ -43,6 +42,13 @@ function ReadResponse(jsonMessage) {
         MoveHostileUnit(jsonMessage)
     }
 
+    if (event === "SetTarget") {
+        SetTarget(jsonMessage);
+    }
+
+    if (event === "Error") {
+        console.log(jsonMessage);
+    }
 
     /*
        if (event === "InitUnit") {   // +

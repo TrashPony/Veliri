@@ -20,8 +20,8 @@ function CreateUnit(unitStat) {
     unit.input.pixelPerfectClick = true;   // уберает ивенты кликов на пустую зону спрайта
 
     unit.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
-    unit.events.onInputOver.add(unitTip, unit); // обрабатываем наведение мышки
-    unit.events.onInputOut.add(TipOff);   // обрабатываем убирание мышки
+    unit.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
+    unit.events.onInputOut.add(UnitMouseOut);   // обрабатываем убирание мышки
 
     unitStat.shadow = shadow;
     unitStat.sprite = unit;

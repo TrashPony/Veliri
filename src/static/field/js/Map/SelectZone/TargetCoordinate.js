@@ -1,8 +1,8 @@
 function SelectTargetCoordinateCreate(jsonMessage) {
 
-    console.log(jsonMessage);
-
     var targetCoordinates = JSON.parse(jsonMessage).targets;
+
+    var event = JSON.parse(jsonMessage).event;
 
     var unitX = JSON.parse(jsonMessage).unit.x;
     var unitY = JSON.parse(jsonMessage).unit.y;
@@ -14,11 +14,11 @@ function SelectTargetCoordinateCreate(jsonMessage) {
                 if (targetCoordinates[x].hasOwnProperty(y)) {
                     var cellSprite = game.map.OneLayerMap[targetCoordinates[x][y].x][targetCoordinates[x][y].y].sprite;
 
-                    if (game.Phase === "move") {
+                    if (event === "GetFirstTargets") {
                         MarkZone(cellSprite, targetCoordinates, x, y, 'Target', false, game.SelectTargetLineLayer);
                     }
 
-                    if (game.Phase === "targeting") {
+                    if (event === "GetTargets") {
                         var selectSprite = MarkZone(cellSprite, targetCoordinates, x, y, 'Target', true, game.SelectTargetLineLayer);
 
                         selectSprite.TargetX = targetCoordinates[x][y].x;
@@ -29,7 +29,7 @@ function SelectTargetCoordinateCreate(jsonMessage) {
                         selectSprite.UnitID = unitID;
 
                         selectSprite.inputEnabled = true;
-                        selectSprite.events.onInputDown.add(SelectTarget, selectSprite);  // todo
+                        selectSprite.events.onInputDown.add(SelectTarget, selectSprite);
                         selectSprite.events.onInputOver.add(animateCoordinate, selectSprite);
                         selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
 
