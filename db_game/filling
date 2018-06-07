@@ -29,8 +29,6 @@ INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) 
 INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 7, 7, 'desert', 'terrain_2');
 INSERT INTO map_constructor (id_map, type, x, y, texture_flore, texture_object) VALUES (1 , 'terrain', 9, 6, 'desert', 'terrain_1');
 
-
-
 /*  ---------------------------- chassis_type ------------------------------------------ */
 INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('track', 'caterpillar', 80, 6, 3);
 INSERT INTO chassis_type (name, type, carrying, Maneuverability, max_speed)  VALUES ('test2', 'walking', 100, 3, 8);
@@ -52,12 +50,16 @@ INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('
 INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test2', 'radar', 20, 6, TRUE, 5);
 
 /*  ---------------------------- Equipping_type -------------------------------------------------- */
-INSERT INTO equipping_type (type, specification)  VALUES ('repair_kit', 'ремонтный дроид который ремонтирует выбраного юнита на 50% в течение 3х ходов');
-INSERT INTO equipping_type (type, specification)  VALUES ('energy_shield', 'Поглащает 33% всего урона выбраного юнита в течение 5ти ходов');
+INSERT INTO equipping_type (id, type, specification)  VALUES (1, 'repair_kit', 'ремонтный дроид который ремонтирует выбраного юнита на 20% каждых ход в течение 3х ходов');
+INSERT INTO equipping_type (id, type, specification)  VALUES (2, 'energy_shield', 'Поглащает 33% всего урона выбраного юнита в течение 5ти ходов');
 
-/* ------------------------------ Global Maps ------------------------------------------------ */
-INSERT INTO global_map DEFAULT VALUES;
-INSERT INTO regions (id_region, x, y, type) VALUES (1, 0, 0, "terrain");
+/*  ---------------------------- Effects_type -------------------------------------------------- */
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (1, 'repair_1', 'replenishes', 3, 'hp', 20, true);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (2, 'shield_1', 'special', 5, '', 33, true);
+
+/*  ---------------------------- Anchor_effects_to_equip -------------------------------------------------- */
+INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);
+INSERT INTO equip_effects (id_equip, id_effect) VALUES (2, 2);
 
 # update action_game_unit Set range_view=3;
 # update action_game_unit Set action=true;

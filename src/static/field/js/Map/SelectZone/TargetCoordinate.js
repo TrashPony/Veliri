@@ -28,7 +28,7 @@ function SelectTargetCoordinateCreate(jsonMessage) {
                         selectSprite.UnitID = unitID;
 
                         selectSprite.inputEnabled = true;
-
+                        // Todo если в клетку куда показывает юзер есть юнит надо показывать сколько примерно отниметься хп
                         selectSprite.events.onInputDown.add(SelectTarget, selectSprite);
                         selectSprite.events.onInputOver.add(animateTargetCoordinate, selectSprite);
                         selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);

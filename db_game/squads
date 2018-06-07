@@ -9,13 +9,6 @@ CREATE TABLE mother_ship_type (
     range_view int
 );
 
-CREATE TABLE equipping_type (
-    id serial primary key,
-    type varchar(64),
-    specification varchar(255)
-    /* todo время действия в раундах */
-);
-
 CREATE TABLE squads (
 	id serial primary key,
 	name varchar(64),
@@ -45,6 +38,3 @@ CREATE TABLE squad_equipping (
 	slot_in_mother_ship int,
     id_equipping int references equipping_type(id)
 );
-
-// TODO дополнить базу настройками машины для сквада
-// TODO сделать базу данных для модификаторов от экипировки

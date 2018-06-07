@@ -38,7 +38,7 @@ CREATE TABLE action_game_unit(
     initiative       int,
     damage           int,
     range_attack     int,
-    min_attack_range  int,
+    min_attack_range int,
     area_attack      int,
     type_attack      varchar(64),
     hp               int,
@@ -68,10 +68,18 @@ CREATE TABLE action_game_user(
    ready    boolean
 );
 
-CREATE TABLE action_game_equipping(
+CREATE TABLE action_game_equipping( /* снаряжение у игрока */
    id serial primary key,
    id_game int references action_games(id),
    id_user int references users(id),
    id_type int references equipping_type(id),
    used    boolean
+);
+
+CREATE TABLE action_game_effects( /* эфекты которые в данный момент висят на юнитах */
+   id serial    primary key,
+   id_game      int references action_games(id),
+   id_unit      int references action_game_unit(id),
+   id_effect    int references effects_type(id),
+   left_steps   int
 );
