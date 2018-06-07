@@ -10,12 +10,18 @@ function UnitMouseOver(unit) {
             to_y: Number(unit.info.y)
         }));
     }
+
+    if (unit.info.target) {
+        MarkTarget(unit.info.target)
+    }
 }
 
-function UnitMouseOut() {
+function UnitMouseOut(unit) {
     TipOff();
+    DeleteMarkTarget(unit.info.target);
 
     if (game.SelectLayer.children.length === 0 && game.Phase === "targeting") {
         RemoveTargetLine();
     }
 }
+

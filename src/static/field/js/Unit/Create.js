@@ -21,7 +21,7 @@ function CreateUnit(unitStat) {
 
     unit.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
     unit.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
-    unit.events.onInputOut.add(UnitMouseOut);   // обрабатываем убирание мышки
+    unit.events.onInputOut.add(UnitMouseOut, unit);   // обрабатываем убирание мышки
 
     unitStat.shadow = shadow;
     unitStat.sprite = unit;

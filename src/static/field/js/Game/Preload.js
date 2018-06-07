@@ -31,7 +31,6 @@ function preload() {
     game.load.image('tank', 'http://' + window.location.host + '/assets/tank.png');
     game.load.spritesheet('tank360', 'http://' + window.location.host + '/assets/tank360.png', 100, 100, 360);
 
-
     // Structures
     game.load.image('respawn', 'http://' + window.location.host + '/assets/respawn.png');
 
@@ -46,6 +45,7 @@ function preload() {
 
     // Interface marks
     game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/toMove.png');
+    game.load.image('MarkTarget', 'http://' + window.location.host + '/assets/aim.png');
 
     // Fonts
     game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');
