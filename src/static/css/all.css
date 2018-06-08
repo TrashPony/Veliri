@@ -29,6 +29,16 @@ input:hover {
     background-color: rgba(0, 120, 211, 0.9);
 }
 
+#mask {
+    background-color:rgba(0, 0, 0, 0.7);
+    height:100%;
+    position:fixed;
+    width:100%;
+    top:0;
+    left:0;
+    z-index: 899;
+    display: none;
+}
 
 .h {
     font-weight:bold;

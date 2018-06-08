@@ -141,17 +141,6 @@
     cursor:pointer;
 }
 
-#mask {
-    background-color:rgba(0, 0, 0, 0.7);
-    height:100%;
-    position:fixed;
-    width:100%;
-    top:0;
-    left:0;
-    z-index: 899;
-    display: none;
-}
-
 #radarElement {
     top: 290px;
 }

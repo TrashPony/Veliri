@@ -42,10 +42,31 @@ input {
     display: none;
     font-family: sans-serif;
     font-size: 9pt;
-    border-radius: 10px;
     z-index: 901;
     animation: menuAnimation 3000ms linear infinite;
     border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+}
+
+
+#inventory {
+    pointer-events:none;
+    position: absolute;
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 9pt;
+    z-index: 901;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    width: 100px;
+    height: 100px;
 }
 
 .button.subMenu {

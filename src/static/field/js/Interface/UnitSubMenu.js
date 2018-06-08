@@ -8,8 +8,8 @@ function CreateUnitSubMenu(unit) {
 
     unitSubMenu = document.createElement("table");
     unitSubMenu.id = "UnitSubMenu";
-    unitSubMenu.style.left = stylePositionParams.left;
-    unitSubMenu.style.top = stylePositionParams.top;
+    unitSubMenu.style.left = stylePositionParams.left + 'px';
+    unitSubMenu.style.top = stylePositionParams.top + 'px';
     unitSubMenu.style.display = "block";
 
 
@@ -109,13 +109,7 @@ function TargetingSubMenu(unitSubMenu, unit) {
     equipButton.value = "Инвентарь";
     equipButton.className = "button subMenu";
 
-    equipButton.onclick = function () {
-        field.send(JSON.stringify({
-            event: "getEquip",
-            x: Number(unit.info.x),
-            y: Number(unit.info.y)
-        }));
-    };
+    equipButton.onclick = ChoiceEquip;
 
     tdEquip.appendChild(equipButton);
     trEquip.appendChild(tdEquip);

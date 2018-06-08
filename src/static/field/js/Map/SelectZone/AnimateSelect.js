@@ -18,7 +18,6 @@ function animatePlaceCoordinate(coordinate) {
 }
 
 function animateTargetCoordinate(coordinate) {
-    console.log(coordinate);
     coordinate.animations.add('select', [1,2]);
     coordinate.animations.play('select', 3, true);
 }
