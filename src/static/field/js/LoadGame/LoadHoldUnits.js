@@ -24,6 +24,10 @@ function LoadHoldUnits() {
                         event: "SelectStorageUnit",
                         unit_id: Number(this.unit.info.id)
                     }));
+
+                    if (document.getElementsByClassName("boxUnit").length === 0) { // todo не работает :(
+                        document.getElementById("holdUnits").style.display = "none";
+                    }
                 };
 
                 boxUnit.onmouseover = function () {

@@ -12,6 +12,11 @@ function animateMoveCoordinate(coordinate) {
     game.SelectLineLayer.visible = false;
 }
 
+function animatePlaceCoordinate(coordinate) {
+    coordinate.animations.add('select');
+    coordinate.animations.play('select', 5, true);
+}
+
 function animateTargetCoordinate(coordinate) {
     console.log(coordinate);
     coordinate.animations.add('select', [1,2]);

@@ -27,7 +27,7 @@ function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, type
     }
 
     if (addEmpty) {
-        if (selector === "move") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectEmpty');
+        if (selector === "move" || selector === "place") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectEmpty');
         if (selector === "target") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectTarget');
     }
 

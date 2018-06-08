@@ -38,12 +38,14 @@ func GetEquip(player player.Player, game *game.Game) []*equip.Equip {
 	return equips
 }
 
-func GetEffectsEquip(equip *equip.Equip)  {
+func GetEffectsEquip(equip *equip.Equip) {
 
 	equip.Effects = make([]effect.Effect, 0)
 
-	rows, err := db.Query(" SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages"+
-		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equip.Id)
+	rows, err := db.Query(" SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages "+
+		" FROM action_game_equipping age, equip_effects ee, effects_type et "+
+		" WHERE age.id = $1 AND age.id_type = et.id AND et.id = ee.id_equip;", equip.Id)
+
 	if err != nil {
 		println("get user equip effects")
 		log.Fatal(err)

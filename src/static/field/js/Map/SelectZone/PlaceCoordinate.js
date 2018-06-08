@@ -1,5 +1,7 @@
 function SelectCoordinateUnitCreate(jsonMessage) {
 
+    RemoveSelect();
+
     var placeCoordinate = JSON.parse(jsonMessage).place_coordinate;
     var unitID = JSON.parse(jsonMessage).unit.id;
 
@@ -10,7 +12,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     var cellSprite = game.map.OneLayerMap[placeCoordinate[x][y].x][placeCoordinate[x][y].y].sprite;
 
-                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place', true, game.SelectLineLayer);
+                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place', true, game.SelectLineLayer, "place");
 
                     selectSprite.PlaceX = placeCoordinate[x][y].x;
                     selectSprite.PlaceY = placeCoordinate[x][y].y;
@@ -18,7 +20,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     selectSprite.inputEnabled = true;
                     selectSprite.events.onInputDown.add(SelectPlaceCoordinate, selectSprite);
-                    selectSprite.events.onInputOver.add(animateCoordinate, selectSprite);
+                    selectSprite.events.onInputOver.add(animatePlaceCoordinate, selectSprite);
                     selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
 
                     game.map.selectSprites.push(selectSprite);

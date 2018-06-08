@@ -24,7 +24,7 @@ function CreateUnitSubMenu(unit) {
     if (game.Phase === "targeting") {
 
         unitSubMenu.style.width = "100px";
-        unitSubMenu.style.height = "65px";
+        unitSubMenu.style.height = "70px";
 
         TargetingSubMenu(unitSubMenu, unit);
     }
