@@ -29,7 +29,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 		Event:              "LoadGame",
 		UserName:           usersFieldWs[ws].GetLogin(),
 		Ready:              usersFieldWs[ws].GetReady(),
-		Equip:              usersFieldWs[ws].GetEquip(),
+		Equip:              usersFieldWs[ws].GetEquips(),
 		Units:              usersFieldWs[ws].GetUnits(),
 		HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
 		UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),

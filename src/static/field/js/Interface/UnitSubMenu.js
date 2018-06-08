@@ -109,7 +109,9 @@ function TargetingSubMenu(unitSubMenu, unit) {
     equipButton.value = "Инвентарь";
     equipButton.className = "button subMenu";
 
-    equipButton.onclick = ChoiceEquip;
+    equipButton.onclick = function () {
+        ChoiceEquip(unit);
+    };
 
     tdEquip.appendChild(equipButton);
     trEquip.appendChild(tdEquip);

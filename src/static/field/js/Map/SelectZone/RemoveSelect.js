@@ -2,6 +2,7 @@ function RemoveSelect() {
     RemoveSelectLine();
     RemoveSelectCoordinate();
     RemoveTargetLine();
+    TipEquipOff();
 
     if (document.getElementById("UnitSubMenu")) {
         document.getElementById("UnitSubMenu").remove()

@@ -4,6 +4,7 @@ type Message struct {
 	Event    string `json:"event"`
 	IdGame   int    `json:"id_game"`
 	UnitID   int    `json:"unit_id"`
+	EquipID  int    `json:"equip_id"`
 	IdTarget string `json:"id_target"`
 	TypeUnit string `json:"type_unit"`
 	X        int    `json:"x"`

@@ -1,26 +1,25 @@
-function ChoiceEquip() {
+function ChoiceEquip(unit) {
+
     var inventory = document.getElementById("inventory");
 
-    if (!inventory) {
-
-        inventory = document.createElement("div");
-        inventory.id = "inventory";
-
-        var table = CreateTableInventory();
-        inventory.appendChild(table);
-        var cancelButton = CreateCancelButton();
-        inventory.appendChild(cancelButton);
-
-    } else {
-        inventory.style.display = "inline-block";
+    if (inventory) {
+        inventory.remove();
     }
+
+    inventory = document.createElement("div");
+    inventory.id = "inventory";
+
+    var table = CreateTableInventory();
+    inventory.appendChild(table);
+    var cancelButton = CreateCancelButton();
+    inventory.appendChild(cancelButton);
 
     inventory.style.top = stylePositionParams.top - 90 + 'px';
     inventory.style.left = 70 + stylePositionParams.left + 'px';
 
     document.body.appendChild(inventory);
 
-    FillingCellInventory();
+    FillingCellInventory(unit);
 }
 
 function CreateTableInventory() {
@@ -49,15 +48,16 @@ function CreateTableInventory() {
     return table
 }
 
-function FillingCellInventory() {
+function FillingCellInventory(unit) {
     var cells = document.getElementsByClassName('cellInventory');
 
     // todo будут проблемы если эквипом больше чем ячеек
     for (var i = 0; i < game.user.equip.length; i++) {
         cells[i].equip = game.user.equip[i];
+        cells[i].unit = unit;
         cells[i].style.backgroundImage = "url(/assets/" + cells[i].equip.type + ".png)";
         cells[i].onclick = function () {
-            UsedEquip(this.equip);
+            UsedEquip(this);
         };
         cells[i].onmouseover = function () {
             TipEquipOn(this.equip);

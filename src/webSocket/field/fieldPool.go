@@ -90,6 +90,11 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			DefendTarget(msg, ws)
 			continue
 		}
+
+		if msg.Event == "UseEquip" {
+			UseEquip(msg, ws)
+			continue
+		}
 	}
 }
 
