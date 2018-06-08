@@ -92,10 +92,11 @@ func ParseUnitTarget(targetKey string) *coordinate.Coordinate {
 
 func GetUnitEffects(unit *unit.Unit) {
 
-	rows, err := db.Query(" SELECT age.id, et.id, et.name, et.type, age.left_steps, et.parameter, et.quantity, et.percentages"+
-		"FROM action_game_effects age, effects_type et"+
+	rows, err := db.Query("SELECT age.id, et.id, et.name, et.type, age.left_steps, et.parameter, et.quantity, et.percentages "+
+		"FROM action_game_effects age, effects_type et "+
 		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.Id)
 	if err != nil {
+		println("get unit effects")
 		log.Fatal(err)
 	}
 	defer rows.Close()

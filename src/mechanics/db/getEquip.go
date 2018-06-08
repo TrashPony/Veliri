@@ -45,6 +45,7 @@ func GetEffectsEquip(equip *equip.Equip)  {
 	rows, err := db.Query(" SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages"+
 		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equip.Id)
 	if err != nil {
+		println("get user equip effects")
 		log.Fatal(err)
 	}
 	defer rows.Close()
