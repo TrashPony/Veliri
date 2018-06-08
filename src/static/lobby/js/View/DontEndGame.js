@@ -1,6 +1,4 @@
 function NotEndGame(jsonMessage) {
-    console.log(jsonMessage);
-
     var games = JSON.parse(jsonMessage).dont_end_games;
 
     for(var i = 0; i < games.length; i ++) {

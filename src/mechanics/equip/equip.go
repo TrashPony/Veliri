@@ -1,6 +1,11 @@
 package equip
 
+import "../effect"
+
 type Equip struct {
-	Type string `json:"type"`
-	Used bool   `json:"used"`
+	Id            int             `json:"id"`
+	Type          string          `json:"type"`
+	Specification string          `json:"specification"`
+	Effects       []effect.Effect `json:"effects"`
+	Used          bool            `json:"used"`
 }

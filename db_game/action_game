@@ -78,7 +78,6 @@ CREATE TABLE action_game_equipping( /* снаряжение у игрока */
 
 CREATE TABLE action_game_effects( /* эфекты которые в данный момент висят на юнитах */
    id serial    primary key,
-   id_game      int references action_games(id),
    id_unit      int references action_game_unit(id),
    id_effect    int references effects_type(id),
    left_steps   int

@@ -55,11 +55,13 @@ INSERT INTO equipping_type (id, type, specification)  VALUES (2, 'energy_shield'
 
 /*  ---------------------------- Effects_type -------------------------------------------------- */
 INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (1, 'repair_1', 'replenishes', 3, 'hp', 20, true);
-INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (2, 'shield_1', 'special', 5, '', 33, true);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (2, 'shield_1', 'enhances', 5, 'resistance', 33, true);
 
 /*  ---------------------------- Anchor_effects_to_equip -------------------------------------------------- */
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (2, 2);
+
+# "SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages FROM equip_effects, effects_type as et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=effects_type.id", equip.Id
 
 # update action_game_unit Set range_view=3;
 # update action_game_unit Set action=true;

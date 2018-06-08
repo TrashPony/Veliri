@@ -8,6 +8,7 @@ import (
 	"../../detailUnit"
 	"../coordinate"
 	"../unit"
+	"../effect"
 )
 
 func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
@@ -49,7 +50,9 @@ func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 		}
 
 		gameUnit.Target = ParseUnitTarget(targetKey)
+
 		SetDetails(&gameUnit, chassisID, weaponID, towerID, bodyID, radarID)
+		GetUnitEffects(&gameUnit)
 
 		if gameUnit.OnMap {
 			if units[gameUnit.X] != nil { // кладем юнита в матрицу
@@ -84,6 +87,29 @@ func ParseUnitTarget(targetKey string) *coordinate.Coordinate {
 		}
 	} else {
 		return nil
+	}
+}
+
+func GetUnitEffects(unit *unit.Unit) {
+
+	rows, err := db.Query(" SELECT age.id, et.id, et.name, et.type, age.left_steps, et.parameter, et.quantity, et.percentages"+
+		"FROM action_game_effects age, effects_type et"+
+		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var unitEffect effect.Effect
+
+		err := rows.Scan(&unitEffect.ID, &unitEffect.TypeID, &unitEffect.Name, &unitEffect.Type,
+			&unitEffect.StepsTime, &unitEffect.Parameter, &unitEffect.Quantity, &unitEffect.Percentages)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		unit.Effects = append(unit.Effects, unitEffect)
 	}
 }
 

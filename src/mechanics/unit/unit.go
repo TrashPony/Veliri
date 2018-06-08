@@ -3,6 +3,7 @@ package unit
 import (
 	"../../detailUnit"
 	"../coordinate"
+	"../effect"
 )
 
 type Unit struct {
@@ -52,6 +53,9 @@ type Unit struct {
 	Action bool                   `json:"action"`
 	Target *coordinate.Coordinate `json:"target"`
 	Queue  int                    `json:"queue"`
+
+	// Бафы, дебафы
+	Effects []effect.Effect `json:"effect"`
 }
 
 func (unit *Unit) SetX(x int) {
@@ -78,11 +82,11 @@ func (unit *Unit) GetOwnerUser() string {
 	return unit.Owner
 }
 
-func (unit *Unit) GetOnMap() bool  {
+func (unit *Unit) GetOnMap() bool {
 	return unit.OnMap
 }
 
-func (unit *Unit) SetOnMap(bool bool)  {
+func (unit *Unit) SetOnMap(bool bool) {
 	unit.OnMap = bool
 }
 
