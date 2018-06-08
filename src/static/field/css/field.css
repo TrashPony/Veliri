@@ -93,9 +93,32 @@ input {
     cursor: pointer;
 }
 
+#TipEquip {
+    pointer-events:none;
+    position: absolute;
+    display: inline-block;
+    z-index: 901;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    width: 150px;
+    padding: 5px;
+}
+
+#TipEquip td{
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 6pt;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: #a5d5ef;
+}
+
 .button.subMenu {
     font-family: sans-serif;
-    font-size: 7pt;
+    font-size: 6pt;
     text-shadow: #28a5e4 0 0 4px;
     color:  #a5d5ef
 }

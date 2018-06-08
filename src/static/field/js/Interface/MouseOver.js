@@ -15,4 +15,6 @@ function moveMouse(e) {
     }
     // Положение от верхнего края окна браузера
     stylePositionParams.top = y;
+
+    updatePositionTipEquip();
 }

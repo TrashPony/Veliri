@@ -2,6 +2,7 @@ function ChoiceEquip() {
     var inventory = document.getElementById("inventory");
 
     if (!inventory) {
+
         inventory = document.createElement("div");
         inventory.id = "inventory";
 
@@ -18,6 +19,8 @@ function ChoiceEquip() {
     inventory.style.left = 70 + stylePositionParams.left + 'px';
 
     document.body.appendChild(inventory);
+
+    FillingCellInventory();
 }
 
 function CreateTableInventory() {
@@ -38,13 +41,31 @@ function CreateTableInventory() {
         for (var j = 0; j < 4; j++) {
             var cellInventory = document.createElement("td");
             cellInventory.className = "cellInventory";
-            //todo заполнение итемами + onclick + mouseOver со вспылающей подсказкой
             rowInventory.appendChild(cellInventory);
         }
         table.appendChild(rowInventory);
     }
 
     return table
+}
+
+function FillingCellInventory() {
+    var cells = document.getElementsByClassName('cellInventory');
+
+    // todo будут проблемы если эквипом больше чем ячеек
+    for (var i = 0; i < game.user.equip.length; i++) {
+        cells[i].equip = game.user.equip[i];
+        cells[i].style.backgroundImage = "url(/assets/" + cells[i].equip.type + ".png)";
+        cells[i].onclick = function () {
+            UsedEquip(this.equip);
+        };
+        cells[i].onmouseover = function () {
+            TipEquipOn(this.equip);
+        };
+        cells[i].onmouseout = function () {
+            TipEquipOff();
+        };
+    }
 }
 
 function CreateCancelButton() {
