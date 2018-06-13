@@ -132,7 +132,7 @@ function MoveUnit() {
 
                         var dist = game.physics.arcade.distanceToXY(unit.sprite, unit.movePoint.x * 100 + 50 , unit.movePoint.y * 100 + 50);
 
-                        if (Math.round(dist) >= -4 && Math.round(dist) <= 4) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                        if (Math.round(dist) >= -5 && Math.round(dist) <= 5) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
                             delete game.units[unit.x][unit.y];
 

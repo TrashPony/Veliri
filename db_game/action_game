@@ -69,16 +69,24 @@ CREATE TABLE action_game_user(
 );
 
 CREATE TABLE action_game_equipping( /* снаряжение у игрока */
-   id serial primary key,
-   id_game int references action_games(id),
-   id_user int references users(id),
-   id_type int references equipping_type(id),
-   used    boolean
+   id           serial primary key,
+   id_game      int references action_games(id),
+   id_user      int references users(id),
+   id_type      int references equipping_type(id),
+   used         boolean
 );
 
-CREATE TABLE action_game_effects( /* эфекты которые в данный момент висят на юнитах */
+CREATE TABLE action_game_unit_effects( /* эфекты которые в данный момент висят на юнитах */
    id serial    primary key,
    id_unit      int references action_game_unit(id),
+   id_effect    int references effects_type(id),
+   left_steps   int
+);
+
+CREATE TABLE action_game_zone_effects( /* эфекты которые в данный момент висят на ячейках карты */
+   id serial    primary key,
+   x            int,
+   y            int,
    id_effect    int references effects_type(id),
    left_steps   int
 );

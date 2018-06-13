@@ -110,7 +110,7 @@ func GetUnitEffects(unit *unit.Unit) {
 			log.Fatal(err)
 		}
 
-		unit.Effects = append(unit.Effects, unitEffect)
+		unit.Effects = append(unit.Effects, &unitEffect)
 	}
 }
 

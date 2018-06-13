@@ -26,6 +26,10 @@ function preload() {
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 100, 100, 6);
     game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 100, 100, 6);
 
+    //Equip_Animate
+    game.load.spritesheet('EnergyShield', 'http://' + window.location.host + '/assets/equipAnimate/energy_shield_animate.png', 100, 100, 20);
+    game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 8);
+
     //MatherShips MotherTrucker
     game.load.image('MotherTrucker', 'http://' + window.location.host + '/assets/MotherTrucker.png');
     game.load.image('FuryRoad', 'http://' + window.location.host + '/assets/FuryRoad.png');

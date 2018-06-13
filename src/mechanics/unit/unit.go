@@ -55,7 +55,7 @@ type Unit struct {
 	Queue  int                    `json:"queue"`
 
 	// Бафы, дебафы
-	Effects []effect.Effect `json:"effect"`
+	Effects []*effect.Effect `json:"effect"`
 }
 
 func (unit *Unit) SetX(x int) {
