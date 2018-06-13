@@ -50,9 +50,9 @@ INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('
 INSERT INTO radar_type (name, type, weight, power, through, analysis)  VALUES ('test2', 'radar', 20, 6, TRUE, 5);
 
 /*  ---------------------------- Equipping_type -------------------------------------------------- */
-INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (1, 'repair_kit', 'ремонтный дроид который ремонтирует выбраного юнита на 20% каждых ход в течение 3х ходов', 'my_units', 1);
-INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (2, 'energy_shield', 'Поглащает 33% всего урона выбраного юнита в течение 5ти ходов', 'my_units', 1);
-INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (3, 'small_bomb', 'наносит урон в радиусе 2х клеток', 'map', 2);
+INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (1, 'repair_kit', 'ремонтный дроид который ремонтирует выбраного юнита на 20% каждых ход в течение 3х ходов', 'my_units', 0);
+INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (2, 'energy_shield', 'Поглащает 33% всего урона выбраного юнита в течение 5ти ходов', 'my_units', 0);
+INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (3, 'small_bomb', 'наносит урон в радиусе 2х клеток', 'map', 1);
 
 /*  ---------------------------- Effects_type -------------------------------------------------- */
 INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (1, 'repair_1', 'replenishes', 3, 'hp', 20, true);
@@ -63,8 +63,6 @@ INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, perce
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (2, 2);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (3, 3);
-
-# "SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages FROM equip_effects, effects_type as et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=effects_type.id", equip.Id
 
 # update action_game_unit Set range_view=3;
 # update action_game_unit Set action=true;

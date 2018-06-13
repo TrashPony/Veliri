@@ -1,12 +1,11 @@
-function UsedEquip(unit, equip) {
+function UsedEquip() {
 
     RemoveSelect();
 
     field.send(JSON.stringify({
         event: "UseEquip",
-        x: Number(unit.x),
-        y: Number(unit.y),
-        unit_id: Number(unit.id),
-        equip_id: Number(equip.id)
+        x: Number(this.gameCoordinateX),
+        y: Number(this.gameCoordinateY),
+        equip_id: Number(this.equipID)
     }));
 }

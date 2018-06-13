@@ -18,7 +18,7 @@ func GetTypeEquipping() []Equipping {
 	for rows.Next() {
 		var equip Equipping
 
-		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification)
+		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification, &equip.Applicable, &equip.Region)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -42,7 +42,7 @@ func GetTypeEquip(id int) Equipping {
 	var equip Equipping
 
 	for rows.Next() {
-		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification)
+		err := rows.Scan(&equip.Id, &equip.Type, &equip.Specification, &equip.Applicable, &equip.Region)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -53,7 +53,7 @@ func GetTypeEquip(id int) Equipping {
 	return equip
 }
 
-func GetEffectsEquip(equip *Equipping)  {
+func GetEffectsEquip(equip *Equipping) {
 
 	equip.Effects = make([]effect.Effect, 0)
 
@@ -81,4 +81,6 @@ type Equipping struct {
 	Type          string          `json:"type"`
 	Specification string          `json:"specification"`
 	Effects       []effect.Effect `json:"effects"`
+	Applicable    string          `json:"applicable"`
+	Region        int             `json:"region"`
 }

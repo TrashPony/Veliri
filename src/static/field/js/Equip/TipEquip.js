@@ -68,6 +68,10 @@ function ParseEffect(effect) {
         type = "+"
     }
 
+    if (effect.type === "takes_away") {
+        type = "-"
+    }
+
     if (effect.type === "replenishes") {
         type = "++"
     }
