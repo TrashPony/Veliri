@@ -1,8 +1,9 @@
 CREATE TABLE equipping_type (
     id serial primary key,
     type varchar(64),
-    specification varchar(255) /* описание снаряжения */
-    /* TODO эфекты на себя, на врага, на местность */
+    specification varchar(255), /* описание снаряжения */
+    applicable varchar(64),     /* прменимо к своим "my_units", вражеским "hostile_units", всем "all",  карте "map"*/
+    region int                  /* регион на которое работает снаряжение*/
 );
 
 CREATE TABLE equip_effects (
