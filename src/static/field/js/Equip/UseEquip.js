@@ -1,10 +1,6 @@
-function UsedEquip(cell) {
+function UsedEquip(unit, equip) {
+
     RemoveSelect();
-
-    // todo придумать окно подтверждения типо "Применить equip_type к выбраному юниту?"
-
-    var equip = cell.equip;
-    var unit = cell.unit.info;
 
     field.send(JSON.stringify({
         event: "UseEquip",
