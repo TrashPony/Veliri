@@ -16,7 +16,7 @@ function CreateUnitSubMenu(unit) {
     if (game.Phase === "move") {
 
         unitSubMenu.style.width = "100px";
-        unitSubMenu.style.height = "40px";
+        unitSubMenu.style.height = "45px";
 
         MoveSubMenu(unitSubMenu, unit);
     }
@@ -24,7 +24,7 @@ function CreateUnitSubMenu(unit) {
     if (game.Phase === "targeting") {
 
         unitSubMenu.style.width = "100px";
-        unitSubMenu.style.height = "70px";
+        unitSubMenu.style.height = "45px";
 
         TargetingSubMenu(unitSubMenu, unit);
     }
@@ -101,24 +101,8 @@ function TargetingSubMenu(unitSubMenu, unit) {
     tdDefend.appendChild(defendButton);
     trDefend.appendChild(tdDefend);
 
-    var trEquip = document.createElement("tr");
-    var tdEquip = document.createElement("td");
-    tdEquip.style.alignContent = "center";
-    var equipButton = document.createElement("input");
-    equipButton.type = "button";
-    equipButton.value = "Инвентарь";
-    equipButton.className = "button subMenu";
-
-    equipButton.onclick = function () {
-        ChoiceEquip(unit);
-    };
-
-    tdEquip.appendChild(equipButton);
-    trEquip.appendChild(tdEquip);
-
     table.appendChild(tr);
     table.appendChild(trDefend);
-    table.appendChild(trEquip);
 
     unitSubMenu.appendChild(table);
 }

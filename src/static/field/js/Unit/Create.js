@@ -1,33 +1,56 @@
-function CreateUnit(unitStat) {
+function CreateUnit(unitStat, inVisible) {
     var x = unitStat.x;
     var y = unitStat.y;
 
     var cell = game.map.OneLayerMap[x][y].sprite;
+    var unit;
 
-    var shadow = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'tank360', unitStat.rotate);
-    game.physics.arcade.enable(shadow);
+    if (game.user.name === unitStat.owner) {
+        unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'MySelectUnit', 0) ;
+    } else {
+        unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'HostileSelectUnit', 0);
+    }
+    game.physics.enable(unit, Phaser.Physics.ARCADE);
+    unit.anchor.setTo(0.5, 0.5);
+    unit.inputEnabled = true;             // включаем ивенты на спрайт
+    unit.info = unitStat;
+
+    var shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
+    unit.addChild(shadow);
+    //game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
 
-    var unit = game.floorObjectLayer.create(cell.x + game.tileSize / 2, cell.y + game.tileSize / 2, 'tank360', unitStat.rotate);
-    game.physics.arcade.enable(unit);
-    unit.inputEnabled = true;             // включаем ивенты на спрайт
-    unit.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
-    unit.body.collideWorldBounds = true;  // границы страницы
-    unit.info = unitStat;
-    unit.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
-    unit.input.pixelPerfectClick = true;   // уберает ивенты кликов на пустую зону спрайта
+    var body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
+    unit.addChild(body);
+    game.physics.arcade.enable(body);
+    body.inputEnabled = true;             // включаем ивенты на спрайт
+    body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
+    body.body.collideWorldBounds = true;  // границы страницы
+    body.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
+    body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    unit.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
-    unit.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
-    unit.events.onInputOut.add(UnitMouseOut, unit);   // обрабатываем убирание мышки
+    body.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
+    body.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
+    body.events.onInputOut.add(UnitMouseOut, unit);   // обрабатываем убирание мышки
 
-    unitStat.shadow = shadow;
     unitStat.sprite = unit;
+    unitStat.sprite.unitBody = body;
+    unitStat.sprite.unitShadow = shadow;
 
-    if(unitStat.action && game.user.name === unitStat.owner){
+    unitStat.RotateUnit = function(angle) {
+        RotateUnit(this.sprite, angle);
+    };
+
+    if (unitStat.action && game.user.name === unitStat.owner) {
         DeactivationUnit(unitStat);
+    }
+
+    if (inVisible) {
+        unitStat.sprite.alpha = 0;
+        unitStat.sprite.unitBody.alpha = 0;
+        unitStat.sprite.unitShadow.alpha = 0;
     }
 
     addToGameUnit(unitStat);

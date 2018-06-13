@@ -6,15 +6,7 @@ function CloseCoordinates(coordinates) {
         var unit = GetGameUnitXY(coordinate.x, coordinate.y);
 
         if (unit) {
-            delete game.units[unit.x][unit.y];
-            unit.sprite.destroy();
-            unit.shadow.destroy();
+            unit.destroy = true;
         }
     }
-}
-
-function CloseCoordinate(jsonMessage) {
-    /*var x = JSON.parse(jsonMessage).x;
-    var y = JSON.parse(jsonMessage).y;
-    GameMap.OneLayerMap[x][y].sprite.tint = 0x757575;*/
 }

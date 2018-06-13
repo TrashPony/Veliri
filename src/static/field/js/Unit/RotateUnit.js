@@ -1,4 +1,4 @@
-function RotateUnit() {
+function UpdateRotateUnit() {
     for (var x in game.units) {
         if (game.units.hasOwnProperty(x)) {
             for (var y in game.units[x]) {
@@ -24,10 +24,8 @@ function RotateUnit() {
                                 unit.spriteAngle--;
                             }
                         }
+                        unit.RotateUnit(unit.spriteAngle);
                     }
-
-                    unit.shadow.loadTexture('tank360', unit.spriteAngle);
-                    unit.sprite.loadTexture('tank360', unit.spriteAngle);
                 }
             }
         }
@@ -52,10 +50,17 @@ function directionRotate(spriteAngle, rotate) {
         }
     }
 
-
     if (direction) {
         return count <= 180
     } else {
         return !(count <= 180)
+    }
+}
+
+function RotateUnit(unit, angle) {
+    for (var sprite in unit) {
+        if (unit.hasOwnProperty(sprite) && unit[sprite] !== null && unit[sprite].hasOwnProperty('_frame')) {
+            unit[sprite].frame = angle;
+        }
     }
 }

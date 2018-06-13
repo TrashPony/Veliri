@@ -44,7 +44,7 @@ function MoveHostileUnit(jsonMessage) {
                 unit = JSON.parse(jsonMessage).unit;
                 unit.x = firstNode.path_node.x;
                 unit.y = firstNode.path_node.y;
-                CreateUnit(unit);
+                CreateUnit(unit, true);
 
                 unit.path = patchNodes;                // добавляем юниту путь
             }
@@ -85,49 +85,54 @@ function CheckPath(unit) {
     }
 
     if (unit.sprite) {
-        unit.movePoint = pathNode.path_node;
         unit.rotate = pathNode.unit_rotate;
         unit.watch = pathNode.watch_node;
+        unit.movePoint = pathNode.path_node;
     }
 }
 
 function MoveToCell(unit) {
     unit.sprite.body.velocity = game.physics.arcade.velocityFromAngle(unit.spriteAngle, 100); // устанавливаем скорость
-    unit.shadow.body.velocity = game.physics.arcade.velocityFromAngle(unit.spriteAngle, 100); // устанавливаем скорость
 }
 
 function StopUnit(unit) {
     unit.sprite.body.angularVelocity = 0;
     unit.sprite.body.velocity.x = 0;
     unit.sprite.body.velocity.y = 0;
+}
 
-    unit.shadow.body.angularVelocity = 0;
-    unit.shadow.body.velocity.x = 0;
-    unit.shadow.body.velocity.y = 0;
+function HideUnit(unit) {
+    game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.unitBody).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+}
+
+function UncoverUnit(unit) {
+    game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.unitBody).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
 }
 
 function MoveUnit() {
-
     for (var x in game.units) {
         if (game.units.hasOwnProperty(x)) {
             for (var y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y) && game.units[x][y].sprite && game.units[x][y].shadow) {
+                if (game.units[x].hasOwnProperty(y) && game.units[x][y].sprite) {
                     var unit = game.units[x][y];
 
                     if (unit.movePoint == null) { // если у юнита больше нет цели перемещения выставляем ему скорость движения и поворота 0
                         StopUnit(unit);
                     } else {
+
                         if (unit.spriteAngle === unit.rotate) {
                             MoveToCell(unit);
+                        } else {
+                            StopUnit(unit);
                         }
-                        var xTarget = (unit.movePoint.x * 100) + 50,
-                            yTarget = (unit.movePoint.y * 100) + 50;
 
-                        var xUnit = unit.sprite.x,
-                            yUnit = unit.sprite.y;
+                        var dist = game.physics.arcade.distanceToXY(unit.sprite, unit.movePoint.x * 100 + 50 , unit.movePoint.y * 100 + 50);
 
-                        if ((xUnit - 20 < xTarget && xTarget < xUnit + 20) &&
-                            (yUnit - 20 < yTarget && yTarget < yUnit + 20)) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                        if (Math.round(dist) >= -4 && Math.round(dist) <= 4) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
                             delete game.units[unit.x][unit.y];
 
@@ -137,13 +142,11 @@ function MoveUnit() {
                             addToGameUnit(unit);
 
                             if (unit.movePoint.type === "inToFog") {
-                                game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-                                game.add.tween(unit.shadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+                                HideUnit(unit);
                             }
 
                             if (unit.movePoint.type === "outFog") {
-                                game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-                                game.add.tween(unit.shadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+                                UncoverUnit(unit);
                             }
 
                             unit.movePoint = null;

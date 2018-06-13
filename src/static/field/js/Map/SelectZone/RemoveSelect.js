@@ -3,13 +3,10 @@ function RemoveSelect() {
     RemoveSelectCoordinate();
     RemoveTargetLine();
     TipEquipOff();
+    RemoveUnitMarks();
 
     if (document.getElementById("UnitSubMenu")) {
         document.getElementById("UnitSubMenu").remove()
-    }
-
-    if (document.getElementById("inventory")) {
-        document.getElementById("inventory").remove()
     }
 }
 
