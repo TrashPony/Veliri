@@ -29,6 +29,7 @@ func main() {
 	go field.MoveSender()
 	go field.UnitSender()
 	go field.PhaseSender()
+	go field.EquipSender()
 
 	go globalMap.GlobalReposeSender()
 	go globalMap.TimerSteep() // таймер сервер отвечает за синхронизацию всех игроков в сети, должен содержать в себе всю логику что бы все действия проводились через него
