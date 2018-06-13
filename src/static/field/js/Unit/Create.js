@@ -39,6 +39,10 @@ function CreateUnit(unitStat, inVisible) {
     unitStat.sprite.unitBody = body;
     unitStat.sprite.unitShadow = shadow;
 
+    if (unitStat.effect !== null && unitStat.effect.length > 0) {
+        CreateAnimateEffects(unitStat)
+    }
+
     unitStat.RotateUnit = function(angle) {
         RotateUnit(this.sprite, angle);
     };
@@ -54,4 +58,14 @@ function CreateUnit(unitStat, inVisible) {
     }
 
     addToGameUnit(unitStat);
+}
+
+function CreateAnimateEffects(unit) {
+    for (var i = 0; i < unit.effect.length; i++) {
+        if (unit.effect[i].type === "unit_always_animate"){
+            if (unit.effect[i].name === "animate_energy_shield") {
+                energyShieldAnimate(unit);
+            }
+        }
+    }
 }

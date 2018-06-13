@@ -60,7 +60,7 @@ INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, perce
 INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (3, 'damage_1', 'takes_away', 1, 'hp', 10, false, true);
 
 INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (4, 'animate_explosion', 'animate', 1, '', 0, false, false);
-INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (5, 'animate_energy_shield', 'animate', 5, '', 0, false, false);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (5, 'animate_energy_shield', 'unit_always_animate', 5, '', 0, false, false);
 
 /*  ---------------------------- Anchor_effects_to_equip -------------------------------------------------- */
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);
