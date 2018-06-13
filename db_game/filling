@@ -55,9 +55,9 @@ INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES
 INSERT INTO equipping_type (id, type, specification, applicable, region)  VALUES (3, 'small_bomb', 'наносит урон в радиусе 2х клеток', 'map', 1);
 
 /*  ---------------------------- Effects_type -------------------------------------------------- */
-INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (1, 'repair_1', 'replenishes', 3, 'hp', 20, true);
-INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (2, 'shield_1', 'enhances', 5, 'resistance', 33, true);
-INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages)  VALUES (3, 'damage_1', 'takes_away', 1, 'hp', 10, false);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (1, 'repair_1', 'replenishes', 3, 'hp', 20, true, true);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (2, 'shield_1', 'enhances', 5, 'resistance', 33, true, false);
+INSERT INTO effects_type (id, name, type, steps_time, parameter, quantity, percentages, forever)  VALUES (3, 'damage_1', 'takes_away', 1, 'hp', 10, false, true);
 
 /*  ---------------------------- Anchor_effects_to_equip -------------------------------------------------- */
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);

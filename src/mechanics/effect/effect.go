@@ -9,4 +9,5 @@ type Effect struct {
 	Parameter   string `json:"parameter"`
 	Quantity    int    `json:"quantity"`
 	Percentages bool   `json:"percentages"`
+	Forever     bool   `json:"forever"`
 }
