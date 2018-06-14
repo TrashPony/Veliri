@@ -17,4 +17,5 @@ function moveMouse(e) {
     stylePositionParams.top = y + 10;
 
     updatePositionTipEquip();
+    updatePositionTipEffect();
 }

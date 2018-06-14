@@ -6,6 +6,8 @@ function create() {
     game.time.desiredFps = 60;       // макс фпс 60
     game.time.slowMotion = 0;        // плавный переход в мин фпс
 
+    game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
+
     game.world.setBounds(0, 0, game.tileSize * game.map.XSize, game.tileSize * game.map.YSize); //размеры карты
 
     game.stage.backgroundColor = "#242424"; //цвет фона

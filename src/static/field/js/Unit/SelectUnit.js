@@ -2,9 +2,7 @@ function SelectUnit() {
 
     RemoveSelect();
 
-    if (!this.info.action && game.user.name === this.info.owner) {
-        CreateUnitSubMenu(this);
-    }
+    CreateUnitSubMenu(this);
 
     MarkUnitSelect(this);
 

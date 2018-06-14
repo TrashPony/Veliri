@@ -31,10 +31,10 @@ function CreateTableInventory() {
 
     for (var i = 0; i < 3; i++) {
         var rowInventory = document.createElement("tr");
-        rowInventory.className = "rowInventory";
+        rowInventory.className = "row Inventory";
         for (var j = 0; j < 4; j++) {
             var cellInventory = document.createElement("td");
-            cellInventory.className = "cellInventory";
+            cellInventory.className = "cell Inventory";
             rowInventory.appendChild(cellInventory);
         }
         table.appendChild(rowInventory);

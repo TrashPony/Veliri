@@ -15,7 +15,7 @@ function ParseEffect(effect, equip) {
     var time = "";
     var region = "";
 
-    if (equip.region > 0) {
+    if (equip !== undefined && equip.region > 0) {
         if (equip.region === 1) {
             region = "<br> в радиусе <span class='Value'>" + equip.region + " клетки</span>"
         } else {
@@ -23,17 +23,29 @@ function ParseEffect(effect, equip) {
         }
     }
 
-    if (effect.forever) {
-        if (effect.steps_time === 1) {
-            time =  ""
+    if (equip !== undefined) {
+        if (effect.forever) {
+            if (effect.steps_time === 1) {
+                time = ""
+            } else {
+                time = "<br> в течение <span class='Value'>" + effect.steps_time + " ходов</span>";
+            }
         } else {
-            time = "<br> в течение <span class='Value'>" + effect.steps_time + " ходов</span>";
+            if (effect.steps_time > 4) {
+                time = "<br> на <span class='Value'>" + effect.steps_time + " ходов</span>";
+            } else {
+                time = "<br> на <span class='Value'>" + effect.steps_time + " хода</span>";
+            }
         }
     } else {
-        if (effect.steps_time > 4) {
-            time = "<br> на <span class='Value'>" + effect.steps_time + " ходов</span>";
-        } else {
-            time = "<br> на <span class='Value'>" + effect.steps_time + " хода</span>";
+        if (effect.steps_time === 1) {
+            time = "<br> остался <span class='Value'>" + effect.steps_time + " ход</span>";
+        }
+        if (effect.steps_time > 1 && 5 > effect.steps_time) {
+            time = "<br> осталось <span class='Value'>" + effect.steps_time + " хода</span>";
+        }
+        if (5 <= effect.steps_time) {
+            time = "<br> осталось <span class='Value'>" + effect.steps_time + " ходов</span>";
         }
     }
 

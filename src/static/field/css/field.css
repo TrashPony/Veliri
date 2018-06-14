@@ -1,6 +1,10 @@
 body {
     user-select: none;
     overflow: hidden;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .info {
@@ -65,15 +69,11 @@ input {
     margin-bottom: 5px;
 }
 
-#TableInventory {
-
+.panel.Effect {
+    margin: auto;
 }
 
-.rowInventory {
-
-}
-
-.cellInventory {
+.cell {
     pointer-events:visible;
     width: 17px;
     height: 17px;
@@ -84,10 +84,14 @@ input {
     background-repeat: no-repeat;
 }
 
-.cellInventory:hover {
+.cell:hover {
     box-shadow: 0 0 5px 3px rgb(255, 149, 32);
     color: #00fffd;
     cursor: pointer;
+}
+
+.cell.Inventory:active{
+    box-shadow: 0 0 5px 3px rgb(165, 213, 239);
 }
 
 #TipEquip {
@@ -105,6 +109,29 @@ input {
 }
 
 #TipEquip td{
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 6pt;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: #a5d5ef;
+}
+
+#TipEffect {
+    pointer-events:none;
+    position: absolute;
+    display: inline-block;
+    z-index: 901;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    width: 90px;
+    padding: 5px;
+}
+
+#TipEffect td{
     text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 6pt;

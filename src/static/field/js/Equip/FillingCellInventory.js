@@ -1,5 +1,5 @@
 function FillingCellInventory() {
-    var cells = document.getElementsByClassName('cellInventory');
+    var cells = document.getElementsByClassName('cell Inventory');
 
     // todo будут проблемы если эквипом больше чем ячеек
     for (var i = 0; i < game.user.equip.length; i++) {

@@ -6,31 +6,41 @@ function CreateUnitSubMenu(unit) {
         unitSubMenu.remove();
     }
 
-    unitSubMenu = document.createElement("table");
+    unitSubMenu = document.createElement("div");
     unitSubMenu.id = "UnitSubMenu";
     unitSubMenu.style.left = stylePositionParams.left + 'px';
     unitSubMenu.style.top = stylePositionParams.top + 'px';
     unitSubMenu.style.display = "block";
 
+    if (!unit.info.action && game.user.name === unit.info.owner) {
+        if (game.Phase === "move") {
 
-    if (game.Phase === "move") {
+            unitSubMenu.style.width = "100px";
+            unitSubMenu.style.height = "45px";
 
-        unitSubMenu.style.width = "100px";
-        unitSubMenu.style.height = "45px";
+            MoveSubMenu(unitSubMenu, unit);
+        }
 
-        MoveSubMenu(unitSubMenu, unit);
+        if (game.Phase === "targeting") {
+
+            unitSubMenu.style.width = "100px";
+            unitSubMenu.style.height = "45px";
+
+            TargetingSubMenu(unitSubMenu, unit);
+        }
+
     }
 
-    if (game.Phase === "targeting") {
-
-        unitSubMenu.style.width = "100px";
-        unitSubMenu.style.height = "45px";
-
-        TargetingSubMenu(unitSubMenu, unit);
-    }
-
-    // TODO панель с активными эфектами юнита
     document.body.appendChild(unitSubMenu);
+
+    if (unit.info.effect !== null && unit.info.effect.length > 0) {
+        if (!unit.info.action && game.user.name === unit.info.owner) {
+            unitSubMenu.style.height = "65px";
+        } else {
+            unitSubMenu.style.height = "20px";
+        }
+        EffectsPanel(unitSubMenu, unit);
+    }
 }
 
 function MoveSubMenu(unitSubMenu, unit) {
@@ -105,4 +115,60 @@ function TargetingSubMenu(unitSubMenu, unit) {
     table.appendChild(trDefend);
 
     unitSubMenu.appendChild(table);
+}
+
+function EffectsPanel(unitSubMenu, unit) {
+    var table = document.createElement("table");
+    table.className = "panel Effect";
+
+    var tr = document.createElement("tr");
+    var th = document.createElement("th");
+    th.style.alignContent = "center";
+    th.colSpan = 4;
+    th.innerHTML = "Эфеекты:";
+    th.className = "h";
+
+    tr.appendChild(th);
+    table.appendChild(tr);
+    unitSubMenu.appendChild(table);
+
+    var panel = document.createElement("table");
+    panel.className = "panel Effect";
+
+    var rowInventory;
+    var count = 0;
+
+    for (var j = 0; j < unit.info.effect.length; j++) {
+        if (unit.info.effect[j].type !== "unit_always_animate") {
+            if (count % 4 === 0) {
+                rowInventory = document.createElement("tr");
+                rowInventory.className = "row Effect";
+            }
+
+            var cellInventory = document.createElement("td");
+            cellInventory.className = "cell Effect";
+            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.info.effect[j].name + ".png)";
+            cellInventory.effect = unit.info.effect[j];
+
+            cellInventory.onmouseover = function () {
+                TipEffectOn(this.effect);
+            };
+
+            cellInventory.onmouseout = function () {
+                TipEffectOff();
+            };
+
+            rowInventory.appendChild(cellInventory);
+
+            if (count % 4 === 0) {
+                panel.appendChild(rowInventory);
+                var height = unitSubMenu.offsetHeight + 22;
+                unitSubMenu.style.height = height + "px";
+            }
+
+            count++;
+        }
+    }
+
+    unitSubMenu.appendChild(panel);
 }
