@@ -10,7 +10,7 @@ function TipEffectOn(effect) {
     headTR.appendChild(headTH);
 
     var iconTD = document.createElement("td");
-    iconTD.style.backgroundImage = "url(/assets/effects/" + effect.name + ".png)";
+    iconTD.style.backgroundImage = "url(/assets/effects/" + effect.name + "_" + effect.level + ".png)";
     iconTD.style.width = "20px";
     iconTD.style.height = "20px";
     iconTD.style.borderRadius = "5px";

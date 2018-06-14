@@ -7,9 +7,40 @@ import (
 	"../equip"
 )
 
+func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
+	newLevel := oldEffect.Level + up
+
+	rows, err := db.Query("SELECT * FROM effects_type WHERE level=$1 AND name=$2 AND type=$3 AND parameter=$4;",
+		newLevel, oldEffect.Name, oldEffect.Type, oldEffect.Parameter)
+
+	if err != nil {
+		println("get new lvl effect")
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var newEffect effect.Effect
+
+		err := rows.Scan(&newEffect.TypeID, &newEffect.Name, &newEffect.Level, &newEffect.Type,
+			&newEffect.StepsTime, &newEffect.Parameter, &newEffect.Quantity, &newEffect.Percentages, &newEffect.Forever)
+		if err != nil {
+			println("get new lvl effect")
+			log.Fatal(err)
+		}
+
+		newEffect.StepsTime = oldEffect.StepsTime
+		newEffect.ID = oldEffect.ID
+
+		return &newEffect
+	}
+
+	return nil
+}
+
 func GetUnitEffects(unit *unit.Unit) {
 
-	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages "+
+	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_unit_effects age, effects_type et "+
 		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.Id)
 	if err != nil {
@@ -22,8 +53,9 @@ func GetUnitEffects(unit *unit.Unit) {
 		var unitEffect effect.Effect
 
 		err := rows.Scan(&unitEffect.ID, &unitEffect.TypeID, &unitEffect.Name, &unitEffect.Level, &unitEffect.Type,
-			&unitEffect.StepsTime, &unitEffect.Parameter, &unitEffect.Quantity, &unitEffect.Percentages)
+			&unitEffect.StepsTime, &unitEffect.Parameter, &unitEffect.Quantity, &unitEffect.Percentages, &unitEffect.Forever)
 		if err != nil {
+			println("get unit effects")
 			log.Fatal(err)
 		}
 
@@ -52,6 +84,7 @@ func GetEffectsEquip(equip *equip.Equip) {
 		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Level,&equipEffect.Type, &equipEffect.StepsTime,
 			&equipEffect.Parameter, &equipEffect.Quantity, &equipEffect.Percentages, &equipEffect.Forever)
 		if err != nil {
+			println("get user equip effects")
 			log.Fatal(err)
 		}
 

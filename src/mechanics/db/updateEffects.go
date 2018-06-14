@@ -2,26 +2,29 @@ package db
 
 import (
 	"../unit"
+	"log"
 )
 
 func UpdateUnitEffects(unit *unit.Unit) error {
 	for _, unitEffect := range unit.Effects {
 		if unitEffect.StepsTime == 0 {
 
-			_, err := db.Exec("DELETE FROM action_game_effects WHERE id=$1", unitEffect.ID)
-
+			_, err := db.Exec("DELETE FROM action_game_unit_effects WHERE id=$1", unitEffect.ID)
+			// todo
 			if err != nil {
 				println("Error delete unit effect")
+				log.Fatal(err)
 				return err
 			}
 
 		} else {
 			if unitEffect.ID != 0 {
 
-				_, err := db.Exec("UPDATE action_game_effects SET left_steps=$1", unitEffect.StepsTime)
+				_, err := db.Exec("UPDATE action_game_unit_effects SET left_steps=$1, id_effect=$3 WHERE id=$2", unitEffect.StepsTime, unitEffect.ID, unitEffect.TypeID)
 
 				if err != nil {
 					println("Error update unit effect")
+					log.Fatal(err)
 					return err
 				}
 
@@ -32,6 +35,7 @@ func UpdateUnitEffects(unit *unit.Unit) error {
 
 				if err != nil {
 					println("Error add new unit effect")
+					log.Fatal(err)
 					return err
 				}
 

@@ -147,7 +147,7 @@ function EffectsPanel(unitSubMenu, unit) {
 
             var cellInventory = document.createElement("td");
             cellInventory.className = "cell Effect";
-            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.info.effect[j].name + ".png)";
+            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.info.effect[j].name + "_" + unit.info.effect[j].level + ".png)";
             cellInventory.effect = unit.info.effect[j];
 
             cellInventory.onmouseover = function () {
