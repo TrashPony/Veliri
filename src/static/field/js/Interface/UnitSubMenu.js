@@ -29,7 +29,7 @@ function CreateUnitSubMenu(unit) {
         TargetingSubMenu(unitSubMenu, unit);
     }
 
-
+    // TODO панель с активными эфектами юнита
     document.body.appendChild(unitSubMenu);
 }
 

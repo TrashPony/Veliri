@@ -79,6 +79,7 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 
 	gameCoordinate, find := game.GetMap().GetCoordinate(x,y)
 	if find && gameCoordinate.Type == "obstacle"{
+		passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) // добавляем препятвие и выходим из цикла
 		return
 	} else {
 		passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) //ставим первую точку
@@ -98,6 +99,7 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 
 		gameCoordinate, find := game.GetMap().GetCoordinate(x,y)
 		if find && gameCoordinate.Type == "obstacle"{
+			passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) // добавляем препятвие и выходим из цикла
 			return
 		} else {
 			passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) //ставим первую точку
