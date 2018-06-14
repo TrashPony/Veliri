@@ -4,7 +4,6 @@ import (
 	"../player"
 	"../game"
 	"../equip"
-	"../effect"
 	"log"
 )
 
@@ -37,32 +36,4 @@ func GetEquip(player player.Player, game *game.Game) []*equip.Equip {
 	}
 
 	return equips
-}
-
-func GetEffectsEquip(equip *equip.Equip) {
-
-	equip.Effects = make([]*effect.Effect, 0)
-
-	rows, err := db.Query(" SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, " +
-		" et.percentages, et.forever "+
-		" FROM action_game_equipping age, equip_effects ee, effects_type et "+
-		" WHERE age.id = $1 AND age.id_type = ee.id_equip AND ee.id_effect = et.id;", equip.Id)
-
-	if err != nil {
-		println("get user equip effects")
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var equipEffect effect.Effect
-
-		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Type, &equipEffect.StepsTime,
-			&equipEffect.Parameter, &equipEffect.Quantity, &equipEffect.Percentages, &equipEffect.Forever)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		equip.Effects = append(equip.Effects, &equipEffect)
-	}
 }

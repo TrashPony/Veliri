@@ -4,6 +4,7 @@ type Effect struct {
 	ID          int    `json:"id"`
 	TypeID      int    `json:"type_id"`
 	Name        string `json:"name"`
+	Level       int    `json:"level"`
 	Type        string `json:"type"`
 	StepsTime   int    `json:"steps_time"`
 	Parameter   string `json:"parameter"`

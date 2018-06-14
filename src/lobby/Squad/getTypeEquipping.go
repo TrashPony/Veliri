@@ -57,7 +57,7 @@ func GetEffectsEquip(equip *Equipping) {
 
 	equip.Effects = make([]effect.Effect, 0)
 
-	rows, err := db.Query(" SELECT et.id, et.name, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
+	rows, err := db.Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
 		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equip.Id)
 	if err != nil {
 		log.Fatal(err)
@@ -67,7 +67,7 @@ func GetEffectsEquip(equip *Equipping) {
 	for rows.Next() {
 		var equipEffect effect.Effect
 
-		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Type, &equipEffect.StepsTime, &equipEffect.Parameter,
+		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Level, &equipEffect.Type, &equipEffect.StepsTime, &equipEffect.Parameter,
 			&equipEffect.Quantity, &equipEffect.Percentages, &equipEffect.Forever)
 		if err != nil {
 			log.Fatal(err)
