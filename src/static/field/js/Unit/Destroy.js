@@ -6,7 +6,6 @@ function UnitDestroy() {
 
                     var unit = game.units[x][y];
                     if (unit.destroy && unit.sprite.alpha < 0.1) {
-                        console.log("Destroy unit");
 
                         unit.sprite.destroy();
                         unit.sprite.unitBody.destroy();

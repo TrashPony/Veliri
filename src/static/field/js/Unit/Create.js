@@ -37,7 +37,7 @@ function CreateUnit(unitStat, inVisible) {
     var healBar = game.make.sprite(0, 45, 'healBar');
     unit.addChild(healBar);
     healBar.anchor.setTo(0.5);
-    healBar.visible = false;
+    healBar.alpha = 0;
 
     var heal = game.make.sprite(-50, 0, 'heal');
     healBar.addChild(heal);
@@ -50,7 +50,7 @@ function CreateUnit(unitStat, inVisible) {
     unitStat.sprite.healBar = healBar;
     unitStat.sprite.heal = heal;
 
-    CalculateHealBar(unitStat);
+    //CalculateHealBar(unitStat);
 
     if (unitStat.effect !== null && unitStat.effect.length > 0) {
         CreateAnimateEffects(unitStat)

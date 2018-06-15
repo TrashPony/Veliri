@@ -1,6 +1,8 @@
 function UnitMouseOver() {
     unitTip(this);
-    this.sprite.healBar.visible = true;
+
+    CalculateHealBar(this);
+    game.add.tween(this.sprite.healBar).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true);
 
     if (game.Phase === "targeting") {
         field.send(JSON.stringify({
@@ -20,7 +22,7 @@ function UnitMouseOver() {
 function UnitMouseOut() {
     TipOff();
     DeleteMarkTarget(this.target);
-    this.sprite.healBar.visible = false;
+    game.add.tween(this.sprite.healBar).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
 
 
     if (game.SelectLayer.children.length === 0 && game.Phase === "targeting") {
