@@ -4,15 +4,13 @@ function UnitMouseOver() {
     CalculateHealBar(this);
     game.add.tween(this.sprite.healBar).to({alpha: 1}, 100, Phaser.Easing.Linear.None, true);
 
-    if (game.Phase === "targeting") {
-        field.send(JSON.stringify({
-            event: "GetTargetZone",
-            x: Number(this.x),
-            y: Number(this.y),
-            to_x: Number(this.x),
-            to_y: Number(this.y)
-        }));
-    }
+    field.send(JSON.stringify({
+        event: "GetTargetZone",
+        x: Number(this.x),
+        y: Number(this.y),
+        to_x: Number(this.x),
+        to_y: Number(this.y)
+    }));
 
     if (this.target) {
         MarkTarget(this.target)
@@ -25,7 +23,7 @@ function UnitMouseOut() {
     game.add.tween(this.sprite.healBar).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
 
 
-    if (game.SelectLayer.children.length === 0 && game.Phase === "targeting") {
+    if (game.SelectLayer.children.length === 0) {
         RemoveTargetLine();
     }
 }

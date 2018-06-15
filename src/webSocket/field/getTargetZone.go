@@ -11,6 +11,10 @@ func GetTargetZone(msg Message, ws *websocket.Conn) {
 	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
 	activeGame, findGame := Games[client.GetGameID()]
 
+	if !findUnit {
+		gameUnit, findUnit = client.GetHostileUnit(msg.X, msg.Y)
+	}
+
 	if findClient && findUnit && findGame {
 
 		tmpUnit := *gameUnit

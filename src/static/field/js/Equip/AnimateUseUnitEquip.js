@@ -28,6 +28,7 @@ function repairKitAnimate(unit) {
 }
 
 function energyShieldAnimate(unit) {
+    // TODO проверять естли уже этот эфект на анимации или нет если есть то нечего не делать
     var shield = game.make.sprite(0, 0, 'EnergyShield', 0);
     shield.animations.add('EnergyShield_activated');
     shield.animations.play('EnergyShield_activated', 20, true, false);
