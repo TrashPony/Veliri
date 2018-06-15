@@ -4,16 +4,17 @@ import "strconv"
 
 var coordinates = make([]*Coordinate, 0)
 
-func GetCoordinatesRadius(xCenter int, yCenter int, WatchZone int) []*Coordinate {
-	circle(xCenter, yCenter, WatchZone, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
-	circle(yCenter, xCenter, WatchZone, true)
+func GetCoordinatesRadius(xCenter int, yCenter int, Radius int) []*Coordinate {
+	// TODO сделать что бы этот метод принимал игровую карту и возвращал радиус реальными игровыми координатами
+	circle(xCenter, yCenter, Radius, false) // метод отрисовывает только растовый полукруг что бы получить полную фигуруз надо у и х поменять местами и прогнать еще раз
+	circle(yCenter, xCenter, Radius, true)
 
-	zx := xCenter - WatchZone
-	zy := yCenter - WatchZone
+	zx := xCenter - Radius
+	zy := yCenter - Radius
 
-	for y := zy; y <= (WatchZone*2+WatchZone)+yCenter; y++ {
+	for y := zy; y <= (Radius * 2 + Radius) + yCenter; y++ {
 		xMax, xMin := xMaxMin(y)
-		for x := zx; x <= (WatchZone*2+(WatchZone-1))+xCenter; x++ {
+		for x := zx; x <= (Radius * 2 + (Radius - 1)) + xCenter; x++ {
 			if xMin < x && xMax > x {
 				coordinates = append(coordinates, &Coordinate{X: x, Y: y})
 			}
@@ -22,7 +23,7 @@ func GetCoordinatesRadius(xCenter int, yCenter int, WatchZone int) []*Coordinate
 
 	sendCoordinates := removeDuplicates(coordinates)
 
-	defer delCoorinates() // удаляем собранные координаты после ретурна
+	defer delCoordinates() // удаляем собранные координаты после ретурна
 	return sendCoordinates
 }
 
@@ -98,6 +99,6 @@ func putCoordinates(x int, y int, xCenter int, yCenter int, invert bool) {
 	}
 }
 
-func delCoorinates() {
+func delCoordinates() {
 	coordinates = nil
 }

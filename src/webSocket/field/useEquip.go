@@ -25,10 +25,16 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 
 	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used {
 		if playerEquip.Applicable == "map" {
-			useEquip.ToMap(msg.X, msg.Y, activeGame, playerEquip)
+			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.X, msg.Y)
+			if findCoordinate {
+				useEquip.ToMap(gameCoordinate, activeGame, playerEquip, client)
+			} else {
+				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
+			}
 		} else {
 			gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
 			if findUnit {
+				// todo свои, чужие юниты
 				useEquip.ToUnit(gameUnit, playerEquip, client)
 				ws.WriteJSON(SendUseEquip{Event: msg.Event, Unit: gameUnit, AppliedEquip: playerEquip})
 				updateEquipHostileUser(client, activeGame, gameUnit, playerEquip)

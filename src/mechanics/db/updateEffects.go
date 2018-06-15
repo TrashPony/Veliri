@@ -63,7 +63,7 @@ func UpdateCoordinateEffects(mapCoordinate *coordinate.Coordinate) error {
 		} else {
 			if coordinateEffect.ID != 0 {
 
-				_, err := db.Exec("UPDATE action_game_zone_effects SET left_steps=$1, x=$2, y=$3 id_effect=$4 WHERE id=$5",
+				_, err := db.Exec("UPDATE action_game_zone_effects SET left_steps=$1, x=$2, y=$3, id_effect=$4 WHERE id=$5",
 					coordinateEffect.StepsTime, mapCoordinate.X, mapCoordinate.Y, coordinateEffect.TypeID, coordinateEffect.ID)
 
 				if err != nil {
