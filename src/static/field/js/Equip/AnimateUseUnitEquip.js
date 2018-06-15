@@ -1,4 +1,4 @@
-function AnimateUseEquip(jsonMessage) {
+function AnimateUseUnitEquip(jsonMessage) {
     console.log(jsonMessage);
 
     var equipBox = document.getElementById(JSON.parse(jsonMessage).applied_equip.id  + ":equip"); // id:equip

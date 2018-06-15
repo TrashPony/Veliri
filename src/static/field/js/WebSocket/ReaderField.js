@@ -46,8 +46,12 @@ function ReadResponse(jsonMessage) {
         UpdateUnit(jsonMessage);
     }
 
-    if (event === "UseEquip") {
-        AnimateUseEquip(jsonMessage);
+    if (event === "UseUnitEquip") {
+        AnimateUseUnitEquip(jsonMessage);
+    }
+
+    if (event === "UseMapEquip") {
+        AnimateUseMapEquip(jsonMessage);
     }
 
     if (event === "Error") {

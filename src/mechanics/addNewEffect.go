@@ -40,7 +40,7 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 	}
 }
 // TODO эти 2 метода очень похожи возможно их стоить обьеденить через интерфейс
-func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *effect.Effect) {
+func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect effect.Effect) {
 
 	addAnimate := true
 
@@ -64,9 +64,9 @@ func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *ef
 
 	if newEffect.Type == "unit_always_animate" || newEffect.Type == "animate" {
 		if addAnimate {
-			gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
+			gameCoordinate.Effects = append(gameCoordinate.Effects, &newEffect)
 		}
 	} else {
-		gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
+		gameCoordinate.Effects = append(gameCoordinate.Effects, &newEffect)
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"../../mechanics/equip"
 	"../../mechanics/player"
 	"../../mechanics/game"
-
+	"../../mechanics/coordinate"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {
@@ -15,29 +15,24 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 	activeGame, findGame := Games[client.GetGameID()]
 	playerEquip, findEquip := client.GetEquipByID(msg.EquipID)
 
-	//TODO 1) активация эфектов от эквипа на юнит +
-	//TODO 1,5 ) активация эфектов от эквипа на территорию
-	//TODO 2) эквим делаем заюзаным +
-	//TODO 3) обновляем бд +
-	//TODO 4) оповещаем юзера об успешности операции и обновляем инфу на клиенте
-	//TODO 5) оповещаем других игроков которые видят этого юнита
-	//TODO 6) на фронтенде проигрывается анимация
-
 	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used {
 		if playerEquip.Applicable == "map" {
 			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.X, msg.Y)
 			if findCoordinate {
-				useEquip.ToMap(gameCoordinate, activeGame, playerEquip, client)
+				effectCoordinates := useEquip.ToMap(gameCoordinate, activeGame, playerEquip, client)
+				ws.WriteJSON(SendUseEquip{Event: "UseMapEquip", ZoneEffect: effectCoordinates, AppliedEquip: playerEquip, XUse: msg.X, YUse: msg.Y})
+				updateUseMapEquipHostileUser(msg.X, msg.Y, client, activeGame, effectCoordinates, playerEquip)
 			} else {
 				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
 			}
 		} else {
-			gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
-			if findUnit {
-				// todo свои, чужие юниты
+
+			gameUnit := EquipApplicable(playerEquip, client, msg.X, msg.Y)
+
+			if gameUnit != nil {
 				useEquip.ToUnit(gameUnit, playerEquip, client)
-				ws.WriteJSON(SendUseEquip{Event: msg.Event, Unit: gameUnit, AppliedEquip: playerEquip})
-				updateEquipHostileUser(client, activeGame, gameUnit, playerEquip)
+				ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: gameUnit, AppliedEquip: playerEquip})
+				updateUseUnitEquipHostileUser(client, activeGame, gameUnit, playerEquip)
 			} else {
 				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find unit"})
 			}
@@ -47,21 +42,65 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateEquipHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
+func EquipApplicable(playerEquip *equip.Equip, client *player.Player, x, y int) *unit.Unit {
+	if playerEquip.Applicable == "my_units" {
+		gameUnit, findUnit := client.GetUnit(x, y)
+		if findUnit {
+			return gameUnit
+		}
+	}
+
+	if playerEquip.Applicable == "hostile_units" {
+		gameUnit, findUnit := client.GetHostileUnit(x, y)
+		if findUnit {
+			return gameUnit
+		}
+	}
+
+	if playerEquip.Applicable == "all" {
+		gameUnit, findUnit := client.GetUnit(x, y)
+		if findUnit {
+			return gameUnit
+		} else {
+			gameUnit, findUnit := client.GetHostileUnit(x, y)
+			if findUnit {
+				return gameUnit
+			}
+		}
+	}
+
+	return nil
+}
+
+func updateUseUnitEquipHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(gameUnit.X, gameUnit.Y)
 			if watch {
-				equipPipe <- SendUseEquip{Event: "UseEquip", UserName: user.GetLogin(), GameID: activeGame.Id, Unit: gameUnit, AppliedEquip: playerEquip}
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, Unit: gameUnit, AppliedEquip: playerEquip}
+			}
+		}
+	}
+}
+
+func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *game.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {
+	for _, user := range activeGame.GetPlayers() {
+		if user.GetLogin() != client.GetLogin() {
+			_, watch := user.GetHostileUnit(xUse, yUse)
+			if watch {
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, ZoneEffect: zoneEffect, AppliedEquip: playerEquip, XUse: xUse, YUse: yUse}
 			}
 		}
 	}
 }
 
 type SendUseEquip struct {
-	Event        string       `json:"event"`
-	UserName     string       `json:"user_name"`
-	GameID       int          `json:"game_id"`
-	Unit         *unit.Unit   `json:"unit"`
-	AppliedEquip *equip.Equip `json:"applied_equip"`
+	Event        string                                       `json:"event"`
+	UserName     string                                       `json:"user_name"`
+	GameID       int                                          `json:"game_id"`
+	Unit         *unit.Unit                                   `json:"unit"`
+	AppliedEquip *equip.Equip                                 `json:"applied_equip"`
+	ZoneEffect   map[string]map[string]*coordinate.Coordinate `json:"zone_effect"`
+	XUse         int                                          `json:"x_use"`
+	YUse         int                                          `json:"y_use"`
 }
