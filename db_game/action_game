@@ -41,6 +41,7 @@ CREATE TABLE action_game_unit(
     min_attack_range int,
     area_attack      int,
     type_attack      varchar(64),
+    max_hp           int,
     hp               int,
     armor            int,
     evasion_critical int,

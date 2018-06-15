@@ -30,6 +30,7 @@ type Unit struct {
 	TypeAttack     string `json:"type_attack"`
 
 	// Выживаемость
+	MaxHP			int `json:"max_hp"`
 	HP              int `json:"hp"`
 	Armor           int `json:"armor"`
 	EvasionCritical int `json:"evasion_critical"`
