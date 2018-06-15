@@ -12,7 +12,7 @@ function CreateUnitSubMenu(unit) {
     unitSubMenu.style.top = stylePositionParams.top + 'px';
     unitSubMenu.style.display = "block";
 
-    if (!unit.info.action && game.user.name === unit.info.owner) {
+    if (!unit.action && game.user.name === unit.owner) {
         if (game.Phase === "move") {
 
             unitSubMenu.style.width = "100px";
@@ -33,8 +33,9 @@ function CreateUnitSubMenu(unit) {
 
     document.body.appendChild(unitSubMenu);
 
-    if (unit.info.effect !== null && unit.info.effect.length > 0) {
-        if (!unit.info.action && game.user.name === unit.info.owner) {
+    if (unit.effect !== null && unit.effect.length > 0) {
+
+        if (!unit.action && game.user.name === unit.owner) {
             unitSubMenu.style.height = "65px";
         } else {
             unitSubMenu.style.height = "20px";
@@ -66,8 +67,8 @@ function MoveSubMenu(unitSubMenu, unit) {
     skipButton.onclick = function () {
         field.send(JSON.stringify({
             event: "SkipMoveUnit",
-            x: Number(unit.info.x),
-            y: Number(unit.info.y)
+            x: Number(unit.x),
+            y: Number(unit.y)
         }));
     };
 
@@ -103,8 +104,8 @@ function TargetingSubMenu(unitSubMenu, unit) {
     defendButton.onclick = function () {
         field.send(JSON.stringify({
             event: "Defend",
-            x: Number(unit.info.x),
-            y: Number(unit.info.y)
+            x: Number(unit.x),
+            y: Number(unit.y)
         }));
     };
 
@@ -138,8 +139,8 @@ function EffectsPanel(unitSubMenu, unit) {
     var rowInventory;
     var count = 0;
 
-    for (var j = 0; j < unit.info.effect.length; j++) {
-        if (unit.info.effect[j].type !== "unit_always_animate") {
+    for (var j = 0; j < unit.effect.length; j++) {
+        if (unit.effect[j].type !== "unit_always_animate") {
             if (count % 4 === 0) {
                 rowInventory = document.createElement("tr");
                 rowInventory.className = "row Effect";
@@ -147,8 +148,8 @@ function EffectsPanel(unitSubMenu, unit) {
 
             var cellInventory = document.createElement("td");
             cellInventory.className = "cell Effect";
-            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.info.effect[j].name + "_" + unit.info.effect[j].level + ".png)";
-            cellInventory.effect = unit.info.effect[j];
+            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.effect[j].name + "_" + unit.effect[j].level + ".png)";
+            cellInventory.effect = unit.effect[j];
 
             cellInventory.onmouseover = function () {
                 TipEffectOn(this.effect);

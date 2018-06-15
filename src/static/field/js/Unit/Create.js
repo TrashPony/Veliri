@@ -13,7 +13,6 @@ function CreateUnit(unitStat, inVisible) {
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
-    unit.info = unitStat;
 
     var shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
     unit.addChild(shadow);
@@ -31,13 +30,27 @@ function CreateUnit(unitStat, inVisible) {
     body.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    body.events.onInputDown.add(SelectUnit, unit); // обрабатываем наведение мышки
-    body.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
-    body.events.onInputOut.add(UnitMouseOut, unit);   // обрабатываем убирание мышки
+    body.events.onInputDown.add(SelectUnit, unitStat); // обрабатываем наведение мышки
+    body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
+    body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки
+
+    var healBar = game.make.sprite(0, 45, 'healBar');
+    unit.addChild(healBar);
+    healBar.anchor.setTo(0.5);
+    healBar.visible = false;
+
+    var heal = game.make.sprite(-50, 0, 'heal');
+    healBar.addChild(heal);
+    heal.anchor.setTo(0, 0.5);
+    heal.alpha = 1;
 
     unitStat.sprite = unit;
     unitStat.sprite.unitBody = body;
     unitStat.sprite.unitShadow = shadow;
+    unitStat.sprite.healBar = healBar;
+    unitStat.sprite.heal = heal;
+
+    CalculateHealBar(unitStat);
 
     if (unitStat.effect !== null && unitStat.effect.length > 0) {
         CreateAnimateEffects(unitStat)
@@ -55,6 +68,8 @@ function CreateUnit(unitStat, inVisible) {
         unitStat.sprite.alpha = 0;
         unitStat.sprite.unitBody.alpha = 0;
         unitStat.sprite.unitShadow.alpha = 0;
+        unitStat.sprite.healBar.alpha = 0;
+        unitStat.sprite.heal = heal;
     }
 
     addToGameUnit(unitStat);

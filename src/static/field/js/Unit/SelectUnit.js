@@ -8,7 +8,7 @@ function SelectUnit() {
 
     field.send(JSON.stringify({
         event: "SelectUnit",
-        x: Number(this.info.x),
-        y: Number(this.info.y)
+        x: Number(this.x),
+        y: Number(this.y)
     }));
 }

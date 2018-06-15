@@ -1,5 +1,5 @@
 function MarkUnitSelect(unit) {
-    unit.frame = 1;
+    unit.sprite.frame = 1;
 }
 
 function RemoveUnitMarks() {

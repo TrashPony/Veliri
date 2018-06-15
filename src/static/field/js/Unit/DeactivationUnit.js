@@ -3,5 +3,5 @@ function DeactivationUnit(unit) {
 }
 
 function ActivationUnit(unit) {
-    unit.sprite.tint = 0x757575*2;
+    unit.sprite.tint = 0xFFFFFF;
 }

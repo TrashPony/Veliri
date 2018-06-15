@@ -57,4 +57,8 @@ function preload() {
     // Fonts
     game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');
 
+    //Bar
+    game.load.image('healBar', 'http://' + window.location.host + '/assets/bar/healBar.png');
+    game.load.image('heal', 'http://' + window.location.host + '/assets/bar/heal.png');
+
 }

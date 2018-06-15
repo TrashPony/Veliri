@@ -105,12 +105,18 @@ function HideUnit(unit) {
     game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitBody).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.healBar).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.heal).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+
 }
 
 function UncoverUnit(unit) {
     game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitBody).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.healBar).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+
 }
 
 function MoveUnit() {
