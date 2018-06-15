@@ -29,8 +29,13 @@ function TipEquipOn(equip) {
     table.appendChild(specificationTR);
 
     for (var i = 0; i < equip.effects.length; i++) {
-        var effectsTR = ParseEffect(equip.effects[i], equip);
-        table.appendChild(effectsTR);
+        if (equip.effects[i].type !== "unit_always_animate" && equip.effects[i].type !== "animate" &&
+            equip.effects[i].type !== "zone_always_animate" && equip.effects[i].type !== "anchor") {
+
+            var effectsTR = ParseEffect(equip.effects[i], equip);
+            table.appendChild(effectsTR);
+            
+        }
     }
 
     tip.appendChild(table);
