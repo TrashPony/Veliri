@@ -7,7 +7,7 @@ import (
 	"./coordinate"
 )
 
-const maxLvl = 2
+const maxLvl = 5
 
 func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 
@@ -39,10 +39,14 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 		gameUnit.Effects = append(gameUnit.Effects, newEffect)
 	}
 }
-// TODO эти 2 метода очень похожи возможно их стоить обьеденить через интерфейс
+
 func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect effect.Effect) {
 
 	addAnimate := true
+
+	if newEffect.Type == "anchor" {
+		return
+	}
 
 	for i, coordinateEffect := range gameCoordinate.Effects {
 		if coordinateEffect.Type != "unit_always_animate" && coordinateEffect.Type != "animate" && coordinateEffect.Type != "zone_always_animate" {

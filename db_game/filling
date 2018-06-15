@@ -84,15 +84,23 @@ INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity
 INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (17, 'animate_energy_shield', 1, 'unit_always_animate', 5, '', 0, false, false);
 INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (18, 'animate_energy_shield', 1, 'zone_always_animate', 5, '', 0, false, false);
 
+INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (19, 'energy_shield_zone_anchor', 1, 'anchor', 5, '', 0, false, false);
+INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (20, 'small_bomb_zone_anchor', 1, 'anchor', 5, '', 0, false, false);
 
 /*  ---------------------------- Anchor_effects_to_equip -------------------------------------------------- */
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (1, 1);
+
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (2, 6);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (2, 17);
+
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (3, 11);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (3, 16);
+INSERT INTO equip_effects (id_equip, id_effect) VALUES (3, 20);
+
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (4, 6);
 INSERT INTO equip_effects (id_equip, id_effect) VALUES (4, 18);
+INSERT INTO equip_effects (id_equip, id_effect) VALUES (4, 19);
+
 
 # update action_game_unit Set range_view=3;
 # update action_game_unit Set action=true;

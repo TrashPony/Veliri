@@ -1,7 +1,7 @@
 function CreateMap() {
     for (var x = 0; x < game.map.XSize; x++) {
         for (var y = 0; y < game.map.YSize; y++) {
-
+            // todo построение карты из существующих координат а не по размеру
             var floorSprite = game.floorLayer.create(x * game.tileSize, y * game.tileSize, 'floor');
             var fogSprite = game.fogOfWar.create(x * game.tileSize, y * game.tileSize, 'FogOfWar');
 
@@ -15,7 +15,6 @@ function CreateMap() {
 
             if (game.map.OneLayerMap[x][y].texture_object !== "") {
 
-                var shadow;
                 var object;
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_1") {
@@ -28,9 +27,6 @@ function CreateMap() {
 
                 if (game.map.OneLayerMap[x][y].texture_object === "wall") {
                     object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.1, 0.35, 10);
-
-
-                    //object.anchor.setTo(0, 0);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "crater") {
@@ -38,11 +34,13 @@ function CreateMap() {
                     object.inputEnabled = true;
                     object.events.onInputOut.add(TipOff);
                     object.events.onInputDown.add(RemoveSelect);
-
-                    //object.anchor.setTo(0, 0);
                 }
 
                 game.map.OneLayerMap[x][y].objectSprite = object;
+            }
+
+            if (game.map.OneLayerMap[x][y].effects != null && game.map.OneLayerMap[x][y].effects.length > 0) {
+                MarkZoneEffect(game.map.OneLayerMap[x][y])
             }
         }
     }

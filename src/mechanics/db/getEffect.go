@@ -97,7 +97,7 @@ func GetCoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 
 	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_zone_effects age, effects_type et "+
-		"WHERE age.id_game = $1 AND age.x = $2 AND age.y = $3;", mapCoordinate.GameID, mapCoordinate.X, mapCoordinate.Y)
+		"WHERE age.id_game = $1 AND age.x = $2 AND age.y = $3 AND et.id = age.id_effect;", mapCoordinate.GameID, mapCoordinate.X, mapCoordinate.Y)
 	if err != nil {
 		println("get coordinate effects")
 		log.Fatal(err)

@@ -14,6 +14,8 @@ func ToMap(useCoordinate *coordinate.Coordinate, activeGame *game.Game, useEquip
 
 	useEquip.Used = false //TODO делаем эквип использованым но сейчас нет для тестов надо исправитьв будущем
 
+	AddAnchor(useCoordinate, useEquip) // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
+
 	zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate.X, useCoordinate.Y, useEquip.Region)
 
 	effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
@@ -34,6 +36,26 @@ func ToMap(useCoordinate *coordinate.Coordinate, activeGame *game.Game, useEquip
 	db.UpdatePlayer(client)
 
 	return effectCoordinates
+}
+
+func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip)  {
+	addAnchor := true
+
+	for _, effect := range useEquip.Effects {
+		for _, coordinateEffect := range useCoordinate.Effects {
+			if coordinateEffect.Type == "anchor" && effect.Name == coordinateEffect.Name {
+				addAnchor = false
+			}
+		}
+	}
+	// todo наверно нужен рефакторинг
+	if addAnchor {
+		for _, effect := range useEquip.Effects {
+			if effect.Type == "anchor" {
+				useCoordinate.Effects = append(useCoordinate.Effects, effect)
+			}
+		}
+	}
 }
 
 func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {

@@ -30,7 +30,10 @@ func watch(gameObject Watcher, login string, game *game.Game) (allCoordinate map
 		for _, gameCoordinate := range PermCoordinates{
 			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.Y)
 
-			allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
+			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.X, gameCoordinate.Y)
+			if find { // TODO костыль // TODO проеб сылок координата gameCoordinate не так что у игры >_<
+				allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Y)] = newCoordinate
+			}
 
 			if ok {
 				if unitsCoordinate[gameCoordinate.X] != nil {
