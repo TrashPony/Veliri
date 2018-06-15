@@ -14,7 +14,7 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 	addAnimate := true
 
 	for i, unitEffect := range gameUnit.Effects {
-		if unitEffect.Type != "unit_always_animate" && unitEffect.Type != "animate" {
+		if unitEffect.Type != "unit_always_animate" && unitEffect.Type != "animate" && unitEffect.Type != "zone_always_animate" {
 			if unitEffect.Name == newEffect.Name {
 				if unitEffect.Level+newEffect.Level >= maxLvl {
 					newLvl := maxLvl - unitEffect.Level
@@ -45,7 +45,7 @@ func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect eff
 	addAnimate := true
 
 	for i, coordinateEffect := range gameCoordinate.Effects {
-		if coordinateEffect.Type != "unit_always_animate" && coordinateEffect.Type != "animate" {
+		if coordinateEffect.Type != "unit_always_animate" && coordinateEffect.Type != "animate" && coordinateEffect.Type != "zone_always_animate" {
 			if coordinateEffect.Name == newEffect.Name {
 				if coordinateEffect.Level+newEffect.Level >= maxLvl {
 					newLvl := maxLvl - coordinateEffect.Level

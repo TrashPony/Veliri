@@ -42,10 +42,11 @@ function preload() {
     game.load.image('respawn', 'http://' + window.location.host + '/assets/respawn.png');
 
     // Map Objects
-    game.load.image('wall', 'http://' + window.location.host + '/assets/obstacle.png');
-    game.load.image('floor', 'http://' + window.location.host + '/assets/openCell.jpg');
+    game.load.image('wall', 'http://' + window.location.host + '/assets/wall.png');
+    game.load.image('floor', 'http://' + window.location.host + '/assets/floor.jpg');
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/tree2.png');
+    game.load.image('crater', 'http://' + window.location.host + '/assets/crater.png');
 
     // fog
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/fogOfWar.png');

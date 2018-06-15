@@ -19,19 +19,21 @@ function CreateMap() {
                 var object;
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_1") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.33, 0.70);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.33, 0.70, 45);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_2") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.42, 0.75);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.42, 0.75, 45);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "wall") {
-                    shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, game.map.OneLayerMap[x][y].texture_object);
-                    shadow.anchor.setTo(0, 0);
-                    shadow.tint = 0x000000;
-                    shadow.alpha = 0.6;
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.1, 0.35, 10);
 
+
+                    //object.anchor.setTo(0, 0);
+                }
+
+                if (game.map.OneLayerMap[x][y].texture_object === "crater") {
                     object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, game.map.OneLayerMap[x][y].texture_object);
                     object.inputEnabled = true;
                     object.events.onInputOut.add(TipOff);
@@ -46,14 +48,14 @@ function CreateMap() {
     }
 }
 
-function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY) {
+function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY, angle) {
 
 
     var shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, texture);
     shadow.anchor.setTo(ShadowOffsetX, ShadowOffsetY);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
-    shadow.angle = 45;
+    shadow.angle = angle;
 
     shadow.inputEnabled = true;             // включаем ивенты на спрайт
     shadow.input.pixelPerfectOver = true;

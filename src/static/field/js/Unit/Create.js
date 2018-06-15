@@ -10,6 +10,7 @@ function CreateUnit(unitStat, inVisible) {
     } else {
         unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'HostileSelectUnit', 0);
     }
+
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
