@@ -5,9 +5,10 @@ import (
 	"log"
 	"../coordinate"
 	"../gameMap"
+	"../game"
 )
 
-func GetCoordinatesMap(mp *gameMap.Map) {
+func GetCoordinatesMap(mp *gameMap.Map, game *game.Game) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := db.Query("Select x, y, type, texture_flore, texture_object FROM map_constructor WHERE id_map =" + strconv.Itoa(mp.Id))
@@ -24,6 +25,9 @@ func GetCoordinatesMap(mp *gameMap.Map) {
 			log.Fatal(err)
 		}
 
+		gameCoordinate.GameID = game.Id
+		GetCoordinateEffects(&gameCoordinate)
+
 		if oneLayerMap[gameCoordinate.X] != nil {
 			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
 		} else {
@@ -38,6 +42,9 @@ func GetCoordinatesMap(mp *gameMap.Map) {
 			if !find {
 				var gameCoordinate coordinate.Coordinate
 				gameCoordinate = coordinate.Coordinate{X:x, Y:y}
+
+				gameCoordinate.GameID = game.Id
+				GetCoordinateEffects(&gameCoordinate)
 
 				if oneLayerMap[gameCoordinate.X] != nil {
 					oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate

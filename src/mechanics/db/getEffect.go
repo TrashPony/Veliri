@@ -5,6 +5,7 @@ import (
 	"../unit"
 	"../effect"
 	"../equip"
+	"../coordinate"
 )
 
 func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
@@ -89,5 +90,30 @@ func GetEffectsEquip(equip *equip.Equip) {
 		}
 
 		equip.Effects = append(equip.Effects, &equipEffect)
+	}
+}
+
+func GetCoordinateEffects(mapCoordinate *coordinate.Coordinate) {
+
+	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
+		"FROM action_game_zone_effects age, effects_type et "+
+		"WHERE age.id_game = $1 AND age.x = $2 AND age.y = $3;", mapCoordinate.GameID, mapCoordinate.X, mapCoordinate.Y)
+	if err != nil {
+		println("get coordinate effects")
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var coordinateEffect effect.Effect
+
+		err := rows.Scan(&coordinateEffect.ID, &coordinateEffect.TypeID, &coordinateEffect.Name, &coordinateEffect.Level, &coordinateEffect.Type,
+			&coordinateEffect.StepsTime, &coordinateEffect.Parameter, &coordinateEffect.Quantity, &coordinateEffect.Percentages, &coordinateEffect.Forever)
+		if err != nil {
+			println("get coordinate effects")
+			log.Fatal(err)
+		}
+
+		mapCoordinate.Effects = append(mapCoordinate.Effects, &coordinateEffect)
 	}
 }

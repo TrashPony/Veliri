@@ -9,7 +9,7 @@ import (
 func InitGame(idGAme int) (newGame *game.Game) {
 
 	newGame = db.GetGame(idGAme)
-	Map := db.GetMap(newGame.MapID)
+	Map := db.GetMap(newGame)
 	units, unitStorage := db.GetAllUnits(idGAme)
 	matherShips := db.GetMatherShips(idGAme)
 

@@ -1,14 +1,19 @@
 package coordinate
 
-import "strconv"
+import (
+	"strconv"
+	"../effect"
+)
 
 type Coordinate struct {
-	Type          string `json:"type"`
-	TextureFlore  string `json:"texture_flore"`
-	TextureObject string `json:"texture_object"`
-	X             int    `json:"x"`
-	Y             int    `json:"y"`
-	State         int    `json:"state"`
+	Type          string          `json:"type"`
+	TextureFlore  string          `json:"texture_flore"`
+	TextureObject string          `json:"texture_object"`
+	GameID		  int			  `json:"game_id"`
+	X             int             `json:"x"`
+	Y             int             `json:"y"`
+	State         int             `json:"state"`
+	Effects       []*effect.Effect `json:"effects"`
 	H, G, F       int
 	Parent        *Coordinate
 }

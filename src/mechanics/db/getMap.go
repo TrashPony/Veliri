@@ -2,12 +2,13 @@ package db
 
 import (
 	"../gameMap"
+	"../game"
 	"log"
 )
 
-func GetMap(idMap int) gameMap.Map {
+func GetMap(game *game.Game) gameMap.Map {
 
-	rows, err := db.Query("Select * FROM maps WHERE id = $1", idMap)
+	rows, err := db.Query("Select * FROM maps WHERE id = $1", game.MapID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,7 +22,7 @@ func GetMap(idMap int) gameMap.Map {
 		}
 	}
 
-	GetCoordinatesMap(&mp)
+	GetCoordinatesMap(&mp, game)
 
 	return mp
 }

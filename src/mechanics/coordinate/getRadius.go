@@ -1,5 +1,7 @@
 package coordinate
 
+import "strconv"
+
 var coordinates = make([]*Coordinate, 0)
 
 func GetCoordinatesRadius(xCenter int, yCenter int, WatchZone int) []*Coordinate {
@@ -46,14 +48,15 @@ func xMaxMin(y int) (int, int) {
 }
 
 func removeDuplicates(elements []*Coordinate) []*Coordinate {
-	encountered := map[Coordinate]bool{}
+	encountered := map[string]bool{}
 	result := make([]*Coordinate, 0)
 
-	for v := range elements {
-		if encountered[*elements[v]] == true {
+	for _, coordinate := range elements {
+		if encountered[strconv.Itoa(coordinate.X) + ":" + strconv.Itoa(coordinate.Y)] == true {
+
 		} else {
-			encountered[*elements[v]] = true
-			result = append(result, elements[v])
+			encountered[strconv.Itoa(coordinate.X) + ":" + strconv.Itoa(coordinate.Y)] = true
+			result = append(result, coordinate)
 		}
 	}
 	return result

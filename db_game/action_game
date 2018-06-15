@@ -86,8 +86,9 @@ CREATE TABLE action_game_unit_effects( /* эфекты которые в дан�
 
 CREATE TABLE action_game_zone_effects( /* эфекты которые в данный момент висят на ячейках карты */
    id serial    primary key,
+   id_game      int references action_games(id),
+   id_effect    int references effects_type(id),
    x            int,
    y            int,
-   id_effect    int references effects_type(id),
    left_steps   int
 );
