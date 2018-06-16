@@ -11,7 +11,7 @@ import (
 
 func placeUnit(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
-	actionGame, ok := Games[client.GetGameID()]
+	actionGame, ok := Games.Get(client.GetGameID())
 
 	if client.GetReady() == false {
 

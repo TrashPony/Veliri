@@ -10,7 +10,7 @@ import (
 func Ready(ws *websocket.Conn) {
 
 	client := usersFieldWs[ws]
-	activeGame := Games[client.GetGameID()]
+	activeGame, _ := Games.Get(client.GetGameID())
 
 	changePhase := mechanics.UserReady(client, activeGame)
 

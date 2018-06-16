@@ -12,7 +12,7 @@ import (
 
 func UseEquip(msg Message, ws *websocket.Conn) {
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games[client.GetGameID()]
+	activeGame, findGame := Games.Get(client.GetGameID())
 	playerEquip, findEquip := client.GetEquipByID(msg.EquipID)
 
 	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used {

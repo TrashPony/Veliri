@@ -8,7 +8,7 @@ import (
 func DefendTarget(msg Message, ws *websocket.Conn) {
 	client, findClient := usersFieldWs[ws]
 	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
-	activeGame, findGame := Games[client.GetGameID()]
+	activeGame, findGame :=  Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame && !client.GetReady() {
 		targetPhase.DefendTarget(gameUnit)

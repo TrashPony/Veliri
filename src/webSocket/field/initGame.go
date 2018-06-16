@@ -11,35 +11,39 @@ import (
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
-	loadGame, ok := Games[msg.IdGame]
+	loadGame, ok := Games.Get(msg.IdGame)
 	newClient, _ := usersFieldWs[ws]
 
 	if !ok {
 		loadGame = mechanics.InitGame(msg.IdGame)
-		Games[loadGame.Id] = loadGame // добавляем новую игру в карту активных игор
+		Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
+		println(loadGame)
 	}
 
-	for _, player := range loadGame.GetPlayers() {
-		if (newClient.GetLogin() == player.GetLogin()) && (newClient.GetID() == player.GetID()) {
-			usersFieldWs[ws] = player
-		}
-	}
+	player := loadGame.GetPlayer(newClient.GetID(), newClient.GetLogin())
 
-	var sendLoadGame = LoadGame{
-		Event:              "LoadGame",
-		UserName:           usersFieldWs[ws].GetLogin(),
-		Ready:              usersFieldWs[ws].GetReady(),
-		Equip:              usersFieldWs[ws].GetEquips(),
-		Units:              usersFieldWs[ws].GetUnits(),
-		HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
-		UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),
-		Map:                loadGame.GetMap(),
-		MatherShip:         usersFieldWs[ws].GetMatherShip(),
-		HostileMatherShips: usersFieldWs[ws].GetHostileMatherShips(),
-		Watch:              usersFieldWs[ws].GetWatchCoordinates(),
-		GameStep:           loadGame.GetStep(),
-		GamePhase:          loadGame.GetPhase()}
-	ws.WriteJSON(sendLoadGame)
+	if player != nil {
+
+		usersFieldWs[ws] = player
+
+		var sendLoadGame = LoadGame{
+			Event:              "LoadGame",
+			UserName:           usersFieldWs[ws].GetLogin(),
+			Ready:              usersFieldWs[ws].GetReady(),
+			Equip:              usersFieldWs[ws].GetEquips(),
+			Units:              usersFieldWs[ws].GetUnits(),
+			HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
+			UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),
+			Map:                loadGame.GetMap(),
+			MatherShip:         usersFieldWs[ws].GetMatherShip(),
+			HostileMatherShips: usersFieldWs[ws].GetHostileMatherShips(),
+			Watch:              usersFieldWs[ws].GetWatchCoordinates(),
+			GameStep:           loadGame.GetStep(),
+			GamePhase:          loadGame.GetPhase()}
+		ws.WriteJSON(sendLoadGame)
+	} else {
+		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "error"})
+	}
 }
 
 type LoadGame struct {

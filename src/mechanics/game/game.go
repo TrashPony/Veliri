@@ -75,6 +75,16 @@ func (game *Game) GetPlayers() (Players []*player.Player) {
 	return game.players
 }
 
+func (game *Game) GetPlayer(id int, login string) (Players *player.Player) {
+	for i, gamePlayer := range game.players {
+		if (login == gamePlayer.GetLogin()) && (id == gamePlayer.GetID()) {
+			return game.players[i]
+		}
+	}
+
+	return nil
+}
+
 func (game *Game) GetMatherShips() (matherShips map[int]map[int]*matherShip.MatherShip) {
 	return game.MatherShips
 }

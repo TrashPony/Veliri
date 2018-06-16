@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"sync"
 	"../../mechanics/player"
-	"../../mechanics/game"
 	"log"
 )
 
@@ -16,7 +15,6 @@ var equipPipe = make(chan SendUseEquip)
 var move = make(chan Move)
 
 var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
-var Games = make(map[int]*game.Game)
 
 var mutex = &sync.Mutex{}
 
@@ -43,7 +41,9 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 		}
 
 		if msg.Event == "InitGame" {
+			mutex.Lock() // это тут что бы при создание новой игры когда все пишут одновременно не создавались копии игр
 			loadGame(msg, ws)
+			mutex.Unlock()
 			continue
 		}
 

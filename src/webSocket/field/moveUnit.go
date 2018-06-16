@@ -30,7 +30,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 
 	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games[client.GetGameID()]
+	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findUnit && findClient && findGame {
 		if !gameUnit.Action && !client.GetReady() {
@@ -62,7 +62,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
 	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games[client.GetGameID()]
+	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findUnit && findClient && findGame {
 		if !gameUnit.Action {

@@ -9,13 +9,14 @@ import (
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {
 	client, ok := usersFieldWs[ws]
+	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if client.GetReady() == false {
+	if client.GetReady() == false && findGame {
 
 		if !ok {
 			delete(usersFieldWs, ws)
 		} else {
-			client.SetCreateZone(placePhase.GetPlaceCoordinate(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, Games[client.GetGameID()]))
+			client.SetCreateZone(placePhase.GetPlaceCoordinate(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, activeGame))
 
 			storageUnit, find := client.GetUnitStorage(msg.UnitID)
 
