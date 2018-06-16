@@ -7,11 +7,11 @@ import (
 	"./coordinate"
 )
 
-const maxLvl = 5
-
 func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 
 	addAnimate := true
+
+	maxLvl := db.GetMaxLvlEffect(newEffect)
 
 	for i, unitEffect := range gameUnit.Effects {
 		if unitEffect.Type != "unit_always_animate" && unitEffect.Type != "animate" && unitEffect.Type != "zone_always_animate" {
@@ -40,13 +40,15 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 	}
 }
 
-func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect effect.Effect) {
+func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *effect.Effect) {
 
 	addAnimate := true
 
 	if newEffect.Type == "anchor" {
 		return
 	}
+
+	maxLvl := db.GetMaxLvlEffect(newEffect)
 
 	for i, coordinateEffect := range gameCoordinate.Effects {
 		if coordinateEffect.Type != "unit_always_animate" && coordinateEffect.Type != "animate" && coordinateEffect.Type != "zone_always_animate" {
@@ -68,9 +70,9 @@ func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect eff
 
 	if newEffect.Type == "unit_always_animate" || newEffect.Type == "animate" {
 		if addAnimate {
-			gameCoordinate.Effects = append(gameCoordinate.Effects, &newEffect)
+			gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
 		}
 	} else {
-		gameCoordinate.Effects = append(gameCoordinate.Effects, &newEffect)
+		gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
 	}
 }

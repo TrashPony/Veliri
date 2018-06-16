@@ -8,6 +8,20 @@ import (
 	"../coordinate"
 )
 
+func GetMaxLvlEffect(gameEffect *effect.Effect) int {
+	var maxLvl int
+
+	row := db.QueryRow("SELECT COUNT(*) FROM effects_type WHERE name = $1 AND type = $2;", gameEffect.Name, gameEffect.Type)
+
+	err := row.Scan(&maxLvl)
+
+	if err != nil {
+		println("get max lvl effect")
+		log.Fatal(err)
+	}
+	return maxLvl
+}
+
 func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 	newLevel := oldEffect.Level + up
 

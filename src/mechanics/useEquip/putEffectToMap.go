@@ -24,7 +24,7 @@ func ToMap(useCoordinate *coordinate.Coordinate, activeGame *game.Game, useEquip
 		gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
 		if find {
 			for _, effect := range useEquip.Effects { // переносим все эфекты из эквипа выбраной координате
-				mechanics.AddNewCoordinateEffect(gameCoordinate, *effect)
+				mechanics.AddNewCoordinateEffect(gameCoordinate, effect)
 			}
 
 			AddCoordinate(effectCoordinates, gameCoordinate)
