@@ -1,3 +1,3 @@
 function MarkZoneEffect(coordinate) {
-    console.log(coordinate)
+    //console.log(coordinate)
 }

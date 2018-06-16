@@ -19,9 +19,11 @@ function create() {
 
     game.SelectLineLayer = game.add.group();
     game.SelectLineLayer.alpha = 0.7;
+    game.add.tween(game.SelectLineLayer).to( { alpha: 0.2 }, 1500, "Linear").loop(true).yoyo(true).start();
 
     game.SelectTargetLineLayer = game.add.group();
     game.SelectTargetLineLayer.alpha = 0.7;
+    game.add.tween(game.SelectTargetLineLayer).to( { alpha: 0.2 }, 1500, "Linear").loop(true).yoyo(true).start();
 
     game.floorObjectLayer = game.add.group();
 

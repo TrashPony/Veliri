@@ -6,7 +6,7 @@ function TipEffectOn(effect) {
     var headTR = document.createElement("tr");
     var headTH = document.createElement("th");
 
-    headTH.innerHTML = "<span class='Value'> " + effect.name + " </span>";
+    headTH.innerHTML = "<span class='Value'> " + effect.name + " " + effect.level + " </span>";
     headTR.appendChild(headTH);
 
     var iconTD = document.createElement("td");

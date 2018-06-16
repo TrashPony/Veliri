@@ -34,7 +34,6 @@ function TipEquipOn(equip) {
 
             var effectsTR = ParseEffect(equip.effects[i], equip);
             table.appendChild(effectsTR);
-            
         }
     }
 

@@ -8,5 +8,7 @@ function UpdateUnit(jsonMessage) {
 
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;
+    unit.effect = unitStat.effect;
+
     // todo
 }

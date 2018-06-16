@@ -107,7 +107,8 @@ function HideUnit(unit) {
     game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.healBar).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.heal).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-
+    game.add.tween(unit.sprite.shield).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    //TODO тут надо сделать `for in unit.sprite` но мне чето лень :D
 }
 
 function UncoverUnit(unit) {
@@ -116,6 +117,7 @@ function UncoverUnit(unit) {
     game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.healBar).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    game.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
 
 }
 
