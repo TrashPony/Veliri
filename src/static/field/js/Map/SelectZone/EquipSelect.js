@@ -7,9 +7,8 @@ function MarkEquipSelect(markCode, equip) {
 
         for (var x in game.map.OneLayerMap) {
             if (game.map.OneLayerMap.hasOwnProperty(x)) {
-
                 for (var y in game.map.OneLayerMap[x]) {
-                    if (game.map.OneLayerMap[x].hasOwnProperty(y) && game.map.OneLayerMap[x][y].fogSprite.hide) {
+                    if (game.map.OneLayerMap[x].hasOwnProperty(y) && game.map.OneLayerMap[x][y].fogSprite.alpha === 0) {
                         // если скрыт туман войны то клетка видна и значит можно примернить снарягу
                         if (coordinates.hasOwnProperty(x)) {
                             coordinates[x][y] = game.map.OneLayerMap[x][y];
@@ -21,7 +20,6 @@ function MarkEquipSelect(markCode, equip) {
                 }
             }
         }
-
         MarkEquipZone(coordinates, equip);
 
     } else {

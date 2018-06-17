@@ -15,7 +15,7 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 	activeGame, findGame := Games.Get(client.GetGameID())
 	playerEquip, findEquip := client.GetEquipByID(msg.EquipID)
 
-	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used {
+	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used && (activeGame.Phase == "move" || activeGame.Phase == "targeting") {
 		if playerEquip.Applicable == "map" {
 			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.X, msg.Y)
 			if findCoordinate {

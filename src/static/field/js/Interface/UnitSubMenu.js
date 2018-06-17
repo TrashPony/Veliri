@@ -1,46 +1,47 @@
 function CreateUnitSubMenu(unit) {
+    if (game.Phase === "move" || game.Phase === "targeting") {
 
-    var unitSubMenu = document.getElementById("UnitSubMenu");
+        var unitSubMenu = document.getElementById("UnitSubMenu");
 
-    if (unitSubMenu) {
-        unitSubMenu.remove();
-    }
-
-    unitSubMenu = document.createElement("div");
-    unitSubMenu.id = "UnitSubMenu";
-    unitSubMenu.style.left = stylePositionParams.left + 'px';
-    unitSubMenu.style.top = stylePositionParams.top + 'px';
-    unitSubMenu.style.display = "block";
-
-    if (!unit.action && game.user.name === unit.owner) {
-        if (game.Phase === "move") {
-
-            unitSubMenu.style.width = "100px";
-            unitSubMenu.style.height = "45px";
-
-            MoveSubMenu(unitSubMenu, unit);
+        if (unitSubMenu) {
+            unitSubMenu.remove();
         }
 
-        if (game.Phase === "targeting") {
-
-            unitSubMenu.style.width = "100px";
-            unitSubMenu.style.height = "45px";
-
-            TargetingSubMenu(unitSubMenu, unit);
-        }
-
-    }
-
-    document.body.appendChild(unitSubMenu);
-
-    if (unit.effect !== null && unit.effect.length > 0) {
+        unitSubMenu = document.createElement("div");
+        unitSubMenu.id = "UnitSubMenu";
+        unitSubMenu.style.left = stylePositionParams.left + 'px';
+        unitSubMenu.style.top = stylePositionParams.top + 'px';
+        unitSubMenu.style.display = "block";
 
         if (!unit.action && game.user.name === unit.owner) {
-            unitSubMenu.style.height = "65px";
-        } else {
-            unitSubMenu.style.height = "20px";
+            if (game.Phase === "move") {
+
+                unitSubMenu.style.width = "100px";
+                unitSubMenu.style.height = "45px";
+
+                MoveSubMenu(unitSubMenu, unit);
+            }
+
+            if (game.Phase === "targeting") {
+
+                unitSubMenu.style.width = "100px";
+                unitSubMenu.style.height = "45px";
+
+                TargetingSubMenu(unitSubMenu, unit);
+            }
         }
-        EffectsPanel(unitSubMenu, unit);
+
+        document.body.appendChild(unitSubMenu);
+
+        if (unit.effect !== null && unit.effect.length > 0) {
+
+            if (!unit.action && game.user.name === unit.owner) {
+                unitSubMenu.style.height = "65px";
+            } else {
+                unitSubMenu.style.height = "20px";
+            }
+            EffectsPanel(unitSubMenu, unit);
+        }
     }
 }
 
