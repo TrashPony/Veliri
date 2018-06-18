@@ -67,7 +67,7 @@ function CheckPath(unit) {
         StopUnit(unit);
 
         if (unit.path.length === 0) {
-            unit.destroy = true;
+            UnitDestroy(unit);
         }
 
         return
@@ -75,7 +75,7 @@ function CheckPath(unit) {
 
     if (pathNode.path_node.type === "inToFog") {
         if (unit.path.length === 0) {
-            unit.destroy = true;
+            UnitDestroy(unit);
         }
     }
 

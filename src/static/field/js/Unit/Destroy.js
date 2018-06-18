@@ -1,26 +1,9 @@
-function UnitDestroy() {
-    for (var x in game.units) {
-        if (game.units.hasOwnProperty(x)) {
-            for (var y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y)) {
-
-                    var unit = game.units[x][y];
-                    if (unit.destroy && unit.sprite.alpha < 0.1) {
-
-                        unit.sprite.destroy();
-                        unit.sprite.unitBody.destroy();
-                        unit.sprite.unitShadow.destroy();
-
-                        delete game.units[x][y];
-                    } else {
-                        if (unit.destroy) {
-                            game.add.tween(unit.sprite).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
-                            game.add.tween(unit.sprite.unitBody).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
-                            game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
-                        }
-                    }
-                }
-            }
-        }
-    }
+function UnitDestroy(unit) {
+    delete game.units[unit.x][unit.y];
+    unit = unit.sprite;
+    var tween = game.add.tween(unit).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true, 1000);
+    // функция выполняемая после завершение tween таймера в данном случае удаление спрайта анимации //
+    tween.onComplete.add(function (unit) {
+        unit.destroy();
+    }, unit);
 }

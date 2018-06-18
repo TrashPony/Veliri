@@ -8,7 +8,7 @@ function CloseCoordinates(coordinates) {
         var unit = GetGameUnitXY(coordinate.x, coordinate.y);
 
         if (unit) {
-            unit.destroy = true;
+            UnitDestroy(unit);
         }
     }
 }
