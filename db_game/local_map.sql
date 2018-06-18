@@ -12,7 +12,8 @@ CREATE TABLE map_constructor(
    id_map  int references maps(id),             /* ид карты к которой принадлежит координата */
    id_type int references coordinate_type(id),  /* ид типа координаты */
    x       int,
-   y       int
+   y       int,
+   level   int           /* определяет уровень координаты ""примечание 1"" */
 );
 
 CREATE TABLE coordinate_type(
@@ -23,7 +24,7 @@ CREATE TABLE coordinate_type(
    move           boolean,      /* определяет можно ли ходить через эту координату */
    view           boolean,      /* определяет можно ли видить через эту координату */
    attack         boolean,      /* определяет можно ли атаковать через эту координату */
-   level          int           /* определяет уровень координаты ""примечание 1"" */
+   passable_edges boolean      /* определяет можно ли проходить на искосок от коорднаты */
 );
 
 CREATE TABLE coordinate_type_effect(

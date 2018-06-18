@@ -91,5 +91,16 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 		}
 	}
 
+	err = AddCoordinateEffects(game.Map.Id)
+	if err != nil {
+		println("error db add coordinate effect new game")
+		log.Fatal(err)
+	}
+
 	return id, true
+}
+
+func AddCoordinateEffects(mapID int) error  {
+
+	return nil
 }

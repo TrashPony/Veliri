@@ -53,10 +53,10 @@ func FindPath(client *player.Player, gameMap *gameMap.Map, start *coordinate.Coo
 	var noSortedPath []*coordinate.Coordinate
 	for {
 		current := *MinF(openPoints) // Берем точку с мин стоимостью пути
-		if current.Equal(END_POINT) { // если текущая точка и есть конец начинаем генерить путь
-			for !current.Equal(START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
+		if current.Equal(&END_POINT) { // если текущая точка и есть конец начинаем генерить путь
+			for !current.Equal(&START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
 				current = *current.Parent // берем текущую точку и на ее место ставить ее родителя
-				if !current.Equal(START_POINT) { // если текущая точка попрежнему не стартовая то
+				if !current.Equal(&START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
 
 					gameCoordinate, find := gameMap.GetCoordinate(current.X, current.Y)
