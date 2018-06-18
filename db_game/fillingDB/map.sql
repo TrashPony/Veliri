@@ -1,6 +1,6 @@
 /*  ---------------------------- Map -------------------------------------------------- */
-INSERT INTO maps (name, x_size, y_size, type, specification) VALUES ('Test', 10, 10, 'test', 'тестовая карта на 2 человека');
-INSERT INTO maps (name, x_size, y_size, type, specification) VALUES ('Test2', 10, 10, 'test', 'тестовая карта на 4 человека');
+INSERT INTO maps (name, x_size, y_size, id_type, specification) VALUES ('Test', 10, 10, 6, 'тестовая карта на 2 человека');
+INSERT INTO maps (name, x_size, y_size, id_type, specification) VALUES ('Test2', 10, 10, 6, 'тестовая карта на 4 человека');
 
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 1, 1, 1, 3);
@@ -36,6 +36,7 @@ INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (3, '', 'desert', 'terrain_1', false, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (4, '', 'desert', 'terrain_2', false, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (5, '', 'desert', 'crater', true, true, true, true);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (6, '' , 'terrain', '', true, true, true, true);
 
 /* Coordinate Effects */
 INSERT INTO coordinate_type_effect (id_type, id_effect) VALUES (5, 21);

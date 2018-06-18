@@ -20,7 +20,7 @@ type Map struct {
 	Name          string
 	XSize         int
 	YSize         int
-	Type          string
+	TypeID        int
 	Respawns      int
 	Specification string
 }

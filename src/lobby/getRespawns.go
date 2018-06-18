@@ -7,7 +7,9 @@ import (
 
 func GetRespawns(mapID int) []*Respawn {
 
-	rows, err := db.Query("Select id, x, y, id_map FROM map_constructor WHERE type='respawn' AND id_map = (Select id from maps WHERE id=$1)", mapID)
+	rows, err := db.Query("Select id, x, y, id_map " +
+		"FROM map_constructor " +
+		"WHERE id_type=1 AND id_map = $1", mapID)
 	if err != nil {
 		log.Fatal(err)
 	}

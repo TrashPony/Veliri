@@ -17,7 +17,6 @@ func loadGame(msg Message, ws *websocket.Conn) {
 	if !ok {
 		loadGame = mechanics.InitGame(msg.IdGame)
 		Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
-		println(loadGame)
 	}
 
 	player := loadGame.GetPlayer(newClient.GetID(), newClient.GetLogin())
