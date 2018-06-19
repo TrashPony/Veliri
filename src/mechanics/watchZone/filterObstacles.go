@@ -6,7 +6,7 @@ import (
 	"../coordinate"
 )
 
-func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *game.Game) (watch map[string]*coordinate.Coordinate)  {
+func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *game.Game) (watch map[string]*coordinate.Coordinate) {
 
 	watch = make(map[string]*coordinate.Coordinate)
 
@@ -18,7 +18,7 @@ func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *game
 	return
 }
 
-func addCoordinateToMap(watch *map[string]*coordinate.Coordinate, new *[]*coordinate.Coordinate, game *game.Game)  {
+func addCoordinateToMap(watch *map[string]*coordinate.Coordinate, new *[]*coordinate.Coordinate, game *game.Game) {
 	for _, gameCoordinate := range *new {
 		if (gameCoordinate.X >= 0 && gameCoordinate.Y >= 0) && (game.Map.XSize > gameCoordinate.X && game.Map.YSize > gameCoordinate.Y) {
 			(*watch)[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
@@ -77,12 +77,12 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 	y = yStart
 	err = el / 2
 
-	gameCoordinate, find := game.GetMap().GetCoordinate(x,y)
-	if find && gameCoordinate.Type == "obstacle"{
-		passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) // добавляем препятвие и выходим из цикла
+	gameCoordinate, find := game.GetMap().GetCoordinate(x, y)
+	if find && !gameCoordinate.View {
+		passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) // добавляем препятвие и выходим из цикла
 		return
 	} else {
-		passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) //ставим первую точку
+		passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
 	}
 	//все последующие точки возможно надо сдвигать, поэтому первую ставим вне цикла
 	for i := 0; i < el; i++ { //идём по всем точкам, начиная со второй и до последней
@@ -97,12 +97,12 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 			y += pdy //цикл идёт по иксу; сдвинуть вверх или вниз, если по y
 		}
 
-		gameCoordinate, find := game.GetMap().GetCoordinate(x,y)
-		if find && gameCoordinate.Type == "obstacle"{
-			passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) // добавляем препятвие и выходим из цикла
+		gameCoordinate, find := game.GetMap().GetCoordinate(x, y)
+		if find && !gameCoordinate.View {
+			passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) // добавляем препятвие и выходим из цикла
 			return
 		} else {
-			passed = append(passed, &coordinate.Coordinate{X: x, Y:y}) //ставим первую точку
+			passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
 		}
 	}
 
@@ -110,7 +110,7 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 }
 
 // Этот код "рисует" все 9 видов отрезков. Наклонные (из начала в конец и из конца в начало каждый), вертикальный и горизонтальный - тоже из начала в конец и из конца в начало, и точку.
-func sign (x int) int { 	//возвращает 0, если аргумент (x) равен нулю; -1, если x < 0 и 1, если x > 0.
+func sign(x int) int { //возвращает 0, если аргумент (x) равен нулю; -1, если x < 0 и 1, если x > 0.
 	if x == 0 {
 		return 0
 	} else {

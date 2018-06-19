@@ -36,7 +36,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	}
 
 	//верх лево
-	if left && top {
+	if (leftCoordinate != nil && leftCoordinate.PassableEdges) && (topCoordinate != nil && topCoordinate.PassableEdges) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y-1)
 		if find {
 			Phases.AddCoordinate(res, gameCoordinate)
@@ -44,7 +44,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	}
 
 	//верх право
-	if right && top {
+	if (rightCoordinate != nil && rightCoordinate.PassableEdges) && (topCoordinate != nil && topCoordinate.PassableEdges) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y-1)
 		if find {
 			Phases.AddCoordinate(res, gameCoordinate)
@@ -52,7 +52,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	}
 
 	//низ лево
-	if left && bottom {
+	if (leftCoordinate != nil && leftCoordinate.PassableEdges) && (bottomCoordinate != nil && bottomCoordinate.PassableEdges) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y+1)
 		if find {
 			Phases.AddCoordinate(res, gameCoordinate)
@@ -60,7 +60,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	}
 
 	//низ право
-	if right && bottom {
+	if (rightCoordinate != nil && rightCoordinate.PassableEdges) && (bottomCoordinate != nil && bottomCoordinate.PassableEdges) {
 		gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y+1)
 		if find {
 			Phases.AddCoordinate(res, gameCoordinate)

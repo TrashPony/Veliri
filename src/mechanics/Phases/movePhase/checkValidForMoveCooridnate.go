@@ -16,8 +16,10 @@ func checkValidForMoveCoordinate(client *player.Player, gameMap *gameMap.Map, x 
 
 	if ok && !findUnit && !findHostileUnit && !findMSHostile{
 		if !(x == client.GetMatherShip().X && y == client.GetMatherShip().Y) {
-			if gameCoordinate.Type != "obstacle" && gameCoordinate.Type != "terrain" {
+			if gameCoordinate.Move {
 				return gameCoordinate, true
+			} else {
+				return gameCoordinate, false
 			}
 		}
 	}

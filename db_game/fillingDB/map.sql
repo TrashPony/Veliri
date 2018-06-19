@@ -24,6 +24,8 @@ INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 4, 1, 3, 3
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 8, 2, 3);
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 4, 7, 7, 3);
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 9, 6, 3);
+INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 5, 1, 3);
+
 
 /* Craters */
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 5, 2, 1, 3);
