@@ -46,7 +46,7 @@ func GetCoordinatesMap(mp *gameMap.Map, game *game.Game) {
 		for y := 0; y < mp.YSize; y++ {
 			_, find := oneLayerMap[x][y]
 			if !find {
-				// todo брать стандартный тип из карты
+
 				var gameCoordinate coordinate.Coordinate
 
 				gameCoordinate = defaultCoordinate
@@ -78,6 +78,7 @@ func GetDefaultCoordinateType(mp *gameMap.Map) coordinate.Coordinate {
 		println("Get Default coordinate type")
 		log.Fatal(err)
 	}
+
 	defer rows.Close()
 
 	gameCoordinate := coordinate.Coordinate{Level: mp.DefaultLevel}

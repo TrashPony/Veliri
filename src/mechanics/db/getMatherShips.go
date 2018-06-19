@@ -15,6 +15,7 @@ func GetMatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherS
 		println("get game matherShip")
 		log.Fatal(err)
 	}
+	defer rows.Close()
 
 	matherShips = make(map[int]map[int]*matherShip.MatherShip)
 

@@ -14,6 +14,8 @@ func GetRespawns(mapID int) []*Respawn {
 		log.Fatal(err)
 	}
 
+	defer rows.Close()
+
 	var respawns = make([]*Respawn, 0)
 
 	for rows.Next() {
