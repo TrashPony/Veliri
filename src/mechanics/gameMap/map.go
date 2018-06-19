@@ -9,7 +9,8 @@ type Map struct {
 	Name          string
 	XSize         int
 	YSize         int
-	Type          string
+	DefaultTypeID int
+	DefaultLevel  int
 	Specification string
 	OneLayerMap   map[int]map[int]*coordinate.Coordinate
 }

@@ -34,6 +34,8 @@ function CreateMap() {
                     object.inputEnabled = true;
                     object.events.onInputOut.add(TipOff);
                     object.events.onInputDown.add(RemoveSelect);
+                    object.input.pixelPerfectOver = true;
+                    object.input.pixelPerfectClick = true;
                 }
 
                 game.map.OneLayerMap[x][y].objectSprite = object;

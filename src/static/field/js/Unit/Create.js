@@ -17,7 +17,7 @@ function CreateUnit(unitStat, inVisible) {
 
     var shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
     unit.addChild(shadow);
-    //game.physics.arcade.enable(shadow);
+    game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
@@ -27,7 +27,7 @@ function CreateUnit(unitStat, inVisible) {
     game.physics.arcade.enable(body);
     body.inputEnabled = true;             // включаем ивенты на спрайт
     body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
-    body.body.collideWorldBounds = true;  // границы страницы
+    //body.body.collideWorldBounds = true;  // границы страницы
     body.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 

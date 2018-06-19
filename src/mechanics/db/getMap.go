@@ -8,7 +8,7 @@ import (
 
 func GetMap(game *game.Game) gameMap.Map {
 
-	rows, err := db.Query("Select * FROM maps WHERE id = $1", game.MapID)
+	rows, err := db.Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id = $1", game.MapID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -16,7 +16,7 @@ func GetMap(game *game.Game) gameMap.Map {
 
 	var mp gameMap.Map
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.Type, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}

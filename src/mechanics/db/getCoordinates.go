@@ -40,13 +40,18 @@ func GetCoordinatesMap(mp *gameMap.Map, game *game.Game) {
 		}
 	}
 
-	for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками
+	defaultCoordinate := GetDefaultCoordinateType(mp)
+
+	for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
 		for y := 0; y < mp.YSize; y++ {
 			_, find := oneLayerMap[x][y]
 			if !find {
 				var gameCoordinate coordinate.Coordinate
-				gameCoordinate = coordinate.Coordinate{X: x, Y: y}
 
+				gameCoordinate = defaultCoordinate
+				gameCoordinate.X = x
+				gameCoordinate.Y = y
+				
 				gameCoordinate.GameID = game.Id
 				GetCoordinateEffects(&gameCoordinate)
 
@@ -61,4 +66,29 @@ func GetCoordinatesMap(mp *gameMap.Map, game *game.Game) {
 	}
 
 	mp.OneLayerMap = oneLayerMap
+}
+
+func GetDefaultCoordinateType(mp *gameMap.Map) coordinate.Coordinate {
+	rows, err := db.Query("SELECT type, texture_flore, texture_object, move, view, attack, passable_edges "+
+		"FROM coordinate_type "+
+		"WHERE id = $1;", strconv.Itoa(mp.DefaultTypeID))
+
+	if err != nil {
+		println("Get Default coordinate type")
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	gameCoordinate := coordinate.Coordinate{Level: mp.DefaultLevel}
+
+	for rows.Next() {
+		err := rows.Scan(&gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
+			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.PassableEdges)
+		if err != nil {
+			println("Get Default coordinate type")
+			log.Fatal(err)
+		}
+	}
+
+	return gameCoordinate
 }

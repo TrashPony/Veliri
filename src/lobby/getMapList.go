@@ -6,7 +6,7 @@ import (
 
 func GetMapList() []Map {
 
-	rows, err := db.Query("Select * FROM maps")
+	rows, err := db.Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -16,7 +16,7 @@ func GetMapList() []Map {
 	var mp Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.TypeID, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -34,7 +34,7 @@ func GetMapList() []Map {
 
 func GetMap(id int) Map {
 
-	rows, err := db.Query("Select * FROM maps WHERE id=$1", id)
+	rows, err := db.Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func GetMap(id int) Map {
 	var mp Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.TypeID, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
