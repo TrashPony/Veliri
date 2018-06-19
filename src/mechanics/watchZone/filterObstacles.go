@@ -102,7 +102,10 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 			passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) // добавляем препятвие и выходим из цикла
 			return
 		} else {
-			passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
+			if x == xEnd && y == yEnd {
+				passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
+				return
+			}
 		}
 	}
 

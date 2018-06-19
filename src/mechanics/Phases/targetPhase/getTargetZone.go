@@ -120,7 +120,9 @@ func drawBresenhamLine(xStart, yStart, xEnd, yEnd int, game *game.Game) (passed 
 		if find && !gameCoordinate.Attack {
 			return
 		} else {
-			passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
+			if x == xEnd && y == yEnd {	
+				passed = append(passed, &coordinate.Coordinate{X: x, Y: y}) //ставим первую точку
+			}
 		}
 	}
 
