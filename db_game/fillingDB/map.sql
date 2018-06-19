@@ -25,7 +25,9 @@ INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 8, 2, 3
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 4, 7, 7, 3);
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 9, 6, 3);
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 3, 5, 1, 3);
-
+INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 7, 9, 0, 3);
+INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 7, 9, 1, 3);
+INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 7, 8, 0, 3);
 
 /* Craters */
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 5, 2, 1, 3);
@@ -38,7 +40,8 @@ INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (3, '', 'desert', 'terrain_1', false, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (4, '', 'desert', 'terrain_2', false, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (5, '', 'desert', 'crater', true, true, true, true);
-INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (6, '' , 'terrain', '', true, true, true, true);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (6, '', 'desert', '', true, true, true, true);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (7, '', 'desert', 'terrain_3', false, false, false, false);
 
 /* Coordinate Effects */
 INSERT INTO coordinate_type_effect (id_type, id_effect) VALUES (5, 21);

@@ -18,15 +18,19 @@ function CreateMap() {
                 var object;
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_1") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.33, 0.70, 45);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, 0, 0.2, -0.33, 0.70, 45);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "terrain_2") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.42, 0.75, 45);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, 0, 0.2, -0.42, 0.75, 45);
+                }
+
+                if (game.map.OneLayerMap[x][y].texture_object === "terrain_3") {
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, 0, 0, -0.5, 0.8, 45);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "wall") {
-                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, -0.1, 0.35, 10);
+                    object = gameObjectCreate(x, y, game.map.OneLayerMap[x][y].texture_object, 0, 0.2, -0.1, 0.35, 10);
                 }
 
                 if (game.map.OneLayerMap[x][y].texture_object === "crater") {
@@ -48,7 +52,7 @@ function CreateMap() {
     }
 }
 
-function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY, angle) {
+function gameObjectCreate(x, y, texture, spriteAnchorX, spriteAnchorY, ShadowOffsetX, ShadowOffsetY, angle) {
 
 
     var shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, texture);
@@ -65,7 +69,7 @@ function gameObjectCreate(x, y, texture, ShadowOffsetX, ShadowOffsetY, angle) {
     object.inputEnabled = true;
     object.events.onInputOut.add(TipOff);
     object.events.onInputDown.add(RemoveSelect);
-    object.anchor.setTo(0, 0.2); // todo подгружать спрайт от невидимой границы
+    object.anchor.setTo(spriteAnchorX, spriteAnchorY); // todo подгружать спрайт от невидимой границы
 
     shadow.inputEnabled = true;
     object.input.pixelPerfectOver = true;

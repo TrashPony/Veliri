@@ -46,6 +46,7 @@ function preload() {
     game.load.image('floor', 'http://' + window.location.host + '/assets/floor.jpg');
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/tree2.png');
+    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/tree3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/crater.png');
 
     // fog

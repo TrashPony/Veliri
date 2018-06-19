@@ -27,6 +27,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
                     selectSprite.events.onInputDown.add(SelectMoveCoordinate, selectSprite);
                     selectSprite.events.onInputOver.add(animateMoveCoordinate, selectSprite);
                     selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
+                    selectSprite.input.priorityID = 1; // утсанавливает повышеный приоритет среди спрайтов на которых мышь
 
                     game.map.selectSprites.push(selectSprite);
                 }
