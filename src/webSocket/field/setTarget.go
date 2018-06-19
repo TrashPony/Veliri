@@ -15,7 +15,7 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 
 	if findClient && findUnit && findGame && !client.GetReady() {
 
-		targetCoordinate := targetPhase.GetTargetCoordinate(gameUnit, client, activeGame)
+		targetCoordinate := targetPhase.GetTargetCoordinate(gameUnit, activeGame)
 		_, find := targetCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
 
 		if find {
