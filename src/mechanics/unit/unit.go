@@ -28,6 +28,7 @@ type Unit struct {
 	MinAttackRange int    `json:"min_attack_range"`
 	AreaAttack     int    `json:"area_attack"`
 	TypeAttack     string `json:"type_attack"`
+	Artillery	   bool   `json:"artillery"`
 
 	// Выживаемость
 	MaxHP			int `json:"max_hp"`

@@ -7,7 +7,7 @@ import (
 
 func StartNewGame(game *LobbyGames) (int, bool) {
 	id := 0
-// TODO переделать на транзакции
+	// TODO переделать на транзакции
 	err := db.QueryRow("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5) RETURNING id", // добавляем новую игру в БД
 		game.Name, game.Map.Id, 0, "Init", "").Scan(&id) // название игры, id карты, 0 - ход, Фаза Инициализации (растановка войск), победитель
 
@@ -91,7 +91,7 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 		}
 	}
 
-	err = AddCoordinateEffects(game.Map.Id)
+	err = AddCoordinateEffects(game.Map.Id, id)
 	if err != nil {
 		println("error db add coordinate effect new game")
 		log.Fatal(err)
@@ -100,7 +100,35 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 	return id, true
 }
 
-func AddCoordinateEffects(mapID int) error  {
+func AddCoordinateEffects(mapID, gameID int) error {
+	rows, err := db.Query("SELECT mc.x, mc.y, cte.id_effect "+
+		"FROM map_constructor mc, coordinate_type ct, coordinate_type_effect cte "+
+		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND ct.id = cte.id_type; ", mapID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		var x, y, effectID int
+
+		err := rows.Scan(&x, &y, &effectID)
+		if err != nil {
+			println("start game get coordinate effects")
+			log.Fatal(err)
+			return err
+		}
+
+		_, err = db.Exec("INSERT INTO action_game_zone_effects (id_game, id_effect, x, y, left_steps) VALUES ($1, $2, $3, $4, $5)",
+			gameID, effectID, x, y, 999)
+
+		if err != nil {
+			println("start game add coordinate effects")
+			log.Fatal(err)
+			return err
+
+		}
+	}
 
 	return nil
 }
