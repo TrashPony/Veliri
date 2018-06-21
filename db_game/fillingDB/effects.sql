@@ -22,6 +22,6 @@ INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity
 INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (18, 'animate_energy_shield', 1, 'zone_always_animate', 5, '', 0, false, false);
 
 INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (19, 'energy_shield_zone_anchor', 1, 'anchor', 5, '', 0, false, false);
-INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (20, 'small_bomb_zone_anchor', 1, 'anchor', 1, '', 0, false, false);
+INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (20, 'small_bomb_zone_anchor', 1, 'anchor', 5, '', 0, false, false);
 
 INSERT INTO effects_type (id, name, level, type, steps_time, parameter, quantity, percentages, forever)  VALUES (21, 'defend', 1, 'enhances', 1, 'armor', 10, false, false);

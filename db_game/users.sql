@@ -1,6 +1,6 @@
-CREATE TABLE users(
-    id serial primary key,
-    name varchar(64),
-    password varchar(255),
-    mail varchar(64)
+CREATE TABLE users (
+  id       SERIAL PRIMARY KEY,
+  name     VARCHAR(64),
+  password VARCHAR(255),
+  mail     VARCHAR(64)
 );

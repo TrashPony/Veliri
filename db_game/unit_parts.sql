@@ -1,58 +1,58 @@
 CREATE TABLE chassis_type (
-	id serial primary key,
-	name varchar(64),
-	type varchar(64),
-	carrying int,
-	Maneuverability int,
-	max_speed int
+  id              SERIAL PRIMARY KEY,
+  name            VARCHAR(64),
+  type            VARCHAR(64),
+  carrying        INT,
+  Maneuverability INT,
+  max_speed       INT
 );
 
 CREATE TABLE weapon_type (
-	id serial primary key,
-	name varchar(64),
-	type varchar(64),
-	weight int,
-	damage int,
-	min_attack_range int,
-	range_attack int,
-	accuracy int,
-	area_covers int
+  id               SERIAL PRIMARY KEY,
+  name             VARCHAR(64),
+  type             VARCHAR(64),
+  weight           INT,
+  damage           INT,
+  min_attack_range INT,
+  range_attack     INT,
+  accuracy         INT,
+  area_covers      INT
 );
 
 CREATE TABLE tower_type (
-	id serial primary key,
-    name varchar(64),
-	type varchar(64),
-	weight	int,
-	hp int,
-	power_radar int,
-	armor int,
-	vulnerability_to_kinetics int,
-	vulnerability_to_thermo int,
-	vulnerability_to_em int,
-	vulnerability_to_explosion int
+  id                         SERIAL PRIMARY KEY,
+  name                       VARCHAR(64),
+  type                       VARCHAR(64),
+  weight                     INT,
+  hp                         INT,
+  power_radar                INT,
+  armor                      INT,
+  vulnerability_to_kinetics  INT,
+  vulnerability_to_thermo    INT,
+  vulnerability_to_em        INT,
+  vulnerability_to_explosion INT
 );
 
 CREATE TABLE body_type (
-	id serial primary key,
-	name varchar(64),
-	type varchar(64),
-	weight	int,
-	hp int,
-	max_tower_weight int,
-	armor int,
-	vulnerability_to_kinetics int,
-	vulnerability_to_thermo int,
-	vulnerability_to_em int,
-	vulnerability_to_explosion int
+  id                         SERIAL PRIMARY KEY,
+  name                       VARCHAR(64),
+  type                       VARCHAR(64),
+  weight                     INT,
+  hp                         INT,
+  max_tower_weight           INT,
+  armor                      INT,
+  vulnerability_to_kinetics  INT,
+  vulnerability_to_thermo    INT,
+  vulnerability_to_em        INT,
+  vulnerability_to_explosion INT
 );
 
 CREATE TABLE radar_type (
-	id serial primary key,
-    name varchar(64),
-	type varchar(64),
-	weight	int,
-	power int,
-	through bool,
-	analysis int
+  id       SERIAL PRIMARY KEY,
+  name     VARCHAR(64),
+  type     VARCHAR(64),
+  weight   INT,
+  power    INT,
+  through  BOOL,
+  analysis INT
 );

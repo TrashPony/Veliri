@@ -1,40 +1,40 @@
 CREATE TABLE mother_ship_type (
-    id serial primary key,
-    type varchar(64),
-    hp int,
-    armor int,
-    unit_slots int,
-    unit_slot_size int,
-    equipment_slots int,
-    range_view int
+  id              SERIAL PRIMARY KEY,
+  type            VARCHAR(64),
+  hp              INT,
+  armor           INT,
+  unit_slots      INT,
+  unit_slot_size  INT,
+  equipment_slots INT,
+  range_view      INT
 );
 
 CREATE TABLE squads (
-	id serial primary key,
-	name varchar(64),
-	id_user int references users(id)
+  id      SERIAL PRIMARY KEY,
+  name    VARCHAR(64),
+  id_user INT REFERENCES users (id)
 );
 
 CREATE TABLE squad_units (
-	id serial primary key,
-	id_squad int references squads(id),
-	slot_in_mother_ship int,
-	id_chassis int references chassis_type(id),
-	id_weapon int references weapon_type(id),
-	id_tower int references tower_type(id),
-	id_body int references body_type(id),
-	id_radar int references radar_type(id)
+  id                  SERIAL PRIMARY KEY,
+  id_squad            INT REFERENCES squads (id),
+  slot_in_mother_ship INT,
+  id_chassis          INT REFERENCES chassis_type (id),
+  id_weapon           INT REFERENCES weapon_type (id),
+  id_tower            INT REFERENCES tower_type (id),
+  id_body             INT REFERENCES body_type (id),
+  id_radar            INT REFERENCES radar_type (id)
 );
 
 CREATE TABLE squad_mother_ship (
-    id serial primary key,
-	id_squad int references squads(id),
-	id_mother_ship int references mother_ship_type(id)
+  id             SERIAL PRIMARY KEY,
+  id_squad       INT REFERENCES squads (id),
+  id_mother_ship INT REFERENCES mother_ship_type (id)
 );
 
 CREATE TABLE squad_equipping (
-	id serial primary key,
-	id_squad int references squads(id),
-	slot_in_mother_ship int,
-    id_equipping int references equipping_type(id)
+  id                  SERIAL PRIMARY KEY,
+  id_squad            INT REFERENCES squads (id),
+  slot_in_mother_ship INT,
+  id_equipping        INT REFERENCES equipping_type (id)
 );
