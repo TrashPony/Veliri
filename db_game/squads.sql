@@ -1,16 +1,18 @@
 CREATE TABLE squads (
   id      SERIAL PRIMARY KEY,
   name    VARCHAR(64),
-  id_user INT REFERENCES users (id),
-  in_game BOOLEAN
+  id_user INT REFERENCES users (id),  /* кому принадлежит */
+  in_game BOOLEAN                     /* отряд в бою */
 );
 
 CREATE TABLE squad_units (
   id                  SERIAL PRIMARY KEY,
-  id_squad            INT REFERENCES squads (id),
-  id_weapon           INT REFERENCES weapon_type (id),
-  id_ammunition       INT REFERENCES ammunition_type (id),
-  id_body             INT REFERENCES body_type (id),
+  id_squad            INT REFERENCES squads (id),          /* ид отряда к которому принадлежит юнит */
+
+  /* из чего состоит юнит */
+  id_weapon           INT REFERENCES weapon_type (id),     /* ид оружия которое на юните */
+  id_ammunition       INT REFERENCES ammunition_type (id), /* ид боеприпаса которое на юните */
+  id_body             INT REFERENCES body_type (id),       /* ид тела юнита */
 
   slot_in_mother_ship INT, /* номер слота который занимает юнит в материнской машине */
 
@@ -32,9 +34,11 @@ CREATE TABLE squad_units (
 CREATE TABLE squad_mother_ship (
   id            SERIAL PRIMARY KEY,
   id_squad      INT REFERENCES squads (id),
-  id_weapon     INT REFERENCES weapon_type (id),
-  id_ammunition INT REFERENCES ammunition_type (id),
-  id_body       INT REFERENCES body_type (id),
+
+  /* из чего состоит мазер шип */
+  id_weapon     INT REFERENCES weapon_type (id),     /* ид оружия которое на юните */
+  id_ammunition INT REFERENCES ammunition_type (id), /* ид боеприпаса которое на юните */
+  id_body       INT REFERENCES body_type (id),       /* ид тела юнита */
 
   /* Позиция */
   x             INT,
@@ -50,23 +54,24 @@ CREATE TABLE squad_mother_ship (
   hp            INT
 );
 
-CREATE TABLE squad_units_equipping (
+CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */
   id            SERIAL PRIMARY KEY,
   id_squad      INT REFERENCES squads (id),
-  id_squad_unit INT REFERENCES squad_units,
-  id_equipping  INT REFERENCES equipping_type (id),
-  slot_in_unit  INT
+
+  id_squad_unit INT REFERENCES squad_units,           /* ид юнита к которому прикреплено оружие */
+  id_equipping  INT REFERENCES equipping_type (id),   /* ид снаряжения */
+  slot_in_unit  INT                                   /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
 );
 
-CREATE TABLE squad_mother_ship_equipping (
+CREATE TABLE squad_mother_ship_equipping ( /* таблица снаряжения которое нацеплино на мазер шипа */
   id                   SERIAL PRIMARY KEY,
   id_squad             INT REFERENCES squads (id),
-  id_squad_mother_ship INT REFERENCES squad_mother_ship,
-  id_equipping         INT REFERENCES equipping_type (id),
-  slot_in_mother_ship  INT
+  id_squad_mother_ship INT REFERENCES squad_mother_ship,   /* ид мазершипа к которому прикреплено оружие */
+  id_equipping         INT REFERENCES equipping_type (id), /* ид снаряжения */
+  slot_in_mother_ship  INT                                 /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
 );
 
-CREATE TABLE squad_inventory (
+CREATE TABLE squad_inventory ( /* инвентарь отряда не боевой параметр пока не проработан */
   id                   SERIAL PRIMARY KEY,
   id_squad             INT REFERENCES squads (id),
   slot                 INT
