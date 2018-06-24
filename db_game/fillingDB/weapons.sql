@@ -1,6 +1,13 @@
 /*  ---------------------------- weapon_type -------------------------------------------------- */
-INSERT INTO weapon_type (name, damage, min_attack_range, range_attack, accuracy, area_covers)
-VALUES ('tank_gun', 10, 0, 5, 5, 0);
+INSERT INTO weapon_type (name, min_attack_range, range_attack, accuracy, artillery, power)
+VALUES ('tank_gun', 0, 3, 5, false, 30);
 
-INSERT INTO weapon_type (name, damage, min_attack_range, range_attack, accuracy, area_covers)
-VALUES ('test2', 20, 3, 3, 7, 2);
+INSERT INTO weapon_type (name, min_attack_range, range_attack, accuracy, artillery, power)
+VALUES ('artillery', 2, 5, 5, true, 50);
+
+/* AMMO Type*/
+INSERT INTO ammunition_type (name, type, type_attack, damage, area_covers)
+VALUES ('piu-piu', 'em', 'em', 15, 0);
+
+INSERT INTO ammunition_type (name, type, type_attack, damage, area_covers)
+VALUES ('ba-bah', 'explosion', 'explosion', 25, 1);

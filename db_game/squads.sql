@@ -1,4 +1,4 @@
-CREATE TABLE squads (
+ CREATE TABLE squads (
   id      SERIAL PRIMARY KEY,
   name    VARCHAR(64),
   id_user INT REFERENCES users (id),  /* кому принадлежит */
