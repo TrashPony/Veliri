@@ -4,12 +4,12 @@ import (
 	"strconv"
 	"log"
 	"../../localGame/map/coordinate"
-	"../../localGame/map/gameMap"
+	"../../gameObjects/map"
 	"../../localGame"
 	"../../../dbConnect"
 )
 
-func CoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
+func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+
@@ -70,7 +70,7 @@ func CoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 	mp.OneLayerMap = oneLayerMap
 }
 
-func DefaultCoordinateType(mp *gameMap.Map) coordinate.Coordinate {
+func DefaultCoordinateType(mp *_map.Map) coordinate.Coordinate {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT type, texture_flore, texture_object, move, view, attack, passable_edges "+
 		"FROM coordinate_type "+
 		"WHERE id = $1;", strconv.Itoa(mp.DefaultTypeID))

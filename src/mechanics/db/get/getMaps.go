@@ -1,11 +1,13 @@
-package lobby
+package get
 
 import (
 	"log"
-	"../../dbConnect"
+	"../../../dbConnect"
+	gameMap "../../gameObjects/map"
+
 )
 
-func GetMapList() []Map {
+func MapList() []gameMap.Map {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps")
 	if err != nil {
@@ -13,8 +15,8 @@ func GetMapList() []Map {
 	}
 	defer rows.Close()
 
-	var maps = make([]Map, 0)
-	var mp Map
+	var maps = make([]gameMap.Map, 0)
+	var mp gameMap.Map
 
 	for rows.Next() {
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
@@ -33,7 +35,7 @@ func GetMapList() []Map {
 	return maps
 }
 
-func GetMap(id int) Map {
+func Map(id int) gameMap.Map {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id=$1", id)
 	if err != nil {
@@ -41,7 +43,7 @@ func GetMap(id int) Map {
 	}
 	defer rows.Close()
 
-	var mp Map
+	var mp gameMap.Map
 
 	for rows.Next() {
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)

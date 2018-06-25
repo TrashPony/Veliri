@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/equip"
-	"../../mechanics/localGame/map/gameMap"
+	"../../mechanics/gameObjects/map"
 	"../../mechanics/gameObjects/matherShip"
 	"../../mechanics/localGame/map/coordinate"
 	"../../mechanics/localGame/initGame"
@@ -53,7 +53,7 @@ type LoadGame struct {
 	Units              map[string]map[string]*unit.Unit             `json:"units"`
 	HostileUnits       map[string]map[string]*unit.Unit             `json:"hostile_units"`
 	UnitStorage        []*unit.Unit                                 `json:"unit_storage"`
-	Map                *gameMap.Map                                 `json:"map"`
+	Map                *_map.Map                                    `json:"map"`
 	MatherShip         *matherShip.MatherShip                       `json:"mather_ship"`
 	HostileMatherShips map[string]map[string]*matherShip.MatherShip `json:"hostile_mather_ships"`
 	Watch              map[string]map[string]*coordinate.Coordinate `json:"watch"`

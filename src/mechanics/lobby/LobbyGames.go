@@ -4,12 +4,14 @@ import (
 	"errors"
 	"../player"
 	"../localGame/map/coordinate"
+	LocalMap "../gameObjects/map"
+	"../db/get"
 )
 
 type LobbyGames struct {
 	ID       int
 	Name     string
-	Map      Map
+	Map      LocalMap.Map
 	Creator  *player.Player
 	Respawns []*coordinate.Coordinate
 	Users    []*player.Player
@@ -18,7 +20,7 @@ type LobbyGames struct {
 func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player) LobbyGames {
 
 	respawns := GetRespawns(mapID)
-	mp := GetMap(mapID)
+	mp := get.Map(mapID)
 
 	game := LobbyGames{Name: nameGame, Map: mp, Creator: creator, Users: make([]*player.Player, 0), Respawns: respawns}
 	game.Users = append(game.Users, creator)

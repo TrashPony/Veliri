@@ -3,7 +3,7 @@ package movePhase
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
 	"math"
-	"../../map/gameMap"
+	"../../../gameObjects/map"
 	"../../map/coordinate"
 	"../../../player"
 )
@@ -25,7 +25,7 @@ var (
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
 type Points map[string]coordinate.Coordinate
 
-func FindPath(client *player.Player, gameMap *gameMap.Map, start *coordinate.Coordinate, end *coordinate.Coordinate) []*coordinate.Coordinate {
+func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate) []*coordinate.Coordinate {
 
 	START_POINT = coordinate.Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
@@ -78,7 +78,7 @@ func FindPath(client *player.Player, gameMap *gameMap.Map, start *coordinate.Coo
 	return path
 }
 
-func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *gameMap.Map) {
+func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *_map.Map) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 

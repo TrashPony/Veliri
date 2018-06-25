@@ -8,6 +8,7 @@ import (
 	"log"
 	"strconv"
 	"sync"
+	"../../mechanics/db/get"
 )
 
 var mutex = &sync.Mutex{}
@@ -46,7 +47,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MapView" {
-			var maps = lobby.GetMapList()
+			var maps = get.MapList()
 			for _, Map := range maps {
 				var resp = Response{Event: msg.Event, Map: &Map}
 				ws.WriteJSON(resp)

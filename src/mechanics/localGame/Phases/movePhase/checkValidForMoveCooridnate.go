@@ -2,11 +2,11 @@ package movePhase
 
 import (
 	"../../map/coordinate"
-	"../../map/gameMap"
+	"../../../gameObjects/map"
 	"../../../player"
 )
 
-func checkValidForMoveCoordinate(client *player.Player, gameMap *gameMap.Map, x int, y int) (*coordinate.Coordinate, bool) {
+func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, x int, y int) (*coordinate.Coordinate, bool) {
 
 	gameCoordinate, ok := gameMap.GetCoordinate(x, y)
 

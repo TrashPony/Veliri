@@ -2,12 +2,12 @@ package movePhase
 
 import (
 	"../../map/coordinate"
-	"../../map/gameMap"
+	"../../../gameObjects/map"
 	"../../../player"
 	"../../Phases"
 )
 
-func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *gameMap.Map) (res map[string]map[string]*coordinate.Coordinate) {
+func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map) (res map[string]map[string]*coordinate.Coordinate) {
 	// берет все соседние клетки от текущей
 	res = make(map[string]map[string]*coordinate.Coordinate)
 

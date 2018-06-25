@@ -1,7 +1,7 @@
 package localGame
 
 import (
-	"./map/gameMap"
+	"../gameObjects/map"
 	"../player"
 	"../gameObjects/matherShip"
 	"../gameObjects/unit"
@@ -14,7 +14,7 @@ type Game struct {
 	Step        int
 	Phase       string
 	Winner      string
-	Map         *gameMap.Map
+	Map         *_map.Map
 	players     []*player.Player
 	unitStorage []*unit.Unit
 	units       map[int]map[int]*unit.Unit
@@ -29,7 +29,7 @@ func (game *Game) SetPlayers(players []*player.Player) {
 	game.players = players
 }
 
-func (game *Game) SetMap(gameMap *gameMap.Map) {
+func (game *Game) SetMap(gameMap *_map.Map) {
 	game.Map = gameMap
 }
 
@@ -54,7 +54,7 @@ func (game *Game) DelUnit(unit *unit.Unit) {
 	delete(game.units[unit.X], unit.Y)
 }
 
-func (game *Game) GetMap() (mp *gameMap.Map) {
+func (game *Game) GetMap() (mp *_map.Map) {
 	return game.Map
 }
 

@@ -24,8 +24,8 @@ func GetDontEndGames(userID int) []DontEndGames {
 			log.Fatal(err)
 		}
 
-		mp := GetMap(mapID)
-		game.Map = mp
+		//mp := GetMap(mapID)
+		//game.Map = mp
 
 		games = append(games, game)
 	}

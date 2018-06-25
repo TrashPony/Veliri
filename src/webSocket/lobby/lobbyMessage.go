@@ -4,6 +4,7 @@ import (
 	"../../mechanics/player"
 	"../../mechanics/localGame/map/coordinate"
 	"../../mechanics/lobby"
+	LocalMap "../../mechanics/gameObjects/map"
 )
 
 type Message struct {
@@ -12,8 +13,7 @@ type Message struct {
 	GameName  string `json:"game_name"`
 	RespawnID int    `json:"respawn_id"`
 	Message   string `json:"message"`
-	GameID       int `json:"game_id"`
-
+	GameID    int    `json:"game_id"`
 
 	MapID int `json:"map_id"`
 }
@@ -40,7 +40,7 @@ type Response struct {
 	Respawn  *coordinate.Coordinate   `json:"respawn"`
 	Respawns []*coordinate.Coordinate `json:"respawns"`
 	Game     *lobby.LobbyGames        `json:"game"`
-	Map      *lobby.Map               `json:"map"`
+	Map      *LocalMap.Map            `json:"map"`
 
 	DontEndGames []lobby.DontEndGames `json:"dont_end_games"`
 }
