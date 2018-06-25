@@ -1,12 +1,12 @@
 package mechanics
 
 import (
-	"./game"
+	"./localGame"
 	"./player"
 	"./db"
 )
 
-func UserReady(client *player.Player, actionGame *game.Game) (bool) {
+func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
 	client.SetReady(true)
 	db.UpdatePlayer(client)
 
@@ -26,7 +26,7 @@ func UserReady(client *player.Player, actionGame *game.Game) (bool) {
 	return allReady
 }
 
-func changeGamePhase(actionGame *game.Game) {
+func changeGamePhase(actionGame *localGame.Game) {
 	if actionGame.Phase == "Init" || actionGame.Phase == "attack" {
 		actionGame.Phase = "move"
 	} else {

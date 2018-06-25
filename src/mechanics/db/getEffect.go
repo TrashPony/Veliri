@@ -5,7 +5,7 @@ import (
 	"../unit"
 	"../effect"
 	"../equip"
-	"../coordinate"
+	"../localGame/map/coordinate"
 	"../../dbConnect"
 )
 
@@ -58,7 +58,7 @@ func GetUnitEffects(unit *unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_unit_effects age, effects_type et "+
-		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.Id)
+		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.ID)
 	if err != nil {
 		println("get unit effects")
 		log.Fatal(err)

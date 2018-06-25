@@ -66,7 +66,7 @@ func (client *Player) GetHostileUnit(x, y int) (gameUnit *unit.Unit, find bool) 
 func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool) {
 	for _, xLine := range client.GetHostileUnits(){
 		for _, hostile := range xLine {
-			if hostile.Id == id {
+			if hostile.ID == id {
 				return hostile, true
 			}
 		}
@@ -77,7 +77,7 @@ func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool
 func (client *Player) DelHostileUnit(id int) {
 	for x, xLine := range client.GetHostileUnits(){
 		for y, hostile := range xLine {
-			if hostile.Id == id {
+			if hostile.ID == id {
 				delete(client.hostileUnits[x], y)
 			}
 		}
@@ -94,7 +94,7 @@ func (client *Player) GetUnitsStorage() (gameUnit []*unit.Unit) {
 
 func (client *Player) GetUnitStorage(id int) (storageUnit *unit.Unit, find bool) {
 	for _, storageUnit := range client.GetUnitsStorage() {
-		if id == storageUnit.Id {
+		if id == storageUnit.ID {
 			return storageUnit, true
 		}
 	}
@@ -104,7 +104,7 @@ func (client *Player) GetUnitStorage(id int) (storageUnit *unit.Unit, find bool)
 
 func (client *Player) DelUnitStorage(id int) (find bool) {
 	for _, storageUnit := range client.GetUnitsStorage() {
-		if id == storageUnit.Id {
+		if id == storageUnit.ID {
 			client.unitStorage = remove(client.GetUnitsStorage(), storageUnit)
 			return true
 		}

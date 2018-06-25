@@ -1,19 +1,18 @@
 package db
 
 import (
-	"log"
 	"database/sql"
 	"strings"
 	"strconv"
-	"../../detailUnit"
-	"../coordinate"
+	"../unit/detailUnit"
+	"../localGame/map/coordinate"
 	"../unit"
-	"../../dbConnect"
+	//"../../dbConnect"
 )
 
 func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 
-	rows, err := dbConnect.GetDBConnect().Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
+	/*rows, err := dbConnect.GetDBConnect().Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
 		"ag.weight, ag.speed, ag.initiative, ag.damage, ag.range_attack, ag.min_attack_range, ag.area_attack, "+
 		"ag.type_attack, ag.hp, ag.max_hp, ag.armor, ag.evasion_critical, ag.vul_kinetics, ag.vul_thermal, ag.vul_em, "+
 		"ag.vul_explosive, ag.range_view, ag.accuracy, ag.wall_hack, "+
@@ -26,11 +25,11 @@ func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 	defer rows.Close()
 
 
-
+*/ // todo переделать под новые запросы
 	var units = make(map[int]map[int]*unit.Unit)
 	var unitStorage = make([]*unit.Unit, 0)
 
-	var targetKey string
+	/*var targetKey string
 
 	chassisID := sql.NullInt64{}
 	weaponID := sql.NullInt64{}
@@ -68,7 +67,7 @@ func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 
 	if err = rows.Err(); err != nil {
 		log.Fatal(err)
-	}
+	}*/
 
 	return units, unitStorage
 }
@@ -90,25 +89,13 @@ func ParseUnitTarget(targetKey string) *coordinate.Coordinate {
 	}
 }
 
-func SetDetails(unit *unit.Unit, chassisID, weaponID, towerID, bodyID, radarID sql.NullInt64)  {
-	if chassisID.Valid {
-		chassis := detailUnit.GetChass(int(chassisID.Int64))
-		unit.SetChassis(chassis)
-	}
+func SetDetails(unit *unit.Unit, weaponID, bodyID sql.NullInt64)  {
 	if weaponID.Valid {
 		weapon := detailUnit.GetWeapon(int(weaponID.Int64))
 		unit.SetWeapon(weapon)
 	}
-	if towerID.Valid {
-		tower := detailUnit.GetTower(int(towerID.Int64))
-		unit.SetTower(tower)
-	}
 	if bodyID.Valid {
 		body := detailUnit.GetBody(int(bodyID.Int64))
 		unit.SetBody(body)
-	}
-	if radarID.Valid {
-		radar := detailUnit.GetRadar(int(radarID.Int64))
-		unit.SetRadar(radar)
 	}
 }

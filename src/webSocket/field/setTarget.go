@@ -2,7 +2,7 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/Phases/targetPhase"
+	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/unit"
 	"strconv"
 )

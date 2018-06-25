@@ -2,7 +2,7 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../inventory"
+	"../../mechanics/inventory"
 )
 
 func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*inventory.User) {

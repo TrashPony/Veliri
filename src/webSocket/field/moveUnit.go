@@ -1,11 +1,11 @@
 package field
 
 import (
-	"../../mechanics/Phases/movePhase"
+	"../../mechanics/localGame/Phases/movePhase"
 	"../../mechanics/unit"
 	"../../mechanics/player"
-	"../../mechanics/game"
-	"../../mechanics/coordinate"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/map/coordinate"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -78,17 +78,17 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateWatchHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
+func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
 
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 
 			// пытаемся взять юнита по начальной координате
-			_, okGetUnit := user.GetHostileUnitByID(gameUnit.Id)
+			_, okGetUnit := user.GetHostileUnitByID(gameUnit.ID)
 
 			// если юзер видит юнита то удаляем его со строго места
 			if okGetUnit {
-				user.DelHostileUnit(gameUnit.Id)
+				user.DelHostileUnit(gameUnit.ID)
 			}
 
 			// пытаемся взять юнита по конечной координате

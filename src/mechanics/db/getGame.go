@@ -1,12 +1,12 @@
 package db
 
 import (
-	"../game"
+	"../localGame"
 	"log"
 	"../../dbConnect"
 )
 
-func GetGame(idGame int) *game.Game {
+func GetGame(idGame int) *localGame.Game {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, id_map, step, phase, winner FROM action_games WHERE id=$1", idGame)
 	if err != nil {
@@ -15,7 +15,7 @@ func GetGame(idGame int) *game.Game {
 	}
 	defer rows.Close()
 
-	var loadGame game.Game
+	var loadGame localGame.Game
 
 	for rows.Next() {
 		err := rows.Scan(&loadGame.Id, &loadGame.Name, &loadGame.MapID, &loadGame.Step, &loadGame.Phase, &loadGame.Winner)

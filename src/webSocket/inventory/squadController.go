@@ -1,7 +1,7 @@
 package inventory
 
 import (
-	"../../inventory"
+	"../../mechanics/inventory"
 	"github.com/gorilla/websocket"
 )
 

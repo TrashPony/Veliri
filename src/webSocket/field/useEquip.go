@@ -2,12 +2,12 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/useEquip"
+	"../../mechanics/localGame/useEquip"
 	"../../mechanics/unit"
 	"../../mechanics/equip"
 	"../../mechanics/player"
-	"../../mechanics/game"
-	"../../mechanics/coordinate"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/map/coordinate"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {
@@ -72,7 +72,7 @@ func EquipApplicable(playerEquip *equip.Equip, client *player.Player, x, y int) 
 	return nil
 }
 
-func updateUseUnitEquipHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
+func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(gameUnit.X, gameUnit.Y)
@@ -83,7 +83,7 @@ func updateUseUnitEquipHostileUser(client *player.Player, activeGame *game.Game,
 	}
 }
 
-func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *game.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {
+func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *localGame.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(xUse, yUse)

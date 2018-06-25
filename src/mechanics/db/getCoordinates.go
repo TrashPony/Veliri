@@ -3,13 +3,13 @@ package db
 import (
 	"strconv"
 	"log"
-	"../coordinate"
-	"../gameMap"
-	"../game"
+	"../localGame/map/coordinate"
+	"../localGame/map/gameMap"
+	"../localGame"
 	"../../dbConnect"
 )
 
-func GetCoordinatesMap(mp *gameMap.Map, game *game.Game) {
+func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+

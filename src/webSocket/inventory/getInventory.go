@@ -1,9 +1,9 @@
 package inventory
 
 import (
-	"../../inventory"
+	"../../mechanics/inventory"
 	"github.com/gorilla/websocket"
-	"../../detailUnit"
+	"../../mechanics/unit/detailUnit"
 )
 
 func GetDetailSquad(ws *websocket.Conn, msg Message)  {

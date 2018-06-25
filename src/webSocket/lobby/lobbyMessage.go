@@ -1,7 +1,9 @@
 package lobby
 
 import (
-	"../../lobby"
+	"../../mechanics/player"
+	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/lobby"
 )
 
 type Message struct {
@@ -10,6 +12,8 @@ type Message struct {
 	GameName  string `json:"game_name"`
 	RespawnID int    `json:"respawn_id"`
 	Message   string `json:"message"`
+	GameID       int `json:"game_id"`
+
 
 	MapID int `json:"map_id"`
 }
@@ -30,13 +34,13 @@ type Response struct {
 	Message      string `json:"message"`
 	GameUser     string `json:"game_user"`
 
-	User      *lobby.User   `json:"user"`
-	GameUsers []*lobby.User `json:"game_users"`
+	User      *player.Player   `json:"user"`
+	GameUsers []*player.Player `json:"game_users"`
 
-	Respawn  *lobby.Respawn    `json:"respawn"`
-	Respawns []*lobby.Respawn  `json:"respawns"`
-	Game     *lobby.LobbyGames `json:"game"`
-	Map      *lobby.Map        `json:"map"`
+	Respawn  *coordinate.Coordinate   `json:"respawn"`
+	Respawns []*coordinate.Coordinate `json:"respawns"`
+	Game     *lobby.LobbyGames        `json:"game"`
+	Map      *lobby.Map               `json:"map"`
 
 	DontEndGames []lobby.DontEndGames `json:"dont_end_games"`
 }

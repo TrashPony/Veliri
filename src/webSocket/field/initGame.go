@@ -5,9 +5,9 @@ import (
 	"../../mechanics"
 	"../../mechanics/unit"
 	"../../mechanics/equip"
-	"../../mechanics/gameMap"
+	"../../mechanics/localGame/map/gameMap"
 	"../../mechanics/matherShip"
-	"../../mechanics/coordinate"
+	"../../mechanics/localGame/map/coordinate"
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {

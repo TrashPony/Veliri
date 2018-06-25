@@ -3,12 +3,12 @@ package lobby
 import (
 	"github.com/gorilla/websocket"
 	"errors"
-	"../../lobby"
+	"../../mechanics/lobby"
 )
 
 func StartNewGame(msg Message, ws *websocket.Conn) {
 
-	game, ok := openGames[usersLobbyWs[ws].Game]
+	game, ok := openGames[usersLobbyWs[ws].GetGameID()]
 
 	if ok {
 		// список игроков которым надо разослать данные взятые из обьекта игры
@@ -22,33 +22,33 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 				if success {
 
-					delete(openGames, game.Name) // удаляем обьект игры из лоби ¯\_(ツ)_/¯
+					delete(openGames, game.ID) // удаляем обьект игры из лоби ¯\_(ツ)_/¯
 					for _, user := range game.Users {
-						var resp = Response{Event: msg.Event, UserName: user.Name, IdGame: id}
+						var resp = Response{Event: msg.Event, UserName: user.GetLogin(), IdGame: id}
 						lobbyPipe <- resp
 					}
 
 				} else {
-					var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("error ad to DB").Error()}
+					var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("error ad to DB").Error()}
 					ws.WriteJSON(resp)
 				}
 			} else {
-				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("PlayerNotReady").Error()}
+				var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("PlayerNotReady").Error()}
 				ws.WriteJSON(resp)
 			}
 		} else {
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("Players < 2").Error()}
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("Players < 2").Error()}
 			ws.WriteJSON(resp)
 		}
 	} else {
-		var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].Name, Error: errors.New("game not found").Error()}
+		var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("game not found").Error()}
 		ws.WriteJSON(resp)
 	}
 }
 
 func CheckReady(game *lobby.LobbyGames) bool  {
 	for _, user := range game.Users {
-		if !user.Ready {
+		if !user.GetReady() {
 			return false
 			break
 		}

@@ -2,7 +2,7 @@ package player
 
 import (
 	"strconv"
-	"../coordinate"
+	"../localGame/map/coordinate"
 )
 
 func (client *Player) AddCoordinate(gameCoordinate *coordinate.Coordinate) { // Todo AddWatchCoordinate

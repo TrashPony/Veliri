@@ -1,15 +1,15 @@
 package db
 
 import (
-	"../game"
+	"../localGame"
 	"../player"
 	"../unit"
-	"../watchZone"
+	"../localGame/map/watchZone"
 	"log"
 	"../../dbConnect"
 )
 
-func GetPlayer(game *game.Game) []*player.Player {
+func GetPlayer(game *localGame.Game) []*player.Player {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select users.name, agu.ready, users.id "+
 		"FROM action_game_user as agu, users "+
@@ -53,7 +53,7 @@ func GetPlayer(game *game.Game) []*player.Player {
 	return users
 }
 
-func GetNotGameUnits(player player.Player, game *game.Game) []*unit.Unit {
+func GetNotGameUnits(player player.Player, game *localGame.Game) []*unit.Unit {
 	units := make([]*unit.Unit, 0)
 
 	for _, gameUnit := range game.GetUnitsStorage() {

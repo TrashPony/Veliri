@@ -2,13 +2,13 @@ package db
 
 import (
 	"../player"
-	"../game"
+	"../localGame"
 	"../equip"
 	"log"
 	"../../dbConnect"
 )
 
-func GetEquip(player player.Player, game *game.Game) []*equip.Equip {
+func GetEquip(player player.Player, game *localGame.Game) []*equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select equip.id, type.type, equip.used, type.specification, "+
 		"type.applicable, type.region " +

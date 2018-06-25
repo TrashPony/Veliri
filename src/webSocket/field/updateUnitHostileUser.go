@@ -3,10 +3,10 @@ package field
 import (
 	"../../mechanics/unit"
 	"../../mechanics/player"
-	"../../mechanics/game"
+	"../../mechanics/localGame"
 )
 
-func updateUnitHostileUser(client *player.Player, activeGame *game.Game, gameUnit *unit.Unit) {
+func updateUnitHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(gameUnit.X, gameUnit.Y)

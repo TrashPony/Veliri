@@ -3,7 +3,7 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics"
-	"../../mechanics/game"
+	"../../mechanics/localGame"
 	"../../mechanics/unit"
 )
 
@@ -31,7 +31,7 @@ type UserReady struct {
 	Ready bool   `json:"ready"`
 }
 
-func ChangePhase(actionGame *game.Game) {
+func ChangePhase(actionGame *localGame.Game) {
 	for _, client := range actionGame.GetPlayers() {
 		phaseInfo := PhaseInfo{
 			Event:     "ChangePhase",

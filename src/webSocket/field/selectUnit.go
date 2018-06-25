@@ -2,11 +2,11 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/Phases/movePhase"
-	"../../mechanics/Phases/targetPhase"
+	"../../mechanics/localGame/Phases/movePhase"
+	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/player"
-	"../../mechanics/coordinate"
-	"../../mechanics/game"
+	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/localGame"
 	"../../mechanics/unit"
 )
 
@@ -27,7 +27,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
+func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
 	if !client.GetReady() {
 		if !gameUnit.Action {
 			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame)})
@@ -45,7 +45,7 @@ type MoveCoordinate struct {
 	Move  map[string]map[string]*coordinate.Coordinate `json:"move"`
 }
 
-func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *game.Game, ws *websocket.Conn) {
+func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
 	if !client.GetReady() {
 		ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Unit: gameUnit, Targets: targetPhase.GetTargetCoordinate(gameUnit, actionGame)})
 	} else {

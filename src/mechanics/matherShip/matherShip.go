@@ -1,13 +1,17 @@
 package matherShip
 
 type MatherShip struct {
-	Type      string `json:"type"`
-	Owner     string `json:"owner"`
-	X         int    `json:"x"`
-	Y         int    `json:"y"`
-	HP        int    `json:"hp"`
-	Armor     int    `json:"armor"`
-	RangeView int    `json:"range_view"`
+	ID             int    `json:"id"`
+	Type           string `json:"type"`
+	Owner          string `json:"owner"`
+	X              int    `json:"x"`
+	Y              int    `json:"y"`
+	HP             int    `json:"hp"`
+	Armor          int    `json:"armor"`
+	RangeView      int    `json:"range_view"`
+	UnitSlots      int    `json:"unit_slots"`
+	UnitSlotSize   int    `json:"unit_slot_size"`
+	EquipmentSlots int    `json:"equipment_slots"`
 }
 
 func (matherShip *MatherShip) GetX() int {

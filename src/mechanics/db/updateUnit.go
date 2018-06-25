@@ -2,19 +2,19 @@ package db
 
 import (
 	"../unit"
-	"strconv"
-	"../../dbConnect"
+	//"strconv"
+	//"../../dbConnect"
 )
 
 func UpdateUnit(unit *unit.Unit) error {
 
-	var target string
-
+	//var target string
+	// todo переделать под новую структуру бд
 	if unit.Target != nil {
-		target = strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y)
+		//target = strconv.Itoa(unit.Target.X) + ":" + strconv.Itoa(unit.Target.Y)
 	}
 
-	_, err := dbConnect.GetDBConnect().Exec("UPDATE action_game_unit "+
+	/*_, err := dbConnect.GetDBConnect().Exec("UPDATE action_game_unit "+
 		"SET x=$2, y=$3, rotate=$4, on_map=$5, "+
 		"action=$6, target=$7, queue_attack=$8, "+
 		"weight=$9, speed=$10, initiative=$11, damage=$12, range_attack=$13, min_attack_range=$14, area_attack=$15, type_attack=$16, "+
@@ -37,7 +37,7 @@ func UpdateUnit(unit *unit.Unit) error {
 	err = UpdateUnitEffects(unit)
 	if err != nil {
 		return err
-	}
+	}*/
 
 	return nil
 }

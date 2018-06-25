@@ -1,12 +1,15 @@
 package inventory
 
 import (
-	"../../inventory"
-	"../../detailUnit"
+	"../../mechanics/inventory"
+	"../../mechanics/unit/detailUnit"
+	"../../mechanics/unit"
+	"../../mechanics/matherShip"
+	"../../mechanics/equip"
 )
 
 type Message struct {
-	Event    string `json:"event"`
+	Event string `json:"event"`
 
 	ChassisID int `json:"chassis"`
 	WeaponID  int `json:"weapon"`
@@ -26,7 +29,7 @@ type Response struct {
 	Event        string `json:"event"`
 	UserName     string `json:"user_name"`
 	NameGame     string `json:"name_game"`
-	IdGame       int `json:"id_game"`
+	IdGame       int    `json:"id_game"`
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
 	Ready        string `json:"ready"`
@@ -38,16 +41,16 @@ type Response struct {
 	Message      string `json:"message"`
 	GameUser     string `json:"game_user"`
 
-	MatherShips []inventory.MatherShip `json:"mather_ships"`
-	Equipping   []inventory.Equipping  `json:"equipping"`
-	Unit        inventory.Unit         `json:"unit"`
+	MatherShips []matherShip.MatherShip `json:"mather_ships"`
+	Equipping   []equip.Equip   `json:"equipping"`
+	Unit        unit.Unit               `json:"unit"`
 
-	Weapons []detailUnit.Weapon  `json:"weapons"`
-	Bodies  []detailUnit.Body    `json:"bodies"`
+	Weapons []detailUnit.Weapon `json:"weapons"`
+	Bodies  []detailUnit.Body   `json:"bodies"`
 
 	Squads  []*inventory.Squad `json:"squads"`
 	Squad   *inventory.Squad   `json:"squad"`
-	SquadID int            `json:"squad_id"`
+	SquadID int                `json:"squad_id"`
 
 	EquipSlot int `json:"equip_slot"`
 	UnitSlot  int `json:"slot"`

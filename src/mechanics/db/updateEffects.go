@@ -2,7 +2,7 @@ package db
 
 import (
 	"../unit"
-	"../coordinate"
+	"../localGame/map/coordinate"
 	"log"
 	"../../dbConnect"
 )
@@ -33,7 +33,7 @@ func UpdateUnitEffects(unit *unit.Unit) error {
 			} else {
 				id := 0
 				err := dbConnect.GetDBConnect().QueryRow("INSERT INTO action_game_unit_effects (id_unit, id_effect, left_steps) "+
-					"VALUES ($1, $2, $3) RETURNING id", unit.Id, unitEffect.TypeID, unitEffect.StepsTime).Scan(&id)
+					"VALUES ($1, $2, $3) RETURNING id", unit.ID, unitEffect.TypeID, unitEffect.StepsTime).Scan(&id)
 
 				if err != nil {
 					println("Error add new unit effect")

@@ -1,12 +1,12 @@
 package mechanics
 
 import (
-	"./game"
+	"./localGame"
 	"./db"
 )
 
 
-func InitGame(idGAme int) (newGame *game.Game) {
+func InitGame(idGAme int) (newGame *localGame.Game) {
 
 	newGame = db.GetGame(idGAme)
 	Map := db.GetMap(newGame)

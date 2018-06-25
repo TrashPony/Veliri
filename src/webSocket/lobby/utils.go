@@ -1,45 +1,45 @@
 package lobby
 
 import (
-	"../../lobby"
 	"github.com/gorilla/websocket"
+	"../../mechanics/player"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*lobby.User) {
+func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	for ws, client := range *usersWs {
-		if client.Name == login {
+		if client.GetLogin() == login {
 			ws.Close()
 			println(login + " Уже был в соеденениях")
 		}
 	}
 }
 
-func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*lobby.User) {
+func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	for _, client := range *usersWs {
-		var resp = Response{Event: "NewLobbyUser", UserName: client.Name, GameUser: login}
+		var resp = Response{Event: "NewLobbyUser", UserName: client.GetLogin() , GameUser: login}
 		lobbyPipe <- resp
 	}
 }
 
-func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*lobby.User) {
+func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	for _, client := range *usersWs {
-		if login != client.Name {
-			var resp = Response{Event: "NewLobbyUser", UserName: login, GameUser: client.Name}
+		if login != client.GetLogin()  {
+			var resp = Response{Event: "NewLobbyUser", UserName: login, GameUser: client.GetLogin() }
 			lobbyPipe <- resp
 		}
 	}
 }
 
-func RefreshLobbyGames(user *lobby.User) {
+func RefreshLobbyGames(user *player.Player) {
 	for _, client := range usersLobbyWs {
-		if client.Name != user.Name {
+		if client.GetLogin()  != user.GetLogin()  {
 
-			var refresh = Response{Event: "GameRefresh", UserName: client.Name}
+			var refresh = Response{Event: "GameRefresh", UserName: client.GetLogin() }
 			lobbyPipe <- refresh
 
 			for _, game := range openGames {
 
-				var resp = Response{Event: "GameView", UserName: client.Name, Game:game}
+				var resp = Response{Event: "GameView", UserName: client.GetLogin() , Game:game}
 				lobbyPipe <- resp
 
 			}

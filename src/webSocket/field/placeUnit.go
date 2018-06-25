@@ -2,10 +2,10 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/Phases/placePhase"
+	"../../mechanics/localGame/Phases/placePhase"
 	"../../mechanics/unit"
-	"../../mechanics/game"
-	"../../mechanics/watchZone"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/map/watchZone"
 	"strconv"
 )
 
@@ -52,7 +52,7 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func UpdatePlaceHostilePlayers(actionGame *game.Game, x, y int) {
+func UpdatePlaceHostilePlayers(actionGame *localGame.Game, x, y int) {
 	for _, player := range actionGame.GetPlayers() { // смотрим игроков которые участвую в игре
 
 		_, find := player.GetWatchCoordinate(x, y)   // если игрок видит ту зону куда ставиться юнит то отправляем ему сообщение

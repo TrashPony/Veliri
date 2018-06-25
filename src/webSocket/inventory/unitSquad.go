@@ -2,41 +2,28 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../inventory"
-	"../../detailUnit"
+	"../../mechanics/unit/detailUnit"
+	"../../mechanics/unit"
 )
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" {
 		if usersInventoryWs[ws].Squad != nil {
-			var unit inventory.Unit
+			var gameUnit unit.Unit
 			// todo проверка на занятость слота в который хотят добавить юнита
 			if msg.WeaponID != 0 {
-				unit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
-			}
-
-			if msg.ChassisID != 0 {
-				unit.SetChassis(detailUnit.GetChass(msg.ChassisID))
-			}
-
-			if msg.TowerID != 0 {
-				unit.SetTower(detailUnit.GetTower(msg.TowerID))
+				gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 			}
 
 			if msg.BodyID != 0 {
-				unit.SetBody(detailUnit.GetBody(msg.BodyID))
+				gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
 			}
 
-			if msg.RadarID != 0 {
-				unit.SetRadar(detailUnit.GetRadar(msg.RadarID))
-			}
-
-			unit.CalculateParametersUnit()
 
 			if msg.Event == "AddUnit" {
-				usersInventoryWs[ws].Squad.AddUnit(&unit, msg.UnitSlot)
+				usersInventoryWs[ws].Squad.AddUnit(&gameUnit, msg.UnitSlot)
 			} else {
-				usersInventoryWs[ws].Squad.ReplaceUnit(&unit, msg.UnitSlot)
+				usersInventoryWs[ws].Squad.ReplaceUnit(&gameUnit, msg.UnitSlot)
 			}
 
 			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].Squad}
@@ -70,43 +57,23 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 
 func UnitConstructor(ws *websocket.Conn, msg Message) {
 
-	unit, ok := usersInventoryWs[ws].Squad.Units[msg.UnitSlot]
+	gameUnit, ok := usersInventoryWs[ws].Squad.Units[msg.UnitSlot]
 	if !ok {
-		unit = &inventory.Unit{}
+		gameUnit = &unit.Unit{}
 	}
 
 	if msg.WeaponID != 0 {
-		unit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
+		gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 	} else {
-		unit.DelWeapon()
-	}
-
-	if msg.ChassisID != 0 {
-		unit.SetChassis(detailUnit.GetChass(msg.ChassisID))
-	} else {
-		unit.DelChassis()
-	}
-
-	if msg.TowerID != 0 {
-		unit.SetTower(detailUnit.GetTower(msg.TowerID))
-	} else {
-		unit.DelTower()
+		gameUnit.DelWeapon()
 	}
 
 	if msg.BodyID != 0 {
-		unit.SetBody(detailUnit.GetBody(msg.BodyID))
+		gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
 	} else {
-		unit.DelBody()
+		gameUnit.DelBody()
 	}
 
-	if msg.RadarID != 0 {
-		unit.SetRadar(detailUnit.GetRadar(msg.RadarID))
-	} else {
-		unit.DelRadar()
-	}
-
-	unit.CalculateParametersUnit()
-
-	resp := Response{Event: "UnitConstructorUpdate", Unit: *unit}
+	resp := Response{Event: "UnitConstructorUpdate", Unit: *gameUnit}
 	ws.WriteJSON(resp)
 }
