@@ -2,7 +2,7 @@ package watchZone
 
 import (
 	"../../../player"
-	"../../../unit"
+	"../../../gameObjects/unit"
 	"strconv"
 )
 

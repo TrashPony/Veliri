@@ -2,7 +2,7 @@ package movePhase
 
 import (
 	"../../map/coordinate"
-	"../../../unit"
+	"../../../gameObjects/unit"
 	"../../../player"
 	"strconv"
 	"../../../localGame"

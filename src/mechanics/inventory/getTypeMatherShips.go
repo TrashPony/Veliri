@@ -3,7 +3,7 @@ package inventory
 import (
 	"log"
 	"../../dbConnect"
-	"../matherShip"
+	"../gameObjects/matherShip"
 )
 
 func GetTypeMatherShips() []matherShip.MatherShip {

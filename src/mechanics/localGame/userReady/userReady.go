@@ -1,9 +1,9 @@
-package mechanics
+package userReady
 
 import (
-	"./localGame"
-	"./player"
-	"./db"
+	"../../player"
+	"../../db"
+	"../../localGame"
 )
 
 func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {

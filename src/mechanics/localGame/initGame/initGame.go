@@ -1,8 +1,8 @@
-package mechanics
+package initGame
 
 import (
-	"./localGame"
-	"./db"
+	"../../db"
+	"../../localGame"
 )
 
 

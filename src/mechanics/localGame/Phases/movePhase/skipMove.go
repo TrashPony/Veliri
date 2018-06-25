@@ -1,7 +1,7 @@
 package movePhase
 
 import (
-	"../../../unit"
+	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../db"
 )

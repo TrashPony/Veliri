@@ -2,9 +2,9 @@ package inventory
 
 import (
 	"log"
-	"../effect"
+	"../gameObjects/effect"
 	"../../dbConnect"
-	"../equip"
+	"../gameObjects/equip"
 )
 
 func GetTypeEquipping() []equip.Equip {

@@ -1,9 +1,9 @@
 package player
 
 import (
-	"../equip"
-	"../matherShip"
-	"../unit"
+	"../gameObjects/equip"
+	"../gameObjects/matherShip"
+	"../gameObjects/unit"
 	"../localGame/map/coordinate"
 	"../inventory"
 )

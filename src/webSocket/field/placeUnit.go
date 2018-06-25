@@ -3,7 +3,7 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/localGame/Phases/placePhase"
-	"../../mechanics/unit"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/map/watchZone"
 	"strconv"

@@ -3,8 +3,8 @@ package field
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/localGame/useEquip"
-	"../../mechanics/unit"
-	"../../mechanics/equip"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/gameObjects/equip"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/map/coordinate"

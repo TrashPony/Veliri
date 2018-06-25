@@ -1,13 +1,12 @@
 package useEquip
 
 import (
-	"../"
-	"../../equip"
+	"../../gameObjects/equip"
 	"../../player"
 	"../map/coordinate"
-	"../../"
 	"../../db"
 	"strconv"
+	"../../localGame"
 )
 
 func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
@@ -24,7 +23,7 @@ func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, use
 		gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
 		if find {
 			for _, effect := range useEquip.Effects { // переносим все эфекты из эквипа выбраной координате
-				mechanics.AddNewCoordinateEffect(gameCoordinate, effect)
+				AddNewCoordinateEffect(gameCoordinate, effect)
 			}
 
 			AddCoordinate(effectCoordinates, gameCoordinate)

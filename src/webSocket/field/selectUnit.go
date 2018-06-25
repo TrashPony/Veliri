@@ -7,7 +7,7 @@ import (
 	"../../mechanics/player"
 	"../../mechanics/localGame/map/coordinate"
 	"../../mechanics/localGame"
-	"../../mechanics/unit"
+	"../../mechanics/gameObjects/unit"
 )
 
 func SelectUnit(msg Message, ws *websocket.Conn) {

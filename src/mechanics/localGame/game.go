@@ -3,8 +3,8 @@ package localGame
 import (
 	"./map/gameMap"
 	"../player"
-	"../matherShip"
-	"../unit"
+	"../gameObjects/matherShip"
+	"../gameObjects/unit"
 )
 
 type Game struct {

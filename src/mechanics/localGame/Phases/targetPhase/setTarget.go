@@ -1,7 +1,7 @@
 package targetPhase
 
 import (
-	"../../../unit"
+	"../../../gameObjects/unit"
 	"../../../db"
 	"../../../localGame"
 	"math"

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"../matherShip"
+	"../gameObjects/matherShip"
 	"log"
 	"../../dbConnect"
 )

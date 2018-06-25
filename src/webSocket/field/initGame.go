@@ -2,12 +2,12 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics"
-	"../../mechanics/unit"
-	"../../mechanics/equip"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/gameObjects/equip"
 	"../../mechanics/localGame/map/gameMap"
-	"../../mechanics/matherShip"
+	"../../mechanics/gameObjects/matherShip"
 	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/localGame/initGame"
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
@@ -15,7 +15,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 	newClient, _ := usersFieldWs[ws]
 
 	if !ok {
-		loadGame = mechanics.InitGame(msg.IdGame)
+		loadGame = initGame.InitGame(msg.IdGame)
 		Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
 	}
 

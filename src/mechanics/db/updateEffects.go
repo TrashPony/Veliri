@@ -1,7 +1,7 @@
 package db
 
 import (
-	"../unit"
+	"../gameObjects/unit"
 	"../localGame/map/coordinate"
 	"log"
 	"../../dbConnect"

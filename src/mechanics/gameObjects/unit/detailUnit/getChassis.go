@@ -2,7 +2,7 @@ package detailUnit
 
 import (
 	"log"
-	"../../../dbConnect"
+	"../../../../dbConnect"
 )
 
 type Chassis struct {

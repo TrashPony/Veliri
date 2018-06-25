@@ -2,7 +2,7 @@ package field
 
 import (
 	"../../mechanics/localGame/Phases/movePhase"
-	"../../mechanics/unit"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/map/coordinate"

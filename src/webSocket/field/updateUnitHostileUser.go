@@ -1,7 +1,7 @@
 package field
 
 import (
-	"../../mechanics/unit"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
 )

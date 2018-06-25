@@ -3,7 +3,7 @@ package inventory
 import (
 	"../../mechanics/inventory"
 	"github.com/gorilla/websocket"
-	"../../mechanics/unit/detailUnit"
+	"../../mechanics/gameObjects/unit/detailUnit"
 )
 
 func GetDetailSquad(ws *websocket.Conn, msg Message)  {

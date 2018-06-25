@@ -2,9 +2,9 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics"
 	"../../mechanics/localGame"
-	"../../mechanics/unit"
+	"../../mechanics/localGame/userReady"
+	"../../mechanics/gameObjects/unit"
 )
 
 func Ready(ws *websocket.Conn) {
@@ -12,7 +12,7 @@ func Ready(ws *websocket.Conn) {
 	client := usersFieldWs[ws]
 	activeGame, _ := Games.Get(client.GetGameID())
 
-	changePhase := mechanics.UserReady(client, activeGame)
+	changePhase := userReady.UserReady(client, activeGame)
 
 	if changePhase {
 

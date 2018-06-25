@@ -3,8 +3,8 @@ package watchZone
 import (
 	"../../"
 	"../../../player"
-	"../../../matherShip"
-	"../../../unit"
+	"../../../gameObjects/matherShip"
+	"../../../gameObjects/unit"
 	"../coordinate"
 )
 

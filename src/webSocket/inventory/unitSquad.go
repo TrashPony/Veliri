@@ -2,8 +2,8 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/unit/detailUnit"
-	"../../mechanics/unit"
+	"../../mechanics/gameObjects/unit/detailUnit"
+	"../../mechanics/gameObjects/unit"
 )
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {

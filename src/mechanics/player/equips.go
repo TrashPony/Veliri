@@ -1,6 +1,6 @@
 package player
 
-import "../equip"
+import "../gameObjects/equip"
 
 func (client *Player) SetEquip(equips []*equip.Equip) {
 	client.equips = equips

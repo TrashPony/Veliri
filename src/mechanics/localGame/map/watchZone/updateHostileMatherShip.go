@@ -2,7 +2,7 @@ package watchZone
 
 import (
 	"../../../player"
-	"../../../matherShip"
+	"../../../gameObjects/matherShip"
 	"strconv"
 )
 

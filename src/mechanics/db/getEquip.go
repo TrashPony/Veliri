@@ -3,7 +3,7 @@ package db
 import (
 	"../player"
 	"../localGame"
-	"../equip"
+	"../gameObjects/equip"
 	"log"
 	"../../dbConnect"
 )

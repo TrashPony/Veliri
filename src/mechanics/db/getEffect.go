@@ -2,9 +2,9 @@ package db
 
 import (
 	"log"
-	"../unit"
-	"../effect"
-	"../equip"
+	"../gameObjects/unit"
+	"../gameObjects/effect"
+	"../gameObjects/equip"
 	"../localGame/map/coordinate"
 	"../../dbConnect"
 )

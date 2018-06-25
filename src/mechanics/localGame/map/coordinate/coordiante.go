@@ -2,7 +2,7 @@ package coordinate
 
 import (
 	"strconv"
-	"../../../effect"
+	"../../../gameObjects/effect"
 )
 
 type Coordinate struct {

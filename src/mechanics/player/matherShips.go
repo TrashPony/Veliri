@@ -2,7 +2,7 @@ package player
 
 import (
 	"strconv"
-	"../matherShip"
+	"../gameObjects/matherShip"
 )
 
 func (client *Player) AddMatherShips(ship *matherShip.MatherShip) {

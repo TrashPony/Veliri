@@ -3,11 +3,11 @@ package inventory
 import (
 	"log"
 	"database/sql"
-	"../unit/detailUnit"
+	"../gameObjects/unit/detailUnit"
 	"../../dbConnect"
-	"../unit"
-	"../matherShip"
-	"../equip"
+	"../gameObjects/unit"
+	"../gameObjects/matherShip"
+	"../gameObjects/equip"
 )
 
 type Squad struct {

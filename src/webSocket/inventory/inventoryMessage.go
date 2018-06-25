@@ -2,10 +2,10 @@ package inventory
 
 import (
 	"../../mechanics/inventory"
-	"../../mechanics/unit/detailUnit"
-	"../../mechanics/unit"
-	"../../mechanics/matherShip"
-	"../../mechanics/equip"
+	"../../mechanics/gameObjects/unit/detailUnit"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/gameObjects/matherShip"
+	"../../mechanics/gameObjects/equip"
 )
 
 type Message struct {

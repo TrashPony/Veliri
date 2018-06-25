@@ -2,7 +2,7 @@ package targetPhase
 
 import (
 	"../../map/coordinate"
-	"../../../unit"
+	"../../../gameObjects/unit"
 	"../../Phases"
 	"../../map/watchZone"
 	"../../../localGame"

@@ -1,10 +1,10 @@
-package mechanics
+package useEquip
 
 import (
-	"./unit"
-	"./effect"
-	"./db"
-	"./localGame/map/coordinate"
+	"../../gameObjects/unit"
+	"../../gameObjects/effect"
+	"../../db"
+	"../map/coordinate"
 )
 
 func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
