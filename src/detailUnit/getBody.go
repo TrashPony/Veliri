@@ -1,6 +1,9 @@
 package detailUnit
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 type Body struct {
 	Id             int    `json:"id"`
@@ -19,7 +22,7 @@ type Body struct {
 func GetBodies() (bodies []Body) {
 	bodies = make([]Body, 0)
 
-	rows, err := db.Query("select * from body_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from body_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +43,7 @@ func GetBodies() (bodies []Body) {
 
 func GetBody(id int) (body *Body) {
 
-	rows, err := db.Query("select * from body_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from body_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,11 +3,12 @@ package db
 import (
 	"../matherShip"
 	"log"
+	"../../dbConnect"
 )
 
 func GetMatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherShip) {
 
-	rows, err := db.Query("Select type.type, users.name, ship.x, ship.y, "+
+	rows, err := dbConnect.GetDBConnect().Query("Select type.type, users.name, ship.x, ship.y, "+
 		"type.hp, type.armor, type.range_view "+
 		"FROM action_mother_ship as ship, mother_ship_type as type, users "+
 		"WHERE users.id=ship.id_user AND type.id=ship.id_type AND id_game=$1", idGame)

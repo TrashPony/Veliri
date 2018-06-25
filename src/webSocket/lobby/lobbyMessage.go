@@ -1,8 +1,6 @@
 package lobby
 
 import (
-	"../../detailUnit"
-	"../../lobby/Squad"
 	"../../lobby"
 )
 
@@ -14,26 +12,13 @@ type Message struct {
 	Message   string `json:"message"`
 
 	MapID int `json:"map_id"`
-
-	SquadName    string `json:"squad_name"`
-	SquadID      int    `json:"squad_id"`
-	UnitSlot     int    `json:"slot"`
-	EquipSlot    int    `json:"equip_slot"`
-	EquipID      int    `json:"equip_id"`
-	MatherShipID int    `json:"mather_ship_id"`
-
-	ChassisID int `json:"chassis"`
-	WeaponID  int `json:"weapon"`
-	TowerID   int `json:"tower"`
-	BodyID    int `json:"body"`
-	RadarID   int `json:"radar"`
 }
 
 type Response struct {
 	Event        string `json:"event"`
 	UserName     string `json:"user_name"`
 	NameGame     string `json:"name_game"`
-	IdGame       int `json:"id_game"`
+	IdGame       int    `json:"id_game"`
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
 	Ready        string `json:"ready"`
@@ -52,23 +37,6 @@ type Response struct {
 	Respawns []*lobby.Respawn  `json:"respawns"`
 	Game     *lobby.LobbyGames `json:"game"`
 	Map      *lobby.Map        `json:"map"`
-
-	MatherShips []Squad.MatherShip `json:"mather_ships"`
-	Equipping   []Squad.Equipping  `json:"equipping"`
-	Unit        Squad.Unit         `json:"unit"`
-
-	Chassis []detailUnit.Chassis `json:"chassis"`
-	Weapons []detailUnit.Weapon  `json:"weapons"`
-	Towers  []detailUnit.Tower   `json:"towers"`
-	Bodies  []detailUnit.Body    `json:"bodies"`
-	Radars  []detailUnit.Radar   `json:"radars"`
-
-	Squads  []*Squad.Squad `json:"squads"`
-	Squad   *Squad.Squad   `json:"squad"`
-	SquadID int            `json:"squad_id"`
-
-	EquipSlot int `json:"equip_slot"`
-	UnitSlot  int `json:"slot"`
 
 	DontEndGames []lobby.DontEndGames `json:"dont_end_games"`
 }

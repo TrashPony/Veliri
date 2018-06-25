@@ -1,11 +1,14 @@
-package Squad
+package inventory
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 func AddNewSquad(name string, userID int) (err error, squad *Squad) {
 	// TODO проверка на имя
 	id := 0
-	err = db.QueryRow("INSERT INTO squads (name, id_user) VALUES ($1, $2) RETURNING id", name, userID).Scan(&id)
+	err = dbConnect.GetDBConnect().QueryRow("INSERT INTO squads (name, id_user) VALUES ($1, $2) RETURNING id", name, userID).Scan(&id)
 
 	if err != nil {
 		log.Fatal(err)

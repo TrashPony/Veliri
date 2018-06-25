@@ -1,6 +1,9 @@
 package detailUnit
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 type Chassis struct {
 	Id              int    `json:"id"`
@@ -14,7 +17,7 @@ type Chassis struct {
 func GetChassis() (chassiss []Chassis) {
 	chassiss = make([]Chassis, 0)
 
-	rows, err := db.Query("select * from chassis_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from chassis_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,7 +38,7 @@ func GetChassis() (chassiss []Chassis) {
 
 func GetChass(id int) (chassis *Chassis) {
 
-	rows, err := db.Query("select * from chassis_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from chassis_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

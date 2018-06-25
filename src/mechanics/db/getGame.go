@@ -3,11 +3,12 @@ package db
 import (
 	"../game"
 	"log"
+	"../../dbConnect"
 )
 
 func GetGame(idGame int) *game.Game {
 
-	rows, err := db.Query("Select id, name, id_map, step, phase, winner FROM action_games WHERE id=$1", idGame)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, id_map, step, phase, winner FROM action_games WHERE id=$1", idGame)
 	if err != nil {
 		println("Error GetInfo Game")
 		log.Fatal(err)

@@ -3,11 +3,12 @@ package lobby
 import (
 	"log"
 	"strconv"
+	"../dbConnect"
 )
 
 func GetRespawns(mapID int) []*Respawn {
 
-	rows, err := db.Query("Select id, x, y, id_map " +
+	rows, err := dbConnect.GetDBConnect().Query("Select id, x, y, id_map " +
 		"FROM map_constructor " +
 		"WHERE id_type=1 AND id_map = $1", mapID)
 	if err != nil {

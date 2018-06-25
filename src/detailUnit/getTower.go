@@ -1,6 +1,9 @@
 package detailUnit
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 type Tower struct {
 	Id             int    `json:"id"`
@@ -19,7 +22,7 @@ type Tower struct {
 func GetTowers() (towers []Tower) {
 	towers = make([]Tower, 0)
 
-	rows, err := db.Query("select * from tower_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from tower_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +43,7 @@ func GetTowers() (towers []Tower) {
 
 func GetTower(id int) (tower *Tower) {
 
-	rows, err := db.Query("select * from tower_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from tower_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -6,11 +6,12 @@ import (
 	"../unit"
 	"../watchZone"
 	"log"
+	"../../dbConnect"
 )
 
 func GetPlayer(game *game.Game) []*player.Player {
 
-	rows, err := db.Query("Select users.name, agu.ready, users.id "+
+	rows, err := dbConnect.GetDBConnect().Query("Select users.name, agu.ready, users.id "+
 		"FROM action_game_user as agu, users "+
 		"WHERE agu.id_user=users.id AND agu.id_game=$1", game.Id)
 	if err != nil {

@@ -1,6 +1,9 @@
 package detailUnit
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 type Radar struct {
 	Id       int    `json:"id"`
@@ -15,7 +18,7 @@ type Radar struct {
 func GetRadars() (radars []Radar) {
 	radars = make([]Radar, 0)
 
-	rows, err := db.Query("select * from radar_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from radar_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,7 +39,7 @@ func GetRadars() (radars []Radar) {
 
 func GetRadar(id int) (radar *Radar) {
 
-	rows, err := db.Query("select * from radar_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from radar_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

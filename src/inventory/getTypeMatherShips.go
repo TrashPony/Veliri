@@ -1,12 +1,13 @@
-package Squad
+package inventory
 
 import (
 	"log"
+	"../dbConnect"
 )
 
 func GetTypeMatherShips() []MatherShip {
 
-	rows, err := db.Query("select * from mother_ship_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,7 +29,7 @@ func GetTypeMatherShips() []MatherShip {
 
 func GetTypeMatherShip(id int) *MatherShip {
 
-	rows, err := db.Query("select * from mother_ship_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

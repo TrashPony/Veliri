@@ -6,12 +6,13 @@ import (
 	"../effect"
 	"../equip"
 	"../coordinate"
+	"../../dbConnect"
 )
 
 func GetMaxLvlEffect(gameEffect *effect.Effect) int {
 	var maxLvl int
 
-	row := db.QueryRow("SELECT COUNT(*) FROM effects_type WHERE name = $1 AND type = $2;", gameEffect.Name, gameEffect.Type)
+	row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) FROM effects_type WHERE name = $1 AND type = $2;", gameEffect.Name, gameEffect.Type)
 
 	err := row.Scan(&maxLvl)
 
@@ -25,7 +26,7 @@ func GetMaxLvlEffect(gameEffect *effect.Effect) int {
 func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 	newLevel := oldEffect.Level + up
 
-	rows, err := db.Query("SELECT * FROM effects_type WHERE level=$1 AND name=$2 AND type=$3 AND parameter=$4;",
+	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM effects_type WHERE level=$1 AND name=$2 AND type=$3 AND parameter=$4;",
 		newLevel, oldEffect.Name, oldEffect.Type, oldEffect.Parameter)
 
 	if err != nil {
@@ -55,7 +56,7 @@ func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 
 func GetUnitEffects(unit *unit.Unit) {
 
-	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_unit_effects age, effects_type et "+
 		"WHERE age.id_unit=$1 AND age.id_effect=et.id;", unit.Id)
 	if err != nil {
@@ -82,7 +83,7 @@ func GetEffectsEquip(equip *equip.Equip) {
 
 	equip.Effects = make([]*effect.Effect, 0)
 
-	rows, err := db.Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, " +
+	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, " +
 		" et.percentages, et.forever "+
 		" FROM action_game_equipping age, equip_effects ee, effects_type et "+
 		" WHERE age.id = $1 AND age.id_type = ee.id_equip AND ee.id_effect = et.id;", equip.Id)
@@ -109,7 +110,7 @@ func GetEffectsEquip(equip *equip.Equip) {
 
 func GetCoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 
-	rows, err := db.Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_zone_effects age, effects_type et "+
 		"WHERE age.id_game = $1 AND age.x = $2 AND age.y = $3 AND et.id = age.id_effect;", mapCoordinate.GameID, mapCoordinate.X, mapCoordinate.Y)
 	if err != nil {

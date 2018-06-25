@@ -8,11 +8,12 @@ import (
 	"../../detailUnit"
 	"../coordinate"
 	"../unit"
+	"../../dbConnect"
 )
 
 func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 
-	rows, err := db.Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
+	rows, err := dbConnect.GetDBConnect().Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
 		"ag.weight, ag.speed, ag.initiative, ag.damage, ag.range_attack, ag.min_attack_range, ag.area_attack, "+
 		"ag.type_attack, ag.hp, ag.max_hp, ag.armor, ag.evasion_critical, ag.vul_kinetics, ag.vul_thermal, ag.vul_em, "+
 		"ag.vul_explosive, ag.range_view, ag.accuracy, ag.wall_hack, "+

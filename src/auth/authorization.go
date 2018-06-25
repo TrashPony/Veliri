@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/sessions"
 	"encoding/json"
 	"log"
+	"../dbConnect"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -98,7 +99,7 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 }
 
 func GetUsers(name string) User{
-	rows, err := db.Query("Select id, name, mail, password FROM users WHERE name=$1", name)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, mail, password FROM users WHERE name=$1", name)
 	if err != nil {
 		log.Fatal(err)
 	}

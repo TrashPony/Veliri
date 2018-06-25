@@ -1,15 +1,15 @@
 package lobby
 
 import (
-	"./Squad"
+	"../inventory"
 )
 
 type User struct {
 	Id      int
 	Name    string
 	Ready   bool
-	Squad   *Squad.Squad
-	Squads  []*Squad.Squad
+	Squad   *inventory.Squad
+	Squads  []*inventory.Squad
 	Respawn *Respawn
 	Game    string
 }
@@ -26,7 +26,7 @@ func (user User) SetReady() bool {
 	}
 }
 
-func CheckUnit(squad *Squad.Squad) bool {
+func CheckUnit(squad *inventory.Squad) bool {
 	if len(squad.Units) >= 1 {
 		return true
 	}

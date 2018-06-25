@@ -103,26 +103,6 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 
-		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {
-			SquadSettings(ws, msg)
-		}
-
-		if msg.Event == "GetMatherShips" || msg.Event == "GetListSquad" || msg.Event == "GetDetailOfUnits" || msg.Event == "GetEquipping" {
-			GetDetailSquad(ws, msg)
-		}
-
-		if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" || msg.Event == "RemoveUnit" {
-			UnitSquad(ws, msg)
-		}
-
-		if msg.Event == "AddEquipment" || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
-			EquipSquad(ws, msg)
-		}
-
-		if msg.Event == "UnitConstructor" {
-			UnitConstructor(ws, msg)
-		}
-
 		if msg.Event == "Logout" {
 			ws.Close()
 		}

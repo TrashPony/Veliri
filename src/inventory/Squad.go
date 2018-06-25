@@ -1,9 +1,10 @@
-package Squad
+package inventory
 
 import (
 	"log"
 	"database/sql"
-	"../../detailUnit"
+	"../detailUnit"
+	"../dbConnect"
 )
 
 type Squad struct {
@@ -16,7 +17,7 @@ type Squad struct {
 
 func (squad *Squad) GetSquadMatherShip() {
 
-	rows, err := db.Query("Select id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +43,7 @@ func (squad *Squad) AddMatherShip(id int) () {
 	matherShip := GetTypeMatherShip(id)
 	squad.MatherShip = matherShip
 
-	_, err := db.Exec("INSERT INTO squad_mother_ship (id_squad, id_mother_ship) "+
+	_, err := dbConnect.GetDBConnect().Exec("INSERT INTO squad_mother_ship (id_squad, id_mother_ship) "+
 		"VALUES ($1, $2)", squad.ID, matherShip.Id)
 	if err != nil {
 		log.Fatal(err)
@@ -53,7 +54,7 @@ func (squad *Squad) DelMatherShip() () {
 
 	squad.MatherShip = nil
 
-	_, err := db.Exec("DELETE FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +67,7 @@ func (squad *Squad) ReplaceMatherShip(id int) () {
 }
 
 func (squad *Squad) GetSquadUnits() {
-	rows, err := db.Query("Select slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
+	rows, err := dbConnect.GetDBConnect().Query("Select slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -151,7 +152,7 @@ func (squad *Squad) AddUnit(unit *Unit, slot int) {
 			RadarID = sql.NullInt64{int64(unit.Radar.Id), true}
 		}
 
-		_, err := db.Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+
+		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO squad_units (id_squad, slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar) "+
 			"VALUES ($1, $2, $3, $4, $5, $6, $7)", squad.ID, slot, ChassisID, WeaponID, TowerID, BodyID, RadarID)
 
 		if err != nil {
@@ -164,7 +165,7 @@ func (squad *Squad) DelUnit(slot int) (error) {
 
 	squad.Units[slot] = nil
 
-	_, err := db.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
 	if err != nil {
 		println("DelUnit")
 		log.Fatal(err)
@@ -182,7 +183,7 @@ func (squad *Squad) ReplaceUnit(unit *Unit, slot int) {
 }
 
 func (squad *Squad) GetSquadEquip() {
-	rows, err := db.Query("Select slot_in_mother_ship, id_equipping FROM squad_equipping WHERE id_squad=$1", squad.ID)
+	rows, err := dbConnect.GetDBConnect().Query("Select slot_in_mother_ship, id_equipping FROM squad_equipping WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -214,7 +215,7 @@ func (squad *Squad) AddEquip(equip *Equipping, slot int) {
 
 		squad.Equip[slot] = equip
 
-		_, err := db.Exec("INSERT INTO squad_equipping (id_squad, slot_in_mother_ship, id_equipping) "+
+		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO squad_equipping (id_squad, slot_in_mother_ship, id_equipping) "+
 			"VALUES ($1, $2, $3)", squad.ID, slot, equip.Id)
 		if err != nil {
 			log.Fatal(err)
@@ -225,7 +226,7 @@ func (squad *Squad) AddEquip(equip *Equipping, slot int) {
 func (squad *Squad) DelEquip(slot int) (error) {
 	squad.Equip[slot] = nil
 
-	_, err := db.Exec("DELETE FROM squad_equipping WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM squad_equipping WHERE id_squad=$1 AND slot_in_mother_ship=$2", squad.ID, slot)
 	if err != nil {
 		println("DelEquip")
 		log.Fatal(err)

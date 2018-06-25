@@ -2,11 +2,12 @@ package lobby
 
 import (
 	"log"
+	"../dbConnect"
 )
 
 func GetUsers(query string) User {
 
-	rows, err := db.Query("Select id, name FROM users " + query)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name FROM users " + query)
 	if err != nil {
 		log.Fatal(err)
 	}

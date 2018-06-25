@@ -3,12 +3,14 @@ package lobby
 import (
 	"log"
 	"database/sql"
+	"../dbConnect"
 )
 
 func StartNewGame(game *LobbyGames) (int, bool) {
+
 	id := 0
 	// TODO переделать на транзакции
-	err := db.QueryRow("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5) RETURNING id", // добавляем новую игру в БД
+	err := dbConnect.GetDBConnect().QueryRow("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5) RETURNING id", // добавляем новую игру в БД
 		game.Name, game.Map.Id, 0, "Init", "").Scan(&id) // название игры, id карты, 0 - ход, Фаза Инициализации (растановка войск), победитель
 
 	if err != nil {
@@ -18,7 +20,7 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 	}
 
 	for _, user := range game.Users {
-		_, err = db.Exec("INSERT INTO action_mother_ship (id_game, id_type, id_user, x, y) VALUES ($1, $2, $3, $4, $5)",
+		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_mother_ship (id_game, id_type, id_user, x, y) VALUES ($1, $2, $3, $4, $5)",
 			id, user.Squad.MatherShip.Id, user.Id, user.Respawn.X, user.Respawn.Y)
 		if err != nil {
 			println("add matherShip error")
@@ -26,7 +28,7 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 			return id, false
 		}
 
-		_, err = db.Exec("INSERT INTO action_game_user (id_game, id_user, ready) VALUES ($1, $2, $3)",
+		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_user (id_game, id_user, ready) VALUES ($1, $2, $3)",
 			id, user.Id, "false")
 		if err != nil {
 			println("add user game error")
@@ -62,7 +64,7 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 				RadarID = sql.NullInt64{int64(unit.Radar.Id), true}
 			}
 
-			_, err = db.Exec("INSERT INTO action_game_unit (id_user, id_game, "+ // вносим методанные юнита
+			_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_unit (id_user, id_game, "+ // вносим методанные юнита
 				"id_chassis, id_weapons, id_tower, id_body, id_radar, "+ // части тела
 				"weight, speed, initiative, damage, range_attack, min_attack_range, area_attack, "+ // характиристики
 				"type_attack, hp, armor, evasion_critical, vul_kinetics, vul_thermal, vul_em, vul_explosive, "+
@@ -81,7 +83,7 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 		}
 
 		for _, equip := range user.Squad.Equip {
-			_, err = db.Exec("INSERT INTO action_game_equipping (id_game, id_user, id_type, used) VALUES ($1, $2, $3, $4)",
+			_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_equipping (id_game, id_user, id_type, used) VALUES ($1, $2, $3, $4)",
 				id, user.Id, equip.Id, false)
 			if err != nil {
 				println("add equip error")
@@ -101,7 +103,8 @@ func StartNewGame(game *LobbyGames) (int, bool) {
 }
 
 func AddCoordinateEffects(mapID, gameID int) error {
-	rows, err := db.Query("SELECT mc.x, mc.y, cte.id_effect "+
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, cte.id_effect "+
 		"FROM map_constructor mc, coordinate_type ct, coordinate_type_effect cte "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND ct.id = cte.id_type; ", mapID)
 
@@ -119,7 +122,7 @@ func AddCoordinateEffects(mapID, gameID int) error {
 			return err
 		}
 
-		_, err = db.Exec("INSERT INTO action_game_zone_effects (id_game, id_effect, x, y, left_steps) VALUES ($1, $2, $3, $4, $5)",
+		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_zone_effects (id_game, id_effect, x, y, left_steps) VALUES ($1, $2, $3, $4, $5)",
 			gameID, effectID, x, y, 999)
 
 		if err != nil {

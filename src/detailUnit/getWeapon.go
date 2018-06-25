@@ -1,6 +1,9 @@
 package detailUnit
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 type Weapon struct {
 	Id             int    `json:"id"`
@@ -17,7 +20,7 @@ type Weapon struct {
 func GetWeapons() (weapons []Weapon) {
 	weapons = make([]Weapon, 0)
 
-	rows, err := db.Query("select * from weapon_type")
+	rows, err := dbConnect.GetDBConnect().Query("select * from weapon_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +41,7 @@ func GetWeapons() (weapons []Weapon) {
 
 func GetWeapon(id int) (weapon *Weapon) {
 
-	rows, err := db.Query("select * from weapon_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("select * from weapon_type where id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}

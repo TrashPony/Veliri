@@ -1,10 +1,13 @@
-package Squad
+package inventory
 
-import "log"
+import (
+	"log"
+	"../dbConnect"
+)
 
 func GetUserSquads(userID int) (squads []*Squad, err error) {
 
-	rows, err := db.Query("Select id, name FROM squads WHERE id_user=$1", userID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name FROM squads WHERE id_user=$1", userID)
 	if err != nil {
 		log.Fatal(err)
 	}

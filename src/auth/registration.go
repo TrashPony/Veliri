@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"encoding/json"
 	"log"
+	"../dbConnect"
 )
 
 type response struct {
@@ -96,7 +97,7 @@ func SuccessRegistration(login, email, password string) {
 		panic(err)
 	}
 
-	_, err = db.Exec("INSERT INTO users (name, password, mail) VALUES ($1, $2, $3)", login, hashPassword, email)
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO users (name, password, mail) VALUES ($1, $2, $3)", login, hashPassword, email)
 
 	if err != nil {
 		log.Fatal(err)

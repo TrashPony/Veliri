@@ -1,13 +1,14 @@
-package Squad
+package inventory
 
 import (
 	"log"
-	"../../mechanics/effect"
+	"../mechanics/effect"
+	"../dbConnect"
 )
 
 func GetTypeEquipping() []Equipping {
 
-	rows, err := db.Query("SELECT * FROM equipping_type")
+	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +34,7 @@ func GetTypeEquipping() []Equipping {
 
 func GetTypeEquip(id int) Equipping {
 
-	rows, err := db.Query("SELECT * FROM equipping_type WHERE id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type WHERE id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +58,7 @@ func GetEffectsEquip(equip *Equipping) {
 
 	equip.Effects = make([]effect.Effect, 0)
 
-	rows, err := db.Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
+	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
 		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equip.Id)
 	if err != nil {
 		log.Fatal(err)
