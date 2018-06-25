@@ -1,28 +1,13 @@
-package detailUnit
+package get
 
 import (
+	"../../../dbConnect"
+	"../../gameObjects/detail"
 	"log"
-	"../../../../dbConnect"
 )
 
-type Body struct {
-	Id             int    `json:"id"`
-	Name           string `json:"name"`
-	Type           string `json:"type"`
-	Weight         int    `json:"weight"`
-	Speed          int    `json:"speed"`
-	HP             int    `json:"hp"`
-	MaxTowerWeight int    `json:"max_tower_weight"`
-	Armor          int    `json:"armor"`
-	VulToKinetics  int    `json:"vul_to_kinetics"`
-	VulToThermo    int    `json:"vul_to_thermo"`
-	VulToEM        int    `json:"vul_to_em"`
-	VulToExplosion int    `json:"vul_to_explosion"`
-	RangeView      int    `json:"range_view"`
-}
-
-func GetBodies() (bodies []Body) {
-	bodies = make([]Body, 0)
+func Bodies() (bodies []detail.Body) {
+	bodies = make([]detail.Body, 0)
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from body_type")
 	if err != nil {
@@ -30,7 +15,7 @@ func GetBodies() (bodies []Body) {
 	}
 	defer rows.Close()
 
-	var body Body
+	var body detail.Body
 
 	for rows.Next() {
 		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)
@@ -43,7 +28,7 @@ func GetBodies() (bodies []Body) {
 	return bodies
 }
 
-func GetBody(id int) (body *Body) {
+func Body(id int) (body *detail.Body) {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from body_type where id=$1", id)
 	if err != nil {
@@ -51,7 +36,7 @@ func GetBody(id int) (body *Body) {
 	}
 	defer rows.Close()
 
-	body = &Body{}
+	body = &detail.Body{}
 
 	for rows.Next() {
 		err := rows.Scan(&body.Id, &body.Name, &body.Type, &body.Weight, &body.HP, &body.MaxTowerWeight, &body.Armor, &body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion)

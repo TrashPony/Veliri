@@ -1,24 +1,7 @@
 package inventory
 
-import (
-	"log"
-	"database/sql"
-	"../gameObjects/unit/detailUnit"
-	"../../dbConnect"
-	"../gameObjects/unit"
-	"../gameObjects/matherShip"
-	"../gameObjects/equip"
-)
 
-type Squad struct {
-	ID         int                    `json:"id"`
-	Name       string                 `json:"name"`
-	MatherShip *matherShip.MatherShip `json:"mather_ship"`
-	Units      map[int]*unit.Unit     `json:"units"`
-	Equip      map[int]*equip.Equip     `json:"equip"`
-}
-
-func (squad *Squad) GetSquadMatherShip() {
+/*func (squad *Squad) GetSquadMatherShip() {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id_mother_ship FROM squad_mother_ship WHERE id_squad=$1", squad.ID)
 	if err != nil {
@@ -70,7 +53,7 @@ func (squad *Squad) ReplaceMatherShip(id int) () {
 }
 
 func (squad *Squad) GetSquadUnits() {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
+	/*rows, err := dbConnect.GetDBConnect().Query("SELECT slot_in_mother_ship, id_chassis, id_weapon, id_tower, id_body, id_radar FROM squad_units WHERE id_squad=$1", squad.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,12 +80,12 @@ func (squad *Squad) GetSquadUnits() {
 		}
 
 		if weaponID.Valid {
-			weapon := detailUnit.GetWeapon(int(weaponID.Int64))
+			weapon := get.GetWeapon(int(weaponID.Int64))
 			gameUnit.SetWeapon(weapon)
 		}
 
 		if bodyID.Valid {
-			body := detailUnit.GetBody(int(bodyID.Int64))
+			body := get.GetBody(int(bodyID.Int64))
 			gameUnit.SetBody(body)
 		}
 
@@ -221,3 +204,4 @@ func (squad *Squad) ReplaceEquip(equip *equip.Equip, slot int) {
 		squad.AddEquip(equip, slot)
 	}
 }
+*/

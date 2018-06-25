@@ -1,24 +1,13 @@
-package detailUnit
+package get
 
 import (
+	"../../../dbConnect"
+	"../../gameObjects/detail"
 	"log"
-	"../../../../dbConnect"
 )
 
-type Weapon struct {
-	Id             int    `json:"id"`
-	Name		   string `json:"name"`
-	Type           string `json:"type"`
-	Weight         int    `json:"weight"`
-	Damage         int    `json:"damage"`
-	MinAttackRange int    `json:"min_attack_range"`
-	Range		   int    `json:"range"`
-	Accuracy       int    `json:"accuracy"`
-	AreaCovers     int    `json:"area_covers"`
-}
-
-func GetWeapons() (weapons []Weapon) {
-	weapons = make([]Weapon, 0)
+func Weapons() (weapons []detail.Weapon) {
+	weapons = make([]detail.Weapon, 0)
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from weapon_type")
 	if err != nil {
@@ -26,7 +15,7 @@ func GetWeapons() (weapons []Weapon) {
 	}
 	defer rows.Close()
 
-	var weapon Weapon
+	var weapon detail.Weapon
 
 	for rows.Next() {
 		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
@@ -39,7 +28,7 @@ func GetWeapons() (weapons []Weapon) {
 	return weapons
 }
 
-func GetWeapon(id int) (weapon *Weapon) {
+func Weapon(id int) (weapon *detail.Weapon) {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from weapon_type where id=$1", id)
 	if err != nil {
@@ -47,7 +36,7 @@ func GetWeapon(id int) (weapon *Weapon) {
 	}
 	defer rows.Close()
 
-	weapon = &Weapon{}
+	weapon = &detail.Weapon{}
 
 	for rows.Next() {
 		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
@@ -58,4 +47,3 @@ func GetWeapon(id int) (weapon *Weapon) {
 
 	return weapon
 }
-

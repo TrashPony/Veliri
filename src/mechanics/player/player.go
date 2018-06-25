@@ -4,8 +4,8 @@ import (
 	"../gameObjects/equip"
 	"../gameObjects/matherShip"
 	"../gameObjects/unit"
+	"../gameObjects/squad"
 	"../localGame/map/coordinate"
-	"../inventory"
 )
 
 type Player struct {
@@ -24,8 +24,8 @@ type Player struct {
 	equips             []*equip.Equip
 	ready              bool
 
-	Squad   *inventory.Squad
-	Squads  []*inventory.Squad
+	Squad   *squad.Squad
+	Squads  []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {

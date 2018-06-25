@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
-	"../../mechanics/gameObjects/unit/detailUnit"
+	"../../mechanics/gameObjects/squad"
+	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/matherShip"
 	"../../mechanics/gameObjects/equip"
@@ -45,11 +45,11 @@ type Response struct {
 	Equipping   []equip.Equip   `json:"equipping"`
 	Unit        unit.Unit               `json:"unit"`
 
-	Weapons []detailUnit.Weapon `json:"weapons"`
-	Bodies  []detailUnit.Body   `json:"bodies"`
+	Weapons []detail.Weapon `json:"weapons"`
+	Bodies  []detail.Body   `json:"bodies"`
 
-	Squads  []*inventory.Squad `json:"squads"`
-	Squad   *inventory.Squad   `json:"squad"`
+	Squads  []*squad.Squad `json:"squads"`
+	Squad   *squad.Squad   `json:"squad"`
 	SquadID int                `json:"squad_id"`
 
 	EquipSlot int `json:"equip_slot"`

@@ -1,15 +1,15 @@
-package db
+package getLocalGame
 
 import (
 	"strconv"
 	"log"
-	"../localGame/map/coordinate"
-	"../localGame/map/gameMap"
-	"../localGame"
-	"../../dbConnect"
+	"../../localGame/map/coordinate"
+	"../../localGame/map/gameMap"
+	"../../localGame"
+	"../../../dbConnect"
 )
 
-func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
+func CoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+
@@ -31,7 +31,7 @@ func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 		}
 
 		gameCoordinate.GameID = game.Id
-		GetCoordinateEffects(&gameCoordinate)
+		CoordinateEffects(&gameCoordinate)
 
 		if oneLayerMap[gameCoordinate.X] != nil {
 			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
@@ -41,7 +41,7 @@ func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 		}
 	}
 
-	defaultCoordinate := GetDefaultCoordinateType(mp)
+	defaultCoordinate := DefaultCoordinateType(mp)
 
 	for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
 		for y := 0; y < mp.YSize; y++ {
@@ -55,7 +55,7 @@ func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 				gameCoordinate.Y = y
 				
 				gameCoordinate.GameID = game.Id
-				GetCoordinateEffects(&gameCoordinate)
+				CoordinateEffects(&gameCoordinate)
 
 				if oneLayerMap[gameCoordinate.X] != nil {
 					oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
@@ -70,7 +70,7 @@ func GetCoordinatesMap(mp *gameMap.Map, game *localGame.Game) {
 	mp.OneLayerMap = oneLayerMap
 }
 
-func GetDefaultCoordinateType(mp *gameMap.Map) coordinate.Coordinate {
+func DefaultCoordinateType(mp *gameMap.Map) coordinate.Coordinate {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT type, texture_flore, texture_object, move, view, attack, passable_edges "+
 		"FROM coordinate_type "+
 		"WHERE id = $1;", strconv.Itoa(mp.DefaultTypeID))

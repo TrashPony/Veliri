@@ -1,12 +1,12 @@
-package inventory
+package get
 
 import (
 	"log"
-	"../../dbConnect"
-	"../gameObjects/matherShip"
+	"../../../dbConnect"
+	"../../gameObjects/matherShip"
 )
 
-func GetTypeMatherShips() []matherShip.MatherShip {
+func TypeMatherShips() []matherShip.MatherShip {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type")
 	if err != nil {
@@ -29,7 +29,7 @@ func GetTypeMatherShips() []matherShip.MatherShip {
 	return matherShips
 }
 
-func GetTypeMatherShip(id int) *matherShip.MatherShip {
+func TypeMatherShip(id int) *matherShip.MatherShip {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type where id=$1", id)
 	if err != nil {

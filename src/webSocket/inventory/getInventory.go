@@ -1,29 +1,28 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
+	"../../mechanics/db/get"
 	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit/detailUnit"
 )
 
 func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "GetDetailOfUnits" {
 
-		weapons := detailUnit.GetWeapons()
-		bodies := detailUnit.GetBodies()
+		//weapons := detailUnit.GetWeapons()
+		//bodies := detailUnit.GetBodies()
 
-		var resp = Response{Event: msg.Event, Weapons: weapons, Bodies: bodies}
-		ws.WriteJSON(resp)
+		//var resp = Response{Event: msg.Event, Weapons: weapons, Bodies: bodies}
+		//ws.WriteJSON(resp)
 	}
 
 	if msg.Event == "GetEquipping" {
-		var equipping = inventory.GetTypeEquipping()
+		var equipping = get.TypeEquipping()
 		var resp = Response{Event: msg.Event, Equipping: equipping}
 		ws.WriteJSON(resp)
 	}
 
 	if msg.Event == "GetListSquad" {
-		squads, err := inventory.GetUserSquads(usersInventoryWs[ws].GetID())
+		squads, err := get.UserSquads(usersInventoryWs[ws].GetID())
 
 		var resp Response
 
@@ -38,7 +37,7 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "GetMatherShips" {
-		var matherShips = inventory.GetTypeMatherShips()
+		var matherShips = get.TypeMatherShips()
 		var resp = Response{Event: msg.Event, MatherShips: matherShips}
 		ws.WriteJSON(resp)
 	}

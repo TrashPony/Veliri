@@ -3,7 +3,7 @@ package useEquip
 import (
 	"../../gameObjects/unit"
 	"../../gameObjects/equip"
-	"../../db"
+	"../../db/update"
 	"../../player"
 )
 
@@ -15,6 +15,6 @@ func ToUnit(gameUnit *unit.Unit, useEquip *equip.Equip, client *player.Player) {
 		AddNewUnitEffect(gameUnit, effect)
 	}
 
-	db.UpdateUnit(gameUnit)
-	db.UpdatePlayer(client)
+	update.Unit(gameUnit)
+	update.Player(client)
 }

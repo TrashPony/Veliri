@@ -1,13 +1,13 @@
-package db
+package update
 
 import (
-	"../gameObjects/unit"
-	"../localGame/map/coordinate"
+	"../../gameObjects/unit"
+	"../../localGame/map/coordinate"
 	"log"
-	"../../dbConnect"
+	"../../../dbConnect"
 )
 
-func UpdateUnitEffects(unit *unit.Unit) error {
+func UnitEffects(unit *unit.Unit) error {
 	for _, unitEffect := range unit.Effects {
 		if unitEffect.StepsTime == 0 {
 
@@ -49,7 +49,7 @@ func UpdateUnitEffects(unit *unit.Unit) error {
 	return nil
 }
 
-func UpdateCoordinateEffects(mapCoordinate *coordinate.Coordinate) error {
+func CoordinateEffects(mapCoordinate *coordinate.Coordinate) error {
 	for _, coordinateEffect := range mapCoordinate.Effects {
 		if coordinateEffect.StepsTime == 0 {
 

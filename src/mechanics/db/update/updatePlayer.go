@@ -1,12 +1,12 @@
-package db
+package update
 
 import (
 	"log"
-	"../player"
-	"../../dbConnect"
+	"../../player"
+	"../../../dbConnect"
 )
 
-func UpdatePlayer(client *player.Player) {
+func Player(client *player.Player) {
 	_, err := dbConnect.GetDBConnect().Exec("Update action_game_user SET ready=$1 WHERE id_game=$2", client.GetReady(), client.GetGameID())
 
 	if err != nil {
@@ -14,10 +14,10 @@ func UpdatePlayer(client *player.Player) {
 		log.Fatal(err)
 	}
 
-	UpdatePlayerEquip(client)
+	PlayerEquip(client)
 }
 
-func UpdatePlayerEquip(client *player.Player)  {
+func PlayerEquip(client *player.Player)  {
 
 	for _, playerEquip := range client.GetEquips() {
 

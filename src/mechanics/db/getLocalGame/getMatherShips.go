@@ -1,12 +1,12 @@
-package db
+package getLocalGame
 
 import (
-	"../gameObjects/matherShip"
+	"../../gameObjects/matherShip"
+	"../../../dbConnect"
 	"log"
-	"../../dbConnect"
 )
 
-func GetMatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherShip) {
+func MatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherShip) {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select type.type, users.name, ship.x, ship.y, "+
 		"type.hp, type.armor, type.range_view "+

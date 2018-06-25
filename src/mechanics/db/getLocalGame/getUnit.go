@@ -1,16 +1,15 @@
-package db
+package getLocalGame
 
 import (
 	"database/sql"
 	"strings"
 	"strconv"
-	"../gameObjects/unit/detailUnit"
-	"../localGame/map/coordinate"
-	"../gameObjects/unit"
+	"../../localGame/map/coordinate"
+	"../../gameObjects/unit"
 	//"../../dbConnect"
 )
 
-func GetAllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
+func AllUnits(idGame int) (map[int]map[int]*unit.Unit, []*unit.Unit ){
 
 	/*rows, err := dbConnect.GetDBConnect().Query("Select ag.id, users.name, ag.x, ag.y, ag.rotate, ag.action, ag.target, ag.queue_attack, "+
 		"ag.weight, ag.speed, ag.initiative, ag.damage, ag.range_attack, ag.min_attack_range, ag.area_attack, "+
@@ -91,11 +90,11 @@ func ParseUnitTarget(targetKey string) *coordinate.Coordinate {
 
 func SetDetails(unit *unit.Unit, weaponID, bodyID sql.NullInt64)  {
 	if weaponID.Valid {
-		weapon := detailUnit.GetWeapon(int(weaponID.Int64))
-		unit.SetWeapon(weapon)
+		//weapon := detailUnit.GetWeapon(int(weaponID.Int64))
+		//unit.SetWeapon(weapon)
 	}
 	if bodyID.Valid {
-		body := detailUnit.GetBody(int(bodyID.Int64))
-		unit.SetBody(body)
+		//body := detailUnit.GetBody(int(bodyID.Int64))
+		//unit.SetBody(body)
 	}
 }

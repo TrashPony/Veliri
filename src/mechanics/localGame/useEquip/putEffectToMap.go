@@ -4,7 +4,7 @@ import (
 	"../../gameObjects/equip"
 	"../../player"
 	"../map/coordinate"
-	"../../db"
+	"../../db/update"
 	"strconv"
 	"../../localGame"
 )
@@ -28,11 +28,11 @@ func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, use
 
 			AddCoordinate(effectCoordinates, gameCoordinate)
 
-			db.UpdateCoordinateEffects(gameCoordinate)
+			update.CoordinateEffects(gameCoordinate)
 		}
 	}
 
-	db.UpdatePlayer(client)
+	update.Player(client)
 
 	return effectCoordinates
 }

@@ -2,28 +2,27 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit/detailUnit"
 	"../../mechanics/gameObjects/unit"
 )
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" {
 		if usersInventoryWs[ws].Squad != nil {
-			var gameUnit unit.Unit
+			//var gameUnit unit.Unit
 			// todo проверка на занятость слота в который хотят добавить юнита
 			if msg.WeaponID != 0 {
-				gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
+				//gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 			}
 
 			if msg.BodyID != 0 {
-				gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
+				//gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
 			}
 
 
 			if msg.Event == "AddUnit" {
-				usersInventoryWs[ws].Squad.AddUnit(&gameUnit, msg.UnitSlot)
+				//usersInventoryWs[ws].Squad.AddUnit(&gameUnit, msg.UnitSlot)
 			} else {
-				usersInventoryWs[ws].Squad.ReplaceUnit(&gameUnit, msg.UnitSlot)
+				//usersInventoryWs[ws].Squad.ReplaceUnit(&gameUnit, msg.UnitSlot)
 			}
 
 			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].Squad}
@@ -36,7 +35,7 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 
 	if msg.Event == "RemoveUnit" {
 		if usersInventoryWs[ws].Squad != nil {
-			err := usersInventoryWs[ws].Squad.DelUnit(msg.UnitSlot)
+			/*err := usersInventoryWs[ws].Squad.DelUnit(msg.UnitSlot)
 
 			if err == nil {
 				resp := Response{Event: msg.Event, Error: "none", UnitSlot: msg.UnitSlot}
@@ -50,7 +49,7 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 			ws.WriteJSON(resp)
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
-			ws.WriteJSON(resp)
+			ws.WriteJSON(resp)*/
 		}
 	}
 }
@@ -63,13 +62,13 @@ func UnitConstructor(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.WeaponID != 0 {
-		gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
+		//gameUnit.SetWeapon(detailUnit.GetWeapon(msg.WeaponID))
 	} else {
 		gameUnit.DelWeapon()
 	}
 
 	if msg.BodyID != 0 {
-		gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
+		//gameUnit.SetBody(detailUnit.GetBody(msg.BodyID))
 	} else {
 		gameUnit.DelBody()
 	}

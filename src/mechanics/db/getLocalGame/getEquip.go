@@ -1,14 +1,14 @@
-package db
+package getLocalGame
 
 import (
-	"../player"
-	"../localGame"
-	"../gameObjects/equip"
+	"../../player"
+	"../../localGame"
+	"../../gameObjects/equip"
+	"../../../dbConnect"
 	"log"
-	"../../dbConnect"
 )
 
-func GetEquip(player player.Player, game *localGame.Game) []*equip.Equip {
+func Equip(player player.Player, game *localGame.Game) []*equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select equip.id, type.type, equip.used, type.specification, "+
 		"type.applicable, type.region " +
@@ -31,7 +31,7 @@ func GetEquip(player player.Player, game *localGame.Game) []*equip.Equip {
 			log.Fatal(err)
 		}
 
-		GetEffectsEquip(&userEquip)
+		EffectsEquip(&userEquip)
 
 		equips = append(equips, &userEquip)
 	}

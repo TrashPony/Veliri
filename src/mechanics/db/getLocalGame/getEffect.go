@@ -1,15 +1,15 @@
-package db
+package getLocalGame
 
 import (
+	"../../gameObjects/unit"
+	"../../gameObjects/effect"
+	"../../gameObjects/equip"
+	"../../localGame/map/coordinate"
+	"../../../dbConnect"
 	"log"
-	"../gameObjects/unit"
-	"../gameObjects/effect"
-	"../gameObjects/equip"
-	"../localGame/map/coordinate"
-	"../../dbConnect"
 )
 
-func GetMaxLvlEffect(gameEffect *effect.Effect) int {
+func MaxLvlEffect(gameEffect *effect.Effect) int {
 	var maxLvl int
 
 	row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) FROM effects_type WHERE name = $1 AND type = $2;", gameEffect.Name, gameEffect.Type)
@@ -23,7 +23,7 @@ func GetMaxLvlEffect(gameEffect *effect.Effect) int {
 	return maxLvl
 }
 
-func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
+func NewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 	newLevel := oldEffect.Level + up
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM effects_type WHERE level=$1 AND name=$2 AND type=$3 AND parameter=$4;",
@@ -54,7 +54,7 @@ func GetNewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 	return nil
 }
 
-func GetUnitEffects(unit *unit.Unit) {
+func UnitEffects(unit *unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_unit_effects age, effects_type et "+
@@ -79,7 +79,7 @@ func GetUnitEffects(unit *unit.Unit) {
 	}
 }
 
-func GetEffectsEquip(equip *equip.Equip) {
+func EffectsEquip(equip *equip.Equip) {
 
 	equip.Effects = make([]*effect.Effect, 0)
 
@@ -108,7 +108,7 @@ func GetEffectsEquip(equip *equip.Equip) {
 	}
 }
 
-func GetCoordinateEffects(mapCoordinate *coordinate.Coordinate) {
+func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT age.id, et.id, et.name, et.level, et.type, age.left_steps, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM action_game_zone_effects age, effects_type et "+

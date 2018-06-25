@@ -5,7 +5,7 @@ import (
 	"../../../gameObjects/unit"
 	"../../../player"
 	"../../map/watchZone"
-	"../../../db"
+	"../../../db/update"
 	"errors"
 	"math"
 	"../../../localGame"
@@ -58,7 +58,7 @@ func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game
 			queue := Queue(game)
 			gameUnit.QueueAttack = queue
 
-			db.UpdateUnit(gameUnit)
+			update.Unit(gameUnit)
 
 			return
 		}

@@ -51,9 +51,9 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "SelectMatherShip" {
 		if usersInventoryWs[ws].Squad != nil {
 			if usersInventoryWs[ws].Squad.MatherShip != nil {
-				usersInventoryWs[ws].Squad.ReplaceMatherShip(msg.MatherShipID)
+				//usersInventoryWs[ws].Squad.ReplaceMatherShip(msg.MatherShipID)
 			} else {
-				usersInventoryWs[ws].Squad.AddMatherShip(msg.MatherShipID)
+				//usersInventoryWs[ws].Squad.AddMatherShip(msg.MatherShipID)
 			}
 			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].Squad}
 			ws.WriteJSON(resp)

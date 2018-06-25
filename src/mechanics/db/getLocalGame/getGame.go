@@ -1,12 +1,12 @@
-package db
+package getLocalGame
 
 import (
-	"../localGame"
+	"../../localGame"
+	"../../../dbConnect"
 	"log"
-	"../../dbConnect"
 )
 
-func GetGame(idGame int) *localGame.Game {
+func Game(idGame int) *localGame.Game {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, id_map, step, phase, winner FROM action_games WHERE id=$1", idGame)
 	if err != nil {

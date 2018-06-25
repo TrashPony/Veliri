@@ -1,7 +1,7 @@
 package unit
 
 import (
-	"./detailUnit"
+	"../detail"
 	"../effect"
 	"../../localGame/map/coordinate"
 )
@@ -11,8 +11,8 @@ type Unit struct {
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
 
-	Weapon *detailUnit.Weapon `json:"weapon"`
-	Body   *detailUnit.Body   `json:"body"`
+	Weapon *detail.Weapon `json:"weapon"`
+	Body   *detail.Body   `json:"body"`
 	// todo AMMO
 
 	MotherShipSlot int `json:"mother_ship_slot"`
@@ -51,11 +51,11 @@ func (unit *Unit) DelAmmo() {
 
 }
 
-func (unit *Unit) SetWeapon(weapon *detailUnit.Weapon) {
+func (unit *Unit) SetWeapon(weapon *detail.Weapon) {
 	unit.Weapon = weapon
 }
 
-func (unit *Unit) SetBody(body *detailUnit.Body) {
+func (unit *Unit) SetBody(body *detail.Body) {
 	unit.Body = body
 }
 

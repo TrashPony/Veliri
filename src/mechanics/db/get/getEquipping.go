@@ -1,13 +1,13 @@
-package inventory
+package get
 
 import (
 	"log"
-	"../gameObjects/effect"
-	"../../dbConnect"
-	"../gameObjects/equip"
+	"../../gameObjects/effect"
+	"../../../dbConnect"
+	"../../gameObjects/equip"
 )
 
-func GetTypeEquipping() []equip.Equip {
+func TypeEquipping() []equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type")
 	if err != nil {
@@ -25,7 +25,7 @@ func GetTypeEquipping() []equip.Equip {
 			log.Fatal(err)
 		}
 
-		GetEffectsEquip(&equipType)
+		EffectsEquip(&equipType)
 
 		equipping = append(equipping, equipType)
 	}
@@ -33,7 +33,7 @@ func GetTypeEquipping() []equip.Equip {
 	return equipping
 }
 
-func GetTypeEquip(id int) equip.Equip {
+func TypeEquip(id int) equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type WHERE id=$1", id)
 	if err != nil {
@@ -51,12 +51,12 @@ func GetTypeEquip(id int) equip.Equip {
 		}
 	}
 
-	GetEffectsEquip(&equipType)
+	EffectsEquip(&equipType)
 
 	return equipType
 }
 
-func GetEffectsEquip(equipType *equip.Equip) {
+func EffectsEquip(equipType *equip.Equip) {
 
 	equipType.Effects = make([]*effect.Effect, 0)
 

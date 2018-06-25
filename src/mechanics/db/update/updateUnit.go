@@ -1,12 +1,12 @@
-package db
+package update
 
 import (
-	"../gameObjects/unit"
+	"../../gameObjects/unit"
 	//"strconv"
 	//"../../dbConnect"
 )
 
-func UpdateUnit(unit *unit.Unit) error {
+func Unit(unit *unit.Unit) error {
 
 	//var target string
 	// todo переделать под новую структуру бд

@@ -1,15 +1,15 @@
-package db
+package getLocalGame
 
 import (
-	"../localGame"
-	"../player"
-	"../gameObjects/unit"
-	"../localGame/map/watchZone"
+	"../../localGame"
+	"../../player"
+	"../../gameObjects/unit"
+	"../../localGame/map/watchZone"
+	"../../../dbConnect"
 	"log"
-	"../../dbConnect"
 )
 
-func GetPlayer(game *localGame.Game) []*player.Player {
+func Player(game *localGame.Game) []*player.Player {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select users.name, agu.ready, users.id "+
 		"FROM action_game_user as agu, users "+
@@ -38,8 +38,8 @@ func GetPlayer(game *localGame.Game) []*player.Player {
 		client.SetReady(ready)
 		client.SetID(id)
 
-		equip := GetEquip(client, game)
-		units := GetNotGameUnits(client, game)
+		equip := Equip(client, game)
+		units := NotGameUnits(client, game)
 
 		client.SetGameID(game.Id)
 		client.SetEquip(equip)
@@ -53,7 +53,7 @@ func GetPlayer(game *localGame.Game) []*player.Player {
 	return users
 }
 
-func GetNotGameUnits(player player.Player, game *localGame.Game) []*unit.Unit {
+func NotGameUnits(player player.Player, game *localGame.Game) []*unit.Unit {
 	units := make([]*unit.Unit, 0)
 
 	for _, gameUnit := range game.GetUnitsStorage() {

@@ -2,13 +2,13 @@ package userReady
 
 import (
 	"../../player"
-	"../../db"
+	"../../db/update"
 	"../../localGame"
 )
 
 func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
 	client.SetReady(true)
-	db.UpdatePlayer(client)
+	update.Player(client)
 
 	allReady := true
 
@@ -41,18 +41,18 @@ func changeGamePhase(actionGame *localGame.Game) {
 		}
 	}
 
-	db.UpdateGame(actionGame)
+	update.Game(actionGame)
 
 	for _, user := range actionGame.GetPlayers() {
 		user.SetReady(false)
-		db.UpdatePlayer(user)
+		update.Player(user)
 	}
 
 	for _, xLine := range actionGame.GetUnits() {
 		for _, unit := range xLine {
 			unit.Action = false
 			unit.Target = nil
-			db.UpdateUnit(unit)
+			update.Unit(unit)
 		}
 	}
 }

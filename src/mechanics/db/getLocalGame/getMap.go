@@ -1,13 +1,13 @@
-package db
+package getLocalGame
 
 import (
-	"../localGame/map/gameMap"
-	"../localGame"
+	"../../localGame/map/gameMap"
+	"../../localGame"
+	"../../../dbConnect"
 	"log"
-	"../../dbConnect"
 )
 
-func GetMap(game *localGame.Game) gameMap.Map {
+func Map(game *localGame.Game) gameMap.Map {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id = $1", game.MapID)
 	if err != nil {
@@ -23,7 +23,7 @@ func GetMap(game *localGame.Game) gameMap.Map {
 		}
 	}
 
-	GetCoordinatesMap(&mp, game)
+	CoordinatesMap(&mp, game)
 
 	return mp
 }

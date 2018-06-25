@@ -2,7 +2,7 @@ package placePhase
 
 import (
 	"../../../gameObjects/unit"
-	"../../../db"
+	"../../../db/update"
 	"../../../player"
 	"../../../localGame"
 )
@@ -19,7 +19,7 @@ func PlaceUnit(gameUnit *unit.Unit, x,y int, actionGame *localGame.Game, client 
 	client.DelUnitStorage(gameUnit.ID)     // юдаяем его из трюма в обьекте игры
 	client.AddUnit(gameUnit)			   // добавляем его как активного юнита в обьект игры
 
-	err := db.UpdateUnit(gameUnit)		   // обновляем его параметры в БД игры
+	err := update.Unit(gameUnit)		   // обновляем его параметры в БД игры
 	if err != nil {						   // если при добавление не случилось ишибки то отправляем nil что значит нет ошибок, юнит обновлен и стоит на карте
 		return err
 	}

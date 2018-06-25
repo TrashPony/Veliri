@@ -2,7 +2,7 @@ package targetPhase
 
 import (
 	"../../../gameObjects/unit"
-	"../../../db"
+	"../../../db/update"
 	"../../../localGame"
 	"math"
 )
@@ -15,7 +15,7 @@ func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetX, targetY int) 
 	gameUnit.Target = target
 	gameUnit.Rotate = rotate
 
-	db.UpdateUnit(gameUnit)
+	update.Unit(gameUnit)
 }
 
 func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{

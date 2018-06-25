@@ -3,7 +3,7 @@ package movePhase
 import (
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"../../../db"
+	"../../../db/update"
 )
 
 func SkipMove(gameUnit *unit.Unit, game *localGame.Game)  {
@@ -12,5 +12,5 @@ func SkipMove(gameUnit *unit.Unit, game *localGame.Game)  {
 	queue := Queue(game)
 	gameUnit.QueueAttack = queue
 
-	db.UpdateUnit(gameUnit)
+	update.Unit(gameUnit)
 }

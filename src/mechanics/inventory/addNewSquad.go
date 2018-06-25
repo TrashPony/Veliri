@@ -1,13 +1,10 @@
 package inventory
 
-import (
-	"log"
-	"../../dbConnect"
-)
+import "../gameObjects/squad"
 
-func AddNewSquad(name string, userID int) (err error, squad *Squad) {
+func AddNewSquad(name string, userID int) (err error, squad *squad.Squad) {
 	// TODO проверка на имя
-	id := 0
+	/*id := 0
 	err = dbConnect.GetDBConnect().QueryRow("INSERT INTO squads (name, id_user) VALUES ($1, $2) RETURNING id", name, userID).Scan(&id)
 
 	if err != nil {
@@ -18,8 +15,8 @@ func AddNewSquad(name string, userID int) (err error, squad *Squad) {
 	squad = &Squad{ID: int(id), Name: name}
 	squad.GetSquadUnits()
 	squad.GetSquadMatherShip()
-	squad.GetSquadEquip()
+	squad.GetSquadEquip()*/
 
-	return nil, squad
+	return nil, nil
 }
 
