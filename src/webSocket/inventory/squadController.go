@@ -8,7 +8,7 @@ import (
 func SquadSettings(ws *websocket.Conn, msg Message)  {
 
 	if msg.Event == "AddNewSquad" {
-		err, squad := inventory.AddNewSquad(msg.SquadName, usersInventoryWs[ws].Id)
+		err, squad := inventory.AddNewSquad(msg.SquadName, usersInventoryWs[ws].GetID())
 
 		var resp Response
 

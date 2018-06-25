@@ -2,15 +2,20 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/inventory"
+	"../../mechanics/player"
 )
 
 
-var usersInventoryWs = make(map[*websocket.Conn]*inventory.User)
+var usersInventoryWs = make(map[*websocket.Conn]*player.Player)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	CheckDoubleLogin(login, &usersInventoryWs)
-	usersInventoryWs[ws] = &inventory.User{Name: login, Id: id} // Регистрируем нового Клиента
+
+	newPlayer := &player.Player{}
+	newPlayer.SetLogin(login)
+	newPlayer.SetID(id)
+
+	usersInventoryWs[ws] = newPlayer // Регистрируем нового Клиента
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
 
 	Reader(ws)

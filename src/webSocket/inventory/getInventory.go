@@ -23,7 +23,7 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "GetListSquad" {
-		squads, err := inventory.GetUserSquads(usersInventoryWs[ws].Id)
+		squads, err := inventory.GetUserSquads(usersInventoryWs[ws].GetID())
 
 		var resp Response
 
