@@ -3,13 +3,15 @@ package inventory
 import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/player"
+	"../utils"
+
 )
 
 
 var usersInventoryWs = make(map[*websocket.Conn]*player.Player)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	CheckDoubleLogin(login, &usersInventoryWs)
+	utils.CheckDoubleLogin(login, &usersInventoryWs)
 
 	newPlayer := &player.Player{}
 	newPlayer.SetLogin(login)
@@ -28,7 +30,7 @@ func Reader(ws *websocket.Conn) {
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			DelConn(ws, &usersInventoryWs, err)
+			utils.DelConn(ws, &usersInventoryWs, err)
 			break
 		}
 

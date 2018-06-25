@@ -1,4 +1,4 @@
-package inventory
+package utils
 
 import (
 	"github.com/gorilla/websocket"

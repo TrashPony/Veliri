@@ -4,7 +4,6 @@ import (
 	"./field"
 	"./lobby"
 	"./chat"
-	"./globalMap"
 	"./inventory"
 
 	"github.com/gorilla/websocket"
@@ -31,10 +30,6 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 
 	if pool == "/wsChat" {
 		chat.AddNewUser(ws, login, id)
-	}
-
-	if pool == "/wsGlobal" {
-		globalMap.AddNewUser(ws, login, id)
 	}
 
 	if pool == "/wsInventory" {

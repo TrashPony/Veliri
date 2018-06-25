@@ -6,7 +6,6 @@ import (
 	"./webSocket/field"
 	"./webSocket/lobby"
 	"./webSocket/chat"
-	"./webSocket/globalMap"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -30,9 +29,6 @@ func main() {
 	go field.UnitSender()
 	go field.PhaseSender()
 	go field.EquipSender()
-
-	go globalMap.GlobalReposeSender()
-	go globalMap.TimerSteep() // таймер сервер отвечает за синхронизацию всех игроков в сети, должен содержать в себе всю логику что бы все действия проводились через него
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

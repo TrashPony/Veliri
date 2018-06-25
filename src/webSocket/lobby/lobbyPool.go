@@ -3,7 +3,7 @@ package lobby
 import (
 	"../../mechanics/lobby"
 	"../../mechanics/player"
-
+	"../utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -17,7 +17,7 @@ var lobbyPipe = make(chan Response)
 var openGames = make(map[int]*lobby.LobbyGames)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	CheckDoubleLogin(login, &usersLobbyWs)
+	utils.CheckDoubleLogin(login, &usersLobbyWs)
 
 	newPlayer := &player.Player{}
 	newPlayer.SetLogin(login)

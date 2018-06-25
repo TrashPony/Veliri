@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"sync"
 	"../../mechanics/player"
+	"../utils"
 	"log"
 )
 
@@ -19,7 +20,7 @@ var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут
 var mutex = &sync.Mutex{}
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	CheckDoubleLogin(login, &usersFieldWs)
+	utils.CheckDoubleLogin(login, &usersFieldWs)
 	newPlayer := player.Player{}
 	newPlayer.SetLogin(login)
 	newPlayer.SetID(id)
@@ -36,7 +37,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			DelConn(ws, &usersFieldWs, err)
+			utils.DelConn(ws, &usersFieldWs, err)
 			break
 		}
 

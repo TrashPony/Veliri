@@ -5,15 +5,6 @@ import (
 	"../../mechanics/player"
 )
 
-func CheckDoubleLogin(login string, usersWs *map[*websocket.Conn]*player.Player) {
-	for ws, client := range *usersWs {
-		if client.GetLogin() == login {
-			ws.Close()
-			println(login + " Уже был в соеденениях")
-		}
-	}
-}
-
 func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	for _, client := range *usersWs {
 		var resp = Response{Event: "NewLobbyUser", UserName: client.GetLogin() , GameUser: login}
