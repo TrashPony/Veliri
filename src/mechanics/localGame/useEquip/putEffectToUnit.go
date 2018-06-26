@@ -3,7 +3,7 @@ package useEquip
 import (
 	"../../gameObjects/unit"
 	"../../gameObjects/equip"
-	"../../db/update"
+	"../../db/localGame/update"
 	"../../player"
 )
 

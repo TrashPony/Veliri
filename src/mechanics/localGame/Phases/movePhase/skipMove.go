@@ -3,7 +3,7 @@ package movePhase
 import (
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"../../../db/update"
+	"../../../db/localGame/update"
 )
 
 func SkipMove(gameUnit *unit.Unit, game *localGame.Game)  {

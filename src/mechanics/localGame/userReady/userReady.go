@@ -2,7 +2,7 @@ package userReady
 
 import (
 	"../../player"
-	"../../db/update"
+	"../../db/localGame/update"
 	"../../localGame"
 )
 

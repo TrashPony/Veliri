@@ -1,11 +1,11 @@
-package getLocalGame
+package get
 
 import (
-	"../../gameObjects/unit"
-	"../../gameObjects/effect"
-	"../../gameObjects/equip"
-	"../../gameObjects/coordinate"
-	"../../../dbConnect"
+	"../../../gameObjects/unit"
+	"../../../gameObjects/effect"
+	"../../../gameObjects/equip"
+	"../../../gameObjects/coordinate"
+	"../../../../dbConnect"
 	"log"
 )
 

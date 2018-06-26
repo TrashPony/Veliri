@@ -1,7 +1,7 @@
 package update
 
 import (
-	"../../gameObjects/unit"
+	"../../../gameObjects/unit"
 	//"strconv"
 	//"../../dbConnect"
 )

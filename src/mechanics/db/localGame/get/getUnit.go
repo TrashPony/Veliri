@@ -1,11 +1,11 @@
-package getLocalGame
+package get
 
 import (
 	"database/sql"
 	"strings"
 	"strconv"
-	"../../gameObjects/coordinate"
-	"../../gameObjects/unit"
+	"../../../gameObjects/coordinate"
+	"../../../gameObjects/unit"
 	//"../../dbConnect"
 )
 

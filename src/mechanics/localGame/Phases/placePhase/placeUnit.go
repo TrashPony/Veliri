@@ -2,7 +2,7 @@ package placePhase
 
 import (
 	"../../../gameObjects/unit"
-	"../../../db/update"
+	"../../../db/localGame/update"
 	"../../../player"
 	"../../../localGame"
 )

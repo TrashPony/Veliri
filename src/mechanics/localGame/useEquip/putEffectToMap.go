@@ -4,7 +4,7 @@ import (
 	"../../gameObjects/equip"
 	"../../player"
 	"../../gameObjects/coordinate"
-	"../../db/update"
+	"../../db/localGame/update"
 	"strconv"
 	"../../localGame"
 )

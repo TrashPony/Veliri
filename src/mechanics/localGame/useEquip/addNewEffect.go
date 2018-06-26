@@ -3,7 +3,7 @@ package useEquip
 import (
 	"../../gameObjects/unit"
 	"../../gameObjects/effect"
-	"../../db/getLocalGame"
+	"../../db/localGame/get"
 	"../../gameObjects/coordinate"
 )
 
@@ -11,16 +11,16 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 
 	addAnimate := true
 
-	maxLvl := getLocalGame.MaxLvlEffect(newEffect)
+	maxLvl := get.MaxLvlEffect(newEffect)
 
 	for i, unitEffect := range gameUnit.Effects {
 		if unitEffect.Type != "unit_always_animate" && unitEffect.Type != "animate" && unitEffect.Type != "zone_always_animate" {
 			if unitEffect.Name == newEffect.Name {
 				if unitEffect.Level+newEffect.Level >= maxLvl {
 					newLvl := maxLvl - unitEffect.Level
-					gameUnit.Effects[i] = getLocalGame.NewLvlEffect(unitEffect, newLvl)
+					gameUnit.Effects[i] = get.NewLvlEffect(unitEffect, newLvl)
 				} else {
-					gameUnit.Effects[i] = getLocalGame.NewLvlEffect(unitEffect, newEffect.Level)
+					gameUnit.Effects[i] = get.NewLvlEffect(unitEffect, newEffect.Level)
 				}
 				return
 			}
@@ -48,16 +48,16 @@ func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *ef
 		return
 	}
 
-	maxLvl := getLocalGame.MaxLvlEffect(newEffect)
+	maxLvl := get.MaxLvlEffect(newEffect)
 
 	for i, coordinateEffect := range gameCoordinate.Effects {
 		if coordinateEffect.Type != "unit_always_animate" && coordinateEffect.Type != "animate" && coordinateEffect.Type != "zone_always_animate" {
 			if coordinateEffect.Name == newEffect.Name {
 				if coordinateEffect.Level+newEffect.Level >= maxLvl {
 					newLvl := maxLvl - coordinateEffect.Level
-					gameCoordinate.Effects[i] = getLocalGame.NewLvlEffect(coordinateEffect, newLvl)
+					gameCoordinate.Effects[i] = get.NewLvlEffect(coordinateEffect, newLvl)
 				} else {
-					gameCoordinate.Effects[i] = getLocalGame.NewLvlEffect(coordinateEffect, newEffect.Level)
+					gameCoordinate.Effects[i] = get.NewLvlEffect(coordinateEffect, newEffect.Level)
 				}
 				return
 			}

@@ -5,7 +5,7 @@ import (
 	"../../../gameObjects/unit"
 	"../../../player"
 	"../../map/watchZone"
-	"../../../db/update"
+	"../../../db/localGame/update"
 	"errors"
 	"math"
 	"../../../localGame"

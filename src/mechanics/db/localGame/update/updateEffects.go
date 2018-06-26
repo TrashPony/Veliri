@@ -1,10 +1,10 @@
 package update
 
 import (
-	"../../gameObjects/unit"
-	"../../gameObjects/coordinate"
+	"../../../gameObjects/unit"
+	"../../../gameObjects/coordinate"
 	"log"
-	"../../../dbConnect"
+	"../../../../dbConnect"
 )
 
 func UnitEffects(unit *unit.Unit) error {

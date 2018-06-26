@@ -2,7 +2,7 @@ package targetPhase
 
 import (
 	"../../../gameObjects/unit"
-	"../../../db/update"
+	"../../../db/localGame/update"
 	"../../../localGame"
 	"math"
 )

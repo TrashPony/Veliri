@@ -1,9 +1,9 @@
 package update
 
 import (
-	"../../localGame"
+	"../../../localGame"
 	"log"
-	"../../../dbConnect"
+	"../../../../dbConnect"
 )
 
 func Game(game *localGame.Game)  {

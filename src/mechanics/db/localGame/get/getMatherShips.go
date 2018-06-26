@@ -1,8 +1,8 @@
-package getLocalGame
+package get
 
 import (
-	"../../gameObjects/matherShip"
-	"../../../dbConnect"
+	"../../../gameObjects/matherShip"
+	"../../../../dbConnect"
 	"log"
 )
 
@@ -20,7 +20,7 @@ func MatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherShip
 
 	matherShips = make(map[int]map[int]*matherShip.MatherShip)
 
-	for rows.Next() {
+	/*for rows.Next() {
 		var ship matherShip.MatherShip
 		err := rows.Scan(&ship.Type, &ship.Owner, &ship.X, &ship.Y, &ship.HP, &ship.Armor, &ship.RangeView)
 		if err != nil {
@@ -33,7 +33,7 @@ func MatherShips(idGame int) (matherShips map[int]map[int]*matherShip.MatherShip
 			matherShips[ship.X] = make(map[int]*matherShip.MatherShip)
 			matherShips[ship.X][ship.Y] = &ship
 		}
-	}
+	}*/
 
 	return
 }

@@ -15,16 +15,16 @@ func MatherShips() []matherShip.MatherShip {
 	defer rows.Close()
 
 	var matherShips = make([]matherShip.MatherShip, 0)
-	var gameMatherShip matherShip.MatherShip
+	//var gameMatherShip matherShip.MatherShip
 
-	for rows.Next() {
+	/*for rows.Next() {
 		err := rows.Scan(&gameMatherShip.ID, &gameMatherShip.Type, &gameMatherShip.HP, &gameMatherShip.Armor,
 			&gameMatherShip.UnitSlots, &gameMatherShip.UnitSlotSize, &gameMatherShip.EquipmentSlots, &gameMatherShip.RangeView)
 		if err != nil {
 			log.Fatal(err)
 		}
 		matherShips = append(matherShips, gameMatherShip)
-	}
+	}*/
 
 	return matherShips
 }
@@ -39,14 +39,14 @@ func MatherShip(id int) *matherShip.MatherShip {
 
 	var gameMatherShip matherShip.MatherShip
 
-	for rows.Next() {
+	/*for rows.Next() {
 		err := rows.Scan(&gameMatherShip.ID, &gameMatherShip.Type, &gameMatherShip.HP,
 			&gameMatherShip.Armor, &gameMatherShip.UnitSlots, &gameMatherShip.UnitSlotSize,
 			&gameMatherShip.EquipmentSlots, &gameMatherShip.RangeView)
 		if err != nil {
 			log.Fatal(err)
 		}
-	}
+	}*/
 
 	return &gameMatherShip
 }

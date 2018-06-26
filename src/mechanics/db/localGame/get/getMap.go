@@ -1,9 +1,9 @@
-package getLocalGame
+package get
 
 import (
-	"../../gameObjects/map"
-	"../../localGame"
-	"../../../dbConnect"
+	"../../../gameObjects/map"
+	"../../../localGame"
+	"../../../../dbConnect"
 	"log"
 )
 

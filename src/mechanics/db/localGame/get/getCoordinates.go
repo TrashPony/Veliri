@@ -1,12 +1,12 @@
-package getLocalGame
+package get
 
 import (
 	"strconv"
 	"log"
-	"../../gameObjects/coordinate"
-	"../../gameObjects/map"
-	"../../localGame"
-	"../../../dbConnect"
+	"../../../gameObjects/coordinate"
+	"../../../gameObjects/map"
+	"../../../localGame"
+	"../../../../dbConnect"
 )
 
 func CoordinatesMap(mp *_map.Map, game *localGame.Game) {

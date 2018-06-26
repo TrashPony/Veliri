@@ -16,7 +16,7 @@ func selectStorageUnit(msg Message, ws *websocket.Conn) {
 		if !ok {
 			delete(usersFieldWs, ws)
 		} else {
-			client.SetCreateZone(placePhase.GetPlaceCoordinate(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().RangeView, activeGame))
+			client.SetCreateZone(placePhase.GetPlaceCoordinate(client.GetMatherShip().X, client.GetMatherShip().Y, client.GetMatherShip().Body.RangeView, activeGame))
 
 			storageUnit, find := client.GetUnitStorage(msg.UnitID)
 

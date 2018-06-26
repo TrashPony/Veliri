@@ -2,7 +2,6 @@ package inventory
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit"
 )
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {
@@ -56,7 +55,7 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 
 func UnitConstructor(ws *websocket.Conn, msg Message) {
 
-	gameUnit, ok := usersInventoryWs[ws].Squad.Units[msg.UnitSlot]
+	/*gameUnit, ok := usersInventoryWs[ws].Squad.Units[msg.UnitSlot]
 	if !ok {
 		gameUnit = &unit.Unit{}
 	}
@@ -74,5 +73,5 @@ func UnitConstructor(ws *websocket.Conn, msg Message) {
 	}
 
 	resp := Response{Event: "UnitConstructorUpdate", Unit: *gameUnit}
-	ws.WriteJSON(resp)
+	ws.WriteJSON(resp)*/
 }
