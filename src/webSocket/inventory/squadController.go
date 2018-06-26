@@ -1,14 +1,15 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
+	"../../mechanics/db/insert"
+	"../../mechanics/db/removeInDB"
 	"github.com/gorilla/websocket"
 )
 
 func SquadSettings(ws *websocket.Conn, msg Message)  {
 
 	if msg.Event == "AddNewSquad" {
-		err, squad := inventory.AddNewSquad(msg.SquadName, usersInventoryWs[ws].GetID())
+		err, squad := insert.AddNewSquad(msg.SquadName, usersInventoryWs[ws].GetID())
 
 		var resp Response
 
@@ -37,7 +38,7 @@ func SquadSettings(ws *websocket.Conn, msg Message)  {
 		if usersInventoryWs[ws].Squad != nil {
 
 			id := usersInventoryWs[ws].Squad.ID
-			inventory.DeleteSquad(id)
+			removeInDB.DeleteSquad(id)
 			usersInventoryWs[ws].Squad = nil
 
 			resp := Response{Event: "RemoveSquad", SquadID: id}

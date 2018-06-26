@@ -21,7 +21,7 @@ func main() {
 	router.HandleFunc("/wsChat", webSocket.HandleConnections)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
 
-	go lobby.LobbyReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
+	go lobby.ReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
 	go chat.CommonChatSender()
 
 	go field.WatchSender()

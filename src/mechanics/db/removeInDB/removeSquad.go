@@ -1,8 +1,8 @@
-package inventory
+package removeInDB
 
 import (
 	"log"
-	"../../dbConnect"
+	"../../../dbConnect"
 )
 
 func DeleteSquad(id int)  {

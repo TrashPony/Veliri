@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"errors"
 	"../../mechanics/lobby"
+	"../../mechanics/db/insert"
 )
 
 func StartNewGame(msg Message, ws *websocket.Conn) {
@@ -18,7 +19,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 			if allReady {
 
-				id, success := lobby.StartNewGame(game)
+				id, success := insert.StartNewGame(game)
 
 				if success {
 

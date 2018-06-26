@@ -118,7 +118,7 @@ func Reader(ws *websocket.Conn) {
 	}
 }
 
-func LobbyReposeSender() {
+func ReposeSender() {
 	for {
 		resp := <-lobbyPipe
 		mutex.Lock()

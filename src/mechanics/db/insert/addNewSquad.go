@@ -1,6 +1,6 @@
-package inventory
+package insert
 
-import "../gameObjects/squad"
+import "../../gameObjects/squad"
 
 func AddNewSquad(name string, userID int) (err error, squad *squad.Squad) {
 	// TODO проверка на имя
