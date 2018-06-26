@@ -2,10 +2,11 @@ package coordinate
 
 import (
 	"strconv"
-	"../../../gameObjects/effect"
+	"../effect"
 )
 
 type Coordinate struct {
+	ID			  int 			   `json:"id"`
 	Type          string           `json:"type"`
 	TextureFlore  string           `json:"texture_flore"`
 	TextureObject string           `json:"texture_object"`

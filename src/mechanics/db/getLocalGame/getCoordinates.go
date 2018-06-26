@@ -3,7 +3,7 @@ package getLocalGame
 import (
 	"strconv"
 	"log"
-	"../../localGame/map/coordinate"
+	"../../gameObjects/coordinate"
 	"../../gameObjects/map"
 	"../../localGame"
 	"../../../dbConnect"

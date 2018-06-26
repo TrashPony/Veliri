@@ -6,7 +6,7 @@ import (
 	"../../gameObjects/matherShip"
 )
 
-func TypeMatherShips() []matherShip.MatherShip {
+func MatherShips() []matherShip.MatherShip {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type")
 	if err != nil {
@@ -29,7 +29,7 @@ func TypeMatherShips() []matherShip.MatherShip {
 	return matherShips
 }
 
-func TypeMatherShip(id int) *matherShip.MatherShip {
+func MatherShip(id int) *matherShip.MatherShip {
 
 	rows, err := dbConnect.GetDBConnect().Query("select * from mother_ship_type where id=$1", id)
 	if err != nil {

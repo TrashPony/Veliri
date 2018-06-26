@@ -1,7 +1,7 @@
 package _map
 
 import (
-	"../../localGame/map/coordinate"
+	"../coordinate"
 )
 
 type Map struct {

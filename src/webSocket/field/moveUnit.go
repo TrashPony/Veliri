@@ -5,7 +5,7 @@ import (
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
-	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/gameObjects/coordinate"
 	"github.com/gorilla/websocket"
 	"strconv"
 )

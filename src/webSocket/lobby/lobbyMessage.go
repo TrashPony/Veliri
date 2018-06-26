@@ -2,9 +2,10 @@ package lobby
 
 import (
 	"../../mechanics/player"
-	"../../mechanics/localGame/map/coordinate"
-	"../../mechanics/lobby"
+	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/lobby/notFinishedGames"
 	LocalMap "../../mechanics/gameObjects/map"
+	"../../mechanics/lobby"
 )
 
 type Message struct {
@@ -39,8 +40,8 @@ type Response struct {
 
 	Respawn  *coordinate.Coordinate   `json:"respawn"`
 	Respawns []*coordinate.Coordinate `json:"respawns"`
-	Game     *lobby.LobbyGames        `json:"game"`
+	Game     *lobby.Game        `json:"game"`
 	Map      *LocalMap.Map            `json:"map"`
 
-	DontEndGames []lobby.DontEndGames `json:"dont_end_games"`
+	DontEndGames []notFinishedGames.NotFinishedGames `json:"dont_end_games"`
 }

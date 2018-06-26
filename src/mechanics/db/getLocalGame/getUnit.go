@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"strings"
 	"strconv"
-	"../../localGame/map/coordinate"
+	"../../gameObjects/coordinate"
 	"../../gameObjects/unit"
 	//"../../dbConnect"
 )

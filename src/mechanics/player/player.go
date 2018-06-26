@@ -5,7 +5,7 @@ import (
 	"../gameObjects/matherShip"
 	"../gameObjects/unit"
 	"../gameObjects/squad"
-	"../localGame/map/coordinate"
+	"../gameObjects/coordinate"
 )
 
 type Player struct {

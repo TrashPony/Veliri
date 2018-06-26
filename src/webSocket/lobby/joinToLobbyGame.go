@@ -17,7 +17,7 @@ func JoinToLobbyGame(msg Message, ws *websocket.Conn) {
 
 		} else {
 			// добавляем в игрока имя игры
-			// usersLobbyWs[ws].Game = game.Name todo адаптировать под новую логику
+			usersLobbyWs[ws].SetGameID(game.ID)
 			// игрок инициализирует лобби меню на клиенте и создает там игроков
 			resp := Response{Event: "initLobbyGame", UserName: usersLobbyWs[ws].GetLogin(), User: usersLobbyWs[ws], GameUsers: game.Users}
 			ws.WriteJSON(resp)

@@ -3,7 +3,7 @@ package unit
 import (
 	"../detail"
 	"../effect"
-	"../../localGame/map/coordinate"
+	"../coordinate"
 )
 
 type Unit struct {

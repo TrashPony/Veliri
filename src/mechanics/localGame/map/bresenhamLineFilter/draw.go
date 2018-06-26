@@ -1,7 +1,7 @@
 package bresenhamLineFilter
 
 import (
-	"../coordinate"
+	"../../../gameObjects/coordinate"
 	"../../"
 )
 

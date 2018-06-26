@@ -7,7 +7,7 @@ import (
 	"../../mechanics/gameObjects/equip"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
-	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/gameObjects/coordinate"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {

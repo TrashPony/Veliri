@@ -1,7 +1,7 @@
 package placePhase
 
 import (
-	"../../map/coordinate"
+	"../../../gameObjects/coordinate"
 	"strconv"
 	"../../../localGame"
 )

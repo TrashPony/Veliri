@@ -1,15 +1,10 @@
-package lobby
+package notFinishedGames
 
-type DontEndGames struct {
+type NotFinishedGames struct {
 	Id     string
 	Name   string
 	Step   string
 	Phase  string
 	Winner string
 	Ready  string
-}
-
-type ActiveGames struct {
-	Id   int
-	Name string
 }

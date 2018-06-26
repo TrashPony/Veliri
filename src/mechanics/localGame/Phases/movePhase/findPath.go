@@ -4,7 +4,7 @@ package movePhase
 import (
 	"math"
 	"../../../gameObjects/map"
-	"../../map/coordinate"
+	"../../../gameObjects/coordinate"
 	"../../../player"
 )
 

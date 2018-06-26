@@ -6,7 +6,7 @@ import (
 	"../../"
 	"../../../gameObjects/matherShip"
 	"../../../gameObjects/unit"
-	"../coordinate"
+	"../../../gameObjects/coordinate"
 )
 
 type Watcher interface {

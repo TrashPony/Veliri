@@ -1,10 +1,6 @@
 package lobby
 
-import (
-
-)
-
-func StartNewGame(game *LobbyGames) (int, bool) {
+func StartNewGame(game *Game) (int, bool) {
 
 	id := 0
 	// TODO переделать на транзакции, передалть запросы под новую логику

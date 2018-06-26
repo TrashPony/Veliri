@@ -3,12 +3,12 @@ package lobby
 import (
 	"errors"
 	"../player"
-	"../localGame/map/coordinate"
+	"../gameObjects/coordinate"
 	LocalMap "../gameObjects/map"
 	"../db/get"
 )
 
-type LobbyGames struct {
+type Game struct {
 	ID       int
 	Name     string
 	Map      LocalMap.Map
@@ -17,17 +17,17 @@ type LobbyGames struct {
 	Users    []*player.Player
 }
 
-func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player) LobbyGames {
+func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player, id int) Game {
 
-	respawns := GetRespawns(mapID)
+	respawns := get.Respawns(mapID)
 	mp := get.Map(mapID)
 
-	game := LobbyGames{Name: nameGame, Map: mp, Creator: creator, Users: make([]*player.Player, 0), Respawns: respawns}
+	game := Game{ID: id, Name: nameGame, Map: mp, Creator: creator, Users: make([]*player.Player, 0), Respawns: respawns}
 	game.Users = append(game.Users, creator)
 	return game
 }
 
-func (game *LobbyGames) JoinToLobbyGame(user *player.Player) error {
+func (game *Game) JoinToLobbyGame(user *player.Player) error {
 
 	if len(game.Respawns) > len(game.Users) {
 		game.Users = append(game.Users, user)
@@ -39,7 +39,7 @@ func (game *LobbyGames) JoinToLobbyGame(user *player.Player) error {
 	return errors.New("unknown error")
 }
 
-func (game *LobbyGames) UserReady(user *player.Player, respawn *coordinate.Coordinate) {
+func (game *Game) UserReady(user *player.Player, respawn *coordinate.Coordinate) {
 	if user.GetReady() == true {
 		user.SetReady(false)
 		game.DelRespawnUser(user)
@@ -49,32 +49,37 @@ func (game *LobbyGames) UserReady(user *player.Player, respawn *coordinate.Coord
 	}
 }
 
-func (game *LobbyGames)SetRespawnUser(user *player.Player, respawnID int) (*coordinate.Coordinate, error) {
+func (game *Game) SetRespawnUser(user *player.Player, respawnID int) (*coordinate.Coordinate, error) {
 
-	/*for _, respawn := range game.Respawns {
-		if respawn.Id == respawnID && (respawn.UserName == "" || respawn.UserName == user.GetLogin()) {
-			if respawn.UserName == user.GetLogin() {
-				respawn.UserName = ""
-				return nil, nil
-			} else {
-				respawn.UserName = user.GetLogin()
-				return respawn, nil
+	for _, user := range game.Users { // смотрим что бы респ не был занят
+		if user.GetRespawn() == nil {
+			continue
+		} else {
+			if user.GetRespawn().ID == respawnID {
+				return nil, errors.New("respawn busy")
 			}
 		}
-	}*/ // todo адаптировать под новую логику
+	}
 
-	return nil, errors.New("respawn busy")
-}
-
-func (game *LobbyGames) DelRespawnUser(user *player.Player) {
-	/*for _, respawn := range game.Respawns {
-		if respawn.UserName == user.GetLogin() {
-			respawn.UserName = ""
+	for _, respawn := range game.Respawns { // устанавливаем юзеру респаун
+		if respawn.ID == respawnID {
+			user.SetRespawn(respawn)
+			return respawn, nil
 		}
-	}*/ // todo адаптировать под новую логику
+	}
+
+	return nil, errors.New("respawn not find")
 }
 
-func (game *LobbyGames) RemoveUser(user *player.Player)  {
+func (game *Game) DelRespawnUser(user *player.Player) {
+	for _, respawn := range game.Respawns {
+		if respawn.ID == user.GetRespawn().ID {
+			user.SetRespawn(nil)
+		}
+	}
+}
+
+func (game *Game) RemoveUser(user *player.Player) {
 	game.DelRespawnUser(user)
 	for i, gameUser := range game.Users {
 		if gameUser.GetLogin() == user.GetLogin() {

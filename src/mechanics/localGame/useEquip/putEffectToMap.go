@@ -3,7 +3,7 @@ package useEquip
 import (
 	"../../gameObjects/equip"
 	"../../player"
-	"../map/coordinate"
+	"../../gameObjects/coordinate"
 	"../../db/update"
 	"strconv"
 	"../../localGame"

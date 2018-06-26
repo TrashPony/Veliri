@@ -15,7 +15,7 @@ var mutex = &sync.Mutex{}
 
 var usersLobbyWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
 var lobbyPipe = make(chan Response)
-var openGames = make(map[int]*lobby.LobbyGames)
+var openGames = make(map[int]*lobby.Game)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	utils.CheckDoubleLogin(login, &usersLobbyWs)
@@ -63,10 +63,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "CreateLobbyGame" {
 			user := usersLobbyWs[ws]
-			game := lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, user)
+			game := lobby.CreateNewLobbyGame(msg.GameName, msg.MapID, user, len(openGames))
 
 			openGames[game.ID] = &game
-			//user.Set = game.Name todo адаптаировать под новую логику
+			user.SetGameID(game.ID)
 
 			var resp = Response{Event: msg.Event, UserName: user.GetLogin(), Game: &game}
 			ws.WriteJSON(resp)
@@ -87,9 +87,9 @@ func Reader(ws *websocket.Conn) {
 			user := usersLobbyWs[ws]
 
 			for _, game := range openGames {
-				for _, player := range game.Users {
-					if player != nil {
-						if user.GetLogin() == player.GetLogin() {
+				for _, gamePlayer := range game.Users {
+					if gamePlayer != nil {
+						if user.GetLogin() == gamePlayer.GetLogin() {
 							var resp = Response{Event: msg.Event, Respawns: game.Respawns}
 							ws.WriteJSON(resp)
 						}
@@ -107,7 +107,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "DontEndGamesList" {
-			games := lobby.GetDontEndGames(usersLobbyWs[ws].GetID())
+			games := get.GetNotFinishedGames(usersLobbyWs[ws].GetID())
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), DontEndGames: games}
 			ws.WriteJSON(resp)
 		}

@@ -2,7 +2,7 @@ package Phases
 
 import (
 	"strconv"
-	"../map/coordinate"
+	"../../gameObjects/coordinate"
 )
 
 func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {

@@ -4,7 +4,7 @@ import (
 	"../../gameObjects/unit"
 	"../../gameObjects/effect"
 	"../../db/getLocalGame"
-	"../map/coordinate"
+	"../../gameObjects/coordinate"
 )
 
 func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {

@@ -39,7 +39,7 @@ func DelLobbyUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
 	}
 }
 
-func DelUserInLobby(game *lobby.LobbyGames, delLogin string) {
+func DelUserInLobby(game *lobby.Game, delLogin string) {
 	for _, user := range game.Users {
 		if user != nil {
 			var message = Response{Event: "DelUser", UserName: user.GetLogin(), GameUser: delLogin}

@@ -6,7 +6,7 @@ import (
 	"../../mechanics/gameObjects/equip"
 	"../../mechanics/gameObjects/map"
 	"../../mechanics/gameObjects/matherShip"
-	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/localGame/initGame"
 )
 

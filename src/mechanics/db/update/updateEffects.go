@@ -2,7 +2,7 @@ package update
 
 import (
 	"../../gameObjects/unit"
-	"../../localGame/map/coordinate"
+	"../../gameObjects/coordinate"
 	"log"
 	"../../../dbConnect"
 )

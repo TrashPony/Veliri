@@ -5,7 +5,7 @@ import (
 	"../../../player"
 	"../../../gameObjects/matherShip"
 	"../../../gameObjects/unit"
-	"../coordinate"
+	"../../../gameObjects/coordinate"
 )
 
 type UpdaterWatchZone struct {

@@ -4,7 +4,7 @@ import (
 	"../../gameObjects/unit"
 	"../../gameObjects/effect"
 	"../../gameObjects/equip"
-	"../../localGame/map/coordinate"
+	"../../gameObjects/coordinate"
 	"../../../dbConnect"
 	"log"
 )

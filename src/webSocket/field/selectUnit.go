@@ -5,7 +5,7 @@ import (
 	"../../mechanics/localGame/Phases/movePhase"
 	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/player"
-	"../../mechanics/localGame/map/coordinate"
+	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/unit"
 )

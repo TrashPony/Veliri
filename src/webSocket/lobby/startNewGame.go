@@ -46,7 +46,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func CheckReady(game *lobby.LobbyGames) bool  {
+func CheckReady(game *lobby.Game) bool  {
 	for _, user := range game.Users {
 		if !user.GetReady() {
 			return false

@@ -37,7 +37,7 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "GetMatherShips" {
-		var matherShips = get.TypeMatherShips()
+		var matherShips = get.MatherShips()
 		var resp = Response{Event: msg.Event, MatherShips: matherShips}
 		ws.WriteJSON(resp)
 	}

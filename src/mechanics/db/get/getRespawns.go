@@ -1,14 +1,14 @@
-package lobby
+package get
 
 import (
 	"log"
-	"../../dbConnect"
-	"../localGame/map/coordinate"
+	"../../../dbConnect"
+	"../../gameObjects/coordinate"
 )
 
-func GetRespawns(mapID int) []*coordinate.Coordinate {
+func Respawns(mapID int) []*coordinate.Coordinate {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select x, y, id_map " +
+	rows, err := dbConnect.GetDBConnect().Query("Select id, x, y " +
 		"FROM map_constructor " +
 		"WHERE id_type=1 AND id_map = $1", mapID)
 	if err != nil {
@@ -22,7 +22,7 @@ func GetRespawns(mapID int) []*coordinate.Coordinate {
 	for rows.Next() {
 		var resp coordinate.Coordinate
 
-		err := rows.Scan(&resp.X, &resp.Y)
+		err := rows.Scan(&resp.ID, &resp.X, &resp.Y)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -3,7 +3,7 @@ package watchZone
 import (
 	"strconv"
 	"../../"
-	"../coordinate"
+	"../../../gameObjects/coordinate"
 	"../bresenhamLineFilter"
 )
 
