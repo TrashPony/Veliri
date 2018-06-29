@@ -8,7 +8,6 @@ function NewUser(jsonMessage) {
 
 function JoinToLobby(jsonMessage) {
     // дает новому игроку данные по тем кто уже внутри
-    console.log(jsonMessage);
 
     let users = JSON.parse(jsonMessage).game_users;
 
