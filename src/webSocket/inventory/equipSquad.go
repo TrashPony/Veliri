@@ -6,7 +6,7 @@ import (
 
 func EquipSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "AddEquipment" || msg.Event == "ReplaceEquipment" {
-		if usersInventoryWs[ws].Squad != nil {
+		if usersInventoryWs[ws].GetSquad() != nil {
 			//equip := inventory.GetTypeEquip(msg.EquipID)
 
 			if msg.Event == "AddEquipment" {
@@ -15,7 +15,7 @@ func EquipSquad(ws *websocket.Conn, msg Message)  {
 				//usersInventoryWs[ws].Squad.ReplaceEquip(&equip, msg.EquipSlot)
 			}
 
-			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].Squad}
+			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].GetSquad()}
 			ws.WriteJSON(resp)
 
 		} else {
@@ -25,7 +25,7 @@ func EquipSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "RemoveEquipment" {
-		if usersInventoryWs[ws].Squad != nil {
+		if usersInventoryWs[ws].GetSquad() != nil {
 			/*err := usersInventoryWs[ws].Squad.DelEquip(msg.EquipSlot)
 
 			if err == nil {

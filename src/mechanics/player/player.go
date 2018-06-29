@@ -17,19 +17,19 @@ type Player struct {
 	units              map[string]map[string]*unit.Unit // map[X]map[Y]
 	matherShip         *matherShip.MatherShip
 	hostileMatherShips map[string]map[string]*matherShip.MatherShip // map[X]map[Y]
-	hostileUnits       map[string]map[string]*unit.Unit       // map[X]map[Y]
-	respawn            *coordinate.Coordinate
+	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
+	Respawn            *coordinate.Coordinate
 	createZone         map[string]map[string]*coordinate.Coordinate
 	gameID             int
 	equips             []*equip.Equip
-	ready              bool
+	Ready              bool
 
-	Squad   *squad.Squad
-	Squads  []*squad.Squad
+	squad  			   *squad.Squad
+	//squads 			   []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
-	client.respawn = respawn
+	client.Respawn = respawn
 }
 
 func (client *Player) SetCreateZone(zone map[string]map[string]*coordinate.Coordinate) () {
@@ -41,7 +41,7 @@ func (client *Player) GetCreateZone() (map[string]map[string]*coordinate.Coordin
 }
 
 func (client *Player) GetRespawn() (respawn *coordinate.Coordinate) {
-	return client.respawn
+	return client.Respawn
 }
 
 func (client *Player) SetLogin(login string) {
@@ -69,9 +69,17 @@ func (client *Player) GetGameID() (id int) {
 }
 
 func (client *Player) SetReady(ready bool) {
-	client.ready = ready
+	client.Ready = ready
 }
 
 func (client *Player) GetReady() (bool) {
-	return client.ready
+	return client.Ready
+}
+
+func (client *Player) GetSquad() (*squad.Squad) {
+	return client.squad
+}
+
+func (client *Player) SetSquad(squad *squad.Squad) () {
+	client.squad = squad
 }

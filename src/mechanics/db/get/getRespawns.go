@@ -6,7 +6,7 @@ import (
 	"../../gameObjects/coordinate"
 )
 
-func Respawns(mapID int) []*coordinate.Coordinate {
+func Respawns(mapID int) map[int]*coordinate.Coordinate {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, x, y " +
 		"FROM map_constructor " +
@@ -17,7 +17,7 @@ func Respawns(mapID int) []*coordinate.Coordinate {
 
 	defer rows.Close()
 
-	var respawns = make([]*coordinate.Coordinate, 0)
+	var respawns = make(map[int]*coordinate.Coordinate)
 
 	for rows.Next() {
 		var resp coordinate.Coordinate
@@ -27,7 +27,7 @@ func Respawns(mapID int) []*coordinate.Coordinate {
 			log.Fatal(err)
 		}
 
-		respawns = append(respawns, &resp)
+		respawns[resp.ID] = &resp
 	}
 	return respawns
 }

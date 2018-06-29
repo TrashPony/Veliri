@@ -35,13 +35,13 @@ type Response struct {
 	Message      string `json:"message"`
 	GameUser     string `json:"game_user"`
 
-	User      *player.Player   `json:"user"`
-	GameUsers []*player.Player `json:"game_users"`
+	User      *player.Player            `json:"user"`
+	GameUsers map[string]*player.Player `json:"game_users"`
 
-	Respawn  *coordinate.Coordinate   `json:"respawn"`
-	Respawns []*coordinate.Coordinate `json:"respawns"`
-	Game     *lobby.Game        `json:"game"`
-	Map      *LocalMap.Map            `json:"map"`
+	Respawn  *coordinate.Coordinate         `json:"respawn"`
+	Respawns map[int]*coordinate.Coordinate `json:"respawns"`
+	Game     *lobby.Game                    `json:"game"`
+	Map      *LocalMap.Map                  `json:"map"`
 
 	DontEndGames []notFinishedGames.NotFinishedGames `json:"dont_end_games"`
 }

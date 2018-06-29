@@ -1,6 +1,6 @@
 function sendReady(gameName) {
 
-    var selectResp = document.getElementById("RespawnSelect");
+    let selectResp = document.getElementById("RespawnSelect");
 
     if (selectResp) {
         respownId = selectResp.options[selectResp.selectedIndex];
@@ -14,17 +14,18 @@ function sendReady(gameName) {
 }
 
 function Ready(jsonMessage) {
+    console.log(jsonMessage);
 
-    var error = JSON.parse(jsonMessage).error;
-    var ownedName = JSON.parse(jsonMessage).user_name;
-    var respawn = JSON.parse(jsonMessage).respawn;
+    let error = JSON.parse(jsonMessage).error;
+    let ownedName = JSON.parse(jsonMessage).user_name;
+    let respawn = JSON.parse(jsonMessage).respawn;
 
-    var user = Object();
+    let user = Object();
     user.Name = JSON.parse(jsonMessage).game_user;
 
     if (error === "") {
-        var userRespawnCell = document.getElementById(user.Name).cells[1];
-        var userReadyCell = document.getElementById(user.Name).cells[2];
+        let userRespawnCell = document.getElementById(user.Name).cells[1];
+        let userReadyCell = document.getElementById(user.Name).cells[2];
 
         if (user.Ready = JSON.parse(jsonMessage).ready === "false") {
 
@@ -51,5 +52,7 @@ function Ready(jsonMessage) {
             userRespawnCell.innerHTML = user.Respawn.Name;
         }
         Respawn();
+    } else {
+        alert(error)
     }
 }

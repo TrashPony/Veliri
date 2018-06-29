@@ -19,7 +19,7 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*player.Player, er
 		if game != nil { // если такая игра есть оповещаем других игроков о том что он вышел
 			DelUserInLobby(game, user.GetLogin())
 
-			if user.GetLogin() == game.Creator.GetLogin() {
+			if user.GetLogin() == game.Creator {
 				// если это создатель говорим другим игрокам выйти в общее лоби
 				DisconnectLobby(game.Users)
 				delete(openGames, game.ID)
@@ -48,7 +48,7 @@ func DelUserInLobby(game *lobby.Game, delLogin string) {
 	}
 }
 
-func DisconnectLobby(users []*player.Player) {
+func DisconnectLobby(users map[string]*player.Player) {
 	for _, user := range users {
 		if user != nil {
 			var refresh = Response{Event: "DisconnectLobby", UserName: user.GetLogin()}

@@ -21,7 +21,7 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 
 	for _, user := range game.Users {
 		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_squads (id_game, id_squad) VALUES ($1, $2)",
-			id, user.Squad.ID)
+			id, user.GetSquad().ID)
 			// todo обновление информации внутри сквада для мазр шипов, положение, на карте, снять все прошлые эффекты и тд
 		if err != nil {
 			println("add matherShip error")

@@ -12,9 +12,9 @@ type Game struct {
 	ID       int
 	Name     string
 	Map      LocalMap.Map
-	Creator  *player.Player
-	Respawns []*coordinate.Coordinate
-	Users    []*player.Player
+	Creator  string
+	Respawns map[int]*coordinate.Coordinate
+	Users    map[string]*player.Player
 }
 
 func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player, id int) Game {
@@ -22,15 +22,15 @@ func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player, id i
 	respawns := get.Respawns(mapID)
 	mp := get.Map(mapID)
 
-	game := Game{ID: id, Name: nameGame, Map: mp, Creator: creator, Users: make([]*player.Player, 0), Respawns: respawns}
-	game.Users = append(game.Users, creator)
+	game := Game{ID: id, Name: nameGame, Map: mp, Creator: creator.GetLogin(), Users: make(map[string]*player.Player, 0), Respawns: respawns}
+	game.Users[creator.GetLogin()] = creator
 	return game
 }
 
 func (game *Game) JoinToLobbyGame(user *player.Player) error {
 
 	if len(game.Respawns) > len(game.Users) {
-		game.Users = append(game.Users, user)
+		game.Users[user.GetLogin()] = user
 		return nil
 	} else {
 		return errors.New("lobby is full")
@@ -81,14 +81,6 @@ func (game *Game) DelRespawnUser(user *player.Player) {
 
 func (game *Game) RemoveUser(user *player.Player) {
 	game.DelRespawnUser(user)
-	for i, gameUser := range game.Users {
-		if gameUser.GetLogin() == user.GetLogin() {
-			game.Users = remove(game.Users, i)
-		}
-	}
-}
 
-func remove(users []*player.Player, i int) []*player.Player {
-	users[len(users)-1], users[i] = users[i], users[len(users)-1]
-	return users[:len(users)-1]
+	delete(game.Users, user.GetLogin())
 }

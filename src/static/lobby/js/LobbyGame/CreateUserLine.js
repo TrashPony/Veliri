@@ -1,25 +1,25 @@
-function CreateUserLine(user) {
-    var oldUser = document.getElementById(user.Name);
+function CreateUserLine(userName, ready) {
+    let oldUser = document.getElementById(userName);
 
     if (oldUser) {
         return;
     }
 
-    var list = document.getElementById('gameInfo');
-    var tr = document.createElement('tr');
-    var tdName = document.createElement('td');
-    var tdRespawn = document.createElement('td');
-    var tdReady = document.createElement('td');
+    let list = document.getElementById('gameInfo');
+    let tr = document.createElement('tr');
+    let tdName = document.createElement('td');
+    let tdRespawn = document.createElement('td');
+    let tdReady = document.createElement('td');
 
     tr.style.wordWrap = 'break-word';
     tr.className = "User";
     tr.align = "center";
-    tr.id = user.Name;
+    tr.id = userName;
 
-    tdName.appendChild(document.createTextNode(user.Name));
+    tdName.appendChild(document.createTextNode(userName));
     tdName.className = "Value";
 
-    if (user.Ready) {
+    if (ready) {
         tdReady.innerHTML = "Готов.";
         tdReady.className = "Success";
         tdRespawn.innerHTML = user.Respawn.Name;

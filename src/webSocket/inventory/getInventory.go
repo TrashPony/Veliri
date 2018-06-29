@@ -22,7 +22,7 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "GetListSquad" {
-		squads, err := get.UserSquads(usersInventoryWs[ws].GetID())
+		/*squads, err := get.UserSquads(usersInventoryWs[ws].GetID())
 
 		var resp Response
 
@@ -30,10 +30,10 @@ func GetDetailSquad(ws *websocket.Conn, msg Message)  {
 			resp = Response{Event: "GetListSquad", Error: err.Error()}
 			ws.WriteJSON(resp)
 		} else {
-			usersInventoryWs[ws].Squads = squads
-			resp = Response{Event: "GetListSquad", Error: "none", Squads: squads}
-			ws.WriteJSON(resp)
-		}
+			//usersInventoryWs[ws].Squads = squads
+			//resp = Response{Event: "GetListSquad", Error: "none", Squads: squads}
+			//ws.WriteJSON(resp)
+		}*/
 	}
 
 	if msg.Event == "GetMatherShips" {

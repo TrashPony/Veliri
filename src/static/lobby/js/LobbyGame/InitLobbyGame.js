@@ -1,26 +1,40 @@
 function CreateNewLobbyGame(jsonMessage) {
-    var game = JSON.parse(jsonMessage).game;
+    let game = JSON.parse(jsonMessage).game;
     CreateLobbyMenu(game.Name, JSON.parse(jsonMessage).error, true);
 
-    var user = JSON.parse(jsonMessage).game.Creator;
+    let user = JSON.parse(jsonMessage).user_name;
 
-    CreateUserLine(user);
-    CreateSelectRespawn(user.Name);
-    Respawn();
+    let users = JSON.parse(jsonMessage).game.Users;
+
+    for (let name in users) {
+        if (users.hasOwnProperty(name)) {
+            console.log(name);
+            CreateUserLine(name, users[name].Ready);
+
+            if (name === user) {
+                CreateSelectRespawn(name);
+                Respawn();
+            }
+        }
+    }
 }
 
 function InitLobbyGame(jsonMessage) {
     CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, false);
 
-    var user = JSON.parse(jsonMessage).user;
+    let user = JSON.parse(jsonMessage).user_name;
 
-    CreateUserLine(user);
-    CreateSelectRespawn(user.Name);
-    Respawn();
+    let users = JSON.parse(jsonMessage).game.Users;
 
-    var users = JSON.parse(jsonMessage).game_users;
+    for (let name in users) {
+        if (users.hasOwnProperty(name)) {
+            console.log(name);
+            CreateUserLine(name, users[name].Ready);
 
-    for (var i = 0; i < users.length; i++) {
-        CreateUserLine(users[i]);
+            if (name === user) {
+                CreateSelectRespawn(name);
+                Respawn();
+            }
+        }
     }
 }

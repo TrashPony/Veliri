@@ -6,7 +6,7 @@ import (
 
 func UnitSquad(ws *websocket.Conn, msg Message)  {
 	if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" {
-		if usersInventoryWs[ws].Squad != nil {
+		if usersInventoryWs[ws].GetSquad() != nil {
 			//var gameUnit unit.Unit
 			// todo проверка на занятость слота в который хотят добавить юнита
 			if msg.WeaponID != 0 {
@@ -24,7 +24,7 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 				//usersInventoryWs[ws].Squad.ReplaceUnit(&gameUnit, msg.UnitSlot)
 			}
 
-			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].Squad}
+			resp := Response{Event: "UpdateSquad", Squad: usersInventoryWs[ws].GetSquad()}
 			ws.WriteJSON(resp)
 		} else {
 			resp := Response{Event: msg.Event, Error: "No select squad"}
@@ -33,7 +33,7 @@ func UnitSquad(ws *websocket.Conn, msg Message)  {
 	}
 
 	if msg.Event == "RemoveUnit" {
-		if usersInventoryWs[ws].Squad != nil {
+		if usersInventoryWs[ws].GetSquad() != nil {
 			/*err := usersInventoryWs[ws].Squad.DelUnit(msg.UnitSlot)
 
 			if err == nil {
