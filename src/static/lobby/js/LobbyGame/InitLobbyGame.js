@@ -24,7 +24,7 @@ function InitLobbyGame(jsonMessage) {
 
     let user = JSON.parse(jsonMessage).user_name;
 
-    let users = JSON.parse(jsonMessage).game.Users;
+    let users = JSON.parse(jsonMessage).game_users;
 
     for (let name in users) {
         if (users.hasOwnProperty(name)) {

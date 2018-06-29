@@ -2,7 +2,6 @@ package lobby
 
 import (
 	"github.com/gorilla/websocket"
-	"strconv"
 )
 
 func Ready(msg Message, ws *websocket.Conn) {
@@ -18,7 +17,7 @@ func Ready(msg Message, ws *websocket.Conn) {
 			game.UserReady(user, respawn)
 
 			for _, gameUser := range game.Users {
-				resp := Response{Event: msg.Event, UserName: gameUser.GetLogin(), GameUser: user.GetLogin(), Ready: strconv.FormatBool(user.GetReady()), Respawn: user.GetRespawn()}
+				resp := Response{Event: msg.Event, UserName: gameUser.GetLogin(), GameUser: user.GetLogin(), Ready: user.GetReady(), Respawn: user.GetRespawn()}
 				lobbyPipe <- resp
 			}
 		} else {

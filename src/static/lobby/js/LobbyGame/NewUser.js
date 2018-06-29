@@ -1,15 +1,18 @@
 function NewUser(jsonMessage) {
     // говорит всем кто в игре кто подключился
-    var user = JSON.parse(jsonMessage).user;
+    let user = JSON.parse(jsonMessage).game_user;
+    let userReady = JSON.parse(jsonMessage).ready;
 
-    CreateUserLine(user);
+    CreateUserLine(user, userReady);
 }
 
 function JoinToLobby(jsonMessage) {
     // дает новому игроку данные по тем кто уже внутри
-    var users = JSON.parse(jsonMessage).game_users;
+    console.log(jsonMessage);
 
-    for (var i = 0; i < users.length; i++) {
+    let users = JSON.parse(jsonMessage).game_users;
+
+    for (let i = 0; i < users.length; i++) {
         CreateUserLine(users[i]);
     }
 }

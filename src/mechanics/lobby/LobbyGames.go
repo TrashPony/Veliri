@@ -73,8 +73,10 @@ func (game *Game) SetRespawnUser(user *player.Player, respawnID int) (*coordinat
 
 func (game *Game) DelRespawnUser(user *player.Player) {
 	for _, respawn := range game.Respawns {
-		if respawn.ID == user.GetRespawn().ID {
-			user.SetRespawn(nil)
+		if user.GetRespawn() != nil {
+			if respawn.ID == user.GetRespawn().ID {
+				user.SetRespawn(nil)
+			}
 		}
 	}
 }

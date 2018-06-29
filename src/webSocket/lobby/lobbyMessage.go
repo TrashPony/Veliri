@@ -26,7 +26,7 @@ type Response struct {
 	IdGame       int    `json:"id_game"`
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
-	Ready        string `json:"ready"`
+	Ready        bool `json:"ready"`
 	NumOfPlayers string `json:"num_of_players"`
 	Players      string `json:"players"`
 	Creator      string `json:"creator"`

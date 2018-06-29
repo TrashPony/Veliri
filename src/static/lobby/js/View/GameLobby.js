@@ -1,8 +1,8 @@
 function GameView(jsonMessage) {
 
-    var game = JSON.parse(jsonMessage).game;
+    let game = JSON.parse(jsonMessage).game;
 
-    var gameLine = document.getElementById(game.Name);
+    let gameLine = document.getElementById(game.Name);
     if (gameLine) {
         gameLine.remove();
     }
@@ -11,14 +11,14 @@ function GameView(jsonMessage) {
 }
 
 function CreateLobyGame(game) {
-    var list = document.getElementById('Menu');
+    let list = document.getElementById('Menu');
     if (list) {
-        var tr = document.createElement('tr');
-        var tdName = document.createElement('td');
-        var tdID = document.createElement('td');
-        var tdStep = document.createElement('td');
-        var tdPhase = document.createElement('td');
-        var tdMyStep = document.createElement('td');
+        let tr = document.createElement('tr');
+        let tdName = document.createElement('td');
+        let tdID = document.createElement('td');
+        let tdStep = document.createElement('td');
+        let tdPhase = document.createElement('td');
+        let tdMyStep = document.createElement('td');
 
         tr.style.wordWrap = 'break-word';
         tr.className = 'Select Menu';
@@ -37,11 +37,17 @@ function CreateLobyGame(game) {
 
         tr.map = game.Map;
 
+        let countUsers = 0;
+
+        for (let key in game.Users) {
+            countUsers++;
+        }
+
         tdName.appendChild(document.createTextNode(game.Name));
         tdID.appendChild(document.createTextNode(game.Map.Name));
-        tdStep.appendChild(document.createTextNode(game.Creator.Name));
+        tdStep.appendChild(document.createTextNode(game.Creator));
         tdPhase.appendChild(document.createTextNode(game.Map.Respawns));
-        tdMyStep.appendChild(document.createTextNode(game.Users.length));
+        tdMyStep.appendChild(document.createTextNode(countUsers));
 
         tdName.className = "Value";
 

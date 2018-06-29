@@ -1,8 +1,8 @@
 function ReaderLobby(jsonMessage) {
-    var event = JSON.parse(jsonMessage).event;
+    let event = JSON.parse(jsonMessage).event;
     if (event === "InitLobby") {
-        var login = document.getElementById('login');
-        var userName = JSON.parse(jsonMessage).user_name;
+        let login = document.getElementById('login');
+        let userName = JSON.parse(jsonMessage).user_name;
         login.innerHTML = "Вы зашли как: " + userName;
     }
 
@@ -15,8 +15,10 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "DelUser") {
-        var userTr = document.getElementById(JSON.parse(jsonMessage).game_user);
-        userTr.remove();
+        let userTr = document.getElementById(JSON.parse(jsonMessage).game_user);
+        if (userTr !== null) {
+            userTr.remove();
+        }
     }
 
     if (event === "UserRefresh") {
