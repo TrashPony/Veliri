@@ -82,7 +82,7 @@ func BodyEquip(ship Boder) {
 
 		for bodySlot := range ship.GetBody().Equip {
 			if bodySlot.Number == slot {
-				if bodySlot.Weapon || equipType == "ammo" {
+				if bodySlot.Weapon {
 					if equipType == "weapon" {
 						ship.GetBody().Weapons[bodySlot] = Weapon(idEquip)
 					}

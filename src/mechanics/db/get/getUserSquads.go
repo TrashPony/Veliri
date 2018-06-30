@@ -103,5 +103,40 @@ func SquadUnits(squadID int) (units map[int]*unit.Unit) {
 
 func SquadInventory(squadID int) (inventory map[int]interface{}) {
 
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id"+
+		"FROM squad_inventory "+
+		"WHERE id_squad = $1", squadID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var TypeItem string
+	var idItem int
+	var slot int
+
+	for rows.Next() {
+		err := rows.Scan(&slot, &TypeItem, &idItem)
+		if err != nil {
+			log.Fatal("get body equip " + err.Error())
+		}
+
+		if TypeItem == "weapon" {
+			inventory[slot] = Weapon(idItem)
+		}
+
+		if TypeItem == "ammo" {
+			inventory[slot] = Ammo(idItem)
+		}
+
+		if TypeItem == "equip" {
+			inventory[slot] = TypeEquip(idItem)
+		}
+
+		if TypeItem == "body" {
+			inventory[slot] = Body(idItem)
+		}
+	}
+
 	return
 }
