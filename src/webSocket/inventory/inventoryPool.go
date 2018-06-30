@@ -46,10 +46,6 @@ func Reader(ws *websocket.Conn) {
 			SquadSettings(ws, msg)
 		}
 
-		if msg.Event == "GetMatherShips" || msg.Event == "GetListSquad" || msg.Event == "GetDetailOfUnits" || msg.Event == "GetEquipping" {
-			GetDetailSquad(ws, msg)
-		}
-
 		if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" || msg.Event == "RemoveUnit" {
 			UnitSquad(ws, msg)
 		}

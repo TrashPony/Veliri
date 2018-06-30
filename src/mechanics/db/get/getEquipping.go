@@ -7,32 +7,6 @@ import (
 	"../../gameObjects/equip"
 )
 
-func TypeEquipping() []equip.Equip {
-
-	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	var equipping = make([]equip.Equip, 0)
-
-	for rows.Next() {
-		var equipType equip.Equip
-
-		err := rows.Scan(&equipType.Id, &equipType.Type, &equipType.Specification, &equipType.Applicable, &equipType.Region)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		EffectsEquip(&equipType)
-
-		equipping = append(equipping, equipType)
-	}
-
-	return equipping
-}
-
 func TypeEquip(id int) *equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type WHERE id=$1", id)
