@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/websocket"
 	"../../mechanics/player"
 	"../utils"
-
+	"strconv"
 )
 
 
@@ -16,6 +16,10 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	newPlayer := &player.Player{}
 	newPlayer.SetLogin(login)
 	newPlayer.SetID(id)
+
+	print("WS inventory Сессия: ")                          // просто смотрим новое подключение
+	print(ws)
+	println(" login: " + login + " id: " + strconv.Itoa(id))
 
 	usersInventoryWs[ws] = newPlayer // Регистрируем нового Клиента
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
@@ -35,7 +39,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openInventory" {
-
+			Open(ws, msg)
 		}
 
 		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {

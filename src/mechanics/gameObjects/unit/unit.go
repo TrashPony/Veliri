@@ -5,7 +5,6 @@ import (
 	"../effect"
 	"../coordinate"
 	"../ammo"
-	"../equip"
 )
 
 type Unit struct {
@@ -16,10 +15,6 @@ type Unit struct {
 	Weapon *detail.Weapon `json:"weapon"`
 	Body   *detail.Body   `json:"body"`
 	Ammo   *ammo.Ammo     `json:"ammo"`
-
-	Equip      map[int]*equip.Equip   `json:"equip"`     // номера слотов
-
-	MotherShipSlot int `json:"mother_ship_slot"`
 
 	X      int  `json:"x"`
 	Y      int  `json:"y"`
@@ -33,6 +28,14 @@ type Unit struct {
 	HP int `json:"hp"`
 
 	Effects []*effect.Effect `json:"effects"`
+}
+
+func (unit *Unit) GetID() int  {
+	return unit.ID
+}
+
+func (unit *Unit) GetBody() *detail.Body  {
+	return unit.Body
 }
 
 func (unit *Unit) DelWeapon() {

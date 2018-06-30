@@ -33,7 +33,7 @@ func TypeEquipping() []equip.Equip {
 	return equipping
 }
 
-func TypeEquip(id int) equip.Equip {
+func TypeEquip(id int) *equip.Equip {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type WHERE id=$1", id)
 	if err != nil {
@@ -53,7 +53,7 @@ func TypeEquip(id int) equip.Equip {
 
 	EffectsEquip(&equipType)
 
-	return equipType
+	return &equipType
 }
 
 func EffectsEquip(equipType *equip.Equip) {

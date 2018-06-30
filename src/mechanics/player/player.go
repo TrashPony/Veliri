@@ -25,7 +25,7 @@ type Player struct {
 	Ready              bool
 
 	squad  			   *squad.Squad
-	//squads 			   []*squad.Squad
+	squads 			   []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
@@ -82,4 +82,12 @@ func (client *Player) GetSquad() (*squad.Squad) {
 
 func (client *Player) SetSquad(squad *squad.Squad) () {
 	client.squad = squad
+}
+
+func (client *Player) GetSquads() ([]*squad.Squad) {
+	return client.squads
+}
+
+func (client *Player) SetSquads(squads []*squad.Squad) () {
+	client.squads = squads
 }

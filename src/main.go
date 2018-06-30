@@ -16,6 +16,7 @@ func main() {
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections) // если браузер запрашивает соеденение на /ws то инициализируется переход на вебсокеты
+	router.HandleFunc("/wsInventory", webSocket.HandleConnections)
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
 	router.HandleFunc("/wsGlobal", webSocket.HandleConnections)
 	router.HandleFunc("/wsChat", webSocket.HandleConnections)

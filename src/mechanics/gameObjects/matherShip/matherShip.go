@@ -2,7 +2,6 @@ package matherShip
 
 import (
 	"../unit"
-	"../equip"
 	"../detail"
 	"../ammo"
 	"../coordinate"
@@ -19,9 +18,6 @@ type MatherShip struct {
 	Ammo   *ammo.Ammo     `json:"ammo"`
 
 	Units      map[int]*unit.Unit     `json:"units"`     // в роли ключей карты выступают
-	Equip      map[int]*equip.Equip   `json:"equip"`     // номера слотов
-
-	MotherShipSlot int `json:"mother_ship_slot"`
 
 	X      int  `json:"x"`
 	Y      int  `json:"y"`
@@ -35,6 +31,14 @@ type MatherShip struct {
 	HP int `json:"hp"`
 
 	Effects []*effect.Effect `json:"effects"`
+}
+
+func (matherShip *MatherShip) GetID() int  {
+	return matherShip.ID
+}
+
+func (matherShip *MatherShip) GetBody() *detail.Body  {
+	return matherShip.Body
 }
 
 func (matherShip *MatherShip) GetX() int {

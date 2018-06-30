@@ -11,7 +11,11 @@ import (
 	"net/http"
 )
 
-var upgrader = websocket.Upgrader{} // методами приема обычного HTTP-соединения и обновления его до WebSocket
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+} // методами приема обычного HTTP-соединения и обновления его до WebSocket
 
 func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, pool string) {
 
