@@ -17,7 +17,8 @@ type Body struct {
 	VulToExplosion  int                       `json:"vul_to_explosion"`
 	RangeView       int                       `json:"range_view"`
 	Accuracy        int                       `json:"accuracy"`
-	Power           int                       `json:"power"`
+	MaxPower        int                       `json:"max_power"`
+	RecoveryPower   int                       `json:"recovery_power"`
 	WallHack        bool                      `json:"wall_hack"`
 	Equip           map[BodySlot]*equip.Equip `json:"equip"`
 	Weapons         map[BodySlot]*Weapon      `json:"weapons"`

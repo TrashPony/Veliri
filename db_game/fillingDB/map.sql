@@ -1,6 +1,6 @@
 /*  ---------------------------- Map -------------------------------------------------- */
-INSERT INTO maps (name, x_size, y_size, id_type, level, specification) VALUES ('Test', 10, 10, 6, 2, 'тестовая карта на 2 человека');
-INSERT INTO maps (name, x_size, y_size, id_type, level, specification) VALUES ('Test2', 10, 10, 6, 2, 'тестовая карта на 4 человека');
+INSERT INTO maps (id, name, x_size, y_size, id_type, level, specification) VALUES (1, 'Test', 10, 10, 6, 2, 'тестовая карта на 2 человека');
+INSERT INTO maps (id, name, x_size, y_size, id_type, level, specification) VALUES (2, 'Test2', 10, 10, 6, 2, 'тестовая карта на 4 человека');
 
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 1, 1, 1, 2);

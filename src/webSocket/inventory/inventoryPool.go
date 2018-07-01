@@ -41,21 +41,5 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "openInventory" {
 			Open(ws, msg)
 		}
-
-		if msg.Event == "AddNewSquad" || msg.Event == "SelectSquad" || msg.Event == "SelectMatherShip" || msg.Event == "DeleteSquad" {
-			SquadSettings(ws, msg)
-		}
-
-		if msg.Event == "AddUnit" || msg.Event == "ReplaceUnit" || msg.Event == "RemoveUnit" {
-			UnitSquad(ws, msg)
-		}
-
-		if msg.Event == "AddEquipment" || msg.Event == "ReplaceEquipment" || msg.Event == "RemoveEquipment" {
-			EquipSquad(ws, msg)
-		}
-
-		if msg.Event == "UnitConstructor" {
-			UnitConstructor(ws, msg)
-		}
 	}
 }

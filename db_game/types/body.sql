@@ -13,7 +13,8 @@ CREATE TABLE body_type (
   vulnerability_to_explosion INT,
   range_view                 INT,
   accuracy                   INT,
-  power                      INT, /* сила встроеного генератора */
+  max_power                  INT, /* макс колво энергии */
+  recovery_power             INT, /* востановление энергии за ход */
   wall_hack                  BOOLEAN
 );
 

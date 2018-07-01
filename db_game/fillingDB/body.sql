@@ -1,11 +1,11 @@
 /*  ---------------------------- body_type -------------------------------------------------- */
 INSERT INTO body_type (id, name, mother_ship, speed, initiative, max_hp, armor, evasion_critical, vulnerability_to_kinetics,
-                       vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, power, wall_hack)
-VALUES (1, 'tank', false, 3, 5, 40, 5, 5, 15, 15, 15, 15, 3, 3, 30, false);
+                       vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, max_power, recovery_power, wall_hack)
+VALUES (1, 'tank', false, 3, 5, 40, 5, 5, 15, 15, 15, 15, 3, 3, 50, 15, false);
 
 INSERT INTO body_type (id, name, mother_ship, speed, initiative, max_hp, armor, evasion_critical, vulnerability_to_kinetics,
-                       vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, power, wall_hack)
-VALUES (2, 'Mother', true, 3, 25, 100, 5, 15, 15, 15, 15, 15, 3, 5, 100, false);
+                       vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, max_power, recovery_power, wall_hack)
+VALUES (2, 'Mother', true, 3, 25, 100, 5, 15, 15, 15, 15, 15, 3, 5, 100, 20, false);
 
 /* BODY TANK*/
 /* I */
