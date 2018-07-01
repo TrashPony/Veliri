@@ -25,20 +25,20 @@ VALUES (1, 3, 2, false, '');
 /* BODY MOTHER*/
 /* I */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 1, 1, true, '');
+VALUES (2, 1, 1, true, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 1, 2, true, '');
+VALUES (2, 1, 2, true, '');
 /* II */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 2, 1, false, '');
+VALUES (2, 2, 1, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 2, 2, false, '');
+VALUES (2, 2, 2, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 2, 3, false, '');
+VALUES (2, 2, 3, false, '');
 /* III */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 3, 1, true, '');
+VALUES (2, 3, 1, true, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 3, 2, false, '');
+VALUES (2, 3, 2, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 3, 3, true, '');
+VALUES (2, 3, 3, true, '');

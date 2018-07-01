@@ -101,9 +101,9 @@ func SquadUnits(squadID int) (units map[int]*unit.Unit) {
 	return
 }
 
-func SquadInventory(squadID int) (inventory map[int]interface{}) {
+func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id"+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity"+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)
 	if err != nil {
@@ -111,30 +111,36 @@ func SquadInventory(squadID int) (inventory map[int]interface{}) {
 	}
 	defer rows.Close()
 
-	var TypeItem string
-	var idItem int
-	var slot int
-
 	for rows.Next() {
-		err := rows.Scan(&slot, &TypeItem, &idItem)
+
+		var inventorySlot = squad.InventorySlot{}
+		var TypeItem string
+		var idItem int
+		var slot int
+
+		err := rows.Scan(&slot, &TypeItem, &idItem, &inventorySlot.Quantity)
 		if err != nil {
 			log.Fatal("get body equip " + err.Error())
 		}
 
 		if TypeItem == "weapon" {
-			inventory[slot] = Weapon(idItem)
+			inventorySlot.Item = Weapon(idItem)
+			inventory[slot] = &inventorySlot
 		}
 
 		if TypeItem == "ammo" {
-			inventory[slot] = Ammo(idItem)
+			inventorySlot.Item = Ammo(idItem)
+			inventory[slot] = &inventorySlot
 		}
 
 		if TypeItem == "equip" {
-			inventory[slot] = TypeEquip(idItem)
+			inventorySlot.Item = TypeEquip(idItem)
+			inventory[slot] = &inventorySlot
 		}
 
 		if TypeItem == "body" {
-			inventory[slot] = Body(idItem)
+			inventorySlot.Item = Body(idItem)
+			inventory[slot] = &inventorySlot
 		}
 	}
 
