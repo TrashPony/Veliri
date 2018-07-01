@@ -47,22 +47,23 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 			"FROM squad_mother_ship "+
 			"WHERE id_squad=$1", squadID)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get ship squad " + err.Error())
 	}
 	defer rows.Close()
 
 	ship = &matherShip.MatherShip{}
 
-	var idBody int
+	for rows.Next() {
+		var idBody int
 
-	err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &ship.Target, ship.QueueAttack)
-	if err != nil {
-		log.Fatal(err)
+		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &ship.Target, ship.QueueAttack)
+		if err != nil {
+			log.Fatal("scan get ship squad " + err.Error())
+		}
+
+		ship.Body = Body(idBody)
+		BodyEquip(ship)
 	}
-
-	ship.Body = Body(idBody)
-
-	BodyEquip(ship)
 
 	return
 }
@@ -70,11 +71,11 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 func SquadUnits(squadID int) (units map[int]*unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"Select id, id_body, hp, x, y, rotate, action, target, queue_attack, slot "+
-			"FROM squad_mother_ship "+
+		"SELECT id, id_body, hp, x, y, rotate, action, target, queue_attack, slot "+
+			"FROM squad_units "+
 			"WHERE id_squad=$1", squadID)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get units squad " + err.Error())
 	}
 	defer rows.Close()
 
@@ -103,13 +104,15 @@ func SquadUnits(squadID int) (units map[int]*unit.Unit) {
 
 func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity"+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity "+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get inventory squad " + err.Error())
 	}
 	defer rows.Close()
+
+	inventory = make(map[int]*squad.InventorySlot)
 
 	for rows.Next() {
 
@@ -120,7 +123,7 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 
 		err := rows.Scan(&slot, &TypeItem, &idItem, &inventorySlot.Quantity)
 		if err != nil {
-			log.Fatal("get body equip " + err.Error())
+			log.Fatal("get inventory squad " + err.Error())
 		}
 
 		if TypeItem == "weapon" {

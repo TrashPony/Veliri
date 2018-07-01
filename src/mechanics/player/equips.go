@@ -13,7 +13,7 @@ func (client *Player) GetEquips() []*equip.Equip {
 func (client *Player) GetEquipByID(id int) (*equip.Equip, bool) {
 
 	for _, playerEquip := range client.equips {
-		if playerEquip.Id == id {
+		if playerEquip.ID == id {
 			return playerEquip, true
 		}
 	}

@@ -3,11 +3,17 @@ package equip
 import "../effect"
 
 type Equip struct {
-	Id            int              `json:"id"`
+	ID            int              `json:"id"`
 	Type          string           `json:"type"`
+	Active        bool             `json:"active"`
 	Specification string           `json:"specification"`
-	Effects       []*effect.Effect `json:"effects"`
-	Used          bool             `json:"used"`
 	Applicable    string           `json:"applicable"`
 	Region        int              `json:"region"`
+	Radius        int              `json:"radius"`
+	TypeSlot      int              `json:"type_slot"`
+	Reload        int              `json:"reload"`
+	Power         int              `json:"power"`
+	UsePower      int              `json:"use_power"`
+	Effects       []*effect.Effect `json:"effects"`
+	Used          bool             `json:"used"`
 }

@@ -3,6 +3,7 @@ package get
 import (
 	"../../../dbConnect"
 	"../../gameObjects/detail"
+	"../../gameObjects/equip"
 	"log"
 )
 
@@ -14,16 +15,18 @@ func Body(id int) (body *detail.Body) {
 		"FROM body_type "+
 		"WHERE id=$1", id)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get body: " + err.Error())
 	}
 	defer rows.Close()
 
 	body = &detail.Body{}
 
-	err = rows.Scan(&body.ID, &body.Name, &body.MotherShip, &body.Speed, &body.Initiative, &body.MaxHP, &body.Armor, &body.EvasionCritical,
-		&body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion, &body.RangeView, &body.Accuracy, &body.MaxPower, &body.RecoveryPower)
-	if err != nil {
-		log.Fatal("get body" + err.Error())
+	for rows.Next() {
+		err = rows.Scan(&body.ID, &body.Name, &body.MotherShip, &body.Speed, &body.Initiative, &body.MaxHP, &body.Armor, &body.EvasionCritical,
+			&body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion, &body.RangeView, &body.Accuracy, &body.MaxPower, &body.RecoveryPower)
+		if err != nil {
+			log.Fatal("get body: " + err.Error())
+		}
 	}
 
 	BodySlots(body)
@@ -39,6 +42,9 @@ func BodySlots(body *detail.Body) {
 		log.Fatal("get body slot " + err.Error())
 	}
 	defer rows.Close()
+
+	body.Weapons = make(map[detail.BodySlot]*detail.Weapon)
+	body.Equip = make(map[detail.BodySlot]*equip.Equip)
 
 	for rows.Next() {
 		var slot detail.BodySlot

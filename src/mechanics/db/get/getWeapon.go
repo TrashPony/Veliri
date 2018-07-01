@@ -8,18 +8,20 @@ import (
 
 func Weapon(id int) (weapon *detail.Weapon) {
 
-	rows, err := dbConnect.GetDBConnect().Query("select * from weapon_type where id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, min_attack_range, range_attack, accuracy, artillery, power " +
+		"FROM weapon_type " +
+		"WHERE id=$1", id)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get weapon: " + err.Error())
 	}
 	defer rows.Close()
 
 	weapon = &detail.Weapon{}
 
 	for rows.Next() {
-		err := rows.Scan(&weapon.Id, &weapon.Name, &weapon.Type, &weapon.Weight, &weapon.Damage, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.AreaCovers)
+		err := rows.Scan(&weapon.ID, &weapon.Name, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy, &weapon.Artillery, &weapon.Power)
 		if err != nil {
-			log.Fatal("get weapon" + err.Error())
+			log.Fatal("get scan weapon: " + err.Error())
 		}
 	}
 

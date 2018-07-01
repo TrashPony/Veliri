@@ -26,7 +26,7 @@ func Equip(player player.Player, game *localGame.Game) []*equip.Equip {
 
 		var userEquip equip.Equip
 
-		err := rows.Scan(&userEquip.Id, &userEquip.Type, &userEquip.Used, &userEquip.Specification, &userEquip.Applicable, &userEquip.Region)
+		err := rows.Scan(&userEquip.ID, &userEquip.Type, &userEquip.Used, &userEquip.Specification, &userEquip.Applicable, &userEquip.Region)
 		if err != nil {
 			log.Fatal(err)
 		}

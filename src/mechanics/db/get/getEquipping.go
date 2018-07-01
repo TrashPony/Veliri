@@ -9,19 +9,21 @@ import (
 
 func TypeEquip(id int) *equip.Equip {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT * FROM equipping_type WHERE id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, active, specification, applicable, region, radius, type_slot, reload, power, use_power "+
+		"FROM equipping_type "+
+		"WHERE id=$1", id)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get type equip " + err.Error())
 	}
 	defer rows.Close()
 
 	var equipType equip.Equip
 
 	for rows.Next() {
-		err := rows.Scan(&equipType.Id, &equipType.Type, &equipType.Specification,
-			&equipType.Applicable, &equipType.Region)
+		err := rows.Scan(&equipType.ID, &equipType.Type, &equipType.Active, &equipType.Specification, &equipType.Applicable, &equipType.Region, &equipType.Radius,
+			&equipType.TypeSlot, &equipType.Reload, &equipType.Power, &equipType.UsePower)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get scan type equip " + err.Error())
 		}
 	}
 
@@ -35,7 +37,7 @@ func EffectsEquip(equipType *equip.Equip) {
 	equipType.Effects = make([]*effect.Effect, 0)
 
 	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
-		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equipType.Id)
+		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equipType.ID)
 	if err != nil {
 		log.Fatal(err)
 	}

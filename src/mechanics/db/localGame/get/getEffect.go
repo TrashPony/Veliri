@@ -86,7 +86,7 @@ func EffectsEquip(equip *equip.Equip) {
 	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, " +
 		" et.percentages, et.forever "+
 		" FROM action_game_equipping age, equip_effects ee, effects_type et "+
-		" WHERE age.id = $1 AND age.id_type = ee.id_equip AND ee.id_effect = et.id;", equip.Id)
+		" WHERE age.id = $1 AND age.id_type = ee.id_equip AND ee.id_effect = et.id;", equip.ID)
 
 	if err != nil {
 		println("get user equip effects")

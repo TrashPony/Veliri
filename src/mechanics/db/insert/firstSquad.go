@@ -25,7 +25,7 @@ func FirstSquad(userID int) (userSquad *squad.Squad)  {
 	/* 1 мазершип */
 	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity) " +
 		"VALUES ($1, $2, $3, $4, $5)",
-		userSquad.ID, 2, "body", 1, 1)
+		userSquad.ID, 2, "body", 2, 1)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
