@@ -1,13 +1,13 @@
 package inventory
 
 import (
+	"log"
 	"../player"
 	"../db/get"
 	"../db/insert"
-	"log"
 )
 
-func Open(client *player.Player) {
+func GetInventory(client *player.Player) {
 	squads, err := get.UserSquads(client.GetID())
 	if err != nil {
 		println("error, get Squads")

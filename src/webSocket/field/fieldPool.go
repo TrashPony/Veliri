@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"sync"
 	"../../mechanics/player"
+	"../../mechanics/players"
 	"../utils"
 	"log"
 )
@@ -20,15 +21,26 @@ var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут
 var mutex = &sync.Mutex{}
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
+	mutex.Lock()
+
 	utils.CheckDoubleLogin(login, &usersFieldWs)
-	newPlayer := player.Player{}
-	newPlayer.SetLogin(login)
-	newPlayer.SetID(id)
-	usersFieldWs[ws] = &newPlayer // Регистрируем нового Клиента
-	print("WS field Сессия: ")    // просто смотрим новое подключение
+
+	newPlayer, ok := players.Users.Get(id)
+
+	if !ok {
+		newPlayer = players.Users.Add(id, login)
+	}
+
+	usersFieldWs[ws] = newPlayer // Регистрируем нового Клиента
+
+	print("WS field Сессия: ") // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
+
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
+
+	mutex.Unlock()
+
 	fieldReader(ws, usersFieldWs)
 }
 
@@ -82,7 +94,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "SetTarget"{
+		if msg.Event == "SetTarget" {
 			SetTarget(msg, ws)
 			continue
 		}
@@ -155,7 +167,7 @@ func MoveSender() {
 
 func UnitSender() {
 	for {
-		resp := <- targetPipe
+		resp := <-targetPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
@@ -173,7 +185,7 @@ func UnitSender() {
 
 func EquipSender() {
 	for {
-		resp := <- equipPipe
+		resp := <-equipPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {

@@ -4,17 +4,15 @@ import (
 	"github.com/gorilla/websocket"
 	"sync"
 	"log"
+	"strconv"
+	"../../mechanics/players"
+	"../../mechanics/player"
 )
 
 var mutex = &sync.Mutex{}
 
-var usersLobbyWs = make(map[*websocket.Conn]*Clients) // тут будут храниться наши подключения
+var usersChatWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
 var chatPipe = make(chan chatResponse)
-
-type Clients struct { // структура описывающая клиента ws соеденение
-	Login string
-	Id    int
-}
 
 type chatMessage struct {
 	Event    string `json:"event"`
@@ -30,9 +28,23 @@ type chatResponse struct {
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	CheckDoubleLogin(login, &usersLobbyWs)
-	usersLobbyWs[ws] = &Clients{Login: login, Id: id} // Регистрируем нового Клиента
-	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
+
+	mutex.Lock()
+
+	newPlayer, ok := players.Users.Get(id)
+
+	if !ok {
+		newPlayer = players.Users.Add(id, login)
+	}
+
+	usersChatWs[ws] = newPlayer // Регистрируем нового Клиента
+
+	print("WS chat Сессия: ")                          // просто смотрим новое подключение
+	println(" login: " + newPlayer.GetLogin() + " id: " + strconv.Itoa(newPlayer.GetID()))
+
+	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
+
+	mutex.Unlock()
 
 	Reader(ws)
 }
@@ -43,11 +55,11 @@ func Reader(ws *websocket.Conn) {
 		var msg chatMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			DelConn(ws, &usersLobbyWs, err)
+			DelConn(ws, &usersChatWs, err)
 			break
 		}
 		if msg.Event == "NewChatMessage" {
-			var resp= chatResponse{Event: msg.Event, Message: msg.Message, GameUser: usersLobbyWs[ws].Login}
+			var resp = chatResponse{Event: msg.Event, Message: msg.Message, GameUser: usersChatWs[ws].GetLogin()}
 			chatPipe <- resp
 		}
 	}
@@ -57,12 +69,12 @@ func CommonChatSender()  {
 	for {
 		resp := <- chatPipe
 		mutex.Lock()
-		for ws := range usersLobbyWs {
+		for ws := range usersChatWs {
 			err := ws.WriteJSON(resp)
 			if err != nil {
 				log.Printf("error: %v", err)
 				ws.Close()
-				delete(usersLobbyWs, ws)
+				delete(usersChatWs, ws)
 			}
 		}
 		mutex.Unlock()

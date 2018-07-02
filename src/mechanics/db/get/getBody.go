@@ -3,7 +3,6 @@ package get
 import (
 	"../../../dbConnect"
 	"../../gameObjects/detail"
-	"../../gameObjects/equip"
 	"log"
 )
 
@@ -43,8 +42,7 @@ func BodySlots(body *detail.Body) {
 	}
 	defer rows.Close()
 
-	body.Weapons = make(map[detail.BodySlot]*detail.Weapon)
-	body.Equip = make(map[detail.BodySlot]*equip.Equip)
+	body.Equip = make(map[int]*detail.BodySlot)
 
 	for rows.Next() {
 		var slot detail.BodySlot
@@ -55,9 +53,10 @@ func BodySlots(body *detail.Body) {
 		}
 
 		if slot.Weapon {
-			body.Weapons[slot] = nil
+
 		} else {
-			body.Equip[slot] = nil
+			slot.Equip = nil
+			body.Equip[slot.Number] = &slot
 		}
 	}
 }
@@ -86,18 +85,18 @@ func BodyEquip(ship Boder) {
 			log.Fatal("get body equip " + err.Error())
 		}
 
-		for bodySlot := range ship.GetBody().Equip {
+		for i, bodySlot := range ship.GetBody().Equip {
 			if bodySlot.Number == slot {
 				if bodySlot.Weapon {
 					if equipType == "weapon" {
-						ship.GetBody().Weapons[bodySlot] = Weapon(idEquip)
+						ship.GetBody().Weapon = Weapon(idEquip)
 					}
 					if equipType == "ammo" { //todo если береться в неправильном порядке будут проблемы
-						ship.GetBody().Weapons[bodySlot].Ammo = Ammo(idEquip)
+						ship.GetBody().Weapon.Ammo = Ammo(idEquip)
 					}
 				} else {
 					if equipType == "equip" {
-						ship.GetBody().Equip[bodySlot] = TypeEquip(idEquip)
+						ship.GetBody().Equip[i].Equip = TypeEquip(idEquip)
 					}
 				}
 			}

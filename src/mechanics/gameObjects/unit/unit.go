@@ -4,7 +4,6 @@ import (
 	"../detail"
 	"../effect"
 	"../coordinate"
-	"../ammo"
 )
 
 type Unit struct {
@@ -12,9 +11,7 @@ type Unit struct {
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
 
-	Weapon *detail.Weapon `json:"weapon"`
 	Body   *detail.Body   `json:"body"`
-	Ammo   *ammo.Ammo     `json:"ammo"`
 
 	X      int  `json:"x"`
 	Y      int  `json:"y"`
@@ -38,12 +35,6 @@ func (unit *Unit) GetBody() *detail.Body  {
 	return unit.Body
 }
 
-func (unit *Unit) DelWeapon() {
-	if unit.Weapon != nil {
-		unit.Weapon = nil
-	}
-}
-
 func (unit *Unit) DelBody() {
 	if unit.Body != nil {
 		unit.Body = nil
@@ -56,10 +47,6 @@ func (unit *Unit) DelEquip() {
 
 func (unit *Unit) DelAmmo() {
 
-}
-
-func (unit *Unit) SetWeapon(weapon *detail.Weapon) {
-	unit.Weapon = weapon
 }
 
 func (unit *Unit) SetBody(body *detail.Body) {

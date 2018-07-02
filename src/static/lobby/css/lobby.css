@@ -28,6 +28,28 @@ tr td:last-child {
     position: relative;
 }
 
+#choiceSquad {
+    position: absolute;
+    bottom: 50px;
+}
+
+#choiceSquadTable {
+    width: 400px;
+}
+
+#matherShipTD {
+    text-align: center;
+    height: 70px;
+    width: 70px;
+    position: relative;
+}
+
+#unitsTD {
+    height: 70px;
+    text-align: center;
+    vertical-align: middle;
+}
+
 #lobby {
     padding: 5px;
     display:inline-block;

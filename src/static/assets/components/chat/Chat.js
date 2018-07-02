@@ -9,7 +9,6 @@ function ConnectChat() {
     };
 
     chat.onmessage = function(msg) {
-        console.log(msg);
         NewChatMessage(msg.data);
     };
 

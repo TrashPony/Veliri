@@ -3,7 +3,6 @@ package matherShip
 import (
 	"../unit"
 	"../detail"
-	"../ammo"
 	"../coordinate"
 	"../effect"
 )
@@ -13,9 +12,7 @@ type MatherShip struct {
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
 
-	Weapon *detail.Weapon `json:"weapon"`
 	Body   *detail.Body   `json:"body"`
-	Ammo   *ammo.Ammo     `json:"ammo"`
 
 	Units      map[int]*unit.Unit     `json:"units"`     // в роли ключей карты выступают
 

@@ -3,12 +3,14 @@ package lobby
 import (
 	"../../mechanics/lobby"
 	"../../mechanics/player"
+	"../../mechanics/players"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
 	"sync"
 	"../../mechanics/db/get"
+	"time"
 )
 
 var mutex = &sync.Mutex{}
@@ -18,22 +20,26 @@ var lobbyPipe = make(chan Response)
 var openGames = make(map[int]*lobby.Game)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
+	mutex.Lock()
+
 	utils.CheckDoubleLogin(login, &usersLobbyWs)
 
-	newPlayer := &player.Player{}
-	newPlayer.SetLogin(login)
-	newPlayer.SetID(id)
+	newPlayer, ok := players.Users.Get(id)
+
+	if !ok {
+		newPlayer = players.Users.Add(id, login)
+	}
 
 	usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента
 
-	print("WS lobby Сессия: ")                          // просто смотрим новое подключение
-	print(ws)
+	print("WS lobby Сессия: ") // просто смотрим новое подключение
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
 	go NewLobbyUser(login, &usersLobbyWs)
 	go SentOnlineUser(login, &usersLobbyWs)
 
+	mutex.Unlock()
 	Reader(ws)
 }
 
@@ -45,6 +51,8 @@ func Reader(ws *websocket.Conn) {
 			DelConn(ws, &usersLobbyWs, err)
 			break
 		}
+
+		time.Sleep(time.Millisecond * 200) // todo кстыль, без этого таймаута неспевается создаться пользователь и nullPointer в итоге :(
 
 		if msg.Event == "MapView" {
 			var maps = get.MapList()
@@ -107,7 +115,10 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "DontEndGamesList" {
-			games := get.GetNotFinishedGames(usersLobbyWs[ws].GetID())
+
+			user := usersLobbyWs[ws]
+			games := get.GetNotFinishedGames(user.GetID())
+
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), DontEndGames: games}
 			ws.WriteJSON(resp)
 		}

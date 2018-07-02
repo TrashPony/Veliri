@@ -14,7 +14,7 @@ func GetTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) map[st
 
 	openCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), gameUnit.Weapon.Range)
+	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), gameUnit.Body.Weapon.Range)
 	zone := filter(gameUnit, RadiusCoordinates, activeGame)
 
 	for _, gameCoordinate := range zone {

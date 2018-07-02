@@ -4,9 +4,9 @@
     <title>Veliri</title>
 
     <meta charset="utf-8">
-    <link href="../css/all.css" rel="stylesheet">
-    <link href="../css/menuAnimation.css" rel="stylesheet">
-    <link href="../css/chat.css" rel="stylesheet">
+    <link href="../assets/css/all.css" rel="stylesheet">
+    <link href="../assets/css/menuAnimation.css" rel="stylesheet">
+    <link href="../assets/css/chat.css" rel="stylesheet">
     <link href="css/lobby.css" rel="stylesheet">
     <link href="css/slider.css" rel="stylesheet">
 
@@ -33,31 +33,6 @@
     <script src="js/LobbyGame/NewUser.js"></script>
 
     <script src="js/SquadMenu/CreateChoiceSquadBlock.js"></script>
-    <script src="js/SquadMenu/AddNewSquad.js"></script>
-    <script src="js/SquadMenu/MatherShipsParse.js"></script>
-    <script src="js/SquadMenu/Slider.js"></script>
-    <script src="js/SquadMenu/SelectSquad.js"></script>
-    <script src="js/SquadMenu/ListSquad.js"></script>
-    <script src="js/SquadMenu/UpdateSquad.js"></script>
-    <script src="js/SquadMenu/DeleteInfoSquad.js"></script>
-    <script src="js/SquadMenu/RemoveSquad.js"></script>
-    <script src="js/SquadMenu/UnitMouseOver.js"></script>
-
-    <script src="js/ConstructorsMenu/UnitConstructor.js"></script>
-    <script src="js/ConstructorsMenu/DetailUnitParse.js"></script>
-    <script src="js/ConstructorsMenu/SelectedDetail.js"></script>
-    <script src="js/ConstructorsMenu/SendEvent.js"></script>
-    <script src="js/ConstructorsMenu/UpdateUnitInfo.js"></script>
-    <script src="js/ConstructorsMenu/LoadUnitConfig.js"></script>
-    <script src="js/ConstructorsMenu/UnitDelete.js"></script>
-
-    <script src="js/ConstructorsMenu/Create/TabDetail.js"></script>
-    <script src="js/ConstructorsMenu/Create/CreateUnitConstructor.js"></script>
-    <script src="js/ConstructorsMenu/Create/CreateUnitMenu.js"></script>
-    <script src="js/ConstructorsMenu/Create/CreateUnitParamsTable.js"></script>
-
-    <script src="js/ConstructorsMenu/Tip/DetailMouseOver.js"></script>
-    <script src="js/ConstructorsMenu/Tip/Tip.js"></script>
 
     <script src="js/EquippingMenu/EquippingMenu.js"></script>
     <script src="js/EquippingMenu/EquippingParse.js"></script>
@@ -65,11 +40,13 @@
     <script src="js/EquippingMenu/SelectEquip.js"></script>
 
 
-    <script src="../js/MoveWindow.js"></script>
-    <script src="../js/Chat.js"></script>
+    <script src="../assets/components/chat/MoveWindow.js"></script>
+    <script src="../assets/components/chat/Chat.js"></script>
 
-    <script src="../lib/phaser.js"></script>
-    <script src="../lib/phaser-plugin-isometric.js"></script>
+    <script src="../assets/components/inventory/Create.js"></script>
+    <script src="../assets/components/inventory/webSocket.js"></script>
+
+    <script src="../assets/lib/phaser.js"></script>
 
     <script> ConnectLobby() </script>
 </head>
@@ -83,7 +60,7 @@
         </table>
     </div>
 
-    <div id="lobby" align="left" onmousemove="moveTip(event)">
+    <div id="lobby" align="left">
         <div class="NotGameLobby">
             <div class="h">Новые игры:</div>
             <table id="Menu" class="table" width="390">
@@ -96,7 +73,6 @@
                 </tr>
             </table>
             <p>
-
                 Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
                 <input type="button" value="Создать Игру" class="button" onclick="MapSelection()">
             <p>
@@ -139,263 +115,6 @@
         <input type="button" value="Send" class="button" onclick="chatMessage()">
         <script>ConnectChat()</script>
     </div>
-</div>
-
-
-<div id="mask"></div>
-
-<div class="tip" id="tipChassis">
-    <table class="animateTable">
-        <tr>
-            <td>Name: </td>
-            <td id="nameChassis"> </td>
-        </tr>
-        <tr>
-            <td>Type: </td>
-            <td id="typeChassis"> </td>
-        </tr>
-        <tr>
-            <td>Carrying: </td>
-            <td id="carryingChassis"> </td>
-        </tr>
-        <tr>
-            <td>Maneuverability: </td>
-            <td id="maneuverabilityChassis"> </td>
-        </tr>
-        <tr>
-            <td>Max Speed: </td>
-            <td id="maxSpeed"> </td>
-        </tr>
-    </table>
-</div>
-
-<div class="tip" id="tipWeapon">
-    <table class="animateTable">
-        <tr>
-            <td>Name: </td>
-            <td id="nameWeapon"> </td>
-        </tr>
-        <tr>
-            <td>Type: </td>
-            <td id="typeWeapon"> </td>
-        </tr>
-        <tr>
-            <td>Damage: </td>
-            <td id="damageWeapon"> </td>
-        </tr>
-        <tr>
-            <td>Min Attack Range: </td>
-            <td id="minAttackRange"> </td>
-        </tr>
-        <tr>
-            <td>Accuracy: </td>
-            <td id="accuracy"> </td>
-        </tr>
-        <tr>
-            <td>Area Covers: </td>
-            <td id="areaCovers"> </td>
-        </tr>
-        <tr>
-            <td>Weight: </td>
-            <td id="weightWeapon"> </td>
-        </tr>
-        <tr>
-            <td>Range: </td>
-            <td id="RangeWeapon"> </td>
-        </tr>
-    </table>
-</div>
-
-<div class="tip" id="tipTower">
-    <table class="animateTable">
-        <tr>
-            <td>Name: </td>
-            <td id="nameTower"> </td>
-        </tr>
-        <tr>
-            <td>Type: </td>
-            <td id="typeTower"> </td>
-        </tr>
-        <tr>
-            <td>HP: </td>
-            <td id="hpTower"> </td>
-        </tr>
-        <tr>
-            <td>Power Radar: </td>
-            <td id="powerTower"> </td>
-        </tr>
-        <tr>
-            <td>Armor: </td>
-            <td id="armorTower"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to kinetics: </td>
-            <td id="vulToKineticsTower"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to thermo: </td>
-            <td id="vulToThermoTower"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to EM: </td>
-            <td id="vulToEMTower"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to explosion: </td>
-            <td id="vulToExplosionTower"> </td>
-        </tr>
-        <tr>
-            <td>Weight: </td>
-            <td id="weightTower"> </td>
-        </tr>
-    </table>
-</div>
-
-<div class="tip" id="tipBody">
-    <table class="animateTable">
-        <tr>
-            <td>Name: </td>
-            <td id="nameBody"> </td>
-        </tr>
-        <tr>
-            <td>Type: </td>
-            <td id="typeBody"> </td>
-        </tr>
-        <tr>
-            <td>HP: </td>
-            <td id="hpBody"> </td>
-        </tr>
-        <tr>
-            <td>Max Tower Weight: </td>
-            <td id="maxTowerWeightBody"> </td>
-        </tr>
-        <tr>
-            <td>Armor: </td>
-            <td id="armorBody"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to kinetics: </td>
-            <td id="vulToKineticsBody"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to thermo: </td>
-            <td id="vulToThermoBody"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to EM: </td>
-            <td id="vulToEMBody"> </td>
-        </tr>
-        <tr>
-            <td>Vulnerability to explosion: </td>
-            <td id="vulToExplosionBody"> </td>
-        </tr>
-        <tr>
-            <td>Weight: </td>
-            <td id="weightBody"> </td>
-        </tr>
-    </table>
-</div>
-
-<div class="tip" id="tipRadar">
-    <table class="animateTable">
-        <tr>
-            <td>Name: </td>
-            <td id="nameRadar"> </td>
-        </tr>
-        <tr>
-            <td>Type: </td>
-            <td id="typeRadar"> </td>
-        </tr>
-        <tr>
-            <td>Power: </td>
-            <td id="powerRadar"> </td>
-        </tr>
-        <tr>
-            <td>Through: </td>
-            <td id="throughRadar"> </td>
-        </tr>
-        <tr>
-            <td>Analysis: </td>
-            <td id="analysisRadar"> </td>
-        </tr>
-        <tr>
-            <td>Weight: </td>
-            <td id="weightRadar"> </td>
-        </tr>
-    </table>
-</div>
-
-<div class="tip" id="tipUnit">
-    <table class="animateTable">
-        <tr>
-            <td>Speed: </td>
-            <td id="speed:tip"> </td>
-        </tr>
-        <tr>
-            <td>Initiative: </td>
-            <td id="initiative:tip"> </td>
-        </tr>
-        <tr>
-            <td>RangeView: </td>
-            <td id="range_view:tip"> </td>
-        </tr>
-        <tr>
-            <td>Accuracy: </td>
-            <td id="accuracy:tip"> </td>
-        </tr>
-        <tr>
-            <td>WallHack: </td>
-            <td id="wall_hack:tip"> </td>
-        </tr>
-        <tr>
-            <td>Damage: </td>
-            <td id="damage:tip"> </td>
-        </tr>
-        <tr>
-            <td>RangeAttack: </td>
-            <td id="range_attack:tip"> </td>
-        </tr>
-        <tr>
-            <td>MinAttackRange: </td>
-            <td id="min_attack_range:tip"> </td>
-        </tr>
-        <tr>
-            <td>AreaAttack: </td>
-                <td id="area_attack:tip"> </td>
-        </tr>
-        <tr>
-            <td>TypeAttack: </td>
-            <td id="type_attack:tip"> </td>
-        </tr>
-        <tr>
-            <td>HP: </td>
-            <td id="hp:tip"> </td>
-        </tr>
-        <tr>
-            <td>Armor: </td>
-            <td id="armor:tip"> </td>
-        </tr>
-        <tr>
-            <td>EvasionCritical: </td>
-            <td id="evasion_critical:tip"> </td>
-        </tr>
-        <tr>
-            <td>VulKinetics: </td>
-            <td id="vul_kinetics:tip"> </td>
-        </tr>
-        <tr>
-            <td>VulThermal: </td>
-            <td id="vul_thermal:tip"> </td>
-        </tr>
-        <tr>
-            <td>VulEM: </td>
-            <td id="vul_em:tip"> </td>
-        </tr>
-        <tr>
-            <td>VulExplosive: </td>
-            <td id="vul_explosive:tip"> </td>
-        </tr>
-    </table>
 </div>
 
 </body>

@@ -9,7 +9,7 @@ type Squad struct {
 	Name       string                 `json:"name"`
 	Active     bool                   `json:"active"`
 	MatherShip *matherShip.MatherShip `json:"mather_ship"`
-	Inventory  map[int]*InventorySlot  `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
+	Inventory  map[int]*InventorySlot `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
 	InGame     bool                   `json:"in_game"`
 }
 

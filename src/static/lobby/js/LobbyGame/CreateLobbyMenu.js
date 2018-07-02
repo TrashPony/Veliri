@@ -23,9 +23,18 @@ function CreateLobbyMenu(id, error, hoster) {
         cancel.onclick = ReturnLobby;
         parentElem.appendChild(cancel);
 
+        var inventory = document.createElement("input");
+        inventory.type = "button";
+        inventory.style.marginLeft = "0px";
+        inventory.style.left = "95px";
+        inventory.className = "lobbyButton";
+        inventory.value = "Инвентарь";
+        inventory.onclick = CreateInventoryMenu;
+        parentElem.appendChild(inventory);
+
         var ready = document.createElement("input");
         ready.type = "button";
-        ready.style.marginLeft = "10px";
+        ready.style.marginLeft = "95px";
         ready.style.left = "95px";
         ready.className = "lobbyButton";
         ready.value = "Готов";

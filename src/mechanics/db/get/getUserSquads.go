@@ -8,6 +8,8 @@ import (
 	"../../gameObjects/matherShip"
 )
 
+
+
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game FROM squads WHERE id_user=$1", userID)
