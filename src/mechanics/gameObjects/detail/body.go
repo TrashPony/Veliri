@@ -30,4 +30,5 @@ type BodySlot struct {
 	Weapon     bool         `json:"weapon"`
 	WeaponType string       `json:"weapon_type"`
 	Equip      *equip.Equip `json:"equip"`
+	InsertToDB bool         `json:"insert_to_db"`
 }

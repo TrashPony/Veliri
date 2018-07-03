@@ -8,6 +8,7 @@ type Weapon struct {
 	MinAttackRange int        `json:"min_attack_range"`
 	Range          int        `json:"range"`
 	Accuracy       int        `json:"accuracy"`
+	AmmoCapacity   int        `json:"ammo_capacity"`
 	Artillery      bool       `json:"artillery"`
 	Power          int        `json:"power"`
 	Ammo           *ammo.Ammo `json:"ammo"`

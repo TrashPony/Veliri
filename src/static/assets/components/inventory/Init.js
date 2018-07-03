@@ -18,7 +18,7 @@ function InitInventoryMenu() {
 }
 
 function includeJS(url) {
-    var script = document.createElement('script');
+    let script = document.createElement('script');
     script.type = "text/javascript";
     script.charset = "charset='utf-8'";
     script.src = url;
@@ -26,7 +26,7 @@ function includeJS(url) {
 }
 
 function includeCSS(url) {
-    var css = document.createElement('link');
+    let css = document.createElement('link');
     css.type = "text/css";
     css.rel = "stylesheet";
     css.href = url;

@@ -1,12 +1,12 @@
 function FillingInventory(jsonData) {
-    var squad = JSON.parse(jsonData).squad;
+    let squad = JSON.parse(jsonData).squad;
     FillingInventoryTable(squad.inventory)
 }
 
 function FillingInventoryTable(inventoryItems) {
-    for (var slot in inventoryItems) {
+    for (let slot in inventoryItems) {
         if (inventoryItems.hasOwnProperty(slot)) {
-            var cell = document.getElementById("inventory " + slot + 6);
+            let cell = document.getElementById("inventory " + slot + 6);
 
             cell.item = inventoryItems[slot].item;
             cell.type = inventoryItems[slot].type;

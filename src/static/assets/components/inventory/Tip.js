@@ -1,15 +1,15 @@
 function InventoryTip(item, x, y) {
-    var tip = document.createElement("div");
+    let tip = document.createElement("div");
     tip.style.top = y + "px";
     tip.style.left = x + "px";
     tip.id = "InventoryTip";
 
-    var name = document.createElement("span");
+    let name = document.createElement("span");
     name.className = "InventoryTipName";
     name.innerHTML = item.name;
     tip.appendChild(name);
 
-    var cancelButton = document.createElement("input");
+    let cancelButton = document.createElement("input");
     cancelButton.type = "button";
     cancelButton.className = "lobbyButton inventoryTip";
     cancelButton.value = "Отменить";
@@ -32,7 +32,7 @@ function DestroyInventoryTip() {
 }
 
 function DestroyInventoryClickEvent() {
-    var shipIcon = document.getElementById("UnitIcon");
+    let shipIcon = document.getElementById("UnitIcon");
     shipIcon.className = "";
     shipIcon.onclick = null;
 }

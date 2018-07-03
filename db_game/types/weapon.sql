@@ -4,6 +4,7 @@ CREATE TABLE weapon_type (
   min_attack_range INT,
   range_attack     INT,
   accuracy         INT,
+  ammo_capacity    INT,                 /* кол-во боезапаса вмещаемого в орудие до перезарядки */
   artillery        BOOLEAN,
   power            INT                  /* кол-во потребляемой энергии */
 );

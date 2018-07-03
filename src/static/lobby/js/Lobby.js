@@ -1,13 +1,13 @@
-var createGame = false;
-var toField = false;
-var respownId;
+let createGame = false;
+let toField = false;
+let respownId;
 
 function ReturnLobby() {
     location.reload();
 }
 
 function CreateLobbyGame(mapId) {
-    var gameName = document.querySelector('input[name="NameGame"]').value;
+    let gameName = document.querySelector('input[name="NameGame"]').value;
     sendCreateLobbyGame(mapId, gameName);
 }
 
@@ -21,27 +21,27 @@ function MapSelection() {
 
     DelElements("Select SubMenu");
 
-    var SubMenu = document.getElementById("SubMenu");
-    var inputs = SubMenu.getElementsByTagName("th");
-    var tableH = document.getElementById("NotEndGame");
+    let SubMenu = document.getElementById("SubMenu");
+    let inputs = SubMenu.getElementsByTagName("th");
+    let tableH = document.getElementById("NotEndGame");
 
     tableH.innerHTML = "Выберети карту";
 
-    var i = inputs.length;
+    let i = inputs.length;
     while (i--) {
-        var input = inputs[i];
+        let input = inputs[i];
         if (input) {
-            var th = input.parentNode.parentNode;
+            let th = input.parentNode.parentNode;
             SubMenu.deleteRow(th.rowIndex);
         }
     }
 
-    var tr = document.createElement('tr');
+    let tr = document.createElement('tr');
     SubMenu.appendChild(tr);
 
-    var thName = document.createElement('th');
+    let thName = document.createElement('th');
     thName.innerHTML = "Название карты";
-    var thPlayers =  document.createElement('th');
+    let thPlayers =  document.createElement('th');
     thPlayers.innerHTML = "Максимум игроков";
     tr.appendChild(thName);
     tr.appendChild(thPlayers);
@@ -50,8 +50,8 @@ function MapSelection() {
         event: "MapView"
     }));
 
-    var div = document.getElementById("cancel");
-    var cancel = document.getElementById("cancelButton");
+    let div = document.getElementById("cancel");
+    let cancel = document.getElementById("cancelButton");
 
     if (!cancel) {
         cancel = document.createElement("input");
@@ -65,7 +65,7 @@ function MapSelection() {
 }
 
 function DelElements(ClassElements) {
-    var SelectMap = document.getElementsByClassName(ClassElements);
+    let SelectMap = document.getElementsByClassName(ClassElements);
     while (SelectMap.length > 0) {
         SelectMap[0].parentNode.removeChild(SelectMap[0]);
     }

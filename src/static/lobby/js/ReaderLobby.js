@@ -69,37 +69,8 @@ function ReaderLobby(jsonMessage) {
         DelLobbyUser(jsonMessage);
     }
 
-    if (event === "GetMatherShips") {
-        MatherShipsParse(jsonMessage);
-    }
-
-    if (event === "GetDetailOfUnits") {
-        DetailUnitParse(jsonMessage)
-    }
-
-    if (event === "GetListSquad") {
-        AddListSquad(jsonMessage);
-    }
-
-    if (event === "AddNewSquad") {
-        AddNewSquadInList(jsonMessage);
-    }
-
-    if (event === "UpdateSquad") {
-        UpdateSquad(jsonMessage);
-    }
-
-    if (event === "RemoveSquad") {
-        RemoveSquad(jsonMessage);
-    }
-
     if (event === "GetEquipping") {
         console.log(jsonMessage);
         EquippingParse(jsonMessage);
-    }
-
-    if (event === "UnitConstructorUpdate") {
-        let unit = JSON.parse(jsonMessage).unit;
-        UpdateUnitInfo(unit);
     }
 }
