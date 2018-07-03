@@ -4,7 +4,7 @@ import "../effect"
 
 type Equip struct {
 	ID            int              `json:"id"`
-	Type          string           `json:"type"`
+	Name          string           `json:"name"`
 	Active        bool             `json:"active"`
 	Specification string           `json:"specification"`
 	Applicable    string           `json:"applicable"`

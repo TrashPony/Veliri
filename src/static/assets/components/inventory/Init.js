@@ -3,21 +3,18 @@ function InitInventoryMenu() {
     includeJS("../assets/components/inventory/webSocket.js");
     includeJS("../assets/components/inventory/Create.js");
     includeJS("../assets/components/inventory/filling.js");
+    includeJS("../assets/components/inventory/SelectInventoryItem.js");
+    includeJS("../assets/components/inventory/Tip.js");
 
     includeCSS("../assets/components/inventory/css/constructor.css");
     includeCSS("../assets/components/inventory/css/equipBox.css");
     includeCSS("../assets/components/inventory/css/inventoryCells.css");
+    includeCSS("../assets/components/inventory/css/tip.css");
 
     setTimeout(function () {
         ConnectInventory();
         CreateInventoryMenu();
     }, 400);
-
-    if (inventorySocket && inventorySocket.readyState === 1) {
-        inventorySocket.send(JSON.stringify({
-            event: "openInventory"
-        }));
-    }
 }
 
 function includeJS(url) {

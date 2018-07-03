@@ -9,7 +9,7 @@ import (
 
 func TypeEquip(id int) *equip.Equip {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, active, specification, applicable, region, radius, type_slot, reload, power, use_power "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, active, specification, applicable, region, radius, type_slot, reload, power, use_power "+
 		"FROM equipping_type "+
 		"WHERE id=$1", id)
 	if err != nil {
@@ -20,7 +20,7 @@ func TypeEquip(id int) *equip.Equip {
 	var equipType equip.Equip
 
 	for rows.Next() {
-		err := rows.Scan(&equipType.ID, &equipType.Type, &equipType.Active, &equipType.Specification, &equipType.Applicable, &equipType.Region, &equipType.Radius,
+		err := rows.Scan(&equipType.ID, &equipType.Name, &equipType.Active, &equipType.Specification, &equipType.Applicable, &equipType.Region, &equipType.Radius,
 			&equipType.TypeSlot, &equipType.Reload, &equipType.Power, &equipType.UsePower)
 		if err != nil {
 			log.Fatal("get scan type equip " + err.Error())

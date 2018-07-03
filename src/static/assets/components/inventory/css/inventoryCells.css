@@ -11,6 +11,30 @@
     vertical-align: top;
 }
 
+.inventoryEquipping.noActive:before {
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}
+
 .inventoryEquipping.noActive {
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
 }
@@ -40,6 +64,31 @@
     vertical-align: top;
 }
 
+.inventoryUnit.noActive:before {
+    text-align: center;
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}
+
 .inventoryUnit.noActive {
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
 }
@@ -67,6 +116,32 @@
     background-repeat: no-repeat;
     vertical-align: top;
     margin: 1px;
+}
+
+.QuantityItems {
+    position:relative;
+    bottom:-5px;
+    left: 5px;
+    font-family: Arial;
+    font-size: 12px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 1px #000000,
+            0   -1px 1px #000000,
+            -0    1px 1px #000000,
+            0    1px 1px #000000,
+            -1px -0   1px #000000,
+            1px -0   1px #000000,
+            -1px  0   1px #000000,
+            1px  0   1px #000000,
+            -1px -1px 1px #000000,
+            1px -1px 1px #000000,
+            -1px  1px 1px #000000,
+            1px  1px 1px #000000,
+            -1px -1px 1px #000000,
+            1px -1px 1px #000000,
+            -1px  1px 1px #000000,
+            1px  1px 1px #000000;
 }
 
 .InventoryCell:hover {

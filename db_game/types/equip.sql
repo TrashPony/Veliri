@@ -1,6 +1,6 @@
 CREATE TABLE equipping_type (
   id            SERIAL PRIMARY KEY,
-  type          VARCHAR(64),
+  name          VARCHAR(64),
   active        BOOLEAN,             /* активное или пасивное оборудование */
   specification VARCHAR(255),        /* описание снаряжения */
   applicable    VARCHAR(64),         /* прменимо к своим "my_units", вражеским "hostile_units", всем "all",  карте "map", на себя "myself" */

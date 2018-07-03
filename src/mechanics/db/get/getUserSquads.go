@@ -119,32 +119,30 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 	for rows.Next() {
 
 		var inventorySlot = squad.InventorySlot{}
-		var TypeItem string
-		var idItem int
 		var slot int
 
-		err := rows.Scan(&slot, &TypeItem, &idItem, &inventorySlot.Quantity)
+		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity)
 		if err != nil {
 			log.Fatal("get inventory squad " + err.Error())
 		}
 
-		if TypeItem == "weapon" {
-			inventorySlot.Item = Weapon(idItem)
+		if inventorySlot.Type == "weapon" {
+			inventorySlot.Item = Weapon(inventorySlot.ItemID)
 			inventory[slot] = &inventorySlot
 		}
 
-		if TypeItem == "ammo" {
-			inventorySlot.Item = Ammo(idItem)
+		if inventorySlot.Type == "ammo" {
+			inventorySlot.Item = Ammo(inventorySlot.ItemID)
 			inventory[slot] = &inventorySlot
 		}
 
-		if TypeItem == "equip" {
-			inventorySlot.Item = TypeEquip(idItem)
+		if inventorySlot.Type == "equip" {
+			inventorySlot.Item = TypeEquip(inventorySlot.ItemID)
 			inventory[slot] = &inventorySlot
 		}
 
-		if TypeItem == "body" {
-			inventorySlot.Item = Body(idItem)
+		if inventorySlot.Type == "body" {
+			inventorySlot.Item = Body(inventorySlot.ItemID)
 			inventory[slot] = &inventorySlot
 		}
 	}

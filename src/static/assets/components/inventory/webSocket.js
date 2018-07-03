@@ -6,6 +6,9 @@ function ConnectInventory() {
 
     inventorySocket.onopen = function() {
         console.log("Connection inventory opened..." + this.readyState);
+        this.send(JSON.stringify({
+            event: "openInventory"
+        }));
     };
 
     inventorySocket.onmessage = function(msg) {

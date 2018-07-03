@@ -1,0 +1,47 @@
+#InventoryTip {
+    pointer-events:none;
+    position: absolute;
+    display: inline-block;
+    z-index: 901;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    height: 40px;
+    width: 100px;
+    padding: 5px;
+}
+
+.InventoryTipName {
+    font-family: Arial;
+    font-size: 16px;
+    color: #00FAFF;
+    text-shadow:
+            -0   -1px 2px #000000,
+            0   -1px 2px #000000,
+            -0    1px 2px #000000,
+            0    1px 2px #000000,
+            -1px -0   2px #000000,
+            1px -0   2px #000000,
+            -1px  0   2px #000000,
+            1px  0   2px #000000,
+            -1px -1px 2px #000000,
+            1px -1px 2px #000000,
+            -1px  1px 2px #000000,
+            1px  1px 2px #000000,
+            -1px -1px 2px #000000,
+            1px -1px 2px #000000,
+            -1px  1px 2px #000000,
+            1px  1px 2px #000000;
+}
+
+.lobbyButton.inventoryTip {
+    margin: auto;
+    position: relative;
+    top: 0;
+}
+
+.lobbyButton.inventoryTip:active {
+    color: #27cbef;
+}

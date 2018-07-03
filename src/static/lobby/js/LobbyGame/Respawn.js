@@ -1,7 +1,5 @@
 function RespawnInit(jsonMessage) {
 
-    console.log(jsonMessage);
-
     let respawns = JSON.parse(jsonMessage).respawns;
     let select = document.getElementById("RespawnSelect");
 

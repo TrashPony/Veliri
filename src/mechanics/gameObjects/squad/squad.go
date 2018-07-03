@@ -16,4 +16,6 @@ type Squad struct {
 type InventorySlot struct {
 	Item     interface{} `json:"item"`
 	Quantity int         `json:"quantity"`
+	Type     string      `json:"type"`
+	ItemID   int         `json:"item_id"`
 }
