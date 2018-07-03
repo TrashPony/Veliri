@@ -1,27 +1,22 @@
-var inventory;
+var inventorySocket;
 
 function ConnectInventory() {
-    inventory = new WebSocket("ws://" + window.location.host + "/wsInventory");
-    console.log("Websocket inventory - status: " + inventory.readyState);
+    inventorySocket = new WebSocket("ws://" + window.location.host + "/wsInventory");
+    console.log("Websocket inventory - status: " + inventorySocket.readyState);
 
-    inventory.onopen = function() {
+    inventorySocket.onopen = function() {
         console.log("Connection inventory opened..." + this.readyState);
     };
 
-    inventory.onmessage = function(msg) {
-        console.log(msg);
-        NewInventoryMessage(msg.data);
+    inventorySocket.onmessage = function(msg) {
+        FillingInventory(msg.data);
     };
 
-    inventory.onerror = function(msg) {
+    inventorySocket.onerror = function(msg) {
         console.log("Error inventory occured sending..." + msg.data);
     };
 
-    inventory.onclose = function(msg) {
+    inventorySocket.onclose = function(msg) {
         console.log("Disconnected inventory - status " + this.readyState);
     };
-}
-
-function NewInventoryMessage(data) {
-    console.log(data);
 }

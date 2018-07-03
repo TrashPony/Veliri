@@ -29,7 +29,7 @@ function CreateLobbyMenu(id, error, hoster) {
         inventory.style.left = "95px";
         inventory.className = "lobbyButton";
         inventory.value = "Инвентарь";
-        inventory.onclick = CreateInventoryMenu;
+        inventory.onclick = InitInventoryMenu;
         parentElem.appendChild(inventory);
 
         var ready = document.createElement("input");
