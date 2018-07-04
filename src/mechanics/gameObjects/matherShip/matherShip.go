@@ -53,3 +53,7 @@ func (matherShip *MatherShip) GetWatchZone() int {
 func (matherShip *MatherShip) GetOwnerUser() string {
 	return matherShip.Owner
 }
+
+func (matherShip *MatherShip) GetTarget() *coordinate.Coordinate  {
+	return matherShip.Target
+}

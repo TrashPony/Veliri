@@ -35,6 +35,10 @@ func (unit *Unit) GetBody() *detail.Body  {
 	return unit.Body
 }
 
+func (unit *Unit) GetTarget() *coordinate.Coordinate  {
+	return unit.Target
+}
+
 func (unit *Unit) DelBody() {
 	if unit.Body != nil {
 		unit.Body = nil

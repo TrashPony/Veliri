@@ -42,21 +42,26 @@ func BodySlots(body *detail.Body) {
 	}
 	defer rows.Close()
 
-	body.Equip = make(map[int]*detail.BodySlot)
+	body.Equipping = make(map[int]*detail.BodyEquipSlot)
+	body.Weapons = make(map[int]*detail.BodyWeaponSlot)
 
 	for rows.Next() {
-		var slot detail.BodySlot
+		var slotType int
+		var slotNumber int
+		var slotWeapon bool
+		var slotWeaponType string
 
-		err := rows.Scan(&slot.Type, &slot.Number, &slot.Weapon, &slot.WeaponType)
+		err := rows.Scan(&slotType, &slotNumber, &slotWeapon, &slotWeaponType)
 		if err != nil {
 			log.Fatal("get body slot " + err.Error())
 		}
 
-		if slot.Weapon {
-
+		if slotWeapon {
+			weaponSlot := detail.BodyWeaponSlot{Type: slotType, Number: slotNumber, WeaponType: slotWeaponType}
+			body.Weapons[slotNumber] = &weaponSlot
 		} else {
-			slot.Equip = nil
-			body.Equip[slot.Number] = &slot
+			equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+			body.Equipping[slotNumber] = &equipSlot
 		}
 	}
 }
@@ -85,19 +90,21 @@ func BodyEquip(ship Boder) {
 			log.Fatal("get body equip " + err.Error())
 		}
 
-		for i, bodySlot := range ship.GetBody().Equip {
-			if bodySlot.Number == slot {
-				if bodySlot.Weapon {
-					if equipType == "weapon" {
-						ship.GetBody().Weapon = Weapon(idEquip)
-					}
-					if equipType == "ammo" { //todo если береться в неправильном порядке будут проблемы
-						ship.GetBody().Weapon.Ammo = Ammo(idEquip)
-					}
-				} else {
-					if equipType == "equip" {
-						ship.GetBody().Equip[i].Equip = TypeEquip(idEquip)
-					}
+		for i, bodyEquipSlot := range ship.GetBody().Equipping {
+			if bodyEquipSlot.Number == slot {
+				if equipType == "equip" {
+					ship.GetBody().Equipping[i].Equip = TypeEquip(idEquip)
+				}
+			}
+		}
+
+		for _, bodyWeaponSlot := range ship.GetBody().Weapons {
+			if bodyWeaponSlot.Weapon != nil {
+				if equipType == "weapon" {
+					ship.GetBody().Weapons[bodyWeaponSlot.Number].Weapon = Weapon(idEquip)
+				}
+				if equipType == "ammo" {
+					ship.GetBody().Weapons[bodyWeaponSlot.Number].Ammo = Ammo(idEquip)
 				}
 			}
 		}

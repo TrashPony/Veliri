@@ -2,7 +2,7 @@ package updateSquad
 
 import (
 	"../../gameObjects/squad"
-	"../../gameObjects/unit"
+	"../../gameObjects/coordinate"
 	"../../../dbConnect"
 	"log"
 	"strconv"
@@ -37,7 +37,7 @@ func Units(squad *squad.Squad)  {
 			}
 
 			squadUnit.ID = id
-			UpdateBodyUnit(units[slot])
+			UpdateBody(units[slot], squad.ID, "squad_units_equipping")
 			if squad.InGame {
 				//todo обновление эфектов
 				//UnitEffects(squadUnit)
@@ -55,7 +55,7 @@ func Units(squad *squad.Squad)  {
 				log.Fatal("update unit squad" + err.Error())
 			}
 
-			UpdateBodyUnit(units[slot])
+			UpdateBody(units[slot], squad.ID, "squad_units_equipping")
 			if squad.InGame {
 				//todo обновление эфектов
 				//UnitEffects(squadUnit)
@@ -64,12 +64,15 @@ func Units(squad *squad.Squad)  {
 	}
 }
 
+type aimer interface {
+	GetTarget() *coordinate.Coordinate
+}
 
-func parseTarget(squadUnit *unit.Unit) string {
+func parseTarget(aimer aimer) string {
 	var target string
 
-	if squadUnit.Target != nil {
-		target = strconv.Itoa(squadUnit.Target.X) + ":" + strconv.Itoa(squadUnit.Target.Y)
+	if aimer.GetTarget() != nil {
+		target = strconv.Itoa(aimer.GetTarget().X) + ":" + strconv.Itoa(aimer.GetTarget().Y)
 	}
 
 	return target

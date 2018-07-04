@@ -54,7 +54,7 @@ CREATE TABLE squad_mother_ship (
 CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */
   id            SERIAL PRIMARY KEY,
   id_squad      INT REFERENCES squads (id),
-  type          VARCHAR(64),                        /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo)*/
+  type          VARCHAR(64),                          /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo)*/
   id_squad_unit INT REFERENCES squad_units,           /* ид юнита к которому прикреплено снаряжение */
   id_equipping  INT REFERENCES equipping_type (id),   /* ид снаряжения */
   slot_in_body  INT                                   /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
