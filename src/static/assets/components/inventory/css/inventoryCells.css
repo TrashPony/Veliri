@@ -4,11 +4,20 @@
     height: 35px;
     display: inline-block;
     border: 1px solid #959595;
-    background-color: #4c4c4c;
+    background-color: #2c2c2c;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     margin: 1px;
     vertical-align: top;
+}
+
+.inventoryEquipping.active.select {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+}
+
+.inventoryEquipping.active.weapon {
+    box-shadow: 0 0 5px 3px rgb(255, 0, 0);
 }
 
 .inventoryEquipping.noActive:before {

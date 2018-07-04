@@ -131,14 +131,14 @@ func BodyEquip(ship Boder) {
 			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType)
 		}
 
-		for _, bodyWeaponSlot := range ship.GetBody().Weapons {
-			if bodyWeaponSlot.Weapon != nil {
+		if equipType == "weapon" || equipType == "ammo" {
+			for _, bodyWeaponSlot := range ship.GetBody().Weapons {
 				if equipType == "weapon" {
 					ship.GetBody().Weapons[bodyWeaponSlot.Number].Weapon = Weapon(idEquip)
 				}
 				if equipType == "ammo" {
 					ship.GetBody().Weapons[bodyWeaponSlot.Number].Ammo = Ammo(idEquip)
-					bodyWeaponSlot.AmmoQuantity = quantity
+					ship.GetBody().Weapons[bodyWeaponSlot.Number].AmmoQuantity = quantity
 				}
 			}
 		}

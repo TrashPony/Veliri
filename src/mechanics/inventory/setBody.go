@@ -3,15 +3,15 @@ package inventory
 import (
 	"../player"
 	"../gameObjects/matherShip"
-	"../db/updateSquad"
 	"../db/get"
+	"../db/updateSquad"
 )
 
 func SetBody(user *player.Player, idBody, inventorySlot int) {
 	body := user.GetSquad().Inventory[inventorySlot]
 
 	if body.ItemID == idBody {
-		body := get.Body(idBody)
+		newBody := get.Body(idBody)
 
 		if user.GetSquad().MatherShip == nil {
 			user.GetSquad().MatherShip = &matherShip.MatherShip{}
@@ -21,12 +21,9 @@ func SetBody(user *player.Player, idBody, inventorySlot int) {
 			}
 		}
 
+		user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот из бд
+		user.GetSquad().MatherShip.Body = newBody
 
-		user.GetSquad().MatherShip.Body = body
-		user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот
-
-		delete(user.GetSquad().Inventory, inventorySlot)
+		updateSquad.Squad(user.GetSquad()) // todo для теста опустил обновления в бд
 	}
-
-	updateSquad.Squad(user.GetSquad())
 }

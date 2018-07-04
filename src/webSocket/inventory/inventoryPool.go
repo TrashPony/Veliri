@@ -57,5 +57,9 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SetMotherShipBody" {
 			SetMotherShipBody(ws, msg)
 		}
+
+		if msg.Event == "SetMotherShipWeapon" {
+			SetMotherShipWeapon(ws, msg)
+		}
 	}
 }

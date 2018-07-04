@@ -21,6 +21,9 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body) {
 		weaponSlot.Ammo = nil
 		weaponSlot.Weapon = nil
 	}
+
+	AddItem(inventory, Body, "body", Body.ID, 1) // кидает боди в инвентарь
+	Body = nil // удаляем откуда пришло
 }
 
 func removeAllEquippingBody(inventory map[int]*squad.InventorySlot, equipping map[int]*detail.BodyEquipSlot) {

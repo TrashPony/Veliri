@@ -9,6 +9,7 @@ type Message struct {
 
 	BodyID        int `json:"id_body"`
 	InventorySlot int `json:"inventory_slot"`
+	EquipSlot	  int `json:"equip_slot"`
 }
 
 type Response struct {

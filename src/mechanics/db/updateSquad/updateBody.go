@@ -22,27 +22,27 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 	updateEquipping(body.EquippingV, squadID, tableName, unit.GetID())
 
 	/* обновляем оружие и патроны */
-	for i, slot := range body.Weapons {
+	for _, slot := range body.Weapons {
 		if slot.Weapon == nil {
 			_, err := dbConnect.GetDBConnect().Exec("DELETE FROM "+tableName+" WHERE id_squad_unit=$1 AND slot_in_body = $2 AND id_squad = $3",
 				unit.GetID(), slot.Number, squadID)
 			if err != nil {
 				log.Fatal("delete unit body weapon slot " + err.Error())
 			}
-
-			delete(body.Weapons, i)
 		}
 
 		if slot.InsertToDB && slot.Weapon != nil {
-			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body) VALUES ($1, $2, $3, $4, $5)",
-				squadID, "weapon", unit.GetID(), slot.Weapon.ID, slot.Number)
+			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity ) " +
+				"VALUES ($1, $2, $3, $4, $5, $6, $7)",
+				squadID, "weapon", unit.GetID(), slot.Weapon.ID, slot.Number, slot.Type, 1)
 			if err != nil {
 				log.Fatal("insert unit body weapon slot " + err.Error())
 			}
 
 			if slot.Ammo != nil {
-				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body) VALUES ($1, $2, $3, $4, $5)",
-					squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number)
+				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity ) " +
+					"VALUES ($1, $2, $3, $4, $5, $6, $7)",
+					squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity)
 				if err != nil {
 					log.Fatal("insert unit body ammo slot " + err.Error())
 				}
@@ -50,8 +50,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 		}
 
 		if !slot.InsertToDB && slot.Weapon != nil {
-			_, err := dbConnect.GetDBConnect().Exec("UPDATE "+tableName+" SET type = $1, id_equipping = $2 WHERE id_squad = $3 AND id_squad_unit = $4 AND slot_in_body = $5",
-				"weapon", slot.Weapon.ID, squadID, unit.GetID(), slot.Number)
+			_, err := dbConnect.GetDBConnect().Exec("UPDATE "+tableName+" SET type = $1, id_equipping = $2, type_slot = $6, quantity = $7 " +
+				"WHERE id_squad = $3 AND id_squad_unit = $4 AND slot_in_body = $5",
+				"weapon", slot.Weapon.ID, squadID, unit.GetID(), slot.Number, slot.Type, 1)
 			if err != nil {
 				log.Fatal("update unit body weapon slot " + err.Error())
 			}
@@ -63,8 +64,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 			}
 
 			if slot.Ammo != nil {
-				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body) VALUES ($1, $2, $3, $4, $5)",
-					squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number)
+				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity ) " +
+					"VALUES ($1, $2, $3, $4, $5, $6, $7)",
+					squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity)
 				if err != nil {
 					log.Fatal("insert unit body ammo slot " + err.Error())
 				}
@@ -74,28 +76,28 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 }
 
 func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, tableName string, unitID int) {
-	for i, slot := range Equipping {
+	for _, slot := range Equipping {
 		if slot.Equip == nil {
 			_, err := dbConnect.GetDBConnect().Exec("DELETE FROM "+tableName+" WHERE id_squad_unit=$1 AND slot_in_body = $2 AND id_squad = $3",
 				unitID, slot.Number, squadID)
 			if err != nil {
 				log.Fatal("delete unit body equip slot " + err.Error())
 			}
-			delete(Equipping, i)
 		}
 
 		if slot.InsertToDB && slot.Equip != nil {
-			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, type_slot, id_squad_unit, id_equipping, slot_in_body) VALUES ($1, $2, $3, $4, $5)",
-				squadID, "equip", slot.Equip.TypeSlot, unitID, slot.Equip.ID, slot.Number)
+			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO "+tableName+" (id_squad, type, type_slot, id_squad_unit, id_equipping, slot_in_body, quantity ) " +
+				"VALUES ($1, $2, $3, $4, $5, $6, $7)",
+				squadID, "equip", slot.Equip.TypeSlot, unitID, slot.Equip.ID, slot.Number, 1)
 			if err != nil {
 				log.Fatal("insert unit body equip slot " + err.Error())
 			}
 		}
 
 		if !slot.InsertToDB && slot.Equip != nil {
-			_, err := dbConnect.GetDBConnect().Exec("UPDATE " + tableName + " SET type = $1, type_slot = $2, id_equipping = $3 "+
+			_, err := dbConnect.GetDBConnect().Exec("UPDATE " + tableName + " SET type = $1, type_slot = $2, id_equipping = $3, quantity = $7 "+
 				" WHERE id_squad = $4 AND id_squad_unit = $5 AND slot_in_body = $6",
-				"equip", slot.Equip.TypeSlot, slot.Equip.ID, squadID, unitID, slot.Number)
+				"equip", slot.Equip.TypeSlot, slot.Equip.ID, squadID, unitID, slot.Number, 1)
 			if err != nil {
 				log.Fatal("update unit body equip slot " + err.Error())
 			}
