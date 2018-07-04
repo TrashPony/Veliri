@@ -46,14 +46,11 @@ function cellEquipDestoySelect(typeSlot, count, idPrefix) {
     for (let i = 1; i <= count; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
         if (equipSlot.className === "inventoryEquipping active select") {
-            console.log(equipSlot);
             if (equipSlot.slot.hasOwnProperty("weapon")) {
                 equipSlot.className = "inventoryEquipping active weapon";
-                equipSlot.slot = null;
                 equipSlot.onclick = null;
             } else {
                 equipSlot.className = "inventoryEquipping active";
-                equipSlot.slot = null;
                 equipSlot.onclick = null;
             }
         }

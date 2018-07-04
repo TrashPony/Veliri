@@ -6,7 +6,7 @@ import ("github.com/gorilla/websocket"
 func SetMotherShipWeapon(ws *websocket.Conn, msg Message)  {
 	user := usersInventoryWs[ws]
 
-	inventory.SetWeapon(user, msg.BodyID, msg.InventorySlot, msg.EquipSlot)
+	inventory.SetWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot)
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
 }

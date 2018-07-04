@@ -1,5 +1,8 @@
 function SelectInventoryItem(e) {
+
     DestroyInventoryTip();
+    DestroyInventoryClickEvent();
+
     InventoryTip(this.slot.item, e.clientX, e.clientY);
 
     if (this.slot.type === "body") {
@@ -10,12 +13,11 @@ function SelectInventoryItem(e) {
         SelectInventoryWeapon(this.slot.item, this.number);
     }
 
-    if (this.slot.type === "ammo") {
-        console.log(this.slot.item);
-        console.log(this.slot.quantity);
+    if (this.slot.type === "equip") {
+        SelectInventoryEquip(this.slot.item, this.number)
     }
 
-    if (this.slot.type === "equip") {
+    if (this.slot.type === "ammo") {
         console.log(this.slot.item);
         console.log(this.slot.quantity);
     }
@@ -40,23 +42,43 @@ function SelectInventoryBody(body, slot) {
 }
 
 function SelectInventoryWeapon(weapon, slot) {
-    if (weapon) {
-        for (let i = 1; i <= 5; i++ ) {
-            let equipSlot = document.getElementById("inventoryEquip" + Number(i) + 3);
-            if (equipSlot.className === "inventoryEquipping active weapon") {
-                equipSlot.className = "inventoryEquipping active select";
+    for (let i = 1; i <= 5; i++) {
+        let equipSlot = document.getElementById("inventoryEquip" + Number(i) + 3); // оружие всегда ствиться в 3 слоты по диз-доку
+        if (equipSlot.className === "inventoryEquipping active weapon") {
+            equipSlot.className = "inventoryEquipping active select";
 
-                equipSlot.onclick = function () {
-                    inventorySocket.send(JSON.stringify({
-                        event: "SetMotherShipWeapon",
-                        id_body: Number(weapon.id),
-                        inventory_slot: Number(slot),
-                        equip_slot: this.slot.number_slot
-                    }));
+            equipSlot.onclick = function () {
+                inventorySocket.send(JSON.stringify({
+                    event: "SetMotherShipWeapon",
+                    weapon_id: Number(weapon.id),
+                    inventory_slot: Number(slot),
+                    equip_slot: this.slot.number_slot
+                }));
 
-                    DestroyInventoryClickEvent();
-                    DestroyInventoryTip();
-                }
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    }
+}
+
+function SelectInventoryEquip(equip, slot) {
+    for (let i = 1; i <= 5; i++) {
+        let equipSlot = document.getElementById("inventoryEquip" + Number(i) + equip.type_slot); // оружие всегда ствиться в 3 слоты по диз-доку
+        if (equipSlot.className === "inventoryEquipping active") {
+            equipSlot.className = "inventoryEquipping active select";
+
+            equipSlot.onclick = function () {
+                inventorySocket.send(JSON.stringify({
+                    event: "SetMotherShipEquip",
+                    equip_id: Number(equip.id),
+                    inventory_slot: Number(slot),
+                    equip_slot: this.slot.number_slot,
+                    equip_slot_type: Number(equip.type_slot)
+                }));
+
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
             }
         }
     }

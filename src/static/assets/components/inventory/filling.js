@@ -41,12 +41,13 @@ function FillingSquadTable() {
 }
 
 function FillingConstructorTable(shipBody) {
-    UpdateCells(1, 5, "inventoryEquip", shipBody.equippingI);
-    UpdateCells(2, 5, "inventoryEquip", shipBody.equippingII);
-    UpdateCells(3, 5, "inventoryEquip", shipBody.equippingIII);
-    UpdateCells(5, 2, "inventoryEquip", shipBody.equippingV);
+    UpdateCells(1, "inventoryEquip", shipBody.equippingI);
+    UpdateCells(2, "inventoryEquip", shipBody.equippingII);
+    UpdateCells(3, "inventoryEquip", shipBody.equippingIII);
+    UpdateCells(5, "inventoryEquip", shipBody.equippingV);
 
-    UpdateCells(3, 5, "inventoryEquip", shipBody.weapons); /* вепоны надо делать отдельно т.к. храняться отдельно*/
+    UpdateCells(3, "inventoryEquip", shipBody.weapons);
+    /* вепоны надо делать отдельно т.к. храняться отдельно*/
 
     UpdateShipIcon(shipBody)
 }
@@ -56,44 +57,51 @@ function UpdateShipIcon(shipBody) {
     unitIcon.style.backgroundImage = "url(/assets/" + shipBody.name + ".png)";
 }
 
-function UpdateCells(typeSlot, count, idPrefix, shipSlots) {
-    for (let i = 1; i <= count; i++) {
+function UpdateCells(typeSlot, idPrefix, shipSlots) {
+    for (let slot in shipSlots) {
+        if (shipSlots.hasOwnProperty(slot)) {
 
-        let cell = document.getElementById(idPrefix + Number(i) + typeSlot);
+            let cell = document.getElementById(idPrefix + slot + shipSlots[slot].type_slot);
 
-        if (shipSlots.hasOwnProperty(i)) {
+            if (cell) {
 
-            cell.slot = shipSlots[i];
+                cell.slot = shipSlots[slot];
 
-            if (cell.slot.hasOwnProperty("weapon")) {
-                cell.className = "inventoryEquipping active weapon";
-
-                if (cell.slot.weapon !== null){
-                    cell.style.backgroundImage = "url(/assets/" + cell.slot.weapon.name + ".png)";
+                if (cell.slot.hasOwnProperty("weapon")) {
+                    UpdateWeapon(cell);
+                } else {
+                    UpdateEquips(cell);
                 }
 
-                if (cell.slot.ammo != null) {
-                    // todo ячейка и бекграунд для аммо
-                }
-
+                cell.onclick = function () {
+                    console.log("NumberSlot " + this.Number + " typeSlot " + this.type)
+                };
             } else {
-                cell.className = "inventoryEquipping active";
+                cell.style.backgroundImage = null;
+                cell.innerHTML = "";
+
+                cell.onclick = null;
             }
-
-            if (shipSlots.hasOwnProperty(i).equip) {
-                //todo загрузка бекграунда и фукнций
-            }
-
-            cell.onclick = function () {
-                console.log("NumberSlot " + this.Number + " typeSlot " + this.type)
-            };
-        } else {
-            cell.slot = null;
-
-            cell.style.backgroundImage = null;
-            cell.innerHTML = "";
-
-            cell.onclick = null;
         }
+    }
+}
+
+function UpdateEquips(cell) {
+    cell.className = "inventoryEquipping active";
+
+    if (cell.slot.equip !== null) {
+        cell.style.backgroundImage = "url(/assets/" + cell.slot.equip.name + ".png)";
+    }
+}
+
+function UpdateWeapon(cell) {
+    cell.className = "inventoryEquipping active weapon";
+
+    if (cell.slot.weapon !== null) {
+        cell.style.backgroundImage = "url(/assets/" + cell.slot.weapon.name + ".png)";
+    }
+
+    if (cell.slot.ammo != null) {
+        // todo ячейка и бекграунд для аммо
     }
 }

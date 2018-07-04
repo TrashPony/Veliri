@@ -17,6 +17,8 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 
 			if weaponSlot.Weapon != nil {
 				AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1)
+			} else {
+				weaponSlot.InsertToDB = true
 			}
 
 			if weaponSlot.Ammo != nil {
@@ -24,7 +26,6 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 			}
 
 			user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот из бд
-			weaponSlot.InsertToDB = true
 			weaponSlot.Weapon = newWeapon
 
 			updateSquad.Squad(user.GetSquad()) //todo для теста опустил обновления в бд
