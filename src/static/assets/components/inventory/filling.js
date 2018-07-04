@@ -1,6 +1,8 @@
 function FillingInventory(jsonData) {
     let squad = JSON.parse(jsonData).squad;
-    FillingInventoryTable(squad.inventory)
+    FillingInventoryTable(squad.inventory);
+
+    console.log(jsonData)
 }
 
 function FillingInventoryTable(inventoryItems) {

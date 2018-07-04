@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func Units(squad *squad.Squad)  {
+func Units(squad *squad.Squad) {
 	units := squad.MatherShip.Units
 
 	for slot, squadUnit := range units {
@@ -28,7 +28,7 @@ func Units(squad *squad.Squad)  {
 
 		if units[slot] != nil && squadUnit.ID == 0 { // если ид 0 значит этого юнита создали в програме и его еще нет в бд
 			id := 0
-			err := dbConnect.GetDBConnect().QueryRow("INSERT INTO squad_units (id_squad, id_body, slot, x, y, rotate, on_map, action, target, queue_attack, hp) " +
+			err := dbConnect.GetDBConnect().QueryRow("INSERT INTO squad_units (id_squad, id_body, slot, x, y, rotate, on_map, action, target, queue_attack, hp) "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
 				squad.ID, squadUnit.Body.ID, slot, squadUnit.X, squadUnit.Y, squadUnit.Rotate, squadUnit.OnMap, squadUnit.Action,
 				parseTarget(squadUnit), squadUnit.QueueAttack, squadUnit.HP).Scan(&id)
@@ -46,7 +46,7 @@ func Units(squad *squad.Squad)  {
 
 		if units[slot] != nil && squadUnit.ID != 0 {
 			_, err := dbConnect.GetDBConnect().Exec(
-				"UPDATE squad_mother_ship "+
+				"UPDATE squad_units "+
 					"SET id_body = $1, x = $2, y = $3, rotate = $4, action = $5, target = $6, queue_attack = $7, hp = $8 "+
 					"WHERE id_squad = $9 AND slot = $10",
 				squadUnit.Body.ID, squadUnit.X, squadUnit.Y, squadUnit.Rotate, squadUnit.Action, parseTarget(squadUnit), squadUnit.QueueAttack, squadUnit.HP, squad.ID, slot)

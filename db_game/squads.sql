@@ -54,17 +54,19 @@ CREATE TABLE squad_mother_ship (
 CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */
   id            SERIAL PRIMARY KEY,
   id_squad      INT REFERENCES squads (id),
+  type_slot     INT,                                  /* тип слота */
   type          VARCHAR(64),                          /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo)*/
   id_squad_unit INT REFERENCES squad_units,           /* ид юнита к которому прикреплено снаряжение */
   id_equipping  INT REFERENCES equipping_type (id),   /* ид снаряжения */
-  slot_in_body  INT                                   /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
+  slot_in_body  INT                                   /* слот который занимает снаряжения */
 );
 
 CREATE TABLE squad_mother_ship_equipping ( /* таблица снаряжения которое нацеплино на мазер шипа */
   id                   SERIAL PRIMARY KEY,
   id_squad             INT REFERENCES squads (id),
-  id_squad_mother_ship INT REFERENCES squad_mother_ship,   /* ид мазершипа к которому прикреплено снаряжение */
+  type_slot            INT,                                /* тип слота */
   type                 VARCHAR(64),                        /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo)*/
+  id_squad_mother_ship INT REFERENCES squad_mother_ship,   /* ид мазершипа к которому прикреплено снаряжение */
   id_equipping         INT REFERENCES equipping_type (id), /* ид снаряжения */
   slot_in_body         INT                                 /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
 );

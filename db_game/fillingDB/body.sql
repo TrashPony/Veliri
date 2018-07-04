@@ -10,7 +10,7 @@ VALUES (2, 'Mother', true, 3, 25, 100, 5, 15, 15, 15, 15, 15, 3, 5, 100, 20, fal
 /* BODY TANK*/
 /* I */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (1, 1, 1, true, '');
+VALUES (1, 1, 1, false, '');
 /* II */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
 VALUES (1, 2, 1, false, '');
@@ -25,9 +25,9 @@ VALUES (1, 3, 2, false, '');
 /* BODY MOTHER*/
 /* I */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 1, 1, true, '');
+VALUES (2, 1, 1, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 1, 2, true, '');
+VALUES (2, 1, 2, false, '');
 /* II */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
 VALUES (2, 2, 1, false, '');
@@ -37,7 +37,7 @@ INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
 VALUES (2, 2, 3, false, '');
 /* III */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 3, 1, true, '');
+VALUES (2, 3, 1, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
 VALUES (2, 3, 2, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
