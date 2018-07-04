@@ -19,7 +19,6 @@ type MatherShip struct {
 	X      int  `json:"x"`
 	Y      int  `json:"y"`
 	Rotate int  `json:"rotate"`
-	OnMap  bool `json:"on_map"`
 
 	Action      bool                   `json:"action"`
 	Target      *coordinate.Coordinate `json:"target"`

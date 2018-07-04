@@ -6,9 +6,10 @@ import (
 	"../../gameObjects/squad"
 	"../../gameObjects/unit"
 	"../../gameObjects/matherShip"
+	"../../gameObjects/coordinate"
+	"strings"
+	"strconv"
 )
-
-
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
@@ -55,13 +56,18 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 
 	ship = &matherShip.MatherShip{}
 
+	var target string
+
 	for rows.Next() {
 		var idBody int
 
-		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &ship.Target, ship.QueueAttack)
+		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &target, &ship.QueueAttack)
+
 		if err != nil {
 			log.Fatal("scan get ship squad " + err.Error())
 		}
+
+		ship.Target = ParseTarget(target)
 
 		ship.Body = Body(idBody)
 		BodyEquip(ship)
@@ -148,4 +154,21 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 	}
 
 	return
+}
+
+func ParseTarget(targetKey string) *coordinate.Coordinate {
+	targetCell := strings.Split(targetKey, ":")
+
+	if len(targetCell) > 1 { // устанавливаем таргет если он есть
+		x, ok := strconv.Atoi(targetCell[0])
+		y, ok := strconv.Atoi(targetCell[1])
+		if ok == nil {
+			target := coordinate.Coordinate{X: x, Y: y}
+			return &target
+		} else {
+			return nil
+		}
+	} else {
+		return nil
+	}
 }

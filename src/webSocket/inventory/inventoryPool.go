@@ -45,12 +45,17 @@ func Reader(ws *websocket.Conn) {
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+			println(err.Error())
 			utils.DelConn(ws, &usersInventoryWs, err)
 			break
 		}
 
 		if msg.Event == "openInventory" {
 			Open(ws, msg)
+		}
+
+		if msg.Event == "SetMotherShipBody" {
+			SetMotherShipBody(ws, msg)
 		}
 	}
 }

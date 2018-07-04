@@ -1,8 +1,14 @@
 function FillingInventory(jsonData) {
-    let squad = JSON.parse(jsonData).squad;
-    FillingInventoryTable(squad.inventory);
+    let event = JSON.parse(jsonData).event;
 
-    console.log(jsonData)
+    if (event === "openInventory") {
+        let squad = JSON.parse(jsonData).squad;
+        FillingInventoryTable(squad.inventory);
+    }
+
+    if (event === "UpdateSquad") {
+        console.log(jsonData)
+    }
 }
 
 function FillingInventoryTable(inventoryItems) {

@@ -95,11 +95,11 @@ type Boder interface {
 }
 
 func BodyEquip(ship Boder) {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot"+
-		"FROM squad_mother_ship_equipping "+
-		"WHERE id_squad_mother_ship = $1", ship.GetID())
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity "+
+		" FROM squad_mother_ship_equipping "+
+		" WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("get body equip" + err.Error())
 	}
 	defer rows.Close()
 
@@ -107,11 +107,12 @@ func BodyEquip(ship Boder) {
 	var slot int
 	var slotType int
 	var equipType string
+	var quantity int
 
 	for rows.Next() {
-		err := rows.Scan(&idEquip, &slot, &equipType, &slotType)
+		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity)
 		if err != nil {
-			log.Fatal("get body equip " + err.Error())
+			log.Fatal("scan body equip " + err.Error())
 		}
 
 		if slotType == 1 {
@@ -137,6 +138,7 @@ func BodyEquip(ship Boder) {
 				}
 				if equipType == "ammo" {
 					ship.GetBody().Weapons[bodyWeaponSlot.Number].Ammo = Ammo(idEquip)
+					bodyWeaponSlot.AmmoQuantity = quantity
 				}
 			}
 		}

@@ -28,12 +28,12 @@ func MotherShip(squad *squad.Squad) {
 	} else {
 		if ship.ID == 0 && ship.Body != nil {
 			id := 0
-			err := dbConnect.GetDBConnect().QueryRow("INSERT INTO squad_mother_ship (id_squad, id_body, x, y, rotate, on_map, action, target, queue_attack, hp) " +
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
-				squad.ID, ship.Body.ID, ship.X, ship.Y, ship.Rotate, ship.OnMap, ship.Action,
+			err := dbConnect.GetDBConnect().QueryRow("INSERT INTO squad_mother_ship (id_squad, id_body, x, y, rotate, action, target, queue_attack, hp ) " +
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+				squad.ID, ship.Body.ID, ship.X, ship.Y, ship.Rotate, ship.Action,
 				parseTarget(ship), ship.QueueAttack, ship.HP).Scan(&id)
 			if err != nil {
-				log.Fatal("add new unit to squad " + err.Error())
+				log.Fatal("add new ship to squad " + err.Error())
 			}
 
 			ship.ID = id

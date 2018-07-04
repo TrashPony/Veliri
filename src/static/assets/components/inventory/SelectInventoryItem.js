@@ -30,8 +30,8 @@ function SelectInventoryBody(body, slot) {
 
             inventorySocket.send(JSON.stringify({
                 event: "SetMotherShipBody",
-                id_body: body.id,
-                inventory_slot: slot
+                id_body: Number(body.id),
+                inventory_slot: Number(slot)
             }));
 
             DestroyInventoryClickEvent();

@@ -22,13 +22,15 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 	updateEquipping(body.EquippingV, squadID, tableName, unit.GetID())
 
 	/* обновляем оружие и патроны */
-	for _, slot := range body.Weapons {
+	for i, slot := range body.Weapons {
 		if slot.Weapon == nil {
 			_, err := dbConnect.GetDBConnect().Exec("DELETE FROM "+tableName+" WHERE id_squad_unit=$1 AND slot_in_body = $2 AND id_squad = $3",
 				unit.GetID(), slot.Number, squadID)
 			if err != nil {
 				log.Fatal("delete unit body weapon slot " + err.Error())
 			}
+
+			delete(body.Weapons, i)
 		}
 
 		if slot.InsertToDB && slot.Weapon != nil {
@@ -72,13 +74,14 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string) {
 }
 
 func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, tableName string, unitID int) {
-	for _, slot := range Equipping {
+	for i, slot := range Equipping {
 		if slot.Equip == nil {
 			_, err := dbConnect.GetDBConnect().Exec("DELETE FROM "+tableName+" WHERE id_squad_unit=$1 AND slot_in_body = $2 AND id_squad = $3",
 				unitID, slot.Number, squadID)
 			if err != nil {
 				log.Fatal("delete unit body equip slot " + err.Error())
 			}
+			delete(Equipping, i)
 		}
 
 		if slot.InsertToDB && slot.Equip != nil {

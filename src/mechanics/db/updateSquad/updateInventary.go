@@ -14,6 +14,7 @@ func InventorySquad(squad *squad.Squad) {
 			if err != nil {
 				log.Fatal("delete item to inventory" + err.Error())
 			}
+			delete(squad.Inventory, slotNum)
 		}
 
 		if slot.InsertToDB && slot.Item != nil {
