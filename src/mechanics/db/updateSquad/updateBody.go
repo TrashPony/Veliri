@@ -50,8 +50,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string, tx *sql.Tx) {
 		}
 
 		if !slot.InsertToDB && slot.Weapon != nil {
-			_, err := tx.Exec("UPDATE "+tableName+" SET type = $1, id_equipping = $2, type_slot = $6, quantity = $7 " +
-				"WHERE id_squad = $3 AND id_squad_unit = $4 AND slot_in_body = $5",
+			_, err := tx.Exec("UPDATE "+tableName+
+				" SET type = $1, id_equipping = $2, quantity = $7 " +
+				" WHERE id_squad = $3 AND id_squad_unit = $4 AND slot_in_body = $5 AND type_slot = $6",
 				"weapon", slot.Weapon.ID, squadID, unit.GetID(), slot.Number, slot.Type, 1)
 			if err != nil {
 				log.Fatal("update unit body weapon slot " + err.Error())
@@ -96,8 +97,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, table
 		}
 
 		if !slot.InsertToDB && slot.Equip != nil {
-			_, err := tx.Exec("UPDATE " + tableName + " SET type = $1, type_slot = $2, id_equipping = $3, quantity = $7 "+
-				" WHERE id_squad = $4 AND id_squad_unit = $5 AND slot_in_body = $6",
+			_, err := tx.Exec("UPDATE " + tableName +
+				" SET type = $1, id_equipping = $3, quantity = $7 "+
+				" WHERE id_squad = $4 AND id_squad_unit = $5 AND slot_in_body = $6 AND type_slot = $2",
 				"equip", slot.Equip.TypeSlot, slot.Equip.ID, squadID, unitID, slot.Number, 1)
 			if err != nil {
 				log.Fatal("update unit body equip slot " + err.Error())
