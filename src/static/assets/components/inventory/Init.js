@@ -5,7 +5,8 @@ function InitInventoryMenu() {
     includeJS("../assets/components/inventory/SelectInventoryItem.js");
     includeJS("../assets/components/inventory/Tip.js");
 
-    includeJS("../assets/components/inventory/RemoveBody.js");
+    includeJS("../assets/components/inventory/RemoveTip.js");
+    includeJS("../assets/components/inventory/EquipSelect.js");
 
     includeJS("../assets/components/inventory/filling/Filling.js");
     includeJS("../assets/components/inventory/filling/FillingConstructorTable.js");

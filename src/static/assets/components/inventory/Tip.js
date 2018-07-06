@@ -32,25 +32,9 @@ function DestroyInventoryTip() {
 }
 
 function DestroyInventoryClickEvent() {
-    let shipIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
-    shipIcon.className = "";
-    if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
-        shipIcon.onclick = RemoveBody;
-    } else {
-        shipIcon.onclick = null;
-    }
+    cellUnitIconDestroySelect();
 
-    let ammoCells = document.getElementsByClassName("inventoryAmmoCell"); // обнуляем ячейки боеприпасов
-    for (let i = 0; i < ammoCells.length; i++) {
-        ammoCells[i].onmouseout = function (event) {
-            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-            this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
-            this.style.cursor = "auto";
-        };
-        ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
-        ammoCells[i].style.cursor = "auto";
-        ammoCells[i].onclick = null;
-    }
+    cellAmmoDestroySelect();
 
     cellEquipDestroySelect(1, 5, "inventoryEquip"); // обнуляем ячейки эквипа
     cellEquipDestroySelect(2, 5, "inventoryEquip");
@@ -73,7 +57,13 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
                 };
 
                 equipSlot.className = "inventoryEquipping active weapon";
-                equipSlot.onclick = null;
+
+                if (equipSlot.slot.weapon !== null) {
+                    equipSlot.onclick = WeaponRemove;
+                } else {
+                    equipSlot.onclick = null;
+                }
+
             } else {
 
                 equipSlot.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
@@ -85,8 +75,43 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
                 };
 
                 equipSlot.className = "inventoryEquipping active";
-                equipSlot.onclick = null;
+
+                if (equipSlot.slot.weapon !== null) {
+                    equipSlot.onclick = EquipRemove;
+                } else {
+                    equipSlot.onclick = null;
+                }
             }
         }
+    }
+}
+
+function cellAmmoDestroySelect() {
+    let ammoCells = document.getElementsByClassName("inventoryAmmoCell"); // обнуляем ячейки боеприпасов
+    for (let i = 0; i < ammoCells.length; i++) {
+        ammoCells[i].onmouseout = function (event) {
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+            this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
+            this.style.cursor = "auto";
+        };
+        ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
+        ammoCells[i].style.cursor = "auto";
+
+        if (ammoCells[i].slot.ammo != null && ammoCells[i].slot.ammo !== undefined) {
+            ammoCells[i].onclick = AmmoRemove;
+        } else {
+            ammoCells[i].onclick = null;
+        }
+    }
+}
+
+function cellUnitIconDestroySelect() {
+    let shipIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
+    shipIcon.className = "";
+
+    if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
+        shipIcon.onclick = RemoveTip;
+    } else {
+        shipIcon.onclick = null;
     }
 }

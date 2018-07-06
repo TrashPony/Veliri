@@ -1,6 +1,7 @@
-function RemoveBody(event) {
+function RemoveTip(event, removeFunction) {
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
+    DestroyInventoryClickEvent();
     DestroyInventoryTip();
 
     let tip = document.createElement("div");
@@ -14,16 +15,7 @@ function RemoveBody(event) {
     removeButton.value = "Удалить";
     removeButton.style.pointerEvents = "auto";
 
-    removeButton.onclick = function (event) {
-        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
-        inventorySocket.send(JSON.stringify({
-            event: "RemoveMotherShipBody"
-        }));
-
-        DestroyInventoryClickEvent();
-        DestroyInventoryTip();
-    };
+    removeButton.onclick = removeFunction;
 
     let cancelButton = document.createElement("input");
     cancelButton.type = "button";
@@ -39,5 +31,5 @@ function RemoveBody(event) {
 
     tip.appendChild(removeButton);
     tip.appendChild(cancelButton);
-    this.appendChild(tip)
+    document.body.appendChild(tip);
 }

@@ -73,5 +73,18 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "RemoveMotherShipBody" {
 			RemoveMotherShipBody(ws)
 		}
+
+		if msg.Event == "RemoveMotherShipAmmo" {
+			RemoveMotherShipAmmo(ws, msg)
+		}
+
+		if msg.Event == "RemoveMotherShipWeapon" {
+			RemoveMotherShipWeapon(ws, msg)
+		}
+
+		if msg.Event == "RemoveMotherShipEquip" {
+			RemoveMotherShipEquip(ws, msg)
+		}
+
 	}
 }

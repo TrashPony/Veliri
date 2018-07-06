@@ -15,7 +15,7 @@ function UpdateShipIcon(shipBody) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + shipBody.name + ".png)";
-    unitIcon.onclick = RemoveBody;
+    unitIcon.onclick = BodyRemove;
 }
 
 function UpdateCells(typeSlot, idPrefix, shipSlots) {
@@ -34,18 +34,11 @@ function UpdateCells(typeSlot, idPrefix, shipSlots) {
                     UpdateEquips(cell);
                 }
 
-                cell.onclick = function () {
-                    console.log("NumberSlot " + this.Number + " typeSlot " + this.type)
-                };
-
                 cell.onmouseover = function () {
                     this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
                     this.style.cursor = "pointer";
                 };
 
-                cell.onclick = function () {
-                    console.log("NumberSlot " + this.Number + " typeSlot " + this.type)
-                };
             } else {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "";
@@ -59,6 +52,8 @@ function UpdateCells(typeSlot, idPrefix, shipSlots) {
 function UpdateEquips(cell) {
     cell.className = "inventoryEquipping active";
 
+    cell.onclick = EquipRemove;
+
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
         this.style.cursor = "auto";
@@ -66,12 +61,16 @@ function UpdateEquips(cell) {
 
     if (cell.slot.equip !== null) {
         cell.style.backgroundImage = "url(/assets/" + cell.slot.equip.name + ".png)";
+    } else {
+        cell.style.backgroundImage = null;
     }
 }
 
 function UpdateWeapon(cell) {
     cell.className = "inventoryEquipping active weapon";
     cell.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+
+    cell.onclick = WeaponRemove;
 
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
@@ -80,35 +79,16 @@ function UpdateWeapon(cell) {
 
     if (cell.slot.weapon !== null) {
         cell.style.backgroundImage = "url(/assets/" + cell.slot.weapon.name + ".png)";
+    } else {
+        cell.style.backgroundImage = null;
     }
 
     if (cell.ammoCell === null || cell.ammoCell === undefined) {
-        let ammoCell = document.createElement("div");
-        ammoCell.slot = cell.slot;
-        ammoCell.className = "inventoryAmmoCell";
 
-        ammoCell.onclick = function (event) {
-            console.log("ammo");
-            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true)
-        };
-        ammoCell.onmouseover = function (event) {
-            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-            this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
-            this.style.cursor = "pointer";
-        };
-        ammoCell.onmouseout = function (event) {
-            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-            this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
-            this.style.cursor = "auto";
-        };
-
-        if (cell.slot.ammo !== null) {
-            ammoCell.style.backgroundImage = "url(/assets/" + cell.slot.ammo.name + ".png)";
-            ammoCell.innerHTML = "<span class='QuantityItems'>" + cell.slot.ammo_quantity + "</span>";
-        }
-
+        let ammoCell = CreateAmmoCell(cell);
         cell.appendChild(ammoCell);
         cell.ammoCell = ammoCell;
+
     } else {
         if (cell.slot.ammo !== null) {
             cell.ammoCell.style.backgroundImage = "url(/assets/" + cell.slot.ammo.name + ".png)";
@@ -118,4 +98,31 @@ function UpdateWeapon(cell) {
             cell.ammoCell.innerHTML = "";
         }
     }
+}
+
+function CreateAmmoCell(cell) {
+    let ammoCell = document.createElement("div");
+    ammoCell.slot = cell.slot;
+    ammoCell.className = "inventoryAmmoCell";
+
+    ammoCell.onclick = AmmoRemove;
+
+    ammoCell.onmouseover = function (event) {
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
+        this.style.cursor = "pointer";
+    };
+
+    ammoCell.onmouseout = function (event) {
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+        this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
+        this.style.cursor = "auto";
+    };
+
+    if (cell.slot.ammo !== null) {
+        ammoCell.style.backgroundImage = "url(/assets/" + cell.slot.ammo.name + ".png)";
+        ammoCell.innerHTML = "<span class='QuantityItems'>" + cell.slot.ammo_quantity + "</span>";
+    }
+
+    return ammoCell
 }

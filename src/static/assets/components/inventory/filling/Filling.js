@@ -45,6 +45,6 @@ function NoActiveCell() {
 
 
 function FillingSquadTable() {
-
+    //todo
 }
 
