@@ -1,11 +1,11 @@
 function AmmoRemove(event) {
-    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     if (this.slot.ammo !== null) {
 
         let slot = this.slot.number_slot;
 
         let removeFunction = function () {
+            
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipAmmo",
                 equip_slot: slot
@@ -20,13 +20,13 @@ function AmmoRemove(event) {
 }
 
 function WeaponRemove(event) {
-    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     if (this.slot.weapon !== null) {
 
         let slot = this.slot.number_slot;
 
         let removeFunction = function () {
+
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipWeapon",
                 equip_slot: slot
@@ -41,7 +41,6 @@ function WeaponRemove(event) {
 }
 
 function EquipRemove(event) {
-    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     if (this.slot.equip !== null) {
 
@@ -49,6 +48,7 @@ function EquipRemove(event) {
         let type = this.slot.type_slot;
 
         let removeFunction = function () {
+
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipEquip",
                 equip_slot: slot,
@@ -64,9 +64,9 @@ function EquipRemove(event) {
 }
 
 function BodyRemove(event) {
-    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     let removeFunction = function () {
+
         inventorySocket.send(JSON.stringify({
             event: "RemoveMotherShipBody"
         }));
