@@ -13,7 +13,9 @@ function FillingConstructorTable(shipBody) {
 
 function UpdateShipIcon(shipBody) {
     let unitIcon = document.getElementById("UnitIcon");
+    unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + shipBody.name + ".png)";
+    unitIcon.onclick = RemoveBody;
 }
 
 function UpdateCells(typeSlot, idPrefix, shipSlots) {
@@ -69,6 +71,7 @@ function UpdateEquips(cell) {
 
 function UpdateWeapon(cell) {
     cell.className = "inventoryEquipping active weapon";
+    cell.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
 
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";

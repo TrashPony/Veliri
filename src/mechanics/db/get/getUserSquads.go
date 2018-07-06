@@ -9,6 +9,7 @@ import (
 	"../../gameObjects/coordinate"
 	"strings"
 	"strconv"
+	"database/sql"
 )
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
@@ -59,7 +60,7 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 	var target string
 
 	for rows.Next() {
-		var idBody int
+		var idBody sql.NullInt64
 
 		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &target, &ship.QueueAttack)
 
@@ -69,8 +70,12 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 
 		ship.Target = ParseTarget(target)
 
-		ship.Body = Body(idBody)
-		BodyEquip(ship)
+		if idBody.Valid {
+			ship.Body = Body(int(idBody.Int64))
+			BodyEquip(ship)
+		} else {
+			ship.Body = nil
+		}
 	}
 
 	return

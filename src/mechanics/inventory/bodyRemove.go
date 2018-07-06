@@ -13,7 +13,11 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body) {
 	removeAllEquippingBody(inventory, Body.EquippingV)
 
 	for _, weaponSlot := range Body.Weapons {
-		AddItem(inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1)
+
+		if weaponSlot.Weapon != nil {
+			AddItem(inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1)
+		}
+
 		if weaponSlot.Ammo != nil {
 			AddItem(inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity)
 		}
@@ -23,12 +27,13 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body) {
 	}
 
 	AddItem(inventory, Body, "body", Body.ID, 1) // кидает боди в инвентарь
-	Body = nil // удаляем откуда пришло
 }
 
 func removeAllEquippingBody(inventory map[int]*squad.InventorySlot, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
-		AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1)
-		equipSlot.Equip = nil
+		if equipSlot.Equip != nil{
+			AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1)
+			equipSlot.Equip = nil
+		}
 	}
 }

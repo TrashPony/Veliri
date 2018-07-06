@@ -34,7 +34,11 @@ function DestroyInventoryTip() {
 function DestroyInventoryClickEvent() {
     let shipIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     shipIcon.className = "";
-    shipIcon.onclick = null;
+    if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
+        shipIcon.onclick = RemoveBody;
+    } else {
+        shipIcon.onclick = null;
+    }
 
     let ammoCells = document.getElementsByClassName("inventoryAmmoCell"); // обнуляем ячейки боеприпасов
     for (let i = 0; i < ammoCells.length; i++) {
@@ -48,13 +52,13 @@ function DestroyInventoryClickEvent() {
         ammoCells[i].onclick = null;
     }
 
-    cellEquipDestoySelect(1, 5, "inventoryEquip"); // обнуляем ячейки эквипа
-    cellEquipDestoySelect(2, 5, "inventoryEquip");
-    cellEquipDestoySelect(3, 5, "inventoryEquip");
-    cellEquipDestoySelect(5, 2, "inventoryEquip");
+    cellEquipDestroySelect(1, 5, "inventoryEquip"); // обнуляем ячейки эквипа
+    cellEquipDestroySelect(2, 5, "inventoryEquip");
+    cellEquipDestroySelect(3, 5, "inventoryEquip");
+    cellEquipDestroySelect(5, 2, "inventoryEquip");
 }
 
-function cellEquipDestoySelect(typeSlot, count, idPrefix) {
+function cellEquipDestroySelect(typeSlot, count, idPrefix) {
     for (let i = 1; i <= count; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
         if (equipSlot.className === "inventoryEquipping active select") {

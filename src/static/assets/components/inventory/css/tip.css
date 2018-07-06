@@ -37,9 +37,12 @@
 }
 
 .lobbyButton.inventoryTip {
-    margin: auto;
     position: relative;
     top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: auto;
+    margin-bottom: 3px;
 }
 
 .lobbyButton.inventoryTip:active {

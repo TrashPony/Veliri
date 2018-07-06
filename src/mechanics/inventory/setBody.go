@@ -10,7 +10,7 @@ import (
 func SetBody(user *player.Player, idBody, inventorySlot int) {
 	body := user.GetSquad().Inventory[inventorySlot]
 
-	if body.ItemID == idBody {
+	if  body != nil && body.ItemID == idBody {
 		newBody := get.Body(idBody)
 
 		if user.GetSquad().MatherShip == nil {
@@ -18,6 +18,7 @@ func SetBody(user *player.Player, idBody, inventorySlot int) {
 		} else {
 			if user.GetSquad().MatherShip.Body != nil {
 				BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Body)
+				user.GetSquad().MatherShip.Body = nil
 			}
 		}
 
