@@ -10,7 +10,8 @@ type Message struct {
 	BodyID   int `json:"id_body"`
 	WeaponID int `json:"weapon_id"`
 	EquipID  int `json:"equip_id"`
-
+	AmmoID   int `json:"ammo_id"`
+	
 	InventorySlot int `json:"inventory_slot"`
 	EquipSlot     int `json:"equip_slot"`
 	EquipSlotType int `json:"equip_slot_type"`

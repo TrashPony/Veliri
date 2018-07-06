@@ -23,6 +23,7 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 
 			if weaponSlot.Ammo != nil {
 				AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity)
+				weaponSlot.Ammo = nil
 			}
 
 			user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот из бд

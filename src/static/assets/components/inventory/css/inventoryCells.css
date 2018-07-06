@@ -102,13 +102,6 @@
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
 }
 
-.inventoryUnit.active:hover {
-    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
-    cursor: pointer;
-}
-
 .inventoryUnit.active:active{
     -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
@@ -163,4 +156,20 @@
 .InventoryCell:active{
     -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+}
+
+.inventoryAmmoCell {
+    top: -5px;
+    left: 10px;
+    position: relative;
+    border-radius: 20px;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    border: 1px solid #959595;
+    background-color: #2c2c2c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-box-shadow: 0 0 5px 3px rgb(200, 200, 0);
+    box-shadow: 0 0 2px 2px rgb(200, 200, 0);
 }

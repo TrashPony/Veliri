@@ -6,7 +6,7 @@ func AddItem(inventory map[int]*squad.InventorySlot, item interface{}, itemType 
 
 	for _, slot := range inventory { // ищем стопку с такими же элементами
 		if slot.ItemID == itemID && slot.Type == itemType && slot.Item != nil {
-			slot.Quantity++
+			slot.Quantity = slot.Quantity + quantity
 			return true
 		}
 	}

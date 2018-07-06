@@ -32,11 +32,23 @@ function DestroyInventoryTip() {
 }
 
 function DestroyInventoryClickEvent() {
-    let shipIcon = document.getElementById("UnitIcon");
+    let shipIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     shipIcon.className = "";
     shipIcon.onclick = null;
 
-    cellEquipDestoySelect(1, 5, "inventoryEquip");
+    let ammoCells = document.getElementsByClassName("inventoryAmmoCell"); // обнуляем ячейки боеприпасов
+    for (let i = 0; i < ammoCells.length; i++) {
+        ammoCells[i].onmouseout = function (event) {
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+            this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
+            this.style.cursor = "auto";
+        };
+        ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
+        ammoCells[i].style.cursor = "auto";
+        ammoCells[i].onclick = null;
+    }
+
+    cellEquipDestoySelect(1, 5, "inventoryEquip"); // обнуляем ячейки эквипа
     cellEquipDestoySelect(2, 5, "inventoryEquip");
     cellEquipDestoySelect(3, 5, "inventoryEquip");
     cellEquipDestoySelect(5, 2, "inventoryEquip");
@@ -47,9 +59,27 @@ function cellEquipDestoySelect(typeSlot, count, idPrefix) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
         if (equipSlot.className === "inventoryEquipping active select") {
             if (equipSlot.slot.hasOwnProperty("weapon")) {
+
+                equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+                equipSlot.style.cursor = "auto";
+
+                equipSlot.onmouseout = function () {
+                    this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+                    this.style.cursor = "auto";
+                };
+
                 equipSlot.className = "inventoryEquipping active weapon";
                 equipSlot.onclick = null;
             } else {
+
+                equipSlot.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
+                equipSlot.style.cursor = "auto";
+
+                equipSlot.onmouseout = function () {
+                    this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
+                    this.style.cursor = "auto";
+                };
+
                 equipSlot.className = "inventoryEquipping active";
                 equipSlot.onclick = null;
             }

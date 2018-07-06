@@ -2,9 +2,12 @@ function InitInventoryMenu() {
 
     includeJS("../assets/components/inventory/webSocket.js");
     includeJS("../assets/components/inventory/Create.js");
-    includeJS("../assets/components/inventory/filling.js");
     includeJS("../assets/components/inventory/SelectInventoryItem.js");
     includeJS("../assets/components/inventory/Tip.js");
+
+    includeJS("../assets/components/inventory/filling/Filling.js");
+    includeJS("../assets/components/inventory/filling/FillingConstructorTable.js");
+    includeJS("../assets/components/inventory/filling/FillingInventoryTable.js");
 
     includeCSS("../assets/components/inventory/css/constructor.css");
     includeCSS("../assets/components/inventory/css/equipBox.css");
