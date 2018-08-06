@@ -3,22 +3,22 @@ function SelectInventoryItem(e) {
     DestroyInventoryTip();
     DestroyInventoryClickEvent();
 
-    InventoryTip(this.slot.item, e.clientX, e.clientY);
+    InventoryTip(JSON.parse(this.slotData).item, e.clientX, e.clientY);
 
-    if (this.slot.type === "body") {
-        SelectInventoryBody(this.slot.item, this.number);
+    if (JSON.parse(this.slotData).type === "body") {
+        SelectInventoryBody(JSON.parse(this.slotData).item, this.number);
     }
 
-    if (this.slot.type === "weapon") {
-        SelectInventoryWeapon(this.slot.item, this.number);
+    if (JSON.parse(this.slotData).type === "weapon") {
+        SelectInventoryWeapon(JSON.parse(this.slotData).item, this.number);
     }
 
-    if (this.slot.type === "equip") {
-        SelectInventoryEquip(this.slot.item, this.number)
+    if (JSON.parse(this.slotData).type === "equip") {
+        SelectInventoryEquip(JSON.parse(this.slotData).item, this.number)
     }
 
-    if (this.slot.type === "ammo") {
-        SelectInventoryAmmo(this.slot.item, this.number)
+    if (JSON.parse(this.slotData).type === "ammo") {
+        SelectInventoryAmmo(JSON.parse(this.slotData).item, this.number)
     }
 }
 
@@ -56,7 +56,7 @@ function SelectInventoryWeapon(weapon, slot) {
                     event: "SetMotherShipWeapon",
                     weapon_id: Number(weapon.id),
                     inventory_slot: Number(slot),
-                    equip_slot: this.slot.number_slot
+                    equip_slot: Number(JSON.parse(this.slotData).number_slot)
                 }));
 
                 DestroyInventoryClickEvent();
@@ -81,7 +81,7 @@ function SelectInventoryEquip(equip, slot) {
                     event: "SetMotherShipEquip",
                     equip_id: Number(equip.id),
                     inventory_slot: Number(slot),
-                    equip_slot: this.slot.number_slot,
+                    equip_slot: Number(JSON.parse(this.slotData).number_slot),
                     equip_slot_type: Number(equip.type_slot)
                 }));
 
@@ -107,7 +107,7 @@ function SelectInventoryAmmo(ammo, slot) {
                 event: "SetMotherShipAmmo",
                 ammo_id: Number(ammo.id),
                 inventory_slot: Number(slot),
-                equip_slot: this.slot.number_slot,
+                equip_slot: Number(JSON.parse(this.slotData).number_slot),
             }));
 
             DestroyInventoryClickEvent();

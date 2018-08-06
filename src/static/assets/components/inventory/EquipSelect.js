@@ -1,14 +1,14 @@
 function AmmoRemove(event) {
 
-    if (this.slot.ammo !== null) {
+    if (JSON.parse(this.slotData).ammo !== null) {
 
-        let slot = this.slot.number_slot;
+        let slot = JSON.parse(this.slotData).number_slot;
 
         let removeFunction = function () {
             
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipAmmo",
-                equip_slot: slot
+                equip_slot: Number(slot)
             }));
 
             DestroyInventoryClickEvent();
@@ -21,15 +21,15 @@ function AmmoRemove(event) {
 
 function WeaponRemove(event) {
 
-    if (this.slot.weapon !== null) {
+    if (JSON.parse(this.slotData).weapon !== null) {
 
-        let slot = this.slot.number_slot;
+        let slot = JSON.parse(this.slotData).number_slot;
 
         let removeFunction = function () {
 
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipWeapon",
-                equip_slot: slot
+                equip_slot: Number(slot)
             }));
 
             DestroyInventoryClickEvent();
@@ -42,17 +42,17 @@ function WeaponRemove(event) {
 
 function EquipRemove(event) {
 
-    if (this.slot.equip !== null) {
+    if (JSON.parse(this.slotData).equip !== null) {
 
-        let slot = this.slot.number_slot;
-        let type = this.slot.type_slot;
+        let slot = JSON.parse(this.slotData).number_slot;
+        let type = JSON.parse(this.slotData).type_slot;
 
         let removeFunction = function () {
 
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipEquip",
-                equip_slot: slot,
-                equip_slot_type: type
+                equip_slot: Number(slot),
+                equip_slot_type: Number(type)
             }));
 
             DestroyInventoryClickEvent();

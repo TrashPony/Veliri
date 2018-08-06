@@ -1,4 +1,6 @@
 function InventoryTip(item, x, y) {
+
+
     let tip = document.createElement("div");
     tip.style.top = y + "px";
     tip.style.left = x + "px";

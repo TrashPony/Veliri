@@ -4,15 +4,17 @@ function FillingInventoryTable(inventoryItems) {
 
         if (inventoryItems.hasOwnProperty(i) && inventoryItems[i].item !== null) {
 
-            cell.slot = inventoryItems[i];
+            cell.slotData = JSON.stringify(inventoryItems[i]);
             cell.number = i;
 
-            cell.style.backgroundImage = "url(/assets/" + cell.slot.item.name + ".png)";
-            cell.innerHTML = "<span class='QuantityItems'>" + cell.slot.quantity + "</span>";
+            cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).item.name + ".png)";
+            cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
 
             cell.onclick = SelectInventoryItem
+
         } else {
-            cell.slot = null;
+
+            cell.slotData = null;
 
             cell.style.backgroundImage = null;
             cell.innerHTML = "";
@@ -21,6 +23,7 @@ function FillingInventoryTable(inventoryItems) {
                 DestroyInventoryClickEvent();
                 DestroyInventoryTip();
             };
+
         }
     }
 }

@@ -26,9 +26,9 @@ function UpdateCells(typeSlot, idPrefix, shipSlots) {
 
             if (cell) {
 
-                cell.slot = shipSlots[slot];
+                cell.slotData = JSON.stringify(shipSlots[slot]);
 
-                if (cell.slot.hasOwnProperty("weapon")) {
+                if (JSON.parse(cell.slotData).hasOwnProperty("weapon")) {
                     UpdateWeapon(cell);
                 } else {
                     UpdateEquips(cell);
@@ -59,8 +59,8 @@ function UpdateEquips(cell) {
         this.style.cursor = "auto";
     };
 
-    if (cell.slot.equip !== null) {
-        cell.style.backgroundImage = "url(/assets/" + cell.slot.equip.name + ".png)";
+    if (JSON.parse(cell.slotData).equip !== null) {
+        cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).equip.name + ".png)";
     } else {
         cell.style.backgroundImage = null;
     }
@@ -77,8 +77,8 @@ function UpdateWeapon(cell) {
         this.style.cursor = "auto";
     };
 
-    if (cell.slot.weapon !== null) {
-        cell.style.backgroundImage = "url(/assets/" + cell.slot.weapon.name + ".png)";
+    if (JSON.parse(cell.slotData).weapon !== null) {
+        cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).weapon.name + ".png)";
     } else {
         cell.style.backgroundImage = null;
     }
@@ -90,9 +90,9 @@ function UpdateWeapon(cell) {
         cell.ammoCell = ammoCell;
 
     } else {
-        if (cell.slot.ammo !== null) {
-            cell.ammoCell.style.backgroundImage = "url(/assets/" + cell.slot.ammo.name + ".png)";
-            cell.ammoCell.innerHTML = "<span class='QuantityItems'>" + cell.slot.ammo_quantity + "</span>";
+        if (JSON.parse(cell.slotData).ammo !== null) {
+            cell.ammoCell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).ammo.name + ".png)";
+            cell.ammoCell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).ammo_quantity + "</span>";
         } else {
             cell.ammoCell.style.backgroundImage = null;
             cell.ammoCell.innerHTML = "";
@@ -102,7 +102,7 @@ function UpdateWeapon(cell) {
 
 function CreateAmmoCell(cell) {
     let ammoCell = document.createElement("div");
-    ammoCell.slot = cell.slot;
+    ammoCell.slotData = cell.slotData;
     ammoCell.className = "inventoryAmmoCell";
 
     ammoCell.onclick = AmmoRemove;
@@ -119,9 +119,9 @@ function CreateAmmoCell(cell) {
         this.style.cursor = "auto";
     };
 
-    if (cell.slot.ammo !== null) {
-        ammoCell.style.backgroundImage = "url(/assets/" + cell.slot.ammo.name + ".png)";
-        ammoCell.innerHTML = "<span class='QuantityItems'>" + cell.slot.ammo_quantity + "</span>";
+    if (JSON.parse(ammoCell.slotData).ammo !== null) {
+        ammoCell.style.backgroundImage = "url(/assets/" + JSON.parse(ammoCell.slotData).ammo.name + ".png)";
+        ammoCell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(ammoCell.slotData).ammo_quantity + "</span>";
     }
 
     return ammoCell
