@@ -1,0 +1,63 @@
+#ConstructorUnit {
+    border-radius: 200px;
+    width: 200px;
+    height: 200px;
+    border: 2px solid #6c6c6c;
+    position: absolute;
+    z-index: 910;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-size: 100% 2px, 4px 4px, cover;
+    -webkit-animation: menuAnimation 3000ms linear infinite;
+    animation: menuAnimation 3000ms linear infinite;
+}
+
+#UnitIcon {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    border: 1px solid #959595;
+    display: inline-block;
+    background-color: #4c4c4c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin: 15px;
+    margin-left: 35px;
+    vertical-align: middle;
+}
+
+.UnitEquip {
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    border: 1px solid #6c6c6c;
+    border-radius: 50px;
+}
+
+.UnitEquip.noActive {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
+}
+
+.UnitEquip.noActive:before {
+    text-align: center;
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}

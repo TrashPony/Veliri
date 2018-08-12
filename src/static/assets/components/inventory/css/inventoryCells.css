@@ -107,6 +107,13 @@
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
 }
 
+.inventoryUnit.active:hover{
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    color: #00fffd;
+    cursor: pointer;
+}
+
 .InventoryCell {
     border-radius: 5px;
     width: 25px;

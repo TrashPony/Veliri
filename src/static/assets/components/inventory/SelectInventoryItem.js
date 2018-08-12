@@ -24,7 +24,7 @@ function SelectInventoryItem(e) {
 
 function SelectInventoryBody(body, slot) {
     if (body.mother_ship) {
-        let shipIcon = document.getElementById("UnitIcon");
+        let shipIcon = document.getElementById("MSIcon");
 
         shipIcon.className = "UnitIconSelect";
         shipIcon.onclick = function () {

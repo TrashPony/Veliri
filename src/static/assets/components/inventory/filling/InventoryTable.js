@@ -1,4 +1,4 @@
-function FillingInventoryTable(inventoryItems) {
+function InventoryTable(inventoryItems) {
     for (let i = 1; i <= 40; i++) {
         let cell = document.getElementById("inventory " + i + 6);
 

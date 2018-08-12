@@ -48,7 +48,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
     for (let i = 1; i <= count; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
         if (equipSlot.className === "inventoryEquipping active select") {
-            if (equipSlot.slot.hasOwnProperty("weapon")) {
+            if (JSON.parse(equipSlot.slotData).hasOwnProperty("weapon")) {
 
                 equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
                 equipSlot.style.cursor = "auto";
@@ -60,7 +60,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
 
                 equipSlot.className = "inventoryEquipping active weapon";
 
-                if (equipSlot.slot.weapon !== null) {
+                if (JSON.parse(equipSlot.slotData).weapon !== null) {
                     equipSlot.onclick = WeaponRemove;
                 } else {
                     equipSlot.onclick = null;
@@ -78,7 +78,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
 
                 equipSlot.className = "inventoryEquipping active";
 
-                if (equipSlot.slot.weapon !== null) {
+                if (JSON.parse(equipSlot.slotData) !== null) {
                     equipSlot.onclick = EquipRemove;
                 } else {
                     equipSlot.onclick = null;
@@ -99,7 +99,7 @@ function cellAmmoDestroySelect() {
         ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
         ammoCells[i].style.cursor = "auto";
 
-        if (ammoCells[i].slot.ammo != null && ammoCells[i].slot.ammo !== undefined) {
+        if (JSON.parse(ammoCells[i].slotData).ammo != null && JSON.parse(ammoCells[i].slotData).ammo !== undefined) {
             ammoCells[i].onclick = AmmoRemove;
         } else {
             ammoCells[i].onclick = null;
@@ -108,7 +108,7 @@ function cellAmmoDestroySelect() {
 }
 
 function cellUnitIconDestroySelect() {
-    let shipIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
+    let shipIcon = document.getElementById("MSIcon"); // обнуляем икноку мазершипа
     shipIcon.className = "";
 
     if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {

@@ -5,7 +5,7 @@ function AmmoRemove(event) {
         let slot = JSON.parse(this.slotData).number_slot;
 
         let removeFunction = function () {
-            
+
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipAmmo",
                 equip_slot: Number(slot)

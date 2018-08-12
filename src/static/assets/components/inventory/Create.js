@@ -63,37 +63,36 @@ function CreateConstructorMenu() {
     powerPanel.appendChild(spanPower);
     constructorBackGround.appendChild(powerPanel);
 
-    let constructor = document.createElement("div");
-    constructor.id = "Constructor";
-    constructorBackGround.appendChild(constructor);
+    let constructorMS = document.createElement("div");
+    constructorMS.id = "ConstructorMS";
+    constructorBackGround.appendChild(constructorMS);
 
     /* 3 type slots */
     let equippingPanelIII = document.createElement("div");
     CreateCells(3, 5, "inventoryEquipping noActive", "inventoryEquip", equippingPanelIII);
-    constructor.appendChild(equippingPanelIII);
+    constructorMS.appendChild(equippingPanelIII);
 
     /* 5 type slots */
     let equippingPanelV = document.createElement("div");
     equippingPanelV.className = "verticalEquipPanel";
     CreateCells(5, 2, "inventoryEquipping noActive", "inventoryEquip", equippingPanelV, true);
-    constructor.appendChild(equippingPanelV);
+    constructorMS.appendChild(equippingPanelV);
 
     /* shipIcon */
     let unitIcon = document.createElement("div");
-    unitIcon.id = "UnitIcon";
-    constructor.appendChild(unitIcon);
+    unitIcon.id = "MSIcon";
+    constructorMS.appendChild(unitIcon);
 
     /* 2 type slots */
     let equippingPanelII = document.createElement("div");
     equippingPanelII.className = "verticalEquipPanel";
     CreateCells(2, 5, "inventoryEquipping noActive", "inventoryEquip", equippingPanelII, true);
-    constructor.appendChild(equippingPanelII);
+    constructorMS.appendChild(equippingPanelII);
 
     /* 1 type slots */
     let equippingPanelI = document.createElement("div");
     CreateCells(1, 5, "inventoryEquipping noActive", "inventoryEquip", equippingPanelI);
-    constructor.appendChild(equippingPanelI)
-
+    constructorMS.appendChild(equippingPanelI)
 }
 
 function CreateInventory() {

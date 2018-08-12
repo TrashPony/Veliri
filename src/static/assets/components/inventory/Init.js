@@ -9,11 +9,14 @@ function InitInventoryMenu() {
     includeJS("../assets/components/inventory/EquipSelect.js");
 
     includeJS("../assets/components/inventory/filling/Filling.js");
-    includeJS("../assets/components/inventory/filling/FillingConstructorTable.js");
-    includeJS("../assets/components/inventory/filling/FillingInventoryTable.js");
+    includeJS("../assets/components/inventory/filling/ConstructorTable.js");
+    includeJS("../assets/components/inventory/filling/InventoryTable.js");
+    includeJS("../assets/components/inventory/filling/SquadTable.js");
 
-    includeCSS("../assets/components/inventory/css/constructor.css");
-    includeCSS("../assets/components/inventory/css/equipBox.css");
+    includeCSS("../assets/components/inventory/css/constructorMS.css");
+    includeCSS("../assets/components/inventory/css/constructorUnit.css");
+    includeCSS("../assets/components/inventory/css/equipMSBox.css");
+    includeCSS("../assets/components/inventory/css/equipUnitBox.css");
     includeCSS("../assets/components/inventory/css/inventoryCells.css");
     includeCSS("../assets/components/inventory/css/tip.css");
 

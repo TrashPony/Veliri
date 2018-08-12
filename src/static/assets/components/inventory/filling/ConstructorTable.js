@@ -1,4 +1,4 @@
-function FillingConstructorTable(shipBody) {
+function ConstructorTable(shipBody) {
 
     UpdateCells(1, "inventoryEquip", shipBody.equippingI);
     UpdateCells(2, "inventoryEquip", shipBody.equippingII);
@@ -12,7 +12,7 @@ function FillingConstructorTable(shipBody) {
 }
 
 function UpdateShipIcon(shipBody) {
-    let unitIcon = document.getElementById("UnitIcon");
+    let unitIcon = document.getElementById("MSIcon");
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + shipBody.name + ".png)";
     unitIcon.onclick = BodyRemove;

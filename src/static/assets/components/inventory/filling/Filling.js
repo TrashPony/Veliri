@@ -2,12 +2,13 @@ function FillingInventory(jsonData) {
     let event = JSON.parse(jsonData).event;
 
     if (event === "openInventory" || event === "UpdateSquad") {
-        console.log(jsonData);
+        //console.log(jsonData);
         let squad = JSON.parse(jsonData).squad;
-        FillingInventoryTable(squad.inventory);
+        InventoryTable(squad.inventory);
 
         if (squad.mather_ship.body != null) {
-            FillingConstructorTable(squad.mather_ship.body)
+            ConstructorTable(squad.mather_ship.body);
+            SquadTable(squad.mather_ship.body);
         } else {
             NoActiveCell();
         }
@@ -31,7 +32,7 @@ function NoActiveCell() {
 
     console.log(cells);
 
-    let unitIcon = document.getElementById("UnitIcon");
+    let unitIcon = document.getElementById("MSIcon");
     unitIcon.style.backgroundImage = null;
     unitIcon.onclick = null;
     unitIcon.shipBody = null;
@@ -41,10 +42,3 @@ function NoActiveCell() {
         inventoryAmmoCell[i].remove();
     }
 }
-
-
-
-function FillingSquadTable() {
-    //todo
-}
-

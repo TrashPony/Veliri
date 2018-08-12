@@ -38,4 +38,4 @@ CREATE TABLE action_game_zone_effects (        /* эфекты которые в
 CREATE TABLE action_game_reload_equip (
   id_squad_equip    INT REFERENCES squad_units_equipping (id), /* ид эквипа в отряде */
   reload            INT                                        /* сколько он еще будет перезаряжаться если 0 то он заряжен */
-)
+);
