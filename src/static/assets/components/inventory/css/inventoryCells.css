@@ -102,7 +102,7 @@
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
 }
 
-.inventoryUnit.active:active{
+.inventoryUnit.select{
     -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
 }

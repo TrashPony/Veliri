@@ -1,10 +1,17 @@
-function SquadTable(shipBody) {
-    for (let slot in shipBody.equippingIV) {
-        if (shipBody.equippingIV.hasOwnProperty(slot)) {
+function SquadTable(squad) {
 
-            let unitSlot = shipBody.equippingIV[slot];
-            let cell = document.getElementById("squad " + slot + unitSlot.type_slot);
-            cell.className = "inventoryUnit active";
+    console.log(squad);
+
+    for (let slot in squad.mather_ship.units) {
+        if (squad.mather_ship.units.hasOwnProperty(slot)) {
+
+            let unitSlot = squad.mather_ship.units[slot];
+
+            let cell = document.getElementById("squad " + slot + 4); // 4 это тип ячейки
+
+            if (cell.className !== "inventoryUnit select") {
+                cell.className = "inventoryUnit active";
+            }
 
             cell.slotData = JSON.stringify(unitSlot);
             cell.onclick = OpenUnitEditor
@@ -15,14 +22,28 @@ function SquadTable(shipBody) {
 function OpenUnitEditor() {
     let constructorUnit = document.getElementById("ConstructorUnit");
 
-    if (constructorUnit) {
-        constructorUnit.remove();
+    let inventoryUnits = document.getElementsByClassName("inventoryUnit select");
+    for (let slot in inventoryUnits) {
+        inventoryUnits[slot].className = "inventoryUnit active";
     }
+
+    if (constructorUnit) {
+        if (JSON.parse(constructorUnit.slotData).number_slot === JSON.parse(this.slotData).number_slot) {
+            constructorUnit.remove();
+            return;
+        } else {
+            constructorUnit.remove();
+        }
+    }
+
+    this.className = "inventoryUnit select";
 
     constructorUnit = document.createElement("div");
     constructorUnit.id = "ConstructorUnit";
     constructorUnit.style.left = Number(this.getBoundingClientRect().left - 75) + "px";
     constructorUnit.style.top = Number(this.getBoundingClientRect().top - 220) + "px";
+
+    constructorUnit.slotData = this.slotData;
 
     CreateUnitEquipSlots(constructorUnit);
 

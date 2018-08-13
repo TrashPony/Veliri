@@ -86,5 +86,8 @@ func Reader(ws *websocket.Conn) {
 			RemoveMotherShipEquip(ws, msg)
 		}
 
+		if msg.Event == "SetUnitBody" {
+			println(msg.UnitSlot)
+		}
 	}
 }

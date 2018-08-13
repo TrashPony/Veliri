@@ -8,7 +8,7 @@ function FillingInventory(jsonData) {
 
         if (squad.mather_ship.body != null) {
             ConstructorTable(squad.mather_ship.body);
-            SquadTable(squad.mather_ship.body);
+            SquadTable(squad);
         } else {
             NoActiveCell();
         }

@@ -12,13 +12,13 @@ type MatherShip struct {
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
 
-	Body   *detail.Body   `json:"body"`
+	Body *detail.Body `json:"body"`
 
-	Units      map[int]*unit.Unit     `json:"units"`     // в роли ключей карты выступают
+	Units map[int]*UnitSlot `json:"units"` // в роли ключей карты выступают
 
-	X      int  `json:"x"`
-	Y      int  `json:"y"`
-	Rotate int  `json:"rotate"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Rotate int `json:"rotate"`
 
 	Action      bool                   `json:"action"`
 	Target      *coordinate.Coordinate `json:"target"`
@@ -29,11 +29,16 @@ type MatherShip struct {
 	Effects []*effect.Effect `json:"effects"`
 }
 
-func (matherShip *MatherShip) GetID() int  {
+type UnitSlot struct {
+	Unit       *unit.Unit `json:"unit"`
+	NumberSlot int        `json:"number_slot"`
+}
+
+func (matherShip *MatherShip) GetID() int {
 	return matherShip.ID
 }
 
-func (matherShip *MatherShip) GetBody() *detail.Body  {
+func (matherShip *MatherShip) GetBody() *detail.Body {
 	return matherShip.Body
 }
 
@@ -53,6 +58,6 @@ func (matherShip *MatherShip) GetOwnerUser() string {
 	return matherShip.Owner
 }
 
-func (matherShip *MatherShip) GetTarget() *coordinate.Coordinate  {
+func (matherShip *MatherShip) GetTarget() *coordinate.Coordinate {
 	return matherShip.Target
 }

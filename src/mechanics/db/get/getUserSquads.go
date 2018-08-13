@@ -32,8 +32,17 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
 		userSquad.MatherShip = SquadMatherShip(userSquad.ID)
 
-		if userSquad.MatherShip != nil {
-			userSquad.MatherShip.Units = SquadUnits(userSquad.ID)
+		if userSquad.MatherShip != nil && userSquad.MatherShip.Body != nil {
+
+			userSquad.MatherShip.Units = make(map[int]*matherShip.UnitSlot)
+
+			for _, slot := range userSquad.MatherShip.Body.EquippingIV {
+				unitSlot := matherShip.UnitSlot{}
+				unitSlot.Unit = SquadUnits(userSquad.ID, slot.Number)
+				unitSlot.NumberSlot = slot.Number
+
+				userSquad.MatherShip.Units[slot.Number] = &unitSlot
+			}
 		}
 
 		userSquad.Inventory = SquadInventory(userSquad.ID)
@@ -81,26 +90,23 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 	return
 }
 
-func SquadUnits(squadID int) (units map[int]*unit.Unit) {
+func SquadUnits(squadID int, slot int) (*unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT id, id_body, hp, x, y, rotate, action, target, queue_attack, slot "+
+		"SELECT id, id_body, hp, x, y, rotate, action, target, queue_attack "+
 			"FROM squad_units "+
-			"WHERE id_squad=$1", squadID)
+			"WHERE id_squad=$1 AND slot=$2", squadID, slot)
 	if err != nil {
 		log.Fatal("get units squad " + err.Error())
 	}
 	defer rows.Close()
 
-	units = make(map[int]*unit.Unit)
+	var squadUnit unit.Unit
 
 	for rows.Next() {
-		var squadUnit unit.Unit
-
 		var idBody int
-		var slot int
 
-		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.X, &squadUnit.Y, &squadUnit.Rotate, &squadUnit.Action, &squadUnit.Target, squadUnit.QueueAttack, slot)
+		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.X, &squadUnit.Y, &squadUnit.Rotate, &squadUnit.Action, &squadUnit.Target, squadUnit.QueueAttack)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -108,11 +114,13 @@ func SquadUnits(squadID int) (units map[int]*unit.Unit) {
 		squadUnit.Body = Body(idBody)
 
 		BodyEquip(&squadUnit)
-
-		units[slot] = &squadUnit
 	}
 
-	return
+	if squadUnit.ID != 0 {
+		return &squadUnit
+	} else {
+		return nil
+	}
 }
 
 func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
