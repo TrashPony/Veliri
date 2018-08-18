@@ -119,12 +119,12 @@ function cellUnitIconDestroySelect() {
 
     let unitIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     if (unitIcon) {
-        shipIcon.className = "";
+        unitIcon.className = "";
 
-        if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
-            shipIcon.onclick = BodyUnitRemove;
+        if (unitIcon.shipBody != null && unitIcon.shipBody !== undefined) {
+            unitIcon.onclick = BodyUnitRemove;
         } else {
-            shipIcon.onclick = null;
+            unitIcon.onclick = null;
         }
     }
 }
