@@ -26,6 +26,14 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 		RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 		user.GetSquad().MatherShip.Body = newBody
 
+		user.GetSquad().MatherShip.Units = make(map[int]*matherShip.UnitSlot) // заполняем ячейки юнитов
+		for _, slot := range user.GetSquad().MatherShip.Body.EquippingIV {
+			unitSlot := matherShip.UnitSlot{}
+			unitSlot.NumberSlot = slot.Number
+			unitSlot.Unit = nil
+			user.GetSquad().MatherShip.Units[slot.Number] = &unitSlot
+		}
+
 		updateSquad.Squad(user.GetSquad())
 	}
 }

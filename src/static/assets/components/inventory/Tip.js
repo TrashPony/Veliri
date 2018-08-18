@@ -109,20 +109,22 @@ function cellAmmoDestroySelect() {
 
 function cellUnitIconDestroySelect() {
     let shipIcon = document.getElementById("MSIcon"); // обнуляем икноку мазершипа
-    removeSelet(shipIcon);
+    shipIcon.className = "";
+
+    if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
+        shipIcon.onclick = BodyMSRemove;
+    } else {
+        shipIcon.onclick = null;
+    }
 
     let unitIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     if (unitIcon) {
-        removeSelet(unitIcon);
-    }
+        shipIcon.className = "";
 
-    function removeSelet(item) {
-        item.className = "";
-
-        if (item.shipBody != null && item.shipBody !== undefined) {
-            item.onclick = BodyRemove;
+        if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
+            shipIcon.onclick = BodyUnitRemove;
         } else {
-            item.onclick = null;
+            shipIcon.onclick = null;
         }
     }
 }

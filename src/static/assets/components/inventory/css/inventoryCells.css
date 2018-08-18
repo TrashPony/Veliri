@@ -179,4 +179,5 @@
     background-repeat: no-repeat;
     -webkit-box-shadow: 0 0 5px 3px rgb(200, 200, 0);
     box-shadow: 0 0 2px 2px rgb(200, 200, 0);
+    z-index: 911;
 }

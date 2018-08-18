@@ -89,5 +89,9 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SetUnitBody" {
 			SetUnitBody(ws, msg)
 		}
+
+		if msg.Event == "RemoveUnitBody" {
+			RemoveUnitBody(ws, msg)
+		}
 	}
 }

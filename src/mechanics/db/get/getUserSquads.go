@@ -81,7 +81,7 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 
 		if idBody.Valid {
 			ship.Body = Body(int(idBody.Int64))
-			BodyEquip(ship)
+			BodyEquip(ship, "squad_mother_ship_equipping")
 		} else {
 			ship.Body = nil
 		}
@@ -113,7 +113,7 @@ func SquadUnits(squadID int, slot int) (*unit.Unit) {
 	}
 
 	squadUnit.Body = Body(idBody)
-	BodyEquip(&squadUnit)
+	BodyEquip(&squadUnit, "squad_units_equipping")
 	squadUnit.Target = ParseTarget(target)
 
 	if squadUnit.ID != 0 {

@@ -3,7 +3,34 @@ package inventory
 import (
 	"../gameObjects/detail"
 	"../gameObjects/squad"
+	"../player"
+	"../../mechanics/db/updateSquad"
 )
+
+func RemoveMSBody(user *player.Player)  {
+	if user.GetSquad().MatherShip.Body != nil {
+		BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Body)
+		user.GetSquad().MatherShip.Body = nil
+
+		for _, unitSlot := range user.GetSquad().MatherShip.Units {
+			RemoveUnitBody(user, unitSlot.NumberSlot)
+			delete(user.GetSquad().MatherShip.Units, unitSlot.NumberSlot)
+		}
+	}
+
+	updateSquad.Squad(user.GetSquad())
+}
+
+func RemoveUnitBody(user *player.Player, unitSlot int)  {
+	if user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
+		if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
+			BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Units[unitSlot].Unit.Body)
+			user.GetSquad().MatherShip.Units[unitSlot].Unit = nil // если юниту убрали тело то юнит перестает существовать
+		}
+	}
+
+	updateSquad.Squad(user.GetSquad())
+}
 
 func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body) {
 	removeAllEquippingBody(inventory, Body.EquippingI)

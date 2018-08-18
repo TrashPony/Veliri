@@ -94,9 +94,9 @@ type Boder interface {
 	GetID() int
 }
 
-func BodyEquip(ship Boder) {
+func BodyEquip(ship Boder, table string) {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity "+
-		" FROM squad_mother_ship_equipping "+
+		" FROM " + table +
 		" WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
 		log.Fatal("get body equip" + err.Error())

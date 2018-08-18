@@ -63,12 +63,29 @@ function EquipRemove(event) {
     }
 }
 
-function BodyRemove(event) {
+function BodyMSRemove(event) {
 
     let removeFunction = function () {
 
         inventorySocket.send(JSON.stringify({
             event: "RemoveMotherShipBody"
+        }));
+
+        DestroyInventoryClickEvent();
+        DestroyInventoryTip();
+    };
+
+    RemoveTip(event, removeFunction);
+}
+
+function BodyUnitRemove(event) {
+
+    let numberUnitSlot = JSON.parse(this.slotData).number_slot;
+
+    let removeFunction = function () {
+        inventorySocket.send(JSON.stringify({
+            event: "RemoveUnitBody",
+            unit_slot: Number(numberUnitSlot)
         }));
 
         DestroyInventoryClickEvent();

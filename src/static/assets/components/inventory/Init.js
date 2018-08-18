@@ -12,6 +12,7 @@ function InitInventoryMenu() {
     includeJS("../assets/components/inventory/filling/ConstructorTable.js");
     includeJS("../assets/components/inventory/filling/InventoryTable.js");
     includeJS("../assets/components/inventory/filling/SquadTable.js");
+    includeJS("../assets/components/inventory/filling/MarkConstructorsCell.js");
 
     includeCSS("../assets/components/inventory/css/constructorMS.css");
     includeCSS("../assets/components/inventory/css/constructorUnit.css");

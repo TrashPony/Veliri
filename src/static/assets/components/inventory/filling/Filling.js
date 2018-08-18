@@ -1,14 +1,12 @@
 function FillingInventory(jsonData) {
     let event = JSON.parse(jsonData).event;
-
+    console.log(jsonData);
     if (event === "openInventory" || event === "UpdateSquad") {
-        console.log(jsonData);
         let squad = JSON.parse(jsonData).squad;
         InventoryTable(squad.inventory);
-
+        SquadTable(squad);
         if (squad.mather_ship.body != null) {
             ConstructorTable(squad.mather_ship.body);
-            SquadTable(squad);
         } else {
             NoActiveCell();
         }
@@ -28,17 +26,16 @@ function NoActiveCell() {
         cells[i].onmouseout = null;
         cells[i].onmouseover = null;
         cells[i].onclick = null;
-    }
 
-    console.log(cells);
+        for (let child in cells[i].childNodes) {
+            if (cells[i].childNodes.hasOwnProperty(child)) {
+                cells[i].childNodes[child].remove();
+            }
+        }
+    }
 
     let unitIcon = document.getElementById("MSIcon");
     unitIcon.style.backgroundImage = null;
     unitIcon.onclick = null;
     unitIcon.shipBody = null;
-
-    let inventoryAmmoCell = document.getElementsByClassName("inventoryAmmoCell");
-    for (let i = 0; i < inventoryAmmoCell.length; i++) {
-        inventoryAmmoCell[i].remove();
-    }
 }
