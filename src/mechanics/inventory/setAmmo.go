@@ -23,18 +23,8 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) {
 				AddItem(user.GetSquad().Inventory, ammoSlot.Ammo, "ammo", ammoSlot.Ammo.ID, ammoSlot.AmmoQuantity)
 			}
 
-			capacity := ammoSlot.Weapon.AmmoCapacity
-			ammoCount := user.GetSquad().Inventory[inventorySlot].Quantity
-
-			if capacity < ammoCount {
-				user.GetSquad().Inventory[inventorySlot].Quantity = ammoCount - capacity
-				ammoSlot.Ammo = newAmmo
-				ammoSlot.AmmoQuantity = capacity
-			} else {
-				user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот из бд
-				ammoSlot.Ammo = newAmmo
-				ammoSlot.AmmoQuantity = ammoCount
-			}
+			ammoSlot.Ammo = newAmmo
+			ammoSlot.AmmoQuantity = RemoveInventoryItem(ammoSlot.Weapon.AmmoCapacity, user.GetSquad().Inventory[inventorySlot])
 
 			updateSquad.Squad(user.GetSquad())
 		}

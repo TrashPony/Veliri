@@ -24,10 +24,10 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 					equipSlot.InsertToDB = true
 				}
 
-				user.GetSquad().Inventory[inventorySlot].Item = nil
+				RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 				equipSlot.Equip = newEquip
 
-				updateSquad.Squad(user.GetSquad()) //todo для теста опустил обновления в бд
+				updateSquad.Squad(user.GetSquad())
 			}
 		}
 	}

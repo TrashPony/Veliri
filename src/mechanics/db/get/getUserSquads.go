@@ -102,19 +102,19 @@ func SquadUnits(squadID int, slot int) (*unit.Unit) {
 	defer rows.Close()
 
 	var squadUnit unit.Unit
+	var idBody int
+	var target string
 
 	for rows.Next() {
-		var idBody int
-
-		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.X, &squadUnit.Y, &squadUnit.Rotate, &squadUnit.Action, &squadUnit.Target, squadUnit.QueueAttack)
+		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.X, &squadUnit.Y, &squadUnit.Rotate, &squadUnit.Action, &target, &squadUnit.QueueAttack)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("get units squad " + err.Error())
 		}
-
-		squadUnit.Body = Body(idBody)
-
-		BodyEquip(&squadUnit)
 	}
+
+	squadUnit.Body = Body(idBody)
+	BodyEquip(&squadUnit)
+	squadUnit.Target = ParseTarget(target)
 
 	if squadUnit.ID != 0 {
 		return &squadUnit

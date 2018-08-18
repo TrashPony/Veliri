@@ -26,10 +26,10 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 				weaponSlot.Ammo = nil
 			}
 
-			user.GetSquad().Inventory[inventorySlot].Item = nil // ставим итему nil что бы при обновление удалился слот из бд
+			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 			weaponSlot.Weapon = newWeapon
 
-			updateSquad.Squad(user.GetSquad()) //todo для теста опустил обновления в бд
+			updateSquad.Squad(user.GetSquad())
 		}
 	}
 }

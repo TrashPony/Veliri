@@ -87,7 +87,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "SetUnitBody" {
-			println(msg.UnitSlot)
+			SetUnitBody(ws, msg)
 		}
 	}
 }
