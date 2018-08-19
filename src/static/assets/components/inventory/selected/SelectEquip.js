@@ -1,3 +1,4 @@
+// todo вероятно можно обьеденить эти методы в имя рефакторинга
 function AmmoMSMenu(event) {
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
@@ -96,6 +97,31 @@ function EquipMSMenu(event) {
                 event: "RemoveMotherShipEquip",
                 equip_slot: Number(slot),
                 equip_slot_type: Number(type)
+            }));
+
+            DestroyInventoryClickEvent();
+            DestroyInventoryTip();
+        };
+
+        RemoveTip(event, removeFunction);
+    }
+}
+
+function EquipUnitMenu(event) {
+    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+
+    if (JSON.parse(this.slotData).equip !== null) {
+
+        let slot = JSON.parse(this.slotData).number_slot;
+        let type = JSON.parse(this.slotData).type_slot;
+
+        let removeFunction = function () {
+
+            inventorySocket.send(JSON.stringify({
+                event: "RemoveUnitEquip",
+                equip_slot: Number(slot),
+                equip_slot_type: Number(type),
+                unit_slot: unitSlot
             }));
 
             DestroyInventoryClickEvent();

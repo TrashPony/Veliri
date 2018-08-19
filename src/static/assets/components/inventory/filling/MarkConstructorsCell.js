@@ -28,7 +28,11 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
 function UpdateEquips(cell, classPrefix) {
     cell.className = classPrefix + " active";
 
-    cell.onclick = EquipMSMenu;
+    if (classPrefix === "inventoryEquipping") {
+        cell.onclick = EquipMSMenu;
+    } else {
+        cell.onclick = EquipUnitMenu;
+    }
 
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";

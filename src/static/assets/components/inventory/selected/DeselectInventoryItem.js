@@ -61,7 +61,11 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.className = classPrefix + " active";
 
                 if (JSON.parse(equipSlot.slotData) !== null) {
-                    equipSlot.onclick = EquipMSMenu;
+                    if (classPrefix === "inventoryEquipping") {
+                        equipSlot.onclick = EquipMSMenu;
+                    } else {
+                        equipSlot.onclick = EquipUnitMenu;
+                    }
                 } else {
                     equipSlot.onclick = null;
                 }
