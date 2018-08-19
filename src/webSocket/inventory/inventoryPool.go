@@ -101,5 +101,9 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SetUnitEquip" {
 			SetUnitEquip(ws, msg)
 		}
+
+		if msg.Event == "SetUnitAmmo" {
+			SetUnitAmmo(ws, msg)
+		}
 	}
 }
