@@ -50,7 +50,8 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 			if unitSlot.Unit == nil {
 				unitSlot.Unit = &unit.Unit{}
 			} else {
-				// todo замена тела
+				RemoveUnitBody(user, numberUnitSlot)
+				unitSlot.Unit = &unit.Unit{}
 			}
 
 			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
