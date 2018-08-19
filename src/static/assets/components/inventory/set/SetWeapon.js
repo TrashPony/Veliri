@@ -11,7 +11,7 @@ function SetWeapon(weapon, slot) {
         DestroyInventoryClickEvent();
         DestroyInventoryTip();
     };
-    WeaponSlotSelect("inventoryEquip", "inventoryEquipping", 5, msFunc);
+    WeaponSlotMark("inventoryEquip", "inventoryEquipping", 5, msFunc);
 
     let constructorUnit = document.getElementById("ConstructorUnit");
     if (constructorUnit) {
@@ -29,11 +29,11 @@ function SetWeapon(weapon, slot) {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
         };
-        WeaponSlotSelect("UnitEquip", "UnitEquip", 3, unitFunc);
+        WeaponSlotMark("UnitEquip", "UnitEquip", 3, unitFunc);
     }
 }
 
-function WeaponSlotSelect(idPrefix, classPrefix, countSlots, func) {
+function WeaponSlotMark(idPrefix, classPrefix, countSlots, func) {
     for (let i = 1; i <= countSlots; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + 3); // оружие всегда ствиться в 3 слоты по диз-доку
         if (equipSlot.className === classPrefix + " active weapon") {
