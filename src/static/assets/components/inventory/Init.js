@@ -2,17 +2,20 @@ function InitInventoryMenu() {
 
     includeJS("../assets/components/inventory/webSocket.js");
     includeJS("../assets/components/inventory/Create.js");
-    includeJS("../assets/components/inventory/SelectInventoryItem.js");
-    includeJS("../assets/components/inventory/Tip.js");
 
-    includeJS("../assets/components/inventory/RemoveTip.js");
-    includeJS("../assets/components/inventory/EquipSelect.js");
+    includeJS("../assets/components/inventory/selected/SelectInventoryItem.js");
+    includeJS("../assets/components/inventory/selected/DeselectInventoryItem.js");
+    includeJS("../assets/components/inventory/selected/SelectEquip.js");
 
     includeJS("../assets/components/inventory/filling/Filling.js");
     includeJS("../assets/components/inventory/filling/ConstructorTable.js");
     includeJS("../assets/components/inventory/filling/InventoryTable.js");
     includeJS("../assets/components/inventory/filling/SquadTable.js");
     includeJS("../assets/components/inventory/filling/MarkConstructorsCell.js");
+    includeJS("../assets/components/inventory/filling/DeactivateCell.js");
+
+    includeJS("../assets/components/inventory/tip/RemoveTip.js");
+    includeJS("../assets/components/inventory/tip/SelectItem.js");
 
     includeCSS("../assets/components/inventory/css/constructorMS.css");
     includeCSS("../assets/components/inventory/css/constructorUnit.css");

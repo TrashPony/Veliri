@@ -23,7 +23,6 @@ function InventoryTable(inventoryItems) {
                 DestroyInventoryClickEvent();
                 DestroyInventoryTip();
             };
-
         }
     }
 }

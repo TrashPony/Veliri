@@ -3,7 +3,7 @@ function SquadTable(squad) {
 
         let cell = document.getElementById("squad " + slot + 4); // 4 это тип ячейки
 
-        if (squad.mather_ship.units.hasOwnProperty(slot)) {
+        if (squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
 
             let unitSlot = squad.mather_ship.units[slot];
 
@@ -36,37 +36,6 @@ function SquadTable(squad) {
             if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
                 constructorUnit.remove();
             }
-        }
-    }
-}
-
-function NoActiveUnitCell(slotData) {
-    let constructorUnit = document.getElementById("ConstructorUnit");
-    if (constructorUnit) {
-        if (JSON.parse(constructorUnit.slotData).number_slot === slotData.number_slot) {
-            let cells = document.getElementsByClassName("UnitEquip");
-            for (let i = 0; i < cells.length; i++) {
-                cells[i].ammoCell = null;
-
-                cells[i].className = "UnitEquip noActive";
-                cells[i].style.backgroundImage = "";
-                cells[i].style.boxShadow = "0 0 0 0 rgb(0, 0, 0)";
-
-                cells[i].onmouseout = null;
-                cells[i].onmouseover = null;
-                cells[i].onclick = null;
-
-                for (let child in cells[i].childNodes) {
-                    if (cells[i].childNodes.hasOwnProperty(child)) {
-                        cells[i].childNodes[child].remove();
-                    }
-                }
-            }
-
-            let unitIcon = document.getElementById("UnitIcon");
-            unitIcon.style.backgroundImage = null;
-            unitIcon.onclick = null;
-            unitIcon.shipBody = null;
         }
     }
 }

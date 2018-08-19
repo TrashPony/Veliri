@@ -64,21 +64,21 @@ func FirstSquad(userID int) (userSquad *squad.Squad)  {
 
 	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity) " +
 		"VALUES ($1, $2, $3, $4, $5)",
-		userSquad.ID, 7, "equip", 1, 1)
+		userSquad.ID, 7, "equip", 1, 2)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
 	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity) " +
 		"VALUES ($1, $2, $3, $4, $5)",
-		userSquad.ID, 8, "equip", 2, 1)
+		userSquad.ID, 8, "equip", 2, 2)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
 	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity) " +
 		"VALUES ($1, $2, $3, $4, $5)",
-		userSquad.ID, 9, "equip", 3, 1)
+		userSquad.ID, 9, "equip", 3, 2)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}

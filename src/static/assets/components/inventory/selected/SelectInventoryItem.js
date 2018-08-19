@@ -3,7 +3,7 @@ function SelectInventoryItem(e) {
     DestroyInventoryTip();
     DestroyInventoryClickEvent();
 
-    InventoryTip(JSON.parse(this.slotData).item, e.clientX, e.clientY);
+    InventorySelectTip(JSON.parse(this.slotData).item, e.clientX, e.clientY);
 
     if (JSON.parse(this.slotData).type === "body") {
         SelectInventoryBody(JSON.parse(this.slotData).item, this.number);
