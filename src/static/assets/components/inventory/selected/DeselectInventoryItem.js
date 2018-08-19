@@ -9,16 +9,23 @@ function DestroyInventoryClickEvent() {
 
     cellAmmoDestroySelect();
 
-    cellEquipDestroySelect(1, 5, "inventoryEquip"); // обнуляем ячейки эквипа
-    cellEquipDestroySelect(2, 5, "inventoryEquip");
-    cellEquipDestroySelect(3, 5, "inventoryEquip");
-    cellEquipDestroySelect(5, 2, "inventoryEquip");
+    cellEquipDestroySelect(1, 5, "inventoryEquip", "inventoryEquipping"); // обнуляем ячейки эквипа мса
+    cellEquipDestroySelect(2, 5, "inventoryEquip", "inventoryEquipping");
+    cellEquipDestroySelect(3, 5, "inventoryEquip", "inventoryEquipping");
+    cellEquipDestroySelect(5, 2, "inventoryEquip", "inventoryEquipping");
+
+    let constructorUnit = document.getElementById("ConstructorUnit");
+    if (constructorUnit) {
+        cellEquipDestroySelect(1, 3, "UnitEquip", "UnitEquip"); // обнуляем ячейки эквипа юнита
+        cellEquipDestroySelect(2, 3, "UnitEquip", "UnitEquip");
+        cellEquipDestroySelect(3, 3, "UnitEquip", "UnitEquip");
+    }
 }
 
-function cellEquipDestroySelect(typeSlot, count, idPrefix) {
+function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
     for (let i = 1; i <= count; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
-        if (equipSlot.className === "inventoryEquipping active select") {
+        if (equipSlot.className === classPrefix + " active select") {
             if (JSON.parse(equipSlot.slotData).hasOwnProperty("weapon")) {
 
                 equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
@@ -29,7 +36,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
                     this.style.cursor = "auto";
                 };
 
-                equipSlot.className = "inventoryEquipping active weapon";
+                equipSlot.className = classPrefix + " active weapon";
 
                 if (JSON.parse(equipSlot.slotData).weapon !== null) {
                     equipSlot.onclick = WeaponRemove;
@@ -47,7 +54,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix) {
                     this.style.cursor = "auto";
                 };
 
-                equipSlot.className = "inventoryEquipping active";
+                equipSlot.className = classPrefix + " active";
 
                 if (JSON.parse(equipSlot.slotData) !== null) {
                     equipSlot.onclick = EquipRemove;

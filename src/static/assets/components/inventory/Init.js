@@ -17,6 +17,11 @@ function InitInventoryMenu() {
     includeJS("../assets/components/inventory/tip/RemoveTip.js");
     includeJS("../assets/components/inventory/tip/SelectItem.js");
 
+    includeJS("../assets/components/inventory/set/SetAmmo.js");
+    includeJS("../assets/components/inventory/set/SetBody.js");
+    includeJS("../assets/components/inventory/set/SetEquip.js");
+    includeJS("../assets/components/inventory/set/SetWeapon.js");
+
     includeCSS("../assets/components/inventory/css/constructorMS.css");
     includeCSS("../assets/components/inventory/css/constructorUnit.css");
     includeCSS("../assets/components/inventory/css/equipMSBox.css");

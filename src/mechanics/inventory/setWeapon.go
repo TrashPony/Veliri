@@ -4,9 +4,10 @@ import (
 	"../player"
 	"../db/get"
 	"../db/updateSquad"
+	"../gameObjects/detail"
 )
 
-func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
+func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 	weapon := user.GetSquad().Inventory[inventorySlot]
 
 	if weapon.ItemID == idWeapon {
@@ -14,22 +15,40 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 
 		weaponSlot, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
 		if ok {
-
-			if weaponSlot.Weapon != nil {
-				AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1)
-			} else {
-				weaponSlot.InsertToDB = true
-			}
-
-			if weaponSlot.Ammo != nil {
-				AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity)
-				weaponSlot.Ammo = nil
-			}
-
-			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
-			weaponSlot.Weapon = newWeapon
-
-			updateSquad.Squad(user.GetSquad())
+			SetWeapon(weaponSlot, user, newWeapon, inventorySlot)
 		}
 	}
+}
+
+func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, numberUnitSlot int) {
+	weapon := user.GetSquad().Inventory[inventorySlot]
+
+	if weapon.ItemID == idWeapon {
+		newWeapon := get.Weapon(idWeapon)
+		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
+		if ok && unitSlot.Unit != nil {
+			weaponSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body.Weapons[numEquipSlot]
+			if ok {
+				SetWeapon(weaponSlot, user, newWeapon, inventorySlot)
+			}
+		}
+	}
+}
+
+func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int)  {
+	if weaponSlot.Weapon != nil {
+		AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1)
+	} else {
+		weaponSlot.InsertToDB = true
+	}
+
+	if weaponSlot.Ammo != nil {
+		AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity)
+		weaponSlot.Ammo = nil
+	}
+
+	RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
+	weaponSlot.Weapon = newWeapon
+
+	updateSquad.Squad(user.GetSquad())
 }
