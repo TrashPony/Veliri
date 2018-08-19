@@ -17,7 +17,7 @@ function SetBody(body, slot) {
     } else {
         let unitIcon = document.getElementById("UnitIcon");
         if (unitIcon) {
-            let unitData = JSON.parse(document.getElementById("ConstructorUnit").slotData);
+            let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
 
             unitIcon.className = "UnitIconSelect";
             unitIcon.onclick = function () {
@@ -26,7 +26,7 @@ function SetBody(body, slot) {
                     event: "SetUnitBody",
                     id_body: Number(body.id),
                     inventory_slot: Number(slot),
-                    unit_slot: Number(unitData.number_slot)
+                    unit_slot: Number(unitSlot)
                 }));
 
                 DestroyInventoryClickEvent();

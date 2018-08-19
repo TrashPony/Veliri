@@ -1,9 +1,8 @@
-function AmmoMenu(event) {
+function AmmoMSMenu(event) {
+    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     if (JSON.parse(this.slotData).ammo !== null) {
-
         let slot = JSON.parse(this.slotData).number_slot;
-
         let removeFunction = function () {
 
             inventorySocket.send(JSON.stringify({
@@ -14,12 +13,33 @@ function AmmoMenu(event) {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
         };
-
         RemoveTip(event, removeFunction);
     }
 }
 
-function WeaponMenu(event) {
+function AmmoUnitMenu(event) {
+    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
+    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+
+    if (JSON.parse(this.slotData).ammo !== null) {
+        let slot = JSON.parse(this.slotData).number_slot;
+        let removeFunction = function () {
+
+            inventorySocket.send(JSON.stringify({
+                event: "RemoveUnitAmmo",
+                equip_slot: Number(slot),
+                unit_slot: unitSlot
+            }));
+
+            DestroyInventoryClickEvent();
+            DestroyInventoryTip();
+        };
+        RemoveTip(event, removeFunction);
+    }
+}
+
+function WeaponMSMenu(event) {
 
     if (JSON.parse(this.slotData).weapon !== null) {
 
@@ -40,7 +60,30 @@ function WeaponMenu(event) {
     }
 }
 
-function EquipMenu(event) {
+function WeaponUnitMenu(event) {
+    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+
+    if (JSON.parse(this.slotData).weapon !== null) {
+
+        let slot = JSON.parse(this.slotData).number_slot;
+
+        let removeFunction = function () {
+
+            inventorySocket.send(JSON.stringify({
+                event: "RemoveUnitWeapon",
+                equip_slot: Number(slot),
+                unit_slot: unitSlot
+            }));
+
+            DestroyInventoryClickEvent();
+            DestroyInventoryTip();
+        };
+
+        RemoveTip(event, removeFunction);
+    }
+}
+
+function EquipMSMenu(event) {
 
     if (JSON.parse(this.slotData).equip !== null) {
 

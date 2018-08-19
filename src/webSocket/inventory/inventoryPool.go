@@ -27,7 +27,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	usersInventoryWs[ws] = newPlayer // Регистрируем нового Клиента
 
-	print("WS inventory Сессия: ")                          // просто смотрим новое подключение
+	print("WS inventory Сессия: ") // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 
@@ -98,12 +98,20 @@ func Reader(ws *websocket.Conn) {
 			SetUnitWeapon(ws, msg)
 		}
 
+		if msg.Event == "RemoveUnitWeapon" {
+			RemoveUnitWeapon(ws, msg)
+		}
+
 		if msg.Event == "SetUnitEquip" {
 			SetUnitEquip(ws, msg)
 		}
 
 		if msg.Event == "SetUnitAmmo" {
 			SetUnitAmmo(ws, msg)
+		}
+
+		if msg.Event == "RemoveUnitAmmo" {
+			RemoveUnitAmmo(ws, msg)
 		}
 	}
 }

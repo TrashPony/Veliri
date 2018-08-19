@@ -39,7 +39,11 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.className = classPrefix + " active weapon";
 
                 if (JSON.parse(equipSlot.slotData).weapon !== null) {
-                    equipSlot.onclick = WeaponMenu;
+                    if (classPrefix === "inventoryEquipping") {
+                        equipSlot.onclick = WeaponMSMenu;
+                    } else {
+                        equipSlot.onclick = WeaponUnitMenu;
+                    }
                 } else {
                     equipSlot.onclick = null;
                 }
@@ -57,7 +61,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.className = classPrefix + " active";
 
                 if (JSON.parse(equipSlot.slotData) !== null) {
-                    equipSlot.onclick = EquipMenu;
+                    equipSlot.onclick = EquipMSMenu;
                 } else {
                     equipSlot.onclick = null;
                 }
@@ -78,7 +82,11 @@ function cellAmmoDestroySelect() {
         ammoCells[i].style.cursor = "auto";
 
         if (JSON.parse(ammoCells[i].slotData).ammo != null && JSON.parse(ammoCells[i].slotData).ammo !== undefined) {
-            ammoCells[i].onclick = AmmoMenu;
+            if (ammoCells[i].className === "inventoryAmmoCell inventoryEquipping") {
+                ammoCells[i].onclick = AmmoMSMenu;
+            } else {
+                ammoCells[i].onclick = AmmoUnitMenu;
+            }
         } else {
             ammoCells[i].onclick = null;
         }
@@ -98,8 +106,7 @@ function cellUnitIconDestroySelect() {
     let unitIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     if (unitIcon) {
         unitIcon.className = "";
-
-        if (unitIcon.shipBody != null && unitIcon.shipBody !== undefined) {
+        if (unitIcon.unitBody != null && unitIcon.unitBody !== undefined) {
             unitIcon.onclick = BodyUnitMenu;
         } else {
             unitIcon.onclick = null;

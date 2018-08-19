@@ -8,7 +8,15 @@ import (
 func RemoveMotherShipWeapon(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	inventory.RemoveWeapon(user, msg.EquipSlot)
+	inventory.RemoveMSWeapon(user, msg.EquipSlot)
+
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
+}
+
+func RemoveUnitWeapon(ws *websocket.Conn, msg Message) {
+	user := usersInventoryWs[ws]
+
+	inventory.RemoveUnitWeapon(user, msg.EquipSlot, msg.UnitSlot)
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
 }

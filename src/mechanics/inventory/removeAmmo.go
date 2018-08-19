@@ -5,14 +5,29 @@ import (
 	"../db/updateSquad"
 )
 
-func RemoveAmmo(user *player.Player, numEquipSlot int) {
+func RemoveMSAmmo(user *player.Player, numEquipSlot int) {
 	slotAmmo, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
 
 	if ok && slotAmmo != nil && slotAmmo.Ammo != nil {
-
 		AddItem(user.GetSquad().Inventory, slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity)
 		slotAmmo.Ammo = nil
 
 		updateSquad.Squad(user.GetSquad())
+	}
+}
+
+func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int) {
+	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
+
+	if ok && unitSlot.Unit != nil {
+
+		slotAmmo, ok := unitSlot.Unit.Body.Weapons[numEquipSlot]
+
+		if ok && slotAmmo != nil && slotAmmo.Ammo != nil {
+			AddItem(user.GetSquad().Inventory, slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity)
+			slotAmmo.Ammo = nil
+
+			updateSquad.Squad(user.GetSquad())
+		}
 	}
 }

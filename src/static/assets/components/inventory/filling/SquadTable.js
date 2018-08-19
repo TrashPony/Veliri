@@ -98,6 +98,7 @@ function FillingSquadConstructor(slotData) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.style.backgroundImage = "url(/assets/" + slotData.unit.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(slotData);
+    unitIcon.unitBody = slotData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
 
     UpdateCells(1, "UnitEquip", slotData.unit.body.equippingI, "UnitEquip");
