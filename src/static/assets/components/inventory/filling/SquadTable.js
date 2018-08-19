@@ -3,7 +3,7 @@ function SquadTable(squad) {
 
         let cell = document.getElementById("squad " + slot + 4); // 4 это тип ячейки
 
-        if (squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
+        if (squad.mather_ship != null && squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
 
             let unitSlot = squad.mather_ship.units[slot];
 

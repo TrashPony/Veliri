@@ -38,8 +38,6 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int)  {
 	if weaponSlot.Weapon != nil {
 		AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1)
-	} else {
-		weaponSlot.InsertToDB = true
 	}
 
 	if weaponSlot.Ammo != nil {

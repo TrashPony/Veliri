@@ -46,8 +46,6 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int)  {
 	if equipSlot.Equip != nil {
 		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1)
-	} else {
-		equipSlot.InsertToDB = true
 	}
 
 	RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])

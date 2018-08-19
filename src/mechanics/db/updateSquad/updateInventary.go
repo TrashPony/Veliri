@@ -23,6 +23,7 @@ func InventorySquad(squad *squad.Squad, tx *sql.Tx) {
 			if err != nil {
 				log.Fatal("add new item to inventory" + err.Error())
 			}
+			slot.InsertToDB = false
 		}
 
 		if !slot.InsertToDB && slot.Item != nil {
