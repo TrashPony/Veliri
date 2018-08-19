@@ -77,6 +77,14 @@ function UpdateWeapon(cell, classPrefix) {
         if (JSON.parse(cell.slotData).ammo !== null) {
             cell.ammoCell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).ammo.name + ".png)";
             cell.ammoCell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).ammo_quantity + "</span>";
+            cell.ammoCell.slotData = cell.slotData;
+
+            if (classPrefix === "inventoryEquipping") {
+                cell.ammoCell.onclick = AmmoMSMenu;
+            } else {
+                cell.ammoCell.onclick = AmmoUnitMenu;
+            }
+
         } else {
             cell.ammoCell.style.backgroundImage = null;
             cell.ammoCell.innerHTML = "";
