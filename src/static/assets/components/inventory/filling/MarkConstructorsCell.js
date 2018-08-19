@@ -28,7 +28,7 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
 function UpdateEquips(cell, classPrefix) {
     cell.className = classPrefix + " active";
 
-    cell.onclick = EquipRemove;
+    cell.onclick = EquipMenu;
 
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
@@ -46,7 +46,7 @@ function UpdateWeapon(cell, classPrefix) {
     cell.className = classPrefix + " active weapon";
     cell.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
 
-    cell.onclick = WeaponRemove;
+    cell.onclick = WeaponMenu;
 
     cell.onmouseout = function () {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
@@ -81,7 +81,7 @@ function CreateAmmoCell(cell, classPrefix) {
     ammoCell.slotData = cell.slotData;
     ammoCell.className = "inventoryAmmoCell " + classPrefix;
 
-    ammoCell.onclick = AmmoRemove;
+    ammoCell.onclick = AmmoMenu;
 
     ammoCell.onmouseover = function (event) {
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);

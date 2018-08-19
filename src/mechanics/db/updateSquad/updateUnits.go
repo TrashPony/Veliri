@@ -14,17 +14,30 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 	for slot, slotUnit := range units {
 
 		if units[slot].Unit == nil {
-			_, err := tx.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot = $2",
+			id := 0
+			rows, err := tx.Query("Select id FROM squad_units WHERE id_squad=$1 AND slot = $2", squad.ID, slot)
+			if err != nil {
+				log.Fatal("get id deleting unit " + err.Error())
+			}
+
+			for rows.Next() {
+				err := rows.Scan(&id)
+				if err != nil {
+					log.Fatal("get id deleting unit " + err.Error())
+				}
+			}
+
+			_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit = $2",
+				squad.ID, id)
+			if err != nil {
+				log.Fatal("delete unit equip " + err.Error())
+			}
+
+			_, err = tx.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot = $2",
 				squad.ID, slot)
 			if err != nil {
 				log.Fatal("delete unit " + err.Error())
 			}
-
-			/*_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit = $2",
-				squad.ID, slotUnit.Unit.ID)
-			if err != nil {
-				log.Fatal("delete unit equip " + err.Error())
-			} todo */
 		}
 
 		if units[slot].Unit != nil && slotUnit.Unit.ID == 0 { // если ид 0 значит этого юнита создали в програме и его еще нет в бд

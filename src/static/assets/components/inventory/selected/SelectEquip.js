@@ -1,4 +1,4 @@
-function AmmoRemove(event) {
+function AmmoMenu(event) {
 
     if (JSON.parse(this.slotData).ammo !== null) {
 
@@ -19,7 +19,7 @@ function AmmoRemove(event) {
     }
 }
 
-function WeaponRemove(event) {
+function WeaponMenu(event) {
 
     if (JSON.parse(this.slotData).weapon !== null) {
 
@@ -40,7 +40,7 @@ function WeaponRemove(event) {
     }
 }
 
-function EquipRemove(event) {
+function EquipMenu(event) {
 
     if (JSON.parse(this.slotData).equip !== null) {
 
@@ -63,7 +63,7 @@ function EquipRemove(event) {
     }
 }
 
-function BodyMSRemove(event) {
+function BodyMSMenu(event) {
 
     let removeFunction = function () {
 
@@ -78,7 +78,7 @@ function BodyMSRemove(event) {
     RemoveTip(event, removeFunction);
 }
 
-function BodyUnitRemove(event) {
+function BodyUnitMenu(event) {
 
     let numberUnitSlot = JSON.parse(this.slotData).number_slot;
 

@@ -15,5 +15,5 @@ function UpdateShipIcon(shipBody) {
     let unitIcon = document.getElementById("MSIcon");
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + shipBody.name + ".png)";
-    unitIcon.onclick = BodyMSRemove;
+    unitIcon.onclick = BodyMSMenu;
 }

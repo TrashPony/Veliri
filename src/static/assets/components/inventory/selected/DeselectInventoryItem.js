@@ -39,7 +39,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.className = classPrefix + " active weapon";
 
                 if (JSON.parse(equipSlot.slotData).weapon !== null) {
-                    equipSlot.onclick = WeaponRemove;
+                    equipSlot.onclick = WeaponMenu;
                 } else {
                     equipSlot.onclick = null;
                 }
@@ -57,7 +57,7 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.className = classPrefix + " active";
 
                 if (JSON.parse(equipSlot.slotData) !== null) {
-                    equipSlot.onclick = EquipRemove;
+                    equipSlot.onclick = EquipMenu;
                 } else {
                     equipSlot.onclick = null;
                 }
@@ -78,7 +78,7 @@ function cellAmmoDestroySelect() {
         ammoCells[i].style.cursor = "auto";
 
         if (JSON.parse(ammoCells[i].slotData).ammo != null && JSON.parse(ammoCells[i].slotData).ammo !== undefined) {
-            ammoCells[i].onclick = AmmoRemove;
+            ammoCells[i].onclick = AmmoMenu;
         } else {
             ammoCells[i].onclick = null;
         }
@@ -90,7 +90,7 @@ function cellUnitIconDestroySelect() {
     shipIcon.className = "";
 
     if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
-        shipIcon.onclick = BodyMSRemove;
+        shipIcon.onclick = BodyMSMenu;
     } else {
         shipIcon.onclick = null;
     }
@@ -100,7 +100,7 @@ function cellUnitIconDestroySelect() {
         unitIcon.className = "";
 
         if (unitIcon.shipBody != null && unitIcon.shipBody !== undefined) {
-            unitIcon.onclick = BodyUnitRemove;
+            unitIcon.onclick = BodyUnitMenu;
         } else {
             unitIcon.onclick = null;
         }
