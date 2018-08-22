@@ -41,6 +41,8 @@ function CreateInventoryMenu() {
 function InventoryClose() {
     document.getElementById("mask").remove();
     document.getElementById("inventoryBox").remove();
+    let constructorUnit = document.getElementById("ConstructorUnit");
+    if (constructorUnit) constructorUnit.remove();
     inventorySocket.close();
 }
 

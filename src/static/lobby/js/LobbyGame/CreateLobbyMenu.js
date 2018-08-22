@@ -3,27 +3,27 @@ function CreateLobbyMenu(id, error, hoster) {
 
         DelElements("NotGameLobby");
 
-        var gameInfo = document.createElement('table');
+        let gameInfo = document.createElement('table');
         gameInfo.width = "400px";
         gameInfo.className = "table";
         gameInfo.id = "gameInfo";
 
-        var parentElem = document.getElementById("lobby");
+        let parentElem = document.getElementById("lobby");
         parentElem.appendChild(gameInfo);
 
-        CreateChoiceSquadBlock(parentElem);
+        CreateSquadBlock(parentElem);
 
-        var br = document.createElement("p");
+        let br = document.createElement("p");
         parentElem.appendChild(br);
 
-        var cancel = document.createElement("input");
+        let cancel = document.createElement("input");
         cancel.type = "button";
         cancel.className = "lobbyButton";
         cancel.value = "Отменить";
         cancel.onclick = ReturnLobby;
         parentElem.appendChild(cancel);
 
-        var inventory = document.createElement("input");
+        let inventory = document.createElement("input");
         inventory.type = "button";
         inventory.style.marginLeft = "0px";
         inventory.style.left = "95px";
@@ -32,7 +32,7 @@ function CreateLobbyMenu(id, error, hoster) {
         inventory.onclick = InitInventoryMenu;
         parentElem.appendChild(inventory);
 
-        var ready = document.createElement("input");
+        let ready = document.createElement("input");
         ready.type = "button";
         ready.style.marginLeft = "95px";
         ready.style.left = "95px";
@@ -41,14 +41,14 @@ function CreateLobbyMenu(id, error, hoster) {
 
         ready.id = id + ":ready";
         ready.onclick = function () {
-            var readyID = this.id.split(":");
+            let readyID = this.id.split(":");
             sendReady(readyID[0])
         };
 
         parentElem.appendChild(ready);
 
         if (hoster) {
-            var button = document.createElement("input");
+            let button = document.createElement("input");
             button.type = "button";
             button.style.right = "10px";
             button.style.marginLeft = "120px";
@@ -60,18 +60,18 @@ function CreateLobbyMenu(id, error, hoster) {
 
         createGame = true;
 
-        var tr = document.createElement('tr');
+        let tr = document.createElement('tr');
         gameInfo.appendChild(tr);
 
-        var th1 = document.createElement('th');
+        let th1 = document.createElement('th');
         th1.className = "h";
         th1.appendChild(document.createTextNode("Игроки"));
 
-        var th2 = document.createElement('th');
+        let th2 = document.createElement('th');
         th2.className = "h";
         th2.appendChild(document.createTextNode("Готовность"));
 
-        var th3 = document.createElement('th');
+        let th3 = document.createElement('th');
         th3.className = "h";
         th3.appendChild(document.createTextNode("Респаун"));
 

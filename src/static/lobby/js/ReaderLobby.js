@@ -69,8 +69,7 @@ function ReaderLobby(jsonMessage) {
         DelLobbyUser(jsonMessage);
     }
 
-    if (event === "GetEquipping") {
-        console.log(jsonMessage);
-        EquippingParse(jsonMessage);
+    if (event === "GetSquad") {
+        FillSquadBlock(jsonMessage)
     }
 }

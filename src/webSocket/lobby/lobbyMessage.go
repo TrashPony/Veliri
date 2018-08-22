@@ -4,6 +4,7 @@ import (
 	"../../mechanics/player"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/lobby/notFinishedGames"
+	"../../mechanics/gameObjects/squad"
 	LocalMap "../../mechanics/gameObjects/map"
 	"../../mechanics/lobby"
 )
@@ -26,7 +27,7 @@ type Response struct {
 	IdGame       int    `json:"id_game"`
 	PhaseGame    string `json:"phase_game"`
 	StepGame     string `json:"step_game"`
-	Ready        bool `json:"ready"`
+	Ready        bool   `json:"ready"`
 	NumOfPlayers string `json:"num_of_players"`
 	Players      string `json:"players"`
 	Creator      string `json:"creator"`
@@ -35,13 +36,13 @@ type Response struct {
 	Message      string `json:"message"`
 	GameUser     string `json:"game_user"`
 
-	User      *player.Player            `json:"user"`
-	GameUsers map[string]*player.Player `json:"game_users"`
-
-	Respawn  *coordinate.Coordinate         `json:"respawn"`
-	Respawns map[int]*coordinate.Coordinate `json:"respawns"`
-	Game     *lobby.Game                    `json:"game"`
-	Map      *LocalMap.Map                  `json:"map"`
+	User      *player.Player                 `json:"user"`
+	GameUsers map[string]*player.Player      `json:"game_users"`
+	Squad     *squad.Squad                   `json:"squad"`
+	Respawn   *coordinate.Coordinate         `json:"respawn"`
+	Respawns  map[int]*coordinate.Coordinate `json:"respawns"`
+	Game      *lobby.Game                    `json:"game"`
+	Map       *LocalMap.Map                  `json:"map"`
 
 	DontEndGames []notFinishedGames.NotFinishedGames `json:"dont_end_games"`
 }

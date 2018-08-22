@@ -52,7 +52,7 @@ func Reader(ws *websocket.Conn) {
 			break
 		}
 
-		time.Sleep(time.Millisecond * 200) // todo кстыль, без этого таймаута неспевается создаться пользователь и nullPointer в итоге :(
+		time.Sleep(time.Millisecond * 300) // todo кстыль, без этого таймаута неспевается создаться пользователь и nullPointer в итоге :(
 
 		if msg.Event == "MapView" {
 			var maps = get.MapList()
@@ -125,6 +125,11 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "Logout" {
 			ws.Close()
+		}
+
+		if msg.Event == "GetSquad" {
+			var resp = Response{Event: "GetSquad", Squad: usersLobbyWs[ws].GetSquad()}
+			ws.WriteJSON(resp)
 		}
 	}
 }
