@@ -5,6 +5,21 @@
     width: 99%;
 }
 
+#inventoryCloseButton {
+    width: 60px;
+    height: 22px;
+    border: 1px solid #959595;
+    display: inline-block;
+    position: relative;
+    top: 25px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+#inventoryCloseButton:active {
+    top: 27px;
+}
+
 #ConstructorMS {
     border-radius: 300px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);

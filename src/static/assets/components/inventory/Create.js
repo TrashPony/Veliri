@@ -29,6 +29,19 @@ function CreateInventoryMenu() {
     CreateConstructorMenu();
     CreateInventory();
     CreateSquadMenu();
+
+    let closeButton = document.createElement("div");
+    closeButton.id = "inventoryCloseButton";
+    closeButton.className = "button";
+    closeButton.innerHTML = "Закрыть";
+    closeButton.onclick = InventoryClose;
+    inventory.appendChild(closeButton);
+}
+
+function InventoryClose() {
+    document.getElementById("mask").remove();
+    document.getElementById("inventoryBox").remove();
+    inventorySocket.close();
 }
 
 function CreateMotherShipParamsMenu() {
