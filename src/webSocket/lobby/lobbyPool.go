@@ -143,8 +143,7 @@ func ReposeSender() {
 				err := ws.WriteJSON(resp)
 				if err != nil {
 					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersLobbyWs, ws)
+					DelConn(ws, &usersLobbyWs, err)
 				}
 			}
 		}

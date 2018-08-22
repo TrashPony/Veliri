@@ -1,4 +1,4 @@
-function CreateUserLine(userName, ready) {
+function CreateUserLine(userName, ready, respID) {
     let oldUser = document.getElementById(userName);
 
     if (oldUser) {
@@ -22,7 +22,7 @@ function CreateUserLine(userName, ready) {
     if (ready) {
         tdReady.innerHTML = "Готов.";
         tdReady.className = "Success";
-        tdRespawn.innerHTML = user.Respawn.Name;
+        tdRespawn.innerHTML = respID;
     } else {
         tdReady.innerHTML = "Не готов.";
         tdReady.className = "Failed";

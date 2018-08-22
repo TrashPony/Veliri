@@ -9,11 +9,11 @@ func Ready(msg Message, ws *websocket.Conn) {
 	game, ok := openGames[usersLobbyWs[ws].GetGameID()]
 	user := usersLobbyWs[ws]
 
-	if ok && user.GetReady() {
+	if ok && user.GetSquad().MatherShip.Body != nil {
 
 		respawn, err := game.SetRespawnUser(user, msg.RespawnID)
 
-		if err == nil {
+		if err == nil || user.Ready {
 			game.UserReady(user, respawn)
 
 			for _, gameUser := range game.Users {
@@ -25,7 +25,7 @@ func Ready(msg Message, ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 	} else {
-		if !user.GetReady() {
+		if user.GetSquad().MatherShip.Body == nil {
 			resp := Response{Event: msg.Event, UserName: user.GetLogin(), NameGame: msg.GameName, Error: "не выбран или не настроен отряд"}
 			ws.WriteJSON(resp)
 		} else {

@@ -19,8 +19,11 @@ function CreateNewLobbyGame(jsonMessage) {
 
     for (let name in users) {
         if (users.hasOwnProperty(name)) {
-            CreateUserLine(name, users[name].Ready);
-
+            if (users[name].Respawn) {
+                CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+            } else {
+                CreateUserLine(name, users[name].Ready, "");
+            }
             if (name === user) {
                 CreateSelectRespawn(name);
                 Respawn();
@@ -49,8 +52,11 @@ function InitLobbyGame(jsonMessage) {
 
     for (let name in users) {
         if (users.hasOwnProperty(name)) {
-            CreateUserLine(name, users[name].Ready);
-
+            if (users[name].Respawn) {
+                CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+            } else {
+                CreateUserLine(name, users[name].Ready, "");
+            }
             if (name === user) {
                 CreateSelectRespawn(name);
                 Respawn();

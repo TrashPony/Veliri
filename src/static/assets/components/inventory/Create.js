@@ -44,6 +44,12 @@ function InventoryClose() {
     let constructorUnit = document.getElementById("ConstructorUnit");
     if (constructorUnit) constructorUnit.remove();
     inventorySocket.close();
+
+    lobby.send( //todo костыль т.к. инвентарь по логике может открыть не только в лобби
+        JSON.stringify({
+            event: "GetSquad"
+        })
+    )
 }
 
 function CreateMotherShipParamsMenu() {

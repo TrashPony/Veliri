@@ -10,6 +10,8 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*player.Player, er
 	if (*usersWs)[ws] != nil {
 		user := (*usersWs)[ws]
 
+		user.SetReady(false)
+		user.SetRespawn(nil)
 
 		delete(*usersWs, ws)             // удаляем его из активных подключений
 		DelLobbyUser(user.GetLogin(), usersWs) // удаляем из общего списка игроков

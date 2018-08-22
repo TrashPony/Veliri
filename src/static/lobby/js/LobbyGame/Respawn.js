@@ -10,7 +10,7 @@ function RespawnInit(jsonMessage) {
                 option.className = "RespawnOption";
                 option.value = respawns[id].id;
                 option.text = respawns[id].id;
-                option.id = respawns[id].id + "respawn";
+                option.id = respawns[id].id + ":respawn";
                 select.appendChild(option);
             }
         }

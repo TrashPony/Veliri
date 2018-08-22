@@ -42,7 +42,7 @@ function CreateLobbyMenu(id, error, hoster) {
         ready.id = id + ":ready";
         ready.onclick = function () {
             let readyID = this.id.split(":");
-            sendReady(readyID[0])
+            sendReady(readyID[0]);
         };
 
         parentElem.appendChild(ready);

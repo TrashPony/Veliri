@@ -40,7 +40,7 @@ func (game *Game) JoinToLobbyGame(user *player.Player) error {
 }
 
 func (game *Game) UserReady(user *player.Player, respawn *coordinate.Coordinate) {
-	if user.GetReady() == true {
+	if user.GetReady() {
 		user.SetReady(false)
 		game.DelRespawnUser(user)
 	} else {
@@ -72,13 +72,7 @@ func (game *Game) SetRespawnUser(user *player.Player, respawnID int) (*coordinat
 }
 
 func (game *Game) DelRespawnUser(user *player.Player) {
-	for _, respawn := range game.Respawns {
-		if user.GetRespawn() != nil {
-			if respawn.ID == user.GetRespawn().ID {
-				user.SetRespawn(nil)
-			}
-		}
-	}
+	user.SetRespawn(nil)
 }
 
 func (game *Game) RemoveUser(user *player.Player) {
