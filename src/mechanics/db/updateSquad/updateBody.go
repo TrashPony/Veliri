@@ -38,6 +38,7 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string, tx *sql.Tx) {
 			if err != nil {
 				log.Fatal("insert unit body weapon slot " + err.Error())
 			}
+			slot.InsertToDB = false
 		}
 
 		if !slot.InsertToDB && slot.Weapon != nil {

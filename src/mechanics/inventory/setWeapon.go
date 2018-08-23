@@ -47,6 +47,7 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 
 	RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 	weaponSlot.Weapon = newWeapon
+	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне
 
 	updateSquad.Squad(user.GetSquad())
 }

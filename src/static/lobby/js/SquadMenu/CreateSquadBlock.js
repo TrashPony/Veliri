@@ -30,7 +30,7 @@ function FillSquadBlock(jsonMessage) {
     let squad = JSON.parse(jsonMessage).squad;
     let matherShipTD = document.getElementById("matherShipTD");
 
-    if (squad.mather_ship.body) {
+    if (squad.mather_ship != null && squad.mather_ship.body) {
         matherShipTD.style.backgroundImage = "url(/assets/" + squad.mather_ship.body.name + ".png)";
 
         if (squad.mather_ship.units) {

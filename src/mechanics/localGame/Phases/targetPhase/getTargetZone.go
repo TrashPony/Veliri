@@ -13,8 +13,16 @@ import (
 func GetTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
 
 	openCoordinate := make(map[string]map[string]*coordinate.Coordinate)
-	// todo оружие неправильно береться из тела
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), gameUnit.Body.Weapons[0].Weapon.Range)
+
+	weaponRange := 0
+
+	for _, weaponSlot := range gameUnit.Body.Weapons {
+		if weaponSlot.Weapon != nil {
+			weaponRange = weaponSlot.Weapon.Range
+		}
+	}
+
+	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), weaponRange)
 	zone := filter(gameUnit, RadiusCoordinates, activeGame)
 
 	for _, gameCoordinate := range zone {
