@@ -38,11 +38,7 @@ function preload() {
     game.load.image('tank', 'http://' + window.location.host + '/assets/tank.png');
     game.load.spritesheet('tank360', 'http://' + window.location.host + '/assets/tank360.png', 100, 100, 360);
 
-    // Structures
-    game.load.image('respawn', 'http://' + window.location.host + '/assets/respawn.png');
-
     // Map Objects
-    game.load.image('wall', 'http://' + window.location.host + '/assets/map/wall.png');
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/tree2.png');
     game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/tree3.png');
@@ -65,7 +61,7 @@ function preload() {
     game.load.image('sand_stone_08', 'http://' + window.location.host + '/assets/map/sand_stone_08.png');
 
     // fog
-    game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/fogOfWar.png');
+    game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
 
     // Interface marks
     game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/select/toMove.png');

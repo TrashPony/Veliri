@@ -4,7 +4,7 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
 	"../../../gameObjects/matherShip"
-	"../../"
+	"../../../localGame"
 )
 
 func parseCloseCoordinate(closeCoordinates []*coordinate.Coordinate, closeUnit []*unit.Unit, closeMatherShip []*matherShip.MatherShip, game *localGame.Game) ([]*coordinate.Coordinate) {

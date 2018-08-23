@@ -1,18 +1,18 @@
 function LoadHoldUnits() {
-    var holdTable = document.getElementById("holdUnits");
-    var tr;
+    let holdTable = document.getElementById("holdUnits");
+    let tr;
 
     if (game.unitStorage !== null && game.unitStorage.length !== 0) {
-        var count = 0;
-        for (var unit in game.unitStorage) {
+        let count = 0;
+        for (let unit in game.unitStorage) {
 
             if (count === 0) {
                 tr = document.createElement("tr");
                 tr.className = "UnitRow";
             }
             if (game.unitStorage.hasOwnProperty(unit)) {
-                var td = document.createElement("td");
-                var boxUnit = document.createElement("div");
+                let td = document.createElement("td");
+                let boxUnit = document.createElement("div");
                 boxUnit.className = "boxUnit";
 
                 boxUnit.unit = {};

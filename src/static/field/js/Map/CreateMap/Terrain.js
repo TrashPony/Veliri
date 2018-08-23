@@ -1,7 +1,6 @@
 function CreateTerrain(coordinate) {
-
-    var floorSprite = CreateSpriteTerrain(coordinate);
-    var fogSprite = game.fogOfWar.create(coordinate.x * game.tileSize, coordinate.y * game.tileSize, 'FogOfWar');
+    let floorSprite = CreateSpriteTerrain(coordinate);
+    let fogSprite = game.fogOfWar.create(coordinate.x * game.tileSize, coordinate.y * game.tileSize, 'FogOfWar');
 
     floorSprite.inputEnabled = true; // включаем ивенты на спрайт
     floorSprite.events.onInputOut.add(TipOff, floorSprite);
@@ -14,16 +13,16 @@ function CreateTerrain(coordinate) {
 
 function CreateSpriteTerrain(coordinate) {
     // todo нечитабельный говнокод
-    var leftLevel = coordinateLevel(coordinate.x - 1, coordinate.y, coordinate.level);
-    var leftTopLevel = coordinateLevel(coordinate.x - 1, coordinate.y - 1, coordinate.level);
-    var leftBotLevel = coordinateLevel(coordinate.x - 1, coordinate.y + 1, coordinate.level);
+    let leftLevel = coordinateLevel(coordinate.x - 1, coordinate.y, coordinate.level);
+    let leftTopLevel = coordinateLevel(coordinate.x - 1, coordinate.y - 1, coordinate.level);
+    let leftBotLevel = coordinateLevel(coordinate.x - 1, coordinate.y + 1, coordinate.level);
 
-    var rightLevel = coordinateLevel(coordinate.x + 1, coordinate.y, coordinate.level);
-    var rightTopLevel = coordinateLevel(coordinate.x + 1, coordinate.y - 1, coordinate.level);
-    var rightBotLevel = coordinateLevel(coordinate.x + 1, coordinate.y + 1, coordinate.level);
+    let rightLevel = coordinateLevel(coordinate.x + 1, coordinate.y, coordinate.level);
+    let rightTopLevel = coordinateLevel(coordinate.x + 1, coordinate.y - 1, coordinate.level);
+    let rightBotLevel = coordinateLevel(coordinate.x + 1, coordinate.y + 1, coordinate.level);
 
-    var topLevel = coordinateLevel(coordinate.x, coordinate.y - 1, coordinate.level);
-    var bottomLevel = coordinateLevel(coordinate.x, coordinate.y + 1, coordinate.level);
+    let topLevel = coordinateLevel(coordinate.x, coordinate.y - 1, coordinate.level);
+    let bottomLevel = coordinateLevel(coordinate.x, coordinate.y + 1, coordinate.level);
 
     if (leftLevel === rightLevel
         && leftLevel === topLevel

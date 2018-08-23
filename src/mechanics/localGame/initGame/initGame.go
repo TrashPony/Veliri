@@ -14,12 +14,12 @@ func InitGame(idGAme int) (newGame *localGame.Game) {
 	newGame.SetPlayers(players) // добавляем параметры всех игроков к обьекту игры
 
 	Map := get.Map(newGame)
-	//units, unitStorage := get.AllUnits(idGAme)
+	units, unitStorage := get.AllUnits(newGame)
 	//matherShips := get.MatherShips(idGAme)
 
 	newGame.SetMap(&Map)       // добавляем информацию об карте
-	//newGame.SetUnits(units)    // добавляем имеющихся юнитов
-	//newGame.SetUnitsStorage(unitStorage)
+	newGame.SetUnits(units)    // добавляем имеющихся юнитов
+	newGame.SetUnitsStorage(unitStorage)
 	//newGame.SetMatherShips(matherShips) // добавляем в игру все структуры на карте
 
 	return

@@ -1,7 +1,7 @@
 package watchZone
 
 import (
-	"../../"
+	"../../../localGame"
 	"../../../player"
 )
 

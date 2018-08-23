@@ -84,8 +84,11 @@ func (client *Player) DelHostileUnit(id int) {
 	}
 }
 
-func (client *Player) SetUnitsStorage(units []*unit.Unit) () {
-	client.unitStorage = units
+func (client *Player) AddUnitStorage(gameUnit *unit.Unit) () {
+	if client.unitStorage == nil {
+		client.unitStorage = make([]*unit.Unit, 0)
+	}
+	client.unitStorage = append(client.unitStorage, gameUnit)
 }
 
 func (client *Player) GetUnitsStorage() (gameUnit []*unit.Unit) {

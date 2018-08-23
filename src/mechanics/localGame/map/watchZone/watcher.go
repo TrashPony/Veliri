@@ -3,7 +3,7 @@ package watchZone
 import (
 	"strconv"
 	"errors"
-	"../../"
+	"../../../localGame"
 	"../../../gameObjects/matherShip"
 	"../../../gameObjects/unit"
 	"../../../gameObjects/coordinate"
