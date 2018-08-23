@@ -12,33 +12,25 @@ type Player struct {
 	// структура описывающая клиента ws соеденение
 	login              string
 	id                 int
+
 	watch              map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
 	unitStorage        []*unit.Unit
-	units              map[string]map[string]*unit.Unit // map[X]map[Y]
-	matherShip         *matherShip.MatherShip
-	hostileMatherShips map[string]map[string]*matherShip.MatherShip // map[X]map[Y]
-	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
-	Respawn            *coordinate.Coordinate
-	createZone         map[string]map[string]*coordinate.Coordinate
-	gameID             int
-	equips             []*equip.Equip
+	units	           map[string]map[string]*unit.Unit			    // map[X]map[Y]
+	squad  			   *squad.Squad
 	Ready              bool
 
+	hostileMatherShips map[string]map[string]*matherShip.MatherShip // map[X]map[Y]
+	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
+
+	gameID             int
+	equips             []*equip.Equip
 	LobbyReady		   bool
-	squad  			   *squad.Squad
+	Respawn            *coordinate.Coordinate
 	squads 			   []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
 	client.Respawn = respawn
-}
-
-func (client *Player) SetCreateZone(zone map[string]map[string]*coordinate.Coordinate) () {
-	client.createZone = zone
-}
-
-func (client *Player) GetCreateZone() (map[string]map[string]*coordinate.Coordinate) {
-	return client.createZone
 }
 
 func (client *Player) GetRespawn() (respawn *coordinate.Coordinate) {

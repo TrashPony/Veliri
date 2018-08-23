@@ -51,8 +51,6 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 			if err != nil { // если структура не моя то пропускаем дальнейшее действие
 				continue
 			} else {
-				client.AddMatherShips(gameMatherShip)
-
 				for _, xLine := range watchUnit {
 					for _, hostile := range xLine {
 						if hostile.Owner != client.GetLogin() {

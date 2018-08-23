@@ -6,7 +6,6 @@ import (
 	"../../../players"
 	"../../../../dbConnect"
 	"log"
-	"../../../localGame/map/watchZone"
 )
 
 func Players(game *localGame.Game) []*player.Player {
@@ -42,8 +41,6 @@ func Players(game *localGame.Game) []*player.Player {
 
 		client.SetReady(ready)
 		client.SetGameID(game.Id)
-
-		watchZone.UpdateWatchZone(game, client)
 
 		users = append(users, client)
 	}

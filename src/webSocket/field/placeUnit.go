@@ -23,7 +23,8 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 		storageUnit, find := client.GetUnitStorage(msg.UnitID) // ищем юнита у игрока которые находяться сейчас у него в трюме по id.
 		// msg - это обьект сообщения которое к нам пришло .UnitID - это поле сообщения в нем нам с клиента пришел id юнита которое он хочет ставить. Смотри фаил fieldMessage.go
 		if find { // если мы его нашли то идем дальше, если нет то кидаем ошибку о том что нас хотят наебать
-			_, find = client.GetCreateZone()[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)] // тут мы берем зону где можно строить (механика еще не проработана)
+			_, find = placePhase.GetPlaceCoordinate(client.GetSquad().MatherShip.X, client.GetSquad().MatherShip.Y,
+				client.GetSquad().MatherShip.Body.RangeView, actionGame)[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)] // тут мы берем зону где можно строить
 			// msg - это обьект сообщения которое к нам пришло. .Y и .X - это поле сообщения в нем нам с клиента пришли координаты куда он ставит юнита. Смотри фаил fieldMessage.go
 			if find { // если координата куда хочет ставить юзер юнита есть в зоне строителства то идем дальше иначе кидаем ошибку о том что тут нельзя ставить
 				_, find := actionGame.GetUnit(msg.X, msg.Y) // тут мы пытаемся взять юнита в игре на точке куда он хочет ставить, если юнит есть то туда ставить нельзя

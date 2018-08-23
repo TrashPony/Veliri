@@ -1,9 +1,9 @@
 function CreateUnit(unitStat, inVisible) {
-    var x = unitStat.x;
-    var y = unitStat.y;
+    let x = unitStat.x;
+    let y = unitStat.y;
 
-    var cell = game.map.OneLayerMap[x][y].sprite;
-    var unit;
+    let cell = game.map.OneLayerMap[x][y].sprite;
+    let unit;
 
     if (game.user.name === unitStat.owner) {
         unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'MySelectUnit', 0) ;
@@ -15,14 +15,14 @@ function CreateUnit(unitStat, inVisible) {
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
 
-    var shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
+    let shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
     unit.addChild(shadow);
     game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
 
-    var body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
+    let body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
     unit.addChild(body);
     game.physics.arcade.enable(body);
     body.inputEnabled = true;             // включаем ивенты на спрайт
@@ -35,12 +35,12 @@ function CreateUnit(unitStat, inVisible) {
     body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
     body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки
 
-    var healBar = game.make.sprite(0, 45, 'healBar');
+    let healBar = game.make.sprite(0, 45, 'healBar');
     unit.addChild(healBar);
     healBar.anchor.setTo(0.5);
     healBar.alpha = 0;
 
-    var heal = game.make.sprite(-50, 0, 'heal');
+    let heal = game.make.sprite(-50, 0, 'heal');
     healBar.addChild(heal);
     heal.anchor.setTo(0, 0.5);
     heal.alpha = 1;
@@ -53,7 +53,7 @@ function CreateUnit(unitStat, inVisible) {
 
     //CalculateHealBar(unitStat);
 
-    if (unitStat.effect !== null && unitStat.effect.length > 0) {
+    if (unitStat.effects !== null && unitStat.effects.length > 0) {
         CreateAnimateEffects(unitStat)
     }
 
@@ -77,7 +77,7 @@ function CreateUnit(unitStat, inVisible) {
 }
 
 function CreateAnimateEffects(unit) {
-    for (var i = 0; i < unit.effect.length; i++) {
+    for (let i = 0; i < unit.effect.length; i++) {
         if (unit.effect[i].type === "unit_always_animate"){
             if (unit.effect[i].name === "animate_energy_shield") {
                 energyShieldAnimate(unit);

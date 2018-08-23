@@ -52,28 +52,21 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 
 			slotUnit.Unit.ID = id
 			UpdateBody(units[slot].Unit, squad.ID, "squad_units_equipping", tx)
-			if squad.InGame {
-				//todo обновление эфектов
-				//UnitEffects(squadUnit)
-			}
 		}
 
 		if units[slot].Unit != nil && slotUnit.Unit.ID != 0 {
 			_, err := tx.Exec(
 				"UPDATE squad_units "+
-					"SET id_body = $1, x = $2, y = $3, rotate = $4, action = $5, target = $6, queue_attack = $7, hp = $8 "+
+					"SET id_body = $1, x = $2, y = $3, rotate = $4, action = $5, target = $6, queue_attack = $7, hp = $8, on_map = $11 "+
 					"WHERE id_squad = $9 AND slot = $10",
-				slotUnit.Unit.Body.ID, slotUnit.Unit.X, slotUnit.Unit.Y, slotUnit.Unit.Rotate, slotUnit.Unit.Action, parseTarget(slotUnit.Unit), slotUnit.Unit.QueueAttack, slotUnit.Unit.HP, squad.ID, slot)
+				slotUnit.Unit.Body.ID, slotUnit.Unit.X, slotUnit.Unit.Y, slotUnit.Unit.Rotate, slotUnit.Unit.Action,
+				parseTarget(slotUnit.Unit), slotUnit.Unit.QueueAttack, slotUnit.Unit.HP, squad.ID, slot, slotUnit.Unit.OnMap)
 
 			if err != nil {
 				log.Fatal("update unit squad" + err.Error())
 			}
 
 			UpdateBody(units[slot].Unit, squad.ID, "squad_units_equipping", tx)
-			if squad.InGame {
-				//todo обновление эфектов
-				//UnitEffects(squadUnit)
-			}
 		}
 	}
 }

@@ -32,7 +32,6 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 
 		if ship.Body != nil {
 			UpdateBody(ship, squad.ID, "squad_mother_ship_equipping", tx)
-			//todo обновление эфектов
 		}
 
 	} else {
@@ -51,7 +50,6 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 			if ship.Body != nil {
 				UpdateBody(ship, squad.ID, "squad_mother_ship_equipping", tx)
 			}
-			//todo обновление эфектов
 
 		} else {
 			_, err := tx.Exec("DELETE FROM squad_mother_ship_equipping WHERE id_squad=$1",

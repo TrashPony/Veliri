@@ -44,6 +44,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		/*for _, equip := range user.Squad.Equip {
 		    // todo обновление информации внутри сквада для эквипа, обнулить перезарядку
 		}*/
+
+		//TODO менять координаты мазершипа
 	}
 
 	err = AddCoordinateEffects(game.Map.Id, id)

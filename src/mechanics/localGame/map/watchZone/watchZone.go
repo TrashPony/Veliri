@@ -24,7 +24,6 @@ func UpdateWatchZone(activeGame *localGame.Game, client *player.Player) (*Update
 	oldWatchHostileMatherShips := client.GetHostileMatherShips()
 
 	client.SetUnits(nil)
-	client.SetMatherShip(nil)
 	client.SetHostileUnits(nil)
 	client.SetHostileMatherShips(nil)
 	client.SetWatchCoordinates(nil)

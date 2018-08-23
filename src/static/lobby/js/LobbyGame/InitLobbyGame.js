@@ -1,6 +1,6 @@
 function CreateNewLobbyGame(jsonMessage) {
     let game = JSON.parse(jsonMessage).game;
-
+    console.log(jsonMessage);
     new Promise((resolve) => {
         CreateLobbyMenu(game.Name, JSON.parse(jsonMessage).error, true);
         return resolve();

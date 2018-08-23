@@ -5,8 +5,9 @@ import (
 	"../gameObjects/matherShip"
 )
 
-func (client *Player) AddMatherShips(ship *matherShip.MatherShip) {
-	client.matherShip = ship
+
+func (client *Player) GetMatherShip() (*matherShip.MatherShip) {
+	return client.GetSquad().MatherShip
 }
 
 func (client *Player) AddHostileMatherShip(ship *matherShip.MatherShip) {
@@ -21,14 +22,6 @@ func (client *Player) AddHostileMatherShip(ship *matherShip.MatherShip) {
 		client.hostileMatherShips = make(map[string]map[string]*matherShip.MatherShip)
 		client.AddHostileMatherShip(ship)
 	}
-}
-
-func (client *Player) GetMatherShip() (*matherShip.MatherShip) {
-	return client.matherShip
-}
-
-func (client *Player) SetMatherShip(ship *matherShip.MatherShip) () {
-	client.matherShip = ship
 }
 
 func (client *Player) GetHostileMatherShips() (ship map[string]map[string]*matherShip.MatherShip) {
