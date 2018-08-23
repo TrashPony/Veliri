@@ -1,4 +1,4 @@
-var inventorySocket;
+let inventorySocket;
 
 function ConnectInventory() {
     inventorySocket = new WebSocket("ws://" + window.location.host + "/wsInventory");

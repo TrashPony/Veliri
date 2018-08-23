@@ -1,4 +1,4 @@
-function CreateInventoryMenu() {
+function CreateInventoryMenu(closeFunc) {
     let mask = document.createElement("div");
     mask.id = "mask";
     mask.style.display = "block";
@@ -34,7 +34,7 @@ function CreateInventoryMenu() {
     closeButton.id = "inventoryCloseButton";
     closeButton.className = "button";
     closeButton.innerHTML = "Закрыть";
-    closeButton.onclick = InventoryClose;
+    closeButton.onclick = () => {InventoryClose(); closeFunc()};
     inventory.appendChild(closeButton);
 }
 
@@ -44,12 +44,6 @@ function InventoryClose() {
     let constructorUnit = document.getElementById("ConstructorUnit");
     if (constructorUnit) constructorUnit.remove();
     inventorySocket.close();
-
-    lobby.send( //todo костыль т.к. инвентарь по логике может открыть не только в лобби
-        JSON.stringify({
-            event: "GetSquad"
-        })
-    )
 }
 
 function CreateMotherShipParamsMenu() {

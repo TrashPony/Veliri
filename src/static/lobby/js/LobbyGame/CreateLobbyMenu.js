@@ -29,7 +29,17 @@ function CreateLobbyMenu(id, error, hoster) {
         inventory.style.left = "95px";
         inventory.className = "lobbyButton";
         inventory.value = "Инвентарь";
-        inventory.onclick = InitInventoryMenu;
+        inventory.onclick = () => {
+            InitInventoryMenu(
+                () => {
+                    lobby.send(
+                        JSON.stringify({
+                            event: "GetSquad"
+                        })
+                    )
+                }
+            );
+        };
         parentElem.appendChild(inventory);
 
         let ready = document.createElement("input");
@@ -54,7 +64,7 @@ function CreateLobbyMenu(id, error, hoster) {
             button.style.marginLeft = "120px";
             button.className = "lobbyButton";
             button.value = "Начать";
-            button.onclick =  sendStartNewGame;
+            button.onclick = sendStartNewGame;
             parentElem.appendChild(button);
         }
 

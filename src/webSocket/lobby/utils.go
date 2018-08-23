@@ -5,18 +5,18 @@ import (
 	"../../mechanics/player"
 )
 
-func NewLobbyUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
-	for _, client := range *usersWs {
+func NewLobbyUser(login string, usersWs map[*websocket.Conn]*player.Player) {
+	for ws, client := range usersWs {
 		var resp = Response{Event: "NewLobbyUser", UserName: client.GetLogin() , GameUser: login}
-		lobbyPipe <- resp
+		ws.WriteJSON(resp)
 	}
 }
 
-func SentOnlineUser(login string, usersWs *map[*websocket.Conn]*player.Player) {
-	for _, client := range *usersWs {
+func SentOnlineUser(login string, usersWs map[*websocket.Conn]*player.Player) {
+	for ws, client := range usersWs {
 		if login != client.GetLogin()  {
 			var resp = Response{Event: "NewLobbyUser", UserName: login, GameUser: client.GetLogin() }
-			lobbyPipe <- resp
+			ws.WriteJSON(resp)
 		}
 	}
 }

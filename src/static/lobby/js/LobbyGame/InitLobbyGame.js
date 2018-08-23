@@ -5,31 +5,31 @@ function CreateNewLobbyGame(jsonMessage) {
         CreateLobbyMenu(game.Name, JSON.parse(jsonMessage).error, true);
         return resolve();
     }).then(
-        result => {
+        () => {
             lobby.send(
                 JSON.stringify({
                     event: "GetSquad"
                 })
-            )
+            );
+
+            let user = JSON.parse(jsonMessage).user_name;
+            let users = JSON.parse(jsonMessage).game.Users;
+
+            for (let name in users) {
+                if (users.hasOwnProperty(name)) {
+                    if (users[name].Respawn) {
+                        CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+                    } else {
+                        CreateUserLine(name, users[name].Ready, "");
+                    }
+                    if (name === user) {
+                        CreateSelectRespawn(name);
+                        Respawn();
+                    }
+                }
+            }
         }
     );
-
-    let user = JSON.parse(jsonMessage).user_name;
-    let users = JSON.parse(jsonMessage).game.Users;
-
-    for (let name in users) {
-        if (users.hasOwnProperty(name)) {
-            if (users[name].Respawn) {
-                CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
-            } else {
-                CreateUserLine(name, users[name].Ready, "");
-            }
-            if (name === user) {
-                CreateSelectRespawn(name);
-                Respawn();
-            }
-        }
-    }
 }
 
 function InitLobbyGame(jsonMessage) {
@@ -38,29 +38,29 @@ function InitLobbyGame(jsonMessage) {
         CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, false);
         return resolve();
     }).then(
-        result => {
+        () => {
             lobby.send(
                 JSON.stringify({
                     event: "GetSquad"
                 })
-            )
+            );
+
+            let user = JSON.parse(jsonMessage).user_name;
+            let users = JSON.parse(jsonMessage).game_users;
+
+            for (let name in users) {
+                if (users.hasOwnProperty(name)) {
+                    if (users[name].Respawn) {
+                        CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+                    } else {
+                        CreateUserLine(name, users[name].Ready, "");
+                    }
+                    if (name === user) {
+                        CreateSelectRespawn(name);
+                        Respawn();
+                    }
+                }
+            }
         }
     );
-
-    let user = JSON.parse(jsonMessage).user_name;
-    let users = JSON.parse(jsonMessage).game_users;
-
-    for (let name in users) {
-        if (users.hasOwnProperty(name)) {
-            if (users[name].Respawn) {
-                CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
-            } else {
-                CreateUserLine(name, users[name].Ready, "");
-            }
-            if (name === user) {
-                CreateSelectRespawn(name);
-                Respawn();
-            }
-        }
-    }
 }

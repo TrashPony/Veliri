@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"sync"
 	"../../mechanics/db/get"
-	"time"
 )
 
 var mutex = &sync.Mutex{}
@@ -20,7 +19,6 @@ var lobbyPipe = make(chan Response)
 var openGames = make(map[int]*lobby.Game)
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	mutex.Lock()
 
 	utils.CheckDoubleLogin(login, &usersLobbyWs)
 
@@ -36,23 +34,21 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
-	go NewLobbyUser(login, &usersLobbyWs)
-	go SentOnlineUser(login, &usersLobbyWs)
+	NewLobbyUser(login, usersLobbyWs)
+	SentOnlineUser(login, usersLobbyWs)
 
-	mutex.Unlock()
 	Reader(ws)
 }
 
 func Reader(ws *websocket.Conn) {
 	for {
 		var msg Message
+
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersLobbyWs, err)
 			break
 		}
-
-		time.Sleep(time.Millisecond * 300) // todo кстыль, без этого таймаута неспевается создаться пользователь и nullPointer в итоге :(
 
 		if msg.Event == "MapView" {
 			var maps = get.MapList()
@@ -115,8 +111,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "DontEndGamesList" {
-
 			user := usersLobbyWs[ws]
+			usersLobbyWs[ws].GetLogin()
 			games := get.GetNotFinishedGames(user.GetID())
 
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), DontEndGames: games}
@@ -142,7 +138,7 @@ func ReposeSender() {
 			if client.GetLogin() == resp.UserName {
 				err := ws.WriteJSON(resp)
 				if err != nil {
-					log.Printf("error: %v", err)
+					log.Fatal(err)
 					DelConn(ws, &usersLobbyWs, err)
 				}
 			}
