@@ -38,7 +38,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 				ws.WriteJSON(resp)
 			}
 		} else {
-			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("Players < 2").Error()}
+			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), Error: errors.New("players < 2").Error()}
 			ws.WriteJSON(resp)
 		}
 	} else {
@@ -49,7 +49,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 func CheckReady(game *lobby.Game) bool  {
 	for _, user := range game.Users {
-		if !user.GetReady() {
+		if !user.GetLobbyReady() {
 			return false
 			break
 		}

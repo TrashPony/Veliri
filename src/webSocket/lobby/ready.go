@@ -13,11 +13,11 @@ func Ready(msg Message, ws *websocket.Conn) {
 
 		respawn, err := game.SetRespawnUser(user, msg.RespawnID)
 
-		if err == nil || user.Ready {
+		if err == nil || user.GetLobbyReady() {
 			game.UserReady(user, respawn)
 
 			for _, gameUser := range game.Users {
-				resp := Response{Event: msg.Event, UserName: gameUser.GetLogin(), GameUser: user.GetLogin(), Ready: user.GetReady(), Respawn: user.GetRespawn()}
+				resp := Response{Event: msg.Event, UserName: gameUser.GetLogin(), GameUser: user.GetLogin(), Ready: user.GetLobbyReady(), Respawn: user.GetRespawn()}
 				lobbyPipe <- resp
 			}
 		} else {

@@ -24,7 +24,7 @@ func JoinToLobbyGame(msg Message, ws *websocket.Conn) {
 
 			//все кто в лоби получают сообщение о том что подключился новый игрок
 			for _, user := range game.Users {
-				resp = Response{Event: "NewUser", UserName: user.GetLogin(), GameUser: usersLobbyWs[ws].GetLogin(), Ready: usersLobbyWs[ws].GetReady()}
+				resp = Response{Event: "NewUser", UserName: user.GetLogin(), GameUser: usersLobbyWs[ws].GetLogin(), Ready: usersLobbyWs[ws].GetLobbyReady()}
 				lobbyPipe <- resp
 			}
 

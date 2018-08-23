@@ -24,6 +24,7 @@ type Player struct {
 	equips             []*equip.Equip
 	Ready              bool
 
+	LobbyReady		   bool
 	squad  			   *squad.Squad
 	squads 			   []*squad.Squad
 }
@@ -74,6 +75,14 @@ func (client *Player) SetReady(ready bool) {
 
 func (client *Player) GetReady() (bool) {
 	return client.Ready
+}
+
+func (client *Player) SetLobbyReady(ready bool) {
+	client.LobbyReady = ready
+}
+
+func (client *Player) GetLobbyReady() (bool) {
+	return client.LobbyReady
 }
 
 func (client *Player) GetSquad() (*squad.Squad) {

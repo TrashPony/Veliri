@@ -18,9 +18,9 @@ function CreateNewLobbyGame(jsonMessage) {
             for (let name in users) {
                 if (users.hasOwnProperty(name)) {
                     if (users[name].Respawn) {
-                        CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+                        CreateUserLine(name, users[name].LobbyReady, users[name].Respawn.id);
                     } else {
-                        CreateUserLine(name, users[name].Ready, "");
+                        CreateUserLine(name, users[name].LobbyReady, "");
                     }
                     if (name === user) {
                         CreateSelectRespawn(name);
@@ -33,7 +33,6 @@ function CreateNewLobbyGame(jsonMessage) {
 }
 
 function InitLobbyGame(jsonMessage) {
-
     new Promise((resolve) => {
         CreateLobbyMenu(JSON.parse(jsonMessage).name_game, JSON.parse(jsonMessage).error, false);
         return resolve();
@@ -51,9 +50,9 @@ function InitLobbyGame(jsonMessage) {
             for (let name in users) {
                 if (users.hasOwnProperty(name)) {
                     if (users[name].Respawn) {
-                        CreateUserLine(name, users[name].Ready, users[name].Respawn.id);
+                        CreateUserLine(name, users[name].LobbyReady, users[name].Respawn.id);
                     } else {
-                        CreateUserLine(name, users[name].Ready, "");
+                        CreateUserLine(name, users[name].LobbyReady, "");
                     }
                     if (name === user) {
                         CreateSelectRespawn(name);

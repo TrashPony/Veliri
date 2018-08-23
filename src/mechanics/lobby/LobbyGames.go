@@ -40,11 +40,11 @@ func (game *Game) JoinToLobbyGame(user *player.Player) error {
 }
 
 func (game *Game) UserReady(user *player.Player, respawn *coordinate.Coordinate) {
-	if user.GetReady() {
-		user.SetReady(false)
+	if user.GetLobbyReady() {
+		user.SetLobbyReady(false)
 		game.DelRespawnUser(user)
 	} else {
-		user.SetReady(true)
+		user.SetLobbyReady(true)
 		user.SetRespawn(respawn)
 	}
 }

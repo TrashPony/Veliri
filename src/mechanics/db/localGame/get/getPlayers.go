@@ -3,13 +3,12 @@ package get
 import (
 	"../../../localGame"
 	"../../../player"
-	"../../../gameObjects/unit"
-	"../../../localGame/map/watchZone"
+	"../../../players"
 	"../../../../dbConnect"
 	"log"
 )
 
-func Player(game *localGame.Game) []*player.Player {
+func Players(game *localGame.Game) []*player.Player {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select users.name, agu.ready, users.id "+
 		"FROM action_game_user as agu, users "+
@@ -23,44 +22,30 @@ func Player(game *localGame.Game) []*player.Player {
 	users := make([]*player.Player, 0)
 
 	for rows.Next() {
-		var client player.Player
+		var client *player.Player
 
 		var login string
 		var ready bool
 		var id int
-		
+
 		err := rows.Scan(&login, &ready, &id)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		client.SetLogin(login)
+		client, ok := players.Users.Get(id)
+
+		if !ok {
+			client = players.Users.Add(id, login)
+		}
+
 		client.SetReady(ready)
-		client.SetID(id)
-
-		equip := Equip(client, game)
-		units := NotGameUnits(client, game)
-
 		client.SetGameID(game.Id)
-		client.SetEquip(equip)
-		client.SetUnitsStorage(units)
 
-		watchZone.UpdateWatchZone(game, &client)
+		// todo watchZone.UpdateWatchZone(game, &client)
 
-		users = append(users, &client)
+		users = append(users, client)
 	}
 
 	return users
-}
-
-func NotGameUnits(player player.Player, game *localGame.Game) []*unit.Unit {
-	units := make([]*unit.Unit, 0)
-
-	for _, gameUnit := range game.GetUnitsStorage() {
-		if gameUnit.Owner == player.GetLogin() {
-			units = append(units, gameUnit)
-		}
-	}
-
-	return units
 }
