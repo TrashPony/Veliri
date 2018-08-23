@@ -1,16 +1,16 @@
 function CalculateHealBar(unit) {
-    var hp = unit.hp;
-    var maxHP = unit.max_hp;
-    var percentageHeal = hp * 100 / maxHP;
-    var healSprite = unit.sprite.heal;
+    let hp = unit.hp;
+    let maxHP = unit.body.max_hp;
+    let percentageHeal = hp * 100 / maxHP;
+    let healSprite = unit.sprite.heal;
 
     healSprite.scale.x = percentageHeal / 100;
 
-    var ColorOffset = 255 - (255 * percentageHeal / 100);
+    let ColorOffset = 255 - (255 * percentageHeal / 100);
 
-    var green;
-    var blue = "00";
-    var red;
+    let green;
+    let blue = "00";
+    let red;
 
     if (percentageHeal < 50 && percentageHeal >= 25) {
         green = Math.round((255 + ColorOffset) / 2 + 30);

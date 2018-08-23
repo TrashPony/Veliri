@@ -3,6 +3,7 @@ package insert
 import (
 	"../../../dbConnect"
 	"../../lobby"
+	"../updateSquad"
 	"log"
 )
 
@@ -37,15 +38,24 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 			return id, false
 		}
 
-		/*for _, gameUnit := range user.Squad.Units {
-			// todo обновление информации внутри сквада для юнитов, положение, на карте, снять все прошлые эффекты и тд
-		}*/
+		for _, slotUnit := range user.GetSquad().MatherShip.Units {
+			if slotUnit.Unit != nil {
+				slotUnit.Unit.X = 0
+				slotUnit.Unit.Y = 0
+				slotUnit.Unit.OnMap = false
+				slotUnit.Unit.Target = nil
+				slotUnit.Unit.QueueAttack = 0
+			}
+		}
 
 		/*for _, equip := range user.Squad.Equip {
 		    // todo обновление информации внутри сквада для эквипа, обнулить перезарядку
 		}*/
 
-		//TODO менять координаты мазершипа
+		user.GetSquad().MatherShip.X = user.GetRespawn().X
+		user.GetSquad().MatherShip.Y = user.GetRespawn().Y
+
+		updateSquad.Squad(user.GetSquad())
 	}
 
 	err = AddCoordinateEffects(game.Map.Id, id)

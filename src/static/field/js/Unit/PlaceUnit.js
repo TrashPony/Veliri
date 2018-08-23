@@ -3,11 +3,11 @@ function PlaceUnit(jsonMessage) {
 
         CreateUnit(JSON.parse(jsonMessage).unit);
 
-        var boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);
+        let boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);
         boxUnit.remove();
 
     } else {
-        var log = document.getElementById('fieldLog');
+        let log = document.getElementById('fieldLog');
 
         if (JSON.parse(jsonMessage).error_type === "busy") {
             log.innerHTML = "Место занято"

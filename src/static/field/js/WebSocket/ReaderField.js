@@ -1,5 +1,5 @@
 function ReadResponse(jsonMessage) {
-    var event = JSON.parse(jsonMessage).event;
+    let event = JSON.parse(jsonMessage).event;
 
     if (event === "LoadGame") {
         LoadGame(jsonMessage)
@@ -18,7 +18,8 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "UpdateWatchMap") {
-        var watch = JSON.parse(jsonMessage).update;
+        console.log(jsonMessage);
+        let watch = JSON.parse(jsonMessage).update;
         UpdateWatchZone(watch);
     }
 

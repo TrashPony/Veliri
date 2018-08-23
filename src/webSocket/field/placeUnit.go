@@ -61,7 +61,8 @@ func UpdatePlaceHostilePlayers(actionGame *localGame.Game, x, y int) {
 		if find {
 			updater := watchZone.UpdateWatchZone(actionGame, player) // тут мы берем новузю зону видимости т.к.
 			// клиент должен увидить юнита которого поставили на карту
-			// todo тут есть ошибка т.к. если враг видит юнита то он получит координаты которые видит юнит хотя он не его, но это не твоя задача
+			// TODO тут есть ошибка т.к. если враг видит юнита то он получит координаты которые видит юнит хотя он не его, но это не твоя задача
+			// TODO хозяин не видит новую зону если юнита поставить в туман войны
 			watchPipe <- Watch{Event: "UpdateWatchMap", UserName: player.GetLogin(), GameID: actionGame.Id, Update: updater}
 		}
 	}

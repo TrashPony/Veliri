@@ -5,7 +5,7 @@ function FillingInventory(jsonData) {
         let squad = JSON.parse(jsonData).squad;
         InventoryTable(squad.inventory);
         SquadTable(squad);
-        if (squad.mather_ship.body != null) {
+        if (squad.mather_ship != null && squad.mather_ship.body != null) {
             ConstructorTable(squad.mather_ship.body);
         } else {
             NoActiveCell();

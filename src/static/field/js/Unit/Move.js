@@ -1,15 +1,15 @@
 function CreatePathToUnit(jsonMessage) {
-    var error = JSON.parse(jsonMessage).error;
+    let error = JSON.parse(jsonMessage).error;
 
     if (error === null || error === "") {
 
-        var path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
-        var unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);         // берем юнита
+        let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
+        let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);         // берем юнита
         unit.action = JSON.parse(jsonMessage).unit.action;
 
         if (unit !== null && path) {
 
-            var lastCell = path[path.length - 1].path_node;
+            let lastCell = path[path.length - 1].path_node;
             MarkLastPathCell(unit, lastCell);        // помечаем ячейку куда идет моб
             unit.path = path;                        // добавляем юниту путь
             CheckPath(unit);
@@ -26,12 +26,12 @@ function CreatePathToUnit(jsonMessage) {
 
 function MoveHostileUnit(jsonMessage) {
 
-    var patchNodes = JSON.parse(jsonMessage).path;
-    var unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
+    let patchNodes = JSON.parse(jsonMessage).path;
+    let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
 
     while (patchNodes.length > 0) {
 
-        var firstNode = patchNodes.shift();
+        let firstNode = patchNodes.shift();
 
         // ищем первую ячейку где мы видим юнита
         if (firstNode.path_node.type !== "hide") {
@@ -61,7 +61,7 @@ function MoveHostileUnit(jsonMessage) {
 }
 
 function CheckPath(unit) {
-    var pathNode = unit.path.shift();   // берем первый пункт назначения
+    let pathNode = unit.path.shift();   // берем первый пункт назначения
 
     if (pathNode.path_node.type === "hide") {
         StopUnit(unit);
@@ -107,7 +107,7 @@ function HideUnit(unit) {
     game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.healBar).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.heal).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.shield).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
+    // todo если нет спрайта ошибка game.add.tween(unit.sprite.shield).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
     //TODO тут надо сделать `for in unit.sprite` но мне чето лень :D
 }
 
@@ -117,16 +117,15 @@ function UncoverUnit(unit) {
     game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.healBar).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-
+    // todo если нет спрайта ошибкаgame.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
 }
 
 function MoveUnit() {
-    for (var x in game.units) {
+    for (let x in game.units) {
         if (game.units.hasOwnProperty(x)) {
-            for (var y in game.units[x]) {
+            for (let y in game.units[x]) {
                 if (game.units[x].hasOwnProperty(y) && game.units[x][y].sprite) {
-                    var unit = game.units[x][y];
+                    let unit = game.units[x][y];
 
                     if (unit.movePoint == null) { // если у юнита больше нет цели перемещения выставляем ему скорость движения и поворота 0
                         StopUnit(unit);
@@ -138,7 +137,7 @@ function MoveUnit() {
                             StopUnit(unit);
                         }
 
-                        var dist = game.physics.arcade.distanceToXY(unit.sprite, unit.movePoint.x * 100 + 50 , unit.movePoint.y * 100 + 50);
+                        let dist = game.physics.arcade.distanceToXY(unit.sprite, unit.movePoint.x * 100 + 50 , unit.movePoint.y * 100 + 50);
 
                         if (Math.round(dist) >= -5 && Math.round(dist) <= 5) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 

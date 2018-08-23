@@ -51,7 +51,7 @@ function CreateUnit(unitStat, inVisible) {
     unitStat.sprite.healBar = healBar;
     unitStat.sprite.heal = heal;
 
-    //CalculateHealBar(unitStat);
+    CalculateHealBar(unitStat);
 
     if (unitStat.effects !== null && unitStat.effects.length > 0) {
         CreateAnimateEffects(unitStat)

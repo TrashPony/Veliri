@@ -16,8 +16,8 @@ func PlaceUnit(gameUnit *unit.Unit, x,y int, actionGame *localGame.Game, client 
 	actionGame.DelUnitStorage(gameUnit.ID) // юдаяем его из трюма в обьекте игры
 	actionGame.SetUnit(gameUnit)           // добавляем его как активного юнита в обьект игры
 
-	client.DelUnitStorage(gameUnit.ID)     // юдаяем его из трюма в обьекте игры
-	client.AddUnit(gameUnit)			   // добавляем его как активного юнита в обьект игры
+	client.DelUnitStorage(gameUnit.ID)     // юдаяем его из трюма игрока
+	client.AddUnit(gameUnit)
 
 	updateSquad.Squad(client.GetSquad())   // обновляем его параметры в БД игры
 							   // todo если при добавление не случилось ишибки то отправляем nil что значит нет ошибок, юнит обновлен и стоит на карте

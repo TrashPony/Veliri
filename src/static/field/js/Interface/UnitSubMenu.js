@@ -1,7 +1,7 @@
 function CreateUnitSubMenu(unit) {
     if (game.Phase === "move" || game.Phase === "targeting") {
 
-        var unitSubMenu = document.getElementById("UnitSubMenu");
+        let unitSubMenu = document.getElementById("UnitSubMenu");
 
         if (unitSubMenu) {
             unitSubMenu.remove();
@@ -33,7 +33,7 @@ function CreateUnitSubMenu(unit) {
 
         document.body.appendChild(unitSubMenu);
 
-        if (unit.effect !== null && unit.effect.length > 0) {
+        if (unit.effects !== null && unit.effects.length > 0) {
 
             if (!unit.action && game.user.name === unit.owner) {
                 unitSubMenu.style.height = "65px";
@@ -46,21 +46,21 @@ function CreateUnitSubMenu(unit) {
 }
 
 function MoveSubMenu(unitSubMenu, unit) {
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     table.style.width = "95px";
 
-    var tr = document.createElement("tr");
-    var th = document.createElement("th");
+    let tr = document.createElement("tr");
+    let th = document.createElement("th");
     th.style.alignContent = "center";
     th.innerHTML = "Действия:";
     th.className = "h";
 
     tr.appendChild(th);
 
-    var trSkip = document.createElement("tr");
-    var tdSkip = document.createElement("td");
+    let trSkip = document.createElement("tr");
+    let tdSkip = document.createElement("td");
     tdSkip.style.alignContent = "center";
-    var skipButton = document.createElement("input");
+    let skipButton = document.createElement("input");
     skipButton.type = "button";
     skipButton.value = "Пропустить ход";
     skipButton.className = "button subMenu";
@@ -83,21 +83,21 @@ function MoveSubMenu(unitSubMenu, unit) {
 }
 
 function TargetingSubMenu(unitSubMenu, unit) {
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     table.style.width = "95px";
 
-    var tr = document.createElement("tr");
-    var th = document.createElement("th");
+    let tr = document.createElement("tr");
+    let th = document.createElement("th");
     th.style.alignContent = "center";
     th.innerHTML = "Действия:";
     th.className = "h";
 
     tr.appendChild(th);
 
-    var trDefend = document.createElement("tr");
-    var tdDefend = document.createElement("td");
+    let trDefend = document.createElement("tr");
+    let tdDefend = document.createElement("td");
     tdDefend.style.alignContent = "center";
-    var defendButton = document.createElement("input");
+    let defendButton = document.createElement("input");
     defendButton.type = "button";
     defendButton.value = "Защита";
     defendButton.className = "button subMenu";
@@ -120,11 +120,11 @@ function TargetingSubMenu(unitSubMenu, unit) {
 }
 
 function EffectsPanel(unitSubMenu, unit) {
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     table.className = "panel Effect";
 
-    var tr = document.createElement("tr");
-    var th = document.createElement("th");
+    let tr = document.createElement("tr");
+    let th = document.createElement("th");
     th.style.alignContent = "center";
     th.colSpan = 4;
     th.innerHTML = "Эфеекты:";
@@ -134,26 +134,26 @@ function EffectsPanel(unitSubMenu, unit) {
     table.appendChild(tr);
     unitSubMenu.appendChild(table);
 
-    var panel = document.createElement("table");
+    let panel = document.createElement("table");
     panel.className = "panel Effect";
 
-    var rowInventory;
-    var count = 0;
+    let rowInventory;
+    let count = 0;
 
-    for (var j = 0; j < unit.effect.length; j++) {
-        if (unit.effect[j].type !== "unit_always_animate") {
+    for (let j = 0; j < unit.effects.length; j++) {
+        if (unit.effects[j].type !== "unit_always_animate") {
             if (count % 4 === 0) {
                 rowInventory = document.createElement("tr");
                 rowInventory.className = "row Effect";
             }
 
-            var cellInventory = document.createElement("td");
+            let cellInventory = document.createElement("td");
             cellInventory.className = "cell Effect";
-            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.effect[j].name + "_" + unit.effect[j].level + ".png)";
-            cellInventory.effect = unit.effect[j];
+            cellInventory.style.backgroundImage = "url(/assets/effects/" + unit.effects[j].name + "_" + unit.effects[j].level + ".png)";
+            cellInventory.effects = unit.effects[j];
 
             cellInventory.onmouseover = function () {
-                TipEffectOn(this.effect);
+                TipEffectOn(this.effects);
             };
 
             cellInventory.onmouseout = function () {
@@ -164,7 +164,7 @@ function EffectsPanel(unitSubMenu, unit) {
 
             if (count % 4 === 0) {
                 panel.appendChild(rowInventory);
-                var height = unitSubMenu.offsetHeight + 22;
+                let height = unitSubMenu.offsetHeight + 22;
                 unitSubMenu.style.height = height + "px";
             }
 
