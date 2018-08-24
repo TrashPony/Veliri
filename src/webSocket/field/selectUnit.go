@@ -46,7 +46,7 @@ type MoveCoordinate struct {
 }
 
 func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
-	if !client.GetReady() {
+	if !client.GetReady() && !gameUnit.Action {
 		ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Unit: gameUnit, Targets: targetPhase.GetTargetCoordinate(gameUnit, actionGame)})
 	} else {
 		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})

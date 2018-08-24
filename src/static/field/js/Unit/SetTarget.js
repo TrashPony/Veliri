@@ -1,14 +1,16 @@
 function UpdateUnit(jsonMessage) {
 
-    var unitStat = JSON.parse(jsonMessage).unit;
-    var unit = GetGameUnitID(unitStat.id);
+    let unitStat = JSON.parse(jsonMessage).unit;
+    let unit = GetGameUnitID(unitStat.id);
 
     RemoveSelect();
     DeleteMarkTarget(unitStat);
 
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;
-    unit.effect = unitStat.effect;
-
+    unit.effects = unitStat.effects;
+    unit.action = unitStat.action;
+    
+    console.log(GetGameUnitID(unitStat.id))
     // todo
 }

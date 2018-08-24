@@ -77,8 +77,8 @@ function CreateUnit(unitStat, inVisible) {
 }
 
 function CreateAnimateEffects(unit) {
-    for (let i = 0; i < unit.effect.length; i++) {
-        if (unit.effect[i].type === "unit_always_animate"){
+    for (let i in unit.effect) {
+        if (unit.effect.hasOwnProperty(i) && unit.effect[i].type === "unit_always_animate"){
             if (unit.effect[i].name === "animate_energy_shield") {
                 energyShieldAnimate(unit);
             }

@@ -1,24 +1,24 @@
 function SelectTargetCoordinateCreate(jsonMessage) {
-    var targetCoordinates = JSON.parse(jsonMessage).targets;
+    let targetCoordinates = JSON.parse(jsonMessage).targets;
 
-    var event = JSON.parse(jsonMessage).event;
+    let event = JSON.parse(jsonMessage).event;
 
-    var unitX = JSON.parse(jsonMessage).unit.x;
-    var unitY = JSON.parse(jsonMessage).unit.y;
-    var unitID = JSON.parse(jsonMessage).unit.id;
+    let unitX = JSON.parse(jsonMessage).unit.x;
+    let unitY = JSON.parse(jsonMessage).unit.y;
+    let unitID = JSON.parse(jsonMessage).unit.id;
 
-    for (var x in targetCoordinates) {
+    for (let x in targetCoordinates) {
         if (targetCoordinates.hasOwnProperty(x)) {
-            for (var y in targetCoordinates[x]) {
+            for (let y in targetCoordinates[x]) {
                 if (targetCoordinates[x].hasOwnProperty(y)) {
-                    var cellSprite = game.map.OneLayerMap[targetCoordinates[x][y].x][targetCoordinates[x][y].y].sprite;
+                    let cellSprite = game.map.OneLayerMap[targetCoordinates[x][y].x][targetCoordinates[x][y].y].sprite;
 
                     if (event === "GetFirstTargets") {
                         MarkZone(cellSprite, targetCoordinates, x, y, 'Target', false, game.SelectTargetLineLayer, null);
                     }
 
                     if (event === "GetTargets") {
-                        var selectSprite = MarkZone(cellSprite, targetCoordinates, x, y, 'Target', true, game.SelectTargetLineLayer, "target");
+                        let selectSprite = MarkZone(cellSprite, targetCoordinates, x, y, 'Target', true, game.SelectTargetLineLayer, "target");
 
                         selectSprite.TargetX = targetCoordinates[x][y].x;
                         selectSprite.TargetY = targetCoordinates[x][y].y;

@@ -1,7 +1,6 @@
 let game;
 
 function LoadGame(jsonMessage) {
-    console.log(jsonMessage);
     let gameMap = JSON.parse(jsonMessage).map;
 
     let tileSize = 100; // ширина и высота спрайта в сетке грида

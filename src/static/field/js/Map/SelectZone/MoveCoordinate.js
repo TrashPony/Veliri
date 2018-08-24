@@ -1,20 +1,20 @@
 function SelectMoveCoordinateCreate(jsonMessage) {
 
-    var moveCoordinate = JSON.parse(jsonMessage).move;
+    let moveCoordinate = JSON.parse(jsonMessage).move;
 
-    var unitX = JSON.parse(jsonMessage).unit.x;
-    var unitY = JSON.parse(jsonMessage).unit.y;
-    var unitID = JSON.parse(jsonMessage).unit.id;
+    let unitX = JSON.parse(jsonMessage).unit.x;
+    let unitY = JSON.parse(jsonMessage).unit.y;
+    let unitID = JSON.parse(jsonMessage).unit.id;
 
     game.SelectLineLayer.visible = true;
 
-    for (var x in moveCoordinate) {
+    for (let x in moveCoordinate) {
         if (moveCoordinate.hasOwnProperty(x)) {
-            for (var y in moveCoordinate[x]) {
+            for (let y in moveCoordinate[x]) {
                 if (moveCoordinate[x].hasOwnProperty(y)) {
 
-                    var cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
-                    var selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move', true, game.SelectLineLayer, "move");
+                    let cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
+                    let selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move', true, game.SelectLineLayer, "move");
 
                     selectSprite.MoveX = moveCoordinate[x][y].x;
                     selectSprite.MoveY = moveCoordinate[x][y].y;
