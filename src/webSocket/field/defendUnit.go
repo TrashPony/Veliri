@@ -11,7 +11,7 @@ func DefendTarget(msg Message, ws *websocket.Conn) {
 	activeGame, findGame :=  Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame && !client.GetReady() {
-		targetPhase.DefendTarget(gameUnit)
+		targetPhase.DefendTarget(gameUnit, client)
 		ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
 		updateUnitHostileUser(client, activeGame, gameUnit)
 	}

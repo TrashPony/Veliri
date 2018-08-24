@@ -15,6 +15,6 @@ func ToUnit(gameUnit *unit.Unit, useEquip *equip.Equip, client *player.Player) {
 		AddNewUnitEffect(gameUnit, effect)
 	}
 
-	update.Unit(gameUnit)
 	update.Player(client)
+	update.UnitEffects(gameUnit)
 }

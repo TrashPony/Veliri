@@ -66,7 +66,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
 	if findUnit && findClient && findGame {
 		if !gameUnit.Action {
-			movePhase.SkipMove(gameUnit, activeGame)
+			movePhase.SkipMove(gameUnit, activeGame, client)
 			ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
 		} else {
 			resp := ErrorMessage{Event: "MoveUnit", Error: "unit already"}

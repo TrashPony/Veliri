@@ -19,7 +19,7 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 		_, find := targetCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
 
 		if find {
-			targetPhase.SetTarget(gameUnit, activeGame, msg.ToX, msg.ToY)
+			targetPhase.SetTarget(gameUnit, activeGame, msg.ToX, msg.ToY, client)
 			ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
 			updateUnitHostileUser(client, activeGame, gameUnit)
 		} else {

@@ -4,6 +4,7 @@ import (
 	"../../player"
 	"../../db/localGame/update"
 	"../../localGame"
+	"../../db/updateSquad"
 )
 
 func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
@@ -22,6 +23,8 @@ func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
 	if allReady {
 		changeGamePhase(actionGame)
 	}
+
+	updateSquad.Squad(client.GetSquad())
 
 	return allReady
 }
@@ -52,7 +55,6 @@ func changeGamePhase(actionGame *localGame.Game) {
 		for _, unit := range xLine {
 			unit.Action = false
 			unit.Target = nil
-			update.Unit(unit)
 		}
 	}
 }

@@ -5,10 +5,10 @@ import (
 	"../../../gameObjects/unit"
 	"../../../player"
 	"../../map/watchZone"
-	"../../../db/localGame/update"
 	"errors"
 	"math"
 	"../../../localGame"
+	"../../../db/updateSquad"
 )
 
 type TruePatchNode struct {
@@ -58,7 +58,7 @@ func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game
 			queue := Queue(game)
 			gameUnit.QueueAttack = queue
 
-			update.Unit(gameUnit)
+			updateSquad.Squad(client.GetSquad())
 
 			return
 		}

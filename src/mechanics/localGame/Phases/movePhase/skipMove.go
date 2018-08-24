@@ -3,14 +3,15 @@ package movePhase
 import (
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"../../../db/localGame/update"
+	"../../../player"
+	"../../../db/updateSquad"
 )
 
-func SkipMove(gameUnit *unit.Unit, game *localGame.Game)  {
+func SkipMove(gameUnit *unit.Unit, game *localGame.Game, client *player.Player)  {
 	gameUnit.Action = true
 
 	queue := Queue(game)
 	gameUnit.QueueAttack = queue
 
-	update.Unit(gameUnit)
+	updateSquad.Squad(client.GetSquad())
 }
