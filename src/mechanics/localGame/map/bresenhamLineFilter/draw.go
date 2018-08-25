@@ -92,9 +92,15 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 				return gameCoordinate
 			}
 		}
-
-		if find && !gameCoordinate.Attack && filter == "Target" {
-			return gameCoordinate
+		// todo стоит обьеденить в 1 метод
+		if find && filter == "Target" &&
+			(!gameCoordinate.Attack || checkLevelViewCoordinate(gameCoordinate, pastCoordinate) ||
+				checkLevelViewCoordinate(gameCoordinate, startCoordinate)) {
+			if checkLevelViewCoordinate(gameCoordinate, pastCoordinate) || checkLevelViewCoordinate(gameCoordinate, startCoordinate) {
+				return nil
+			} else {
+				return gameCoordinate
+			}
 		} else {
 			if x == endCoordinate.X && y == endCoordinate.Y && filter == "Target" {
 				return gameCoordinate
