@@ -23,6 +23,7 @@ var (
 )
 
 // TODO переделать POINT в координаты, обьеденить методы с методами из файла "moveUnit"
+// todo и использовать координаты из существующей карты
 type Points map[string]coordinate.Coordinate
 
 func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate) []*coordinate.Coordinate {
