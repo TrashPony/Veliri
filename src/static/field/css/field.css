@@ -40,21 +40,6 @@ input {
     z-index: 900;
 }
 
-#UnitSubMenu {
-    pointer-events:none;
-    position: absolute;
-    display: none;
-    font-family: sans-serif;
-    font-size: 9pt;
-    z-index: 901;
-    animation: menuAnimation 3000ms linear infinite;
-    border: 1px solid #25a0e1;
-    border-radius: 10px;
-    background-size: 100% 2px, 4px 4px, cover;
-    transition-property: background-image;
-    text-shadow: #28a5e4 0 0 4px;
-}
-
 #inventory {
     pointer-events:none;
     font-family: sans-serif;
@@ -67,10 +52,6 @@ input {
     margin-right: auto;
     margin-top: 5px;
     margin-bottom: 5px;
-}
-
-.panel.Effect {
-    margin: auto;
 }
 
 .cell {

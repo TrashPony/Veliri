@@ -21,9 +21,9 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 			SelectMove(client, gameUnit, activeGame, ws)
 		}
 
-		if activeGame.Phase == "targeting" {
+		/*if activeGame.Phase == "targeting" {
 			SelectTarget(client, gameUnit, activeGame, ws)
-		}
+		}*/
 	}
 }
 

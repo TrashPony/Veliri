@@ -24,7 +24,8 @@ type MatherShip struct {
 	Target      *coordinate.Coordinate `json:"target"`
 	QueueAttack int                    `json:"queue_attack"`
 
-	HP int `json:"hp"`
+	HP    int `json:"hp"`
+	POWER int `json:"power"`
 
 	Effects []*effect.Effect `json:"effects"`
 }

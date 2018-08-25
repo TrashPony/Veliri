@@ -27,7 +27,8 @@ CREATE TABLE squad_units (
   queue_attack        INT,
 
   /* Характиристики */
-  hp                  INT
+  hp                  INT,
+  power               INT
 );
 
 CREATE TABLE squad_mother_ship (
@@ -48,7 +49,8 @@ CREATE TABLE squad_mother_ship (
   queue_attack  INT,
 
   /* Характиристики */
-  hp            INT
+  hp            INT,
+  power         INT
 );
 
 CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */

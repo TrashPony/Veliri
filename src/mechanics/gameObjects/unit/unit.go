@@ -11,7 +11,7 @@ type Unit struct {
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
 
-	Body   *detail.Body   `json:"body"`
+	Body *detail.Body `json:"body"`
 
 	X      int  `json:"x"`
 	Y      int  `json:"y"`
@@ -22,20 +22,21 @@ type Unit struct {
 	Target      *coordinate.Coordinate `json:"target"`
 	QueueAttack int                    `json:"queue_attack"`
 
-	HP int `json:"hp"`
+	HP    int `json:"hp"`
+	POWER int `json:"power"`
 
 	Effects []*effect.Effect `json:"effects"`
 }
 
-func (unit *Unit) GetID() int  {
+func (unit *Unit) GetID() int {
 	return unit.ID
 }
 
-func (unit *Unit) GetBody() *detail.Body  {
+func (unit *Unit) GetBody() *detail.Body {
 	return unit.Body
 }
 
-func (unit *Unit) GetTarget() *coordinate.Coordinate  {
+func (unit *Unit) GetTarget() *coordinate.Coordinate {
 	return unit.Target
 }
 

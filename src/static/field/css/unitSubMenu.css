@@ -1,0 +1,105 @@
+#UnitSubMenu {
+    pointer-events: none;
+    position: absolute;
+    display: none;
+    font-family: sans-serif;
+    font-size: 9pt;
+    z-index: 901;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    height: 150px;
+    width: 150px;
+    border-radius: 100px;
+}
+
+#hostileSubMenu {
+    position: absolute;
+    display: none;
+    font-family: sans-serif;
+    font-size: 9pt;
+    z-index: 901;
+    height: 150px;
+    width: 150px;
+}
+
+#EquipPanel {
+    width: 150px;
+    height: 150px;
+}
+
+#effectPanel {
+    position: relative;
+    top: 3px;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    border-radius: 20px;
+}
+
+#targetButtonsTable {
+    position: absolute;
+    bottom: 5px;
+}
+
+.panel.Effect {
+    margin: auto;
+}
+
+.button.unitSubMenu {
+    color: #00fffd;
+    box-shadow: 0 0 2px 3px rgb(0, 230, 255);
+}
+
+#powerPanel {
+    height: 28px;
+    width: 45px;
+    border: 1px solid rgb(0, 255, 23);
+    position: absolute;
+    top: 43px;
+    left: 50px;
+    border-radius: 5px;
+    font-size: 8pt;
+}
+
+#powerPanel > span {
+    color: rgb(0, 255, 23);
+    text-shadow: 1px 1px 2px black, 0 0 1em red;
+}
+
+#ammoBox {
+    top: 40px;
+    left: 25px;
+    height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    position: absolute;
+    box-shadow: 0 0 5px 3px rgb(255, 193, 69);
+    z-index: 2;
+    background-color: #2c2c2c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.blink {
+    -webkit-animation: blink 1s 5;
+    -moz-animation:    blink 1s 5;
+    -o-animation:      blink 1s 5;
+    animation:         blink 1s 5;
+}
+
+@-webkit-keyframes blink {
+    0%   { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes blink {
+    0%   { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}

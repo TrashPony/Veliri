@@ -1,10 +1,10 @@
-var stylePositionParams = {};
+let stylePositionParams = {};
 
 function moveMouse(e) {
 
-    var w = 150; // Ширина слоя
-    var x = e.pageX; // Координата X курсора
-    var y = e.pageY; // Координата Y курсора
+    let w = 150; // Ширина слоя
+    let x = e.pageX; // Координата X курсора
+    let y = e.pageY; // Координата Y курсора
 
     if ((x + w + 20) < document.body.clientWidth) { // если слой выходит за пределый жкрана делает сноску в другой стороне
         // Показывать слой справа от курсора

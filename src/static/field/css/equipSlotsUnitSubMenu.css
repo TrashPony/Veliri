@@ -1,0 +1,156 @@
+#weaponSlotSubMenu {
+    position: absolute;
+    top: 57px;
+    left: 10px;
+    height: 30px;
+    width: 30px;
+    border-radius: 30px;
+    background-color: #2c2c2c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+
+.weaponSlotSubMenu.Active {
+    box-shadow: 0 0 5px 3px rgb(255, 0, 0);
+}
+
+.weaponSlotSubMenu.noActive {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
+}
+
+.weaponSlotSubMenu.noActive:before {
+    text-align: center;
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}
+
+.equipSlotIII {
+    height: 25px;
+    width: 25px;
+    border-radius: 30px;
+    background-color: #2c2c2c;
+    position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.equipSlotIII.Active {
+    box-shadow: 0 0 5px 3px rgb(168, 193, 18);
+}
+
+.equipSlotIII.noActive {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
+}
+
+.equipSlotIII.noActive:before {
+    text-align: center;
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}
+
+#equipSlotIII1 {
+    top: 10px;
+    left: 45px;
+}
+
+#equipSlotIII2 {
+    top: 10px;
+    left: 75px;
+}
+
+.equipSlotII {
+    height: 25px;
+    width: 25px;
+    border-radius: 30px;
+    background-color: #2c2c2c;
+    position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.equipSlotII.Active {
+    box-shadow: 0 0 5px 3px rgb(0, 190, 255);
+}
+
+.equipSlotII.noActive {
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#4c4c4c),color-stop(20%,#1AA9DA), color-stop(0%,#1AA9DA), color-stop(100%,#4c4c4c));
+}
+
+.equipSlotII.noActive:before {
+    text-align: center;
+    content: "N/A";
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    text-shadow:
+            -0   -1px 0   #382626,
+            0   -1px 0   #382626,
+            -0    1px 0   #382626,
+            0    1px 0   #382626,
+            -1px -0   0   #382626,
+            1px -0   0   #382626,
+            -1px  0   0   #382626,
+            1px  0   0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626,
+            -1px -1px 0   #382626,
+            1px -1px 0   #382626,
+            -1px  1px 0   #382626,
+            1px  1px 0   #382626;
+}
+
+#equipSlotII1 {
+    top: 35px;
+    left: 110px;
+}
+
+#equipSlotII2 {
+    top: 65px;
+    left: 120px;
+}
+
+#equipSlotII3 {
+    top: 95px;
+    left: 110px;
+}
