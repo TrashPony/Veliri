@@ -2,7 +2,7 @@ package bresenhamLineFilter
 
 import (
 	"../../../gameObjects/coordinate"
-	"../../"
+	"../../../localGame"
 )
 
 func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localGame.Game, filter string) (*coordinate.Coordinate) {
@@ -50,14 +50,15 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 	y = yStart
 	err = el / 2
 
-	gameCoordinate, find := game.GetMap().GetCoordinate(x, y)
+	startCoordinate, find := game.GetMap().GetCoordinate(x, y)
+	pastCoordinate := startCoordinate
 
-	if find && !gameCoordinate.View && filter == "View"{
-		return gameCoordinate
+	if find && !startCoordinate.View && filter == "View" {
+		return startCoordinate
 	}
 
-	if find && !gameCoordinate.Attack && filter == "Target"{
-		return gameCoordinate
+	if find && !startCoordinate.Attack && filter == "Target" {
+		return startCoordinate
 	}
 
 	//все последующие точки возможно надо сдвигать, поэтому первую ставим вне цикла
@@ -74,9 +75,18 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 		}
 
 		gameCoordinate, find := game.GetMap().GetCoordinate(x, y)
-
-		if find && !gameCoordinate.View && filter == "View" {
-			return gameCoordinate
+		if find && filter == "View" &&
+			(!gameCoordinate.View || checkLevelViewCoordinate(gameCoordinate, pastCoordinate) ||
+				checkLevelViewCoordinate(gameCoordinate, startCoordinate)) {
+			// 1) смотрим что черезхх координату можно смотреть
+			// 2) сравниваем высоту новой координаты с предыдущей, если высота больше или рано 2м, то через нее нельзя смотреть
+			// 3) сравниваем высоты новой и стартовой координаты, опять же если новая выше чем на 2 то она непроглядная
+			if checkLevelViewCoordinate(gameCoordinate, pastCoordinate) || checkLevelViewCoordinate(gameCoordinate, startCoordinate) {
+				// если координата не проглядная из за высот то мы не можем видеть координату которая выше
+				return nil
+			} else {
+				return gameCoordinate
+			}
 		} else {
 			if x == endCoordinate.X && y == endCoordinate.Y && filter == "View" {
 				return gameCoordinate
@@ -90,6 +100,8 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 				return gameCoordinate
 			}
 		}
+
+		pastCoordinate = gameCoordinate
 	}
 
 	return nil
@@ -105,5 +117,18 @@ func sign(x int) int { //возвращает 0, если аргумент (x) �
 		} else {
 			return 1
 		}
+	}
+}
+
+func checkLevelViewCoordinate(one, past *coordinate.Coordinate) bool {
+	if one.Level > past.Level {
+		diffLevel := one.Level - past.Level
+		if diffLevel < 2 {
+			return false
+		} else {
+			return true
+		}
+	} else {
+		return false
 	}
 }
