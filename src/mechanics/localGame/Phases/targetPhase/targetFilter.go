@@ -1,38 +1,12 @@
 package targetPhase
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/unit"
-	"../../Phases"
 	"../../map/watchZone"
 	"../../../localGame"
 	"../../map/bresenhamLineFilter"
 	"strconv"
+	"../../../gameObjects/coordinate"
 )
-
-func GetTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
-
-	openCoordinate := make(map[string]map[string]*coordinate.Coordinate)
-
-	weaponRange := 0
-
-	for _, weaponSlot := range gameUnit.Body.Weapons {
-		if weaponSlot.Weapon != nil {
-			weaponRange = weaponSlot.Weapon.Range
-		}
-	}
-
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), weaponRange)
-	zone := filter(gameUnit, RadiusCoordinates, activeGame)
-
-	for _, gameCoordinate := range zone {
-		if !(gameCoordinate.X == gameUnit.X && gameCoordinate.Y == gameUnit.Y) {
-			Phases.AddCoordinate(openCoordinate, gameCoordinate)
-		}
-	}
-
-	return openCoordinate
-}
 
 func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {
 

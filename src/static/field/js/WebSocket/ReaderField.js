@@ -17,8 +17,12 @@ function ReadResponse(jsonMessage) {
         SelectTargetCoordinateCreate(jsonMessage);
     }
 
+    if (event === "GetEquipMapTargets" || event === "GetEquipMyUnitTargets" ||
+        event === "GetEquipMyUnitTargets" || event === "GetEquipMySelfTarget") {
+        console.log(jsonMessage)
+    }
+
     if (event === "UpdateWatchMap") {
-        console.log(jsonMessage);
         let watch = JSON.parse(jsonMessage).update;
         UpdateWatchZone(watch);
     }

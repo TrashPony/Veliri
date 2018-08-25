@@ -88,6 +88,4 @@ function FillingEquipPanel(equipPanel, unit) {
     power.id = "powerPanel";
     power.innerHTML = "<span>POWER " + unit.power + "/" + unit.body.max_power + "</span>";
     equipPanel.appendChild(power);
-
-    console.log(unit);
 }
