@@ -8,11 +8,22 @@
     background-color: #2c2c2c;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    pointer-events: auto;
 }
 
 
 .weaponSlotSubMenu.Active {
     box-shadow: 0 0 5px 3px rgb(255, 0, 0);
+}
+
+.weaponSlotSubMenu.Active:hover {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+}
+
+.weaponSlotSubMenu.Active:active {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 255, 255);
+    box-shadow: 0 0 5px 3px rgb(255, 255, 255);
 }
 
 .weaponSlotSubMenu.noActive {
@@ -52,10 +63,21 @@
     position: absolute;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    pointer-events: auto;
 }
 
 .equipSlotIII.Active {
     box-shadow: 0 0 5px 3px rgb(168, 193, 18);
+}
+
+.equipSlotIII.Active:hover {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+}
+
+.equipSlotIII.Active:active {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 255, 255);
+    box-shadow: 0 0 5px 3px rgb(255, 255, 255);
 }
 
 .equipSlotIII.noActive {
@@ -89,14 +111,18 @@
 
 #equipSlotIII1 {
     top: 10px;
-    left: 45px;
+    left: 35px;
 }
 
 #equipSlotIII2 {
-    top: 10px;
-    left: 75px;
+    top: 5px;
+    left: 65px;
 }
 
+#equipSlotIII3 {
+    top: 10px;
+    left: 95px;
+}
 .equipSlotII {
     height: 25px;
     width: 25px;
@@ -105,10 +131,21 @@
     position: absolute;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    pointer-events: auto;
 }
 
 .equipSlotII.Active {
     box-shadow: 0 0 5px 3px rgb(0, 190, 255);
+}
+
+.equipSlotII.Active:hover {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+}
+
+.equipSlotII.Active:active {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 255, 255);
+    box-shadow: 0 0 5px 3px rgb(255, 255, 255);
 }
 
 .equipSlotII.noActive {

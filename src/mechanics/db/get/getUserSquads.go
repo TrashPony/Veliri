@@ -56,7 +56,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"Select id, id_body, hp, x, y, rotate, action, target, queue_attack "+
+		"Select id, id_body, hp, x, y, rotate, action, target, queue_attack, use_equip, power "+
 			"FROM squad_mother_ship "+
 			"WHERE id_squad=$1", squadID)
 	if err != nil {
@@ -71,7 +71,8 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 	for rows.Next() {
 		var idBody sql.NullInt64
 
-		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &target, &ship.QueueAttack)
+		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.X, &ship.Y, &ship.Rotate, &ship.Action, &target,
+			&ship.QueueAttack, &ship.UseEquip, &ship.Power)
 
 		if err != nil {
 			log.Fatal("scan get ship squad " + err.Error())
@@ -93,7 +94,7 @@ func SquadMatherShip(squadID int) (ship *matherShip.MatherShip) {
 func SquadUnits(squadID int, slot int) (*unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT id, id_body, hp, x, y, rotate, action, target, queue_attack, on_map "+
+		"SELECT id, id_body, hp, x, y, rotate, action, target, queue_attack, on_map, use_equip, power  "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2", squadID, slot)
 	if err != nil {
@@ -107,7 +108,7 @@ func SquadUnits(squadID int, slot int) (*unit.Unit) {
 
 	for rows.Next() {
 		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.X, &squadUnit.Y, &squadUnit.Rotate,
-			&squadUnit.Action, &target, &squadUnit.QueueAttack, &squadUnit.OnMap)
+			&squadUnit.Action, &target, &squadUnit.QueueAttack, &squadUnit.OnMap, &squadUnit.UseEquip, &squadUnit.Power)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())
 		}

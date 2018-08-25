@@ -23,6 +23,7 @@ CREATE TABLE squad_units (
 
   /* Игровая статистика */
   action              BOOLEAN,
+  use_equip           BOOLEAN,
   target              VARCHAR(64),
   queue_attack        INT,
 
@@ -45,6 +46,7 @@ CREATE TABLE squad_mother_ship (
 
   /* Игровая статистика */
   action        BOOLEAN,
+  use_equip     BOOLEAN,
   target        VARCHAR(64),
   queue_attack  INT,
 

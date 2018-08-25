@@ -19,11 +19,12 @@ type Unit struct {
 	OnMap  bool `json:"on_map"`
 
 	Action      bool                   `json:"action"`
+	UseEquip    bool                   `json:"use_equip"`
 	Target      *coordinate.Coordinate `json:"target"`
 	QueueAttack int                    `json:"queue_attack"`
 
 	HP    int `json:"hp"`
-	POWER int `json:"power"`
+	Power int `json:"power"`
 
 	Effects []*effect.Effect `json:"effects"`
 }
