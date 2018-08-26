@@ -66,6 +66,10 @@
     pointer-events: auto;
 }
 
+.equipSlotIII.notAllow {
+    box-shadow: 0 0 5px 3px  #696969;
+}
+
 .equipSlotIII.Active {
     box-shadow: 0 0 5px 3px rgb(168, 193, 18);
 }
@@ -132,6 +136,10 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
     pointer-events: auto;
+}
+
+.equipSlotII.notAllow {
+    box-shadow: 0 0 5px 3px  #696969;
 }
 
 .equipSlotII.Active {

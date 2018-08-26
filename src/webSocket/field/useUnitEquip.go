@@ -29,7 +29,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 	}
 
 	if findClient && findUnit && findGame && ok && equipSlot.Equip != nil {
-		if !client.GetReady() && !gameUnit.UseEquip {
+		if !client.GetReady() && !gameUnit.UseEquip && !equipSlot.Used {
 
 			var targetUnits []*unit.Unit
 
@@ -57,6 +57,8 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 					updateUseUnitEquipHostileUser(client, activeGame, targetUnit, equipSlot.Equip)
 				}
 			}
+		} else {
+			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
 		}
 	}
 }

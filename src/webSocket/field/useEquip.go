@@ -44,36 +44,6 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 	}*/
 }
 
-func EquipApplicable(playerEquip *equip.Equip, client *player.Player, x, y int) *unit.Unit {
-	if playerEquip.Applicable == "my_units" {
-		gameUnit, findUnit := client.GetUnit(x, y)
-		if findUnit {
-			return gameUnit
-		}
-	}
-
-	if playerEquip.Applicable == "hostile_units" {
-		gameUnit, findUnit := client.GetHostileUnit(x, y)
-		if findUnit {
-			return gameUnit
-		}
-	}
-
-	if playerEquip.Applicable == "all" {
-		gameUnit, findUnit := client.GetUnit(x, y)
-		if findUnit {
-			return gameUnit
-		} else {
-			gameUnit, findUnit := client.GetHostileUnit(x, y)
-			if findUnit {
-				return gameUnit
-			}
-		}
-	}
-
-	return nil
-}
-
 func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *localGame.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {

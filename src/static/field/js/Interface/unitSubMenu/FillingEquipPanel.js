@@ -39,19 +39,24 @@ function FillingEquipPanel(equipPanel, unit) {
         equipping.id = "equipSlotIII" + i;
 
         if (unit.body.equippingIII.hasOwnProperty(i) && unit.body.equippingIII[i].equip) {
-            equipping.className = "equipSlotIII Active";
-            equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
 
-            equipping.onclick = function () {
-                RemoveSelect();
-                field.send(JSON.stringify({
-                    event: "SelectEquip",
-                    x: Number(unit.x),
-                    y: Number(unit.y),
-                    equip_type: 3,
-                    number_slot: unit.body.equippingIII[i].number_slot
-                }));
-            };
+            equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
+            console.log(unit.body.equippingIII[i]);
+            if (!unit.body.equippingIII[i].used) {
+                equipping.className = "equipSlotIII Active";
+                equipping.onclick = function () {
+                    RemoveSelect();
+                    field.send(JSON.stringify({
+                        event: "SelectEquip",
+                        x: Number(unit.x),
+                        y: Number(unit.y),
+                        equip_type: 3,
+                        number_slot: unit.body.equippingIII[i].number_slot
+                    }));
+                };
+            } else {
+                equipping.className = "equipSlotIII notAllow";
+            }
         } else {
             equipping.className = "equipSlotIII noActive";
         }
@@ -64,23 +69,27 @@ function FillingEquipPanel(equipPanel, unit) {
         equipping.id = "equipSlotII" + i;
 
         if (unit.body.equippingII.hasOwnProperty(i) && unit.body.equippingII[i].equip) {
-            equipping.className = "equipSlotII Active";
+
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingII[i].equip.name + ".png)";
 
-            equipping.onclick = function () {
-                RemoveSelect();
-                field.send(JSON.stringify({
-                    event: "SelectEquip",
-                    x: Number(unit.x),
-                    y: Number(unit.y),
-                    equip_type: 2,
-                    number_slot: unit.body.equippingII[i].number_slot
-                }));
-            };
+            if (!unit.body.equippingII[i].used) {
+                equipping.className = "equipSlotII Active";
+                equipping.onclick = function () {
+                    RemoveSelect();
+                    field.send(JSON.stringify({
+                        event: "SelectEquip",
+                        x: Number(unit.x),
+                        y: Number(unit.y),
+                        equip_type: 2,
+                        number_slot: unit.body.equippingII[i].number_slot
+                    }));
+                };
+            } else {
+                equipping.className = "equipSlotII notAllow";
+            }
         } else {
-            equipping.className = "equipSlotIII noActive";
+            equipping.className = "equipSlotII noActive";
         }
-
         equipPanel.appendChild(equipping);
     }
 
