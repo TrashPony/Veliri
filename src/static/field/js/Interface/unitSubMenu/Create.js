@@ -23,11 +23,11 @@ function CreateUnitSubMenu(unit) {
             FillingEquipPanel(equipPanel, unit);
 
             if (game.Phase === "move") {
-                MoveButton(equipPanel, unit);
+                ActionButton(equipPanel, unit, "SkipMoveUnit", "Пропустить ход");
             }
 
             if (game.Phase === "targeting") {
-                TargetingButton(equipPanel, unit);
+                ActionButton(equipPanel, unit, "Defend", "Защита");
             }
         } else {
             unitSubMenu.style.animation = "none";
