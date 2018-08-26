@@ -2,7 +2,8 @@ function MarkUnitSelect(unit, frame, onclickFunc) {
     unit.sprite.frame = frame;
 
     if (onclickFunc) {
-        console.log("dfdf");
+        unit.sprite.events.onInputDown.add(onclickFunc);
+        unit.sprite.input.priorityID = 1;
     }
 }
 

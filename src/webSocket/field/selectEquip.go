@@ -29,21 +29,21 @@ func SelectEquip(msg Message, ws *websocket.Conn) {
 		if !client.GetReady() && !gameUnit.UseEquip {
 			if equipSlot.Equip.Applicable == "map" {
 				ws.WriteJSON(EquipMapCoordinate{Event: "GetEquipMapTargets", Unit: gameUnit,
-					Equip: equipSlot, Targets: targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame)})
+					EquipSlot: equipSlot, Targets: targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame)})
 			}
 
 			if equipSlot.Equip.Applicable == "my_units" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMyUnitTargets", Unit: gameUnit,
+				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMyUnitTargets", Unit: gameUnit, EquipSlot: equipSlot,
 					Units: targetPhase.GetEquipMyUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client)})
 			}
 
 			if equipSlot.Equip.Applicable == "hostile_units" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipHostileUnitTargets", Unit: gameUnit,
+				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipHostileUnitTargets", Unit: gameUnit, EquipSlot: equipSlot,
 					Units: targetPhase.GetEquipHostileUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client)})
 			}
 
 			if equipSlot.Equip.Applicable == "myself" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMySelfTarget", Unit: gameUnit})
+				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMySelfTarget", Unit: gameUnit, EquipSlot: equipSlot})
 			}
 
 			if equipSlot.Equip.Applicable == "all" {
@@ -56,14 +56,15 @@ func SelectEquip(msg Message, ws *websocket.Conn) {
 }
 
 type EquipTargetCoordinate struct {
-	Event string       `json:"event"`
-	Unit  *unit.Unit   `json:"unit"`
-	Units []*unit.Unit `json:"units"`
+	Event     string                `json:"event"`
+	Unit      *unit.Unit            `json:"unit"`
+	Units     []*unit.Unit          `json:"units"`
+	EquipSlot *detail.BodyEquipSlot `json:"equip_slot"`
 }
 
 type EquipMapCoordinate struct {
-	Event   string                                       `json:"event"`
-	Unit    *unit.Unit                                   `json:"unit"`
-	Equip   *detail.BodyEquipSlot                        `json:"equip_slot"`
-	Targets map[string]map[string]*coordinate.Coordinate `json:"targets"`
+	Event     string                                       `json:"event"`
+	Unit      *unit.Unit                                   `json:"unit"`
+	EquipSlot *detail.BodyEquipSlot                        `json:"equip_slot"`
+	Targets   map[string]map[string]*coordinate.Coordinate `json:"targets"`
 }

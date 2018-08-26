@@ -43,11 +43,29 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
     }
 }
 
-function SelectTargetUnit(jsonMessage, func) {
+function SelectTargetUnit(jsonMessage) {
     let units = JSON.parse(jsonMessage).units;
+    let unit = JSON.parse(jsonMessage).unit;
+    let equipSlot = JSON.parse(jsonMessage).equip_slot;
 
     for (let i in units){
         if (units.hasOwnProperty(i)) {
+
+            let func =()=> {
+                field.send(JSON.stringify({
+                    event: "UseUnitEquip",
+                    unit_id: Number(unit.id),
+                    x: Number(unit.x),
+                    y: Number(unit.y),
+                    to_x: Number(GetGameUnitID(units[i].id).x),
+                    to_y: Number(GetGameUnitID(units[i].id).y),
+                    equip_id: Number(equipSlot.equip.id),
+                    equip_type: Number(equipSlot.type_slot),
+                    number_slot: Number(equipSlot.number_slot)
+                }));
+                RemoveSelect();
+            };
+
             MarkUnitSelect(GetGameUnitID(units[i].id), 2, func)
         }
     }
@@ -56,7 +74,7 @@ function SelectTargetUnit(jsonMessage, func) {
 function SelectWeaponTarget(selectSprite) {
     if (game.input.activePointer.leftButton.isDown) {
         field.send(JSON.stringify({
-            event: "SetTarget",
+            event: "SetWeaponTarget",
             unit_id: Number(selectSprite.UnitID),
             x: Number(selectSprite.unitX),
             y: Number(selectSprite.unitY),
@@ -66,14 +84,3 @@ function SelectWeaponTarget(selectSprite) {
         RemoveSelect();
     }
 }
-
-function SelectEquipTarget(selectSprite) {
-    console.log(selectSprite);
-    RemoveSelect();
-}
-
-function SelectUnitEquipTarget(selectSprite) {
-    console.log(selectSprite);
-    RemoveSelect();
-}
-

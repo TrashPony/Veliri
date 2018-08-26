@@ -23,7 +23,7 @@ function ReadResponse(jsonMessage) {
 
     if (event === "GetEquipMyUnitTargets" || event === "GetEquipMyUnitTargets" ||
         event === "GetEquipMySelfTarget" || event === "GetEquipAllUnitTarget") {
-        SelectTargetUnit(jsonMessage, SelectUnitEquipTarget);
+        SelectTargetUnit(jsonMessage);
     }
 
     if (event === "UpdateWatchMap") {

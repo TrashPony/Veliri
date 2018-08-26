@@ -94,7 +94,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "SetTarget" {
+		if msg.Event == "SetWeaponTarget" {
 			SetTarget(msg, ws)
 			continue
 		}
@@ -106,6 +106,11 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 
 		if msg.Event == "UseEquip" {
 			UseEquip(msg, ws)
+			continue
+		}
+
+		if msg.Event == "UseUnitEquip" {
+			UseUnitEquip(msg, ws)
 			continue
 		}
 
