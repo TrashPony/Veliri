@@ -95,7 +95,7 @@ type Boder interface {
 }
 
 func BodyEquip(ship Boder, table string) {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity, used, steps_for_reload "+
 		" FROM " + table +
 		" WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
@@ -108,27 +108,29 @@ func BodyEquip(ship Boder, table string) {
 	var slotType int
 	var equipType string
 	var quantity int
+	var used bool
+	var stepsForReload int
 
 	for rows.Next() {
-		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity)
+		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity, &used, &stepsForReload)
 		if err != nil {
 			log.Fatal("scan body equip " + err.Error())
 		}
 
 		if slotType == 1 {
-			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType)
+			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType, used, stepsForReload)
 		}
 		if slotType == 2 {
-			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType)
+			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType, used, stepsForReload)
 		}
 		if slotType == 3 {
-			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType)
+			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType, used, stepsForReload)
 		}
 		if slotType == 4 {
-			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType)
+			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType, used, stepsForReload)
 		}
 		if slotType == 5 {
-			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType)
+			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType, used, stepsForReload)
 		}
 
 		if equipType == "weapon" || equipType == "ammo" {
@@ -145,10 +147,12 @@ func BodyEquip(ship Boder, table string) {
 	}
 }
 
-func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string) {
+func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string, used bool, stepsForReload int) {
 	for i, bodyEquipSlot := range equipping {
 		if bodyEquipSlot.Number == slot {
 			if equipType == "equip" {
+				bodyEquipSlot.Used = used
+				bodyEquipSlot.StepsForReload = stepsForReload
 				equipping[i].Equip = TypeEquip(idEquip)
 			}
 		}

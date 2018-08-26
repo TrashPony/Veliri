@@ -1,15 +1,6 @@
 package useEquip
 
-import (
-	"../../gameObjects/equip"
-	"../../player"
-	"../../gameObjects/coordinate"
-	"../../db/localGame/update"
-	"strconv"
-	"../../localGame"
-)
-
-func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
+/*func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
 
 	useEquip.Used = false //TODO делаем эквип использованым но сейчас нет для тестов надо исправитьв будущем
 
@@ -64,4 +55,4 @@ func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordin
 		res[strconv.Itoa(gameCoordinate.X)] = make(map[string]*coordinate.Coordinate)
 		res[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
 	}
-}
+}*/

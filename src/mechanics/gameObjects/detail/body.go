@@ -34,10 +34,12 @@ type Body struct {
 }
 
 type BodyEquipSlot struct {
-	Type       int          `json:"type_slot"`
-	Number     int          `json:"number_slot"`
-	Equip      *equip.Equip `json:"equip"`
-	InsertToDB bool         `json:"insert_to_db"`
+	Type           int          `json:"type_slot"`
+	Number         int          `json:"number_slot"`
+	Equip          *equip.Equip `json:"equip"`
+	InsertToDB     bool         `json:"insert_to_db"`
+	Used           bool         `json:"used"` /* использовано или нет */
+	StepsForReload int          `json:"steps_for_reload"`
 }
 
 type BodyWeaponSlot struct {
@@ -46,6 +48,6 @@ type BodyWeaponSlot struct {
 	Weapon       *Weapon    `json:"weapon"`
 	WeaponType   string     `json:"weapon_type"`
 	Ammo         *ammo.Ammo `json:"ammo"`
-	AmmoQuantity int		`json:"ammo_quantity"`
+	AmmoQuantity int        `json:"ammo_quantity"`
 	InsertToDB   bool       `json:"insert_to_db"`
 }

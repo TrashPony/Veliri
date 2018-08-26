@@ -51,7 +51,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 
 			for _, targetUnit := range targetUnits {
 				if targetUnit.X == msg.ToX && targetUnit.Y == msg.ToY {
-					useEquip.ToUnit(targetUnit, equipSlot.Equip, client)
+					useEquip.ToUnit(targetUnit, equipSlot, client)
 
 					ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: targetUnit, AppliedEquip: equipSlot.Equip})
 					updateUseUnitEquipHostileUser(client, activeGame, targetUnit, equipSlot.Equip)
