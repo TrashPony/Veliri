@@ -74,17 +74,6 @@ func EquipApplicable(playerEquip *equip.Equip, client *player.Player, x, y int) 
 	return nil
 }
 
-func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
-	for _, user := range activeGame.GetPlayers() {
-		if user.GetLogin() != client.GetLogin() {
-			_, watch := user.GetHostileUnit(gameUnit.X, gameUnit.Y)
-			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, Unit: gameUnit, AppliedEquip: playerEquip}
-			}
-		}
-	}
-}
-
 func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *localGame.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
