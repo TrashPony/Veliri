@@ -1,5 +1,9 @@
-function MarkUnitSelect(unit) {
-    unit.sprite.frame = 1;
+function MarkUnitSelect(unit, frame, onclickFunc) {
+    unit.sprite.frame = frame;
+
+    if (onclickFunc) {
+        console.log("dfdf");
+    }
 }
 
 function RemoveUnitMarks() {

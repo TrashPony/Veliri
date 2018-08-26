@@ -4,7 +4,7 @@ function SelectUnit() {
 
     CreateUnitSubMenu(this);
 
-    MarkUnitSelect(this);
+    MarkUnitSelect(this, 1);
 
     field.send(JSON.stringify({
         event: "SelectUnit",

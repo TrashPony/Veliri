@@ -104,10 +104,10 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		/*if msg.Event == "UseEquip" {
+		if msg.Event == "UseEquip" {
 			UseEquip(msg, ws)
 			continue
-		}*/
+		}
 
 		if msg.Event == "SelectWeapon" {
 			SelectWeapon(msg, ws)

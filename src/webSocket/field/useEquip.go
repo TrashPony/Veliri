@@ -2,16 +2,18 @@ package field
 
 import (
 	"github.com/gorilla/websocket"
-	"../../mechanics/localGame/useEquip"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/equip"
 	"../../mechanics/player"
 	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/coordinate"
+	"fmt"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {
-	client, findClient := usersFieldWs[ws]
+	fmt.Printf("%+v\n", msg)
+
+	/*client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 	playerEquip, findEquip := client.GetEquipByID(msg.EquipID)
 
@@ -39,7 +41,7 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 		}
 	} else {
 		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
-	}
+	}*/
 }
 
 func EquipApplicable(playerEquip *equip.Equip, client *player.Player, x, y int) *unit.Unit {

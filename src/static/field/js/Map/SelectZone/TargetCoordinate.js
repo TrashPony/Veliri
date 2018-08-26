@@ -1,4 +1,4 @@
-function SelectTargetCoordinateCreate(jsonMessage) {
+function SelectTargetCoordinateCreate(jsonMessage, func) {
     let targetCoordinates = JSON.parse(jsonMessage).targets;
 
     let event = JSON.parse(jsonMessage).event;
@@ -17,7 +17,7 @@ function SelectTargetCoordinateCreate(jsonMessage) {
                         MarkZone(cellSprite, targetCoordinates, x, y, 'Target', false, game.SelectTargetLineLayer, null);
                     }
 
-                    if (event === "GetTargets") {
+                    if (event === "GetTargets" || event === "GetEquipMapTargets") {
                         let selectSprite = MarkZone(cellSprite, targetCoordinates, x, y, 'Target', true, game.SelectTargetLineLayer, "target");
 
                         selectSprite.TargetX = targetCoordinates[x][y].x;
@@ -29,7 +29,7 @@ function SelectTargetCoordinateCreate(jsonMessage) {
 
                         selectSprite.inputEnabled = true;
                         // Todo если в клетку куда показывает юзер есть юнит надо показывать сколько примерно отниметься хп
-                        selectSprite.events.onInputDown.add(SelectTarget, selectSprite);
+                        selectSprite.events.onInputDown.add(func, selectSprite);
                         selectSprite.events.onInputOver.add(animateTargetCoordinate, selectSprite);
                         selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
 
@@ -43,7 +43,17 @@ function SelectTargetCoordinateCreate(jsonMessage) {
     }
 }
 
-function SelectTarget(selectSprite) {
+function SelectTargetUnit(jsonMessage, func) {
+    let units = JSON.parse(jsonMessage).units;
+
+    for (let i in units){
+        if (units.hasOwnProperty(i)) {
+            MarkUnitSelect(GetGameUnitID(units[i].id), 2, func)
+        }
+    }
+}
+
+function SelectWeaponTarget(selectSprite) {
     if (game.input.activePointer.leftButton.isDown) {
         field.send(JSON.stringify({
             event: "SetTarget",
@@ -53,5 +63,17 @@ function SelectTarget(selectSprite) {
             to_x: Number(selectSprite.TargetX),
             to_y: Number(selectSprite.TargetY)
         }));
+        RemoveSelect();
     }
 }
+
+function SelectEquipTarget(selectSprite) {
+    console.log(selectSprite);
+    RemoveSelect();
+}
+
+function SelectUnitEquipTarget(selectSprite) {
+    console.log(selectSprite);
+    RemoveSelect();
+}
+

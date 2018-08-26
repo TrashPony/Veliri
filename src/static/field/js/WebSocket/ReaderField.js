@@ -14,12 +14,16 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "GetTargets" || event === "GetFirstTargets") {
-        SelectTargetCoordinateCreate(jsonMessage);
+        SelectTargetCoordinateCreate(jsonMessage, SelectWeaponTarget);
     }
 
-    if (event === "GetEquipMapTargets" || event === "GetEquipMyUnitTargets" ||
-        event === "GetEquipMyUnitTargets" || event === "GetEquipMySelfTarget") {
-        console.log(jsonMessage)
+    if (event === "GetEquipMapTargets") {
+        MarkEquipSelect(jsonMessage);
+    }
+
+    if (event === "GetEquipMyUnitTargets" || event === "GetEquipMyUnitTargets" ||
+        event === "GetEquipMySelfTarget" || event === "GetEquipAllUnitTarget") {
+        SelectTargetUnit(jsonMessage, SelectUnitEquipTarget);
     }
 
     if (event === "UpdateWatchMap") {
