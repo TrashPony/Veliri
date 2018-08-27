@@ -43,7 +43,7 @@ func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo
 	}
 
 	if ammoSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory, ammoSlot.Ammo, "ammo", ammoSlot.Ammo.ID, ammoSlot.AmmoQuantity)
+		AddItem(user.GetSquad().Inventory, ammoSlot.Ammo, "ammo", ammoSlot.Ammo.ID, ammoSlot.AmmoQuantity, 1)
 	}
 
 	ammoSlot.Ammo = newAmmo

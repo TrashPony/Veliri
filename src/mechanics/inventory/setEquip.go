@@ -19,7 +19,7 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 		if equipping != nil {
 			equipSlot, ok := equipping[numEquipSlot]
 			if ok && equipSlot.Type == typeEquipSlot {
-				SetEquip(equipSlot, user, newEquip, inventorySlot)
+				SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 			}
 		}
 	}
@@ -36,19 +36,20 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 			if equipping != nil {
 				equipSlot, ok := equipping[numEquipSlot]
 				if ok && equipSlot.Type == typeEquipSlot{
-					SetEquip(equipSlot, user, newEquip, inventorySlot)
+					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 				}
 			}
 		}
 	}
 }
 
-func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int)  {
+func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int)  {
 	if equipSlot.Equip != nil {
-		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1)
+		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP)
 		equipSlot.Equip = nil
 	}
 
+	equipSlot.HP = hp
 	RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 
 	updateSquad.Squad(user.GetSquad()) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд

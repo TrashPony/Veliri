@@ -15,7 +15,7 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 
 		weaponSlot, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
 		if ok {
-			SetWeapon(weaponSlot, user, newWeapon, inventorySlot)
+			SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
 		}
 	}
 }
@@ -29,24 +29,26 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 		if ok && unitSlot.Unit != nil {
 			weaponSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body.Weapons[numEquipSlot]
 			if ok {
-				SetWeapon(weaponSlot, user, newWeapon, inventorySlot)
+				SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
 			}
 		}
 	}
 }
 
-func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int)  {
+func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int)  {
 	if weaponSlot.Weapon != nil {
-		AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1)
+		AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1, weaponSlot.HP)
 		weaponSlot.Weapon = nil
 	}
 
 	if weaponSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity)
+		AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1)
 		weaponSlot.Ammo = nil
 	}
 
 	updateSquad.Squad(user.GetSquad())
+
+	weaponSlot.HP = hp
 
 	RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 	weaponSlot.Weapon = newWeapon

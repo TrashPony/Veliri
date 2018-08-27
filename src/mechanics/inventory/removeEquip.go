@@ -13,7 +13,7 @@ func RemoveMSEquip(user *player.Player, numEquipSlot int, typeSlot int) {
 
 	if ok && slotEquip != nil && slotEquip.Equip != nil {
 
-		AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1)
+		AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP)
 		slotEquip.Equip = nil
 
 		updateSquad.Squad(user.GetSquad())
@@ -30,7 +30,7 @@ func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot
 
 		if ok && slotEquip != nil && slotEquip.Equip != nil {
 
-			AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1)
+			AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP)
 			slotEquip.Equip = nil
 
 			updateSquad.Squad(user.GetSquad())
