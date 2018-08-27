@@ -18,7 +18,7 @@ function CreateUnitSubMenu(unit) {
         equipPanel.id = "EquipPanel";
         unitSubMenu.appendChild(equipPanel);
 
-        if (!unit.action && game.user.name === unit.owner) {
+        if (!(unit.action && unit.use_equip) && game.user.name === unit.owner) {
 
             FillingEquipPanel(equipPanel, unit);
 

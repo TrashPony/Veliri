@@ -6,17 +6,28 @@ import (
 	"../../db/localGame/update"
 	"../../db/updateSquad"
 	"../../player"
+	"errors"
 )
 
-func ToUnit(gameUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *player.Player) {
+func ToUnit(gameUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
 
-	useEquipSlot.Used = true
-	useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
+	if !gameUnit.UseEquip && !useEquipSlot.Used && gameUnit.Power >= useEquipSlot.Equip.UsePower {
 
-	for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
-		AddNewUnitEffect(gameUnit, effect)
+		gameUnit.Power = gameUnit.Power - useEquipSlot.Equip.UsePower
+		gameUnit.UseEquip = true
+
+		useEquipSlot.Used = true
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
+
+		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
+			AddNewUnitEffect(gameUnit, effect)
+		}
+
+		update.UnitEffects(gameUnit)
+		updateSquad.Squad(client.GetSquad())
+
+		return nil
+	} else {
+		return errors.New("not allow")
 	}
-
-	update.UnitEffects(gameUnit)
-	updateSquad.Squad(client.GetSquad())
 }

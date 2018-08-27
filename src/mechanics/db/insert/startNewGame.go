@@ -12,7 +12,7 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 	id := 0
 
 	err := dbConnect.GetDBConnect().QueryRow("INSERT INTO action_games (name, id_map, step, phase, winner) VALUES ($1, $2, $3, $4, $5) RETURNING id", // добавляем новую игру в БД
-		game.Name, game.Map.Id, 0, "move", "").Scan(&id) // название игры, id карты, 0 - ход, Фаза движения, победитель
+		game.Name, game.Map.Id, 1, "move", "").Scan(&id) // название игры, id карты, 0 - ход, Фаза движения, победитель
 
 	if err != nil {
 		println("add new game error")

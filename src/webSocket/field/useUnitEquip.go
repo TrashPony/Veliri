@@ -51,10 +51,13 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 
 			for _, targetUnit := range targetUnits {
 				if targetUnit.X == msg.ToX && targetUnit.Y == msg.ToY {
-					useEquip.ToUnit(targetUnit, equipSlot, client)
-
-					ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: targetUnit, AppliedEquip: equipSlot.Equip})
-					updateUseUnitEquipHostileUser(client, activeGame, targetUnit, equipSlot.Equip)
+					err := useEquip.ToUnit(targetUnit, equipSlot, client)
+					if err != nil {
+						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
+					} else {
+						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: targetUnit, AppliedEquip: equipSlot.Equip})
+						updateUseUnitEquipHostileUser(client, activeGame, targetUnit, equipSlot.Equip)
+					}
 				}
 			}
 		} else {

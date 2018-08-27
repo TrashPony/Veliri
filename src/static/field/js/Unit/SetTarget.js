@@ -10,7 +10,6 @@ function UpdateUnit(jsonMessage) {
     unit.target = unitStat.target;
     unit.effects = unitStat.effects;
     unit.action = unitStat.action;
-    
-    console.log(GetGameUnitID(unitStat.id))
+
     // todo
 }

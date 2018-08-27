@@ -30,7 +30,8 @@ func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
 }
 
 func changeGamePhase(actionGame *localGame.Game) {
-	if actionGame.Phase == "Init" || actionGame.Phase == "attack" {
+	if actionGame.Phase == "attack" {
+		actionGame.Step = actionGame.Step + 1
 		actionGame.Phase = "move"
 	} else {
 		if actionGame.Phase == "move" {
@@ -38,8 +39,6 @@ func changeGamePhase(actionGame *localGame.Game) {
 		} else {
 			if actionGame.Phase == "targeting" {
 				actionGame.Phase = "attack"
-				// todo запуск фазы атаки
-				actionGame.Step = actionGame.Step + 1
 			}
 		}
 	}

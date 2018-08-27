@@ -4,6 +4,7 @@ function AnimateUseUnitEquip(jsonMessage) {
     let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
     unit.effects = JSON.parse(jsonMessage).unit.effects;
     unit.body = JSON.parse(jsonMessage).unit.body;
+    unit.power = JSON.parse(jsonMessage).unit.power;
 
     if (equip.name === "repair_kit") {
         repairKitAnimate(unit);

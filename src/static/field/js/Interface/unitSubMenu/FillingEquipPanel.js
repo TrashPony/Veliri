@@ -17,7 +17,6 @@ function FillingEquipPanel(equipPanel, unit) {
                 }));
             };
 
-
             let ammoBox = document.createElement("div");
             ammoBox.id = "ammoBox";
             if (unit.body.weapons[weaponSlot].ammo) {
@@ -42,7 +41,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
             console.log(unit.body.equippingIII[i]);
-            if (!unit.body.equippingIII[i].used) {
+            if (!unit.body.equippingIII[i].used && !unit.use_equip) {
                 equipping.className = "equipSlotIII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -72,7 +71,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingII[i].used) {
+            if (!unit.body.equippingII[i].used && !unit.use_equip) {
                 equipping.className = "equipSlotII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
