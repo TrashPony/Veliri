@@ -95,7 +95,7 @@ type Boder interface {
 }
 
 func BodyEquip(ship Boder, table string) {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity, used, steps_for_reload "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity, used, steps_for_reload, hp "+
 		" FROM " + table +
 		" WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
@@ -110,49 +110,53 @@ func BodyEquip(ship Boder, table string) {
 	var quantity int
 	var used bool
 	var stepsForReload int
+	var hp int
 
 	for rows.Next() {
-		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity, &used, &stepsForReload)
+		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity, &used, &stepsForReload, &hp)
 		if err != nil {
 			log.Fatal("scan body equip " + err.Error())
 		}
 
 		if slotType == 1 {
-			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType, used, stepsForReload)
+			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 2 {
-			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType, used, stepsForReload)
+			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 3 {
-			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType, used, stepsForReload)
+			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 4 {
-			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType, used, stepsForReload)
+			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 5 {
-			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType, used, stepsForReload)
+			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 
 		if equipType == "weapon" || equipType == "ammo" {
 			for _, bodyWeaponSlot := range ship.GetBody().Weapons {
 				if equipType == "weapon" {
-					ship.GetBody().Weapons[bodyWeaponSlot.Number].Weapon = Weapon(idEquip)
+					bodyWeaponSlot.HP = hp
+					bodyWeaponSlot.Weapon = Weapon(idEquip)
 				}
 				if equipType == "ammo" {
-					ship.GetBody().Weapons[bodyWeaponSlot.Number].Ammo = Ammo(idEquip)
-					ship.GetBody().Weapons[bodyWeaponSlot.Number].AmmoQuantity = quantity
+					bodyWeaponSlot.Ammo = Ammo(idEquip)
+					bodyWeaponSlot.AmmoQuantity = quantity
 				}
 			}
 		}
 	}
 }
 
-func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string, used bool, stepsForReload int) {
+func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string, used bool, stepsForReload, hp int) {
 	for i, bodyEquipSlot := range equipping {
 		if bodyEquipSlot.Number == slot {
 			if equipType == "equip" {
 				bodyEquipSlot.Used = used
 				bodyEquipSlot.StepsForReload = stepsForReload
+				bodyEquipSlot.HP = hp
+
 				equipping[i].Equip = TypeEquip(idEquip)
 			}
 		}

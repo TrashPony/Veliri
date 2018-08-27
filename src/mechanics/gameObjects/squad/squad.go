@@ -19,4 +19,5 @@ type InventorySlot struct {
 	Type       string      `json:"type"`
 	ItemID     int         `json:"item_id"`
 	InsertToDB bool        `json:"insert_to_db"`
+	HP         int         `json:"hp"`
 }

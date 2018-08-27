@@ -9,7 +9,8 @@ CREATE TABLE equipping_type (
   type_slot     INT,                 /* тип слота куда встаривается оборудование I (1) , II (2), III (3), IV (4), V (5) */
   reload        INT,                 /* кол-во ходов на перезарядку */
   power         INT,                 /* кол-во потребляемой энергии */
-  use_power     INT                  /* кол-во расходуемой энергии при активации */
+  use_power     INT,                 /* кол-во расходуемой энергии при активации */
+  max_hp        INT                  /* кол-во хп до половки оборудования */
 );
 
 CREATE TABLE equip_effects (

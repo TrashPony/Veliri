@@ -6,7 +6,8 @@ CREATE TABLE weapon_type (
   accuracy         INT,
   ammo_capacity    INT,                 /* кол-во боезапаса вмещаемого в орудие до перезарядки */
   artillery        BOOLEAN,
-  power            INT                  /* кол-во потребляемой энергии */
+  power            INT,                 /* кол-во потребляемой энергии */
+  max_hp           INT                  /* кол-во хп до половки оборудования */
 );
 
 CREATE TABLE ammunition_type (

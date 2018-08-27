@@ -127,7 +127,7 @@ func SquadUnits(squadID int, slot int) (*unit.Unit) {
 
 func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)
 	if err != nil {
@@ -142,7 +142,7 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 		var inventorySlot = squad.InventorySlot{}
 		var slot int
 
-		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity)
+		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity, &inventorySlot.HP)
 		if err != nil {
 			log.Fatal("get inventory squad " + err.Error())
 		}

@@ -10,4 +10,5 @@ type Weapon struct {
 	AmmoCapacity   int        `json:"ammo_capacity"`
 	Artillery      bool       `json:"artillery"`
 	Power          int        `json:"power"`
+	MaxHP          int        `json:"max_hp"`
 }

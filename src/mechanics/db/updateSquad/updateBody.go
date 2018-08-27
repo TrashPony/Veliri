@@ -32,9 +32,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string, tx *sql.Tx) {
 		}
 
 		if slot.InsertToDB && slot.Weapon != nil {
-			_, err := tx.Exec("INSERT INTO " + tableName + " (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-				squadID, "weapon", unit.GetID(), slot.Weapon.ID, slot.Number, slot.Type, 1, false, 0)
+			_, err := tx.Exec("INSERT INTO " + tableName + " (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload, hp) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+				squadID, "weapon", unit.GetID(), slot.Weapon.ID, slot.Number, slot.Type, 1, false, 0, slot.HP)
 			if err != nil {
 				log.Fatal("insert unit body weapon slot " + err.Error())
 			}
@@ -42,9 +42,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string, tx *sql.Tx) {
 
 		if !slot.InsertToDB && slot.Weapon != nil {
 			_, err := tx.Exec("UPDATE " + tableName+
-				" SET id_equipping = $2, quantity = $7 "+
+				" SET id_equipping = $2, quantity = $7, hp = $8 "+
 				" WHERE id_squad = $3 AND id_squad_unit = $4 AND slot_in_body = $5 AND type_slot = $6 AND type = $1",
-				"weapon", slot.Weapon.ID, squadID, unit.GetID(), slot.Number, slot.Type, 1)
+				"weapon", slot.Weapon.ID, squadID, unit.GetID(), slot.Number, slot.Type, 1, slot.HP)
 			if err != nil {
 				log.Fatal("update unit body weapon slot " + err.Error())
 			}
@@ -59,9 +59,9 @@ func UpdateBody(unit BodyEquipper, squadID int, tableName string, tx *sql.Tx) {
 
 		if slot.Ammo != nil {
 			_, err = tx.Exec("INSERT INTO " + tableName +
-				" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload)"+
-				" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-				squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity, false, 0)
+				" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload, hp)"+
+				" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+				squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity, false, 0, 1)
 			if err != nil {
 				log.Fatal("insert ammo " + err.Error())
 			}
@@ -81,9 +81,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, table
 		}
 
 		if slot.InsertToDB && slot.Equip != nil {
-			_, err := tx.Exec("INSERT INTO " + tableName + " (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
-				squadID, "equip", unitID, slot.Equip.ID, slot.Number, slot.Type, 1, slot.Used, slot.StepsForReload)
+			_, err := tx.Exec("INSERT INTO " + tableName + " (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload, hp) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+				squadID, "equip", unitID, slot.Equip.ID, slot.Number, slot.Type, 1, slot.Used, slot.StepsForReload, slot.HP)
 			if err != nil {
 				log.Fatal("insert unit body equip slot " + err.Error())
 			}
@@ -91,9 +91,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, table
 
 		if !slot.InsertToDB && slot.Equip != nil {
 			_, err := tx.Exec("UPDATE " + tableName+
-				" SET type = $1, id_equipping = $3, quantity = $7, used = $8, steps_for_reload = $9 "+
+				" SET type = $1, id_equipping = $3, quantity = $7, used = $8, steps_for_reload = $9, hp = $10 "+
 				" WHERE id_squad = $4 AND id_squad_unit = $5 AND slot_in_body = $6 AND type_slot = $2",
-				"equip", slot.Equip.TypeSlot, slot.Equip.ID, squadID, unitID, slot.Number, 1, slot.Used, slot.StepsForReload)
+				"equip", slot.Equip.TypeSlot, slot.Equip.ID, squadID, unitID, slot.Number, 1, slot.Used, slot.StepsForReload, slot.HP)
 			if err != nil {
 				log.Fatal("update unit body equip slot " + err.Error())
 			}

@@ -15,4 +15,5 @@ type Equip struct {
 	Power          int              `json:"power"`
 	UsePower       int              `json:"use_power"`
 	Effects        []*effect.Effect `json:"effects"`
+	MaxHP          int              `json:"max_hp"`
 }

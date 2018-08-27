@@ -40,6 +40,7 @@ type BodyEquipSlot struct {
 	InsertToDB     bool         `json:"insert_to_db"`
 	Used           bool         `json:"used"` /* использовано или нет */
 	StepsForReload int          `json:"steps_for_reload"`
+	HP             int          `json:"hp"`
 }
 
 type BodyWeaponSlot struct {
@@ -50,4 +51,5 @@ type BodyWeaponSlot struct {
 	Ammo         *ammo.Ammo `json:"ammo"`
 	AmmoQuantity int        `json:"ammo_quantity"`
 	InsertToDB   bool       `json:"insert_to_db"`
+	HP           int        `json:"hp"`
 }
