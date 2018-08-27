@@ -76,6 +76,10 @@ function OpenUnitEditor() {
 }
 
 function CreateUnitEquipSlots(constructorUnit) {
+    let unitPowerPanel = document.createElement("div");
+    unitPowerPanel.id = "unitPowerPanel";
+    constructorUnit.appendChild(unitPowerPanel);
+
     let equippingPanelIII = document.createElement("div");
     CreateCells(3, 3, "UnitEquip noActive", "UnitEquip", equippingPanelIII);
     constructorUnit.appendChild(equippingPanelIII);
@@ -100,6 +104,8 @@ function FillingSquadConstructor(slotData) {
     unitIcon.slotData = JSON.stringify(slotData);
     unitIcon.unitBody = slotData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
+
+    FillPowerPanel(slotData.unit.body, "unitPowerPanel");
 
     UpdateCells(1, "UnitEquip", slotData.unit.body.equippingI, "UnitEquip");
     UpdateCells(2, "UnitEquip", slotData.unit.body.equippingII, "UnitEquip");

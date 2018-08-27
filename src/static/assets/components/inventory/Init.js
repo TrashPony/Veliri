@@ -14,6 +14,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/filling/SquadTable.js");
         includeJS("../assets/components/inventory/filling/MarkConstructorsCell.js");
         includeJS("../assets/components/inventory/filling/DeactivateCell.js");
+        includeJS("../assets/components/inventory/filling/PowerPanel.js");
 
         includeJS("../assets/components/inventory/tip/RemoveTip.js");
         includeJS("../assets/components/inventory/tip/SelectItem.js");
