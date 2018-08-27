@@ -23,6 +23,9 @@ function NoActiveCell() {
     unitIcon.style.backgroundImage = null;
     unitIcon.onclick = null;
     unitIcon.shipBody = null;
+
+    let powerPanel = document.getElementById("powerPanel");
+    powerPanel.innerHTML = "<span class='Value'> Энергия: <br>" + 0 + "/" + 0 + "</span>";
 }
 
 function NoActiveUnitCell(slotData) {
@@ -53,5 +56,8 @@ function NoActiveUnitCell(slotData) {
             unitIcon.onclick = null;
             unitIcon.shipBody = null;
         }
+
+        let powerPanel = document.getElementById("unitPowerPanel");
+        powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
     }
 }

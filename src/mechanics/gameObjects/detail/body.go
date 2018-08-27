@@ -33,6 +33,34 @@ type Body struct {
 	Weapons map[int]*BodyWeaponSlot `json:"weapons"`
 }
 
+func (body *Body) GetUsePower() int {
+	var allPower int
+
+	var counter = func(equip map[int]*BodyEquipSlot) int {
+		var power int
+		for _, slot := range equip {
+			if slot.Equip != nil {
+				power = power + slot.Equip.Power
+			}
+		}
+		return power
+	}
+
+	allPower = allPower + counter(body.EquippingI)
+	allPower = allPower + counter(body.EquippingII)
+	allPower = allPower + counter(body.EquippingIII)
+	allPower = allPower + counter(body.EquippingIV)
+	allPower = allPower + counter(body.EquippingV)
+
+	for _, slot := range body.Weapons {
+		if slot.Weapon != nil {
+			allPower = allPower + slot.Weapon.Power
+		}
+	}
+
+	return allPower
+}
+
 type BodyEquipSlot struct {
 	Type           int          `json:"type_slot"`
 	Number         int          `json:"number_slot"`

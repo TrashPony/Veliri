@@ -11,15 +11,23 @@ import (
 func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int) {
 	equipItem := user.GetSquad().Inventory[inventorySlot]
 
+	msBody := user.GetSquad().MatherShip.Body
+
 	if equipItem.ItemID == idEquip {
 		newEquip := get.TypeEquip(idEquip)
-
-		equipping := SelectType(typeEquipSlot, user.GetSquad().MatherShip.Body)
-
+		equipping := SelectType(typeEquipSlot, msBody)
 		if equipping != nil {
 			equipSlot, ok := equipping[numEquipSlot]
 			if ok && equipSlot.Type == typeEquipSlot {
-				SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+
+				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
+				if (equipSlot.Equip != nil && msBody.MaxPower - msBody.GetUsePower() + equipSlot.Equip.Power >= newEquip.Power) ||
+					(equipSlot.Equip == nil && msBody.MaxPower - msBody.GetUsePower() >= newEquip.Power) {
+
+					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+				} else {
+					// todo return error по питанию
+				}
 			}
 		}
 	}
@@ -35,15 +43,24 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 			equipping := SelectType(typeEquipSlot, unitSlot.Unit.Body)
 			if equipping != nil {
 				equipSlot, ok := equipping[numEquipSlot]
-				if ok && equipSlot.Type == typeEquipSlot{
-					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+				if ok && equipSlot.Type == typeEquipSlot {
+
+					// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
+					if (equipSlot.Equip != nil && unitSlot.Unit.Body.MaxPower - unitSlot.Unit.Body.GetUsePower() + equipSlot.Equip.Power >= newEquip.Power) ||
+						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower - unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
+
+						SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+					} else {
+						// todo return error по питанию
+					}
 				}
 			}
 		}
 	}
 }
 
-func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int)  {
+func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int) {
+
 	if equipSlot.Equip != nil {
 		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP)
 		equipSlot.Equip = nil

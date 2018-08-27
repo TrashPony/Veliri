@@ -72,6 +72,9 @@ function OpenUnitEditor() {
 
     if (slotData.unit !== null && slotData.unit !== undefined) {
         FillingSquadConstructor(slotData);
+    } else {
+        let powerPanel = document.getElementById("unitPowerPanel");
+        powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
     }
 }
 

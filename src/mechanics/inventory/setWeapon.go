@@ -9,13 +9,21 @@ import (
 
 func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) {
 	weapon := user.GetSquad().Inventory[inventorySlot]
+	msBody := user.GetSquad().MatherShip.Body
 
 	if weapon.ItemID == idWeapon {
 		newWeapon := get.Weapon(idWeapon)
 
-		weaponSlot, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
+		weaponSlot, ok := msBody.Weapons[numEquipSlot]
 		if ok {
-			SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+			// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
+			if (weaponSlot.Weapon != nil && msBody.MaxPower-msBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
+				(weaponSlot.Weapon == nil && msBody.MaxPower-msBody.GetUsePower() >= newWeapon.Power) {
+
+				SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+			} else {
+				// todo return error по питанию
+			}
 		}
 	}
 }
@@ -27,22 +35,31 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 		newWeapon := get.Weapon(idWeapon)
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 		if ok && unitSlot.Unit != nil {
+
 			weaponSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body.Weapons[numEquipSlot]
+			unitBody := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body
+
 			if ok {
-				SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
+				if (weaponSlot.Weapon != nil && unitBody.MaxPower-unitBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
+					(weaponSlot.Weapon == nil && unitBody.MaxPower-unitBody.GetUsePower() >= newWeapon.Power) {
+					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+				} else {
+					// todo return error по питанию
+				}
 			}
 		}
 	}
 }
 
-func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int)  {
+func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int) {
 	if weaponSlot.Weapon != nil {
-		AddItem(user.GetSquad().Inventory,  weaponSlot.Weapon, "weapon",  weaponSlot.Weapon.ID, 1, weaponSlot.HP)
+		AddItem(user.GetSquad().Inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP)
 		weaponSlot.Weapon = nil
 	}
 
 	if weaponSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory,  weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1)
+		AddItem(user.GetSquad().Inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1)
 		weaponSlot.Ammo = nil
 	}
 
