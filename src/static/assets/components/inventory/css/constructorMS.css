@@ -41,12 +41,13 @@
     left: 0;
     position: absolute;
     display: inline-block;
-    width: 70px;
-    height: 30px;
+    width: 60px;
+    height: 25px;
     border: 1px solid #25a0e1;
     border-radius: 20px;
     font-size: 8pt;
-    margin: 2px;
+    margin: 4px;
+    padding-top: 2px;
 }
 
 #ConstructorBackGround {

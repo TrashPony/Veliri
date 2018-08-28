@@ -6,9 +6,10 @@ import (
 	"../gameObjects/detail"
 	"../gameObjects/equip"
 	"../db/updateSquad"
+	"errors"
 )
 
-func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int) {
+func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int) error {
 	equipItem := user.GetSquad().Inventory[inventorySlot]
 
 	msBody := user.GetSquad().MatherShip.Body
@@ -26,14 +27,15 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 
 					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 				} else {
-					// todo return error по питанию
+					return errors.New("lacking power")
 				}
 			}
 		}
 	}
+	return nil
 }
 
-func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) {
+func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) error {
 	equipItem := user.GetSquad().Inventory[inventorySlot]
 
 	if equipItem.ItemID == idEquip {
@@ -51,12 +53,13 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 
 						SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 					} else {
-						// todo return error по питанию
+						return errors.New("lacking power")
 					}
 				}
 			}
 		}
 	}
+	return nil
 }
 
 func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int) {

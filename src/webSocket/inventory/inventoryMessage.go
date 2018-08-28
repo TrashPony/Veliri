@@ -23,3 +23,8 @@ type Response struct {
 	Event string       `json:"event"`
 	Squad *squad.Squad `json:"squad"`
 }
+
+type Error struct {
+	Event string `json:"event"`
+	Error string `json:"error"`
+}
