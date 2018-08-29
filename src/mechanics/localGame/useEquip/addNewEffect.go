@@ -7,7 +7,7 @@ import (
 	"../../gameObjects/coordinate"
 )
 
-func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
+func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect, time int) {
 
 	addAnimate := true
 
@@ -40,7 +40,7 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect) {
 	}
 }
 
-func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *effect.Effect) {
+func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *effect.Effect, time int) {
 
 	addAnimate := true
 

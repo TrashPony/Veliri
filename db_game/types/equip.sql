@@ -10,7 +10,8 @@ CREATE TABLE equipping_type (
   reload        INT,                 /* кол-во ходов на перезарядку */
   power         INT,                 /* кол-во потребляемой энергии */
   use_power     INT,                 /* кол-во расходуемой энергии при активации */
-  max_hp        INT                  /* кол-во хп до половки оборудования */
+  max_hp        INT,                 /* кол-во хп до половки оборудования */
+  steps_time    INT                  /* Время дейсвия эфектов в игровых ходах */
 );
 
 CREATE TABLE equip_effects (

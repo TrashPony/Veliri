@@ -3,7 +3,6 @@ package get
 import (
 	"../../../gameObjects/unit"
 	"../../../gameObjects/effect"
-	"../../../gameObjects/equip"
 	"../../../gameObjects/coordinate"
 	"../../../../dbConnect"
 	"log"
@@ -39,7 +38,7 @@ func NewLvlEffect(oldEffect *effect.Effect, up int) *effect.Effect {
 		var newEffect effect.Effect
 
 		err := rows.Scan(&newEffect.TypeID, &newEffect.Name, &newEffect.Level, &newEffect.Type,
-			&newEffect.StepsTime, &newEffect.Parameter, &newEffect.Quantity, &newEffect.Percentages, &newEffect.Forever)
+			&newEffect.Parameter, &newEffect.Quantity, &newEffect.Percentages, &newEffect.Forever)
 		if err != nil {
 			println("get new lvl effect")
 			log.Fatal(err)
@@ -76,35 +75,6 @@ func UnitEffects(unit *unit.Unit) {
 		}
 
 		unit.Effects = append(unit.Effects, &unitEffect)
-	}
-}
-
-func EffectsEquip(equip *equip.Equip) {
-
-	equip.Effects = make([]*effect.Effect, 0)
-
-	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, " +
-		" et.percentages, et.forever "+
-		" FROM action_game_equipping age, equip_effects ee, effects_type et "+
-		" WHERE age.id = $1 AND age.id_type = ee.id_equip AND ee.id_effect = et.id;", equip.ID)
-
-	if err != nil {
-		println("get user equip effects")
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var equipEffect effect.Effect
-
-		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Level,&equipEffect.Type, &equipEffect.StepsTime,
-			&equipEffect.Parameter, &equipEffect.Quantity, &equipEffect.Percentages, &equipEffect.Forever)
-		if err != nil {
-			println("get user equip effects")
-			log.Fatal(err)
-		}
-
-		equip.Effects = append(equip.Effects, &equipEffect)
 	}
 }
 

@@ -9,7 +9,7 @@ import (
 
 func TypeEquip(id int) *equip.Equip {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, active, specification, applicable, region, radius, type_slot, reload, power, use_power "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, active, specification, applicable, region, radius, type_slot, reload, power, use_power, max_hp, steps_time  "+
 		"FROM equipping_type "+
 		"WHERE id=$1", id)
 	if err != nil {
@@ -21,7 +21,7 @@ func TypeEquip(id int) *equip.Equip {
 
 	for rows.Next() {
 		err := rows.Scan(&equipType.ID, &equipType.Name, &equipType.Active, &equipType.Specification, &equipType.Applicable, &equipType.Region, &equipType.Radius,
-			&equipType.TypeSlot, &equipType.Reload, &equipType.Power, &equipType.UsePower)
+			&equipType.TypeSlot, &equipType.Reload, &equipType.Power, &equipType.UsePower, &equipType.MaxHP, &equipType.StepsTime)
 		if err != nil {
 			log.Fatal("get scan type equip " + err.Error())
 		}
@@ -36,7 +36,7 @@ func EffectsEquip(equipType *equip.Equip) {
 
 	equipType.Effects = make([]*effect.Effect, 0)
 
-	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.steps_time, et.parameter, et.quantity, et.percentages, et.forever"+
+	rows, err := dbConnect.GetDBConnect().Query(" SELECT et.id, et.name, et.level, et.type, et.parameter, et.quantity, et.percentages, et.forever"+
 		" FROM equip_effects, effects_type et WHERE equip_effects.id_equip=$1 AND equip_effects.id_effect=et.id;", equipType.ID)
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +46,7 @@ func EffectsEquip(equipType *equip.Equip) {
 	for rows.Next() {
 		var equipEffect effect.Effect
 
-		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Level, &equipEffect.Type, &equipEffect.StepsTime, &equipEffect.Parameter,
+		err := rows.Scan(&equipEffect.TypeID, &equipEffect.Name, &equipEffect.Level, &equipEffect.Type, &equipEffect.Parameter,
 			&equipEffect.Quantity, &equipEffect.Percentages, &equipEffect.Forever)
 		if err != nil {
 			log.Fatal(err)

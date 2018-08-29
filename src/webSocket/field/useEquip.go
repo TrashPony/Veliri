@@ -8,40 +8,42 @@ import (
 	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/coordinate"
 	"fmt"
+	"../../mechanics/localGame/useEquip"
+	"../../mechanics/gameObjects/detail"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {
 	fmt.Printf("%+v\n", msg)
 
-	/*client, findClient := usersFieldWs[ws]
+	client, findClient := usersFieldWs[ws]
+	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
 	activeGame, findGame := Games.Get(client.GetGameID())
-	playerEquip, findEquip := client.GetEquipByID(msg.EquipID)
 
-	if findClient && findGame && !client.GetReady() && findEquip && !playerEquip.Used && (activeGame.Phase == "move" || activeGame.Phase == "targeting") {
-		if playerEquip.Applicable == "map" {
+	ok := false
+	equipSlot := &detail.BodyEquipSlot{}
+
+	if msg.EquipType == 3 {
+		equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
+	}
+
+	if msg.EquipType == 2 {
+		equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
+	}
+
+	if findUnit && findClient && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
+		if equipSlot.Equip.Applicable == "map" {
 			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.X, msg.Y)
 			if findCoordinate {
-				effectCoordinates := useEquip.ToMap(gameCoordinate, activeGame, playerEquip, client)
-				ws.WriteJSON(SendUseEquip{Event: "UseMapEquip", ZoneEffect: effectCoordinates, AppliedEquip: playerEquip, XUse: msg.X, YUse: msg.Y})
-				updateUseMapEquipHostileUser(msg.X, msg.Y, client, activeGame, effectCoordinates, playerEquip)
+				effectCoordinates := useEquip.ToMap(gameCoordinate, activeGame, equipSlot.Equip, client)
+				ws.WriteJSON(SendUseEquip{Event: "UseMapEquip", ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, XUse: msg.X, YUse: msg.Y})
+				updateUseMapEquipHostileUser(msg.X, msg.Y, client, activeGame, effectCoordinates, equipSlot.Equip)
 			} else {
 				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
-			}
-		} else {
-
-			gameUnit := EquipApplicable(playerEquip, client, msg.X, msg.Y)
-
-			if gameUnit != nil {
-				useEquip.ToUnit(gameUnit, playerEquip, client)
-				ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: gameUnit, AppliedEquip: playerEquip})
-				updateUseUnitEquipHostileUser(client, activeGame, gameUnit, playerEquip)
-			} else {
-				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find unit"})
 			}
 		}
 	} else {
 		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
-	}*/
+	}
 }
 
 func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeGame *localGame.Game, zoneEffect map[string]map[string]*coordinate.Coordinate, playerEquip *equip.Equip) {

@@ -20,8 +20,8 @@ func ToUnit(gameUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *pla
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
-			AddNewUnitEffect(gameUnit, effect)
-		}
+			AddNewUnitEffect(gameUnit, effect, useEquipSlot.Equip.StepsTime)
+		} // TODO разрулить время на которое должен работать эфект
 
 		update.UnitEffects(gameUnit)
 		updateSquad.Squad(client.GetSquad())

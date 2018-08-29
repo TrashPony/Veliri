@@ -1,8 +1,15 @@
 package useEquip
 
-/*func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
+import (
+	"../../../mechanics/gameObjects/coordinate"
+	"../../../mechanics/localGame"
+	"../../../mechanics/gameObjects/equip"
+	"../../../mechanics/player"
+	"../../../mechanics/db/localGame/update"
+	"strconv"
+)
 
-	useEquip.Used = false //TODO делаем эквип использованым но сейчас нет для тестов надо исправитьв будущем
+func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
 
 	AddAnchor(useCoordinate, useEquip) // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
 
@@ -14,11 +21,9 @@ package useEquip
 		gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
 		if find {
 			for _, effect := range useEquip.Effects { // переносим все эфекты из эквипа выбраной координате
-				AddNewCoordinateEffect(gameCoordinate, effect)
+				AddNewCoordinateEffect(gameCoordinate, effect, useEquip.StepsTime)
 			}
-
 			AddCoordinate(effectCoordinates, gameCoordinate)
-
 			update.CoordinateEffects(gameCoordinate)
 		}
 	}
@@ -38,7 +43,7 @@ func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip)  {
 			}
 		}
 	}
-	// todo наверно нужен рефакторинг
+
 	if addAnchor {
 		for _, effect := range useEquip.Effects {
 			if effect.Type == "anchor" {
@@ -55,4 +60,4 @@ func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordin
 		res[strconv.Itoa(gameCoordinate.X)] = make(map[string]*coordinate.Coordinate)
 		res[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
 	}
-}*/
+}
