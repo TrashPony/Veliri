@@ -23,7 +23,6 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 	for _, user := range game.Users {
 		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_squads (id_game, id_squad) VALUES ($1, $2)",
 			id, user.GetSquad().ID)
-			// todo обновление информации внутри сквада для мазр шипов, положение, на карте, снять все прошлые эффекты и тд
 		if err != nil {
 			println("add matherShip error")
 			log.Fatal(err)
@@ -48,12 +47,13 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 			}
 		}
 
-		/*for _, equip := range user.Squad.Equip {
-		    // todo обновление информации внутри сквада для эквипа, обнулить перезарядку
-		}*/
+		// todo обновление информации внутри сквада для мазр шипов, положение, на карте, снять все прошлые эффекты и тд
+		// todo обновление информации внутри сквада для эквипа, обнулить перезарядку
 
 		user.GetSquad().MatherShip.X = user.GetRespawn().X
 		user.GetSquad().MatherShip.Y = user.GetRespawn().Y
+		user.GetSquad().MatherShip.Target = nil
+		user.GetSquad().MatherShip.QueueAttack = 0
 
 		updateSquad.Squad(user.GetSquad())
 	}
