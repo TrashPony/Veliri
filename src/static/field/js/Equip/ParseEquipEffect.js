@@ -38,14 +38,14 @@ function ParseEffect(effect, equip) {
             }
         }
     } else {
-        if (equip.steps_time === 1) {
-            time = "<br> остался <span class='Value'>" + equip.steps_time + " ход</span>";
+        if (effect.steps_time === 1) {
+            time = "<br> остался <span class='Value'>" + effect.steps_time + " ход</span>";
         }
-        if (equip.steps_time > 1 && 5 > effect.steps_time) {
-            time = "<br> осталось <span class='Value'>" + equip.steps_time + " хода</span>";
+        if (effect.steps_time > 1 && 5 > effect.steps_time) {
+            time = "<br> осталось <span class='Value'>" + effect.steps_time + " хода</span>";
         }
-        if (5 <= equip.steps_time) {
-            time = "<br> осталось <span class='Value'>" + equip.steps_time + " ходов</span>";
+        if (5 <= effect.steps_time) {
+            time = "<br> осталось <span class='Value'>" + effect.steps_time + " ходов</span>";
         }
     }
 

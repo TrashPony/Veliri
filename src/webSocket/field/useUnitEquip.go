@@ -51,12 +51,12 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 
 			for _, targetUnit := range targetUnits {
 				if targetUnit.X == msg.ToX && targetUnit.Y == msg.ToY {
-					err := useEquip.ToUnit(targetUnit, equipSlot, client)
+					err := useEquip.ToUnit(gameUnit, targetUnit, equipSlot, client)
 					if err != nil {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
 					} else {
-						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", Unit: targetUnit, AppliedEquip: equipSlot.Equip})
-						updateUseUnitEquipHostileUser(client, activeGame, targetUnit, equipSlot.Equip)
+						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
+						updateUseUnitEquipHostileUser(client, activeGame, gameUnit, targetUnit, equipSlot.Equip)
 					}
 				}
 			}
@@ -66,12 +66,12 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, playerEquip *equip.Equip) {
+func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit, targetUnit *unit.Unit, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
-			_, watch := user.GetHostileUnit(gameUnit.X, gameUnit.Y)
+			_, watch := user.GetHostileUnit(targetUnit.X, targetUnit.Y)
 			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, Unit: gameUnit, AppliedEquip: playerEquip}
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
 			}
 		}
 	}

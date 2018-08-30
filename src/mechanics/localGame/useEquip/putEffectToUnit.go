@@ -9,21 +9,23 @@ import (
 	"errors"
 )
 
-func ToUnit(gameUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
+func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
 
-	if !gameUnit.UseEquip && !useEquipSlot.Used && gameUnit.Power >= useEquipSlot.Equip.UsePower {
+	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
-		gameUnit.Power = gameUnit.Power - useEquipSlot.Equip.UsePower
-		gameUnit.UseEquip = false // todo для тестов false, для игры true
+		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
+
+		useUnit.UseEquip = false // todo для тестов false, для игры true
 
 		useEquipSlot.Used = false // todo для тестов false, для игры true
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
-			AddNewUnitEffect(gameUnit, effect, useEquipSlot.Equip.StepsTime)
+			AddNewUnitEffect(toUseUnit, effect, useEquipSlot.Equip.StepsTime)
 		}
 
-		update.UnitEffects(gameUnit)
+		update.UnitEffects(toUseUnit)
+
 		updateSquad.Squad(client.GetSquad())
 
 		return nil

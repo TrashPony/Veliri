@@ -1,17 +1,19 @@
 function AnimateUseUnitEquip(jsonMessage) {
-
     let equip = JSON.parse(jsonMessage).applied_equip; // id:equip
-    let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);
-    unit.effects = JSON.parse(jsonMessage).unit.effects;
-    unit.body = JSON.parse(jsonMessage).unit.body;
-    unit.power = JSON.parse(jsonMessage).unit.power;
+    let useUnit = GetGameUnitID(JSON.parse(jsonMessage).use_unit.id);
+    let toUnit = GetGameUnitID(JSON.parse(jsonMessage).to_unit.id);
+
+    toUnit.effects = JSON.parse(jsonMessage).to_unit.effects;
+
+    useUnit.body = JSON.parse(jsonMessage).use_unit.body;
+    useUnit.power = JSON.parse(jsonMessage).use_unit.power;
 
     if (equip.name === "repair_kit") {
-        repairKitAnimate(unit);
+        repairKitAnimate(toUnit);
     }
 
     if (equip.name === "energy_shield") {
-        energyShieldAnimate(unit);
+        energyShieldAnimate(toUnit);
     }
 }
 

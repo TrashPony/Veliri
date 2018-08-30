@@ -61,7 +61,8 @@ type SendUseEquip struct {
 	Event        string                                       `json:"event"`
 	UserName     string                                       `json:"user_name"`
 	GameID       int                                          `json:"game_id"`
-	Unit         *unit.Unit                                   `json:"unit"`
+	UseUnit      *unit.Unit                                   `json:"use_unit"`
+	ToUnit       *unit.Unit                                   `json:"to_unit"`
 	AppliedEquip *equip.Equip                                 `json:"applied_equip"`
 	ZoneEffect   map[string]map[string]*coordinate.Coordinate `json:"zone_effect"`
 	XUse         int                                          `json:"x_use"`
