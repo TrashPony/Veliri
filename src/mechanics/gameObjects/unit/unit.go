@@ -27,6 +27,13 @@ type Unit struct {
 	Power int `json:"power"`
 
 	Effects []*effect.Effect `json:"effects"`
+	MS      bool             `json:"ms"`
+	Units   map[int]*Slot    `json:"units"` // в роли ключей карты выступают
+}
+
+type Slot struct {
+	Unit       *Unit `json:"unit"`
+	NumberSlot int   `json:"number_slot"`
 }
 
 func (unit *Unit) GetID() int {

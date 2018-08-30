@@ -51,7 +51,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 			}
 
 			slotUnit.Unit.ID = id
-			UpdateBody(units[slot].Unit, squad.ID, "squad_units_equipping", tx)
+			UpdateBody(units[slot].Unit, squad.ID, tx)
 		}
 
 		if units[slot].Unit != nil && slotUnit.Unit.ID != 0 {
@@ -67,7 +67,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				log.Fatal("update unit squad" + err.Error())
 			}
 
-			UpdateBody(units[slot].Unit, squad.ID, "squad_units_equipping", tx)
+			UpdateBody(units[slot].Unit, squad.ID, tx)
 		}
 	}
 }

@@ -12,15 +12,12 @@ func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, x int
 
 	_, findUnit := client.GetUnit(x, y)
 	_, findHostileUnit := client.GetHostileUnit(x, y)
-	_, findMSHostile := client.GetHostileMatherShip(x, y)
 
-	if ok && !findUnit && !findHostileUnit && !findMSHostile{
-		if !(x == client.GetMatherShip().X && y == client.GetMatherShip().Y) {
-			if gameCoordinate.Move {
-				return gameCoordinate, true
-			} else {
-				return gameCoordinate, false
-			}
+	if ok && !findUnit && !findHostileUnit {
+		if gameCoordinate.Move {
+			return gameCoordinate, true
+		} else {
+			return gameCoordinate, false
 		}
 	}
 

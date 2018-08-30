@@ -2,7 +2,6 @@ package inventory
 
 import (
 	"../player"
-	"../gameObjects/matherShip"
 	"../gameObjects/unit"
 	"../db/get"
 	"../db/updateSquad"
@@ -15,7 +14,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 		newBody := get.Body(idBody)
 
 		if user.GetSquad().MatherShip == nil {
-			user.GetSquad().MatherShip = &matherShip.MatherShip{}
+			user.GetSquad().MatherShip = &unit.Unit{}
 		} else {
 			if user.GetSquad().MatherShip.Body != nil {
 				BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Body, user.GetSquad().MatherShip.HP)
@@ -29,9 +28,10 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 		RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 		user.GetSquad().MatherShip.Body = newBody
 
-		user.GetSquad().MatherShip.Units = make(map[int]*matherShip.UnitSlot) // заполняем ячейки юнитов
+		user.GetSquad().MatherShip.Units = make(map[int]*unit.Slot) // заполняем ячейки юнитов
+
 		for _, slot := range user.GetSquad().MatherShip.Body.EquippingIV {
-			unitSlot := matherShip.UnitSlot{}
+			unitSlot := unit.Slot{}
 			unitSlot.NumberSlot = slot.Number
 			unitSlot.Unit = nil
 			user.GetSquad().MatherShip.Units[slot.Number] = &unitSlot

@@ -3,7 +3,6 @@ package localGame
 import (
 	"../gameObjects/map"
 	"../player"
-	"../gameObjects/matherShip"
 	"../gameObjects/unit"
 )
 
@@ -18,11 +17,6 @@ type Game struct {
 	players     []*player.Player
 	unitStorage []*unit.Unit
 	units       map[int]map[int]*unit.Unit
-	MatherShips map[int]map[int]*matherShip.MatherShip
-}
-
-func (game *Game) SetMatherShips(matherShips map[int]map[int]*matherShip.MatherShip) {
-	game.MatherShips = matherShips
 }
 
 func (game *Game) SetPlayers(players []*player.Player) {
@@ -83,15 +77,6 @@ func (game *Game) GetPlayer(id int, login string) (Players *player.Player) {
 	}
 
 	return nil
-}
-
-func (game *Game) GetMatherShips() (matherShips map[int]map[int]*matherShip.MatherShip) {
-	return game.MatherShips
-}
-
-func (game *Game) GetMatherShip(x, y int) (matherShip *matherShip.MatherShip, find bool) {
-	matherShip, find = game.MatherShips[x][y]
-	return
 }
 
 func (game *Game) GetStep() int {

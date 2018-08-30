@@ -33,7 +33,5 @@ function create() {
     CreateMap();
     CreateMyGameUnits();
     CreateHostileGameUnits();
-    //CreateMyMatherShip();
-    //CreateHostileMatherShips();
     LoadOpenCoordinate();
 }

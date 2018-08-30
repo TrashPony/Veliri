@@ -2,20 +2,18 @@ package get
 
 import (
 	"../../../gameObjects/unit"
-	"../../../gameObjects/matherShip"
 	"../../../localGame"
 )
 
-func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit, map[int]map[int]*matherShip.MatherShip){
+func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit){
 	var units = make(map[int]map[int]*unit.Unit)
 	var unitStorage = make([]*unit.Unit, 0)
-	var motherShips = make(map[int]map[int]*matherShip.MatherShip)
 
 	for _, gamePlayer := range game.GetPlayers() {
 
-		// todo обработка MSEffects
-		gamePlayer.GetMatherShip().Owner = gamePlayer.GetLogin()
-		addMStToMap(motherShips, gamePlayer.GetMatherShip())
+		gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
+		UnitEffects(gamePlayer.GetSquad().MatherShip) // берем эфекты ms
+		addUnitToMap(units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
 
 		for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
 			if playerUnit.Unit != nil {
@@ -34,7 +32,7 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit, m
 		}
 	}
 
-	return units, unitStorage, motherShips
+	return units, unitStorage
 }
 
 func addUnitToMap(units map[int]map[int]*unit.Unit, gameUnit *unit.Unit)  {
@@ -43,15 +41,5 @@ func addUnitToMap(units map[int]map[int]*unit.Unit, gameUnit *unit.Unit)  {
 	} else {
 		units[gameUnit.X] = make(map[int]*unit.Unit)
 		units[gameUnit.X][gameUnit.Y] = gameUnit
-	}
-
-}
-
-func addMStToMap(motherShips map[int]map[int]*matherShip.MatherShip, ms *matherShip.MatherShip)  {
-	if motherShips[ms.X] != nil {
-		motherShips[ms.X][ms.Y] = ms
-	} else {
-		motherShips[ms.X] = make(map[int]*matherShip.MatherShip)
-		motherShips[ms.X][ms.Y] = ms
 	}
 }
