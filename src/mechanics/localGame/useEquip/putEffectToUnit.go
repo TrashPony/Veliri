@@ -24,7 +24,6 @@ func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, c
 		}
 
 		update.UnitEffects(toUseUnit)
-
 		updateSquad.Squad(client.GetSquad())
 
 		return nil

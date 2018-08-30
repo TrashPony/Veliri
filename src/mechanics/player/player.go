@@ -1,7 +1,6 @@
 package player
 
 import (
-	"../gameObjects/equip"
 	"../gameObjects/unit"
 	"../gameObjects/squad"
 	"../gameObjects/coordinate"
@@ -17,11 +16,9 @@ type Player struct {
 	units	           map[string]map[string]*unit.Unit			    // map[X]map[Y]
 	squad  			   *squad.Squad
 	Ready              bool
-
 	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
-
 	gameID             int
-	equips             []*equip.Equip
+
 	LobbyReady		   bool
 	Respawn            *coordinate.Coordinate
 	squads 			   []*squad.Squad

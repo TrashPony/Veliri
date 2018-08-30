@@ -17,7 +17,6 @@ func GetPlaceCoordinate(xCenter, yCenter, watchRadius int, actionGame *localGame
 			if gameCoordinate.Type == "" {
 				_, find = actionGame.GetUnit(zoneCoordinate.X, zoneCoordinate.Y)
 				if !find {
-					//_, find = actionGame.GetMatherShip(zoneCoordinate.X, zoneCoordinate.Y)
 					if !find {
 						if zone != nil {
 							if zone[strconv.Itoa(gameCoordinate.X)] != nil {
