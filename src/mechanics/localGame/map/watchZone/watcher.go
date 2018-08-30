@@ -4,7 +4,6 @@ import (
 	"strconv"
 	"errors"
 	"../../../localGame"
-	"../../../gameObjects/matherShip"
 	"../../../gameObjects/unit"
 	"../../../gameObjects/coordinate"
 )
@@ -16,11 +15,10 @@ type Watcher interface {
 	GetOwnerUser() string
 }
 
-func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, matherShipCoordinate map[int]map[int]*matherShip.MatherShip, Err error) {
+func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, Err error) {
 
 	allCoordinate = make(map[string]*coordinate.Coordinate)
 	unitsCoordinate = make(map[int]map[int]*unit.Unit)
-	matherShipCoordinate = make(map[int]map[int]*matherShip.MatherShip)
 
 	if login == gameObject.GetOwnerUser() {
 
@@ -43,22 +41,13 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 					unitsCoordinate[gameCoordinate.X][gameCoordinate.Y] = unitInMap
 				}
 			} else {
-				var matherShipInMap *matherShip.MatherShip
-				matherShipInMap, ok = game.GetMatherShip(gameCoordinate.X, gameCoordinate.Y)
-				if ok {
-					if matherShipCoordinate[gameCoordinate.X] != nil {
-						matherShipCoordinate[gameCoordinate.X][gameCoordinate.Y] = matherShipInMap
-					} else {
-						matherShipCoordinate[gameCoordinate.X] = make(map[int]*matherShip.MatherShip)
-						matherShipCoordinate[gameCoordinate.X][gameCoordinate.Y] = matherShipInMap
-					}
-				}
+
 			}
 		}
 	} else {
-		return allCoordinate, unitsCoordinate, matherShipCoordinate, errors.New("no owned")
+		return allCoordinate, unitsCoordinate, errors.New("no owned")
 	}
-	return allCoordinate, unitsCoordinate, matherShipCoordinate, nil
+	return allCoordinate, unitsCoordinate, nil
 }
 
 

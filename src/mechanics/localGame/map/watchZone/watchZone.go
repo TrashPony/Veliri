@@ -3,7 +3,6 @@ package watchZone
 import (
 	"../../../localGame"
 	"../../../player"
-	"../../../gameObjects/matherShip"
 	"../../../gameObjects/unit"
 	"../../../gameObjects/coordinate"
 )
@@ -12,7 +11,6 @@ type UpdaterWatchZone struct {
 	CloseCoordinate []*coordinate.Coordinate `json:"close_coordinate"`
 	OpenCoordinate  []*coordinate.Coordinate `json:"open_coordinate"`
 	OpenUnit        []*unit.Unit             `json:"open_unit"`
-	OpenMatherShip  []*matherShip.MatherShip `json:"open_mather_ship"`
 }
 
 // отправляем открытые ячейки, удаляем закрытые
@@ -21,25 +19,21 @@ func UpdateWatchZone(activeGame *localGame.Game, client *player.Player) (*Update
 
 	oldWatchZone := client.GetWatchCoordinates()
 	oldWatchHostileUnits := client.GetHostileUnits()
-	oldWatchHostileMatherShips := client.GetHostileMatherShips()
 
 	client.SetUnits(nil)
 	client.SetHostileUnits(nil)
-	client.SetHostileMatherShips(nil)
 	client.SetWatchCoordinates(nil)
 
 	getAllWatchObject(activeGame, client)
 
 	openCoordinate, closeCoordinate := updateOpenCoordinate(client, oldWatchZone)
 	openUnit, closeUnit := updateHostileUnit(client, oldWatchHostileUnits)
-	openMatherShip, closeMatherShip := updateHostileMatherShip(client, oldWatchHostileMatherShips)
 
-	sendCloseCoordinate := parseCloseCoordinate(closeCoordinate, closeUnit, closeMatherShip, activeGame)
+	sendCloseCoordinate := parseCloseCoordinate(closeCoordinate, closeUnit, activeGame)
 
 	updaterWatchZone.CloseCoordinate = sendCloseCoordinate
 	updaterWatchZone.OpenCoordinate = openCoordinate
 	updaterWatchZone.OpenUnit = openUnit
-	updaterWatchZone.OpenMatherShip = openMatherShip
 
 	return &updaterWatchZone
 }

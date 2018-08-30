@@ -1,9 +1,8 @@
 function UpdateWatchZone(watch) {
     if (watch) {
-        var closeCoordinate = watch.close_coordinate;
-        var openCoordinate = watch.open_coordinate;
-        var openUnits = watch.open_unit;
-        var openMatherShip = watch.open_mather_ship;
+        let closeCoordinate = watch.close_coordinate;
+        let openCoordinate = watch.open_coordinate;
+        let openUnits = watch.open_unit;
 
         if (closeCoordinate) {
             CloseCoordinates(closeCoordinate);
@@ -18,10 +17,6 @@ function UpdateWatchZone(watch) {
                 var openUnit = openUnits.shift();
                 CreateUnit(openUnit)
             }
-        }
-
-        if (openMatherShip) {
-            // TODO добавить структуры
         }
     }
 }

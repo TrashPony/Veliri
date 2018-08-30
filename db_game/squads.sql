@@ -29,30 +29,8 @@ CREATE TABLE squad_units (
 
   /* Характиристики */
   hp                  INT,
-  power               INT
-);
-
-CREATE TABLE squad_mother_ship (
-  id            SERIAL PRIMARY KEY,
-  id_squad      INT REFERENCES squads (id),
-
-  /* из чего состоит мазер шип */
-  id_body       INT REFERENCES body_type (id),       /* ид тела юнита */
-
-  /* Позиция */
-  x             INT,
-  y             INT,
-  rotate        INT,
-
-  /* Игровая статистика */
-  action        BOOLEAN,
-  use_equip     BOOLEAN,
-  target        VARCHAR(64),
-  queue_attack  INT,
-
-  /* Характиристики */
-  hp            INT,
-  power         INT
+  power               INT,
+  mother_ship         BOOLEAN /* является ли этот юнит мазршипом */
 );
 
 CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */
@@ -67,20 +45,6 @@ CREATE TABLE squad_units_equipping ( /* таблица снаряжения ко
   used             BOOLEAN,                              /* если true значит уже использовано и ждет перезарядки */
   steps_for_reload INT,                                  /* сколько шагов осталось до перезарядки */
   hp               INT                                   /* сколько осталось хп у эквипа, до поломки*/
-);
-
-CREATE TABLE squad_mother_ship_equipping ( /* таблица снаряжения которое нацеплино на мазер шипа */
-  id                   SERIAL PRIMARY KEY,
-  id_squad             INT REFERENCES squads (id),
-  type_slot            INT,                                /* тип слота */
-  type                 VARCHAR(64),                        /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo)*/
-  id_squad_unit        INT REFERENCES squad_mother_ship,   /* ид мазершипа к которому прикреплено снаряжение */
-  id_equipping         INT REFERENCES equipping_type (id), /* ид снаряжения */
-  slot_in_body         INT,                                /* слот который занимает снаряжения, тип слота определяется типом слота снаряжения */
-  quantity             INT,                                /* количество предметов в слоте */
-  used                 BOOLEAN,                            /* если true значит уже использовано и ждет перезарядки */
-  steps_for_reload     INT,                                /* сколько шагов осталось до перезарядки */
-  hp                   INT                                 /* сколько осталось хп у эквипа, до поломки*/
 );
 
 CREATE TABLE squad_inventory (                     /* инвентарь отряда не боевой параметр */

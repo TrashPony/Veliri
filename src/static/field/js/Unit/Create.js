@@ -1,4 +1,5 @@
 function CreateUnit(unitStat, inVisible) {
+
     let x = unitStat.x;
     let y = unitStat.y;
 
@@ -25,13 +26,13 @@ function CreateUnit(unitStat, inVisible) {
     let body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
     unit.addChild(body);
     game.physics.arcade.enable(body);
+
     body.inputEnabled = true;             // включаем ивенты на спрайт
     body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
-    //body.body.collideWorldBounds = true;  // границы страницы
-    body.input.pixelPerfectOver = true;   // уберает ивенты овера на пустую зону спрайта
+    body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    body.events.onInputDown.add(SelectUnit, unitStat); // обрабатываем наведение мышки
+    body.events.onInputDown.add(SelectUnit, unitStat);    // обрабатываем наведение мышки
     body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
     body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки
 

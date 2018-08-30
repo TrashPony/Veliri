@@ -55,7 +55,7 @@ INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 6, 6, 8, 3
 INSERT INTO map_constructor (id_map, id_type, x, y, level) VALUES (1, 6, 4, 7, 4);
 
 /* Coordinate Type */
-INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (1, 'respawn' , 'terrain', '', true, true, true, true);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (1, 'respawn' , 'desert', '', true, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (2, '', 'desert', 'wall', false, false, false, false);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (3, '', 'desert', 'terrain_1', false, true, true, true);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (4, '', 'desert', 'terrain_2', false, true, true, true);

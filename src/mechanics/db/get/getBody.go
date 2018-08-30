@@ -4,6 +4,7 @@ import (
 	"../../../dbConnect"
 	"../../gameObjects/detail"
 	"log"
+	"../../gameObjects/unit"
 )
 
 func Body(id int) (body *detail.Body) {
@@ -89,15 +90,9 @@ func BodySlots(body *detail.Body) {
 	}
 }
 
-type Boder interface {
-	GetBody() *detail.Body
-	GetID() int
-}
-
-func BodyEquip(ship Boder, table string) {
+func BodyEquip(ship *unit.Unit) {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id_equipping, slot_in_body, type, type_slot, quantity, used, steps_for_reload, hp "+
-		" FROM " + table +
-		" WHERE id_squad_unit = $1", ship.GetID())
+		" FROM squad_units_equipping WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
 		log.Fatal("get body equip" + err.Error())
 	}

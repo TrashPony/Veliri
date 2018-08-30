@@ -5,7 +5,6 @@ import (
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/equip"
 	"../../mechanics/gameObjects/map"
-	"../../mechanics/gameObjects/matherShip"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/localGame/initGame"
 )
@@ -34,8 +33,6 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			HostileUnits:       usersFieldWs[ws].GetHostileUnits(),
 			UnitStorage:        usersFieldWs[ws].GetUnitsStorage(),
 			Map:                loadGame.GetMap(),
-			MatherShip:         usersFieldWs[ws].GetMatherShip(),
-			HostileMatherShips: usersFieldWs[ws].GetHostileMatherShips(),
 			Watch:              usersFieldWs[ws].GetWatchCoordinates(),
 			GameStep:           loadGame.GetStep(),
 			GamePhase:          loadGame.GetPhase()}
@@ -54,8 +51,6 @@ type LoadGame struct {
 	HostileUnits       map[string]map[string]*unit.Unit             `json:"hostile_units"`
 	UnitStorage        []*unit.Unit                                 `json:"unit_storage"`
 	Map                *_map.Map                                    `json:"map"`
-	MatherShip         *matherShip.MatherShip                       `json:"mather_ship"`
-	HostileMatherShips map[string]map[string]*matherShip.MatherShip `json:"hostile_mather_ships"`
 	Watch              map[string]map[string]*coordinate.Coordinate `json:"watch"`
 	GameStep           int                                          `json:"game_step"`
 	GamePhase          string                                       `json:"game_phase"`

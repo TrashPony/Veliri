@@ -2,7 +2,6 @@ package player
 
 import (
 	"../gameObjects/equip"
-	"../gameObjects/matherShip"
 	"../gameObjects/unit"
 	"../gameObjects/squad"
 	"../gameObjects/coordinate"
@@ -19,7 +18,6 @@ type Player struct {
 	squad  			   *squad.Squad
 	Ready              bool
 
-	hostileMatherShips map[string]map[string]*matherShip.MatherShip // map[X]map[Y]
 	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
 
 	gameID             int

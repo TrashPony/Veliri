@@ -31,7 +31,7 @@ function preload() {
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
 
     //MatherShips MotherTrucker
-    game.load.image('MotherTrucker', 'http://' + window.location.host + '/assets/MotherTrucker.png');
+    game.load.image('Mother', 'http://' + window.location.host + '/assets/Mother.png');
     game.load.image('FuryRoad', 'http://' + window.location.host + '/assets/FuryRoad.png');
 
     // Units
