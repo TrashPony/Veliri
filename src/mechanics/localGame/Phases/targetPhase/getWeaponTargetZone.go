@@ -19,11 +19,11 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) 
 		}
 	}
 
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), weaponRange)
+	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetQ(), gameUnit.GetR(), weaponRange)
 	zone := filter(gameUnit, RadiusCoordinates, activeGame)
 
 	for _, gameCoordinate := range zone {
-		if !(gameCoordinate.X == gameUnit.X && gameCoordinate.Y == gameUnit.Y) {
+		if !(gameCoordinate.X == gameUnit.Q && gameCoordinate.Y == gameUnit.R) {
 			Phases.AddCoordinate(targetCoordinate, gameCoordinate)
 		}
 	}

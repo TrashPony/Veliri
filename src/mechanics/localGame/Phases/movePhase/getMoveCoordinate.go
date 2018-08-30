@@ -11,7 +11,7 @@ import (
 
 func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
 
-	start, _ := activeGame.Map.GetCoordinate(gameUnit.X, gameUnit.Y)
+	start, _ := activeGame.Map.GetCoordinate(gameUnit.Q, gameUnit.R)
 
 	openCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 	closeCoordinate := make(map[string]map[string]*coordinate.Coordinate)

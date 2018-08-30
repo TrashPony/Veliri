@@ -1,8 +1,8 @@
 CREATE TABLE maps (
   id            SERIAL PRIMARY KEY,
   name          VARCHAR(64),
-  x_size        INT,                                 /* размер карты по Х */
-  y_size        INT,                                 /* размер карты по Y */
+  q_size        INT,                                 /* размер карты по Х */
+  r_size        INT,                                 /* размер карты по Y */
   id_type       INT REFERENCES coordinate_type (id), /* определяет основной тип тесктур если они явно не указаны в конструкторе */
   level         INT REFERENCES coordinate_type (id), /* определяет основной уровень координат на карте еще он не перепределен конструктором */
   specification VARCHAR(255)                         /* описание карты */
@@ -12,8 +12,8 @@ CREATE TABLE map_constructor (
   id      SERIAL PRIMARY KEY,
   id_map  INT REFERENCES maps (id),            /* ид карты к которой принадлежит координата */
   id_type INT REFERENCES coordinate_type (id), /* ид типа координаты */
-  x       INT,
-  y       INT,
+  q       INT,
+  r       INT,
   level   INT                                  /* определяет уровень координаты ""примечание 1"" */
 );
 

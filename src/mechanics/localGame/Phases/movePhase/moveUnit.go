@@ -21,7 +21,7 @@ func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game
 	moveTrigger := true
 
 	mp := game.GetMap()
-	start, _ := mp.GetCoordinate(gameUnit.X, gameUnit.Y)
+	start, _ := mp.GetCoordinate(gameUnit.Q, gameUnit.R)
 	end, _ := mp.GetCoordinate(toX, toY)
 
 	path = make([]*TruePatchNode, 0)
@@ -85,12 +85,12 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 	}
 
 	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
-	client.DelUnit(gameUnit.X, gameUnit.Y)
+	client.DelUnit(gameUnit.Q, gameUnit.R)
 
 	rotate := findDirection(pathNode, gameUnit)
 
-	gameUnit.X = pathNode.X // даем новые координаты юниту
-	gameUnit.Y = pathNode.Y
+	gameUnit.Q = pathNode.X // даем новые координаты юниту
+	gameUnit.R = pathNode.Y
 
 	game.SetUnit(gameUnit)
 	client.AddUnit(gameUnit) // добавляем новую позицию юнита
@@ -100,7 +100,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
-	rotate := math.Atan2(float64(pathNode.Y - unit.Y), float64(pathNode.X - unit.X))
+	rotate := math.Atan2(float64(pathNode.Y - unit.R), float64(pathNode.X - unit.Q))
 
 	rotate = rotate * 180/math.Pi
 

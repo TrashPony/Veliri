@@ -30,8 +30,9 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 
 	START_POINT = coordinate.Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
-	WIDTH = gameMap.XSize                                                     // ширина карты
-	HEIGHT = gameMap.YSize                                                    // высота карты
+
+	WIDTH = gameMap.QSize                                                     // ширина карты
+	HEIGHT = -gameMap.QSize - gameMap.RSize                                   // высота карты
 
 	matrix = make([][]coordinate.Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {

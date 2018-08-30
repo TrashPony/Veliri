@@ -9,7 +9,7 @@ import (
 
 func MapList() []gameMap.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps")
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func MapList() []gameMap.Map {
 	var mp gameMap.Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -37,7 +37,7 @@ func MapList() []gameMap.Map {
 
 func Map(id int) gameMap.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps WHERE id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func Map(id int) gameMap.Map {
 	var mp gameMap.Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}

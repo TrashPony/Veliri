@@ -39,6 +39,9 @@ function preload() {
     game.load.spritesheet('tank360', 'http://' + window.location.host + '/assets/tank360.png', 100, 100, 360);
 
     // Map Objects
+
+    game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');
+
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/tree2.png');
     game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/tree3.png');

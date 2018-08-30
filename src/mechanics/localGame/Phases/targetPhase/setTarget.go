@@ -20,7 +20,7 @@ func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetX, targetY int, 
 }
 
 func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{
-	rotate := math.Atan2(float64(targetY - gameUnit.Y), float64(targetX - gameUnit.X))
+	rotate := math.Atan2(float64(targetY - gameUnit.Q), float64(targetX - gameUnit.R))
 
 	rotate = rotate * 180/math.Pi
 

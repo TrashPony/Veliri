@@ -50,7 +50,7 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 	y = yStart
 	err = el / 2
 
-	startCoordinate, find := game.GetMap().GetCoordinate(x, y)
+	startCoordinate, find := game.GetMap().GetCoordinate(x, -y-x)
 	pastCoordinate := startCoordinate
 
 	if find && !startCoordinate.View && filter == "View" {
@@ -74,7 +74,8 @@ func Draw(xStart, yStart int, endCoordinate *coordinate.Coordinate, game *localG
 			y += pdy //цикл идёт по иксу; сдвинуть вверх или вниз, если по y
 		}
 
-		gameCoordinate, find := game.GetMap().GetCoordinate(x, y)
+		gameCoordinate, find := game.GetMap().GetCoordinate(x, -y-x)
+		//y = -x-z     z = y - x
 		if find && filter == "View" &&
 			(!gameCoordinate.View || checkLevelViewCoordinate(gameCoordinate, pastCoordinate) ||
 				checkLevelViewCoordinate(gameCoordinate, startCoordinate)) {

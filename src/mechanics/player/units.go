@@ -7,10 +7,10 @@ import (
 
 func (client *Player) AddUnit(gameUnit *unit.Unit) {
 	if client.units != nil {
-		if client.units[strconv.Itoa(gameUnit.X)] != nil {
-			client.units[strconv.Itoa(gameUnit.X)][strconv.Itoa(gameUnit.Y)] = gameUnit
+		if client.units[strconv.Itoa(gameUnit.Q)] != nil {
+			client.units[strconv.Itoa(gameUnit.Q)][strconv.Itoa(gameUnit.R)] = gameUnit
 		} else {
-			client.units[strconv.Itoa(gameUnit.X)] = make(map[string]*unit.Unit)
+			client.units[strconv.Itoa(gameUnit.Q)] = make(map[string]*unit.Unit)
 			client.AddUnit(gameUnit)
 		}
 	} else {
@@ -21,10 +21,10 @@ func (client *Player) AddUnit(gameUnit *unit.Unit) {
 
 func (client *Player) AddHostileUnit(hostile *unit.Unit) {
 	if client.hostileUnits != nil {
-		if client.hostileUnits[strconv.Itoa(hostile.X)] != nil {
-			client.hostileUnits[strconv.Itoa(hostile.X)][strconv.Itoa(hostile.Y)] = hostile
+		if client.hostileUnits[strconv.Itoa(hostile.Q)] != nil {
+			client.hostileUnits[strconv.Itoa(hostile.Q)][strconv.Itoa(hostile.R)] = hostile
 		} else {
-			client.hostileUnits[strconv.Itoa(hostile.X)] = make(map[string]*unit.Unit)
+			client.hostileUnits[strconv.Itoa(hostile.Q)] = make(map[string]*unit.Unit)
 			client.AddHostileUnit(hostile)
 		}
 	} else {
@@ -41,13 +41,13 @@ func (client *Player) SetUnits(units map[string]map[string]*unit.Unit) () {
 	client.units = units
 }
 
-func (client *Player) GetUnit(x, y int) (gameUnit *unit.Unit, find bool) {
-	gameUnit, find = client.units[strconv.Itoa(x)][strconv.Itoa(y)]
+func (client *Player) GetUnit(q, r int) (gameUnit *unit.Unit, find bool) {
+	gameUnit, find = client.units[strconv.Itoa(q)][strconv.Itoa(r)]
 	return
 }
 
-func (client *Player) DelUnit(x, y int) {
-	delete(client.units[strconv.Itoa(x)], strconv.Itoa(y))
+func (client *Player) DelUnit(q, r int) {
+	delete(client.units[strconv.Itoa(q)], strconv.Itoa(r))
 }
 
 func (client *Player) GetHostileUnits() (units map[string]map[string]*unit.Unit) {
@@ -58,8 +58,8 @@ func (client *Player) SetHostileUnits(units map[string]map[string]*unit.Unit) ()
 	client.hostileUnits = units
 }
 
-func (client *Player) GetHostileUnit(x, y int) (gameUnit *unit.Unit, find bool) {
-	gameUnit, find = client.hostileUnits[strconv.Itoa(x)][strconv.Itoa(y)]
+func (client *Player) GetHostileUnit(q, r int) (gameUnit *unit.Unit, find bool) {
+	gameUnit, find = client.hostileUnits[strconv.Itoa(q)][strconv.Itoa(r)]
 	return
 }
 

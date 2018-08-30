@@ -13,6 +13,7 @@ type Coordinate struct {
 	GameID        int              `json:"game_id"`
 	X             int              `json:"x"`
 	Y             int              `json:"y"`
+	Z			  int			   `json:"z"`
 	State         int              `json:"state"`
 	Effects       []*effect.Effect `json:"effects"`
 	Move          bool             `json:"move"`
@@ -22,6 +23,10 @@ type Coordinate struct {
 	Level         int              `json:"level"`
 	H, G, F       int
 	Parent        *Coordinate
+}
+
+func (coor *Coordinate) GetZ() int {
+	return -coor.Y-coor.X
 }
 
 func (coor *Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины

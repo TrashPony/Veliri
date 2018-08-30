@@ -20,7 +20,7 @@ func selectStorageUnit(msg Message, ws *websocket.Conn) {
 
 			if find {
 				resp := SelectStorageUnit{Event: msg.Event, Unit: storageUnit,
-					PlaceCoordinate: placePhase.GetPlaceCoordinate(client.GetSquad().MatherShip.X, client.GetSquad().MatherShip.Y,
+					PlaceCoordinate: placePhase.GetPlaceCoordinate(client.GetSquad().MatherShip.Q, client.GetSquad().MatherShip.R,
 						client.GetSquad().MatherShip.Body.RangeView, activeGame)}
 				ws.WriteJSON(resp)
 			}

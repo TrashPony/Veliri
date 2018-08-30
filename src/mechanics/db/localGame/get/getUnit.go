@@ -36,10 +36,10 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit){
 }
 
 func addUnitToMap(units map[int]map[int]*unit.Unit, gameUnit *unit.Unit)  {
-	if units[gameUnit.X] != nil { // кладем юнита в матрицу
-		units[gameUnit.X][gameUnit.Y] = gameUnit
+	if units[gameUnit.Q] != nil { // кладем юнита в матрицу
+		units[gameUnit.Q][gameUnit.R] = gameUnit
 	} else {
-		units[gameUnit.X] = make(map[int]*unit.Unit)
-		units[gameUnit.X][gameUnit.Y] = gameUnit
+		units[gameUnit.Q] = make(map[int]*unit.Unit)
+		units[gameUnit.Q][gameUnit.R] = gameUnit
 	}
 }

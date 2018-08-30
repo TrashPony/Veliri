@@ -8,7 +8,7 @@ function create() {
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
 
-    game.world.setBounds(0, 0, game.tileSize * game.map.XSize, game.tileSize * game.map.YSize); //размеры карты
+    game.world.setBounds(0, 0, game.tileSize * game.map.QSize, game.tileSize * game.map.RSize); //размеры карты
 
     game.stage.backgroundColor = "#242424"; //цвет фона
 

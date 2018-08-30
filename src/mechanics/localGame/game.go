@@ -36,16 +36,16 @@ func (game *Game) SetUnitsStorage(unit []*unit.Unit) {
 }
 
 func (game *Game) SetUnit(gameUnit *unit.Unit) {
-	if game.units[gameUnit.X] != nil {
-		game.units[gameUnit.X][gameUnit.Y] = gameUnit
+	if game.units[gameUnit.Q] != nil {
+		game.units[gameUnit.Q][gameUnit.R] = gameUnit
 	} else {
-		game.units[gameUnit.X] = make(map[int]*unit.Unit)
-		game.units[gameUnit.X][gameUnit.Y] = gameUnit
+		game.units[gameUnit.Q] = make(map[int]*unit.Unit)
+		game.units[gameUnit.Q][gameUnit.R] = gameUnit
 	}
 }
 
 func (game *Game) DelUnit(unit *unit.Unit) {
-	delete(game.units[unit.X], unit.Y)
+	delete(game.units[unit.Q], unit.R)
 }
 
 func (game *Game) GetMap() (mp *_map.Map) {

@@ -7,8 +7,8 @@ import (
 type Map struct {
 	Id            int
 	Name          string
-	XSize         int
-	YSize         int
+	QSize         int
+	RSize         int
 	DefaultTypeID int
 	DefaultLevel  int
 	Specification string
@@ -16,7 +16,7 @@ type Map struct {
 	Respawns      int
 }
 
-func (mp *Map) GetCoordinate(x, y int) (coordinate *coordinate.Coordinate, find bool) {
-	coordinate, find = mp.OneLayerMap[x][y]
+func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {
+	coordinate, find = mp.OneLayerMap[q][r]
 	return
 }

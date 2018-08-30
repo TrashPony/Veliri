@@ -12,7 +12,7 @@ import (
 func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.q, mc.r, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -24,7 +24,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 
 	for rows.Next() { // заполняем карту значащами клетками
 		var gameCoordinate coordinate.Coordinate
-		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
+		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Z, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
 			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.PassableEdges, &gameCoordinate.Level)
 		if err != nil {
 			log.Fatal(err)
@@ -33,35 +33,39 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 		gameCoordinate.GameID = game.Id
 		CoordinateEffects(&gameCoordinate)
 
+		gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
+
 		if oneLayerMap[gameCoordinate.X] != nil {
-			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+			oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
 		} else {
 			oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
-			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+			oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
 		}
 	}
 
 	defaultCoordinate := DefaultCoordinateType(mp)
 
-	for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
-		for y := 0; y < mp.YSize; y++ {
-			_, find := oneLayerMap[x][y]
+	for q := 0; q < mp.QSize; q++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
+		for r := 0; r < mp.RSize; r++ {
+			_, find := oneLayerMap[q][r]
 			if !find {
 
 				var gameCoordinate coordinate.Coordinate
 
 				gameCoordinate = defaultCoordinate
-				gameCoordinate.X = x
-				gameCoordinate.Y = y
-				
+
+				gameCoordinate.X = q
+				gameCoordinate.Z = r
+				gameCoordinate.Y = -q-r
+
 				gameCoordinate.GameID = game.Id
 				CoordinateEffects(&gameCoordinate)
 
 				if oneLayerMap[gameCoordinate.X] != nil {
-					oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+					oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
 				} else {
 					oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
-					oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+					oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
 				}
 			}
 		}

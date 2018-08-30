@@ -39,8 +39,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 
 		for _, slotUnit := range user.GetSquad().MatherShip.Units {
 			if slotUnit.Unit != nil {
-				slotUnit.Unit.X = 0
-				slotUnit.Unit.Y = 0
+				slotUnit.Unit.Q = 0
+				slotUnit.Unit.R = 0
 				slotUnit.Unit.OnMap = false
 				slotUnit.Unit.Target = nil
 				slotUnit.Unit.QueueAttack = 0
@@ -50,8 +50,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		// todo обновление информации внутри сквада для мазр шипов, положение, на карте, снять все прошлые эффекты и тд
 		// todo обновление информации внутри сквада для эквипа, обнулить перезарядку
 
-		user.GetSquad().MatherShip.X = user.GetRespawn().X
-		user.GetSquad().MatherShip.Y = user.GetRespawn().Y
+		user.GetSquad().MatherShip.Q = user.GetRespawn().X
+		user.GetSquad().MatherShip.R = user.GetRespawn().Y
 		user.GetSquad().MatherShip.Target = nil
 		user.GetSquad().MatherShip.QueueAttack = 0
 

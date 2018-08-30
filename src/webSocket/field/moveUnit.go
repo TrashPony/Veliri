@@ -92,7 +92,7 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			}
 
 			// пытаемся взять юнита по конечной координате
-			_, okGetEndXY := user.GetWatchCoordinate(gameUnit.X, gameUnit.Y)
+			_, okGetEndXY := user.GetWatchCoordinate(gameUnit.Q, gameUnit.R)
 
 			// если конечная точка пути видима то добавляем юнита
 			if okGetEndXY {

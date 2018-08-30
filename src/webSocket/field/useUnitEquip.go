@@ -50,7 +50,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 			}
 
 			for _, targetUnit := range targetUnits {
-				if targetUnit.X == msg.ToX && targetUnit.Y == msg.ToY {
+				if targetUnit.Q == msg.ToX && targetUnit.R == msg.ToY {
 					err := useEquip.ToUnit(gameUnit, targetUnit, equipSlot, client)
 					if err != nil {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
@@ -69,7 +69,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit, targetUnit *unit.Unit, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
-			_, watch := user.GetHostileUnit(targetUnit.X, targetUnit.Y)
+			_, watch := user.GetHostileUnit(targetUnit.Q, targetUnit.R)
 			if watch {
 				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
 			}

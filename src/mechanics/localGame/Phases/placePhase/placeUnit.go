@@ -7,10 +7,10 @@ import (
 	"../../../localGame"
 )
 
-func PlaceUnit(gameUnit *unit.Unit, x,y int, actionGame *localGame.Game, client *player.Player) error {
+func PlaceUnit(gameUnit *unit.Unit, q,r int, actionGame *localGame.Game, client *player.Player) error {
 
-	gameUnit.SetX(x) //значит тут мы присваиваем юниту го координаты куда его поставили
-	gameUnit.SetY(y) //значит тут мы присваиваем юниту го координаты куда его поставили
+	gameUnit.SetQ(q) //значит тут мы присваиваем юниту го координаты куда его поставили
+	gameUnit.SetR(r) //значит тут мы присваиваем юниту го координаты куда его поставили
 	gameUnit.SetOnMap(true) // устанавливаем ему параметр который говорит что он на игровом поле
 
 	actionGame.DelUnitStorage(gameUnit.ID) // юдаяем его из трюма в обьекте игры
