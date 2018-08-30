@@ -14,14 +14,14 @@ func ToUnit(gameUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *pla
 	if !gameUnit.UseEquip && !useEquipSlot.Used && gameUnit.Power >= useEquipSlot.Equip.UsePower {
 
 		gameUnit.Power = gameUnit.Power - useEquipSlot.Equip.UsePower
-		gameUnit.UseEquip = true
+		gameUnit.UseEquip = false // todo для тестов false, для игры true
 
-		useEquipSlot.Used = true
+		useEquipSlot.Used = false // todo для тестов false, для игры true
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
 			AddNewUnitEffect(gameUnit, effect, useEquipSlot.Equip.StepsTime)
-		} // TODO разрулить время на которое должен работать эфект
+		}
 
 		update.UnitEffects(gameUnit)
 		updateSquad.Squad(client.GetSquad())

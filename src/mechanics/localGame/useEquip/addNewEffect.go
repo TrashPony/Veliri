@@ -33,9 +33,11 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect, time int) {
 
 	if newEffect.Type == "unit_always_animate" || newEffect.Type == "animate" {
 		if addAnimate {
+			newEffect.StepsTime = time // кладем время эфекта, т.к. оно храниться не в типе эфекта а в эквипе
 			gameUnit.Effects = append(gameUnit.Effects, newEffect)
 		}
 	} else {
+		newEffect.StepsTime = time // кладем время эфекта, т.к. оно храниться не в типе эфекта а в эквипе
 		gameUnit.Effects = append(gameUnit.Effects, newEffect)
 	}
 }
@@ -70,9 +72,11 @@ func AddNewCoordinateEffect(gameCoordinate *coordinate.Coordinate, newEffect *ef
 
 	if newEffect.Type == "unit_always_animate" || newEffect.Type == "animate" {
 		if addAnimate {
+			newEffect.StepsTime = time // кладем время эфекта, т.к. оно храниться не в типе эфекта а в эквипе
 			gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
 		}
 	} else {
+		newEffect.StepsTime = time // кладем время эфекта, т.к. оно храниться не в типе эфекта а в эквипе
 		gameCoordinate.Effects = append(gameCoordinate.Effects, newEffect)
 	}
 }
