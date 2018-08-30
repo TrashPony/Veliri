@@ -14,11 +14,10 @@ func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, c
 	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
 		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
 		useUnit.UseEquip = false // todo для тестов false, для игры true
-
 		useEquipSlot.Used = false // todo для тестов false, для игры true
-		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
 			AddNewUnitEffect(toUseUnit, effect, useEquipSlot.Equip.StepsTime)

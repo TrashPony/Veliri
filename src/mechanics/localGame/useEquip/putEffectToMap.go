@@ -1,41 +1,55 @@
 package useEquip
 
 import (
-	"../../../mechanics/gameObjects/coordinate"
-	"../../../mechanics/localGame"
-	"../../../mechanics/gameObjects/equip"
-	"../../../mechanics/player"
-	"../../../mechanics/db/localGame/update"
+	"../../gameObjects/coordinate"
+	"../../localGame"
+	"../../gameObjects/equip"
+	"../../player"
+	"../../db/localGame/update"
+	"../../gameObjects/unit"
+	"../../gameObjects/detail"
+	"../../db/updateSquad"
 	"strconv"
 )
 
-func ToMap(useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquip *equip.Equip, client *player.Player) map[string]map[string]*coordinate.Coordinate {
+func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot, client *player.Player) map[string]map[string]*coordinate.Coordinate {
+	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
-	AddAnchor(useCoordinate, useEquip, "anchor") // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
-	AddAnchor(useCoordinate, useEquip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки
+		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
-	zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate.X, useCoordinate.Y, useEquip.Region)
+		useUnit.UseEquip = false // todo для тестов false, для игры true
+		useEquipSlot.Used = false // todo для тестов false, для игры true
 
-	effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
+		AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
+		AddAnchor(useCoordinate, useEquipSlot.Equip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки
 
-	for _, zoneCoordinate := range zoneCoordinates {
-		gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
-		if find {
-			for _, effect := range useEquip.Effects { // переносим все эфекты из эквипа выбраной координате
-				if effect.Type != "anchor" && effect.Type != "animate" {
-					newEffect := *effect // создаем копию эфекта что бы обнулить ид и добавить в бд как новую
-					newEffect.ID = 0
-					AddNewCoordinateEffect(gameCoordinate, &newEffect, useEquip.StepsTime)
+		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate.X, useCoordinate.Y, useEquipSlot.Equip.Region)
+
+		effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
+
+		for _, zoneCoordinate := range zoneCoordinates {
+			gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
+			if find {
+				for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из эквипа выбраной координате
+					if effect.Type != "anchor" && effect.Type != "animate" {
+						newEffect := *effect // создаем копию эфекта что бы обнулить ид и добавить в бд как новую
+						newEffect.ID = 0
+						AddNewCoordinateEffect(gameCoordinate, &newEffect, useEquipSlot.Equip.StepsTime)
+					}
 				}
+				AddCoordinate(effectCoordinates, gameCoordinate)
+				update.CoordinateEffects(gameCoordinate)
 			}
-			AddCoordinate(effectCoordinates, gameCoordinate)
-			update.CoordinateEffects(gameCoordinate)
 		}
+
+		update.Player(client)
+		updateSquad.Squad(client.GetSquad())
+
+		return effectCoordinates
+	} else {
+		return nil
 	}
-
-	update.Player(client)
-
-	return effectCoordinates
 }
 
 func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string)  {

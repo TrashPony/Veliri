@@ -1,4 +1,5 @@
 function AnimateUseUnitEquip(jsonMessage) {
+
     let equip = JSON.parse(jsonMessage).applied_equip; // id:equip
     let useUnit = GetGameUnitID(JSON.parse(jsonMessage).use_unit.id);
     let toUnit = GetGameUnitID(JSON.parse(jsonMessage).to_unit.id);
