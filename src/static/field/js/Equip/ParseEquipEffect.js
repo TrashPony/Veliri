@@ -2,18 +2,18 @@
 function ParseEffect(effect, equip) {
     // todo жажда рефакторинга и дополнения для других эфектов
 
-    var effectsTR = document.createElement("tr");
-    var effectsTD = document.createElement("td");
+    let effectsTR = document.createElement("tr");
+    let effectsTD = document.createElement("td");
 
     effectsTD.colSpan = 2;
     effectsTD.style.fontSize = "8pt";
     effectsTD.style.backgroundColor = "#4c4c4c";
     effectsTD.style.borderRadius = "5px";
 
-    var type = "";
-    var quantity = "";
-    var time = "";
-    var region = "";
+    let type = "";
+    let quantity = "";
+    let time = "";
+    let region = "";
 
     if (equip !== undefined && equip.region > 0) {
         if (equip.region === 1) {
@@ -25,27 +25,27 @@ function ParseEffect(effect, equip) {
 
     if (equip !== undefined) {
         if (effect.forever) {
-            if (effect.steps_time === 1) {
+            if (equip.steps_time === 1) {
                 time = ""
             } else {
-                time = "<br> в течение <span class='Value'>" + effect.steps_time + " ходов</span>";
+                time = "<br> в течение <span class='Value'>" + equip.steps_time + " ходов</span>";
             }
         } else {
-            if (effect.steps_time > 4) {
-                time = "<br> на <span class='Value'>" + effect.steps_time + " ходов</span>";
+            if (equip.steps_time > 4) {
+                time = "<br> на <span class='Value'>" + equip.steps_time + " ходов</span>";
             } else {
-                time = "<br> на <span class='Value'>" + effect.steps_time + " хода</span>";
+                time = "<br> на <span class='Value'>" + equip.steps_time + " хода</span>";
             }
         }
     } else {
-        if (effect.steps_time === 1) {
-            time = "<br> остался <span class='Value'>" + effect.steps_time + " ход</span>";
+        if (equip.steps_time === 1) {
+            time = "<br> остался <span class='Value'>" + equip.steps_time + " ход</span>";
         }
-        if (effect.steps_time > 1 && 5 > effect.steps_time) {
-            time = "<br> осталось <span class='Value'>" + effect.steps_time + " хода</span>";
+        if (equip.steps_time > 1 && 5 > effect.steps_time) {
+            time = "<br> осталось <span class='Value'>" + equip.steps_time + " хода</span>";
         }
-        if (5 <= effect.steps_time) {
-            time = "<br> осталось <span class='Value'>" + effect.steps_time + " ходов</span>";
+        if (5 <= equip.steps_time) {
+            time = "<br> осталось <span class='Value'>" + equip.steps_time + " ходов</span>";
         }
     }
 

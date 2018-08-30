@@ -39,5 +39,4 @@ function LoadGame(jsonMessage) {
     InitPlayer();
 
     LoadHoldUnits();
-    //ChoiceEquip();
 }

@@ -1,16 +1,16 @@
 function TipEquipOn(equip) {
-    var tip = document.createElement("div");
+    let tip = document.createElement("div");
     tip.id = "TipEquip";
 
-    var table = document.createElement("table");
-    var headTR = document.createElement("tr");
-    var headTH = document.createElement("th");
+    let table = document.createElement("table");
+    let headTR = document.createElement("tr");
+    let headTH = document.createElement("th");
 
-    headTH.innerHTML = "<span class='Value'> " + equip.type + " </span>";
+    headTH.innerHTML = "<span class='Value'> " + equip.name + " </span>";
     headTR.appendChild(headTH);
 
-    var iconTD = document.createElement("td");
-    iconTD.style.backgroundImage = "url(/assets/" + equip.type + ".png)";
+    let iconTD = document.createElement("td");
+    iconTD.style.backgroundImage = "url(/assets/" + equip.name + ".png)";
     iconTD.style.width = "20px";
     iconTD.style.height = "20px";
     iconTD.style.borderRadius = "5px";
@@ -18,8 +18,8 @@ function TipEquipOn(equip) {
     headTR.appendChild(iconTD);
     table.appendChild(headTR);
 
-    var specificationTR = document.createElement("tr");
-    var specificationTD = document.createElement("td");
+    let specificationTR = document.createElement("tr");
+    let specificationTD = document.createElement("td");
     specificationTD.innerHTML = equip.specification;
     specificationTD.style.backgroundColor = "#4c4c4c";
     specificationTD.style.borderRadius = "5px";
@@ -28,11 +28,11 @@ function TipEquipOn(equip) {
     specificationTR.appendChild(specificationTD);
     table.appendChild(specificationTR);
 
-    for (var i = 0; i < equip.effects.length; i++) {
+    for (let i = 0; i < equip.effects.length; i++) {
         if (equip.effects[i].type !== "unit_always_animate" && equip.effects[i].type !== "animate" &&
             equip.effects[i].type !== "zone_always_animate" && equip.effects[i].type !== "anchor") {
 
-            var effectsTR = ParseEffect(equip.effects[i], equip);
+            let effectsTR = ParseEffect(equip.effects[i], equip);
             table.appendChild(effectsTR);
         }
     }

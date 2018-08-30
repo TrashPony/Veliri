@@ -53,6 +53,15 @@ function FillingEquipPanel(equipPanel, unit) {
                         number_slot: unit.body.equippingIII[i].number_slot
                     }));
                 };
+
+                equipping.onmouseover = function () {
+                    TipEquipOn(unit.body.equippingIII[i].equip);
+                };
+
+                equipping.onmouseout = function () {
+                    TipEquipOff();
+                };
+
             } else {
                 equipping.className = "equipSlotIII notAllow";
             }
@@ -82,6 +91,13 @@ function FillingEquipPanel(equipPanel, unit) {
                         equip_type: 2,
                         number_slot: unit.body.equippingII[i].number_slot
                     }));
+                };
+                equipping.onmouseover = function () {
+                    TipEquipOn(unit.body.equippingII[i].equip);
+                };
+
+                equipping.onmouseout = function () {
+                    TipEquipOff();
                 };
             } else {
                 equipping.className = "equipSlotII notAllow";

@@ -1,15 +1,15 @@
 function TipEffectOn(effect) {
-    var tip = document.createElement("div");
+    let tip = document.createElement("div");
     tip.id = "TipEffect";
 
-    var table = document.createElement("table");
-    var headTR = document.createElement("tr");
-    var headTH = document.createElement("th");
+    let table = document.createElement("table");
+    let headTR = document.createElement("tr");
+    let headTH = document.createElement("th");
 
     headTH.innerHTML = "<span class='Value'> " + effect.name + " " + effect.level + " </span>";
     headTR.appendChild(headTH);
 
-    var iconTD = document.createElement("td");
+    let iconTD = document.createElement("td");
     iconTD.style.backgroundImage = "url(/assets/effects/" + effect.name + "_" + effect.level + ".png)";
     iconTD.style.width = "20px";
     iconTD.style.height = "20px";
@@ -18,7 +18,7 @@ function TipEffectOn(effect) {
     headTR.appendChild(iconTD);
     table.appendChild(headTR);
 
-    var effectsTR = ParseEffect(effect);
+    let effectsTR = ParseEffect(effect);
     table.appendChild(effectsTR);
 
     tip.appendChild(table);

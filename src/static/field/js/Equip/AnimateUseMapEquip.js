@@ -1,9 +1,6 @@
 function AnimateUseMapEquip(jsonMessage) {
     console.log(jsonMessage);
 
-    let equipBox = document.getElementById(JSON.parse(jsonMessage).applied_equip.id + ":equip"); // id:equip
-    RemoveEquipCell(equipBox);
-
     let xUse = JSON.parse(jsonMessage).x_use;
     let yUse = JSON.parse(jsonMessage).y_use;
     let zone_effect = JSON.parse(jsonMessage).zone_effect;
