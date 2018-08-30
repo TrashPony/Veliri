@@ -43,7 +43,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 		if units[slot].Unit != nil && slotUnit.Unit.ID == 0 { // если ид 0 значит этого юнита создали в програме и его еще нет в бд
 			id := 0
 			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, slot, x, y, rotate, on_map, action, target, queue_attack, hp, use_equip, power, mother_ship) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 				squad.ID, slotUnit.Unit.Body.ID, slot, slotUnit.Unit.X, slotUnit.Unit.Y, slotUnit.Unit.Rotate, slotUnit.Unit.OnMap, slotUnit.Unit.Action,
 				parseTarget(slotUnit.Unit), slotUnit.Unit.QueueAttack, slotUnit.Unit.HP, slotUnit.Unit.UseEquip, slotUnit.Unit.Power, false).Scan(&id)
 			if err != nil {
