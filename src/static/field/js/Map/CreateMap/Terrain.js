@@ -14,6 +14,6 @@ function CreateTerrain(coordinate, q, r) {
     coordinate.fogSprite = fogSprite;
 
 
-    let label = game.add.text(20, 15, q + "," + r);
+    let label = game.add.text(10, 10, "x" + coordinate.x + ", z" + coordinate.z + "\n y" + coordinate.y);
     floorSprite.addChild(label);
 }

@@ -1,10 +1,10 @@
 function LoadOpenCoordinate() {
     console.log(game.user.watch);
-    for (let x in game.user.watch) {
-        if (game.user.watch.hasOwnProperty(x)) {
-            for (let y in game.user.watch[x]) {
-                if (game.user.watch[x].hasOwnProperty(y)) {
-                    OpenCoordinate(game.user.watch[x][y].x, game.user.watch[x][y].z);
+    for (let q in game.user.watch) {
+        if (game.user.watch.hasOwnProperty(q)) {
+            for (let r in game.user.watch[q]) {
+                if (game.user.watch[q].hasOwnProperty(r)) {
+                    OpenCoordinate(game.user.watch[q][r].q, game.user.watch[q][r].r);
                 }
             }
         }

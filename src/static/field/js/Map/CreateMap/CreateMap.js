@@ -32,7 +32,7 @@ function CreateMap() {
             floorSprite.events.onInputDown.add(RemoveSelect);
             floorSprite.z = 0;
 
-            let label = game.add.text(20, 15, r + "," + " " + q + "\n" + Number(-q-r));
+            let label = game.add.text(20, 15, q + "," + r);
             floorSprite.addChild(label);
 
             coordinate.sprite = floorSprite;

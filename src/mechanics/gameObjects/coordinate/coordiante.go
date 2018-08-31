@@ -6,14 +6,16 @@ import (
 )
 
 type Coordinate struct {
-	ID			  int 			   `json:"id"`
+	ID            int              `json:"id"`
 	Type          string           `json:"type"`
 	TextureFlore  string           `json:"texture_flore"`
 	TextureObject string           `json:"texture_object"`
 	GameID        int              `json:"game_id"`
 	X             int              `json:"x"`
 	Y             int              `json:"y"`
-	Z			  int			   `json:"z"`
+	Z             int              `json:"z"`
+	R             int              `json:"r"`
+	Q             int              `json:"q"`
 	State         int              `json:"state"`
 	Effects       []*effect.Effect `json:"effects"`
 	Move          bool             `json:"move"`
@@ -26,9 +28,24 @@ type Coordinate struct {
 }
 
 func (coor *Coordinate) GetZ() int {
-	return -coor.X-coor.Y
+	return coor.Z
 }
 
+func (coor *Coordinate) GetY() int {
+	return coor.Y
+}
+
+func (coor *Coordinate) GetX() int {
+	return coor.X
+}
+
+func (coor *Coordinate) GetR() int {
+	return coor.X
+}
+
+func (coor *Coordinate) GetQ() int {
+	return coor.X
+}
 func (coor *Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины
 	if target.X != coor.X && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
 		target.Y != coor.Y { // можно реализовывать стоимость пути по различной поверхности

@@ -24,7 +24,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 
 	for rows.Next() { // заполняем карту значащами клетками
 		var gameCoordinate coordinate.Coordinate
-		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Z, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
+		err := rows.Scan(&gameCoordinate.Q, &gameCoordinate.R, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
 			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.PassableEdges, &gameCoordinate.Level)
 		if err != nil {
 			log.Fatal(err)
@@ -33,13 +33,16 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 		gameCoordinate.GameID = game.Id
 		CoordinateEffects(&gameCoordinate)
 
+		// в бд карта храниться в хексовых координатах
+		gameCoordinate.X = gameCoordinate.Q - (gameCoordinate.R - (gameCoordinate.R & 1)) / 2
+		gameCoordinate.Z = gameCoordinate.R
 		gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
 
-		if oneLayerMap[gameCoordinate.X] != nil {
-			oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
+		if oneLayerMap[gameCoordinate.Q] != nil {
+			oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
 		} else {
-			oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
-			oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
+			oneLayerMap[gameCoordinate.Q] = make(map[int]*coordinate.Coordinate)
+			oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
 		}
 	}
 
@@ -54,18 +57,21 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 
 				gameCoordinate = defaultCoordinate
 
-				gameCoordinate.X = q
+				gameCoordinate.Q = q
+				gameCoordinate.R = r
+				// в бд карта храниться в хексовых координатах
+				gameCoordinate.X = q - (r - (r & 1)) / 2
 				gameCoordinate.Z = r
-				gameCoordinate.Y = -q-r
+				gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
 
 				gameCoordinate.GameID = game.Id
 				CoordinateEffects(&gameCoordinate)
 
-				if oneLayerMap[gameCoordinate.X] != nil {
-					oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
+				if oneLayerMap[gameCoordinate.Q] != nil {
+					oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
 				} else {
-					oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
-					oneLayerMap[gameCoordinate.X][gameCoordinate.Z] = &gameCoordinate
+					oneLayerMap[gameCoordinate.Q] = make(map[int]*coordinate.Coordinate)
+					oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
 				}
 			}
 		}

@@ -29,19 +29,19 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 		//PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
 
 		for _, gameCoordinate := range RadiusCoordinates{
-			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.Z)
+			unitInMap, ok := game.GetUnit(gameCoordinate.Q,gameCoordinate.R)
 
-			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.X, gameCoordinate.Z)
-			if find { // TODO костыль // TODO проеб сылок координата gameCoordinate не так что у игры >_<
-				allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Z)] = newCoordinate
+			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.Q, gameCoordinate.R)
+			if find {
+				allCoordinate[strconv.Itoa(gameCoordinate.Q)+":"+strconv.Itoa(gameCoordinate.R)] = newCoordinate
 			}
 
 			if ok {
-				if unitsCoordinate[gameCoordinate.X] != nil {
-					unitsCoordinate[gameCoordinate.X][gameCoordinate.Z] = unitInMap
+				if unitsCoordinate[gameCoordinate.Q] != nil {
+					unitsCoordinate[gameCoordinate.Q][gameCoordinate.R] = unitInMap
 				} else {
-					unitsCoordinate[gameCoordinate.X] = make(map[int]*unit.Unit)
-					unitsCoordinate[gameCoordinate.X][gameCoordinate.Z] = unitInMap
+					unitsCoordinate[gameCoordinate.Q] = make(map[int]*unit.Unit)
+					unitsCoordinate[gameCoordinate.Q][gameCoordinate.R] = unitInMap
 				}
 			}
 		}

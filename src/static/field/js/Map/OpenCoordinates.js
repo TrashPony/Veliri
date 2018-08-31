@@ -1,5 +1,5 @@
-function OpenCoordinate(x, z) {
-    let openFog = game.map.OneLayerMap[x][z].fogSprite; //.hide = true;
+function OpenCoordinate(q, r) {
+    let openFog = game.map.OneLayerMap[q][r].fogSprite; //.hide = true;
     game.add.tween(openFog).to({alpha: 0}, 1500, Phaser.Easing.Linear.None, true, 0);
 }
 
