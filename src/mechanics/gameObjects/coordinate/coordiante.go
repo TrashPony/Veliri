@@ -26,7 +26,7 @@ type Coordinate struct {
 }
 
 func (coor *Coordinate) GetZ() int {
-	return -coor.Y-coor.X
+	return -coor.X-coor.Y
 }
 
 func (coor *Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины

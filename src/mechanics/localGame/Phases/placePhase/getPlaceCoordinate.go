@@ -2,13 +2,12 @@ package placePhase
 
 import (
 	"../../../gameObjects/coordinate"
-	"strconv"
 	"../../../localGame"
 )
 
 func GetPlaceCoordinate(xCenter, yCenter, watchRadius int, actionGame *localGame.Game) (zone map[string]map[string]*coordinate.Coordinate) {
 
-	tmpCoordinates := coordinate.GetCoordinatesRadius(xCenter, yCenter, watchRadius)
+	/*tmpCoordinates := coordinate.GetCoordinatesRadius(xCenter, yCenter, watchRadius)
 
 	for _, zoneCoordinate := range tmpCoordinates {
 		gameCoordinate, find := actionGame.GetMap().GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
@@ -34,6 +33,6 @@ func GetPlaceCoordinate(xCenter, yCenter, watchRadius int, actionGame *localGame
 				}
 			}
 		}
-	}
+	}*/
 	return zone
 }

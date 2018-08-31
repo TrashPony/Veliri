@@ -24,7 +24,7 @@ func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame 
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки
 
-		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate.X, useCoordinate.Y, useEquipSlot.Equip.Region)
+		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate, useEquipSlot.Equip.Region)
 
 		effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
 

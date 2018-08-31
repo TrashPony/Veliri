@@ -4,7 +4,6 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/equip"
 	"../../../gameObjects/unit"
-	"../../../localGame/Phases"
 	"../../../localGame"
 	"../../../player"
 )
@@ -12,14 +11,14 @@ import (
 func GetEquipAllTargetZone(gameUnit *unit.Unit, equip *equip.Equip, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
 	targetCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetQ(), gameUnit.GetR(), equip.Radius)
+	/*RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetQ(), gameUnit.GetR(), equip.Radius)
 	zone := filter(gameUnit, RadiusCoordinates, activeGame)
 
 	for _, gameCoordinate := range zone {
 		if !(gameCoordinate.X == gameUnit.Q && gameCoordinate.Y == gameUnit.R) {
 			Phases.AddCoordinate(targetCoordinate, gameCoordinate)
 		}
-	}
+	}*/
 
 	return targetCoordinate
 }

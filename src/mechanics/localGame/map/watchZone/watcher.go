@@ -23,15 +23,17 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 
 	if login == gameObject.GetOwnerUser() {
 
-		RadiusCoordinates := coordinate.GetCoordinatesRadius(gameObject.GetQ(), gameObject.GetY(), gameObject.GetWatchZone())
-		PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
+		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 
-		for _, gameCoordinate := range PermCoordinates{
-			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.GetZ())
+		RadiusCoordinates := coordinate.GetCoordinatesRadius(centerCoordinate, gameObject.GetWatchZone())
+		//PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
 
-			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.X, gameCoordinate.GetZ())
+		for _, gameCoordinate := range RadiusCoordinates{
+			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.Z)
+
+			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.X, gameCoordinate.Z)
 			if find { // TODO костыль // TODO проеб сылок координата gameCoordinate не так что у игры >_<
-				allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.GetZ())] = newCoordinate
+				allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Z)] = newCoordinate
 			}
 
 			if ok {
