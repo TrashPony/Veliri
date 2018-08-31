@@ -1,40 +1,40 @@
-function CreateObjects(coordinate) {
+function CreateObjects(coordinate, x, y) {
     var object;
 
     if (coordinate.texture_object === "terrain_1") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.33, 0.70, 45);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.33, 0.70, 45);
     }
 
     if (coordinate.texture_object === "terrain_2") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.42, 0.75, 45);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.42, 0.75, 45);
     }
 
     if (coordinate.texture_object === "terrain_3") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0, -0.5, 0.8, 45);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0, -0.5, 0.8, 45);
     }
 
     if (coordinate.texture_object === "sand_stone_04") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
     if (coordinate.texture_object === "sand_stone_05") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
     if (coordinate.texture_object === "sand_stone_06") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
     if (coordinate.texture_object === "sand_stone_07") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
     if (coordinate.texture_object === "sand_stone_08") {
-        object = gameObjectCreate(coordinate.x, coordinate.y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
     if (coordinate.texture_object === "crater") {
-        object = game.floorObjectLayer.create(coordinate.x * game.tileSize, coordinate.y * game.tileSize, coordinate.texture_object);
+        object = game.floorObjectLayer.create(x - 100, y, coordinate.texture_object);
         object.inputEnabled = true;
         object.events.onInputOut.add(TipOff);
         object.events.onInputDown.add(RemoveSelect);
@@ -47,7 +47,7 @@ function CreateObjects(coordinate) {
 
 function gameObjectCreate(x, y, texture, spriteAnchorX, spriteAnchorY, ShadowOffsetX, ShadowOffsetY, angle) {
 
-    var shadow = game.floorObjectLayer.create((x * game.tileSize), (y * game.tileSize) + game.shadowYOffset, texture);
+    let shadow = game.floorObjectLayer.create(x - 100, y + game.shadowYOffset, texture);
     shadow.anchor.setTo(ShadowOffsetX, ShadowOffsetY);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
@@ -57,7 +57,7 @@ function gameObjectCreate(x, y, texture, spriteAnchorX, spriteAnchorY, ShadowOff
     shadow.input.pixelPerfectOver = true;
     shadow.input.pixelPerfectClick = true;
 
-    var object = game.floorObjectLayer.create(x * game.tileSize, y * game.tileSize, texture);
+    let object = game.floorObjectLayer.create(x - 100, y, texture);
     object.inputEnabled = true;
     object.events.onInputOut.add(TipOff);
     object.events.onInputDown.add(RemoveSelect);

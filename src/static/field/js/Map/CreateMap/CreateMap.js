@@ -39,6 +39,10 @@ function CreateMap() {
             coordinate.fogSprite = fogSprite;
 
             startX += horizontalOffset;
+
+            if (coordinate.texture_object !== "") {
+                CreateObjects(coordinate, startX, startY);
+            }
         }
     }
 

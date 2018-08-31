@@ -4,7 +4,7 @@ function LoadGame(jsonMessage) {
     let gameMap = JSON.parse(jsonMessage).map;
 
     let tileSize = 100; // ширина и высота спрайта в сетке грида
-    game = new Phaser.Game(GetWidth(tileSize, gameMap), GetHeight(tileSize, gameMap), Phaser.CANVAS, 'main', {
+    game = new Phaser.Game(1000, GetHeight(tileSize, gameMap), Phaser.CANVAS, 'main', {
         preload: preload,
         create: create,
         update: update,

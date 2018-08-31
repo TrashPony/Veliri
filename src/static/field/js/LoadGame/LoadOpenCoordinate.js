@@ -1,5 +1,4 @@
 function LoadOpenCoordinate() {
-    console.log(game.user.watch);
     for (let q in game.user.watch) {
         if (game.user.watch.hasOwnProperty(q)) {
             for (let r in game.user.watch[q]) {
