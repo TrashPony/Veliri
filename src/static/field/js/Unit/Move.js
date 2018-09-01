@@ -85,7 +85,7 @@ function CheckPath(unit) {
     }
 
     if (unit.sprite) {
-        unit.rotate = pathNode.unit_rotate;
+        unit.rotate = pathNode.unit_rotate; // тут приходят фактическое положение на карте
         unit.watch = pathNode.watch_node;
         unit.movePoint = pathNode.path_node;
     }
@@ -131,19 +131,27 @@ function MoveUnit() {
                         StopUnit(unit);
                     } else {
 
-                        if (unit.spriteAngle === unit.rotate) {
-                            MoveToCell(unit);
-                        } else {
-                            StopUnit(unit);
-                        }
-
                         let moveSprite = game.map.OneLayerMap[unit.movePoint.q][unit.movePoint.r].sprite;
+
                         let x = moveSprite.x + moveSprite.width / 2;
                         let y = moveSprite.y + moveSprite.height / 2;
 
+                        let markerMove = game.add.sprite(x, y); // пустой спрайт что бы юнит мог ориентироваться
+                        markerMove.anchor.setTo(0.5, 0.5);
+
+                        if (unit.spriteAngle === unit.rotate) {
+                            MoveToCell(unit);
+                        } else {
+                            unit.rotate = Math.round(game.physics.arcade.angleBetween(unit.sprite, markerMove) * 180 / 3.14);
+                            if (unit.rotate < 0) { // тут мы берем реальные градусы до цели, что бы спрайт не уехал
+                                unit.rotate = unit.rotate + 360;
+                            }
+                            StopUnit(unit);
+                        }
+
                         let dist = game.physics.arcade.distanceToXY(unit.sprite, x, y);
 
-                        if (Math.round(dist) >= -40 && Math.round(dist) <= 40) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                        if (Math.round(dist) >= -5 && Math.round(dist) <= 5) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
                             delete game.units[unit.q][unit.r];
 
@@ -161,7 +169,7 @@ function MoveUnit() {
                             }
 
                             unit.movePoint = null;
-                            //todo UpdateWatchZone(unit.watch);
+                            UpdateWatchZone(unit.watch);
 
                             if (unit.path.length > 0) {
                                 StopUnit(unit);

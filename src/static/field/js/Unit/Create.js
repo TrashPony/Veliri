@@ -3,12 +3,15 @@ function CreateUnit(unitStat, inVisible) {
     let r = unitStat.r;
 
     let cell = game.map.OneLayerMap[q][r].sprite;
+    let x = cell.x + cell.width / 2;
+    let y = cell.y + cell.height / 2;
+
     let unit;
 
     if (game.user.name === unitStat.owner) {
-        unit = game.floorObjectLayer.create((cell.x + 50) + game.shadowXOffset, (cell.y + 40) + game.shadowYOffset, 'MySelectUnit', 0) ;
+        unit = game.floorObjectLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'MySelectUnit', 0) ;
     } else {
-        unit = game.floorObjectLayer.create((cell.x + 50) + game.shadowXOffset, (cell.y + 40) + game.shadowYOffset, 'HostileSelectUnit', 0);
+        unit = game.floorObjectLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'HostileSelectUnit', 0);
     }
 
     game.physics.enable(unit, Phaser.Physics.ARCADE);
