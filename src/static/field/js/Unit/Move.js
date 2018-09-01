@@ -1,5 +1,4 @@
 function CreatePathToUnit(jsonMessage) {
-    console.log(jsonMessage);
     let error = JSON.parse(jsonMessage).error;
 
     if (error === null || error === "") {
