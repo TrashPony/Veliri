@@ -1,6 +1,6 @@
 function CreatePathToUnit(jsonMessage) {
     let error = JSON.parse(jsonMessage).error;
-
+    
     if (error === null || error === "") {
 
         let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита

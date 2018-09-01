@@ -18,7 +18,11 @@ function DeleteMarkLastPathCell(cellState) {
     if (cellState) {
         let q = cellState.q;
         let r = cellState.r;
-        let mark = game.map.OneLayerMap[q][r].sprite.getChildAt(0);
-        mark.destroy();
+
+        for (let i in game.map.OneLayerMap[q][r].sprite.children) {
+            if (game.map.OneLayerMap[q][r].sprite.children[i].key === "MarkMoveLastCell") {
+                game.map.OneLayerMap[q][r].sprite.children[i].destroy()
+            }
+        }
     }
 }

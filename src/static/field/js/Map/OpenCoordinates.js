@@ -4,7 +4,6 @@ function OpenCoordinate(q, r) {
 }
 
 function OpenCoordinates(coordinates) {
-    console.log(coordinates);
     while (coordinates.length > 0) {
         let coordinate = coordinates.shift();
         let openFog = game.map.OneLayerMap[coordinate.q][coordinate.r].fogSprite; //.hide = true;

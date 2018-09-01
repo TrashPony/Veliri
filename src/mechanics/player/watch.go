@@ -7,10 +7,10 @@ import (
 
 func (client *Player) AddCoordinate(gameCoordinate *coordinate.Coordinate) { // Todo AddWatchCoordinate
 	if client.watch != nil {
-		if client.watch[strconv.Itoa(gameCoordinate.X)] != nil {
-			client.watch[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
+		if client.watch[strconv.Itoa(gameCoordinate.Q)] != nil {
+			client.watch[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)] = gameCoordinate
 		} else {
-			client.watch[strconv.Itoa(gameCoordinate.X)] = make(map[string]*coordinate.Coordinate)
+			client.watch[strconv.Itoa(gameCoordinate.Q)] = make(map[string]*coordinate.Coordinate)
 			client.AddCoordinate(gameCoordinate)
 		}
 	} else {
@@ -19,8 +19,8 @@ func (client *Player) AddCoordinate(gameCoordinate *coordinate.Coordinate) { // 
 	}
 }
 
-func (client *Player) DelWatchCoordinate(x, y int) {
-	delete(client.watch[strconv.Itoa(x)], strconv.Itoa(y))
+func (client *Player) DelWatchCoordinate(q, r int) {
+	delete(client.watch[strconv.Itoa(q)], strconv.Itoa(r))
 }
 
 func (client *Player) GetWatchCoordinates() (coordinates map[string]map[string]*coordinate.Coordinate) {
@@ -31,7 +31,7 @@ func (client *Player) SetWatchCoordinates(coordinates map[string]map[string]*coo
 	client.watch = coordinates
 }
 
-func (client *Player) GetWatchCoordinate(x, y int) (gameCoordinate *coordinate.Coordinate, find bool) {
-	gameCoordinate, find = client.watch[strconv.Itoa(x)][strconv.Itoa(y)]
+func (client *Player) GetWatchCoordinate(q, r int) (gameCoordinate *coordinate.Coordinate, find bool) {
+	gameCoordinate, find = client.watch[strconv.Itoa(q)][strconv.Itoa(r)]
 	return
 }

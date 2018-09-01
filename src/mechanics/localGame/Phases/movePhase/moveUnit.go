@@ -36,9 +36,14 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 
 			errorMove, unitRotate := Move(gameUnit, pathNode, client, end, game)
 
-			if errorMove != nil && errorMove.Error() == "cell is busy" {
-				moveTrigger = false
-				break
+			if errorMove != nil {
+				if errorMove.Error() == "cell is busy" {
+					moveTrigger = false
+					break
+				}
+				if errorMove.Error() == "end cell is busy" {
+					break
+				}
 			} else {
 				truePatchNode := TruePatchNode{}
 
@@ -67,13 +72,13 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *localGame.Game) (error, int) {
 
 	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
-		_, ok := client.GetHostileUnit(end.Q, end.R)
+		_, ok := game.GetUnit(end.Q, end.R)
 		if ok {
 			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 			return errors.New("end cell is busy"), 0
 		}
 	} else {
-		_, ok := client.GetHostileUnit(pathNode.Q, pathNode.R)
+		_, ok := game.GetUnit(pathNode.Q, pathNode.R)
 		if ok {
 			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 		}
