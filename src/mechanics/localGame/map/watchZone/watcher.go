@@ -26,9 +26,9 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 
 		RadiusCoordinates := coordinate.GetCoordinatesRadius(centerCoordinate, gameObject.GetWatchZone())
-		//PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
+		PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
 
-		for _, gameCoordinate := range RadiusCoordinates{
+		for _, gameCoordinate := range PermCoordinates{
 			unitInMap, ok := game.GetUnit(gameCoordinate.Q,gameCoordinate.R)
 
 			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.Q, gameCoordinate.R)

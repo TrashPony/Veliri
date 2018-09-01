@@ -3,14 +3,12 @@ package targetPhase
 import (
 	"../../map/watchZone"
 	"../../../localGame"
-	"../../map/bresenhamLineFilter"
-	"strconv"
 	"../../../gameObjects/coordinate"
 )
 
 func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {
 
-	watch = make(map[string]*coordinate.Coordinate)
+	/*watch = make(map[string]*coordinate.Coordinate)
 
 	watcherCoordinate, _ := game.GetMap().GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 	watch[strconv.Itoa(watcherCoordinate.X)+":"+strconv.Itoa(watcherCoordinate.Y)] = watcherCoordinate
@@ -25,7 +23,7 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 				watch[strconv.Itoa(passedCoordinate.X)+":"+strconv.Itoa(passedCoordinate.Y)] = passedCoordinate
 			}
 		}
-	}
+	}*/
 
 	return
 }
