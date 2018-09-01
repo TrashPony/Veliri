@@ -1,29 +1,88 @@
-function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, typeLine, selector) {
+function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typeLine, selector) {
+    let topLeft = false;
+    let topRight = false;
     let left = false;
     let right = false;
-    let top = false;
-    let bot = false;
+    let botLeft = false;
+    let botRight = false;
+
     let sprite;
     let line;
 
-    if (placeCoordinate.hasOwnProperty(Number(x) + 1)) {
-        if (placeCoordinate[Number(x) + 1].hasOwnProperty(y)) {
-            right = true;
-        }
-    }
+    /*
+        соседи гексов беруться по разному в зависимости от четности строки
+        // even {Q,R}
 
-    if (placeCoordinate.hasOwnProperty(Number(x) - 1)) {
-        if (placeCoordinate[Number(x) - 1].hasOwnProperty(y)) {
+           {0,-1}  {+1,-1}
+        {-1,0} {0,0} {+1,0}
+           {0,+1}  {+1,+1}
+
+        // odd
+          {-1,-1}  {0,-1}
+        {-1,0} {0,0} {+1,0}
+          {-1,+1}  {0,+1}
+    */
+
+    if (placeCoordinates.hasOwnProperty(Number(q) - 1)) {
+        if (placeCoordinates[Number(q) - 1].hasOwnProperty(Number(r))) {
             left = true;
         }
     }
 
-    if (placeCoordinate[x].hasOwnProperty(Number(y) - 1)) {
-        top = true;
+    if (placeCoordinates.hasOwnProperty(Number(q) + 1)) {
+        if (placeCoordinates[Number(q) + 1].hasOwnProperty(Number(r))) {
+            right = true;
+        }
     }
 
-    if (placeCoordinate[x].hasOwnProperty(Number(y) + 1)) {
-        bot = true;
+    if (r % 2 !== 0) {
+        if (placeCoordinates.hasOwnProperty(Number(q))) {
+            if (placeCoordinates[Number(q)].hasOwnProperty(Number(r) - 1)) {
+                topLeft = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q) + 1)) {
+            if (placeCoordinates[Number(q) + 1].hasOwnProperty(Number(r) - 1)) {
+                topRight = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q))) {
+            if (placeCoordinates[Number(q)].hasOwnProperty(Number(r) + 1)) {
+                botLeft = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q) + 1)) {
+            if (placeCoordinates[Number(q) + 1].hasOwnProperty(Number(r) + 1)) {
+                botRight = true;
+            }
+        }
+    } else {
+        if (placeCoordinates.hasOwnProperty(Number(q) - 1)) {
+            if (placeCoordinates[Number(q) - 1].hasOwnProperty(Number(r) - 1)) {
+                topLeft = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q))) {
+            if (placeCoordinates[Number(q)].hasOwnProperty(Number(r) - 1)) {
+                topRight = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q) - 1)) {
+            if (placeCoordinates[Number(q) - 1].hasOwnProperty(Number(r) + 1)) {
+                botLeft = true;
+            }
+        }
+
+        if (placeCoordinates.hasOwnProperty(Number(q))) {
+            if (placeCoordinates[Number(q)].hasOwnProperty(Number(r) + 1)) {
+                botRight = true;
+            }
+        }
     }
 
     if (addEmpty) {
@@ -31,85 +90,28 @@ function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, type
         if (selector === "target") sprite = game.SelectLayer.create(cellSprite.x, cellSprite.y, 'selectTarget');
     }
 
-    if (right && left && !top && bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
+    if (!left) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 4);
     }
 
-    if (right && !left && top && bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
-        line.anchor.setTo(1, 0);
-        line.angle = -90;
+    if (!right) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 1);
     }
 
-    if (!right && left && top && bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
-        line.anchor.setTo(0, 1);
-        line.angle = 90;
+    if (!topLeft) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 5);
     }
 
-    if (right && left && top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_1');
-        line.anchor.setTo(0, 1);
-        line.scale.y *= -1;
+    if (!topRight) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 0);
     }
 
-    if (!right && left && top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
-        line.anchor.setTo(0, 1);
-        line.scale.y *= -1;
+    if (!botLeft) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 3);
     }
 
-    if (right && !left && !top && bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
-        line.anchor.setTo(1, 0);
-        line.angle = -90;
-    }
-
-    if (right && !left && top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
-        line.anchor.setTo(1, 1);
-        line.scale.x *= -1;
-        line.scale.y *= -1;
-    }
-
-    if (!right && left && !top && bot) {
-        typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_2');
-    }
-
-    if (right && left && !top && !bot) {
-        typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_4');
-    }
-
-    if (!right && !left && top && bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_4');
-        line.anchor.setTo(1, 0);
-        line.angle = -90;
-    }
-
-    if (!right && !left && top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
-        line.anchor.setTo(1, 1);
-        line.angle = -180;
-    }
-
-    if (!right && left && !top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
-        line.anchor.setTo(0, 1);
-        line.angle = 90;
-    }
-
-    if (right && !left && !top && !bot) {
-        line = typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
-        line.anchor.setTo(1, 0);
-        line.angle = -90;
-    }
-
-    if (!right && !left && !top && bot) {
-        typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_3');
-    }
-
-    if (!right && !left && !top && !bot) {
-        typeLine.create(cellSprite.x, cellSprite.y, 'select' + selectClass + '_5');
+    if (!botRight) {
+        typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 2);
     }
 
     return sprite

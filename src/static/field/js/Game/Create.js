@@ -15,10 +15,10 @@ function create() {
     game.floorLayer = game.add.group();
 
     game.SelectLayer = game.add.group();
-    game.SelectLayer.alpha = 0.3;
+    game.SelectLayer.alpha = 0.4;
 
     game.SelectLineLayer = game.add.group();
-    game.SelectLineLayer.alpha = 0.7;
+    game.SelectLineLayer.alpha = 0.9;
     game.add.tween(game.SelectLineLayer).to( { alpha: 0.2 }, 1500, "Linear").loop(true).yoyo(true).start();
 
     game.SelectTargetLineLayer = game.add.group();

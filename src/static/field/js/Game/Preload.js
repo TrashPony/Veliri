@@ -2,28 +2,15 @@ function preload() {
     game.stage.disableVisibilityChange = true; // не дает оставиться выполнения скрипта если окно скрыто
 
     // Select
-    game.load.image('selectPlace_1', 'http://' + window.location.host + '/assets/select/place1.png');
-    game.load.image('selectPlace_2', 'http://' + window.location.host + '/assets/select/place2.png');
-    game.load.image('selectPlace_3', 'http://' + window.location.host + '/assets/select/place3.png');
-    game.load.image('selectPlace_4', 'http://' + window.location.host + '/assets/select/place4.png');
-    game.load.image('selectPlace_5', 'http://' + window.location.host + '/assets/select/place5.png');
-
-    game.load.image('selectMove_1', 'http://' + window.location.host + '/assets/select/move1.png');
-    game.load.image('selectMove_2', 'http://' + window.location.host + '/assets/select/move2.png');
-    game.load.image('selectMove_3', 'http://' + window.location.host + '/assets/select/move3.png');
-    game.load.image('selectMove_4', 'http://' + window.location.host + '/assets/select/move4.png');
-    game.load.image('selectMove_5', 'http://' + window.location.host + '/assets/select/move5.png');
-
-    game.load.image('selectTarget_1', 'http://' + window.location.host + '/assets/select/target1.png');
-    game.load.image('selectTarget_2', 'http://' + window.location.host + '/assets/select/target2.png');
-    game.load.image('selectTarget_3', 'http://' + window.location.host + '/assets/select/target3.png');
-    game.load.image('selectTarget_4', 'http://' + window.location.host + '/assets/select/target4.png');
-    game.load.image('selectTarget_5', 'http://' + window.location.host + '/assets/select/target5.png');
-
+        // line
+    game.load.spritesheet('linePlace', 'http://' + window.location.host + '/assets/select/place.png', 80, 100, 6);
+    game.load.spritesheet('lineMove', 'http://' + window.location.host + '/assets/select/move.png', 80, 100, 6);
+    game.load.spritesheet('lineTarget', 'http://' + window.location.host + '/assets/select/target.png', 80, 100, 6);
+        // unit
     game.load.spritesheet('MySelectUnit', 'http://' + window.location.host + '/assets/select/mySelectUnit.png', 100, 100, 3);
     game.load.spritesheet('HostileSelectUnit', 'http://' + window.location.host + '/assets/select/hostileUnitSelect.png', 100, 100, 3);
-
-    game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 100, 100, 6);
+        // zone
+    game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
     game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 100, 100, 3);
 
     //Equip_Animate

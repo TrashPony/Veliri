@@ -9,58 +9,69 @@ import (
 
 func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map) (res map[string]map[string]*coordinate.Coordinate) {
 	/*
-	соседи гексов беруться по разному в зависимости от четности строки
-			// even
-			   {-1,0}  {-1,+1}
-			{0,-1} {0,0} {0,+1}
-			   {+1,0}  {+1,+1}
+        соседи гексов беруться по разному в зависимости от четности строки
+        // even {Q,R}
 
-			// odd
-			  {-1,-1}  {-1,0}
-			{0,-1} {0,0} {0,+1}
-			  {-1,+1}  {+1,0}
+           {0,-1}  {+1,-1}
+        {-1,0} {0,0} {+1,0}
+           {0,+1}  {+1,+1}
+
+        // odd
+          {-1,-1}  {0,-1}
+        {-1,0} {0,0} {+1,0}
+          {-1,+1}  {0,+1}
 	*/
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
-	NeighboursOne, oneOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R)
-	if oneOk && checkLevelCoordinate(curr, NeighboursOne) {
-		Phases.AddCoordinate(res, NeighboursOne)
+	neighboursLeft, left := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R)
+	if left && checkLevelCoordinate(curr, neighboursLeft) {
+		Phases.AddCoordinate(res, neighboursLeft)
 	}
 
-	NeighboursTwo, twoOk := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R - 1)
-	if twoOk && checkLevelCoordinate(curr, NeighboursTwo) {
-		Phases.AddCoordinate(res, NeighboursTwo)
-	}
-
-	NeighboursThree, threeOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R)
-	if threeOk && checkLevelCoordinate(curr, NeighboursThree) {
-		Phases.AddCoordinate(res, NeighboursThree)
-	}
-
-	NeighboursFour, fourOk := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R + 1)
-	if fourOk && checkLevelCoordinate(curr, NeighboursFour) {
-		Phases.AddCoordinate(res, NeighboursFour)
+	NeighboursRight, right := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R)
+	if right && checkLevelCoordinate(curr, NeighboursRight) {
+		Phases.AddCoordinate(res, NeighboursRight)
 	}
 
 	if curr.R % 2 != 0 {
-		NeighboursFive, fiveOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R - 1)
-		if fiveOk && checkLevelCoordinate(curr, NeighboursFive) {
-			Phases.AddCoordinate(res, NeighboursFive)
+		NeighboursTopLeft, topLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R - 1)
+		if topLeft && checkLevelCoordinate(curr, NeighboursTopLeft) {
+			Phases.AddCoordinate(res, NeighboursTopLeft)
 		}
 
-		NeighboursSix, sixOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R + 1)
-		if sixOk && checkLevelCoordinate(curr, NeighboursSix) {
-			Phases.AddCoordinate(res, NeighboursSix)
+		NeighboursTopRight, topRight := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R - 1)
+		if topRight && checkLevelCoordinate(curr, NeighboursTopRight) {
+			Phases.AddCoordinate(res, NeighboursTopRight)
+		}
+
+		NeighboursBotLeft, botLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R + 1)
+		if botLeft && checkLevelCoordinate(curr, NeighboursBotLeft) {
+			Phases.AddCoordinate(res, NeighboursBotLeft)
+		}
+
+		NeighboursBotRight, botRight := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R + 1)
+		if botRight && checkLevelCoordinate(curr, NeighboursBotRight) {
+			Phases.AddCoordinate(res, NeighboursBotRight)
 		}
 	} else {
-		NeighboursFive, fiveOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R - 1)
-		if fiveOk && checkLevelCoordinate(curr, NeighboursFive) {
-			Phases.AddCoordinate(res, NeighboursFive)
+		NeighboursTopLeft, topLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R - 1)
+		if topLeft && checkLevelCoordinate(curr, NeighboursTopLeft) {
+			Phases.AddCoordinate(res, NeighboursTopLeft)
 		}
 
-		NeighboursSix, sixOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R + 1)
-		if sixOk && checkLevelCoordinate(curr, NeighboursSix) {
-			Phases.AddCoordinate(res, NeighboursSix)
+		NeighboursTopRight, topRight := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R - 1)
+		if topRight && checkLevelCoordinate(curr, NeighboursTopRight) {
+			Phases.AddCoordinate(res, NeighboursTopRight)
+		}
+
+		NeighboursBotLeft, botLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R + 1)
+		if botLeft && checkLevelCoordinate(curr, NeighboursBotLeft) {
+			Phases.AddCoordinate(res, NeighboursBotLeft)
+		}
+
+		NeighboursBotRight, botRight := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R + 1)
+		if botRight && checkLevelCoordinate(curr, NeighboursBotRight) {
+			Phases.AddCoordinate(res, NeighboursBotRight)
 		}
 	}
 
