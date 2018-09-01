@@ -1,5 +1,4 @@
 function ChangePhase(jsonMessage) {
-    console.log(jsonMessage);
 
     game.Step = JSON.parse(jsonMessage).game_step;
     game.Phase = JSON.parse(jsonMessage).game_phase;

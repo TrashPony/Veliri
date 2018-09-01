@@ -1,5 +1,4 @@
 function CreateUnit(unitStat, inVisible) {
-    console.log(unitStat);
     let q = unitStat.q;
     let r = unitStat.r;
 

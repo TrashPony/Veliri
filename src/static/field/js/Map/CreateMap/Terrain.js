@@ -17,13 +17,13 @@ function CreateTerrain(coordinate, x, y, q, r) {
     coordinate.fogSprite = fogSprite;
 
     if (coordinate.level === 3) {
-        let style = { font: "16px Arial", fill: "#ffa92b", align: "center" };
+        let style = { font: "24px Arial", fill: "#ffa92b", align: "center" };
         let label = game.add.text(20, 50, coordinate.level, style);
         floorSprite.addChild(label);
     }
 
     if (coordinate.level === 4) {
-        let style = { font: "16px Arial", fill: "#ff3f41", align: "center" };
+        let style = { font: "24px Arial", fill: "#ff3f41", align: "center" };
         let label = game.add.text(20, 50, coordinate.level, style);
         floorSprite.addChild(label);
     }

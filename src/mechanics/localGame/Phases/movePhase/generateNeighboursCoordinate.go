@@ -8,78 +8,63 @@ import (
 )
 
 func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map) (res map[string]map[string]*coordinate.Coordinate) {
-	// берет все соседние клетки от текущей
+	/*
+	соседи гексов беруться по разному в зависимости от четности строки
+			// even
+			   {-1,0}  {-1,+1}
+			{0,-1} {0,0} {0,+1}
+			   {+1,0}  {+1,+1}
+
+			// odd
+			  {-1,-1}  {-1,0}
+			{0,-1} {0,0} {0,+1}
+			  {-1,+1}  {+1,0}
+	*/
 	res = make(map[string]map[string]*coordinate.Coordinate)
-	curr, ok := gameMap.GetCoordinate(curr.X, curr.Y)
-	if !ok {
-		return
-	}
-	//строго лево
-	leftCoordinate, left := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y)
-	if left && checkLevelCoordinate(curr, leftCoordinate) {
-		Phases.AddCoordinate(res, leftCoordinate)
+
+	NeighboursOne, oneOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R)
+	if oneOk && checkLevelCoordinate(curr, NeighboursOne) {
+		Phases.AddCoordinate(res, NeighboursOne)
 	}
 
-	//строго право
-	rightCoordinate, right := checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y)
-	if right && checkLevelCoordinate(curr, rightCoordinate)  {
-		Phases.AddCoordinate(res, rightCoordinate)
+	NeighboursTwo, twoOk := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R - 1)
+	if twoOk && checkLevelCoordinate(curr, NeighboursTwo) {
+		Phases.AddCoordinate(res, NeighboursTwo)
 	}
 
-	//верх центр
-	topCoordinate, top := checkValidForMoveCoordinate(client, gameMap, curr.X, curr.Y-1)
-	if top && checkLevelCoordinate(curr, topCoordinate) {
-		Phases.AddCoordinate(res, topCoordinate)
+	NeighboursThree, threeOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R)
+	if threeOk && checkLevelCoordinate(curr, NeighboursThree) {
+		Phases.AddCoordinate(res, NeighboursThree)
 	}
 
-	//низ центр
-	bottomCoordinate, bottom := checkValidForMoveCoordinate(client, gameMap, curr.X, curr.Y+1)
-	if bottom && checkLevelCoordinate(curr, bottomCoordinate) {
-		Phases.AddCoordinate(res, bottomCoordinate)
+	NeighboursFour, fourOk := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R + 1)
+	if fourOk && checkLevelCoordinate(curr, NeighboursFour) {
+		Phases.AddCoordinate(res, NeighboursFour)
 	}
 
-	//верх лево
-	gameCoordinate, find := checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y-1)
-	if find {
-		checkEdgesCoordinate(curr, leftCoordinate, topCoordinate, gameCoordinate, res)
-	}
+	if curr.R % 2 != 0 {
+		NeighboursFive, fiveOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R - 1)
+		if fiveOk && checkLevelCoordinate(curr, NeighboursFive) {
+			Phases.AddCoordinate(res, NeighboursFive)
+		}
 
-	//верх право
-	gameCoordinate, find = checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y-1)
-	if find {
-		checkEdgesCoordinate(curr, rightCoordinate, topCoordinate, gameCoordinate, res)
-	}
+		NeighboursSix, sixOk := checkValidForMoveCoordinate(client, gameMap, curr.Q + 1, curr.R + 1)
+		if sixOk && checkLevelCoordinate(curr, NeighboursSix) {
+			Phases.AddCoordinate(res, NeighboursSix)
+		}
+	} else {
+		NeighboursFive, fiveOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R - 1)
+		if fiveOk && checkLevelCoordinate(curr, NeighboursFive) {
+			Phases.AddCoordinate(res, NeighboursFive)
+		}
 
-	//низ лево
-	gameCoordinate, find = checkValidForMoveCoordinate(client, gameMap, curr.X-1, curr.Y+1)
-	if find {
-		checkEdgesCoordinate(curr, leftCoordinate, bottomCoordinate, gameCoordinate, res)
-	}
-
-	//низ право
-	gameCoordinate, find = checkValidForMoveCoordinate(client, gameMap, curr.X+1, curr.Y+1)
-	if find {
-		checkEdgesCoordinate(curr, rightCoordinate, bottomCoordinate, gameCoordinate, res)
+		NeighboursSix, sixOk := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R + 1)
+		if sixOk && checkLevelCoordinate(curr, NeighboursSix) {
+			Phases.AddCoordinate(res, NeighboursSix)
+		}
 	}
 
 	return
-}
-
-func checkEdgesCoordinate(curr, edgCorOne, edgCorTwo, gameCoordinate *coordinate.Coordinate, res map[string]map[string]*coordinate.Coordinate) {
-	if (edgCorOne != nil && edgCorOne.PassableEdges) && (edgCorTwo != nil && edgCorTwo.PassableEdges) {
-		// смотрим можно ли пройти прилежашие координаты по углам
-		if checkLevelCoordinate(curr, edgCorOne) && checkLevelCoordinate(curr, edgCorTwo){
-			// сравниваем прилежащие координаты на предмет проходимости по высоте с текущей
-			if checkLevelCoordinate(gameCoordinate, edgCorOne) && checkLevelCoordinate(gameCoordinate, edgCorTwo) {
-				// сравниваем будующую координату на предмет проходимости по высоте с прилежащими координатами
-				if checkLevelCoordinate(curr, gameCoordinate) {
-					// сравниваем текущую координату на предмет проходимости по высоте с будущей координатами
-					  // немного упоротый метод но работает отлично
-					Phases.AddCoordinate(res, gameCoordinate)
-				}
-			}
-		}
-	}
 }
 
 func checkLevelCoordinate(one, two *coordinate.Coordinate) bool  {

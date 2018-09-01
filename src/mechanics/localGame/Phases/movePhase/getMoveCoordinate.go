@@ -20,7 +20,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 
 	for _, xLine := range startMatrix {
 		for _, gameCoordinate := range xLine {
-			_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
+			_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
 			if find {
 				Phases.AddCoordinate(openCoordinate, gameCoordinate)
 			}
@@ -33,9 +33,9 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 				matrix := generateNeighboursCoordinate(client, gameCoordinate, activeGame.Map)
 				for _, xLine := range matrix {
 					for _, gameCoordinate := range xLine {
-						_, ok := openCoordinate[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)]
+						_, ok := openCoordinate[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)]
 						if !ok {
-							_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
+							_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
 							if find {
 								Phases.AddCoordinate(closeCoordinate, gameCoordinate)
 							}
@@ -47,7 +47,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 
 		for _, xLine := range closeCoordinate {
 			for _, gameCoordinate := range xLine {
-				_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.X, gameCoordinate.Y)
+				_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
 				if find {
 					Phases.AddCoordinate(openCoordinate, gameCoordinate)
 				}

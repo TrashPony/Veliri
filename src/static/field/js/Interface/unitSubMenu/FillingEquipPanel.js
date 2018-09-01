@@ -40,7 +40,7 @@ function FillingEquipPanel(equipPanel, unit) {
         if (unit.body.equippingIII.hasOwnProperty(i) && unit.body.equippingIII[i].equip) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
-            console.log(unit.body.equippingIII[i]);
+
             if (!unit.body.equippingIII[i].used && !unit.use_equip) {
                 equipping.className = "equipSlotIII Active";
                 equipping.onclick = function () {

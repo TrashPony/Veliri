@@ -6,12 +6,12 @@ import (
 	"../../../player"
 )
 
-func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, x int, y int) (*coordinate.Coordinate, bool) {
+func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, q int, r int) (*coordinate.Coordinate, bool) {
 
-	gameCoordinate, ok := gameMap.GetCoordinate(x, y)
+	gameCoordinate, ok := gameMap.GetCoordinate(q, r)
 
-	_, findUnit := client.GetUnit(x, y)
-	_, findHostileUnit := client.GetHostileUnit(x, y)
+	_, findUnit := client.GetUnit(q, r)
+	_, findHostileUnit := client.GetHostileUnit(q, r)
 
 	if ok && !findUnit && !findHostileUnit {
 		if gameCoordinate.Move {

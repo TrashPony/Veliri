@@ -1,26 +1,28 @@
 function SelectMoveCoordinateCreate(jsonMessage) {
 
     let moveCoordinate = JSON.parse(jsonMessage).move;
+    console.log(moveCoordinate);
 
-    let unitX = JSON.parse(jsonMessage).unit.x;
-    let unitY = JSON.parse(jsonMessage).unit.y;
+    let unitQ = JSON.parse(jsonMessage).unit.q;
+    let unitR = JSON.parse(jsonMessage).unit.r;
     let unitID = JSON.parse(jsonMessage).unit.id;
 
     game.SelectLineLayer.visible = true;
 
-    for (let x in moveCoordinate) {
-        if (moveCoordinate.hasOwnProperty(x)) {
-            for (let y in moveCoordinate[x]) {
-                if (moveCoordinate[x].hasOwnProperty(y)) {
+    for (let q in moveCoordinate) {
+        if (moveCoordinate.hasOwnProperty(q)) {
+            for (let r in moveCoordinate[q]) {
+                if (moveCoordinate[q].hasOwnProperty(r)) {
 
-                    let cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
-                    let selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move', true, game.SelectLineLayer, "move");
+                    let cellSprite = game.map.OneLayerMap[q][r].sprite;
 
-                    selectSprite.MoveX = moveCoordinate[x][y].x;
-                    selectSprite.MoveY = moveCoordinate[x][y].y;
+                    let selectSprite = MarkZone(cellSprite, moveCoordinate, q, r, 'Move', true, game.SelectLineLayer, "move");
 
-                    selectSprite.unitX = unitX;
-                    selectSprite.unitY = unitY;
+                    selectSprite.MoveQ = q;
+                    selectSprite.MoveR = r;
+
+                    selectSprite.unitQ = unitQ;
+                    selectSprite.unitR = unitR;
                     selectSprite.UnitID = unitID;
 
                     selectSprite.inputEnabled = true;
@@ -42,10 +44,10 @@ function SelectMoveCoordinate(selectSprite) {
         field.send(JSON.stringify({
             event: "MoveUnit",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.unitX),
-            y: Number(selectSprite.unitY),
-            to_x: Number(selectSprite.MoveX),
-            to_y: Number(selectSprite.MoveY)
+            x: Number(selectSprite.unitQ),
+            y: Number(selectSprite.unitR),
+            to_x: Number(selectSprite.MoveQ),
+            to_y: Number(selectSprite.MoveR)
         }));
 
         RemoveSelect()

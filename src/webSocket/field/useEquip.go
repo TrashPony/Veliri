@@ -14,7 +14,7 @@ import (
 func UseEquip(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	ok := false
@@ -30,12 +30,12 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 
 	if findUnit && findClient && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
 		if equipSlot.Equip.Applicable == "map" {
-			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.X, msg.Y)
+			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.Q, msg.R)
 			if findCoordinate {
 				effectCoordinates := useEquip.ToMap(gameUnit, gameCoordinate, activeGame, equipSlot, client)
 				if effectCoordinates != nil {
-					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip",UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, XUse: msg.X, YUse: msg.Y})
-					updateUseMapEquipHostileUser(msg.X, msg.Y, client, activeGame, effectCoordinates, equipSlot.Equip)
+					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip",UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, XUse: msg.Q, YUse: msg.R})
+					updateUseMapEquipHostileUser(msg.Q, msg.R, client, activeGame, effectCoordinates, equipSlot.Equip)
 				} else {
 					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
 				}

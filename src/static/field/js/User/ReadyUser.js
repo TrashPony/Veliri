@@ -1,7 +1,4 @@
 function ReadyUser(jsonMessage) {
-
-    console.log(jsonMessage);
-
     if (JSON.parse(jsonMessage).error === null || JSON.parse(jsonMessage).error === undefined) {
         var ready = document.getElementById("Ready");
 

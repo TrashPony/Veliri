@@ -28,7 +28,7 @@ TODO тогда беда с туманом войны и баг с проебо�
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.Q, msg.R)
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 
@@ -60,7 +60,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 
 func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.Q, msg.R)
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 

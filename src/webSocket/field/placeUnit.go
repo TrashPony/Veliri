@@ -24,19 +24,19 @@ func placeUnit(msg Message, ws *websocket.Conn) {
 		// msg - это обьект сообщения которое к нам пришло .UnitID - это поле сообщения в нем нам с клиента пришел id юнита которое он хочет ставить. Смотри фаил fieldMessage.go
 		if find { // если мы его нашли то идем дальше, если нет то кидаем ошибку о том что нас хотят наебать
 			_, find = placePhase.GetPlaceCoordinate(client.GetSquad().MatherShip.Q, client.GetSquad().MatherShip.R,
-				client.GetSquad().MatherShip.Body.RangeView, actionGame)[strconv.Itoa(msg.X)][strconv.Itoa(msg.Y)] // тут мы берем зону где можно строить
+				client.GetSquad().MatherShip.Body.RangeView, actionGame)[strconv.Itoa(msg.Q)][strconv.Itoa(msg.R)] // тут мы берем зону где можно строить
 			// msg - это обьект сообщения которое к нам пришло. .Y и .X - это поле сообщения в нем нам с клиента пришли координаты куда он ставит юнита. Смотри фаил fieldMessage.go
 			if find { // если координата куда хочет ставить юзер юнита есть в зоне строителства то идем дальше иначе кидаем ошибку о том что тут нельзя ставить
-				_, find := actionGame.GetUnit(msg.X, msg.Y) // тут мы пытаемся взять юнита в игре на точке куда он хочет ставить, если юнит есть то туда ставить нельзя
-				coordinate, _ := actionGame.Map.GetCoordinate(msg.X, msg.Y) // тут мы берем СУЩЕСТВУЮ координату на игровой карте
+				_, find := actionGame.GetUnit(msg.Q, msg.R) // тут мы пытаемся взять юнита в игре на точке куда он хочет ставить, если юнит есть то туда ставить нельзя
+				coordinate, _ := actionGame.Map.GetCoordinate(msg.Q, msg.R) // тут мы берем СУЩЕСТВУЮ координату на игровой карте
 
 				if !find && coordinate.Type != "obstacle" { // если на точке нет юнита и там можно стоять то идем дальше
-					err := placePhase.PlaceUnit(storageUnit, msg.X, msg.Y, actionGame, client) // todo тут мы идем в механику выбери PlaceUnit и нажми ctrl+B <-- тебе сюда
+					err := placePhase.PlaceUnit(storageUnit, msg.Q, msg.R, actionGame, client) // todo тут мы идем в механику выбери PlaceUnit и нажми ctrl+B <-- тебе сюда
 					// todo тут ты должен получить обьект пути и отправить его на фронтенд юзеру
 					if err == nil {	// если нет ошибки то отправляем сообщение клиенту о том что удалось поставить юнита что бы он отыграл анимацию.
 						// тебе тут надо будет переделать отправку сообщения на отправку пути обьект "TruePatchNode" находиться в проекте по пути " src/mechanics/Phases/movePhase/moveUnit.go "
 						ws.WriteJSON(PlaceUnit{Event: "PlaceUnit", Unit: storageUnit}) // todo тут есть ошибка игрок не получает новую зону видимости тут, он это делает в методе с ошибкой, но это не твоя задача
-						UpdatePlaceHostilePlayers(actionGame, msg.X, msg.Y)
+						UpdatePlaceHostilePlayers(actionGame, msg.Q, msg.R)
 						return
 					} else {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "add to db"})

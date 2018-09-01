@@ -1,10 +1,10 @@
 function MarkZone(cellSprite, placeCoordinate, x, y, selectClass, addEmpty, typeLine, selector) {
-    var left = false;
-    var right = false;
-    var top = false;
-    var bot = false;
-    var sprite;
-    var line;
+    let left = false;
+    let right = false;
+    let top = false;
+    let bot = false;
+    let sprite;
+    let line;
 
     if (placeCoordinate.hasOwnProperty(Number(x) + 1)) {
         if (placeCoordinate[Number(x) + 1].hasOwnProperty(y)) {
