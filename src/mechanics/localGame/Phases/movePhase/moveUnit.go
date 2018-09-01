@@ -6,7 +6,6 @@ import (
 	"../../../player"
 	"../../map/watchZone"
 	"errors"
-	"math"
 	"../../../localGame"
 	"../../../db/updateSquad"
 )
@@ -81,7 +80,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 	}
 
 	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
-		gameUnit.Action = false  // todo должно быть true но для тестов пока будет false
+		gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 	}
 
 	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
@@ -100,13 +99,20 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
-	rotate := math.Atan2(float64(pathNode.R - unit.R), float64(pathNode.Q - unit.Q))
+	if unit.Q < pathNode.Q && unit.R == pathNode.R { return 0 }
+	if unit.Q > pathNode.Q && unit.R == pathNode.R { return 180 }
 
-	rotate = rotate * 180/math.Pi
-
-	if rotate < 0 {
-		rotate = 360 + rotate
+	if unit.R%2 == 0 {
+		if unit.Q == pathNode.Q && unit.R < pathNode.R { return 60 }
+		if unit.Q > pathNode.Q && unit.R < pathNode.R {	return 120 }
+		if unit.Q > pathNode.Q && unit.R > pathNode.R { return 240 }
+		if unit.Q == pathNode.Q && unit.R > pathNode.R { return 300 }
+	} else {
+		if unit.Q < pathNode.Q && unit.R < pathNode.R { return 60 }
+		if unit.Q == pathNode.Q && unit.R < pathNode.R { return 120 }
+		if unit.Q == pathNode.Q && unit.R > pathNode.R { return 240 }
+		if unit.Q < pathNode.Q && unit.R > pathNode.R { return 300 }
 	}
 
-	return int(rotate)
+	return 0
 }

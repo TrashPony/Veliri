@@ -1,10 +1,10 @@
 function UpdateRotateUnit() {
-    for (var x in game.units) {
-        if (game.units.hasOwnProperty(x)) {
-            for (var y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y)) {
+    for (let q in game.units) {
+        if (game.units.hasOwnProperty(q)) {
+            for (let r in game.units[q]) {
+                if (game.units[q].hasOwnProperty(r)) {
 
-                    var unit = game.units[x][y];
+                    let unit = game.units[q][r];
 
                     if (unit.spriteAngle === undefined) {
                         unit.spriteAngle = unit.rotate;

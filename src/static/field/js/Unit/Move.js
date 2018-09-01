@@ -16,7 +16,6 @@ function CreatePathToUnit(jsonMessage) {
             CheckPath(unit);
 
         } else {
-
             if (unit !== null && unit.action) {
                 DeactivationUnit(unit);
                 RemoveSelect();
@@ -122,11 +121,11 @@ function UncoverUnit(unit) {
 }
 
 function MoveUnit() {
-    for (let x in game.units) {
-        if (game.units.hasOwnProperty(x)) {
-            for (let y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y) && game.units[x][y].sprite) {
-                    let unit = game.units[x][y];
+    for (let q in game.units) {
+        if (game.units.hasOwnProperty(q)) {
+            for (let r in game.units[q]) {
+                if (game.units[q].hasOwnProperty(r) && game.units[q][r].sprite) {
+                    let unit = game.units[q][r];
 
                     if (unit.movePoint == null) { // если у юнита больше нет цели перемещения выставляем ему скорость движения и поворота 0
                         StopUnit(unit);
@@ -138,14 +137,18 @@ function MoveUnit() {
                             StopUnit(unit);
                         }
 
-                        let dist = game.physics.arcade.distanceToXY(unit.sprite, unit.movePoint.x * 100 + 50 , unit.movePoint.y * 100 + 50);
+                        let moveSprite = game.map.OneLayerMap[unit.movePoint.q][unit.movePoint.r].sprite;
+                        let x = moveSprite.x + moveSprite.width / 2;
+                        let y = moveSprite.y + moveSprite.height / 2;
 
-                        if (Math.round(dist) >= -5 && Math.round(dist) <= 5) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                        let dist = game.physics.arcade.distanceToXY(unit.sprite, x, y);
 
-                            delete game.units[unit.x][unit.y];
+                        if (Math.round(dist) >= -40 && Math.round(dist) <= 40) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
-                            unit.x = unit.movePoint.x;
-                            unit.y = unit.movePoint.y;
+                            delete game.units[unit.q][unit.r];
+
+                            unit.q = unit.movePoint.q;
+                            unit.r = unit.movePoint.r;
 
                             addToGameUnit(unit);
 
@@ -158,7 +161,7 @@ function MoveUnit() {
                             }
 
                             unit.movePoint = null;
-                            UpdateWatchZone(unit.watch);
+                            //todo UpdateWatchZone(unit.watch);
 
                             if (unit.path.length > 0) {
                                 StopUnit(unit);
