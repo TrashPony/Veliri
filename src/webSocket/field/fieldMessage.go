@@ -9,8 +9,8 @@ type Message struct {
 	TypeUnit   string `json:"type_unit"`
 	Q          int    `json:"q"`
 	R          int    `json:"r"`
-	ToX        int    `json:"to_x"`
-	ToY        int    `json:"to_y"`
+	ToQ        int    `json:"to_q"`
+	ToR        int    `json:"to_r"`
 	TargetX    int    `json:"target_x"`
 	TargetY    int    `json:"target_y"`
 	EquipType  int    `json:"equip_type"`

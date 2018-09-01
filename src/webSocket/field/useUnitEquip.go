@@ -50,7 +50,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 			}
 
 			for _, targetUnit := range targetUnits {
-				if targetUnit.Q == msg.ToX && targetUnit.R == msg.ToY {
+				if targetUnit.Q == msg.ToQ && targetUnit.R == msg.ToR {
 					err := useEquip.ToUnit(gameUnit, targetUnit, equipSlot, client)
 					if err != nil {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})

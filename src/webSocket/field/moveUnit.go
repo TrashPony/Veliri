@@ -36,10 +36,10 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 		if !gameUnit.Action && !client.GetReady() {
 
 			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame)
-			_, find := moveCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
+			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 			if find {
-				path := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
+				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame)
 
 				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
 
@@ -92,10 +92,10 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			}
 
 			// пытаемся взять юнита по конечной координате
-			_, okGetEndXY := user.GetWatchCoordinate(gameUnit.Q, gameUnit.R)
+			_, okGetEndQR := user.GetWatchCoordinate(gameUnit.Q, gameUnit.R)
 
 			// если конечная точка пути видима то добавляем юнита
-			if okGetEndXY {
+			if okGetEndQR {
 				user.AddHostileUnit(gameUnit)
 			}
 
@@ -106,13 +106,13 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			for i, pathNode := range pathNodes {
 				pathNode.WatchNode = nil
 
-				_, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.X, pathNode.PathNode.Y)
+				_, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)
 
 				if len(pathNodes) > i+1 {
-					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.X, pathNodes[i+1].PathNode.Y)
+					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.Q, pathNodes[i+1].PathNode.R)
 				}
 				if 0 < i {
-					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.X, pathNodes[i-1].PathNode.Y)
+					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.Q, pathNodes[i-1].PathNode.R)
 				}
 
 				// если юзер не видит координату то скрваем ее
@@ -121,17 +121,17 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 
 					if okSecondNode {
 						fakeNode.Type = "outFog"
-						fakeNode.X = pathNode.PathNode.X
-						fakeNode.Y = pathNode.PathNode.Y
+						fakeNode.Q = pathNode.PathNode.Q
+						fakeNode.R = pathNode.PathNode.R
 					} else {
 						if (okGetUnit && i == 0) || okEarlyNode {
 							fakeNode.Type = "inToFog"
-							fakeNode.X = pathNode.PathNode.X
-							fakeNode.Y = pathNode.PathNode.Y
+							fakeNode.Q = pathNode.PathNode.Q
+							fakeNode.R = pathNode.PathNode.R
 						} else {
 							fakeNode.Type = "hide"
-							fakeNode.X = 0
-							fakeNode.Y = 0
+							fakeNode.Q = 0
+							fakeNode.R = 0
 						}
 					}
 

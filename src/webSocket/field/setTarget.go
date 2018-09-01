@@ -16,10 +16,10 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Action {
 
 		targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame)
-		_, find := targetCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
+		_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 		if find {
-			targetPhase.SetTarget(gameUnit, activeGame, msg.ToX, msg.ToY, client)
+			targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
 			ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
 			updateUnitHostileUser(client, activeGame, gameUnit)
 		} else {

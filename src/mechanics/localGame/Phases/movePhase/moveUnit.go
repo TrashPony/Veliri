@@ -17,12 +17,12 @@ type TruePatchNode struct {
 	UnitRotate int                         `json:"unit_rotate"`
 }
 
-func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game *localGame.Game) (path []*TruePatchNode) {
+func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game *localGame.Game) (path []*TruePatchNode) {
 	moveTrigger := true
 
 	mp := game.GetMap()
 	start, _ := mp.GetCoordinate(gameUnit.Q, gameUnit.R)
-	end, _ := mp.GetCoordinate(toX, toY)
+	end, _ := mp.GetCoordinate(toQ, toR)
 
 	path = make([]*TruePatchNode, 0)
 
@@ -67,20 +67,20 @@ func InitMove(gameUnit *unit.Unit, toX int, toY int, client *player.Player, game
 
 func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *localGame.Game) (error, int) {
 
-	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
-		_, ok := client.GetHostileUnit(end.X, end.Y)
+	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
+		_, ok := client.GetHostileUnit(end.Q, end.R)
 		if ok {
 			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 			return errors.New("end cell is busy"), 0
 		}
 	} else {
-		_, ok := client.GetHostileUnit(pathNode.X, pathNode.Y)
+		_, ok := client.GetHostileUnit(pathNode.Q, pathNode.R)
 		if ok {
 			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 		}
 	}
 
-	if (end.X == pathNode.X) && (end.Y == pathNode.Y) {
+	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
 		gameUnit.Action = false  // todo должно быть true но для тестов пока будет false
 	}
 
@@ -89,8 +89,8 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	rotate := findDirection(pathNode, gameUnit)
 
-	gameUnit.Q = pathNode.X // даем новые координаты юниту
-	gameUnit.R = pathNode.Y
+	gameUnit.Q = pathNode.Q // даем новые координаты юниту
+	gameUnit.R = pathNode.R
 
 	game.SetUnit(gameUnit)
 	client.AddUnit(gameUnit) // добавляем новую позицию юнита
@@ -100,7 +100,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
-	rotate := math.Atan2(float64(pathNode.Y - unit.R), float64(pathNode.X - unit.Q))
+	rotate := math.Atan2(float64(pathNode.R - unit.R), float64(pathNode.Q - unit.Q))
 
 	rotate = rotate * 180/math.Pi
 

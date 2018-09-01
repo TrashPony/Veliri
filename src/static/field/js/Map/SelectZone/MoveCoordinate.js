@@ -1,7 +1,6 @@
 function SelectMoveCoordinateCreate(jsonMessage) {
 
     let moveCoordinate = JSON.parse(jsonMessage).move;
-    console.log(moveCoordinate);
 
     let unitQ = JSON.parse(jsonMessage).unit.q;
     let unitR = JSON.parse(jsonMessage).unit.r;
@@ -44,10 +43,10 @@ function SelectMoveCoordinate(selectSprite) {
         field.send(JSON.stringify({
             event: "MoveUnit",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.unitQ),
-            y: Number(selectSprite.unitR),
-            to_x: Number(selectSprite.MoveQ),
-            to_y: Number(selectSprite.MoveR)
+            q: Number(selectSprite.unitQ),
+            r: Number(selectSprite.unitR),
+            to_q: Number(selectSprite.MoveQ),
+            to_r: Number(selectSprite.MoveR)
         }));
 
         RemoveSelect()

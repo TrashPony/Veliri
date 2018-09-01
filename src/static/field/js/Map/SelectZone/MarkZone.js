@@ -7,7 +7,6 @@ function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typ
     let botRight = false;
 
     let sprite;
-    let line;
 
     /*
         соседи гексов беруться по разному в зависимости от четности строки

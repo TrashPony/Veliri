@@ -21,6 +21,11 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
         {-1,0} {0,0} {+1,0}
           {-1,+1}  {0,+1}
 	*/
+	curr, find := gameMap.GetCoordinate(curr.Q, curr.R)// из алгоритмов иногда приходять координаты без высоты
+	if !find {
+		return
+	}
+
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
 	neighboursLeft, left := checkValidForMoveCoordinate(client, gameMap, curr.Q - 1, curr.R)

@@ -28,40 +28,40 @@ type Points map[string]coordinate.Coordinate
 
 func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate) []*coordinate.Coordinate {
 
-	START_POINT = coordinate.Coordinate{X: start.X, Y: start.Y, State: START} // начальная точка
-	END_POINT = coordinate.Coordinate{X: end.X, Y: end.Y, State: END}         // конечная точка
+	START_POINT = coordinate.Coordinate{Q: start.Q, R: start.R, State: START} // начальная точка
+	END_POINT = coordinate.Coordinate{Q: end.Q, R: end.R, State: END}         // конечная точка
 
 	WIDTH = gameMap.QSize                                                     // ширина карты
-	HEIGHT = -gameMap.QSize - gameMap.RSize                                   // высота карты
+	HEIGHT = gameMap.RSize                                                    // высота карты
 
 	matrix = make([][]coordinate.Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {
 		matrix[i] = make([]coordinate.Coordinate, HEIGHT)
 	}
 
-	for x := 0; x < WIDTH; x++ { //заполняем матрицу координатами
-		for y := 0; y < HEIGHT; y++ {
-			matrix[x][y] = coordinate.Coordinate{X: x, Y: y, State: FREE}
+	for q := 0; q < WIDTH; q++ { //заполняем матрицу координатами
+		for r := 0; r < HEIGHT; r++ {
+			matrix[q][r] = coordinate.Coordinate{Q: q, R: r, State: FREE}
 		}
 	}
 
 	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[START_POINT.Key()] = START_POINT   // кладем в карту посещенных точек стартовую точку
 
-	matrix[START_POINT.X][START_POINT.Y] = START_POINT // магия 	//set start & finish
-	matrix[END_POINT.X][END_POINT.Y] = END_POINT       // магия
+	matrix[START_POINT.Q][START_POINT.R] = START_POINT // кладем первую координату в путь
+	matrix[END_POINT.Q][END_POINT.R] = END_POINT       // кладем последнюю координату в уже провереные
 
 	var path []*coordinate.Coordinate
 	var noSortedPath []*coordinate.Coordinate
 	for {
-		current := *MinF(openPoints) // Берем точку с мин стоимостью пути
-		if current.Equal(&END_POINT) { // если текущая точка и есть конец начинаем генерить путь
-			for !current.Equal(&START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
-				current = *current.Parent // берем текущую точку и на ее место ставить ее родителя
-				if !current.Equal(&START_POINT) { // если текущая точка попрежнему не стартовая то
-					matrix[current.X][current.Y].State = PATH // помечаем ее как часть пути
+		current := *MinF(openPoints) 						  // Берем точку с мин стоимостью пути
+		if current.Equal(&END_POINT) { 						  // если текущая точка и есть конец начинаем генерить путь
+			for !current.Equal(&START_POINT) {      	      // если текущая точка не стартовая точка то цикл крутиться путь мутиться
+				current = *current.Parent 					  // берем текущую точку и на ее место ставить ее родителя
+				if !current.Equal(&START_POINT) { 			  // если текущая точка попрежнему не стартовая то
+					matrix[current.Q][current.R].State = PATH // помечаем ее как часть пути
 
-					gameCoordinate, find := gameMap.GetCoordinate(current.X, current.Y)
+					gameCoordinate, find := gameMap.GetCoordinate(current.Q, current.R)
 					if find {
 						noSortedPath = append(noSortedPath, gameCoordinate)
 					}
@@ -86,10 +86,10 @@ func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]c
 
 	nCoordinate := generateNeighboursCoordinate(client, &curr, gameMap) // берем всех соседей этой клетки
 
-	for _, xLine := range nCoordinate {
-		for _, c := range xLine {
-			if c.X < WIDTH && c.Y < HEIGHT {
-				tmpPoint := (*m)[c.X][c.Y] // берем поинт из матрицы
+	for _, qLine := range nCoordinate {
+		for _, c := range qLine {
+			if c.Q < WIDTH && c.R < HEIGHT {
+				tmpPoint := (*m)[c.Q][c.R] // берем поинт из матрицы
 
 				if _, inClose := (*close)[tmpPoint.Key()]; inClose || tmpPoint.State == BLOCKED {
 					continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
@@ -112,8 +112,8 @@ func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]c
 }
 
 func GetH(a, b coordinate.Coordinate) int { // эвристическое приближение стоимости пути от v до конечной цели.
-	tmp := math.Abs(float64(a.X - b.X)) // вычисляем разницу между точкой и концом пути по Х
-	tmp += math.Abs(float64(a.Y - b.Y)) // вычисляем разницу между точкой и концом пути по Y и сумируем с раницой по X
+	tmp := math.Abs(float64(a.Q - b.Q)) // вычисляем разницу между точкой и концом пути по Х
+	tmp += math.Abs(float64(a.R - b.R)) // вычисляем разницу между точкой и концом пути по Y и сумируем с раницой по X
 
 	return int(tmp)
 }

@@ -12,7 +12,7 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (2, 1, 8, 8, 2
 
 /*  ---------------------------- Obstacles -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 8, 4, 4, 2);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 9, 5, 4, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 9, 2, 4, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 10, 6, 4, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 11, 4, 5, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 12, 4, 6, 2);

@@ -34,7 +34,7 @@ function CreateObjects(coordinate, x, y) {
     }
 
     if (coordinate.texture_object === "crater") {
-        object = game.floorObjectLayer.create(x - 100, y, coordinate.texture_object);
+        object = game.floorObjectLayer.create(x - 90, y, coordinate.texture_object);
         object.inputEnabled = true;
         object.events.onInputOut.add(TipOff);
         object.events.onInputDown.add(RemoveSelect);
