@@ -66,4 +66,6 @@ function ReadResponse(jsonMessage) {
     if (event === "Error") {
         console.log(jsonMessage);
     }
+
+    jsonMessage = null;
 }

@@ -26,6 +26,8 @@ function UpdateRotateUnit() {
                         }
                         unit.RotateUnit(unit.spriteAngle);
                     }
+
+                    unit = null;
                 }
             }
         }
@@ -35,8 +37,8 @@ function UpdateRotateUnit() {
 function directionRotate(spriteAngle, rotate) {
     // true ++
     // false --
-    var count = 0;
-    var direction;
+    let count = 0;
+    let direction;
 
     if (spriteAngle < rotate) {
         for (; spriteAngle < rotate; spriteAngle++) {
@@ -58,7 +60,7 @@ function directionRotate(spriteAngle, rotate) {
 }
 
 function RotateUnit(unit, angle) {
-    for (var sprite in unit) {
+    for (let sprite in unit) {
         if (unit.hasOwnProperty(sprite) && unit[sprite] !== null && unit[sprite].hasOwnProperty('_frame')) {
             unit[sprite].frame = angle;
         }

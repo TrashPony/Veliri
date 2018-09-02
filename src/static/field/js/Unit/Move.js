@@ -1,6 +1,6 @@
 function CreatePathToUnit(jsonMessage) {
     let error = JSON.parse(jsonMessage).error;
-    
+
     if (error === null || error === "") {
 
         let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
@@ -13,7 +13,6 @@ function CreatePathToUnit(jsonMessage) {
             MarkLastPathCell(unit, lastCell);        // помечаем ячейку куда идет моб
             unit.path = path;                        // добавляем юниту путь
             CheckPath(unit);
-
         } else {
             if (unit !== null && unit.action) {
                 DeactivationUnit(unit);
@@ -78,15 +77,15 @@ function CheckPath(unit) {
         }
     }
 
-    if (unit.path.length === 0) {
-        DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
-        unit.lastCell = null;
-    }
-
     if (unit.sprite) {
         unit.rotate = pathNode.unit_rotate; // тут приходят фактическое положение на карте
         unit.watch = pathNode.watch_node;
         unit.movePoint = pathNode.path_node;
+    }
+
+    if (unit.path.length === 0) {
+        DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
+        unit.lastCell = null;
     }
 }
 
@@ -135,18 +134,23 @@ function MoveUnit() {
                         let x = moveSprite.x + moveSprite.width / 2;
                         let y = moveSprite.y + moveSprite.height / 2;
 
-                        let markerMove = game.add.sprite(x, y); // пустой спрайт что бы юнит мог ориентироваться
-                        markerMove.anchor.setTo(0.5, 0.5);
-
                         if (unit.spriteAngle === unit.rotate) {
                             MoveToCell(unit);
                         } else {
+
+                            let markerMove = game.add.sprite(x, y); // пустой спрайт что бы юнит мог ориентироваться
+                            markerMove.anchor.setTo(0.5, 0.5);
+
                             unit.rotate = Math.round(game.physics.arcade.angleBetween(unit.sprite, markerMove) * 180 / 3.14);
                             if (unit.rotate < 0) { // тут мы берем реальные градусы до цели, что бы спрайт не уехал
                                 unit.rotate = unit.rotate + 360;
                             }
                             StopUnit(unit);
+
+                            moveSprite = null;    // если убрать это то будет утекать производительность
+                            markerMove.destroy();
                         }
+
 
                         let dist = game.physics.arcade.distanceToXY(unit.sprite, x, y);
 
@@ -180,6 +184,7 @@ function MoveUnit() {
                             }
                         }
                     }
+                    unit = null;
                 }
             }
         }

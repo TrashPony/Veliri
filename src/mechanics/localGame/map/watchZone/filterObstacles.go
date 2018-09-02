@@ -8,7 +8,7 @@ import (
 )
 
 func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {
-
+	// todo вохможно этот код можно легко обьеденить с localGame/Phases/targetPhase/targetFilter.go
 	watch = make(map[string]*coordinate.Coordinate)
 
 	watcherCoordinate, _ := game.GetMap().GetCoordinate(gameObject.GetQ(), gameObject.GetR())

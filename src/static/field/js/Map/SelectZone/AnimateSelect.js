@@ -4,10 +4,10 @@ function animateMoveCoordinate(coordinate) {
 
     field.send(JSON.stringify({
         event: "GetTargetZone",
-        x: Number(coordinate.unitX),
-        y: Number(coordinate.unitY),
-        to_x: Number(coordinate.MoveX),
-        to_y: Number(coordinate.MoveY)
+        q: Number(coordinate.unitQ),
+        r: Number(coordinate.unitR),
+        to_q: Number(coordinate.MoveQ),
+        to_r: Number(coordinate.MoveR)
     }));
     game.SelectLineLayer.visible = false;
 }

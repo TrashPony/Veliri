@@ -6,10 +6,10 @@ function UnitMouseOver() {
 
     field.send(JSON.stringify({
         event: "GetTargetZone",
-        x: Number(this.x),
-        y: Number(this.y),
-        to_x: Number(this.x),
-        to_y: Number(this.y)
+        q: Number(this.q),
+        r: Number(this.r),
+        to_q: Number(this.q),
+        to_r: Number(this.r)
     }));
 
     if (this.target) {
