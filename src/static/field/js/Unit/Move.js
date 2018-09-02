@@ -1,6 +1,5 @@
 function CreatePathToUnit(jsonMessage) {
     let error = JSON.parse(jsonMessage).error;
-
     if (error === null || error === "") {
 
         let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
@@ -39,20 +38,22 @@ function MoveHostileUnit(jsonMessage) {
             if (unit) {
                 unit.path = patchNodes;
             } else {
+                // если юнита не существует даем ему координаты первой видимой клетки
                 unit = JSON.parse(jsonMessage).unit;
-                unit.x = firstNode.path_node.x;
-                unit.y = firstNode.path_node.y;
+                unit.q = firstNode.path_node.q;
+                unit.r = firstNode.path_node.r;
+
                 CreateUnit(unit, true);
 
                 unit.path = patchNodes;                // добавляем юниту путь
             }
 
             CheckPath(unit);
-            break;
+            break
         }
     }
 
-    if (patchNodes[patchNodes.length - 1].path_node.type !== "hide" &&
+    if (patchNodes.length > 0 && patchNodes[patchNodes.length - 1].path_node.type !== "hide" &&
         patchNodes[patchNodes.length - 1].path_node.type !== "inToFog") {
         MarkLastPathCell(unit, patchNodes[patchNodes.length - 1].path_node);        // помечаем ячейку куда идет моб
     }
@@ -110,12 +111,13 @@ function HideUnit(unit) {
 }
 
 function UncoverUnit(unit) {
+    console.log(unit);
     game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitBody).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.healBar).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
     game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    // todo если нет спрайта ошибкаgame.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    // todo если нет спрайта ошибка game.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
 }
 
 function MoveUnit() {
