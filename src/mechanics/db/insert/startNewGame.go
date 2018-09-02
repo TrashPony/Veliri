@@ -69,7 +69,7 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 
 func AddCoordinateEffects(mapID, gameID int) error {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.x, mc.y, cte.id_effect "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.q, mc.r, cte.id_effect "+
 		"FROM map_constructor mc, coordinate_type ct, coordinate_type_effect cte "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND ct.id = cte.id_type; ", mapID)
 
@@ -78,17 +78,17 @@ func AddCoordinateEffects(mapID, gameID int) error {
 	}
 
 	for rows.Next() {
-		var x, y, effectID int
+		var q, r, effectID int
 
-		err := rows.Scan(&x, &y, &effectID)
+		err := rows.Scan(&q, &r, &effectID)
 		if err != nil {
 			println("start game get coordinate effects")
 			log.Fatal(err)
 			return err
 		}
 
-		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_zone_effects (id_game, id_effect, x, y, left_steps) VALUES ($1, $2, $3, $4, $5)",
-			gameID, effectID, x, y, 999)
+		_, err = dbConnect.GetDBConnect().Exec("INSERT INTO action_game_zone_effects (id_game, id_effect, q, r, left_steps) VALUES ($1, $2, $3, $4, $5)",
+			gameID, effectID, q, r, 999)
 
 		if err != nil {
 			println("start game add coordinate effects")

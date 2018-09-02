@@ -31,7 +31,7 @@ function LoadHoldUnits() {
                 };
 
                 boxUnit.onmouseover = function () {
-                    unitTip(this.unit);
+                    unitTip(game.unitStorage[unit]);
                 };
 
                 boxUnit.onmouseout = function () {

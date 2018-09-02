@@ -14,8 +14,8 @@ function ActionButton(equipPanel, unit, event, text) {
     skipButton.onclick = function () {
         field.send(JSON.stringify({
             event: event,
-            x: Number(unit.x),
-            y: Number(unit.y)
+            q: Number(unit.q),
+            r: Number(unit.r)
         }));
     };
 

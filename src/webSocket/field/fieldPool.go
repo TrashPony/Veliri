@@ -104,7 +104,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "UseEquip" {
+		if msg.Event == "UseMapEquip" {
 			UseEquip(msg, ws)
 			continue
 		}

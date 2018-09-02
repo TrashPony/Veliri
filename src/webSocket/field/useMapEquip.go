@@ -30,17 +30,17 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 
 	if findUnit && findClient && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
 		if equipSlot.Equip.Applicable == "map" {
-			gameCoordinate, findCoordinate := client.GetWatchCoordinate(msg.Q, msg.R)
+			gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.Q, msg.R)
 			if findCoordinate {
-				effectCoordinates := useEquip.ToMap(gameUnit, gameCoordinate, activeGame, equipSlot, client)
-				if effectCoordinates != nil {
-					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip",UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, XUse: msg.Q, YUse: msg.R})
+				effectCoordinates, err := useEquip.ToMap(gameUnit, gameCoordinate, activeGame, equipSlot, client)
+				if err == nil {
+					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip",UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, QUse: msg.Q, RUse: msg.R})
 					updateUseMapEquipHostileUser(msg.Q, msg.R, client, activeGame, effectCoordinates, equipSlot.Equip)
 				} else {
-					ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
+					ws.WriteJSON(ErrorMessage{Event: "Error", Error: err.Error()})
 				}
 			} else {
-				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find coordinate"})
+				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find game coordinate"})
 			}
 		}
 	} else {
@@ -53,7 +53,7 @@ func updateUseMapEquipHostileUser(xUse, yUse int, client *player.Player, activeG
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(xUse, yUse)
 			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, ZoneEffect: zoneEffect, AppliedEquip: playerEquip, XUse: xUse, YUse: yUse}
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, ZoneEffect: zoneEffect, AppliedEquip: playerEquip, QUse: xUse, RUse: yUse}
 			}
 		}
 	}
@@ -67,6 +67,6 @@ type SendUseEquip struct {
 	ToUnit       *unit.Unit                                   `json:"to_unit"`
 	AppliedEquip *equip.Equip                                 `json:"applied_equip"`
 	ZoneEffect   map[string]map[string]*coordinate.Coordinate `json:"zone_effect"`
-	XUse         int                                          `json:"x_use"`
-	YUse         int                                          `json:"y_use"`
+	QUse         int                                          `json:"q_use"`
+	RUse         int                                          `json:"r_use"`
 }

@@ -30,7 +30,7 @@ CREATE TABLE action_game_zone_effects (        /* эфекты которые в
   id         SERIAL PRIMARY KEY,
   id_game    INT REFERENCES action_games (id),
   id_effect  INT REFERENCES effects_type (id), /* какой эффект */
-  x          INT,
-  y          INT,
+  q          INT,
+  r          INT,
   left_steps INT                               /* сколько шагов ему еще висеть */
 );

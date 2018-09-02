@@ -8,11 +8,11 @@ import (
 
 func Respawns(mapID int) map[int]*coordinate.Coordinate {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, x, y " +
+	rows, err := dbConnect.GetDBConnect().Query("Select id, q, r " +
 		"FROM map_constructor " +
 		"WHERE id_type=1 AND id_map = $1", mapID)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error() + "get respawn")
 	}
 
 	defer rows.Close()
