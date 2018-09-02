@@ -1,8 +1,8 @@
 function CreateObjects(coordinate, x, y) {
-    var object;
+    let object;
 
     if (coordinate.texture_object === "terrain_1") {
-        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.33, 0.70, 45);
+            object = gameObjectCreate(x, y, coordinate.texture_object, -0.2, 0.2, -0.47, 0.85, 45);
     }
 
     if (coordinate.texture_object === "terrain_2") {
@@ -10,7 +10,7 @@ function CreateObjects(coordinate, x, y) {
     }
 
     if (coordinate.texture_object === "terrain_3") {
-        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0, -0.5, 0.8, 45);
+        object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.33, 0.95, 45);
     }
 
     if (coordinate.texture_object === "sand_stone_04") {

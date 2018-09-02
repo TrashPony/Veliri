@@ -12,8 +12,8 @@ function FillingEquipPanel(equipPanel, unit) {
                 RemoveSelect();
                 field.send(JSON.stringify({
                     event: "SelectWeapon",
-                    x: Number(unit.x),
-                    y: Number(unit.y)
+                    q: Number(unit.q),
+                    r: Number(unit.r)
                 }));
             };
 
@@ -47,8 +47,8 @@ function FillingEquipPanel(equipPanel, unit) {
                     RemoveSelect();
                     field.send(JSON.stringify({
                         event: "SelectEquip",
-                        x: Number(unit.x),
-                        y: Number(unit.y),
+                        q: Number(unit.q),
+                        r: Number(unit.r),
                         equip_type: 3,
                         number_slot: unit.body.equippingIII[i].number_slot
                     }));
@@ -86,8 +86,8 @@ function FillingEquipPanel(equipPanel, unit) {
                     RemoveSelect();
                     field.send(JSON.stringify({
                         event: "SelectEquip",
-                        x: Number(unit.x),
-                        y: Number(unit.y),
+                        q: Number(unit.q),
+                        r: Number(unit.r),
                         equip_type: 2,
                         number_slot: unit.body.equippingII[i].number_slot
                     }));

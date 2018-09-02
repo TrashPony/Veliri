@@ -26,7 +26,7 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) 
 		zone := filter(gameUnit, RadiusCoordinates, activeGame)
 
 		for _, gameCoordinate := range zone {
-			if !(gameCoordinate.X == gameUnit.Q && gameCoordinate.Y == gameUnit.R) {
+			if !(gameCoordinate.Q == gameUnit.Q && gameCoordinate.R == gameUnit.R) {
 				Phases.AddCoordinate(targetCoordinate, gameCoordinate)
 			}
 		}

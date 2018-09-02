@@ -21,7 +21,7 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                         let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target");
 
                         selectSprite.TargetQ = targetCoordinates[q][r].q;
-                        selectSprite.TargetR = targetCoordinates[q][r].q;
+                        selectSprite.TargetR = targetCoordinates[q][r].r;
 
                         selectSprite.unitQ = unitQ;
                         selectSprite.unitR = unitR;
