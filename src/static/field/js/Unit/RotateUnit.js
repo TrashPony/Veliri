@@ -10,18 +10,20 @@ function UpdateRotateUnit() {
                         unit.spriteAngle = unit.rotate;
                     }
 
+                    if (unit.rotate % 2 !== 0) unit.rotate++;
+
                     if (unit.spriteAngle !== unit.rotate) {
                         if (directionRotate(unit.spriteAngle, unit.rotate)) {
                             if (unit.spriteAngle >= 360) {
                                 unit.spriteAngle = 0;
                             } else {
-                                unit.spriteAngle++;
+                                unit.spriteAngle= unit.spriteAngle + 2;
                             }
                         } else {
                             if (unit.spriteAngle <= 0) {
                                 unit.spriteAngle = 360;
                             } else {
-                                unit.spriteAngle--;
+                                unit.spriteAngle= unit.spriteAngle - 2;
                             }
                         }
                         unit.RotateUnit(unit.spriteAngle);

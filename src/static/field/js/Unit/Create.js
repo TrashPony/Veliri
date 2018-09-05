@@ -1,7 +1,7 @@
 function CreateUnit(unitStat, inVisible) {
     let q = unitStat.q;
     let r = unitStat.r;
-
+    console.log(unitStat);
     let cell = game.map.OneLayerMap[q][r].sprite;
     let x = cell.x + cell.width / 2;
     let y = cell.y + cell.height / 2;
@@ -18,14 +18,15 @@ function CreateUnit(unitStat, inVisible) {
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
 
-    let shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
+
+    let shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name, unitStat.rotate);
     unit.addChild(shadow);
     game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
 
-    let body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
+    let body = game.make.sprite(0, 0, unitStat.body.name, unitStat.rotate);
     unit.addChild(body);
     game.physics.arcade.enable(body);
 

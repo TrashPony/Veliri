@@ -33,6 +33,24 @@ function CreateObjects(coordinate, x, y) {
         object = gameObjectCreate(x, y, coordinate.texture_object, 0, 0.2, -0.1, 0.35, 10);
     }
 
+    if (coordinate.texture_object === "fallen_01") {
+        object = game.floorObjectLayer.create(x - 90, y, coordinate.texture_object);
+        object.inputEnabled = true;
+        object.events.onInputOut.add(TipOff);
+        object.events.onInputDown.add(RemoveSelect);
+        object.input.pixelPerfectOver = true;
+        object.input.pixelPerfectClick = true;
+    }
+
+    if (coordinate.texture_object === "fallen_02") {
+        object = game.floorObjectLayer.create(x - 95, y, coordinate.texture_object);
+        object.inputEnabled = true;
+        object.events.onInputOut.add(TipOff);
+        object.events.onInputDown.add(RemoveSelect);
+        object.input.pixelPerfectOver = true;
+        object.input.pixelPerfectClick = true;
+    }
+
     if (coordinate.texture_object === "crater") {
         object = game.floorObjectLayer.create(x - 90, y, coordinate.texture_object);
         object.inputEnabled = true;

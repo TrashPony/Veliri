@@ -35,15 +35,16 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 5, 7, 3, 2
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 5, 6, 0, 2);
 
 /* Rocks */
+  /* fallen */
+  INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 14, 3, 8, 2);
+  INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 13, 3, 6, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 2, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 2, 6, 3);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 3, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 2, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 8, 4);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 3, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 6, 3);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 3, 6, 4);
 
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 7, 4);
@@ -67,6 +68,8 @@ INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (10, '', 'desert', 'sand_stone_06', false, false, false, false);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (11, '', 'desert', 'sand_stone_07', false, false, false, false);
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (12, '', 'desert', 'sand_stone_08', false, false, false, false);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (13, '', 'desert', 'fallen_01', false, true, true, false);
+INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (14, '', 'desert', 'fallen_02', false, true, true, false);
 
 /* Coordinate Effects */
 INSERT INTO coordinate_type_effect (id_type, id_effect) VALUES (5, 21);

@@ -18,12 +18,10 @@ function preload() {
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
 
     //MatherShips MotherTrucker
-    game.load.image('Mother', 'http://' + window.location.host + '/assets/Mother.png');
-    game.load.image('FuryRoad', 'http://' + window.location.host + '/assets/FuryRoad.png');
+    game.load.spritesheet('Mother', 'http://' + window.location.host + '/assets/Mother.png', 200, 200, 360);
 
     // Units
-    game.load.image('tank', 'http://' + window.location.host + '/assets/tank.png');
-    game.load.spritesheet('tank360', 'http://' + window.location.host + '/assets/tank360.png', 100, 100, 360);
+    game.load.spritesheet('tank', 'http://' + window.location.host + '/assets/tank.png', 100, 100, 360);
 
     // Map Objects
 
@@ -49,6 +47,9 @@ function preload() {
     game.load.image('sand_stone_06', 'http://' + window.location.host + '/assets/map/sand_stone_06.png');
     game.load.image('sand_stone_07', 'http://' + window.location.host + '/assets/map/sand_stone_07.png');
     game.load.image('sand_stone_08', 'http://' + window.location.host + '/assets/map/sand_stone_08.png');
+
+    game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/fallen_01.png');
+    game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/fallen_02.png');
 
     // fog
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
