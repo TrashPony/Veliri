@@ -30,7 +30,7 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 
 	for {
 
-		pathNodes := FindPath(client, mp, start, end)
+		pathNodes := FindPath(client, mp, start, end, gameUnit)
 
 		for _, pathNode := range pathNodes {
 

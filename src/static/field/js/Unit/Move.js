@@ -156,7 +156,7 @@ function MoveUnit() {
 
                         let dist = game.physics.arcade.distanceToXY(unit.sprite, x, y);
 
-                        if (Math.round(dist) >= -5 && Math.round(dist) <= 5) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                        if (Math.round(dist) >= -10 && Math.round(dist) <= 10) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
                             delete game.units[unit.q][unit.r];
 

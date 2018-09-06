@@ -1,5 +1,5 @@
 /*  ---------------------------- Map -------------------------------------------------- */
-INSERT INTO maps (id, name, q_size, r_size, id_type, level, specification) VALUES (1, 'Test', 10, 10, 6, 2, 'тестовая карта на 2 человека');
+INSERT INTO maps (id, name, q_size, r_size, id_type, level, specification) VALUES (1, 'Test', 15, 15, 6, 2, 'тестовая карта на 2 человека');
 INSERT INTO maps (id, name, q_size, r_size, id_type, level, specification) VALUES (2, 'Test2', 10, 10, 6, 2, 'тестовая карта на 4 человека');
 
 /*  ---------------------------- RESPAWN -------------------------------------------------- */
@@ -11,7 +11,7 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (2, 1, 1, 8, 2
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (2, 1, 8, 8, 2);
 
 /*  ---------------------------- Obstacles -------------------------------------------------- */
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 8, 4, 4, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 8, 3, 4, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 9, 2, 4, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 10, 6, 4, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 11, 4, 5, 2);

@@ -16,7 +16,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 	openCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 	closeCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 
-	startMatrix := generateNeighboursCoordinate(client, start, activeGame.Map) // берет все соседние клетки от старта
+	startMatrix := generateNeighboursCoordinate(client, start, activeGame.Map, gameUnit) // берет все соседние клетки от старта
 
 	for _, xLine := range startMatrix {
 		for _, gameCoordinate := range xLine {
@@ -30,7 +30,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 	for i := 0; i < gameUnit.Body.Speed-1; i++ {
 		for _, xLine := range openCoordinate {
 			for _, gameCoordinate := range xLine {
-				matrix := generateNeighboursCoordinate(client, gameCoordinate, activeGame.Map)
+				matrix := generateNeighboursCoordinate(client, gameCoordinate, activeGame.Map, gameUnit)
 				for _, xLine := range matrix {
 					for _, gameCoordinate := range xLine {
 						_, ok := openCoordinate[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)]
