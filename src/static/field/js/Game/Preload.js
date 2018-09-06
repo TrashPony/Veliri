@@ -18,10 +18,10 @@ function preload() {
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
 
     //MatherShips MotherTrucker
-    game.load.spritesheet('Mother', 'http://' + window.location.host + '/assets/Mother.png', 200, 200, 360);
+    game.load.spritesheet('Mother', 'http://' + window.location.host + '/assets/Mother360.png', 200, 200, 360);
 
     // Units
-    game.load.spritesheet('tank', 'http://' + window.location.host + '/assets/tank.png', 100, 100, 360);
+    game.load.spritesheet('tank', 'http://' + window.location.host + '/assets/Tank360.png', 100, 100, 360);
 
     // Map Objects
 
