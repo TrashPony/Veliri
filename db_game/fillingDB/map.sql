@@ -49,7 +49,7 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 8, 4
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 9, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 4, 9, 4);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 6, 9, 4);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 6, 9, 3);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 4, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 6, 8, 3);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 4, 7, 4);

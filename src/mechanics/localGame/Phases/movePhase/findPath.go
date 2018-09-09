@@ -2,15 +2,16 @@ package movePhase
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
-	"math"
-	"../../../gameObjects/map"
 	"../../../gameObjects/coordinate"
-	"../../../player"
+	"../../../gameObjects/map"
 	"../../../gameObjects/unit"
+	"../../../player"
+	"errors"
+	"math"
 )
 
 const (
-	FREE    = iota
+	FREE = iota
 	BLOCKED
 	START
 	END
@@ -27,13 +28,13 @@ var (
 // todo и использовать координаты из существующей карты
 type Points map[string]coordinate.Coordinate
 
-func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate, gameUnit *unit.Unit) []*coordinate.Coordinate {
+func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate, gameUnit *unit.Unit) (error, []*coordinate.Coordinate) {
 
 	START_POINT = coordinate.Coordinate{Q: start.Q, R: start.R, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{Q: end.Q, R: end.R, State: END}         // конечная точка
 
-	WIDTH = gameMap.QSize                                                     // ширина карты
-	HEIGHT = gameMap.RSize                                                    // высота карты
+	WIDTH = gameMap.QSize  // ширина карты
+	HEIGHT = gameMap.RSize // высота карты
 
 	matrix = make([][]coordinate.Coordinate, WIDTH, WIDTH*HEIGHT) //создаем матрицу для всех точек на карте
 	for i := 0; i < len(matrix); i++ {
@@ -55,11 +56,14 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 	var path []*coordinate.Coordinate
 	var noSortedPath []*coordinate.Coordinate
 	for {
-		current := *MinF(openPoints) 						  // Берем точку с мин стоимостью пути
-		if current.Equal(&END_POINT) { 						  // если текущая точка и есть конец начинаем генерить путь
-			for !current.Equal(&START_POINT) {      	      // если текущая точка не стартовая точка то цикл крутиться путь мутиться
-				current = *current.Parent 					  // берем текущую точку и на ее место ставить ее родителя
-				if !current.Equal(&START_POINT) { 			  // если текущая точка попрежнему не стартовая то
+		if len(openPoints) <= 0 {
+			return errors.New("no path"), nil
+		}
+		current := *MinF(openPoints)   // Берем точку с мин стоимостью пути
+		if current.Equal(&END_POINT) { // если текущая точка и есть конец начинаем генерить путь
+			for !current.Equal(&START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
+				current = *current.Parent         // берем текущую точку и на ее место ставить ее родителя
+				if !current.Equal(&START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.Q][current.R].State = PATH // помечаем ее как часть пути
 
 					gameCoordinate, find := gameMap.GetCoordinate(current.Q, current.R)
@@ -78,7 +82,7 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 	}
 
 	path = append(path, end)
-	return path
+	return nil, path
 }
 
 func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *_map.Map, gameUnit *unit.Unit) {

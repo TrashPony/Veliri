@@ -30,58 +30,105 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
-	neighboursLeft, left := checkValidForMoveCoordinate(client, gameMap, curr.Q-1, curr.R)
-	if left && checkLevelCoordinate(curr, neighboursLeft) && checkMSPatency(neighboursLeft, gameUnit, client, gameMap) {
-		Phases.AddCoordinate(res, neighboursLeft)
-	}
-
-	NeighboursRight, right := checkValidForMoveCoordinate(client, gameMap, curr.Q+1, curr.R)
-	if right && checkLevelCoordinate(curr, NeighboursRight) && checkMSPatency(NeighboursRight, gameUnit, client, gameMap) {
-		Phases.AddCoordinate(res, NeighboursRight)
-	}
+	//left
+	checkNeighbour(curr.Q-1, curr.R, client, curr, gameMap, gameUnit, res)
+	//right
+	checkNeighbour(curr.Q+1, curr.R, client, curr, gameMap, gameUnit, res)
 
 	if curr.R%2 != 0 {
-		NeighboursTopLeft, topLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R-1)
-		if topLeft && checkLevelCoordinate(curr, NeighboursTopLeft) && checkMSPatency(NeighboursTopLeft, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursTopLeft)
-		}
-
-		NeighboursTopRight, topRight := checkValidForMoveCoordinate(client, gameMap, curr.Q+1, curr.R-1)
-		if topRight && checkLevelCoordinate(curr, NeighboursTopRight) && checkMSPatency(NeighboursTopRight, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursTopRight)
-		}
-
-		NeighboursBotLeft, botLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R+1)
-		if botLeft && checkLevelCoordinate(curr, NeighboursBotLeft) && checkMSPatency(NeighboursBotLeft, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursBotLeft)
-		}
-
-		NeighboursBotRight, botRight := checkValidForMoveCoordinate(client, gameMap, curr.Q+1, curr.R+1)
-		if botRight && checkLevelCoordinate(curr, NeighboursBotRight) && checkMSPatency(NeighboursBotRight, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursBotRight)
-		}
+		// topLeft
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res)
+		// topRight
+		checkNeighbour(curr.Q+1, curr.R-1, client, curr, gameMap, gameUnit, res)
+		// botLeft
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res)
+		// botRight
+		checkNeighbour(curr.Q+1, curr.R+1, client, curr, gameMap, gameUnit, res)
 	} else {
-		NeighboursTopLeft, topLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q-1, curr.R-1)
-		if topLeft && checkLevelCoordinate(curr, NeighboursTopLeft) && checkMSPatency(NeighboursTopLeft, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursTopLeft)
-		}
-
-		NeighboursTopRight, topRight := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R-1)
-		if topRight && checkLevelCoordinate(curr, NeighboursTopRight) && checkMSPatency(NeighboursTopRight, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursTopRight)
-		}
-
-		NeighboursBotLeft, botLeft := checkValidForMoveCoordinate(client, gameMap, curr.Q-1, curr.R+1)
-		if botLeft && checkLevelCoordinate(curr, NeighboursBotLeft) && checkMSPatency(NeighboursBotLeft, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursBotLeft)
-		}
-		NeighboursBotRight, botRight := checkValidForMoveCoordinate(client, gameMap, curr.Q, curr.R+1)
-		if botRight && checkLevelCoordinate(curr, NeighboursBotRight) && checkMSPatency(NeighboursBotRight, gameUnit, client, gameMap) {
-			Phases.AddCoordinate(res, NeighboursBotRight)
-		}
+		// topLeft
+		checkNeighbour(curr.Q-1, curr.R-1, client, curr, gameMap, gameUnit, res)
+		// topRight
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res)
+		// botLeft
+		checkNeighbour(curr.Q-1, curr.R+1, client, curr, gameMap, gameUnit, res)
+		// botRight
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res)
 	}
 
 	return
+}
+
+func checkNeighbour(q, r int, client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit,
+	res map[string]map[string]*coordinate.Coordinate) {
+
+	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r)
+	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour) &&
+		checkMSPatency(neighbour, gameUnit, client, gameMap) {
+		Phases.AddCoordinate(res, neighbour)
+	}
+}
+
+func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate) bool {
+	for _, q := range client.GetUnits() {
+		for _, myUnit := range q {
+			if myUnit.Body.MotherShip {
+				if checkMSCoordinate(myUnit, neighbour) {
+					return false
+				}
+			}
+		}
+	}
+
+	for _, q := range client.GetHostileUnits() {
+		for _, hostileUnit := range q {
+			if hostileUnit.Body.MotherShip {
+				if checkMSCoordinate(hostileUnit, neighbour) {
+					return false
+				}
+			}
+		}
+	}
+
+	return true
+}
+
+func checkMSCoordinate(gameUnit *unit.Unit, neighbour *coordinate.Coordinate) bool {
+	if gameUnit.Q-1 == neighbour.Q && gameUnit.R == neighbour.R {
+		return true
+	} // left
+	if gameUnit.Q+1 == neighbour.Q && gameUnit.R == neighbour.R {
+		return true
+	} // right
+
+	if gameUnit.R%2 != 0 {
+		if gameUnit.Q == neighbour.Q && gameUnit.R-1 == neighbour.R {
+			return true
+		} // topLeft
+		if gameUnit.Q+1 == neighbour.Q && gameUnit.R-1 == neighbour.R {
+			return true
+		} // topRight
+		if gameUnit.Q == neighbour.Q && gameUnit.R+1 == neighbour.R {
+			return true
+		} // botLeft
+		if gameUnit.Q+1 == neighbour.Q && gameUnit.R+1 == neighbour.R {
+			return true
+		} // botRight
+	} else {
+		if gameUnit.Q-1 == neighbour.Q && gameUnit.R-1 == neighbour.R {
+			return true
+		} // topLeft
+		if gameUnit.Q == neighbour.Q && gameUnit.R-1 == neighbour.R {
+			return true
+		} // topRight
+		if gameUnit.Q-1 == neighbour.Q && gameUnit.R+1 == neighbour.R {
+			return true
+		} // botLeft
+		if gameUnit.Q == neighbour.Q && gameUnit.R+1 == neighbour.R {
+			return true
+		} // botRight
+	}
+
+	return false
 }
 
 func checkMSPatency(curr *coordinate.Coordinate, gameUnit *unit.Unit, client *player.Player, gameMap *_map.Map) bool {

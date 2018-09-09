@@ -1,13 +1,13 @@
 package movePhase
 
 import (
+	"../../../db/updateSquad"
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
+	"../../../localGame"
 	"../../../player"
 	"../../map/watchZone"
 	"errors"
-	"../../../localGame"
-	"../../../db/updateSquad"
 )
 
 type TruePatchNode struct {
@@ -30,7 +30,11 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 
 	for {
 
-		pathNodes := FindPath(client, mp, start, end, gameUnit)
+		err, pathNodes := FindPath(client, mp, start, end, gameUnit)
+		if err != nil {
+			print(err.Error())
+			return
+		}
 
 		for _, pathNode := range pathNodes {
 
@@ -73,13 +77,13 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
 		_, ok := game.GetUnit(end.Q, end.R)
-		if ok {
+		if ok || !checkMSPlace(client, pathNode) {
 			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 			return errors.New("end cell is busy"), 0
 		}
 	} else {
 		_, ok := game.GetUnit(pathNode.Q, pathNode.R)
-		if ok {
+		if ok || !checkMSPlace(client, pathNode) {
 			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 		}
 	}
@@ -104,19 +108,39 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {
 
-	if unit.Q < pathNode.Q && unit.R == pathNode.R { return 0 }
-	if unit.Q > pathNode.Q && unit.R == pathNode.R { return 180 }
+	if unit.Q < pathNode.Q && unit.R == pathNode.R {
+		return 0
+	}
+	if unit.Q > pathNode.Q && unit.R == pathNode.R {
+		return 180
+	}
 
 	if unit.R%2 == 0 {
-		if unit.Q == pathNode.Q && unit.R < pathNode.R { return 60 }
-		if unit.Q > pathNode.Q && unit.R < pathNode.R {	return 120 }
-		if unit.Q > pathNode.Q && unit.R > pathNode.R { return 240 }
-		if unit.Q == pathNode.Q && unit.R > pathNode.R { return 300 }
+		if unit.Q == pathNode.Q && unit.R < pathNode.R {
+			return 60
+		}
+		if unit.Q > pathNode.Q && unit.R < pathNode.R {
+			return 120
+		}
+		if unit.Q > pathNode.Q && unit.R > pathNode.R {
+			return 240
+		}
+		if unit.Q == pathNode.Q && unit.R > pathNode.R {
+			return 300
+		}
 	} else {
-		if unit.Q < pathNode.Q && unit.R < pathNode.R { return 60 }
-		if unit.Q == pathNode.Q && unit.R < pathNode.R { return 120 }
-		if unit.Q == pathNode.Q && unit.R > pathNode.R { return 240 }
-		if unit.Q < pathNode.Q && unit.R > pathNode.R { return 300 }
+		if unit.Q < pathNode.Q && unit.R < pathNode.R {
+			return 60
+		}
+		if unit.Q == pathNode.Q && unit.R < pathNode.R {
+			return 120
+		}
+		if unit.Q == pathNode.Q && unit.R > pathNode.R {
+			return 240
+		}
+		if unit.Q < pathNode.Q && unit.R > pathNode.R {
+			return 300
+		}
 	}
 
 	return 0
