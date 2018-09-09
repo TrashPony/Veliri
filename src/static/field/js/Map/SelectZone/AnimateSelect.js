@@ -12,7 +12,7 @@ function animateMoveCoordinate(coordinate) {
     game.SelectLineLayer.visible = false;
 
     if (coordinate.UnitMS) {
-
+        console.log(game.map.OneLayerMap[coordinate.MoveQ][coordinate.MoveR])
     }
 }
 

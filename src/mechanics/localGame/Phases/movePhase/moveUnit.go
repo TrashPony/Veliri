@@ -77,13 +77,13 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
 		_, ok := game.GetUnit(end.Q, end.R)
-		if ok || !checkMSPlace(client, pathNode) {
+		if ok || !checkMSPlace(client, pathNode, gameUnit) {
 			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
 			return errors.New("end cell is busy"), 0
 		}
 	} else {
 		_, ok := game.GetUnit(pathNode.Q, pathNode.R)
-		if ok || !checkMSPlace(client, pathNode) {
+		if ok || !checkMSPlace(client, pathNode, gameUnit) {
 			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 		}
 	}

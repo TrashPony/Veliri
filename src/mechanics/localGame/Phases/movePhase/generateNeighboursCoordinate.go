@@ -4,8 +4,8 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/map"
 	"../../../gameObjects/unit"
+	"../../../localGame/Phases"
 	"../../../player"
-	"../../Phases"
 )
 
 // TODO возможно есть способ это все упаковать в минимальное количества кода т.к. он тут ппц повтяющиеся
@@ -62,16 +62,16 @@ func checkNeighbour(q, r int, client *player.Player, curr *coordinate.Coordinate
 	res map[string]map[string]*coordinate.Coordinate) {
 
 	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r)
-	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour) &&
+	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour, gameUnit) &&
 		checkMSPatency(neighbour, gameUnit, client, gameMap) {
 		Phases.AddCoordinate(res, neighbour)
 	}
 }
 
-func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate) bool {
+func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate, gameUnit *unit.Unit) bool {
 	for _, q := range client.GetUnits() {
 		for _, myUnit := range q {
-			if myUnit.Body.MotherShip {
+			if myUnit.Body.MotherShip && !(gameUnit.Q == myUnit.Q && gameUnit.R == myUnit.R) {
 				if checkMSCoordinate(myUnit, neighbour) {
 					return false
 				}
@@ -81,7 +81,7 @@ func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate) bool 
 
 	for _, q := range client.GetHostileUnits() {
 		for _, hostileUnit := range q {
-			if hostileUnit.Body.MotherShip {
+			if hostileUnit.Body.MotherShip && !(gameUnit.Q == hostileUnit.Q && gameUnit.R == hostileUnit.R) {
 				if checkMSCoordinate(hostileUnit, neighbour) {
 					return false
 				}
