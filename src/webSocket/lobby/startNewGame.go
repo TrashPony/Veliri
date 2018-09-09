@@ -1,10 +1,10 @@
 package lobby
 
 import (
-	"github.com/gorilla/websocket"
-	"errors"
-	"../../mechanics/lobby"
 	"../../mechanics/db/insert"
+	"../../mechanics/lobby"
+	"errors"
+	"github.com/gorilla/websocket"
 )
 
 func StartNewGame(msg Message, ws *websocket.Conn) {
@@ -47,7 +47,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func CheckReady(game *lobby.Game) bool  {
+func CheckReady(game *lobby.Game) bool {
 	for _, user := range game.Users {
 		if !user.GetLobbyReady() {
 			return false

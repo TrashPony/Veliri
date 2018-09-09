@@ -14,7 +14,7 @@ func AddItem(inventory map[int]*squad.InventorySlot, item interface{}, itemType 
 	for i := 1; i <= 40; i++ { // ищем пустой слот
 		_, ok := inventory[i]
 		if !ok {
-			newItem := squad.InventorySlot{Item: item, Type: itemType, ItemID: itemID, InsertToDB:true, Quantity: quantity, HP: hp}
+			newItem := squad.InventorySlot{Item: item, Type: itemType, ItemID: itemID, InsertToDB: true, Quantity: quantity, HP: hp}
 			inventory[i] = &newItem
 			return true
 		}

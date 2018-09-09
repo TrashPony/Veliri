@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/inventory"
+	"github.com/gorilla/websocket"
 )
 
 func RemoveMotherShipWeapon(ws *websocket.Conn, msg Message) {

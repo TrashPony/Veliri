@@ -1,27 +1,27 @@
 package player
 
 import (
-	"../gameObjects/unit"
-	"../gameObjects/squad"
 	"../gameObjects/coordinate"
+	"../gameObjects/squad"
+	"../gameObjects/unit"
 )
 
 type Player struct {
 	// структура описывающая клиента ws соеденение
-	login              string
-	id                 int
+	login string
+	id    int
 
-	watch              map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
-	unitStorage        []*unit.Unit
-	units	           map[string]map[string]*unit.Unit			    // map[X]map[Y]
-	squad  			   *squad.Squad
-	Ready              bool
-	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y]
-	gameID             int
+	watch        map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
+	unitStorage  []*unit.Unit
+	units        map[string]map[string]*unit.Unit // map[X]map[Y]
+	squad        *squad.Squad
+	Ready        bool
+	hostileUnits map[string]map[string]*unit.Unit // map[X]map[Y]
+	gameID       int
 
-	LobbyReady		   bool
-	Respawn            *coordinate.Coordinate
-	squads 			   []*squad.Squad
+	LobbyReady bool
+	Respawn    *coordinate.Coordinate
+	squads     []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
@@ -60,7 +60,7 @@ func (client *Player) SetReady(ready bool) {
 	client.Ready = ready
 }
 
-func (client *Player) GetReady() (bool) {
+func (client *Player) GetReady() bool {
 	return client.Ready
 }
 
@@ -68,22 +68,22 @@ func (client *Player) SetLobbyReady(ready bool) {
 	client.LobbyReady = ready
 }
 
-func (client *Player) GetLobbyReady() (bool) {
+func (client *Player) GetLobbyReady() bool {
 	return client.LobbyReady
 }
 
-func (client *Player) GetSquad() (*squad.Squad) {
+func (client *Player) GetSquad() *squad.Squad {
 	return client.squad
 }
 
-func (client *Player) SetSquad(squad *squad.Squad) () {
+func (client *Player) SetSquad(squad *squad.Squad) {
 	client.squad = squad
 }
 
-func (client *Player) GetSquads() ([]*squad.Squad) {
+func (client *Player) GetSquads() []*squad.Squad {
 	return client.squads
 }
 
-func (client *Player) SetSquads(squads []*squad.Squad) () {
+func (client *Player) SetSquads(squads []*squad.Squad) {
 	client.squads = squads
 }

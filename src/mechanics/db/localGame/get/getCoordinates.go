@@ -1,12 +1,12 @@
 package get
 
 import (
-	"strconv"
-	"log"
+	"../../../../dbConnect"
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/map"
 	"../../../localGame"
-	"../../../../dbConnect"
+	"log"
+	"strconv"
 )
 
 func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
@@ -34,7 +34,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 		CoordinateEffects(&gameCoordinate)
 
 		// в бд карта храниться в хексовых координатах
-		gameCoordinate.X = gameCoordinate.Q - (gameCoordinate.R - (gameCoordinate.R & 1)) / 2
+		gameCoordinate.X = gameCoordinate.Q - (gameCoordinate.R-(gameCoordinate.R&1))/2
 		gameCoordinate.Z = gameCoordinate.R
 		gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
 
@@ -60,7 +60,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 				gameCoordinate.Q = q
 				gameCoordinate.R = r
 				// в бд карта храниться в хексовых координатах
-				gameCoordinate.X = q - (r - (r & 1)) / 2
+				gameCoordinate.X = q - (r-(r&1))/2
 				gameCoordinate.Z = r
 				gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
 

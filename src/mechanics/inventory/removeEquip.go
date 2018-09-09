@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"../player"
 	"../db/updateSquad"
+	"../player"
 )
 
 func RemoveMSEquip(user *player.Player, numEquipSlot int, typeSlot int) {

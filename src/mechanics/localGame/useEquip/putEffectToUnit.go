@@ -1,10 +1,10 @@
 package useEquip
 
 import (
-	"../../gameObjects/unit"
-	"../../gameObjects/detail"
 	"../../db/localGame/update"
 	"../../db/updateSquad"
+	"../../gameObjects/detail"
+	"../../gameObjects/unit"
 	"../../player"
 	"errors"
 )
@@ -16,7 +16,7 @@ func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, c
 		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
-		useUnit.UseEquip = false // todo для тестов false, для игры true
+		useUnit.UseEquip = false  // todo для тестов false, для игры true
 		useEquipSlot.Used = false // todo для тестов false, для игры true
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту

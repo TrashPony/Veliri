@@ -1,11 +1,11 @@
 package targetPhase
 
 import (
-	"../../../gameObjects/unit"
+	"../../../db/updateSquad"
 	"../../../gameObjects/coordinate"
+	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
-	"../../../db/updateSquad"
 	"math"
 )
 

@@ -1,26 +1,26 @@
 package placePhase
 
 import (
-	"../../../gameObjects/unit"
 	"../../../db/updateSquad"
-	"../../../player"
+	"../../../gameObjects/unit"
 	"../../../localGame"
+	"../../../player"
 )
 
-func PlaceUnit(gameUnit *unit.Unit, q,r int, actionGame *localGame.Game, client *player.Player) error {
+func PlaceUnit(gameUnit *unit.Unit, q, r int, actionGame *localGame.Game, client *player.Player) error {
 
-	gameUnit.SetQ(q) //значит тут мы присваиваем юниту го координаты куда его поставили
-	gameUnit.SetR(r) //значит тут мы присваиваем юниту го координаты куда его поставили
+	gameUnit.SetQ(q)        //значит тут мы присваиваем юниту го координаты куда его поставили
+	gameUnit.SetR(r)        //значит тут мы присваиваем юниту го координаты куда его поставили
 	gameUnit.SetOnMap(true) // устанавливаем ему параметр который говорит что он на игровом поле
 
 	actionGame.DelUnitStorage(gameUnit.ID) // юдаяем его из трюма в обьекте игры
 	actionGame.SetUnit(gameUnit)           // добавляем его как активного юнита в обьект игры
 
-	client.DelUnitStorage(gameUnit.ID)     // юдаяем его из трюма игрока
+	client.DelUnitStorage(gameUnit.ID) // юдаяем его из трюма игрока
 	client.AddUnit(gameUnit)
 
-	updateSquad.Squad(client.GetSquad())   // обновляем его параметры в БД игры
-							   // todo если при добавление не случилось ишибки то отправляем nil что значит нет ошибок, юнит обновлен и стоит на карте
+	updateSquad.Squad(client.GetSquad()) // обновляем его параметры в БД игры
+	// todo если при добавление не случилось ишибки то отправляем nil что значит нет ошибок, юнит обновлен и стоит на карте
 	return nil
 
 	// TODO что тебе надо сделать что бы изначально юнит получал не свои координаты куда его поставили а координаты MatherShip, client.GetMatherShip().X client.GetMatherShip().Y

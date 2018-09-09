@@ -1,12 +1,12 @@
 package chat
 
 import (
+	"../../mechanics/player"
+	"../../mechanics/players"
 	"github.com/gorilla/websocket"
-	"sync"
 	"log"
 	"strconv"
-	"../../mechanics/players"
-	"../../mechanics/player"
+	"sync"
 )
 
 var mutex = &sync.Mutex{}
@@ -21,10 +21,10 @@ type chatMessage struct {
 }
 
 type chatResponse struct {
-	Event        string `json:"event"`
-	UserName     string `json:"user_name"`
-	GameUser     string `json:"game_user"`
-	Message		 string `json:"message"`
+	Event    string `json:"event"`
+	UserName string `json:"user_name"`
+	GameUser string `json:"game_user"`
+	Message  string `json:"message"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -39,7 +39,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	usersChatWs[ws] = newPlayer // Регистрируем нового Клиента
 
-	print("WS chat Сессия: ")                          // просто смотрим новое подключение
+	print("WS chat Сессия: ") // просто смотрим новое подключение
 	println(" login: " + newPlayer.GetLogin() + " id: " + strconv.Itoa(newPlayer.GetID()))
 
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
@@ -49,12 +49,11 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	Reader(ws)
 }
 
-
 func Reader(ws *websocket.Conn) {
 	for {
 		var msg chatMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersChatWs, err)
 			break
 		}
@@ -65,9 +64,9 @@ func Reader(ws *websocket.Conn) {
 	}
 }
 
-func CommonChatSender()  {
+func CommonChatSender() {
 	for {
-		resp := <- chatPipe
+		resp := <-chatPipe
 		mutex.Lock()
 		for ws := range usersChatWs {
 			err := ws.WriteJSON(resp)
@@ -80,4 +79,3 @@ func CommonChatSender()  {
 		mutex.Unlock()
 	}
 }
-

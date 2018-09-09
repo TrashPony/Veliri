@@ -1,10 +1,10 @@
 package inventory
 
 import (
-	"log"
-	"../player"
 	"../db/get"
 	"../db/insert"
+	"../player"
+	"log"
 )
 
 func GetInventory(client *player.Player) {

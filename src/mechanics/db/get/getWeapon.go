@@ -8,8 +8,8 @@ import (
 
 func Weapon(id int) (weapon *detail.Weapon) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, min_attack_range, range_attack, accuracy, ammo_capacity, artillery, power " +
-		"FROM weapon_type " +
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, min_attack_range, range_attack, accuracy, ammo_capacity, artillery, power "+
+		"FROM weapon_type "+
 		"WHERE id=$1", id)
 	if err != nil {
 		log.Fatal("get weapon: " + err.Error())

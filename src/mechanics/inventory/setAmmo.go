@@ -1,11 +1,11 @@
 package inventory
 
 import (
-	"../player"
 	"../db/get"
 	"../db/updateSquad"
-	"../gameObjects/detail"
 	"../gameObjects/ammo"
+	"../gameObjects/detail"
+	"../player"
 )
 
 func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) {
@@ -37,7 +37,7 @@ func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numbe
 	}
 }
 
-func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo.Ammo, inventorySlot int)  {
+func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo.Ammo, inventorySlot int) {
 	if ammoSlot.Weapon == nil {
 		return // если нет оружия ему нельзя поставить боеприпас
 	}

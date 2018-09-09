@@ -3,9 +3,9 @@ package main
 import (
 	"./auth"
 	"./webSocket"
+	"./webSocket/chat"
 	"./webSocket/field"
 	"./webSocket/lobby"
-	"./webSocket/chat"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"

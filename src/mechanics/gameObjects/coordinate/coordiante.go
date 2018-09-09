@@ -1,8 +1,8 @@
 package coordinate
 
 import (
-	"strconv"
 	"../effect"
+	"strconv"
 )
 
 type Coordinate struct {

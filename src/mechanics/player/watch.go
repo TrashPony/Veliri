@@ -1,8 +1,8 @@
 package player
 
 import (
-	"strconv"
 	"../gameObjects/coordinate"
+	"strconv"
 )
 
 func (client *Player) AddCoordinate(gameCoordinate *coordinate.Coordinate) { // Todo AddWatchCoordinate
@@ -27,7 +27,7 @@ func (client *Player) GetWatchCoordinates() (coordinates map[string]map[string]*
 	return client.watch
 }
 
-func (client *Player) SetWatchCoordinates(coordinates map[string]map[string]*coordinate.Coordinate) () {
+func (client *Player) SetWatchCoordinates(coordinates map[string]map[string]*coordinate.Coordinate) {
 	client.watch = coordinates
 }
 

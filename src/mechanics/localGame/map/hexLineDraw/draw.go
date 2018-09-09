@@ -1,19 +1,19 @@
 package hexLineDraw
 
 import (
-	"../../../localGame"
 	"../../../gameObjects/coordinate"
+	"../../../localGame"
 	"math"
 )
 
 func Draw(a, b *coordinate.Coordinate, game *localGame.Game) []*coordinate.Coordinate {
-    /* SOURCE Algorithm: https://www.redblobgames.com/grids/hexagons/#line-drawing
-	1) First we calculate N=1 to be the hex distance between the endpoints.
-    2) Then evenly sample N+1 points between point A and point B. Using linear interpolation, each point
-		will be A + (B - A) * 1.0/N * i, for values of i from 0 to N, inclusive. In the diagram these sample points
-		are the dark blue dots. This results in floating point coordinates.
-    3) Convert each sample point (float) back into a hex (int). The algorithm is called cube_round.
-     */
+	/* SOURCE Algorithm: https://www.redblobgames.com/grids/hexagons/#line-drawing
+		1) First we calculate N=1 to be the hex distance between the endpoints.
+	    2) Then evenly sample N+1 points between point A and point B. Using linear interpolation, each point
+			will be A + (B - A) * 1.0/N * i, for values of i from 0 to N, inclusive. In the diagram these sample points
+			are the dark blue dots. This results in floating point coordinates.
+	    3) Convert each sample point (float) back into a hex (int). The algorithm is called cube_round.
+	*/
 	result := make([]*coordinate.Coordinate, 0)
 
 	distance := int(cubeDistance(a, b))

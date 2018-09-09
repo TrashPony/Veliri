@@ -1,9 +1,9 @@
 package lobby
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/lobby"
 	"../../mechanics/player"
+	"github.com/gorilla/websocket"
 )
 
 func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*player.Player, err error) {
@@ -13,7 +13,7 @@ func DelConn(ws *websocket.Conn, usersWs *map[*websocket.Conn]*player.Player, er
 		user.SetLobbyReady(false)
 		user.SetRespawn(nil)
 
-		delete(*usersWs, ws)             // удаляем его из активных подключений
+		delete(*usersWs, ws)                   // удаляем его из активных подключений
 		DelLobbyUser(user.GetLogin(), usersWs) // удаляем из общего списка игроков
 
 		game := openGames[user.GetGameID()] // получаем игру в которой он был

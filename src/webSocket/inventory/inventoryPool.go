@@ -1,10 +1,10 @@
 package inventory
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/player"
 	"../../mechanics/players"
 	"../utils"
+	"github.com/gorilla/websocket"
 	"strconv"
 	"sync"
 )

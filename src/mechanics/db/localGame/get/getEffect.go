@@ -1,10 +1,10 @@
 package get
 
 import (
-	"../../../gameObjects/unit"
-	"../../../gameObjects/effect"
-	"../../../gameObjects/coordinate"
 	"../../../../dbConnect"
+	"../../../gameObjects/coordinate"
+	"../../../gameObjects/effect"
+	"../../../gameObjects/unit"
 	"log"
 )
 

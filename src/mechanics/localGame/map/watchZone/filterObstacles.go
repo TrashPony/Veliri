@@ -1,10 +1,10 @@
 package watchZone
 
 import (
-	"strconv"
-	"../../../localGame"
 	"../../../gameObjects/coordinate"
+	"../../../localGame"
 	"../hexLineDraw"
+	"strconv"
 )
 
 func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {

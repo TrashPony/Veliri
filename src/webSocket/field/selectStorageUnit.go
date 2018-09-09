@@ -1,10 +1,10 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame/Phases/placePhase"
+	"github.com/gorilla/websocket"
 )
 
 func selectStorageUnit(msg Message, ws *websocket.Conn) {

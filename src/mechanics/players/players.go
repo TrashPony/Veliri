@@ -1,9 +1,9 @@
 package players
 
 import (
-	"sync"
 	"../inventory"
 	"../player"
+	"sync"
 )
 
 type UsersStore struct {
@@ -26,7 +26,7 @@ func (usersStore *UsersStore) Get(id int) (*player.Player, bool) {
 	return val, ok
 }
 
-func (usersStore *UsersStore) Add(id int, login string) (*player.Player){
+func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 

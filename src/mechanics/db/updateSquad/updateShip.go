@@ -2,8 +2,8 @@ package updateSquad
 
 import (
 	"../../gameObjects/squad"
-	"log"
 	"database/sql"
+	"log"
 )
 
 func MotherShip(squad *squad.Squad, tx *sql.Tx) {
@@ -15,7 +15,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 		var bodyID sql.NullInt64
 
 		if ship.Body == nil {
-			bodyID = sql.NullInt64{Int64:0, Valid: false}
+			bodyID = sql.NullInt64{Int64: 0, Valid: false}
 
 			_, err := tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit=$2",
 				squad.ID, ship.ID)
@@ -41,7 +41,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 	} else {
 		if ship.ID == 0 || ship.Body != nil {
 			id := 0
-			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, q, r, rotate, action, target, queue_attack, hp, use_equip, power, mother_ship, on_map) " +
+			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, q, r, rotate, action, target, queue_attack, hp, use_equip, power, mother_ship, on_map) "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
 				squad.ID, ship.Body.ID, ship.Q, ship.R, ship.Rotate, ship.Action,
 				parseTarget(ship), ship.QueueAttack, ship.HP, ship.UseEquip, ship.Power, true, true).Scan(&id)

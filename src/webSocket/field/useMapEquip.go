@@ -1,14 +1,14 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit"
-	"../../mechanics/gameObjects/equip"
-	"../../mechanics/player"
-	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/localGame/useEquip"
 	"../../mechanics/gameObjects/detail"
+	"../../mechanics/gameObjects/equip"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/useEquip"
+	"../../mechanics/player"
+	"github.com/gorilla/websocket"
 )
 
 func UseEquip(msg Message, ws *websocket.Conn) {
@@ -34,7 +34,7 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 			if findCoordinate {
 				effectCoordinates, err := useEquip.ToMap(gameUnit, gameCoordinate, activeGame, equipSlot, client)
 				if err == nil {
-					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip",UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, QUse: msg.Q, RUse: msg.R})
+					ws.WriteJSON(SendUseEquip{Event: "UseMapEquip", UseUnit: gameUnit, ZoneEffect: effectCoordinates, AppliedEquip: equipSlot.Equip, QUse: msg.Q, RUse: msg.R})
 					updateUseMapEquipHostileUser(msg.Q, msg.R, client, activeGame, effectCoordinates, equipSlot.Equip)
 				} else {
 					ws.WriteJSON(ErrorMessage{Event: "Error", Error: err.Error()})

@@ -1,14 +1,14 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/detail"
+	"../../mechanics/gameObjects/equip"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/localGame/useEquip"
-	"../../mechanics/gameObjects/equip"
 	"../../mechanics/player"
-	"../../mechanics/localGame"
+	"github.com/gorilla/websocket"
 )
 
 func UseUnitEquip(msg Message, ws *websocket.Conn) {
@@ -55,7 +55,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 					if err != nil {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
 					} else {
-						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
+						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
 						updateUseUnitEquipHostileUser(client, activeGame, gameUnit, targetUnit, equipSlot.Equip)
 					}
 				}
@@ -71,7 +71,7 @@ func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(targetUnit.Q, targetUnit.R)
 			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 package watchZone
 
 import (
-	"../../../player"
 	"../../../gameObjects/coordinate"
+	"../../../player"
 	"strconv"
 )
 

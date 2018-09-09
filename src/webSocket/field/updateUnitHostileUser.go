@@ -2,8 +2,8 @@ package field
 
 import (
 	"../../mechanics/gameObjects/unit"
-	"../../mechanics/player"
 	"../../mechanics/localGame"
+	"../../mechanics/player"
 )
 
 func updateUnitHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit) {
@@ -11,7 +11,7 @@ func updateUnitHostileUser(client *player.Player, activeGame *localGame.Game, ga
 		if user.GetLogin() != client.GetLogin() {
 			_, watch := user.GetHostileUnit(gameUnit.Q, gameUnit.R)
 			if watch {
-				targetPipe <- Unit{Event: "UpdateUnit", UserName: user.GetLogin(),GameID: activeGame.Id, Unit: gameUnit}
+				targetPipe <- Unit{Event: "UpdateUnit", UserName: user.GetLogin(), GameID: activeGame.Id, Unit: gameUnit}
 			}
 		}
 	}

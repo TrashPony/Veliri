@@ -1,12 +1,12 @@
 package targetPhase
 
 import (
-	"../../../gameObjects/unit"
-	"../../../gameObjects/effect"
-	"../../useEquip"
-	"../../../player"
-	"../../../db/updateSquad"
 	"../../../db/localGame/update"
+	"../../../db/updateSquad"
+	"../../../gameObjects/effect"
+	"../../../gameObjects/unit"
+	"../../../player"
+	"../../useEquip"
 )
 
 func DefendTarget(gameUnit *unit.Unit, client *player.Player) {

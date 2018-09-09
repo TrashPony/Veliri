@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"encoding/gob"
-	"html/template"
-	"net/http"
-	"github.com/gorilla/sessions"
-	"encoding/json"
-	"log"
 	"../dbConnect"
+	"encoding/gob"
+	"encoding/json"
+	"github.com/gorilla/sessions"
+	"html/template"
+	"log"
+	"net/http"
 )
 
 var cookieStore = sessions.NewCookieStore([]byte("dick, mountain, sky ray")) // мало понимаю в шифрование сессии внутри указан приватный ключь шифрования
@@ -98,7 +98,7 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) (string, int) {
 	return login, id
 }
 
-func GetUsers(name string) User{
+func GetUsers(name string) User {
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, mail, password FROM users WHERE name=$1", name)
 	if err != nil {
 		log.Fatal(err)

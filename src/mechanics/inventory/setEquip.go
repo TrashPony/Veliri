@@ -1,11 +1,11 @@
 package inventory
 
 import (
-	"../player"
 	"../db/get"
+	"../db/updateSquad"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
-	"../db/updateSquad"
+	"../player"
 	"errors"
 )
 
@@ -22,8 +22,8 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 			if ok && equipSlot.Type == typeEquipSlot {
 
 				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-				if (equipSlot.Equip != nil && msBody.MaxPower - msBody.GetUsePower() + equipSlot.Equip.Power >= newEquip.Power) ||
-					(equipSlot.Equip == nil && msBody.MaxPower - msBody.GetUsePower() >= newEquip.Power) {
+				if (equipSlot.Equip != nil && msBody.MaxPower-msBody.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
+					(equipSlot.Equip == nil && msBody.MaxPower-msBody.GetUsePower() >= newEquip.Power) {
 
 					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 				} else {
@@ -48,8 +48,8 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 				if ok && equipSlot.Type == typeEquipSlot {
 
 					// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-					if (equipSlot.Equip != nil && unitSlot.Unit.Body.MaxPower - unitSlot.Unit.Body.GetUsePower() + equipSlot.Equip.Power >= newEquip.Power) ||
-						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower - unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
+					if (equipSlot.Equip != nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
+						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
 
 						SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
 					} else {

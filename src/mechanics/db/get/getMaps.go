@@ -1,10 +1,9 @@
 package get
 
 import (
-	"log"
 	"../../../dbConnect"
 	gameMap "../../gameObjects/map"
-
+	"log"
 )
 
 func MapList() []gameMap.Map {
@@ -23,8 +22,8 @@ func MapList() []gameMap.Map {
 		if err != nil {
 			log.Fatal(err)
 		}
-		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns " +
-			"FROM map_constructor " +
+		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns "+
+			"FROM map_constructor "+
 			"WHERE id_type=1 AND id_map = $1;", mp.Id)
 		errors := row.Scan(&mp.Respawns)
 		if errors != nil {
@@ -50,8 +49,8 @@ func Map(id int) gameMap.Map {
 		if err != nil {
 			log.Fatal(err)
 		}
-		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns " +
-			"FROM map_constructor " +
+		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns "+
+			"FROM map_constructor "+
 			"WHERE id_type=1 AND id_map = $1;", mp.Id)
 		errors := row.Scan(&mp.Respawns)
 		if errors != nil {

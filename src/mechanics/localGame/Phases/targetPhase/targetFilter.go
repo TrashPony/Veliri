@@ -1,10 +1,10 @@
 package targetPhase
 
 import (
+	"../../../gameObjects/coordinate"
+	"../../../localGame"
 	"../../map/hexLineDraw"
 	"../../map/watchZone"
-	"../../../localGame"
-	"../../../gameObjects/coordinate"
 	"strconv"
 )
 

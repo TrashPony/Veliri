@@ -1,10 +1,10 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/userReady"
-	"../../mechanics/gameObjects/unit"
+	"github.com/gorilla/websocket"
 )
 
 func Ready(ws *websocket.Conn) {

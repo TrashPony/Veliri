@@ -1,9 +1,9 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame/Phases/targetPhase"
+	"github.com/gorilla/websocket"
 	"strconv"
 )
 

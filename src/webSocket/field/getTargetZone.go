@@ -1,8 +1,8 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/localGame/Phases/targetPhase"
+	"github.com/gorilla/websocket"
 )
 
 func GetTargetZone(msg Message, ws *websocket.Conn) {

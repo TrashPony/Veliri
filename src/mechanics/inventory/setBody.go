@@ -1,10 +1,10 @@
 package inventory
 
 import (
-	"../player"
-	"../gameObjects/unit"
 	"../db/get"
 	"../db/updateSquad"
+	"../gameObjects/unit"
+	"../player"
 )
 
 func SetMSBody(user *player.Player, idBody, inventorySlot int) {
@@ -57,8 +57,8 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 				unitSlot.Unit = &unit.Unit{}
 			}
 
-			unitSlot.Unit.HP = body.HP 			    // устанавливает колво хп как у тела
-			unitSlot.Unit.Power = newBody.MaxPower  // устанавливаем мощьность как у тела
+			unitSlot.Unit.HP = body.HP             // устанавливает колво хп как у тела
+			unitSlot.Unit.Power = newBody.MaxPower // устанавливаем мощьность как у тела
 
 			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 			unitSlot.Unit.Body = newBody

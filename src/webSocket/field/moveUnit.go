@@ -1,11 +1,11 @@
 package field
 
 import (
-	"../../mechanics/localGame/Phases/movePhase"
-	"../../mechanics/gameObjects/unit"
-	"../../mechanics/player"
-	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/Phases/movePhase"
+	"../../mechanics/player"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -24,7 +24,7 @@ TODO улучшить метод движения за счет общения �
 TODO юниты при передвежение будет говорить бекенду свои координаты
 TODO и бекенд будет решать за счет этого кому из игроков говорить где и как двигается юнит
 TODO тогда беда с туманом войны и баг с проебом координаты решается на все 100%
- */
+*/
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
 

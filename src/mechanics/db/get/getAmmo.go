@@ -1,15 +1,15 @@
 package get
 
 import (
-	"log"
 	"../../../dbConnect"
 	"../../gameObjects/ammo"
+	"log"
 )
 
 func Ammo(id int) (resultAmmo *ammo.Ammo) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, type, type_attack, damage, area_covers " +
-		"FROM ammunition_type " +
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, type, type_attack, damage, area_covers "+
+		"FROM ammunition_type "+
 		" WHERE id=$1", id)
 	if err != nil {
 		log.Fatal("get ammo " + err.Error())

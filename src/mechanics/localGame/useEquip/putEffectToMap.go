@@ -1,16 +1,16 @@
 package useEquip
 
 import (
-	"../../gameObjects/coordinate"
-	"../../localGame"
-	"../../gameObjects/equip"
-	"../../player"
 	"../../db/localGame/update"
-	"../../gameObjects/unit"
-	"../../gameObjects/detail"
 	"../../db/updateSquad"
-	"strconv"
+	"../../gameObjects/coordinate"
+	"../../gameObjects/detail"
+	"../../gameObjects/equip"
+	"../../gameObjects/unit"
+	"../../localGame"
+	"../../player"
 	"errors"
+	"strconv"
 )
 
 func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot, client *player.Player) (map[string]map[string]*coordinate.Coordinate, error) {
@@ -19,7 +19,7 @@ func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame 
 		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
-		useUnit.UseEquip = false // todo для тестов false, для игры true
+		useUnit.UseEquip = false  // todo для тестов false, для игры true
 		useEquipSlot.Used = false // todo для тестов false, для игры true
 
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
@@ -61,7 +61,7 @@ func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame 
 	}
 }
 
-func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string)  {
+func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string) {
 	addAEffect := true
 
 	for _, effect := range useEquip.Effects {
@@ -82,7 +82,7 @@ func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, type
 	}
 }
 
-func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {
+func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate) {
 	if res[strconv.Itoa(gameCoordinate.Q)] != nil {
 		res[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)] = gameCoordinate
 	} else {

@@ -1,11 +1,11 @@
 package lobby
 
 import (
-	"errors"
-	"../player"
+	"../db/get"
 	"../gameObjects/coordinate"
 	LocalMap "../gameObjects/map"
-	"../db/get"
+	"../player"
+	"errors"
 )
 
 type Game struct {

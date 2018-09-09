@@ -3,8 +3,8 @@ package get
 import (
 	"../../../dbConnect"
 	"../../gameObjects/detail"
-	"log"
 	"../../gameObjects/unit"
+	"log"
 )
 
 func Body(id int) (body *detail.Body) {

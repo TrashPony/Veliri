@@ -1,8 +1,8 @@
 package insert
 
 import (
-	"../../gameObjects/squad"
 	"../../../dbConnect"
+	"../../gameObjects/squad"
 	"log"
 )
 
@@ -20,4 +20,3 @@ func AddNewSquad(name string, userID int) (err error, newSquad *squad.Squad) {
 
 	return nil, newSquad
 }
-

@@ -4,8 +4,8 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/equip"
 	"../../../gameObjects/unit"
-	"../../../localGame/Phases"
 	"../../../localGame"
+	"../../../localGame/Phases"
 	"../../../player"
 )
 
