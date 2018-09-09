@@ -1,9 +1,9 @@
 package unit
 
 import (
+	"../coordinate"
 	"../detail"
 	"../effect"
-	"../coordinate"
 )
 
 type Unit struct {
@@ -13,8 +13,8 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	Q      int  `json:"q"`
-	R      int  `json:"r"`
+	Q int `json:"q"`
+	R int `json:"r"`
 
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
@@ -24,8 +24,9 @@ type Unit struct {
 	Target      *coordinate.Coordinate `json:"target"`
 	QueueAttack int                    `json:"queue_attack"`
 
-	HP    int `json:"hp"`
-	Power int `json:"power"`
+	HP           int `json:"hp"`
+	Power        int `json:"power"`
+	ActionPoints int `json:"action_points"`
 
 	Effects []*effect.Effect `json:"effects"`
 	MS      bool             `json:"ms"`

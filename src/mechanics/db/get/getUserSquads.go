@@ -1,14 +1,14 @@
 package get
 
 import (
-	"log"
 	"../../../dbConnect"
+	"../../gameObjects/coordinate"
 	"../../gameObjects/squad"
 	"../../gameObjects/unit"
-	"../../gameObjects/coordinate"
-	"strings"
-	"strconv"
 	"database/sql"
+	"log"
+	"strconv"
+	"strings"
 )
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
@@ -55,7 +55,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 func SquadMatherShip(squadID int) (ship *unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"Select id, id_body, hp, q, r, rotate, action, target, queue_attack, use_equip, power, mother_ship "+
+		"Select id, id_body, hp, q, r, rotate, action, target, queue_attack, use_equip, power, mother_ship, action_point "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
 	if err != nil {
@@ -71,7 +71,7 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 		var idBody sql.NullInt64
 
 		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.Q, &ship.R, &ship.Rotate, &ship.Action, &target,
-			&ship.QueueAttack, &ship.UseEquip, &ship.Power, &ship.MS)
+			&ship.QueueAttack, &ship.UseEquip, &ship.Power, &ship.MS, &ship.ActionPoints)
 
 		if err != nil {
 			log.Fatal("scan get ship squad " + err.Error())
@@ -90,10 +90,10 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 	return
 }
 
-func SquadUnits(squadID int, slot int) (*unit.Unit) {
+func SquadUnits(squadID int, slot int) *unit.Unit {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT id, id_body, hp, q, r, rotate, action, target, queue_attack, on_map, use_equip, power, mother_ship "+
+		"SELECT id, id_body, hp, q, r, rotate, action, target, queue_attack, on_map, use_equip, power, mother_ship, action_point "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
 	if err != nil {
@@ -107,7 +107,8 @@ func SquadUnits(squadID int, slot int) (*unit.Unit) {
 
 	for rows.Next() {
 		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.Q, &squadUnit.R, &squadUnit.Rotate,
-			&squadUnit.Action, &target, &squadUnit.QueueAttack, &squadUnit.OnMap, &squadUnit.UseEquip, &squadUnit.Power, &squadUnit.MS)
+			&squadUnit.Action, &target, &squadUnit.QueueAttack, &squadUnit.OnMap, &squadUnit.UseEquip, &squadUnit.Power,
+			&squadUnit.MS, &squadUnit.ActionPoints)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())
 		}

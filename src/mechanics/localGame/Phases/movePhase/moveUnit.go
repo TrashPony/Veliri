@@ -17,8 +17,6 @@ type TruePatchNode struct {
 }
 
 func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game *localGame.Game) (path []*TruePatchNode) {
-	moveTrigger := true
-
 	mp := game.GetMap()
 	start, _ := mp.GetCoordinate(gameUnit.Q, gameUnit.R)
 	end, _ := mp.GetCoordinate(toQ, toR)
@@ -28,68 +26,48 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	startPoint := TruePatchNode{WatchNode: nil, PathNode: start, UnitRotate: gameUnit.Rotate}
 	path = append(path, &startPoint)
 
-	for {
+	err, pathNodes := FindPath(client, mp, start, end, gameUnit)
+	if err != nil {
+		print(err.Error())
+		return
+	}
 
-		err, pathNodes := FindPath(client, mp, start, end, gameUnit)
-		if err != nil {
-			print(err.Error())
-			return
-		}
+	for _, pathNode := range pathNodes {
 
-		for _, pathNode := range pathNodes {
+		errorMove, unitRotate := Move(gameUnit, pathNode, client, end, game)
 
-			errorMove, unitRotate := Move(gameUnit, pathNode, client, end, game)
-
-			if errorMove != nil {
-				if errorMove.Error() == "cell is busy" {
-					moveTrigger = false
-					break
-				}
-				if errorMove.Error() == "end cell is busy" {
-					break
-				}
-			} else {
-				truePatchNode := TruePatchNode{}
-
-				truePatchNode.WatchNode = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
-				truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
-				truePatchNode.UnitRotate = unitRotate
-				gameUnit.Rotate = unitRotate
-
-				path = append(path, &truePatchNode)
-				moveTrigger = true
+		if errorMove != nil {
+			if errorMove.Error() == "cell is busy" {
+				break
 			}
-		}
+		} else {
+			truePatchNode := TruePatchNode{}
 
-		if moveTrigger {
+			truePatchNode.WatchNode = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+			truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
+			truePatchNode.UnitRotate = unitRotate
+			gameUnit.Rotate = unitRotate
 
-			queue := Queue(game)
-			gameUnit.QueueAttack = queue
-
-			updateSquad.Squad(client.GetSquad())
-
-			return
+			path = append(path, &truePatchNode)
 		}
 	}
+
+	if gameUnit.ActionPoints == 0 {
+		gameUnit.Action = true
+		queue := Queue(game)
+		gameUnit.QueueAttack = queue
+	}
+
+	updateSquad.Squad(client.GetSquad())
+
+	return
 }
 
 func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *localGame.Game) (error, int) {
 
-	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
-		_, ok := game.GetUnit(end.Q, end.R)
-		if ok || !checkMSPlace(client, pathNode, gameUnit) {
-			gameUnit.Action = false // todo должно быть true но для тестов пока будет false
-			return errors.New("end cell is busy"), 0
-		}
-	} else {
-		_, ok := game.GetUnit(pathNode.Q, pathNode.R)
-		if ok || !checkMSPlace(client, pathNode, gameUnit) {
-			return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
-		}
-	}
-
-	if (end.Q == pathNode.Q) && (end.R == pathNode.R) {
-		gameUnit.Action = false // todo должно быть true но для тестов пока будет false
+	_, ok := game.GetUnit(pathNode.Q, pathNode.R)
+	if ok || !checkMSPlace(client, pathNode, gameUnit) {
+		return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 	}
 
 	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
@@ -99,6 +77,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	gameUnit.Q = pathNode.Q // даем новые координаты юниту
 	gameUnit.R = pathNode.R
+	gameUnit.ActionPoints -= 1
 
 	game.SetUnit(gameUnit)
 	client.AddUnit(gameUnit) // добавляем новую позицию юнита

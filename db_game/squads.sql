@@ -30,6 +30,7 @@ CREATE TABLE squad_units (
   /* Характиристики */
   hp                  INT,
   power               INT,
+  action_point        INT,    /* очки передвижения юнита */
   mother_ship         BOOLEAN /* является ли этот юнит мазршипом */
 );
 

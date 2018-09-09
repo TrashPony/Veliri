@@ -3,10 +3,10 @@ package movePhase
 import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
-	"../../../player"
-	"strconv"
 	"../../../localGame"
 	"../../../localGame/Phases"
+	"../../../player"
+	"strconv"
 )
 
 func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
@@ -27,7 +27,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 		}
 	}
 
-	for i := 0; i < gameUnit.Body.Speed-1; i++ {
+	for i := 0; i < gameUnit.ActionPoints-1; i++ {
 		for _, xLine := range openCoordinate {
 			for _, gameCoordinate := range xLine {
 				matrix := generateNeighboursCoordinate(client, gameCoordinate, activeGame.Map, gameUnit)
