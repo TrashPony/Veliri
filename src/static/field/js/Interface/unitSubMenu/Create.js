@@ -1,6 +1,7 @@
 function CreateUnitSubMenu(unit) {
     if (game.Phase === "move" || game.Phase === "targeting") {
 
+        let BoxUnitSubMenu = document.getElementById("BoxUnitSubMenu");
         let unitSubMenu = document.getElementById("UnitSubMenu");
 
         if (unitSubMenu) {
@@ -10,8 +11,6 @@ function CreateUnitSubMenu(unit) {
         unitSubMenu = document.createElement("div");
         unitSubMenu.id = "UnitSubMenu";
 
-        unitSubMenu.style.left = stylePositionParams.left - 95 + 'px';
-        unitSubMenu.style.top = stylePositionParams.top - 85 + 'px';
         unitSubMenu.style.display = "block";
 
         let equipPanel = document.createElement("div");
@@ -30,6 +29,7 @@ function CreateUnitSubMenu(unit) {
                 ActionButton(equipPanel, unit, "Defend", "Защита");
             }
         } else {
+            unitSubMenu.style.boxShadow = "none";
             unitSubMenu.style.animation = "none";
             unitSubMenu.style.border = "0px";
         }
@@ -38,6 +38,6 @@ function CreateUnitSubMenu(unit) {
             EffectsPanel(unitSubMenu, unit);
         }
 
-        document.body.appendChild(unitSubMenu);
+        BoxUnitSubMenu.appendChild(unitSubMenu);
     }
 }

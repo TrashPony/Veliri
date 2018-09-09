@@ -1,3 +1,10 @@
+#BoxUnitSubMenu {
+    position: relative;
+    top: 30px;
+    text-align: center;
+    left: 5px;
+}
+
 #UnitSubMenu {
     pointer-events: none;
     position: absolute;
@@ -13,6 +20,7 @@
     height: 150px;
     width: 150px;
     border-radius: 100px;
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
 }
 
 #hostileSubMenu {
@@ -32,13 +40,14 @@
 
 #effectPanel {
     position: relative;
-    top: 3px;
+    top: 20px;
     animation: menuAnimation 3000ms linear infinite;
     border: 1px solid #25a0e1;
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
     text-shadow: #28a5e4 0 0 4px;
     border-radius: 20px;
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
 }
 
 #targetButtonsTable {
