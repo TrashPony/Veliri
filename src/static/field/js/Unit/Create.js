@@ -1,7 +1,7 @@
 function CreateUnit(unitStat, inVisible) {
     let q = unitStat.q;
     let r = unitStat.r;
-    console.log(unitStat);
+
     let cell = game.map.OneLayerMap[q][r].sprite;
     let x = cell.x + cell.width / 2;
     let y = cell.y + cell.height / 2;

@@ -1,13 +1,13 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"strconv"
-	"sync"
 	"../../mechanics/player"
 	"../../mechanics/players"
 	"../utils"
+	"github.com/gorilla/websocket"
 	"log"
+	"strconv"
+	"sync"
 )
 
 var watchPipe = make(chan Watch)
@@ -48,7 +48,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersFieldWs, err)
 			break
 		}
@@ -82,6 +82,12 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 
 		if msg.Event == "GetTargetZone" {
 			GetTargetZone(msg, ws)
+			continue
+		}
+
+		if msg.Event == "GetPreviewPath" {
+			GetPreviewPath(msg, ws)
+			continue
 		}
 
 		if msg.Event == "MoveUnit" {

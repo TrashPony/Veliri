@@ -9,6 +9,15 @@ function animateMoveCoordinate(coordinate) {
         to_q: Number(coordinate.MoveQ),
         to_r: Number(coordinate.MoveR)
     }));
+
+    field.send(JSON.stringify({
+        event: "GetPreviewPath",
+        q: Number(coordinate.unitQ),
+        r: Number(coordinate.unitR),
+        to_q: Number(coordinate.MoveQ),
+        to_r: Number(coordinate.MoveR)
+    }));
+
     game.SelectLineLayer.visible = false;
 
     if (coordinate.UnitMS) {

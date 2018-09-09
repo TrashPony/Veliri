@@ -12,6 +12,8 @@ function preload() {
         // zone
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
     game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 80, 100, 3);
+        // path
+    game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
 
     //Equip_Animate
     game.load.spritesheet('EnergyShield', 'http://' + window.location.host + '/assets/equipAnimate/energy_shield_animate.png', 100, 100, 20);
@@ -24,23 +26,12 @@ function preload() {
     game.load.spritesheet('tank', 'http://' + window.location.host + '/assets/Tank360.png', 100, 100, 360);
 
     // Map Objects
-
     game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');
 
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/tree1.png');
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/tree2.png');
     game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/tree3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/crater.png');
-
-    game.load.image('desert1', 'http://' + window.location.host + '/assets/map/desert/desert_1.jpg');
-    game.load.image('desert2', 'http://' + window.location.host + '/assets/map/desert/desert_2.jpg');
-    game.load.image('desert3', 'http://' + window.location.host + '/assets/map/desert/desert_3.jpg');
-    game.load.image('desert4', 'http://' + window.location.host + '/assets/map/desert/desert_4.jpg');
-    game.load.image('desert5', 'http://' + window.location.host + '/assets/map/desert/desert_5.jpg');
-    game.load.image('desert6', 'http://' + window.location.host + '/assets/map/desert/desert_6.jpg');
-    game.load.image('desert7', 'http://' + window.location.host + '/assets/map/desert/desert_7.jpg');
-    game.load.image('desert8', 'http://' + window.location.host + '/assets/map/desert/desert_8.jpg');
-    game.load.image('desert9', 'http://' + window.location.host + '/assets/map/desert/desert_9.jpg');
 
     game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/sand_stone_04.png');
     game.load.image('sand_stone_05', 'http://' + window.location.host + '/assets/map/sand_stone_05.png');

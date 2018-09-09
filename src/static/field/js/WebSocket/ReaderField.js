@@ -63,6 +63,10 @@ function ReadResponse(jsonMessage) {
         AnimateUseMapEquip(jsonMessage);
     }
 
+    if (event === "PreviewPath") {
+        CreatePreviewPath(jsonMessage)
+    }
+
     if (event === "Error") {
         console.log(jsonMessage);
     }
