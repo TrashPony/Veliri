@@ -3,25 +3,25 @@ package movePhase
 import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/map"
+	"../../../gameObjects/unit"
 	"../../../player"
 	"../../Phases"
-	"../../../gameObjects/unit"
 )
 
 // TODO возможно есть способ это все упаковать в минимальное количества кода т.к. он тут ппц повтяющиеся
 func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit) (res map[string]map[string]*coordinate.Coordinate) {
 	/*
-        соседи гексов беруться по разному в зависимости от четности строки
-        // even {Q,R}
+	   соседи гексов беруться по разному в зависимости от четности строки
+	   // even {Q,R}
 
-           {0,-1}  {+1,-1}
-        {-1,0} {0,0} {+1,0}
-           {0,+1}  {+1,+1}
+	      {0,-1}  {+1,-1}
+	   {-1,0} {0,0} {+1,0}
+	      {0,+1}  {+1,+1}
 
-        // odd
-          {-1,-1}  {0,-1}
-        {-1,0} {0,0} {+1,0}
-          {-1,+1}  {0,+1}
+	   // odd
+	     {-1,-1}  {0,-1}
+	   {-1,0} {0,0} {+1,0}
+	     {-1,+1}  {0,+1}
 	*/
 	curr, find := gameMap.GetCoordinate(curr.Q, curr.R) // из алгоритмов иногда приходять координаты без высоты
 	if !find {
@@ -84,9 +84,8 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	return
 }
 
-// TODO возможно есть способ это все упаковать в минимальное количества кода т.к. он тут ппц повтяющиеся
 func checkMSPatency(curr *coordinate.Coordinate, gameUnit *unit.Unit, client *player.Player, gameMap *_map.Map) bool {
-	if gameUnit.Body.MotherShip && curr.Q == 9 && curr.R == 7{
+	if gameUnit.Body.MotherShip {
 
 		var left, right, topLeft, topRight, botLeft, botRight bool
 
@@ -112,7 +111,7 @@ func checkMSPatency(curr *coordinate.Coordinate, gameUnit *unit.Unit, client *pl
 }
 
 func checkMsCoordinate(curr *coordinate.Coordinate, q, r int, gameUnit *unit.Unit, client *player.Player, gameMap *_map.Map) bool {
-	if gameUnit.Q != q && gameUnit.R != r {
+	if !(gameUnit.Q == q && gameUnit.R == r) {
 		neighbours, pass := checkValidForMoveCoordinate(client, gameMap, q, r)
 		if pass {
 			return checkLevelCoordinate(curr, neighbours)

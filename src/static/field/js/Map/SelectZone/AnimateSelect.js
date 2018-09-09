@@ -10,6 +10,10 @@ function animateMoveCoordinate(coordinate) {
         to_r: Number(coordinate.MoveR)
     }));
     game.SelectLineLayer.visible = false;
+
+    if (coordinate.UnitMS) {
+
+    }
 }
 
 function animatePlaceCoordinate(coordinate) {

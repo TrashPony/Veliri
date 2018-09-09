@@ -11,16 +11,16 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (2, 1, 1, 8, 2
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (2, 1, 8, 8, 2);
 
 /*  ---------------------------- Obstacles -------------------------------------------------- */
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 8, 3, 4, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 8, 7, 13, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 9, 2, 4, 2);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 10, 6, 4, 2);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 11, 4, 5, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 10, 9, 3, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 11, 12, 6, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 12, 4, 6, 2);
 
 /*  ---------------------------- Terrain -------------------------------------------------- */
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 3, 5, 2, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 3, 0, 4, 2);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 4, 1, 3, 2);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 4, 1, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 3, 8, 2, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 4, 7, 7, 2);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 3, 9, 6, 2);
@@ -43,7 +43,6 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 2, 6, 3
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 3, 7, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 2, 8, 4);
-INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 6, 3);
 
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 5, 8, 4);
@@ -54,6 +53,8 @@ INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 6, 9, 4
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 4, 8, 4);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 6, 8, 3);
 INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 4, 7, 4);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 0, 7, 3);
+INSERT INTO map_constructor (id_map, id_type, q, r, level) VALUES (1, 6, 1, 8, 4);
 
 /* Coordinate Type */
 INSERT INTO coordinate_type (id, type, texture_flore, texture_object, move, view, attack, passable_edges) VALUES (1, 'respawn' , 'desert', '', true, true, true, true);

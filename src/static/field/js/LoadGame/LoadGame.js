@@ -3,8 +3,10 @@ let game;
 function LoadGame(jsonMessage) {
     let gameMap = JSON.parse(jsonMessage).map;
 
-    let tileSize = 100; // ширина и высота спрайта в сетке грида
-    game = new Phaser.Game(1000, GetHeight(tileSize, gameMap), Phaser.CANVAS, 'main', {
+    let hexagonWidth = 80;   // ширина
+    let hexagonHeight = 100; // и высота спрайта в сетке грида
+
+    game = new Phaser.Game(GetWidth(hexagonWidth, gameMap), GetHeight(hexagonHeight, gameMap), Phaser.CANVAS, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -29,7 +31,9 @@ function LoadGame(jsonMessage) {
 
     game.map.selectSprites = [];
 
-    game.tileSize = tileSize;
+    game.hexagonWidth = hexagonWidth;
+    game.hexagonHeight = hexagonHeight;
+
     game.shadowXOffset = 3;
     game.shadowYOffset = -3;
 

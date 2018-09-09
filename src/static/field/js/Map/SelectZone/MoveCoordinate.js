@@ -2,9 +2,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
     let moveCoordinate = JSON.parse(jsonMessage).move;
 
-    let unitQ = JSON.parse(jsonMessage).unit.q;
-    let unitR = JSON.parse(jsonMessage).unit.r;
-    let unitID = JSON.parse(jsonMessage).unit.id;
+    let unit = JSON.parse(jsonMessage).unit;
 
     game.SelectLineLayer.visible = true;
 
@@ -20,9 +18,10 @@ function SelectMoveCoordinateCreate(jsonMessage) {
                     selectSprite.MoveQ = q;
                     selectSprite.MoveR = r;
 
-                    selectSprite.unitQ = unitQ;
-                    selectSprite.unitR = unitR;
-                    selectSprite.UnitID = unitID;
+                    selectSprite.unitQ = unit.q;
+                    selectSprite.unitR = unit.r;
+                    selectSprite.UnitID = unit.id;
+                    selectSprite.UnitMS = unit.body.mother_ship;
 
                     selectSprite.inputEnabled = true;
                     selectSprite.events.onInputDown.add(SelectMoveCoordinate, selectSprite);
