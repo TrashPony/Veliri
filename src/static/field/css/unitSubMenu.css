@@ -67,6 +67,13 @@
     padding: 2px;
 }
 
+.button.unitSubMenu.noActive {
+    background-color: grey;
+    color: grey;
+    box-shadow: 0 0 2px 3px grey;
+    border: gray;
+}
+
 #powerPanel {
     height: 28px;
     width: 45px;

@@ -93,7 +93,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 func SquadUnits(squadID int, slot int) *unit.Unit {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT id, id_body, hp, q, r, rotate, action, target, queue_attack, on_map, use_equip, power, mother_ship, action_point "+
+		"SELECT id, id_body, hp, q, r, rotate, action, target, queue_attack, on_map, "+
+			"use_equip, power, mother_ship, action_point "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
 	if err != nil {

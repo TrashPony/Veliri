@@ -8,6 +8,7 @@ function AnimateUseUnitEquip(jsonMessage) {
 
     useUnit.body = JSON.parse(jsonMessage).use_unit.body;
     useUnit.power = JSON.parse(jsonMessage).use_unit.power;
+    useUnit.use_equip = JSON.parse(jsonMessage).use_unit.use_equip;
 
     if (equip.name === "repair_kit") {
         repairKitAnimate(toUnit);

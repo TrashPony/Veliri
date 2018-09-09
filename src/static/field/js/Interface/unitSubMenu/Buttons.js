@@ -9,15 +9,20 @@ function ActionButton(equipPanel, unit, event, text) {
     let skipButton = document.createElement("input");
     skipButton.type = "button";
     skipButton.value = text;
-    skipButton.className = "button unitSubMenu";
+    console.log(unit);
+    if (unit.action_points >= unit.body.speed) {
+        skipButton.className = "button unitSubMenu";
 
-    skipButton.onclick = function () {
-        field.send(JSON.stringify({
-            event: event,
-            q: Number(unit.q),
-            r: Number(unit.r)
-        }));
-    };
+        skipButton.onclick = function () {
+            field.send(JSON.stringify({
+                event: event,
+                q: Number(unit.q),
+                r: Number(unit.r)
+            }));
+        };
+    } else {
+        skipButton.className = "button unitSubMenu noActive";
+    }
 
     tdSkip.appendChild(skipButton);
     trSkip.appendChild(tdSkip);

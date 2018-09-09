@@ -4,8 +4,10 @@ function CreatePathToUnit(jsonMessage) {
 
         let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
         let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);         // берем юнита
-        unit.action = JSON.parse(jsonMessage).unit.action;
 
+        unit.action = JSON.parse(jsonMessage).unit.action;
+        unit.action_points = JSON.parse(jsonMessage).unit.action_points;
+        console.log(unit);
         if (unit !== null && path) {
 
             let lastCell = path[path.length - 1].path_node;

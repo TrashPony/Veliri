@@ -10,6 +10,7 @@ function AnimateUseMapEquip(jsonMessage) {
 
     useUnit.body = JSON.parse(jsonMessage).use_unit.body;
     useUnit.power = JSON.parse(jsonMessage).use_unit.power;
+    useUnit.use_equip = JSON.parse(jsonMessage).use_unit.use_equip;
 
     for (let q in zone_effect) {
         if (zone_effect.hasOwnProperty(q)) {

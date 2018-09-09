@@ -16,11 +16,11 @@ import (
 func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot, client *player.Player) (map[string]map[string]*coordinate.Coordinate, error) {
 	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
-		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
-		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
+		useUnit.Power -= useEquipSlot.Equip.UsePower
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload // устанавливает время перезарядки
 
-		useUnit.UseEquip = false  // todo для тестов false, для игры true
-		useEquipSlot.Used = false // todo для тестов false, для игры true
+		useUnit.UseEquip = true
+		useEquipSlot.Used = true
 
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки

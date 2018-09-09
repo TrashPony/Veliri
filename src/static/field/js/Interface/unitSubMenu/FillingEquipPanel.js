@@ -41,7 +41,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingIII[i].used && !unit.use_equip) {
+            if (!unit.body.equippingIII[i].used && !unit.use_equip && !(unit.power < unit.body.equippingIII[i].equip.use_power)) {
                 equipping.className = "equipSlotIII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -80,7 +80,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingII[i].used && !unit.use_equip) {
+            if (!unit.body.equippingII[i].used && !unit.use_equip && !(unit.power < unit.body.equippingII[i].equip.use_power)) {
                 equipping.className = "equipSlotII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -115,6 +115,6 @@ function FillingEquipPanel(equipPanel, unit) {
 
     let actionPoints = document.createElement("div");
     actionPoints.id = "actionPoints";
-    actionPoints.innerHTML = "<span class='Value'>AP " + unit.action_points + "/" + + unit.body.speed + "</span>";
+    actionPoints.innerHTML = "<span class='Value'>AP " + unit.action_points + "/" + +unit.body.speed + "</span>";
     equipPanel.appendChild(actionPoints);
 }
