@@ -42,7 +42,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 		if ship.ID == 0 || ship.Body != nil {
 			id := 0
 			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, q, r, rotate, action, target, queue_attack, hp, use_equip, power, mother_ship, on_map, action_point ) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 				squad.ID, ship.Body.ID, ship.Q, ship.R, ship.Rotate, ship.Action,
 				parseTarget(ship), ship.QueueAttack, ship.HP, ship.UseEquip, ship.Power, true, true, ship.Body.Speed).Scan(&id)
 			if err != nil {

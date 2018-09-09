@@ -12,7 +12,7 @@ func SetMotherShipWeapon(ws *websocket.Conn, msg Message) {
 	err := inventory.SetMSWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot)
 
 	if err != nil {
-		ws.WriteJSON(Error{Event: "error", Error: err.Error()})
+		ws.WriteJSON(Error{Event: "ms error", Error: err.Error()})
 	}
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
@@ -24,7 +24,7 @@ func SetUnitWeapon(ws *websocket.Conn, msg Message) {
 	err := inventory.SetUnitWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
 
 	if err != nil {
-		ws.WriteJSON(Error{Event: "error", Error: err.Error()})
+		ws.WriteJSON(Error{Event: "unit error", Error: err.Error()})
 	}
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})

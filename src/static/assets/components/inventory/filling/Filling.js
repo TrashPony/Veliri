@@ -12,7 +12,7 @@ function FillingInventory(jsonData) {
             NoActiveCell();
         }
     } else if (event === "ms error") {
-
+        console.log(":dfdfd");
         let powerPanel = document.getElementById("powerPanel");
 
         let start = Date.now();
