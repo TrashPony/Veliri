@@ -112,4 +112,9 @@ function FillingEquipPanel(equipPanel, unit) {
     power.id = "powerPanel";
     power.innerHTML = "<span>POWER " + unit.power + "/" + unit.body.max_power + "</span>";
     equipPanel.appendChild(power);
+
+    let actionPoints = document.createElement("div");
+    actionPoints.id = "actionPoints";
+    actionPoints.innerHTML = "<span class='Value'>AP " + unit.action_points + "/" + + unit.body.speed + "</span>";
+    equipPanel.appendChild(actionPoints);
 }

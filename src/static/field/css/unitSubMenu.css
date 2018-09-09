@@ -73,9 +73,20 @@
     border: 1px solid rgb(0, 255, 23);
     position: absolute;
     top: 43px;
-    left: 50px;
+    left: 52px;
     border-radius: 5px;
     font-size: 8pt;
+}
+
+#actionPoints {
+    height: 14px;
+    width: 45px;
+    border: 1px solid #00fffd;;
+    position: absolute;
+    top: 75px;
+    left: 52px;
+    border-radius: 5px;
+    font-size: 9pt;
 }
 
 #powerPanel > span {
