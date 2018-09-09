@@ -14,11 +14,11 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                     let cellSprite = game.map.OneLayerMap[targetCoordinates[q][r].q][targetCoordinates[q][r].r].sprite;
 
                     if (event === "GetFirstTargets") {
-                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null);
+                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer);
                     }
 
                     if (event === "GetTargets" || event === "GetEquipMapTargets") {
-                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target");
+                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer);
 
                         selectSprite.TargetQ = targetCoordinates[q][r].q;
                         selectSprite.TargetR = targetCoordinates[q][r].r;

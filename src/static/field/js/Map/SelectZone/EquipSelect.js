@@ -32,7 +32,7 @@ function MarkEquipZone(coordinates, equip, unit, equipSlot) {
 
                     let cellSprite = coordinates[q][r].sprite;
 
-                    let selectSprite = MarkZone(cellSprite, coordinates, coordinates[q][r].q, coordinates[q][r].r, 'Place', true, game.SelectTargetLineLayer, "place");
+                    let selectSprite = MarkZone(cellSprite, coordinates, coordinates[q][r].q, coordinates[q][r].r, 'Place', true, game.SelectTargetLineLayer, "place", game.SelectLayer);
 
                     game.map.OneLayerMap[q][r].selectSprite = selectSprite;
 
