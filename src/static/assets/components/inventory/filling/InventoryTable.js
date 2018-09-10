@@ -9,9 +9,15 @@ function InventoryTable(inventoryItems) {
 
             cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).item.name + ".png)";
             cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
+            cell.onclick = SelectInventoryItem;
 
-            cell.onclick = SelectInventoryItem
-
+            cell.addEventListener("mousemove", InventoryOverTip);
+            cell.addEventListener("mouseout", function () {
+                let inventoryTip = document.getElementById("InventoryTipOver");
+                if (inventoryTip) {
+                    inventoryTip.remove()
+                }
+            });
         } else {
 
             cell.slotData = null;
@@ -24,5 +30,15 @@ function InventoryTable(inventoryItems) {
                 DestroyInventoryTip();
             };
         }
+    }
+}
+
+function InventoryOverTip(e) {
+    let inventoryTip = document.getElementById("InventoryTipOver");
+    if (inventoryTip) {
+        inventoryTip.style.top = e.clientY + "px";
+        inventoryTip.style.left = e.clientX + "px";
+    } else {
+        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true);
     }
 }

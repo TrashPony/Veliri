@@ -6,8 +6,8 @@ INSERT INTO weapon_type (name, min_attack_range, range_attack, accuracy, ammo_ca
 VALUES ('artillery', 2, 5, 5, 5, true, 20, 100);
 
 /* AMMO Type*/
-INSERT INTO ammunition_type (name, type, type_attack, damage, area_covers)
-VALUES ('piu-piu', 'em', 'em', 15, 0);
+INSERT INTO ammunition_type (name, type, type_attack, min_damage, max_damage, area_covers)
+VALUES ('piu-piu', 'em', 'em', 10, 15, 0);
 
-INSERT INTO ammunition_type (name, type, type_attack, damage, area_covers)
-VALUES ('ba-bah', 'explosion', 'explosion', 25, 1);
+INSERT INTO ammunition_type (name, type, type_attack, min_damage, max_damage, area_covers)
+VALUES ('ba-bah', 'explosion', 'explosion', 15, 25, 1);

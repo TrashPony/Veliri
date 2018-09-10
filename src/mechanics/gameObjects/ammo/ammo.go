@@ -5,6 +5,7 @@ type Ammo struct {
 	Name       string `json:"name"`
 	Type       string `json:"type"`
 	TypeAttack string `json:"type_attack"`
-	Damage     int    `json:"damage"`
+	MinDamage  int    `json:"min_damage"`
+	MaxDamage  int    `json:"max_damage"`
 	AreaCovers int    `json:"area_covers"`
 }

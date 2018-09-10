@@ -15,6 +15,7 @@ CREATE TABLE ammunition_type (
   name             VARCHAR(64),
   type             VARCHAR(64),
   type_attack      VARCHAR(64),
-  damage           INT,
+  min_damage       INT,
+  max_damage       INT,
   area_covers      INT
 );

@@ -1,4 +1,4 @@
-#InventoryTip {
+#InventoryTip, #InventoryTipOver {
     pointer-events:none;
     position: absolute;
     display: inline-block;
@@ -7,10 +7,15 @@
     border-radius: 10px;
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
-    height: 90px;
+    min-height: 120px;
     width: 100px;
     padding: 5px;
     z-index: 950;
+    text-shadow: 1px 1px 2px black, 0 0 1em #696969; /* Параметры тени */
+}
+
+#InventoryTipOver {
+    min-height: 100px;
 }
 
 #paramsItem {
@@ -53,4 +58,12 @@
 
 .lobbyButton.inventoryTip:active {
     color: #27cbef;
+}
+
+#description {
+    min-height: 30px;
+    width: 100%;
+    border: 1px solid #25a0e1;
+    font-size: 12px;
+    border-radius: 5px;
 }
