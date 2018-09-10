@@ -22,8 +22,9 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 			}
 		}
 
-		user.GetSquad().MatherShip.HP = body.HP             // устанавливает колво хп как у тела
-		user.GetSquad().MatherShip.Power = newBody.MaxPower // устанавливаем мощьность как у тела
+		user.GetSquad().MatherShip.HP = body.HP                 // устанавливает колво хп как у тела
+		user.GetSquad().MatherShip.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
+		user.GetSquad().MatherShip.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
 		RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 		user.GetSquad().MatherShip.Body = newBody
@@ -57,8 +58,9 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 				unitSlot.Unit = &unit.Unit{}
 			}
 
-			unitSlot.Unit.HP = body.HP             // устанавливает колво хп как у тела
-			unitSlot.Unit.Power = newBody.MaxPower // устанавливаем мощьность как у тела
+			unitSlot.Unit.HP = body.HP                 // устанавливает колво хп как у тела
+			unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
+			unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
 			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 			unitSlot.Unit.Body = newBody
