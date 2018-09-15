@@ -27,23 +27,30 @@ TODO тогда беда с туманом войны и баг с проебо�
 */
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
+	var event string
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.Q, msg.R)
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if findUnit && findClient && findGame {
-		if !gameUnit.Action && !client.GetReady() {
+	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+	if !findUnit {
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	} else {
+		event = "SelectStorageUnit"
+	}
 
-			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame)
+	if findUnit && findClient && findGame {
+		if !gameUnit.Action && !client.GetReady() && gameUnit.ActionPoints > 0 {
+
+			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 			if find {
-				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame)
+				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
+				client.DelUnitStorage(gameUnit.ID)
 
 				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
-
-				updateWatchHostileUser(client, activeGame, gameUnit, path)
+				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
 			} else {
 				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
 				ws.WriteJSON(resp)
@@ -78,7 +85,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
+func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode, event string) {
 
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
@@ -104,15 +111,21 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			okEarlyNode := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
 			for i, pathNode := range pathNodes {
+
 				pathNode.WatchNode = nil
 
-				_, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)
+				firstNode, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)
 
 				if len(pathNodes) > i+1 {
 					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.Q, pathNodes[i+1].PathNode.R)
 				}
 				if 0 < i {
 					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.Q, pathNodes[i-1].PathNode.R)
+				}
+
+				if event == "SelectStorageUnit" && i == 0 && okFirstNode {
+					// если машина выходит из мазер шипа говорим что как бе он вышел из тумана что бы она появилась на карте)
+					firstNode.Type = "outFog"
 				}
 
 				// если юзер не видит координату то скрваем ее

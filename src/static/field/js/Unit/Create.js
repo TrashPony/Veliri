@@ -78,6 +78,8 @@ function CreateUnit(unitStat, inVisible) {
     }
 
     addToGameUnit(unitStat);
+
+    return unitStat
 }
 
 function CreateAnimateEffects(unit) {

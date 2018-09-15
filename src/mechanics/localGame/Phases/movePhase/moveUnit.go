@@ -16,25 +16,32 @@ type TruePatchNode struct {
 	UnitRotate int                         `json:"unit_rotate"`
 }
 
-func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game *localGame.Game) (path []*TruePatchNode) {
+func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game *localGame.Game, event string) (path []*TruePatchNode) {
 	mp := game.GetMap()
 	start, _ := mp.GetCoordinate(gameUnit.Q, gameUnit.R)
 	end, _ := mp.GetCoordinate(toQ, toR)
 
 	path = make([]*TruePatchNode, 0)
 
-	startPoint := TruePatchNode{WatchNode: nil, PathNode: start, UnitRotate: gameUnit.Rotate}
-	path = append(path, &startPoint)
+	if event != "SelectStorageUnit" {
+		startPoint := TruePatchNode{WatchNode: nil, PathNode: start, UnitRotate: gameUnit.Rotate}
+		path = append(path, &startPoint)
+	}
 
-	err, pathNodes := FindPath(client, mp, start, end, gameUnit)
+	err, pathNodes := FindPath(client, mp, start, end, gameUnit, event)
 	if err != nil {
 		print(err.Error())
 		return
 	}
 
-	for _, pathNode := range pathNodes {
+	for i, pathNode := range pathNodes {
+		deleteUnit := true
 
-		errorMove, unitRotate := Move(gameUnit, pathNode, client, end, game)
+		if i == 0 && event == "SelectStorageUnit" {
+			deleteUnit = false
+		}
+
+		errorMove, unitRotate := Move(gameUnit, pathNode, client, game, deleteUnit)
 
 		if errorMove != nil {
 			if errorMove.Error() == "cell is busy" {
@@ -58,20 +65,24 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 		gameUnit.QueueAttack = queue
 	}
 
+	gameUnit.OnMap = true
+
 	updateSquad.Squad(client.GetSquad())
 
 	return
 }
 
-func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, end *coordinate.Coordinate, game *localGame.Game) (error, int) {
+func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, game *localGame.Game, deleteUnit bool) (error, int) {
 
 	_, ok := game.GetUnit(pathNode.Q, pathNode.R)
-	if ok || !checkMSPlace(client, pathNode, gameUnit) {
+	if ok || !checkMSPlace(client, pathNode, gameUnit, false) {
 		return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
 	}
 
-	game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
-	client.DelUnit(gameUnit.Q, gameUnit.R)
+	if deleteUnit {
+		game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
+		client.DelUnit(gameUnit.Q, gameUnit.R)
+	}
 
 	rotate := findDirection(pathNode, gameUnit)
 

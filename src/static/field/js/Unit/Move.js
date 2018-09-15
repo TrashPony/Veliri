@@ -1,15 +1,30 @@
 function CreatePathToUnit(jsonMessage) {
+
     let error = JSON.parse(jsonMessage).error;
     if (error === null || error === "") {
 
-        let path = JSON.parse(jsonMessage).path;     // берем масив данных очереди перемещения юнита
-        let unit = GetGameUnitID(JSON.parse(jsonMessage).unit.id);         // берем юнита
+        let path = JSON.parse(jsonMessage).path;                           // берем масив данных очереди перемещения юнита
+        let unitStat = JSON.parse(jsonMessage).unit;
 
-        unit.action = JSON.parse(jsonMessage).unit.action;
-        unit.action_points = JSON.parse(jsonMessage).unit.action_points;
-        console.log(unit);
+        let unit = GetGameUnitID(unitStat.id);         // берем юнита
+        if (!unit) {
+
+            let boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);
+            if (boxUnit) {
+                boxUnit.remove();
+            }
+            
+            unitStat.q = path[0].path_node.q;
+            unitStat.r = path[0].path_node.r;
+            unitStat.rotate = path[0].unit_rotate;
+
+            unit = CreateUnit(unitStat, false)         // создаем юнита
+        }
+
+        unit.action = unitStat.action;
+        unit.action_points = unitStat.action_points;
+
         if (unit !== null && path) {
-
             let lastCell = path[path.length - 1].path_node;
             MarkLastPathCell(unit, lastCell);        // помечаем ячейку куда идет моб
             unit.path = path;                        // добавляем юниту путь
@@ -44,6 +59,7 @@ function MoveHostileUnit(jsonMessage) {
                 unit = JSON.parse(jsonMessage).unit;
                 unit.q = firstNode.path_node.q;
                 unit.r = firstNode.path_node.r;
+                unit.rotate = firstNode.unit_rotate;
 
                 CreateUnit(unit, true);
 

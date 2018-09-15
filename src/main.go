@@ -25,7 +25,6 @@ func main() {
 	go lobby.ReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
 	go chat.CommonChatSender()
 
-	go field.WatchSender()
 	go field.MoveSender()
 	go field.UnitSender()
 	go field.PhaseSender()

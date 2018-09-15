@@ -55,7 +55,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 func SquadMatherShip(squadID int) (ship *unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"Select id, id_body, hp, q, r, rotate, action, target, queue_attack, use_equip, power, mother_ship, action_point "+
+		"Select id, id_body, hp, q, r, rotate, action, target, queue_attack, use_equip, power, mother_ship, action_point, on_map "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
 	if err != nil {
@@ -71,7 +71,7 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 		var idBody sql.NullInt64
 
 		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.Q, &ship.R, &ship.Rotate, &ship.Action, &target,
-			&ship.QueueAttack, &ship.UseEquip, &ship.Power, &ship.MS, &ship.ActionPoints)
+			&ship.QueueAttack, &ship.UseEquip, &ship.Power, &ship.MS, &ship.ActionPoints, &ship.OnMap)
 
 		if err != nil {
 			log.Fatal("scan get ship squad " + err.Error())

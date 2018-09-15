@@ -6,7 +6,7 @@ import (
 )
 
 func NewLobbyUser(login string, usersWs map[*websocket.Conn]*player.Player) {
-	for ws, client := range usersWs {
+	for ws, client := range usersWs { // TODO concurrent map iteration and map write
 		var resp = Response{Event: "NewLobbyUser", UserName: client.GetLogin(), GameUser: login}
 		ws.WriteJSON(resp)
 	}

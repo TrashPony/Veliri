@@ -4,6 +4,7 @@ function animateMoveCoordinate(coordinate) {
 
     field.send(JSON.stringify({
         event: "GetTargetZone",
+        unit_id: Number(coordinate.UnitID),
         q: Number(coordinate.unitQ),
         r: Number(coordinate.unitR),
         to_q: Number(coordinate.MoveQ),
@@ -12,6 +13,7 @@ function animateMoveCoordinate(coordinate) {
 
     field.send(JSON.stringify({
         event: "GetPreviewPath",
+        unit_id: Number(coordinate.UnitID),
         q: Number(coordinate.unitQ),
         r: Number(coordinate.unitR),
         to_q: Number(coordinate.MoveQ),

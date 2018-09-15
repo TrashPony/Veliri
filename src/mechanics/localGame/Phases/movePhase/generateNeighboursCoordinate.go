@@ -9,7 +9,7 @@ import (
 )
 
 // TODO возможно есть способ это все упаковать в минимальное количества кода т.к. он тут ппц повтяющиеся
-func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit) (res map[string]map[string]*coordinate.Coordinate) {
+func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit, event string) (res map[string]map[string]*coordinate.Coordinate) {
 	/*
 	   соседи гексов беруться по разному в зависимости от четности строки
 	   // even {Q,R}
@@ -23,6 +23,12 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	   {-1,0} {0,0} {+1,0}
 	     {-1,+1}  {0,+1}
 	*/
+	var noMyMS bool // переменная которая говорит что ненеадо проверять клетки вокруг мса
+
+	if event == "SelectStorageUnit" {
+		noMyMS = true
+	}
+
 	curr, find := gameMap.GetCoordinate(curr.Q, curr.R) // из алгоритмов иногда приходять координаты без высоты
 	if !find {
 		return
@@ -31,49 +37,51 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
 	//left
-	checkNeighbour(curr.Q-1, curr.R, client, curr, gameMap, gameUnit, res)
+	checkNeighbour(curr.Q-1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS)
 	//right
-	checkNeighbour(curr.Q+1, curr.R, client, curr, gameMap, gameUnit, res)
+	checkNeighbour(curr.Q+1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS)
 
 	if curr.R%2 != 0 {
 		// topLeft
-		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// topRight
-		checkNeighbour(curr.Q+1, curr.R-1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q+1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// botLeft
-		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// botRight
-		checkNeighbour(curr.Q+1, curr.R+1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q+1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
 	} else {
 		// topLeft
-		checkNeighbour(curr.Q-1, curr.R-1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q-1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// topRight
-		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// botLeft
-		checkNeighbour(curr.Q-1, curr.R+1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q-1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
 		// botRight
-		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res)
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
 	}
 
 	return
 }
 
 func checkNeighbour(q, r int, client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit,
-	res map[string]map[string]*coordinate.Coordinate) {
+	res map[string]map[string]*coordinate.Coordinate, noMyMS bool) {
 
 	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r)
-	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour, gameUnit) &&
+	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour, gameUnit, noMyMS) &&
 		checkMSPatency(neighbour, gameUnit, client, gameMap) {
 		Phases.AddCoordinate(res, neighbour)
 	}
 }
 
-func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate, gameUnit *unit.Unit) bool {
-	for _, q := range client.GetUnits() {
-		for _, myUnit := range q {
-			if myUnit.Body.MotherShip && !(gameUnit.Q == myUnit.Q && gameUnit.R == myUnit.R) {
-				if checkMSCoordinate(myUnit, neighbour) {
-					return false
+func checkMSPlace(client *player.Player, neighbour *coordinate.Coordinate, gameUnit *unit.Unit, noMyMS bool) bool {
+	if !noMyMS {
+		for _, q := range client.GetUnits() {
+			for _, myUnit := range q {
+				if myUnit.Body.MotherShip && !(gameUnit.Q == myUnit.Q && gameUnit.R == myUnit.R) {
+					if checkMSCoordinate(myUnit, neighbour) {
+						return false
+					}
 				}
 			}
 		}

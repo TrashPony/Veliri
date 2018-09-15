@@ -36,8 +36,8 @@ function SelectPlaceCoordinate(selectSprite) {
         field.send(JSON.stringify({
             event: "PlaceUnit",
             unit_id: Number(selectSprite.UnitID),
-            q: Number(selectSprite.PlaceQ),
-            r: Number(selectSprite.PlaceR)
+            to_q: Number(selectSprite.PlaceQ),
+            to_r: Number(selectSprite.PlaceR)
         }));
 
         RemoveSelect()

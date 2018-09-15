@@ -10,22 +10,32 @@ import (
 )
 
 func SelectUnit(msg Message, ws *websocket.Conn) {
+	var findUnit bool
+	var gameUnit *unit.Unit
 
 	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if findClient && findUnit && findGame {
+	if msg.Event == "SelectStorageUnit" {
+		// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
+		gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
+		gameUnit.Q = client.GetSquad().MatherShip.Q
+		gameUnit.R = client.GetSquad().MatherShip.R
+	} else {
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	}
+
+	if findClient && findUnit && findGame && gameUnit.ActionPoints > 0 {
 		if activeGame.Phase == "move" {
-			SelectMove(client, gameUnit, activeGame, ws)
+			SelectMove(client, gameUnit, activeGame, ws, msg.Event)
 		}
 	}
 }
 
-func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
+func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn, event string) {
 	if !client.GetReady() {
 		if !gameUnit.Action {
-			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame)})
+			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame, event)})
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
 		}

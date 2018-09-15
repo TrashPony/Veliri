@@ -28,7 +28,7 @@ var (
 // todo и использовать координаты из существующей карты
 type Points map[string]coordinate.Coordinate
 
-func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate, gameUnit *unit.Unit) (error, []*coordinate.Coordinate) {
+func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordinate, end *coordinate.Coordinate, gameUnit *unit.Unit, event string) (error, []*coordinate.Coordinate) {
 
 	START_POINT = coordinate.Coordinate{Q: start.Q, R: start.R, State: START} // начальная точка
 	END_POINT = coordinate.Coordinate{Q: end.Q, R: end.R, State: END}         // конечная точка
@@ -74,7 +74,7 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 			}
 			break
 		}
-		parseNeighbours(client, current, &matrix, &openPoints, &closePoints, gameMap, gameUnit)
+		parseNeighbours(client, current, &matrix, &openPoints, &closePoints, gameMap, gameUnit, event)
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -85,11 +85,11 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 	return nil, path
 }
 
-func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *_map.Map, gameUnit *unit.Unit) {
+func parseNeighbours(client *player.Player, curr coordinate.Coordinate, m *[][]coordinate.Coordinate, open, close *Points, gameMap *_map.Map, gameUnit *unit.Unit, event string) {
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoordinate := generateNeighboursCoordinate(client, &curr, gameMap, gameUnit) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(client, &curr, gameMap, gameUnit, event) // берем всех соседей этой клетки
 
 	for _, qLine := range nCoordinate {
 		for _, c := range qLine {

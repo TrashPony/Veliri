@@ -7,7 +7,7 @@ function ReadyUser(jsonMessage) {
             ready.className = "button noActive";
             ready.onclick = null;
         } else {
-            ready.value = "Готов!";
+            ready.value = "Завершить ход";
             ready.className = "button";
             ready.onclick = function () {
                 Ready();
