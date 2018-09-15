@@ -1,4 +1,4 @@
-function RemoveTip(event, removeFunction) {
+function ClickTip(event, removeFunction) {
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
 
     DestroyInventoryClickEvent();
@@ -7,7 +7,7 @@ function RemoveTip(event, removeFunction) {
     let tip = document.createElement("div");
     tip.style.top = event.clientY + "px";
     tip.style.left = event.clientX + "px";
-    tip.id = "InventoryTip";
+    tip.id = "InventoryTipSelect";
 
     let removeButton = document.createElement("input");
     removeButton.type = "button";
@@ -17,18 +17,25 @@ function RemoveTip(event, removeFunction) {
 
     removeButton.onclick = removeFunction;
 
+    let detailedButton = document.createElement("input");
+    detailedButton.type = "button";
+    detailedButton.className = "lobbyButton inventoryTip";
+    detailedButton.value = "Подробнее";
+    detailedButton.style.pointerEvents = "auto";
+    // TODO detailedButton.onclick = функция вывода подробной информации
+
     let cancelButton = document.createElement("input");
     cancelButton.type = "button";
     cancelButton.className = "lobbyButton inventoryTip";
     cancelButton.value = "Отменить";
     cancelButton.style.pointerEvents = "auto";
-
     cancelButton.onclick = function (event) {
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         DestroyInventoryClickEvent();
         DestroyInventoryTip();
     };
 
+    tip.appendChild(detailedButton);
     tip.appendChild(removeButton);
     tip.appendChild(cancelButton);
     document.body.appendChild(tip);

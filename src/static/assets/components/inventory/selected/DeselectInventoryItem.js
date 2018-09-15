@@ -5,6 +5,9 @@ function DestroyInventoryTip() {
     if (document.getElementById("InventoryTipOver")) {
         document.getElementById("InventoryTipOver").remove();
     }
+    if (document.getElementById("InventoryTipSelect")) {
+        document.getElementById("InventoryTipSelect").remove();
+    }
 }
 
 function DestroyInventoryClickEvent() {

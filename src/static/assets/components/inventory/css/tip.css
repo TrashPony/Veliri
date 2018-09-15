@@ -1,4 +1,4 @@
-#InventoryTip, #InventoryTipOver {
+#InventoryTip, #InventoryTipOver, #InventoryTipSelect {
     pointer-events:none;
     position: absolute;
     display: inline-block;
@@ -8,20 +8,30 @@
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
     min-height: 120px;
-    width: 100px;
+    width: 150px;
     padding: 5px;
     z-index: 950;
     text-shadow: 1px 1px 2px black, 0 0 1em #696969; /* Параметры тени */
+}
+
+#InventoryTipSelect {
+    min-height: 20px;
+    width: 90px;
 }
 
 #InventoryTipOver {
     min-height: 100px;
 }
 
-#paramsItem {
-    width: 100px;
+#paramsItemTable {
     height: 50px;
     font-size: 12px;
+    margin: 0 auto;
+    width: 150px;
+}
+
+#paramsItemTable td {
+    text-align: left;
 }
 
 .InventoryTipName {
