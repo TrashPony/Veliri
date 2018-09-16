@@ -1,5 +1,13 @@
 function FillingEquipPanel(equipPanel, unit) {
 
+    let countSlots;
+
+    if (unit.body.mother_ship) { // по диз доку и мс максимум 5 слотов у юнита 3
+        countSlots = 6;
+    } else {
+        countSlots = 4;
+    }
+
     let weapon = document.createElement("div");
     weapon.id = "weaponSlotSubMenu";
 
@@ -33,7 +41,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
     equipPanel.appendChild(weapon);
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < countSlots; i++) {
         let equipping = document.createElement("div");
         equipping.id = "equipSlotIII" + i;
 
@@ -72,7 +80,7 @@ function FillingEquipPanel(equipPanel, unit) {
         equipPanel.appendChild(equipping);
     }
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < countSlots; i++) {
         let equipping = document.createElement("div");
         equipping.id = "equipSlotII" + i;
 

@@ -17,8 +17,8 @@
     background-size: 100% 2px, 4px 4px, cover;
     transition-property: background-image;
     text-shadow: #28a5e4 0 0 4px;
-    height: 150px;
-    width: 150px;
+    height: 175px;
+    width: 175px;
     border-radius: 100px;
     box-shadow: 0 0 30px 4px rgb(0, 195, 255);
 }
@@ -34,8 +34,8 @@
 }
 
 #EquipPanel {
-    width: 150px;
-    height: 150px;
+    width: 175px;
+    height: 175px;
 }
 
 #effectPanel {
@@ -65,6 +65,7 @@
     font-size: 8px;
     text-align: center;
     padding: 2px;
+    margin-left: 25px;
 }
 
 .button.unitSubMenu.noActive {
@@ -76,22 +77,22 @@
 
 #powerPanel {
     height: 28px;
-    width: 45px;
+    width: 55px;
     border: 1px solid rgb(0, 255, 23);
     position: absolute;
-    top: 43px;
-    left: 52px;
+    top: 70px;
+    left: 53px;
     border-radius: 5px;
     font-size: 8pt;
 }
 
 #actionPoints {
     height: 14px;
-    width: 45px;
+    width: 55px;
     border: 1px solid #00fffd;;
     position: absolute;
-    top: 75px;
-    left: 52px;
+    top: 105px;
+    left: 53px;
     border-radius: 5px;
     font-size: 9pt;
 }
@@ -102,7 +103,7 @@
 }
 
 #ammoBox {
-    top: 45px;
+    top: 65px;
     left: 25px;
     height: 20px;
     width: 20px;

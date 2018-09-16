@@ -1,6 +1,6 @@
 #weaponSlotSubMenu {
     position: absolute;
-    top: 57px;
+    top: 70px;
     left: 10px;
     height: 30px;
     width: 30px;
@@ -115,18 +115,29 @@
 
 #equipSlotIII1 {
     top: 10px;
-    left: 35px;
+    left: 40px;
 }
 
 #equipSlotIII2 {
     top: 5px;
-    left: 65px;
+    left: 70px;
 }
 
 #equipSlotIII3 {
     top: 10px;
-    left: 95px;
+    left: 100px;
 }
+
+#equipSlotIII4 {
+    top: 35px;
+    left: 55px;
+}
+
+#equipSlotIII5 {
+    top: 35px;
+    left: 85px;
+}
+
 .equipSlotII {
     height: 25px;
     width: 25px;
@@ -186,16 +197,26 @@
 }
 
 #equipSlotII1 {
-    top: 35px;
-    left: 110px;
+    top: 40px;
+    right: 15px;
 }
 
 #equipSlotII2 {
-    top: 65px;
-    left: 120px;
+    top: 75px;
+    right: 10px;
 }
 
 #equipSlotII3 {
-    top: 95px;
-    left: 110px;
+    top: 110px;
+    right: 15px;
+}
+
+#equipSlotII4 {
+    top: 90px;
+    right: 35px;
+}
+
+#equipSlotII5 {
+    top: 60px;
+    right: 35px;
 }
