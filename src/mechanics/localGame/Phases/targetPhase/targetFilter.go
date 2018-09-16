@@ -8,13 +8,13 @@ import (
 	"strconv"
 )
 
-func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {
+func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game, artillery bool) (targets map[string]*coordinate.Coordinate) {
 	// todo вохможно этот код можно легко обьеденить с localGame/map/watchZone/filterObstacles.go
-	watch = make(map[string]*coordinate.Coordinate)
+	targets = make(map[string]*coordinate.Coordinate)
 
 	watcherCoordinate, _ := game.GetMap().GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 
-	watch[strconv.Itoa(watcherCoordinate.Q)+":"+strconv.Itoa(watcherCoordinate.R)] = watcherCoordinate
+	targets[strconv.Itoa(watcherCoordinate.Q)+":"+strconv.Itoa(watcherCoordinate.R)] = watcherCoordinate
 
 	for _, gameCoordinate := range coordinates {
 		watchCoordinate, find := game.GetMap().GetCoordinate(gameCoordinate.Q, gameCoordinate.R)
@@ -30,6 +30,14 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 					pastCoordinate = pathCell
 				}
 
+				if artillery {
+					// если стреляет арта то она игнорирует все препятвия
+					if len(pathLine) == i+1 {
+						targets[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
+					}
+					continue
+				}
+
 				if !pathCell.Attack || checkLevelViewCoordinate(pathCell, pastCoordinate) ||
 					checkLevelViewCoordinate(pathCell, watcherCoordinate) {
 					// 1) смотрим что черезхх координату можно смотреть
@@ -40,12 +48,12 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 						break
 					} else {
 						// иначе можем видеть но дальше нет
-						watch[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
+						targets[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
 						break
 					}
 				} else {
 					if len(pathLine) == i+1 {
-						watch[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
+						targets[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
 					}
 				}
 			}

@@ -113,3 +113,7 @@ func (unit *Unit) GetOnMap() bool {
 func (unit *Unit) SetOnMap(bool bool) {
 	unit.OnMap = bool
 }
+
+func (unit *Unit) GetWallHack() bool {
+	return unit.Body.WallHack
+}

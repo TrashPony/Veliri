@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game) (watch map[string]*coordinate.Coordinate) {
+func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game, wallHack bool) (watch map[string]*coordinate.Coordinate) {
 	// todo вохможно этот код можно легко обьеденить с localGame/Phases/targetPhase/targetFilter.go
 	watch = make(map[string]*coordinate.Coordinate)
 
@@ -27,6 +27,13 @@ func filter(gameObject Watcher, coordinates []*coordinate.Coordinate, game *loca
 					pastCoordinate = pathLine[i-1]
 				} else {
 					pastCoordinate = pathCell
+				}
+
+				if wallHack {
+					if len(pathLine) == i+1 {
+						watch[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
+					}
+					continue
 				}
 
 				if !pathCell.View || checkLevelViewCoordinate(pathCell, pastCoordinate) ||

@@ -14,6 +14,7 @@ type Watcher interface {
 	GetY() int
 	GetWatchZone() int
 	GetOwnerUser() string
+	GetWallHack() bool
 }
 
 func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, Err error) {
@@ -26,7 +27,7 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 
 		RadiusCoordinates := coordinate.GetCoordinatesRadius(centerCoordinate, gameObject.GetWatchZone())
-		PermCoordinates := filter(gameObject, RadiusCoordinates, game)
+		PermCoordinates := filter(gameObject, RadiusCoordinates, game, gameObject.GetWallHack())
 
 		for _, gameCoordinate := range PermCoordinates {
 			unitInMap, ok := game.GetUnit(gameCoordinate.Q, gameCoordinate.R)

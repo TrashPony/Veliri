@@ -16,7 +16,7 @@ func GetEquipAllTargetZone(gameUnit *unit.Unit, equip *equip.Equip, activeGame *
 
 	if find {
 		RadiusCoordinates := coordinate.GetCoordinatesRadius(unitCoordinate, equip.Radius)
-		zone := filter(gameUnit, RadiusCoordinates, activeGame)
+		zone := filter(gameUnit, RadiusCoordinates, activeGame, false) // еквип не арта поэтому всегда false
 
 		for _, gameCoordinate := range zone {
 			if !(gameCoordinate.X == gameUnit.Q && gameCoordinate.Y == gameUnit.R) {

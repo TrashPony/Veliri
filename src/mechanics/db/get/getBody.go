@@ -10,7 +10,7 @@ import (
 func Body(id int) (body *detail.Body) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mother_ship, speed, initiative, max_hp, armor, evasion_critical, "+
-		"vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, max_power, recovery_power "+
+		"vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, max_power, recovery_power, "+
 		"wall_hack "+
 		"FROM body_type "+
 		"WHERE id=$1", id)
@@ -23,7 +23,8 @@ func Body(id int) (body *detail.Body) {
 
 	for rows.Next() {
 		err = rows.Scan(&body.ID, &body.Name, &body.MotherShip, &body.Speed, &body.Initiative, &body.MaxHP, &body.Armor, &body.EvasionCritical,
-			&body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion, &body.RangeView, &body.Accuracy, &body.MaxPower, &body.RecoveryPower)
+			&body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion, &body.RangeView, &body.Accuracy, &body.MaxPower, &body.RecoveryPower,
+			&body.WallHack)
 		if err != nil {
 			log.Fatal("get body: " + err.Error())
 		}
