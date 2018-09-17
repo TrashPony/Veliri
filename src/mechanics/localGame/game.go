@@ -60,8 +60,8 @@ func (game *Game) GetUnitsStorage() (units []*unit.Unit) {
 	return game.unitStorage
 }
 
-func (game *Game) GetUnit(x, y int) (unit *unit.Unit, find bool) {
-	unit, find = game.units[x][y]
+func (game *Game) GetUnit(q, r int) (unit *unit.Unit, find bool) {
+	unit, find = game.units[q][r]
 	return
 }
 
