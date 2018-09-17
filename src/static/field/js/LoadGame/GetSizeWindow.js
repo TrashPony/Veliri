@@ -2,7 +2,7 @@ function GetWidth(hexagonWidth, gameMap) { //получаем ширину ок�
     let width;
 
     if (window.innerWidth < hexagonWidth * gameMap.QSize) {
-        width = window.innerWidth;
+        width = window.innerWidth - 35;
     } else {
         width = hexagonWidth * gameMap.QSize
     }
@@ -14,10 +14,10 @@ function GetHeight(hexagonHeight, gameMap) { //получаем высоту о�
     let height;
 
     if (window.innerHeight < hexagonHeight * gameMap.RSize) {
-        height = window.innerHeight;
+        height = window.innerHeight - 35;
     } else {
         height = hexagonHeight * gameMap.RSize;
     }
 
-    return height - 35
+    return height - 10 
 }

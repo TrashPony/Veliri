@@ -87,6 +87,9 @@ input {
     transition-property: background-image;
     width: 150px;
     padding: 5px;
+    color: #a5d5ef;
+    font-size: 12px;
+    text-shadow: 1px 1px 2px #FF0000;
 }
 
 #TipEquip td{
@@ -151,11 +154,10 @@ input {
     display: inline-block;
     white-space: nowrap;
     overflow: auto;
-    resize: both;
     position: relative;
     box-shadow: 25px 25px 20px rgba(0, 0, 0, 0.5);
     z-index: 0;
-    border: 10px solid #959595;
+    border: 1px solid #959595;
 }
 
 #unitTip {

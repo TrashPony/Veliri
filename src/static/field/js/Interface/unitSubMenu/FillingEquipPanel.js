@@ -65,14 +65,20 @@ function FillingEquipPanel(equipPanel, unit) {
                 equipping.onmouseover = function () {
                     TipEquipOn(unit.body.equippingIII[i].equip);
                 };
-
-                equipping.onmouseout = function () {
-                    TipEquipOff();
-                };
-
             } else {
+                if(unit.use_equip) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит уже использовао снаряжение на этом ходу"); };
+                } else if (unit.body.equippingIII[i].used) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
+                } else if (unit.power < unit.body.equippingIII[i].equip.use_power) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };
+                }
                 equipping.className = "equipSlotIII notAllow";
             }
+
+            equipping.onmouseout = function () {
+                TipEquipOff();
+            };
         } else {
             equipping.className = "equipSlotIII noActive";
         }
@@ -103,13 +109,20 @@ function FillingEquipPanel(equipPanel, unit) {
                 equipping.onmouseover = function () {
                     TipEquipOn(unit.body.equippingII[i].equip);
                 };
-
-                equipping.onmouseout = function () {
-                    TipEquipOff();
-                };
             } else {
+                if(unit.use_equip) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит уже использовао снаряжение на этом ходу"); };
+                } else if (unit.body.equippingII[i].used) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
+                } else if (unit.power < unit.body.equippingII[i].equip.use_power) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };
+                }
                 equipping.className = "equipSlotII notAllow";
             }
+
+            equipping.onmouseout = function () {
+                TipEquipOff();
+            };
         } else {
             equipping.className = "equipSlotII noActive";
         }
