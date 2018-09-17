@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/inventory"
+	"github.com/gorilla/websocket"
 )
 
 func RemoveMotherShipBody(ws *websocket.Conn) {
@@ -13,7 +13,7 @@ func RemoveMotherShipBody(ws *websocket.Conn) {
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
 }
 
-func RemoveUnitBody(ws *websocket.Conn,  msg Message)  {
+func RemoveUnitBody(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
 	inventory.RemoveUnitBody(user, msg.UnitSlot)

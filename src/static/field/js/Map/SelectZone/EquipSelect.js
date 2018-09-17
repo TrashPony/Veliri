@@ -7,15 +7,15 @@ function MarkEquipSelect(jsonMessage) {
 
     let coordinates = {};
 
-    for (let x in targets) {
-        if (targets.hasOwnProperty(x) && game.map.OneLayerMap.hasOwnProperty(x)) {
-            for (let y in targets[x]) {
-                if (targets[x].hasOwnProperty(y) && game.map.OneLayerMap[x].hasOwnProperty(y)) {
-                    if (coordinates.hasOwnProperty(x)) {
-                        coordinates[x][y] = game.map.OneLayerMap[x][y];
+    for (let q in targets) {
+        if (targets.hasOwnProperty(q) && game.map.OneLayerMap.hasOwnProperty(q)) {
+            for (let r in targets[q]) {
+                if (targets[q].hasOwnProperty(r) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+                    if (coordinates.hasOwnProperty(q)) {
+                        coordinates[q][r] = game.map.OneLayerMap[q][r];
                     } else {
-                        coordinates[x] = {};
-                        coordinates[x][y] = game.map.OneLayerMap[x][y];
+                        coordinates[q] = {};
+                        coordinates[q][r] = game.map.OneLayerMap[q][r];
                     }
                 }
             }
@@ -25,26 +25,31 @@ function MarkEquipSelect(jsonMessage) {
 }
 
 function MarkEquipZone(coordinates, equip, unit, equipSlot) {
-    for (let x in coordinates) {
-        if (coordinates.hasOwnProperty(x)) {
-            for (let y in coordinates[x]) {
-                if (coordinates[x].hasOwnProperty(y)) {
+    for (let q in coordinates) {
+        if (coordinates.hasOwnProperty(q)) {
+            for (let r in coordinates[q]) {
+                if (coordinates[q].hasOwnProperty(r)) {
 
-                    let cellSprite = coordinates[x][y].sprite;
+                    let cellSprite = coordinates[q][r].sprite;
 
-                    let selectSprite = MarkZone(cellSprite, coordinates, coordinates[x][y].x, coordinates[x][y].y, 'Place', true, game.SelectTargetLineLayer, "place");
+                    let selectSprite = MarkZone(cellSprite, coordinates, coordinates[q][r].q, coordinates[q][r].r, 'Place', true, game.SelectTargetLineLayer, "place", game.SelectLayer);
 
-                    game.map.OneLayerMap[x][y].selectSprite = selectSprite;
+                    game.map.OneLayerMap[q][r].selectSprite = selectSprite;
 
                     selectSprite.inputEnabled = true;
 
-                    selectSprite.gameCoordinateX = x;
-                    selectSprite.gameCoordinateY = y;
+                    selectSprite.gameCoordinateX = coordinates[q][r].x;
+                    selectSprite.gameCoordinateY = coordinates[q][r].y;
+                    selectSprite.gameCoordinateZ = coordinates[q][r].z;
+
                     selectSprite.equipID = equip.id;
                     selectSprite.equipRegion = equip.region;
 
-                    selectSprite.unitX = unit.x;
-                    selectSprite.unitY = unit.y;
+                    selectSprite.targetQ = q;
+                    selectSprite.targetR = r;
+
+                    selectSprite.unitQ = unit.q;
+                    selectSprite.unitR = unit.r;
                     selectSprite.typeSlot = equipSlot.type_slot;
                     selectSprite.numberSlot = equipSlot.number_slot;
 
@@ -64,19 +69,19 @@ function MarkEquipZone(coordinates, equip, unit, equipSlot) {
 function animateEquipCoordinate() {
     let xCenter = this.gameCoordinateX;
     let yCenter = this.gameCoordinateY;
+    let zCenter = this.gameCoordinateZ;
+
     let region = this.equipRegion;
 
-    let circleCoordinates = getRadius(xCenter, yCenter, region);
+    let circleCoordinates = getRadius(xCenter, yCenter, zCenter, region);
 
-    for (let x in circleCoordinates) {
-        if (circleCoordinates.hasOwnProperty(x) && game.map.OneLayerMap.hasOwnProperty(x)) {
-            for (let y in circleCoordinates[x]) {
-                if (circleCoordinates[x].hasOwnProperty(y) && game.map.OneLayerMap[x].hasOwnProperty(y)) {
-                    if (game.map.OneLayerMap[x][y].selectSprite !== undefined) {
-                        game.map.OneLayerMap[x][y].selectSprite.animations.add('select');
-                        game.map.OneLayerMap[x][y].selectSprite.animations.play('select', 5, true);
-                    }
-                }
+    for (let i in circleCoordinates) {
+        let q = circleCoordinates[i].Q;
+        let r = circleCoordinates[i].R;
+        if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+            if (game.map.OneLayerMap[q][r].selectSprite !== undefined) {
+                game.map.OneLayerMap[q][r].selectSprite.animations.add('select');
+                game.map.OneLayerMap[q][r].selectSprite.animations.play('select', 5, true);
             }
         }
     }

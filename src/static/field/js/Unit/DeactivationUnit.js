@@ -1,7 +1,8 @@
 function DeactivationUnit(unit) {
-    unit.sprite.tint = 0x757575;
+    //todo сделать так что бы юзеру было понятно что этот юнит уже ходил
+    unit.body.tint = 0x757575;
 }
 
 function ActivationUnit(unit) {
-    unit.sprite.tint = 0xFFFFFF;
+    unit.body.tint = 0xFFFFFF;
 }

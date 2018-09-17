@@ -6,13 +6,12 @@ function FillingInventory(jsonData) {
         InventoryTable(squad.inventory);
         SquadTable(squad);
         if (squad.mather_ship != null && squad.mather_ship.body != null) {
-            ConstructorTable(squad.mather_ship.body);
+            ConstructorTable(squad.mather_ship);
             FillPowerPanel(squad.mather_ship.body, "powerPanel")
         } else {
             NoActiveCell();
         }
     } else if (event === "ms error") {
-
         let powerPanel = document.getElementById("powerPanel");
 
         let start = Date.now();

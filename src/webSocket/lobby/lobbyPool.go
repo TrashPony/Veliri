@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"../../mechanics/db/get"
 	"../../mechanics/lobby"
 	"../../mechanics/player"
 	"../../mechanics/players"
@@ -9,7 +10,6 @@ import (
 	"log"
 	"strconv"
 	"sync"
-	"../../mechanics/db/get"
 )
 
 var mutex = &sync.Mutex{}
@@ -45,7 +45,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			DelConn(ws, &usersLobbyWs, err)
 			break
 		}

@@ -15,15 +15,15 @@ function GetGameUnitID(id) {
     }
 }
 
-function GetGameUnitXY(xUnit,yUnit) {
+function GetGameUnitXY(qUnit,rUnit) {
     let unit;
 
-    for (let x in game.units) {
-        if (game.units.hasOwnProperty(x)) {
-            for (let y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y)) {
-                    if (game.units[x][y].x === xUnit && game.units[x][y].y === yUnit) {
-                        unit = game.units[x][y];
+    for (let q in game.units) {
+        if (game.units.hasOwnProperty(q)) {
+            for (let r in game.units[q]) {
+                if (game.units[q].hasOwnProperty(r)) {
+                    if (game.units[q][r].q === qUnit && game.units[q][r].r === rUnit) {
+                        unit = game.units[q][r];
                         return unit
                     }
                 }

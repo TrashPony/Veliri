@@ -1,23 +1,23 @@
-function GetWidth(tileWidth, gameMap) { //получаем ширину окна игры
-    var width;
+function GetWidth(hexagonWidth, gameMap) { //получаем ширину окна игры
+    let width;
 
-    if (window.innerWidth < tileWidth * gameMap.XSize) {
-        width = window.innerWidth;
+    if (window.innerWidth < hexagonWidth * gameMap.QSize) {
+        width = window.innerWidth - 35;
     } else {
-        width = tileWidth * gameMap.XSize
+        width = hexagonWidth * gameMap.QSize
     }
 
     return width
 }
 
-function GetHeight(tileWidth, gameMap) { //получаем высоту окна игры
-    var height;
+function GetHeight(hexagonHeight, gameMap) { //получаем высоту окна игры
+    let height;
 
-    if (window.innerHeight < tileWidth * gameMap.YSize) {
-        height = window.innerHeight;
+    if (window.innerHeight < hexagonHeight * gameMap.RSize) {
+        height = window.innerHeight - 35;
     } else {
-        height = tileWidth * gameMap.YSize;
+        height = hexagonHeight * gameMap.RSize;
     }
 
-    return height
+    return height - 10 
 }

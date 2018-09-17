@@ -1,29 +1,32 @@
 function CreateUnit(unitStat, inVisible) {
+    let q = unitStat.q;
+    let r = unitStat.r;
 
-    let x = unitStat.x;
-    let y = unitStat.y;
+    let cell = game.map.OneLayerMap[q][r].sprite;
+    let x = cell.x + cell.width / 2;
+    let y = cell.y + cell.height / 2;
 
-    let cell = game.map.OneLayerMap[x][y].sprite;
     let unit;
 
     if (game.user.name === unitStat.owner) {
-        unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'MySelectUnit', 0) ;
+        unit = game.floorObjectLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'MySelectUnit', 0) ;
     } else {
-        unit = game.floorObjectLayer.create((cell.x + game.tileSize / 2) + game.shadowXOffset, (cell.y + game.tileSize / 2) + game.shadowYOffset, 'HostileSelectUnit', 0);
+        unit = game.floorObjectLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'HostileSelectUnit', 0);
     }
 
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
 
-    let shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, 'tank360', unitStat.rotate);
+
+    let shadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name, unitStat.rotate);
     unit.addChild(shadow);
     game.physics.arcade.enable(shadow);
     shadow.anchor.set(0.5);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;
 
-    let body = game.make.sprite(0, 0, 'tank360', unitStat.rotate);
+    let body = game.make.sprite(0, 0, unitStat.body.name, unitStat.rotate);
     unit.addChild(body);
     game.physics.arcade.enable(body);
 
@@ -75,6 +78,8 @@ function CreateUnit(unitStat, inVisible) {
     }
 
     addToGameUnit(unitStat);
+
+    return unitStat
 }
 
 function CreateAnimateEffects(unit) {

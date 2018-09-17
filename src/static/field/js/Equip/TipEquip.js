@@ -41,6 +41,14 @@ function TipEquipOn(equip) {
     document.body.appendChild(tip);
 }
 
+
+function TipNotAllowEquip(text) {
+    let tip = document.createElement("div");
+    tip.id = "TipEquip";
+    tip.innerHTML = "<span>" + text + "</span>";
+    document.body.appendChild(tip);
+}
+
 function updatePositionTipEquip() {
     if (document.getElementById("TipEquip")) {
         document.getElementById("TipEquip").style.top = stylePositionParams.top + 'px';

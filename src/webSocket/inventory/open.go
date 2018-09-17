@@ -1,9 +1,9 @@
 package inventory
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/inventory"
 	"../../mechanics/gameObjects/squad"
+	"../../mechanics/inventory"
+	"github.com/gorilla/websocket"
 	"log"
 )
 

@@ -1,13 +1,13 @@
 package inventory
 
 import (
+	"../../mechanics/db/updateSquad"
 	"../gameObjects/detail"
 	"../gameObjects/squad"
 	"../player"
-	"../../mechanics/db/updateSquad"
 )
 
-func RemoveMSBody(user *player.Player)  {
+func RemoveMSBody(user *player.Player) {
 	if user.GetSquad().MatherShip.Body != nil {
 
 		BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Body, user.GetSquad().MatherShip.HP)
@@ -25,7 +25,7 @@ func RemoveMSBody(user *player.Player)  {
 	updateSquad.Squad(user.GetSquad())
 }
 
-func RemoveUnitBody(user *player.Player, unitSlot int)  {
+func RemoveUnitBody(user *player.Player, unitSlot int) {
 	if user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
 		if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
 			BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Units[unitSlot].Unit.Body, user.GetSquad().MatherShip.Units[unitSlot].Unit.HP)
@@ -63,7 +63,7 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body, hp in
 
 func removeAllEquippingBody(inventory map[int]*squad.InventorySlot, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
-		if equipSlot.Equip != nil{
+		if equipSlot.Equip != nil {
 			AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP)
 			equipSlot.Equip = nil
 		}

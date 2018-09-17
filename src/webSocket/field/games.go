@@ -6,7 +6,7 @@ import (
 )
 
 type GamesStore struct {
-	mx sync.Mutex
+	mx    sync.Mutex
 	games map[int]*localGame.Game
 }
 

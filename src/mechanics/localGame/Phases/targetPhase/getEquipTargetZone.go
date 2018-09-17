@@ -4,20 +4,24 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/equip"
 	"../../../gameObjects/unit"
-	"../../../localGame/Phases"
 	"../../../localGame"
+	"../../../localGame/Phases"
 	"../../../player"
 )
 
 func GetEquipAllTargetZone(gameUnit *unit.Unit, equip *equip.Equip, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
 	targetCoordinate := make(map[string]map[string]*coordinate.Coordinate)
 
-	RadiusCoordinates := coordinate.GetCoordinatesRadius(gameUnit.GetX(), gameUnit.GetY(), equip.Radius)
-	zone := filter(gameUnit, RadiusCoordinates, activeGame)
+	unitCoordinate, find := activeGame.Map.GetCoordinate(gameUnit.GetQ(), gameUnit.GetR())
 
-	for _, gameCoordinate := range zone {
-		if !(gameCoordinate.X == gameUnit.X && gameCoordinate.Y == gameUnit.Y) {
-			Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+	if find {
+		RadiusCoordinates := coordinate.GetCoordinatesRadius(unitCoordinate, equip.Radius)
+		zone := filter(gameUnit, RadiusCoordinates, activeGame, false) // еквип не арта поэтому всегда false
+
+		for _, gameCoordinate := range zone {
+			if !(gameCoordinate.X == gameUnit.Q && gameCoordinate.Y == gameUnit.R) {
+				Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+			}
 		}
 	}
 

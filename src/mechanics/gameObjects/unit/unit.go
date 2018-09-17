@@ -1,9 +1,9 @@
 package unit
 
 import (
+	"../coordinate"
 	"../detail"
 	"../effect"
-	"../coordinate"
 )
 
 type Unit struct {
@@ -13,8 +13,9 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	X      int  `json:"x"`
-	Y      int  `json:"y"`
+	Q int `json:"q"`
+	R int `json:"r"`
+
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
 
@@ -23,8 +24,9 @@ type Unit struct {
 	Target      *coordinate.Coordinate `json:"target"`
 	QueueAttack int                    `json:"queue_attack"`
 
-	HP    int `json:"hp"`
-	Power int `json:"power"`
+	HP           int `json:"hp"`
+	Power        int `json:"power"`
+	ActionPoints int `json:"action_points"`
 
 	Effects []*effect.Effect `json:"effects"`
 	MS      bool             `json:"ms"`
@@ -76,20 +78,24 @@ func (unit *Unit) SetAmmo() {
 
 // // // //
 
-func (unit *Unit) SetX(x int) {
-	unit.X = x
+func (unit *Unit) SetQ(q int) {
+	unit.Q = q
 }
 
-func (unit *Unit) GetX() int {
-	return unit.X
+func (unit *Unit) GetQ() int {
+	return unit.Q
 }
 
-func (unit *Unit) SetY(y int) {
-	unit.Y = y
+func (unit *Unit) SetR(y int) {
+	unit.R = y
+}
+
+func (unit *Unit) GetR() int {
+	return unit.R
 }
 
 func (unit *Unit) GetY() int {
-	return unit.Y
+	return -unit.Q - unit.R
 }
 
 func (unit *Unit) GetWatchZone() int {
@@ -106,4 +112,8 @@ func (unit *Unit) GetOnMap() bool {
 
 func (unit *Unit) SetOnMap(bool bool) {
 	unit.OnMap = bool
+}
+
+func (unit *Unit) GetWallHack() bool {
+	return unit.Body.WallHack
 }

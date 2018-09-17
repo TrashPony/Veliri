@@ -2,8 +2,8 @@ package updateSquad
 
 import (
 	"../../gameObjects/squad"
-	"log"
 	"database/sql"
+	"log"
 )
 
 func InventorySquad(squad *squad.Squad, tx *sql.Tx) {

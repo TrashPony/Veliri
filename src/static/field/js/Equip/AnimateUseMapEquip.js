@@ -1,28 +1,29 @@
 function AnimateUseMapEquip(jsonMessage) {
 
-    let xUse = JSON.parse(jsonMessage).x_use;
-    let yUse = JSON.parse(jsonMessage).y_use;
+    let qUse = JSON.parse(jsonMessage).q_use;
+    let rUse = JSON.parse(jsonMessage).r_use;
     let zone_effect = JSON.parse(jsonMessage).zone_effect;
     let equip = JSON.parse(jsonMessage).applied_equip; // id:equip
     let useUnit = GetGameUnitID(JSON.parse(jsonMessage).use_unit.id);
 
-    let coordinateUse = game.map.OneLayerMap[xUse][yUse];
+    let coordinateUse = game.map.OneLayerMap[qUse][rUse];
 
     useUnit.body = JSON.parse(jsonMessage).use_unit.body;
     useUnit.power = JSON.parse(jsonMessage).use_unit.power;
+    useUnit.use_equip = JSON.parse(jsonMessage).use_unit.use_equip;
 
-    for (let x in zone_effect) {
-        if (zone_effect.hasOwnProperty(x)) {
-            for (let y in zone_effect[x]) {
-                if (zone_effect[x].hasOwnProperty(y)) {
-                    let coordinate = game.map.OneLayerMap[x][y];
-                    coordinate.effects = zone_effect.effects;
+    for (let q in zone_effect) {
+        if (zone_effect.hasOwnProperty(q)) {
+            for (let r in zone_effect[q]) {
+                if (zone_effect[q].hasOwnProperty(r)) {
+                    let coordinate = game.map.OneLayerMap[q][r];
+                    coordinate.effects = zone_effect[q][r].effects;
                 }
             }
         }
     }
 
-    if (equip.type === "small_bomb") {
+    if (equip.name === "small_bomb") {
         smallBombAnimate(coordinateUse);
     }
 }

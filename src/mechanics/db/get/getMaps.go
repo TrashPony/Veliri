@@ -1,15 +1,14 @@
 package get
 
 import (
-	"log"
 	"../../../dbConnect"
 	gameMap "../../gameObjects/map"
-
+	"log"
 )
 
 func MapList() []gameMap.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps")
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,12 +18,12 @@ func MapList() []gameMap.Map {
 	var mp gameMap.Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
-		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns " +
-			"FROM map_constructor " +
+		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns "+
+			"FROM map_constructor "+
 			"WHERE id_type=1 AND id_map = $1;", mp.Id)
 		errors := row.Scan(&mp.Respawns)
 		if errors != nil {
@@ -37,7 +36,7 @@ func MapList() []gameMap.Map {
 
 func Map(id int) gameMap.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, x_size, y_size, id_type, level, specification FROM maps WHERE id=$1", id)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps WHERE id=$1", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,12 +45,12 @@ func Map(id int) gameMap.Map {
 	var mp gameMap.Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
 		if err != nil {
 			log.Fatal(err)
 		}
-		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns " +
-			"FROM map_constructor " +
+		row := dbConnect.GetDBConnect().QueryRow("SELECT COUNT(*) as Respawns "+
+			"FROM map_constructor "+
 			"WHERE id_type=1 AND id_map = $1;", mp.Id)
 		errors := row.Scan(&mp.Respawns)
 		if errors != nil {

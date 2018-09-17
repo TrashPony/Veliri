@@ -3,9 +3,9 @@ package main
 import (
 	"./auth"
 	"./webSocket"
+	"./webSocket/chat"
 	"./webSocket/field"
 	"./webSocket/lobby"
-	"./webSocket/chat"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -25,7 +25,6 @@ func main() {
 	go lobby.ReposeSender() // запускается гарутина для рассылки сообщений, гуглить гарутины
 	go chat.CommonChatSender()
 
-	go field.WatchSender()
 	go field.MoveSender()
 	go field.UnitSender()
 	go field.PhaseSender()

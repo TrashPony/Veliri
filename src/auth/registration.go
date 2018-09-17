@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"net/http"
-	"html/template"
-	"encoding/json"
-	"log"
 	"../dbConnect"
+	"encoding/json"
+	"html/template"
+	"log"
+	"net/http"
 )
 
 type response struct {

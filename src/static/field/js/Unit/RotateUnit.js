@@ -1,10 +1,10 @@
 function UpdateRotateUnit() {
-    for (var x in game.units) {
-        if (game.units.hasOwnProperty(x)) {
-            for (var y in game.units[x]) {
-                if (game.units[x].hasOwnProperty(y)) {
+    for (let q in game.units) {
+        if (game.units.hasOwnProperty(q)) {
+            for (let r in game.units[q]) {
+                if (game.units[q].hasOwnProperty(r)) {
 
-                    var unit = game.units[x][y];
+                    let unit = game.units[q][r];
 
                     if (unit.spriteAngle === undefined) {
                         unit.spriteAngle = unit.rotate;
@@ -15,17 +15,19 @@ function UpdateRotateUnit() {
                             if (unit.spriteAngle >= 360) {
                                 unit.spriteAngle = 0;
                             } else {
-                                unit.spriteAngle++;
+                                unit.spriteAngle= unit.spriteAngle + 1;
                             }
                         } else {
                             if (unit.spriteAngle <= 0) {
                                 unit.spriteAngle = 360;
                             } else {
-                                unit.spriteAngle--;
+                                unit.spriteAngle= unit.spriteAngle - 1;
                             }
                         }
                         unit.RotateUnit(unit.spriteAngle);
                     }
+
+                    unit = null;
                 }
             }
         }
@@ -35,8 +37,8 @@ function UpdateRotateUnit() {
 function directionRotate(spriteAngle, rotate) {
     // true ++
     // false --
-    var count = 0;
-    var direction;
+    let count = 0;
+    let direction;
 
     if (spriteAngle < rotate) {
         for (; spriteAngle < rotate; spriteAngle++) {
@@ -58,7 +60,7 @@ function directionRotate(spriteAngle, rotate) {
 }
 
 function RotateUnit(unit, angle) {
-    for (var sprite in unit) {
+    for (let sprite in unit) {
         if (unit.hasOwnProperty(sprite) && unit[sprite] !== null && unit[sprite].hasOwnProperty('_frame')) {
             unit[sprite].frame = angle;
         }

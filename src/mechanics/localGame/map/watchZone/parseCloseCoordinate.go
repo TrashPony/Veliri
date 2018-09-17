@@ -6,10 +6,10 @@ import (
 	"../../../localGame"
 )
 
-func parseCloseCoordinate(closeCoordinates []*coordinate.Coordinate, closeUnit []*unit.Unit, game *localGame.Game) ([]*coordinate.Coordinate) {
+func parseCloseCoordinate(closeCoordinates []*coordinate.Coordinate, closeUnit []*unit.Unit, game *localGame.Game) []*coordinate.Coordinate {
 
 	for _, closeUnit := range closeUnit {
-		closeCoordinate, find := game.GetMap().GetCoordinate(closeUnit.X, closeUnit.Y)
+		closeCoordinate, find := game.GetMap().GetCoordinate(closeUnit.Q, closeUnit.R)
 		if find {
 			closeCoordinates = append(closeCoordinates, closeCoordinate)
 		}

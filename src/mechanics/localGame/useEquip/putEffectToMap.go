@@ -1,35 +1,36 @@
 package useEquip
 
 import (
-	"../../gameObjects/coordinate"
-	"../../localGame"
-	"../../gameObjects/equip"
-	"../../player"
 	"../../db/localGame/update"
-	"../../gameObjects/unit"
-	"../../gameObjects/detail"
 	"../../db/updateSquad"
+	"../../gameObjects/coordinate"
+	"../../gameObjects/detail"
+	"../../gameObjects/equip"
+	"../../gameObjects/unit"
+	"../../localGame"
+	"../../player"
+	"errors"
 	"strconv"
 )
 
-func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot, client *player.Player) map[string]map[string]*coordinate.Coordinate {
+func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot, client *player.Player) (map[string]map[string]*coordinate.Coordinate, error) {
 	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
-		useUnit.Power = useUnit.Power - useEquipSlot.Equip.UsePower
-		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
+		useUnit.Power -= useEquipSlot.Equip.UsePower
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload // устанавливает время перезарядки
 
-		useUnit.UseEquip = false // todo для тестов false, для игры true
-		useEquipSlot.Used = false // todo для тестов false, для игры true
+		useUnit.UseEquip = true
+		useEquipSlot.Used = true
 
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
 		AddAnchor(useCoordinate, useEquipSlot.Equip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки
 
-		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate.X, useCoordinate.Y, useEquipSlot.Equip.Region)
+		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate, useEquipSlot.Equip.Region)
 
 		effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
 
 		for _, zoneCoordinate := range zoneCoordinates {
-			gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.X, zoneCoordinate.Y)
+			gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.Q, zoneCoordinate.R)
 			if find {
 				for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из эквипа выбраной координате
 					if effect.Type != "anchor" && effect.Type != "animate" {
@@ -46,13 +47,21 @@ func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame 
 		update.Player(client)
 		updateSquad.Squad(client.GetSquad())
 
-		return effectCoordinates
+		return effectCoordinates, nil
 	} else {
-		return nil
+		if useUnit.Power < useEquipSlot.Equip.UsePower {
+			return nil, errors.New("no power")
+		}
+
+		if useUnit.UseEquip || useEquipSlot.Used {
+			return nil, errors.New("you not ready")
+		}
+
+		return nil, errors.New("unknown error")
 	}
 }
 
-func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string)  {
+func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string) {
 	addAEffect := true
 
 	for _, effect := range useEquip.Effects {
@@ -73,11 +82,11 @@ func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, type
 	}
 }
 
-func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate)  {
-	if res[strconv.Itoa(gameCoordinate.X)] != nil {
-		res[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
+func AddCoordinate(res map[string]map[string]*coordinate.Coordinate, gameCoordinate *coordinate.Coordinate) {
+	if res[strconv.Itoa(gameCoordinate.Q)] != nil {
+		res[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)] = gameCoordinate
 	} else {
-		res[strconv.Itoa(gameCoordinate.X)] = make(map[string]*coordinate.Coordinate)
-		res[strconv.Itoa(gameCoordinate.X)][strconv.Itoa(gameCoordinate.Y)] = gameCoordinate
+		res[strconv.Itoa(gameCoordinate.Q)] = make(map[string]*coordinate.Coordinate)
+		res[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)] = gameCoordinate
 	}
 }

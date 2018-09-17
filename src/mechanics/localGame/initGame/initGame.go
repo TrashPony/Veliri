@@ -1,11 +1,10 @@
 package initGame
 
 import (
-	"../../localGame"
 	"../../db/localGame/get"
+	"../../localGame"
 	"../../localGame/map/watchZone"
 )
-
 
 func InitGame(idGAme int) (newGame *localGame.Game) {
 
@@ -17,15 +16,15 @@ func InitGame(idGAme int) (newGame *localGame.Game) {
 	Map := get.Map(newGame)
 	units, unitStorage := get.AllUnits(newGame)
 
-	newGame.SetMap(&Map)       // добавляем информацию об карте
-	newGame.SetUnits(units)    // добавляем имеющихся юнитов
+	newGame.SetMap(&Map)    // добавляем информацию об карте
+	newGame.SetUnits(units) // добавляем имеющихся юнитов
 	newGame.SetUnitsStorage(unitStorage)
 
 	GetWatchPlayers(newGame)
 	return
 }
 
-func GetWatchPlayers(game *localGame.Game)  {
+func GetWatchPlayers(game *localGame.Game) {
 	for _, client := range game.GetPlayers() {
 		watchZone.UpdateWatchZone(game, client)
 	}

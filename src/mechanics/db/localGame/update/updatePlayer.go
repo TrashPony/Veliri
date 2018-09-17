@@ -1,9 +1,9 @@
 package update
 
 import (
-	"log"
-	"../../../player"
 	"../../../../dbConnect"
+	"../../../player"
+	"log"
 )
 
 func Player(client *player.Player) {

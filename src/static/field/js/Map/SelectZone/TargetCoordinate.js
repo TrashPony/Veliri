@@ -3,28 +3,28 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
 
     let event = JSON.parse(jsonMessage).event;
 
-    let unitX = JSON.parse(jsonMessage).unit.x;
-    let unitY = JSON.parse(jsonMessage).unit.y;
+    let unitQ = JSON.parse(jsonMessage).unit.q;
+    let unitR = JSON.parse(jsonMessage).unit.r;
     let unitID = JSON.parse(jsonMessage).unit.id;
 
-    for (let x in targetCoordinates) {
-        if (targetCoordinates.hasOwnProperty(x)) {
-            for (let y in targetCoordinates[x]) {
-                if (targetCoordinates[x].hasOwnProperty(y)) {
-                    let cellSprite = game.map.OneLayerMap[targetCoordinates[x][y].x][targetCoordinates[x][y].y].sprite;
+    for (let q in targetCoordinates) {
+        if (targetCoordinates.hasOwnProperty(q)) {
+            for (let r in targetCoordinates[q]) {
+                if (targetCoordinates[q].hasOwnProperty(r)) {
+                    let cellSprite = game.map.OneLayerMap[targetCoordinates[q][r].q][targetCoordinates[q][r].r].sprite;
 
                     if (event === "GetFirstTargets") {
-                        MarkZone(cellSprite, targetCoordinates, x, y, 'Target', false, game.SelectTargetLineLayer, null);
+                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer);
                     }
 
                     if (event === "GetTargets" || event === "GetEquipMapTargets") {
-                        let selectSprite = MarkZone(cellSprite, targetCoordinates, x, y, 'Target', true, game.SelectTargetLineLayer, "target");
+                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer);
 
-                        selectSprite.TargetX = targetCoordinates[x][y].x;
-                        selectSprite.TargetY = targetCoordinates[x][y].y;
+                        selectSprite.TargetQ = targetCoordinates[q][r].q;
+                        selectSprite.TargetR = targetCoordinates[q][r].r;
 
-                        selectSprite.unitX = unitX;
-                        selectSprite.unitY = unitY;
+                        selectSprite.unitQ = unitQ;
+                        selectSprite.unitR = unitR;
                         selectSprite.UnitID = unitID;
 
                         selectSprite.inputEnabled = true;
@@ -55,10 +55,10 @@ function SelectTargetUnit(jsonMessage) {
                 field.send(JSON.stringify({
                     event: "UseUnitEquip",
                     unit_id: Number(unit.id),
-                    x: Number(unit.x),
-                    y: Number(unit.y),
-                    to_x: Number(GetGameUnitID(units[i].id).x),
-                    to_y: Number(GetGameUnitID(units[i].id).y),
+                    q: Number(unit.q),
+                    r: Number(unit.r),
+                    to_q: Number(GetGameUnitID(units[i].id).q),
+                    to_r: Number(GetGameUnitID(units[i].id).r),
                     equip_id: Number(equipSlot.equip.id),
                     equip_type: Number(equipSlot.type_slot),
                     number_slot: Number(equipSlot.number_slot)
@@ -76,10 +76,10 @@ function SelectWeaponTarget(selectSprite) {
         field.send(JSON.stringify({
             event: "SetWeaponTarget",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.unitX),
-            y: Number(selectSprite.unitY),
-            to_x: Number(selectSprite.TargetX),
-            to_y: Number(selectSprite.TargetY)
+            q: Number(selectSprite.unitQ),
+            r: Number(selectSprite.unitR),
+            to_q: Number(selectSprite.TargetQ),
+            to_r: Number(selectSprite.TargetR)
         }));
         RemoveSelect();
     }

@@ -1,94 +1,71 @@
 package attackPhase
 
-/*func AttackPhase(game *Game, players []*Player) (resultBattle []ResultBattle) {
+import (
+	"../../../../mechanics/db/updateSquad"
+	"../../../../mechanics/gameObjects/unit"
+	"../../../localGame"
+	"sort"
+)
 
-	Units := game.GetUnits()
+func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 
-	sortUnits := createQueueAttack(Units)
-	resultBattle = attack(sortUnits, game, players)
+	sortUnits := createQueueAttack(game.GetUnits())
+	resultBattle = attack(sortUnits, game)
+	// todo отыгрыш эквипа
+	// todo влияние бафов
+	// todo востановление power
+	// todo ломание эквипа при попадание в юнита
+
+	for _, player := range game.GetPlayers() {
+		updateSquad.Squad(player.GetSquad())
+	}
 
 	return
 }
 
 type ResultBattle struct {
-	AttackUnit Unit
-	TargetUnit Unit
-	Delete bool
+	Map         bool        `json:"map"`
+	AttackUnit  unit.Unit   `json:"attack_unit"`
+	TargetUnit  unit.Unit   `json:"target_unit"`
+	TargetsUnit []unit.Unit `json:"targets_unit"`
+	Error       string      `json:"error"`
 }
 
-func attack(sortUnits []*Unit, game *Game, players []*Player) (resultBattle []ResultBattle) {
-	resultBattle = make([]ResultBattle, 0)
+func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*ResultBattle) {
+	resultBattle = make([]*ResultBattle, 0)
 
-	for _, unit := range sortUnits {
-		if unit.HP > 0 {
-			if unit.Target != nil {
-				for i, target := range sortUnits {
-					if target.X == unit.Target.X && target.Y == unit.Target.Y {
+	for _, gameUnit := range sortUnits {
+		if gameUnit.HP > 0 {
+			if gameUnit.Target != nil {
 
-						sortUnits[i].HP = target.HP - unit.Damage
+				target, findCoordinate := game.Map.GetCoordinate(gameUnit.Target.Q, gameUnit.Target.R)
 
-						deleteUnit := false
-						if sortUnits[i].HP <= 0 {
-							dbDelUnit(sortUnits[i].Id)
-							game.DelUnit(sortUnits[i])
-
-							for _, player := range players {
-								player.DelUnit(sortUnits[i].X, sortUnits[i].Y)
-							}
-
-							deleteUnit = true
-						} else {
-							dbUpdateHpUnit(sortUnits[i].Id, sortUnits[i].HP)
-						}
-
-						result := ResultBattle{AttackUnit: *unit, TargetUnit: *sortUnits[i], Delete: deleteUnit}
-						resultBattle = append(resultBattle, result)
-					}
+				if findCoordinate {
+					result := InitAttack(gameUnit, target, game)
+					resultBattle = append(resultBattle, result)
 				}
 			}
 		}
 
-		dbUpdateTargetUnit(unit.Id)
-		unit.Target = nil
-		unit.Queue = 0
+		gameUnit.Target = nil
+		gameUnit.QueueAttack = 0
 	}
 
 	return
 }
 
-func createQueueAttack(Units map[int]map[int]*Unit) (sortUnits []*Unit) {
+func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*unit.Unit) {
 
 	for _, xLine := range Units {
-		for _, unit := range xLine {
-			unit.Initiative = unit.Initiative + unit.Queue
-			sortUnits = append(sortUnits, unit)
+		for _, gameUnit := range xLine {
+			gameUnit.QueueAttack += gameUnit.Body.Initiative
+			sortUnits = append(sortUnits, gameUnit)
 		}
 	}
 
 	sort.Slice(sortUnits, func(i, j int) bool {
-		return sortUnits[i].Initiative > sortUnits[j].Initiative
+		return sortUnits[i].QueueAttack > sortUnits[j].QueueAttack
 	})
 
 	return
 }
-
-func dbDelUnit(id int) {
-	_, err := db.Exec("DELETE FROM action_game_unit WHERE id=$1", id)
-	if err != nil {
-		println("нет такого юнита") // TODO сбрасывать инициативу до дефолта
-	}
-}
-
-func dbUpdateHpUnit(id int, hp int) {
-	_, err := db.Exec("UPDATE action_game_unit SET hp=$2 WHERE id=$1", id, hp)
-	if err != nil {
-		println("нет такого юнита") // TODO
-	}
-}
-
-func dbUpdateTargetUnit(id int) {
-	_, err := db.Exec("UPDATE action_game_unit SET target=$2, queue_attack=$3 WHERE id=$1", id, "", 0)
-	if err != nil {
-		println("нет такого юнита") // TODO
-	}
-}*/

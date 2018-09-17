@@ -2,8 +2,8 @@ package localGame
 
 import (
 	"../gameObjects/map"
-	"../player"
 	"../gameObjects/unit"
+	"../player"
 )
 
 type Game struct {
@@ -36,16 +36,16 @@ func (game *Game) SetUnitsStorage(unit []*unit.Unit) {
 }
 
 func (game *Game) SetUnit(gameUnit *unit.Unit) {
-	if game.units[gameUnit.X] != nil {
-		game.units[gameUnit.X][gameUnit.Y] = gameUnit
+	if game.units[gameUnit.Q] != nil {
+		game.units[gameUnit.Q][gameUnit.R] = gameUnit
 	} else {
-		game.units[gameUnit.X] = make(map[int]*unit.Unit)
-		game.units[gameUnit.X][gameUnit.Y] = gameUnit
+		game.units[gameUnit.Q] = make(map[int]*unit.Unit)
+		game.units[gameUnit.Q][gameUnit.R] = gameUnit
 	}
 }
 
 func (game *Game) DelUnit(unit *unit.Unit) {
-	delete(game.units[unit.X], unit.Y)
+	delete(game.units[unit.Q], unit.R)
 }
 
 func (game *Game) GetMap() (mp *_map.Map) {
@@ -60,8 +60,8 @@ func (game *Game) GetUnitsStorage() (units []*unit.Unit) {
 	return game.unitStorage
 }
 
-func (game *Game) GetUnit(x, y int) (unit *unit.Unit, find bool) {
-	unit, find = game.units[x][y]
+func (game *Game) GetUnit(q, r int) (unit *unit.Unit, find bool) {
+	unit, find = game.units[q][r]
 	return
 }
 

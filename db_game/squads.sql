@@ -16,8 +16,8 @@ CREATE TABLE squad_units (
   slot                INT, /* номер слота который занимает юнит в материнской машине */
 
   /* Позиция */
-  x                   INT,
-  y                   INT,
+  q                   INT, /* q - колона на которой стоит юнит */
+  r                   INT, /* r - строка на которой стоит юнит */
   rotate              INT,
   on_map              BOOLEAN,
 
@@ -30,6 +30,7 @@ CREATE TABLE squad_units (
   /* Характиристики */
   hp                  INT,
   power               INT,
+  action_point        INT,    /* очки передвижения юнита */
   mother_ship         BOOLEAN /* является ли этот юнит мазршипом */
 );
 

@@ -1,8 +1,8 @@
 package detail
 
 import (
-	"../equip"
 	"../ammo"
+	"../equip"
 )
 
 type Body struct {

@@ -1,21 +1,21 @@
 function SelectCoordinateUnitCreate(jsonMessage) {
-
+    console.log(jsonMessage);
     RemoveSelect();
 
-    var placeCoordinate = JSON.parse(jsonMessage).place_coordinate;
-    var unitID = JSON.parse(jsonMessage).unit.id;
+    let placeCoordinate = JSON.parse(jsonMessage).place_coordinate;
+    let unitID = JSON.parse(jsonMessage).unit.id;
 
-    for (var x in placeCoordinate) {
-        if (placeCoordinate.hasOwnProperty(x)) {
-            for (var y in placeCoordinate[x]) {
-                if (placeCoordinate[x].hasOwnProperty(y)) {
+    for (let q in placeCoordinate) {
+        if (placeCoordinate.hasOwnProperty(q)) {
+            for (let r in placeCoordinate[q]) {
+                if (placeCoordinate[q].hasOwnProperty(r)) {
 
-                    var cellSprite = game.map.OneLayerMap[placeCoordinate[x][y].x][placeCoordinate[x][y].y].sprite;
+                    let cellSprite = game.map.OneLayerMap[placeCoordinate[q][r].q][placeCoordinate[q][r].r].sprite;
 
-                    var selectSprite = MarkZone(cellSprite, placeCoordinate, x, y, 'Place', true, game.SelectLineLayer, "place");
+                    let selectSprite = MarkZone(cellSprite, placeCoordinate, q, r, 'Place', true, game.SelectLineLayer, "place", game.SelectLayer);
 
-                    selectSprite.PlaceX = placeCoordinate[x][y].x;
-                    selectSprite.PlaceY = placeCoordinate[x][y].y;
+                    selectSprite.PlaceQ = placeCoordinate[q][r].q;
+                    selectSprite.PlaceR = placeCoordinate[q][r].r;
                     selectSprite.UnitID = unitID;
 
                     selectSprite.inputEnabled = true;
@@ -36,8 +36,8 @@ function SelectPlaceCoordinate(selectSprite) {
         field.send(JSON.stringify({
             event: "PlaceUnit",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.PlaceX),
-            y: Number(selectSprite.PlaceY)
+            to_q: Number(selectSprite.PlaceQ),
+            to_r: Number(selectSprite.PlaceR)
         }));
 
         RemoveSelect()

@@ -7,10 +7,10 @@ type Message struct {
 	EquipID    int    `json:"equip_id"`
 	IdTarget   string `json:"id_target"`
 	TypeUnit   string `json:"type_unit"`
-	X          int    `json:"x"`
-	Y          int    `json:"y"`
-	ToX        int    `json:"to_x"`
-	ToY        int    `json:"to_y"`
+	Q          int    `json:"q"`
+	R          int    `json:"r"`
+	ToQ        int    `json:"to_q"`
+	ToR        int    `json:"to_r"`
 	TargetX    int    `json:"target_x"`
 	TargetY    int    `json:"target_y"`
 	EquipType  int    `json:"equip_type"`

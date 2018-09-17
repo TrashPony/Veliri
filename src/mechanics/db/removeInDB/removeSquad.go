@@ -1,11 +1,11 @@
 package removeInDB
 
 import (
-	"log"
 	"../../../dbConnect"
+	"log"
 )
 
-func DeleteSquad(id int)  {
+func DeleteSquad(id int) {
 	// удаляем мазер шипы
 	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM squad_mother_ship WHERE id_squad=$1", id)
 	if err != nil {
@@ -28,4 +28,3 @@ func DeleteSquad(id int)  {
 	}
 	//todo по хорошему это должна быть транзакиця
 }
-

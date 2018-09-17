@@ -12,10 +12,30 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                 } else {
                     UpdateEquips(cell, classPrefix);
                 }
-                cell.onmouseover = function () {
+
+                cell.addEventListener("mousemove", function (e) {
+                    if (JSON.parse(this.slotData).equip) {
+                        let equipSlot = JSON.parse(this.slotData);
+                        equipSlot.item = JSON.parse(this.slotData).equip;
+                        equipSlot.type = "equip";
+                        ItemOverTip(e, equipSlot)
+                    } else if (JSON.parse(this.slotData).weapon) {
+                        let weaponSlot = JSON.parse(this.slotData);
+                        weaponSlot.item = JSON.parse(this.slotData).weapon;
+                        weaponSlot.type = "weapon";
+                        ItemOverTip(e, weaponSlot)
+                    }
+                });
+                cell.addEventListener("mouseover", function (e) {
                     this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
                     this.style.cursor = "pointer";
-                };
+                });
+                cell.addEventListener("mouseout", function () {
+                    let inventoryTip = document.getElementById("InventoryTipOver");
+                    if (inventoryTip) {
+                        inventoryTip.remove()
+                    }
+                });
             } else {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "";

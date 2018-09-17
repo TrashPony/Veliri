@@ -1,11 +1,11 @@
 package field
 
 import (
-	"../../mechanics/localGame/Phases/movePhase"
-	"../../mechanics/gameObjects/unit"
-	"../../mechanics/player"
-	"../../mechanics/localGame"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/Phases/movePhase"
+	"../../mechanics/player"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -24,26 +24,33 @@ TODO улучшить метод движения за счет общения �
 TODO юниты при передвежение будет говорить бекенду свои координаты
 TODO и бекенд будет решать за счет этого кому из игроков говорить где и как двигается юнит
 TODO тогда беда с туманом войны и баг с проебом координаты решается на все 100%
- */
+*/
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
+	var event string
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if findUnit && findClient && findGame {
-		if !gameUnit.Action && !client.GetReady() {
+	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+	if !findUnit {
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	} else {
+		event = "SelectStorageUnit"
+	}
 
-			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame)
-			_, find := moveCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
+	if findUnit && findClient && findGame {
+		if !gameUnit.Action && !client.GetReady() && gameUnit.ActionPoints > 0 {
+
+			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
+			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 			if find {
-				path := movePhase.InitMove(gameUnit, msg.ToX, msg.ToY, client, activeGame)
+				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
+				client.DelUnitStorage(gameUnit.ID)
 
 				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
-
-				updateWatchHostileUser(client, activeGame, gameUnit, path)
+				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
 			} else {
 				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
 				ws.WriteJSON(resp)
@@ -60,12 +67,12 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 
 func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.Q, msg.R)
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findUnit && findClient && findGame {
-		if !gameUnit.Action {
+		if !gameUnit.Action && gameUnit.ActionPoints == gameUnit.Body.Speed {
 			movePhase.SkipMove(gameUnit, activeGame, client)
 			ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
 		} else {
@@ -78,7 +85,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
-func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode) {
+func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode, event string) {
 
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
@@ -92,10 +99,10 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			}
 
 			// пытаемся взять юнита по конечной координате
-			_, okGetEndXY := user.GetWatchCoordinate(gameUnit.X, gameUnit.Y)
+			_, okGetEndQR := user.GetWatchCoordinate(gameUnit.Q, gameUnit.R)
 
 			// если конечная точка пути видима то добавляем юнита
-			if okGetEndXY {
+			if okGetEndQR {
 				user.AddHostileUnit(gameUnit)
 			}
 
@@ -104,15 +111,21 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			okEarlyNode := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
 			for i, pathNode := range pathNodes {
+
 				pathNode.WatchNode = nil
 
-				_, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.X, pathNode.PathNode.Y)
+				firstNode, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)
 
 				if len(pathNodes) > i+1 {
-					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.X, pathNodes[i+1].PathNode.Y)
+					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.Q, pathNodes[i+1].PathNode.R)
 				}
 				if 0 < i {
-					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.X, pathNodes[i-1].PathNode.Y)
+					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.Q, pathNodes[i-1].PathNode.R)
+				}
+
+				if event == "SelectStorageUnit" && i == 0 && okFirstNode {
+					// если машина выходит из мазер шипа говорим что как бе он вышел из тумана что бы она появилась на карте)
+					firstNode.Type = "outFog"
 				}
 
 				// если юзер не видит координату то скрваем ее
@@ -121,17 +134,17 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 
 					if okSecondNode {
 						fakeNode.Type = "outFog"
-						fakeNode.X = pathNode.PathNode.X
-						fakeNode.Y = pathNode.PathNode.Y
+						fakeNode.Q = pathNode.PathNode.Q
+						fakeNode.R = pathNode.PathNode.R
 					} else {
 						if (okGetUnit && i == 0) || okEarlyNode {
 							fakeNode.Type = "inToFog"
-							fakeNode.X = pathNode.PathNode.X
-							fakeNode.Y = pathNode.PathNode.Y
+							fakeNode.Q = pathNode.PathNode.Q
+							fakeNode.R = pathNode.PathNode.R
 						} else {
 							fakeNode.Type = "hide"
-							fakeNode.X = 0
-							fakeNode.Y = 0
+							fakeNode.Q = 0
+							fakeNode.R = 0
 						}
 					}
 

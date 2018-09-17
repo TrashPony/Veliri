@@ -1,25 +1,25 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame/Phases/targetPhase"
+	"github.com/gorilla/websocket"
 	"strconv"
 )
 
 func SetTarget(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Action {
 
 		targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame)
-		_, find := targetCoordinate[strconv.Itoa(msg.ToX)][strconv.Itoa(msg.ToY)]
+		_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 		if find {
-			targetPhase.SetTarget(gameUnit, activeGame, msg.ToX, msg.ToY, client)
+			targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
 			ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
 			updateUnitHostileUser(client, activeGame, gameUnit)
 		} else {

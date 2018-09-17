@@ -1,9 +1,9 @@
 package get
 
 import (
-	"log"
 	"../../../dbConnect"
 	"../../lobby/notFinishedGames"
+	"log"
 )
 
 func GetNotFinishedGames(userID int) []notFinishedGames.NotFinishedGames {
@@ -14,7 +14,6 @@ func GetNotFinishedGames(userID int) []notFinishedGames.NotFinishedGames {
 	}
 	defer rows.Close()
 	var games = make([]notFinishedGames.NotFinishedGames, 0)
-
 
 	for rows.Next() {
 		var game notFinishedGames.NotFinishedGames

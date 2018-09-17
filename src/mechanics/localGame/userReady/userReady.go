@@ -1,13 +1,13 @@
 package userReady
 
 import (
-	"../../player"
 	"../../db/localGame/update"
-	"../../localGame"
 	"../../db/updateSquad"
+	"../../localGame"
+	"../../player"
 )
 
-func UserReady(client *player.Player, actionGame *localGame.Game) (bool) {
+func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 	client.SetReady(true)
 	update.Player(client)
 

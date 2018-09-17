@@ -4,12 +4,39 @@ function animateMoveCoordinate(coordinate) {
 
     field.send(JSON.stringify({
         event: "GetTargetZone",
-        x: Number(coordinate.unitX),
-        y: Number(coordinate.unitY),
-        to_x: Number(coordinate.MoveX),
-        to_y: Number(coordinate.MoveY)
+        unit_id: Number(coordinate.UnitID),
+        q: Number(coordinate.unitQ),
+        r: Number(coordinate.unitR),
+        to_q: Number(coordinate.MoveQ),
+        to_r: Number(coordinate.MoveR)
     }));
+
+    field.send(JSON.stringify({
+        event: "GetPreviewPath",
+        unit_id: Number(coordinate.UnitID),
+        q: Number(coordinate.unitQ),
+        r: Number(coordinate.unitR),
+        to_q: Number(coordinate.MoveQ),
+        to_r: Number(coordinate.MoveR)
+    }));
+
     game.SelectLineLayer.visible = false;
+
+    if (coordinate.UnitMS) {
+        let centerCoordinate = game.map.OneLayerMap[coordinate.MoveQ][coordinate.MoveR];
+        let circleCoordinates = getRadius(centerCoordinate.x, centerCoordinate.y, centerCoordinate.z, 1);
+
+        for (let i in circleCoordinates) {
+            let q = circleCoordinates[i].Q;
+            let r = circleCoordinates[i].R;
+            if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+                let animateCoordinate = game.map.OneLayerMap[q][r];
+                let selectSprite = MarkZone(animateCoordinate.sprite, circleCoordinates, q, r, 'Move', true, game.SelectRangeLayer, "move", game.SelectRangeLayer);
+                selectSprite.animations.add('select');
+                selectSprite.animations.play('select', 5, true);
+            }
+        }
+    }
 }
 
 function animatePlaceCoordinate(coordinate) {
@@ -18,7 +45,7 @@ function animatePlaceCoordinate(coordinate) {
 }
 
 function animateTargetCoordinate(coordinate) {
-    coordinate.animations.add('select', [1,2]);
+    coordinate.animations.add('select', [1, 2]);
     coordinate.animations.play('select', 3, true);
 }
 
@@ -29,5 +56,6 @@ function stopAnimateCoordinate(coordinate) {
     if (game.Phase === "move") {
         game.SelectLineLayer.visible = true;
         RemoveTargetLine();
+        RemoveSelectRangeCoordinate();
     }
 }

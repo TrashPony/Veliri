@@ -10,7 +10,7 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 	for _, xLine := range activeGame.GetUnits() {
 		for _, gameUnit := range xLine {
 
-			watchCoordinate, watchUnit, err := watch(gameUnit, client.GetLogin(), activeGame) //PermissionCoordinates(client, unit, units)
+			watchCoordinate, watchUnit, err := watch(gameUnit, client.GetLogin(), activeGame)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие
 				continue
@@ -26,7 +26,7 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 				}
 
 				for _, gameCoordinate := range watchCoordinate {
-					_, ok := activeGame.GetMap().OneLayerMap[gameCoordinate.X][gameCoordinate.Y]
+					_, ok := activeGame.GetMap().OneLayerMap[gameCoordinate.Q][gameCoordinate.R]
 					if ok {
 						client.AddCoordinate(gameCoordinate)
 					}

@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/inventory"
+	"github.com/gorilla/websocket"
 )
 
 func RemoveMotherShipAmmo(ws *websocket.Conn, msg Message) {
@@ -20,4 +20,3 @@ func RemoveUnitAmmo(ws *websocket.Conn, msg Message) {
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
 }
-

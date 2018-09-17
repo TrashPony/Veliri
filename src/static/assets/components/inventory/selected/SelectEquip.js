@@ -14,7 +14,7 @@ function AmmoMSMenu(event) {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
         };
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -36,7 +36,7 @@ function AmmoUnitMenu(event) {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
         };
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -57,7 +57,7 @@ function WeaponMSMenu(event) {
             DestroyInventoryTip();
         };
 
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -80,7 +80,7 @@ function WeaponUnitMenu(event) {
             DestroyInventoryTip();
         };
 
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -103,7 +103,7 @@ function EquipMSMenu(event) {
             DestroyInventoryTip();
         };
 
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -128,7 +128,7 @@ function EquipUnitMenu(event) {
             DestroyInventoryTip();
         };
 
-        RemoveTip(event, removeFunction);
+        ClickTip(event, removeFunction);
     }
 }
 
@@ -144,7 +144,7 @@ function BodyMSMenu(event) {
         DestroyInventoryTip();
     };
 
-    RemoveTip(event, removeFunction);
+    ClickTip(event, removeFunction);
 }
 
 function BodyUnitMenu(event) {
@@ -161,5 +161,5 @@ function BodyUnitMenu(event) {
         DestroyInventoryTip();
     };
 
-    RemoveTip(event, removeFunction);
+    ClickTip(event, removeFunction);
 }

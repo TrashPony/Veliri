@@ -1,32 +1,42 @@
 function CreateMap() {
 
-    for (let x = 0; x < game.map.XSize; x++) {
-        for (let y = 0; y < game.map.YSize; y++) {
-            let coordinate = game.map.OneLayerMap[x][y];
-            // todo построение карты из существующих координат а не по размеру
+    let hexagonWidth = 80;
+    let hexagonHeight = 100;
 
-            CreateTerrain(coordinate);
+    let verticalOffset = hexagonHeight * 3 / 4;
+    let horizontalOffset = hexagonWidth;
+    let startX;
+    let startY;
+    let startXInit = hexagonWidth / 2;
+    let startYInit = hexagonHeight / 2;
 
-            if (coordinate.level === 3) {
-                let style = { font: "16px Arial", fill: "#ffa92b", align: "center" };
-                game.add.text(x * game.tileSize + 30, y * game.tileSize + 30,
-                    "x:" + x + " y:" + y + "\nl:" + coordinate.level, style);
-            }
+    for (let r = 0; r < game.map.QSize; r++) {
 
-            if (coordinate.level === 4) {
-                let style = { font: "16px Arial", fill: "#ff3f41", align: "center" };
-                game.add.text(x * game.tileSize + 30, y * game.tileSize + 30,
-                    "x:" + x + " y:" + y + "\nl:" + coordinate.level, style);
-            }
+        if (r % 2 !== 0) {
+            startX = 2 * startXInit;
+        } else {
+            startX = startXInit;
+        }
 
+        startY = startYInit + (r * verticalOffset);
+
+        for (let q = 0; q < game.map.RSize; q++) {
+
+            let coordinate = game.map.OneLayerMap[q][r];
+
+            CreateTerrain(coordinate, startX, startY, q, r);
+
+            startX += horizontalOffset;
 
             if (coordinate.texture_object !== "") {
-                CreateObjects(coordinate);
+                CreateObjects(coordinate, startX, startY);
             }
 
             if (coordinate.effects != null && coordinate.effects.length > 0) {
-                MarkZoneEffect(coordinate)
+                //MarkZoneEffect(coordinate)
             }
+
         }
     }
 }
+

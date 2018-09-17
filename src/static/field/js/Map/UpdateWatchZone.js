@@ -14,7 +14,7 @@ function UpdateWatchZone(watch) {
 
         if (openUnits) {
             while (openUnits.length > 0) {
-                var openUnit = openUnits.shift();
+                let openUnit = openUnits.shift();
                 CreateUnit(openUnit)
             }
         }

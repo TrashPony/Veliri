@@ -1,12 +1,12 @@
 package lobby
 
 import (
-	"../../mechanics/player"
 	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/lobby/notFinishedGames"
-	"../../mechanics/gameObjects/squad"
 	LocalMap "../../mechanics/gameObjects/map"
+	"../../mechanics/gameObjects/squad"
 	"../../mechanics/lobby"
+	"../../mechanics/lobby/notFinishedGames"
+	"../../mechanics/player"
 )
 
 type Message struct {

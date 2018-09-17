@@ -1,8 +1,8 @@
 package updateSquad
 
 import (
-	"../../gameObjects/squad"
 	"../../../dbConnect"
+	"../../gameObjects/squad"
 	"log"
 )
 

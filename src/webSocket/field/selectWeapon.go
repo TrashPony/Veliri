@@ -1,18 +1,18 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/player"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/targetPhase"
-	"../../mechanics/gameObjects/unit"
+	"../../mechanics/player"
+	"github.com/gorilla/websocket"
 )
 
 func SelectWeapon(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame {

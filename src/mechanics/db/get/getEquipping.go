@@ -1,10 +1,10 @@
 package get
 
 import (
-	"log"
-	"../../gameObjects/effect"
 	"../../../dbConnect"
+	"../../gameObjects/effect"
 	"../../gameObjects/equip"
+	"log"
 )
 
 func TypeEquip(id int) *equip.Equip {

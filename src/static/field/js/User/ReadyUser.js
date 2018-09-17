@@ -1,7 +1,4 @@
 function ReadyUser(jsonMessage) {
-
-    console.log(jsonMessage);
-
     if (JSON.parse(jsonMessage).error === null || JSON.parse(jsonMessage).error === undefined) {
         var ready = document.getElementById("Ready");
 
@@ -10,7 +7,7 @@ function ReadyUser(jsonMessage) {
             ready.className = "button noActive";
             ready.onclick = null;
         } else {
-            ready.value = "Готов!";
+            ready.value = "Завершить ход";
             ready.className = "button";
             ready.onclick = function () {
                 Ready();

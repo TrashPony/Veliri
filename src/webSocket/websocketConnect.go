@@ -1,10 +1,10 @@
 package webSocket
 
 import (
-	"./field"
-	"./lobby"
 	"./chat"
+	"./field"
 	"./inventory"
+	"./lobby"
 
 	"github.com/gorilla/websocket"
 	"log"

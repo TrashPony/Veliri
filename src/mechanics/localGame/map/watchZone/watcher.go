@@ -1,18 +1,20 @@
 package watchZone
 
 import (
-	"strconv"
-	"errors"
-	"../../../localGame"
-	"../../../gameObjects/unit"
 	"../../../gameObjects/coordinate"
+	"../../../gameObjects/unit"
+	"../../../localGame"
+	"errors"
+	"strconv"
 )
 
 type Watcher interface {
-	GetX() int
+	GetQ() int
+	GetR() int
 	GetY() int
 	GetWatchZone() int
 	GetOwnerUser() string
+	GetWallHack() bool
 }
 
 func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, Err error) {
@@ -22,26 +24,26 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 
 	if login == gameObject.GetOwnerUser() {
 
-		RadiusCoordinates := coordinate.GetCoordinatesRadius(gameObject.GetX(), gameObject.GetY(), gameObject.GetWatchZone())
-		PermCoordinates   := filter(gameObject, RadiusCoordinates, game)
+		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 
-		for _, gameCoordinate := range PermCoordinates{
-			unitInMap, ok := game.GetUnit(gameCoordinate.X,gameCoordinate.Y)
+		RadiusCoordinates := coordinate.GetCoordinatesRadius(centerCoordinate, gameObject.GetWatchZone())
+		PermCoordinates := filter(gameObject, RadiusCoordinates, game, gameObject.GetWallHack())
 
-			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.X, gameCoordinate.Y)
-			if find { // TODO костыль // TODO проеб сылок координата gameCoordinate не так что у игры >_<
-				allCoordinate[strconv.Itoa(gameCoordinate.X)+":"+strconv.Itoa(gameCoordinate.Y)] = newCoordinate
+		for _, gameCoordinate := range PermCoordinates {
+			unitInMap, ok := game.GetUnit(gameCoordinate.Q, gameCoordinate.R)
+
+			newCoordinate, find := game.Map.GetCoordinate(gameCoordinate.Q, gameCoordinate.R)
+			if find {
+				allCoordinate[strconv.Itoa(gameCoordinate.Q)+":"+strconv.Itoa(gameCoordinate.R)] = newCoordinate
 			}
 
 			if ok {
-				if unitsCoordinate[gameCoordinate.X] != nil {
-					unitsCoordinate[gameCoordinate.X][gameCoordinate.Y] = unitInMap
+				if unitsCoordinate[gameCoordinate.Q] != nil {
+					unitsCoordinate[gameCoordinate.Q][gameCoordinate.R] = unitInMap
 				} else {
-					unitsCoordinate[gameCoordinate.X] = make(map[int]*unit.Unit)
-					unitsCoordinate[gameCoordinate.X][gameCoordinate.Y] = unitInMap
+					unitsCoordinate[gameCoordinate.Q] = make(map[int]*unit.Unit)
+					unitsCoordinate[gameCoordinate.Q][gameCoordinate.R] = unitInMap
 				}
-			} else {
-
 			}
 		}
 	} else {
@@ -49,5 +51,3 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 	}
 	return allCoordinate, unitsCoordinate, nil
 }
-
-

@@ -1,16 +1,15 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"strconv"
-	"sync"
 	"../../mechanics/player"
 	"../../mechanics/players"
 	"../utils"
+	"github.com/gorilla/websocket"
 	"log"
+	"strconv"
+	"sync"
 )
 
-var watchPipe = make(chan Watch)
 var phasePipe = make(chan PhaseInfo)
 var targetPipe = make(chan Unit)
 var equipPipe = make(chan SendUseEquip)
@@ -48,7 +47,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersFieldWs, err)
 			break
 		}
@@ -60,31 +59,27 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "SelectStorageUnit" {
-			selectStorageUnit(msg, ws)
-			continue
-		}
-
-		if msg.Event == "PlaceUnit" {
-			placeUnit(msg, ws)
-			continue
-		}
-
 		if msg.Event == "Ready" {
 			Ready(ws)
 			continue
 		}
 
-		if msg.Event == "SelectUnit" {
+		if msg.Event == "SelectUnit" || msg.Event == "SelectStorageUnit" {
 			SelectUnit(msg, ws)
 			continue
 		}
 
 		if msg.Event == "GetTargetZone" {
 			GetTargetZone(msg, ws)
+			continue
 		}
 
-		if msg.Event == "MoveUnit" {
+		if msg.Event == "GetPreviewPath" {
+			GetPreviewPath(msg, ws)
+			continue
+		}
+
+		if msg.Event == "MoveUnit" || msg.Event == "PlaceUnit" {
 			MoveUnit(msg, ws)
 			continue
 		}
@@ -104,7 +99,7 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			continue
 		}
 
-		if msg.Event == "UseEquip" {
+		if msg.Event == "UseMapEquip" {
 			UseEquip(msg, ws)
 			continue
 		}
@@ -123,24 +118,6 @@ func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Pl
 			SelectEquip(msg, ws)
 			continue
 		}
-	}
-}
-
-func WatchSender() {
-	for {
-		resp := <-watchPipe
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
 	}
 }
 

@@ -1,20 +1,20 @@
 package field
 
 import (
-	"github.com/gorilla/websocket"
-	"../../mechanics/gameObjects/unit"
 	"../../mechanics/gameObjects/detail"
+	"../../mechanics/gameObjects/equip"
+	"../../mechanics/gameObjects/unit"
+	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/targetPhase"
 	"../../mechanics/localGame/useEquip"
-	"../../mechanics/gameObjects/equip"
 	"../../mechanics/player"
-	"../../mechanics/localGame"
+	"github.com/gorilla/websocket"
 )
 
 func UseUnitEquip(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.X, msg.Y)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	ok := false
@@ -50,12 +50,12 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 			}
 
 			for _, targetUnit := range targetUnits {
-				if targetUnit.X == msg.ToX && targetUnit.Y == msg.ToY {
+				if targetUnit.Q == msg.ToQ && targetUnit.R == msg.ToR {
 					err := useEquip.ToUnit(gameUnit, targetUnit, equipSlot, client)
 					if err != nil {
 						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
 					} else {
-						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
+						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
 						updateUseUnitEquipHostileUser(client, activeGame, gameUnit, targetUnit, equipSlot.Equip)
 					}
 				}
@@ -69,9 +69,9 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit, targetUnit *unit.Unit, playerEquip *equip.Equip) {
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
-			_, watch := user.GetHostileUnit(targetUnit.X, targetUnit.Y)
+			_, watch := user.GetHostileUnit(targetUnit.Q, targetUnit.R)
 			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit:gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
+				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
 			}
 		}
 	}

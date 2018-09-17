@@ -2,8 +2,8 @@ package updateSquad
 
 import (
 	"../../gameObjects/squad"
-	"log"
 	"database/sql"
+	"log"
 )
 
 func MotherShip(squad *squad.Squad, tx *sql.Tx) {
@@ -15,7 +15,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 		var bodyID sql.NullInt64
 
 		if ship.Body == nil {
-			bodyID = sql.NullInt64{Int64:0, Valid: false}
+			bodyID = sql.NullInt64{Int64: 0, Valid: false}
 
 			_, err := tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit=$2",
 				squad.ID, ship.ID)
@@ -30,9 +30,9 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 
 		_, err := tx.Exec(
 			"UPDATE squad_units "+
-				"SET id_body = $1, x = $2, y = $3, rotate = $4, action = $5, target = $6, queue_attack = $7, hp = $8, use_equip = $10, power = $11 "+
+				"SET id_body = $1, q = $2, r = $3, rotate = $4, action = $5, target = $6, queue_attack = $7, hp = $8, use_equip = $10, power = $11, action_point = $13 "+
 				"WHERE id_squad = $9 AND mother_ship = $12",
-			bodyID, ship.X, ship.Y, ship.Rotate, ship.Action, parseTarget(ship), ship.QueueAttack, ship.HP, squad.ID, ship.UseEquip, ship.Power, true)
+			bodyID, ship.Q, ship.R, ship.Rotate, ship.Action, parseTarget(ship), ship.QueueAttack, ship.HP, squad.ID, ship.UseEquip, ship.Power, true, ship.ActionPoints)
 
 		if err != nil {
 			log.Fatal("update motherShip squad" + err.Error())
@@ -41,10 +41,10 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 	} else {
 		if ship.ID == 0 || ship.Body != nil {
 			id := 0
-			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, x, y, rotate, action, target, queue_attack, hp, use_equip, power, mother_ship, on_map) " +
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
-				squad.ID, ship.Body.ID, ship.X, ship.Y, ship.Rotate, ship.Action,
-				parseTarget(ship), ship.QueueAttack, ship.HP, ship.UseEquip, ship.Power, true, true).Scan(&id)
+			err := tx.QueryRow("INSERT INTO squad_units (id_squad, id_body, q, r, rotate, action, target, queue_attack, hp, use_equip, power, mother_ship, on_map, action_point ) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
+				squad.ID, ship.Body.ID, ship.Q, ship.R, ship.Rotate, ship.Action,
+				parseTarget(ship), ship.QueueAttack, ship.HP, ship.UseEquip, ship.Power, true, true, ship.Body.Speed).Scan(&id)
 			if err != nil {
 				log.Fatal("add new ship to squad " + err.Error())
 			}

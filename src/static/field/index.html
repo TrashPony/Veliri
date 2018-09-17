@@ -60,7 +60,6 @@
     <script src="js/Unit/Attack.js"></script>
     <script src="js/Unit/Move.js"></script>
     <script src="js/Unit/RotateUnit.js"></script>
-    <script src="js/Unit/PlaceUnit.js"></script>
     <script src="js/Unit/Create.js"></script>
     <script src="js/Unit/getUnit.js"></script>
     <script src="js/Unit/addToGameUnit.js"></script>
@@ -85,8 +84,9 @@
     <script src="js/Map/SelectZone/UnitSelect.js"></script>
     <script src="js/Map/SelectZone/EquipSelect.js"></script>
     <script src="js/Map/SelectZone/MarkZoneEffect.js"></script>
+    <script src="js/Map/SelectZone/PreviewPath.js"></script>
 
-    <script src="js/utils/BresenhamCircle.js"></script>
+    <script src="js/utils/hexRadius.js"></script>
 
     <script src="../assets/components/chat/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
@@ -151,7 +151,7 @@
 
         <table class="table" width="160">
             <tr align="center">
-                <td> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Готов!"> </td>
+                <td> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Завершить ход"> </td>
             </tr>
         </table>
 
@@ -161,6 +161,9 @@
             </tr>
         </table>
 
+        <div id="BoxUnitSubMenu">
+
+        </div>
     </div>
 </div>
 

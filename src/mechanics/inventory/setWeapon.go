@@ -1,10 +1,10 @@
 package inventory
 
 import (
-	"../player"
 	"../db/get"
 	"../db/updateSquad"
 	"../gameObjects/detail"
+	"../player"
 	"errors"
 )
 

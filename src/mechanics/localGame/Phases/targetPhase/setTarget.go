@@ -1,17 +1,20 @@
 package targetPhase
 
 import (
+	"../../../db/updateSquad"
+	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
-	"../../../db/updateSquad"
 	"math"
 )
 
-func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetX, targetY int, client *player.Player) {
+func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetQ, targetR int, client *player.Player) {
 
-	target, _ := game.Map.GetCoordinate(targetX, targetY)
-	rotate := rotateUnit(gameUnit, targetX, targetY)
+	target, _ := game.Map.GetCoordinate(targetQ, targetR)
+	unitCoordinate, _ := game.Map.GetCoordinate(gameUnit.Q, gameUnit.R)
+
+	rotate := rotateUnit(unitCoordinate, target)
 
 	gameUnit.Target = target
 	gameUnit.Rotate = rotate
@@ -19,11 +22,19 @@ func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetX, targetY int, 
 	updateSquad.Squad(client.GetSquad())
 }
 
-func rotateUnit(gameUnit *unit.Unit, targetX, targetY int)  int{
-	rotate := math.Atan2(float64(targetY - gameUnit.Y), float64(targetX - gameUnit.X))
+func rotateUnit(unitCoordinate, target *coordinate.Coordinate) int {
 
-	rotate = rotate * 180/math.Pi
+	//http://zvold.blogspot.com/2010/01/bresenhams-line-drawing-algorithm-on_26.html
 
+	var rotate float64
+
+	if (target.R-unitCoordinate.R)%2 != 0 {
+		rotate = math.Atan2(float64(target.R-unitCoordinate.R), (float64(target.Q)+0.5)-float64(unitCoordinate.Q))
+	} else {
+		rotate = math.Atan2(float64(target.R-unitCoordinate.R), float64(target.Q-unitCoordinate.Q))
+	}
+
+	rotate = rotate * 180 / math.Pi
 	if rotate < 0 {
 		rotate = 360 + rotate
 	}

@@ -2,26 +2,26 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
     let moveCoordinate = JSON.parse(jsonMessage).move;
 
-    let unitX = JSON.parse(jsonMessage).unit.x;
-    let unitY = JSON.parse(jsonMessage).unit.y;
-    let unitID = JSON.parse(jsonMessage).unit.id;
+    let unit = JSON.parse(jsonMessage).unit;
 
     game.SelectLineLayer.visible = true;
 
-    for (let x in moveCoordinate) {
-        if (moveCoordinate.hasOwnProperty(x)) {
-            for (let y in moveCoordinate[x]) {
-                if (moveCoordinate[x].hasOwnProperty(y)) {
+    for (let q in moveCoordinate) {
+        if (moveCoordinate.hasOwnProperty(q)) {
+            for (let r in moveCoordinate[q]) {
+                if (moveCoordinate[q].hasOwnProperty(r)) {
 
-                    let cellSprite = game.map.OneLayerMap[moveCoordinate[x][y].x][moveCoordinate[x][y].y].sprite;
-                    let selectSprite = MarkZone(cellSprite, moveCoordinate, x, y, 'Move', true, game.SelectLineLayer, "move");
+                    let cellSprite = game.map.OneLayerMap[q][r].sprite;
 
-                    selectSprite.MoveX = moveCoordinate[x][y].x;
-                    selectSprite.MoveY = moveCoordinate[x][y].y;
+                    let selectSprite = MarkZone(cellSprite, moveCoordinate, q, r, 'Move', true, game.SelectLineLayer, "move", game.SelectLayer);
 
-                    selectSprite.unitX = unitX;
-                    selectSprite.unitY = unitY;
-                    selectSprite.UnitID = unitID;
+                    selectSprite.MoveQ = q;
+                    selectSprite.MoveR = r;
+
+                    selectSprite.unitQ = unit.q;
+                    selectSprite.unitR = unit.r;
+                    selectSprite.UnitID = unit.id;
+                    selectSprite.UnitMS = unit.body.mother_ship;
 
                     selectSprite.inputEnabled = true;
                     selectSprite.events.onInputDown.add(SelectMoveCoordinate, selectSprite);
@@ -42,10 +42,10 @@ function SelectMoveCoordinate(selectSprite) {
         field.send(JSON.stringify({
             event: "MoveUnit",
             unit_id: Number(selectSprite.UnitID),
-            x: Number(selectSprite.unitX),
-            y: Number(selectSprite.unitY),
-            to_x: Number(selectSprite.MoveX),
-            to_y: Number(selectSprite.MoveY)
+            q: Number(selectSprite.unitQ),
+            r: Number(selectSprite.unitR),
+            to_q: Number(selectSprite.MoveQ),
+            to_r: Number(selectSprite.MoveR)
         }));
 
         RemoveSelect()
