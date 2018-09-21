@@ -43,7 +43,7 @@ func recoveryPower(gameUnit *unit.Unit)  {
 
 func recoveryEquips(gameUnit *unit.Unit) {
 	recoveryEquip(gameUnit.Body.EquippingI)
-	recoveryEquip(gameUnit.Body.EquippingII)
+	recoveryEquip(gameUnit.Body.EquippingII) 
 	recoveryEquip(gameUnit.Body.EquippingIII)
 	recoveryEquip(gameUnit.Body.EquippingIV)
 	recoveryEquip(gameUnit.Body.EquippingV)
