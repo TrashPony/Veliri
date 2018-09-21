@@ -5,7 +5,7 @@ CREATE TABLE body_type (
   speed                      INT,
   initiative                 INT,
   max_hp                     INT,
-  armor                      INT,
+  armor                      INT, /* блокируемый урон в абсолюте */
   evasion_critical           INT,
   vulnerability_to_kinetics  INT,
   vulnerability_to_thermo    INT,

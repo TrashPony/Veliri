@@ -1,35 +1,39 @@
 package attackPhase
 
 import (
-	"../../../../mechanics/db/updateSquad"
-	"../../../../mechanics/gameObjects/unit"
+	"../../../db/updateSquad"
+	"../../../gameObjects/unit"
 	"../../../localGame"
 	"sort"
 )
 
-func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
+func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEquip []*ResultEquip) {
 
 	sortUnits := createQueueAttack(game.GetUnits())
+	// отыгрываем бой
 	resultBattle = attack(sortUnits, game)
-	// todo отыгрыш эквипа
-	// todo влияние бафов
-	// todo востановление power
-	// todo ломание эквипа при попадание в юнита
+	// отыгрываем снаряжение и эфекты наложеные на юнитов
+	resultEquip = wageringEquip(sortUnits)
+	// востаналиываем энерги, даем актив поинты и снимаем флаги использованого снаряжения
+	recovery(game)
 
 	for _, player := range game.GetPlayers() {
-		updateSquad.Squad(player.GetSquad())
+		updateSquad.Squad(player.GetSquad()) // вносим все изменениея в базу данных
 	}
 
 	return
 }
 
 type ResultBattle struct {
-	Map         bool        `json:"map"`
 	AttackUnit  unit.Unit   `json:"attack_unit"`
-	TargetUnit  unit.Unit   `json:"target_unit"`
-	TargetsUnit []unit.Unit `json:"targets_unit"`
+	TargetUnits []unit.Unit `json:"targets_units"`
 	Error       string      `json:"error"`
 }
+
+type ResultEquip struct {
+
+}
+
 
 func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*ResultBattle) {
 	resultBattle = make([]*ResultBattle, 0)
@@ -46,9 +50,6 @@ func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*Resul
 				}
 			}
 		}
-
-		gameUnit.Target = nil
-		gameUnit.QueueAttack = 0
 	}
 
 	return

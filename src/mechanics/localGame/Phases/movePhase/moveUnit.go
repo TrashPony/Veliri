@@ -81,7 +81,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	if deleteUnit {
 		game.DelUnit(gameUnit) // Удаляем юнита со старых позиций
-		client.DelUnit(gameUnit.Q, gameUnit.R)
+		client.DelUnit(gameUnit, false)
 	}
 
 	rotate := findDirection(pathNode, gameUnit)

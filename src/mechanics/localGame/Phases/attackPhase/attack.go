@@ -1,13 +1,12 @@
 package attackPhase
 
 import (
-	"../../../../mechanics/gameObjects/coordinate"
-	"../../../../mechanics/gameObjects/unit"
+	"../../../gameObjects/coordinate"
+	"../../../gameObjects/unit"
+	"../../../gameObjects/detail"
 	"../../../localGame"
 	"math/rand"
 )
-
-// TODO влияние защиты, хащитный бафов
 
 func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
 
@@ -15,30 +14,10 @@ func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *local
 
 		attacking.Body.Weapons[0].AmmoQuantity -= 1
 
-		if attacking.Body.Weapons[0].Ammo.AreaCovers == 0 {
-			return TargetAttack(attacking, target, game) // тоесть у пухи радиус атаки 0
-		} else {
-			return MapAttack(attacking, target, game) // тоесть у пухи радиус атаки больше 0ля и оружие бьет по площади
-		}
-
+		return MapAttack(attacking, target, game)
+		
 	} else {
 		return &ResultBattle{Error: "no ammo"}
-	}
-}
-
-func TargetAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
-
-	targetUnit, findUnit := game.GetUnit(target.Q, target.R)
-
-	if findUnit {
-
-		maxDamage := attacking.Body.Weapons[0].Ammo.MaxDamage
-		minDamage := attacking.Body.Weapons[0].Ammo.MinDamage
-		targetUnit.HP -= rand.Intn(maxDamage-minDamage) + minDamage
-
-		return &ResultBattle{Map: false, AttackUnit: *attacking, TargetUnit: *targetUnit}
-	} else {
-		return &ResultBattle{Map: false, AttackUnit: *attacking, TargetUnit: nil}
 	}
 }
 
@@ -50,13 +29,65 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 		targetUnit, find := game.GetUnit(attackCoordinate.Q, attackCoordinate.R)
 		if find {
 
-			maxDamage := attacking.Body.Weapons[0].Ammo.MaxDamage
-			minDamage := attacking.Body.Weapons[0].Ammo.MinDamage
-			targetUnit.HP -= rand.Intn(maxDamage-minDamage) + minDamage
+			damage := calculateDamage(targetUnit, attacking.Body.Weapons[0].Ammo.MaxDamage, attacking.Body.Weapons[0].Ammo.MinDamage)
+
+			targetUnit.HP -= damage
+
+			breakingEquip(targetUnit, damage)
 
 			targetsUnit = append(targetsUnit, *targetUnit)
 		}
 	}
 
-	return &ResultBattle{Map: true, AttackUnit: *attacking, TargetsUnit: targetsUnit}
+	return &ResultBattle{AttackUnit: *attacking, TargetUnits: targetsUnit}
+}
+
+func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
+	damage := rand.Intn(maxDamage-minDamage) + minDamage
+
+	armor := targetUnit.Body.Armor
+
+	for _, effect := range targetUnit.Effects {
+		if effect.Parameter == "armor" {
+			if effect.Type == "enhances" {
+				if effect.Percentages {
+					armor += armor/100 * effect.Quantity
+				} else {
+					armor += effect.Quantity
+				}
+			}
+			if effect.Type == "reduced" {
+				if effect.Percentages {
+					armor -= armor/100 * effect.Quantity
+				} else {
+					armor -= effect.Quantity
+				}
+			}
+		}
+	}
+
+	damage -= armor
+
+	if damage < 0 {
+		damage = 0
+	}
+
+	return damage
+}
+
+func breakingEquip(targetUnit *unit.Unit, damage int)  {
+	breaking(targetUnit.Body.EquippingI,damage)
+	breaking(targetUnit.Body.EquippingII,damage)
+	breaking(targetUnit.Body.EquippingIII,damage)
+	breaking(targetUnit.Body.EquippingIV,damage)
+	breaking(targetUnit.Body.EquippingV,damage)
+
+}
+
+func breaking(equip map[int]*detail.BodyEquipSlot, damage int)  {
+	for _, equipSlot := range equip {
+		if equipSlot.Equip != nil {
+			equipSlot.HP -= damage/10 // todo условный дамаг в 10%, в итоге должен зависеть от скила игрока
+		}
+	}
 }

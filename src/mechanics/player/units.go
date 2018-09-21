@@ -46,8 +46,18 @@ func (client *Player) GetUnit(q, r int) (gameUnit *unit.Unit, find bool) {
 	return
 }
 
-func (client *Player) DelUnit(q, r int) {
-	delete(client.units[strconv.Itoa(q)], strconv.Itoa(r))
+func (client *Player) DelUnit(gameUnit *unit.Unit, delSquad bool) {
+	delete(client.units[strconv.Itoa(gameUnit.Q)], strconv.Itoa(gameUnit.R))
+
+	if delSquad {
+		for _, slot := range client.squad.MatherShip.Units {
+			if slot.Unit != nil {
+				if slot.Unit.Q == gameUnit.Q && slot.Unit.R == gameUnit.R && slot.Unit.ID == gameUnit.ID {
+					slot.Unit = nil
+				}
+			}
+		}
+	}
 }
 
 func (client *Player) GetHostileUnits() (units map[string]map[string]*unit.Unit) {
