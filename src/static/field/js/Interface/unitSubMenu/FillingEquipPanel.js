@@ -49,7 +49,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingIII[i].used && !unit.use_equip && !(unit.power < unit.body.equippingIII[i].equip.use_power)) {
+            if (!unit.body.equippingIII[i].used && !(unit.power < unit.body.equippingIII[i].equip.use_power)) {
                 equipping.className = "equipSlotIII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -66,9 +66,7 @@ function FillingEquipPanel(equipPanel, unit) {
                     TipEquipOn(unit.body.equippingIII[i].equip);
                 };
             } else {
-                if(unit.use_equip) {
-                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит уже использовао снаряжение на этом ходу"); };
-                } else if (unit.body.equippingIII[i].used) {
+                if (unit.body.equippingIII[i].used) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
                 } else if (unit.power < unit.body.equippingIII[i].equip.use_power) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };
@@ -94,7 +92,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingII[i].used && !unit.use_equip && !(unit.power < unit.body.equippingII[i].equip.use_power)) {
+            if (!unit.body.equippingII[i].used && !(unit.power < unit.body.equippingII[i].equip.use_power)) {
                 equipping.className = "equipSlotII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -110,9 +108,7 @@ function FillingEquipPanel(equipPanel, unit) {
                     TipEquipOn(unit.body.equippingII[i].equip);
                 };
             } else {
-                if(unit.use_equip) {
-                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит уже использовао снаряжение на этом ходу"); };
-                } else if (unit.body.equippingII[i].used) {
+                if (unit.body.equippingII[i].used) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
                 } else if (unit.power < unit.body.equippingII[i].equip.use_power) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };

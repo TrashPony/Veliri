@@ -9,7 +9,7 @@ function UpdateUnit(jsonMessage) {
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;
     unit.effects = unitStat.effects;
-    unit.action = unitStat.action;
+    unit.defend = unitStat.defend;
 
     // todo
 }

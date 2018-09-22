@@ -22,17 +22,18 @@ CREATE TABLE squad_units (
   on_map              BOOLEAN,
 
   /* Игровая статистика */
-  action              BOOLEAN,
-  use_equip           BOOLEAN,
   target              VARCHAR(64),
   queue_attack        INT,
+  defend              BOOLEAN, /* означат что пользователь защищается юнитов в фазе атаки */
+  mother_ship         BOOLEAN, /* является ли этот юнит мазршипом */
 
   /* Характиристики */
   hp                  INT,
   power               INT,
   action_point        INT,    /* очки передвижения юнита */
-  mother_ship         BOOLEAN /* является ли этот юнит мазршипом */
 );
+
+/* todo продублировать характиристики тела для пасивных модулей */
 
 CREATE TABLE squad_units_equipping ( /* таблица снаряжения которое нацеплино на юнита */
   id               SERIAL PRIMARY KEY,

@@ -21,7 +21,6 @@ function CreatePathToUnit(jsonMessage) {
             unit = CreateUnit(unitStat, false)         // создаем юнита
         }
 
-        unit.action = unitStat.action;
         unit.action_points = unitStat.action_points;
 
         if (unit !== null && path) {

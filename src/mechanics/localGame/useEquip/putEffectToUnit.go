@@ -11,12 +11,11 @@ import (
 
 func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
 
-	if !useUnit.UseEquip && !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
+	if !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
 
 		useUnit.Power -= useEquipSlot.Equip.UsePower
 		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload
 
-		useUnit.UseEquip = true
 		useEquipSlot.Used = true
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту

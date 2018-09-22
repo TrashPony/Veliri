@@ -60,7 +60,6 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	}
 
 	if gameUnit.ActionPoints == 0 {
-		gameUnit.Action = true
 		queue := Queue(game)
 		gameUnit.QueueAttack = queue
 	}

@@ -49,11 +49,4 @@ func changeGamePhase(actionGame *localGame.Game) {
 		user.SetReady(false)
 		update.Player(user)
 	}
-
-	for _, xLine := range actionGame.GetUnits() {
-		for _, unit := range xLine {
-			unit.Action = false
-			unit.Target = nil
-		}
-	}
 }

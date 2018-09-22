@@ -26,7 +26,7 @@ func SelectEquip(msg Message, ws *websocket.Conn) {
 	}
 
 	if findClient && findUnit && findGame && ok && equipSlot.Equip != nil {
-		if !client.GetReady() && !gameUnit.UseEquip {
+		if !client.GetReady() {
 			if equipSlot.Equip.Applicable == "map" {
 				ws.WriteJSON(EquipMapCoordinate{Event: "GetEquipMapTargets", Unit: gameUnit,
 					EquipSlot: equipSlot, Targets: targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame)})

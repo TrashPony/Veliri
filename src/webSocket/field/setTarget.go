@@ -13,7 +13,7 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Action {
+	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Defend {
 
 		targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame)
 		_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]

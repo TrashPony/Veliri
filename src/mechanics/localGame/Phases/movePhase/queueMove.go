@@ -9,7 +9,7 @@ func Queue(game *localGame.Game) int {
 
 	for _, xLine := range game.GetUnits() {
 		for _, gameUnit := range xLine {
-			if gameUnit.Action {
+			if gameUnit.ActionPoints == 0 {
 				if gameUnit.QueueAttack > queue {
 					queue = gameUnit.QueueAttack
 				}

@@ -8,7 +8,7 @@ import (
 )
 
 func SkipMove(gameUnit *unit.Unit, game *localGame.Game, client *player.Player) {
-	gameUnit.Action = true
+	gameUnit.ActionPoints = 0
 
 	queue := Queue(game)
 	gameUnit.QueueAttack = queue

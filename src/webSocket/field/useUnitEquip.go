@@ -29,7 +29,7 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 	}
 
 	if findClient && findUnit && findGame && ok && equipSlot.Equip != nil {
-		if !client.GetReady() && !gameUnit.UseEquip && !equipSlot.Used {
+		if !client.GetReady() && !equipSlot.Used {
 
 			var targetUnits []*unit.Unit
 

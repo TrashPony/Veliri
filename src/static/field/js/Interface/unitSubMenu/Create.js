@@ -17,7 +17,7 @@ function CreateUnitSubMenu(unit) {
         equipPanel.id = "EquipPanel";
         unitSubMenu.appendChild(equipPanel);
 
-        if (!(unit.action && unit.use_equip) && game.user.name === unit.owner) {
+        if (game.user.name === unit.owner) {
 
             FillingEquipPanel(equipPanel, unit);
 
@@ -25,7 +25,7 @@ function CreateUnitSubMenu(unit) {
                 ActionButton(equipPanel, unit, "SkipMoveUnit", "Пропустить ход");
             }
 
-            if (game.Phase === "targeting") {
+            if (game.Phase === "targeting" && !unit.defend) {
                 ActionButton(equipPanel, unit, "Defend", "Защита");
             }
         } else {

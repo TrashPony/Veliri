@@ -31,10 +31,6 @@ function ReadResponse(jsonMessage) {
         UpdateWatchZone(watch);
     }
 
-    if (event === "PlaceUnit") {
-        PlaceUnit(jsonMessage);
-    }
-
     if (event === "Ready") {
         ReadyUser(jsonMessage);
     }
