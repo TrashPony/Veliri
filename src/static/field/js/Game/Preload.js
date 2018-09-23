@@ -56,4 +56,8 @@ function preload() {
     game.load.image('healBar', 'http://' + window.location.host + '/assets/bar/healBar.png');
     game.load.image('heal', 'http://' + window.location.host + '/assets/bar/heal.png');
 
+    //muzzle fire Effects
+    game.load.spritesheet('fireMuzzle_1', 'http://' + window.location.host + '/assets/fire_effects/fireMuzzle_1.png', 50, 50, 3);
+    game.load.spritesheet('fireMuzzle_2', 'http://' + window.location.host + '/assets/fire_effects/fireMuzzle_2.png', 50, 50, 3);
+
 }

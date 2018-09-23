@@ -37,13 +37,10 @@ func recovery(game *localGame.Game) {
 }
 
 func recoveryPower(gameUnit *unit.Unit) {
-	power := gameUnit.Body.RecoveryPower - (gameUnit.Body.GetUsePower() / 4)
-	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
-	// TODO штраф так же должен зависеть от скила пользвотеля
-	if gameUnit.Power+power > gameUnit.Body.MaxPower {
+	if gameUnit.Power+gameUnit.RecoveryPower > gameUnit.Body.MaxPower {
 		gameUnit.Power = gameUnit.Body.MaxPower
 	} else {
-		gameUnit.Power += power
+		gameUnit.Power += gameUnit.RecoveryPower
 	}
 }
 

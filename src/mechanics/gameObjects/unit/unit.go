@@ -27,6 +27,21 @@ type Unit struct {
 	Power        int `json:"power"`
 	ActionPoints int `json:"action_points"`
 
+	Speed           int  `json:"speed"`
+	Initiative      int  `json:"initiative"`
+	MaxHP           int  `json:"max_hp"`
+	Armor           int  `json:"armor"`
+	EvasionCritical int  `json:"evasion_critical"`
+	VulToKinetics   int  `json:"vul_to_kinetics"`
+	VulToThermo     int  `json:"vul_to_thermo"`
+	VulToEM         int  `json:"vul_to_em"`
+	VulToExplosion  int  `json:"vul_to_explosion"`
+	RangeView       int  `json:"range_view"`
+	Accuracy        int  `json:"accuracy"`
+	MaxPower        int  `json:"max_power"`
+	RecoveryPower   int  `json:"recovery_power"`
+	WallHack        bool `json:"wall_hack"`
+
 	Effects []*effect.Effect `json:"effects"`
 	MS      bool             `json:"ms"`
 	Units   map[int]*Slot    `json:"units"` // в роли ключей карты выступают
@@ -115,4 +130,33 @@ func (unit *Unit) SetOnMap(bool bool) {
 
 func (unit *Unit) GetWallHack() bool {
 	return unit.Body.WallHack
+}
+
+func (unit *Unit) CalculateParams() {
+	// начальные параметры тела
+	unit.Speed = unit.Body.Speed
+	unit.Initiative = unit.Body.Initiative
+	unit.MaxHP = unit.Body.MaxHP
+	unit.Armor = unit.Body.Armor
+	unit.EvasionCritical = unit.Body.EvasionCritical
+	unit.VulToKinetics = unit.Body.VulToKinetics
+	unit.VulToThermo = unit.Body.VulToThermo
+	unit.VulToEM = unit.Body.VulToEM
+	unit.VulToExplosion = unit.Body.VulToExplosion
+	unit.RangeView = unit.Body.RangeView
+	unit.Accuracy = unit.Body.Accuracy
+	unit.MaxPower = unit.Body.MaxPower
+	unit.RecoveryPower = unit.Body.RecoveryPower
+	unit.WallHack = unit.Body.WallHack
+
+	// смотрим пасивное обородование
+	// todo
+
+	// смотрим эффекты которые весят на юните
+	// todo
+
+	// высчитывает повер рековери
+	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
+	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
+	// TODO штраф так же должен зависеть от скила пользвотеля
 }

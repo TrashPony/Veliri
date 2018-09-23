@@ -55,7 +55,19 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 func SquadMatherShip(squadID int) (ship *unit.Unit) {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"Select id, id_body, hp, q, r, rotate, target, queue_attack, power, mother_ship, action_point, on_map, defend "+
+		"SELECT "+
+			"id, "+
+			"id_body, "+
+			"hp, "+
+			"q, "+
+			"r, "+
+			"rotate, "+
+			"target, "+
+			"queue_attack, "+
+			"power, mother_ship, "+
+			"action_point, "+
+			"on_map, "+
+			"defend "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
 	if err != nil {
@@ -70,8 +82,21 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 	for rows.Next() {
 		var idBody sql.NullInt64
 
-		err = rows.Scan(&ship.ID, &idBody, &ship.HP, &ship.Q, &ship.R, &ship.Rotate, &target,
-			&ship.QueueAttack, &ship.Power, &ship.MS, &ship.ActionPoints, &ship.OnMap, &ship.Defend)
+		err = rows.Scan(
+			&ship.ID,
+			&idBody,
+			&ship.HP,
+			&ship.Q,
+			&ship.R,
+			&ship.Rotate,
+			&target,
+			&ship.QueueAttack,
+			&ship.Power,
+			&ship.MS,
+			&ship.ActionPoints,
+			&ship.OnMap,
+			&ship.Defend,
+		)
 
 		if err != nil {
 			log.Fatal("scan get ship squad " + err.Error())
@@ -82,6 +107,9 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 		if idBody.Valid {
 			ship.Body = Body(int(idBody.Int64))
 			BodyEquip(ship)
+
+			ship.CalculateParams()
+
 		} else {
 			ship.Body = nil
 		}
@@ -93,8 +121,20 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 func SquadUnits(squadID int, slot int) *unit.Unit {
 
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT id, id_body, hp, q, r, rotate, target, queue_attack, on_map, "+
-			"power, mother_ship, action_point, defend "+
+		"SELECT "+
+			"id, "+
+			"id_body, "+
+			"hp, "+
+			"q, "+
+			"r, "+
+			"rotate, "+
+			"target, "+
+			"queue_attack, "+
+			"on_map, "+
+			"power, "+
+			"mother_ship, "+
+			"action_point, "+
+			"defend "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
 	if err != nil {
@@ -107,9 +147,21 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	var target string
 
 	for rows.Next() {
-		err = rows.Scan(&squadUnit.ID, &idBody, &squadUnit.HP, &squadUnit.Q, &squadUnit.R, &squadUnit.Rotate,
-			&target, &squadUnit.QueueAttack, &squadUnit.OnMap, &squadUnit.Power,
-			&squadUnit.MS, &squadUnit.ActionPoints, &squadUnit.Defend)
+		err = rows.Scan(
+			&squadUnit.ID,
+			&idBody,
+			&squadUnit.HP,
+			&squadUnit.Q,
+			&squadUnit.R,
+			&squadUnit.Rotate,
+			&target,
+			&squadUnit.QueueAttack,
+			&squadUnit.OnMap,
+			&squadUnit.Power,
+			&squadUnit.MS,
+			&squadUnit.ActionPoints,
+			&squadUnit.Defend,
+		)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())
 		}
@@ -118,6 +170,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	squadUnit.Body = Body(idBody)
 	BodyEquip(&squadUnit)
 	squadUnit.Target = ParseTarget(target)
+
+	squadUnit.CalculateParams()
 
 	if squadUnit.ID != 0 {
 		return &squadUnit
