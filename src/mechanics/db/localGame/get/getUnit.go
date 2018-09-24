@@ -28,6 +28,8 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 					unitStorage = append(unitStorage, playerUnit.Unit)
 					gamePlayer.AddUnitStorage(playerUnit.Unit)
 				}
+
+				playerUnit.Unit.CalculateParams()
 			}
 		}
 	}

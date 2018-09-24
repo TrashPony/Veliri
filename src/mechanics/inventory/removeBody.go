@@ -20,6 +20,8 @@ func RemoveMSBody(user *player.Player) {
 			user.GetSquad().MatherShip.HP = 0 // обнулям статы т.к. юез тела их не может быть
 			user.GetSquad().MatherShip.Power = 0
 		}
+
+		user.GetSquad().MatherShip.CalculateParams()
 	}
 
 	updateSquad.Squad(user.GetSquad())

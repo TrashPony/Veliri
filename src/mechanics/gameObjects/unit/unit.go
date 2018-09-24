@@ -40,6 +40,7 @@ type Unit struct {
 	Accuracy        int  `json:"accuracy"`
 	MaxPower        int  `json:"max_power"`
 	RecoveryPower   int  `json:"recovery_power"`
+	RecoveryHP      int  `json:"recovery_HP"`
 	WallHack        bool `json:"wall_hack"`
 
 	Effects []*effect.Effect `json:"effects"`
@@ -113,7 +114,7 @@ func (unit *Unit) GetY() int {
 }
 
 func (unit *Unit) GetWatchZone() int {
-	return unit.Body.RangeView
+	return unit.RangeView
 }
 
 func (unit *Unit) GetOwnerUser() string {
@@ -129,7 +130,7 @@ func (unit *Unit) SetOnMap(bool bool) {
 }
 
 func (unit *Unit) GetWallHack() bool {
-	return unit.Body.WallHack
+	return unit.WallHack
 }
 
 func (unit *Unit) CalculateParams() {
@@ -147,13 +148,34 @@ func (unit *Unit) CalculateParams() {
 	unit.Accuracy = unit.Body.Accuracy
 	unit.MaxPower = unit.Body.MaxPower
 	unit.RecoveryPower = unit.Body.RecoveryPower
+	unit.RecoveryHP = unit.Body.RecoveryHP
 	unit.WallHack = unit.Body.WallHack
 
 	// смотрим пасивное обородование
-	// todo
+	var checkPassiveEquip = func(equip map[int]*detail.BodyEquipSlot, gameUnit *Unit) {
+		for _, slot := range equip {
+			if slot.Equip != nil && !slot.Equip.Active {
+				for _, equipEffect := range slot.Equip.Effects {
+					if equipEffect.Type == "enhances" || equipEffect.Type == "reduced" {
+						// todo
+					}
+				}
+			}
+		}
+	}
 
-	// смотрим эффекты которые весят на юните
-	// todo
+	checkPassiveEquip(unit.Body.EquippingI, unit)
+	checkPassiveEquip(unit.Body.EquippingII, unit)
+	checkPassiveEquip(unit.Body.EquippingIII, unit)
+	checkPassiveEquip(unit.Body.EquippingIV, unit)
+	checkPassiveEquip(unit.Body.EquippingV, unit)
+
+	// смотрим наложеные в игре эфекты
+	for _, unitEffect := range unit.Effects {
+		if unitEffect.Type == "enhances" || unitEffect.Type == "reduced" {
+			// todo
+		}
+	}
 
 	// высчитывает повер рековери
 	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)

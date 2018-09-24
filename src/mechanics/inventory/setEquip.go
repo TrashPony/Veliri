@@ -26,6 +26,8 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 					(equipSlot.Equip == nil && msBody.MaxPower-msBody.GetUsePower() >= newEquip.Power) {
 
 					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+
+					user.GetSquad().MatherShip.CalculateParams()
 				} else {
 					return errors.New("lacking power")
 				}
@@ -52,6 +54,8 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
 
 						SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+
+						unitSlot.Unit.CalculateParams()
 					} else {
 						return errors.New("lacking power")
 					}

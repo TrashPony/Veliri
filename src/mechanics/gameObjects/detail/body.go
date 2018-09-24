@@ -22,6 +22,7 @@ type Body struct {
 	Accuracy        int    `json:"accuracy"`
 	MaxPower        int    `json:"max_power"`
 	RecoveryPower   int    `json:"recovery_power"`
+	RecoveryHP      int    `json:"recovery_hp"`
 	WallHack        bool   `json:"wall_hack"`
 
 	EquippingI   map[int]*BodyEquipSlot `json:"equippingI"`

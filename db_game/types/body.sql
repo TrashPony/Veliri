@@ -15,6 +15,7 @@ CREATE TABLE body_type (
   accuracy                   INT,
   max_power                  INT, /* макс колво энергии */
   recovery_power             INT, /* востановление энергии за ход */
+  recovery_hp                INT, /* востановление hp например за счет дронов */
   wall_hack                  BOOLEAN
 );
 

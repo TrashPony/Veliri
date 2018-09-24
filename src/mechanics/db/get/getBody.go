@@ -9,9 +9,25 @@ import (
 
 func Body(id int) (body *detail.Body) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mother_ship, speed, initiative, max_hp, armor, evasion_critical, "+
-		"vulnerability_to_kinetics, vulnerability_to_thermo, vulnerability_to_em, vulnerability_to_explosion, range_view, accuracy, max_power, recovery_power, "+
-		"wall_hack "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT "+
+		"id, "+
+		"name, "+
+		"mother_ship, "+
+		"speed, "+
+		"initiative, "+
+		"max_hp, "+
+		"armor, "+
+		"evasion_critical, "+
+		"vulnerability_to_kinetics, "+
+		"vulnerability_to_thermo, "+
+		"vulnerability_to_em, "+
+		"vulnerability_to_explosion, "+
+		"range_view, "+
+		"accuracy, "+
+		"max_power, "+
+		"recovery_power, "+
+		"wall_hack, "+
+		"recovery_hp "+
 		"FROM body_type "+
 		"WHERE id=$1", id)
 	if err != nil {
@@ -22,9 +38,26 @@ func Body(id int) (body *detail.Body) {
 	body = &detail.Body{}
 
 	for rows.Next() {
-		err = rows.Scan(&body.ID, &body.Name, &body.MotherShip, &body.Speed, &body.Initiative, &body.MaxHP, &body.Armor, &body.EvasionCritical,
-			&body.VulToKinetics, &body.VulToThermo, &body.VulToEM, &body.VulToExplosion, &body.RangeView, &body.Accuracy, &body.MaxPower, &body.RecoveryPower,
-			&body.WallHack)
+		err = rows.Scan(
+			&body.ID,
+			&body.Name,
+			&body.MotherShip,
+			&body.Speed,
+			&body.Initiative,
+			&body.MaxHP,
+			&body.Armor,
+			&body.EvasionCritical,
+			&body.VulToKinetics,
+			&body.VulToThermo,
+			&body.VulToEM,
+			&body.VulToExplosion,
+			&body.RangeView,
+			&body.Accuracy,
+			&body.MaxPower,
+			&body.RecoveryPower,
+			&body.WallHack,
+			&body.RecoveryHP,
+		)
 		if err != nil {
 			log.Fatal("get body: " + err.Error())
 		}
@@ -44,7 +77,7 @@ func BodySlots(body *detail.Body) {
 	}
 	defer rows.Close()
 
-	body.EquippingI = make(map[int]*detail.BodyEquipSlot) // todo чето как то пиздец
+	body.EquippingI = make(map[int]*detail.BodyEquipSlot) // чето как то пиздец
 	body.EquippingII = make(map[int]*detail.BodyEquipSlot)
 	body.EquippingIII = make(map[int]*detail.BodyEquipSlot)
 	body.EquippingIV = make(map[int]*detail.BodyEquipSlot)

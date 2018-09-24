@@ -38,6 +38,8 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 			user.GetSquad().MatherShip.Units[slot.Number] = &unitSlot
 		}
 
+		user.GetSquad().MatherShip.CalculateParams()
+
 		updateSquad.Squad(user.GetSquad())
 	}
 }
@@ -65,6 +67,9 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
 			unitSlot.Unit.Body = newBody
 		}
+
+		unitSlot.Unit.CalculateParams()
+
 		updateSquad.Squad(user.GetSquad())
 	}
 }
