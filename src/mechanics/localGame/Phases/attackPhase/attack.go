@@ -15,7 +15,7 @@ func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *local
 		attacking.Body.Weapons[0].AmmoQuantity -= 1
 
 		return MapAttack(attacking, target, game)
-		
+
 	} else {
 		return &ResultBattle{Error: "no ammo"}
 	}
@@ -23,7 +23,7 @@ func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *local
 
 func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
 	attackZone := coordinate.GetCoordinatesRadius(target, attacking.Body.Weapons[0].Ammo.AreaCovers)
-	targetsUnit := make([]unit.Unit, 0)
+	targetsUnit := make([]TargetUnit, 0)
 
 	for _, attackCoordinate := range attackZone {
 		targetUnit, find := game.GetUnit(attackCoordinate.Q, attackCoordinate.R)
@@ -33,9 +33,9 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 
 			targetUnit.HP -= damage
 
-			breakingEquip(targetUnit, damage)
+			broken := breakingEquip(targetUnit, damage)
 
-			targetsUnit = append(targetsUnit, *targetUnit)
+			targetsUnit = append(targetsUnit, TargetUnit{Unit: *targetUnit, Damage: damage, BreakingEquip: broken})
 		}
 	}
 
@@ -51,14 +51,14 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 		if effect.Parameter == "armor" {
 			if effect.Type == "enhances" {
 				if effect.Percentages {
-					armor += armor/100 * effect.Quantity
+					armor += armor / 100 * effect.Quantity
 				} else {
 					armor += effect.Quantity
 				}
 			}
 			if effect.Type == "reduced" {
 				if effect.Percentages {
-					armor -= armor/100 * effect.Quantity
+					armor -= armor / 100 * effect.Quantity
 				} else {
 					armor -= effect.Quantity
 				}
@@ -75,19 +75,19 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 	return damage
 }
 
-func breakingEquip(targetUnit *unit.Unit, damage int)  {
-	breaking(targetUnit.Body.EquippingI,damage)
-	breaking(targetUnit.Body.EquippingII,damage)
-	breaking(targetUnit.Body.EquippingIII,damage)
-	breaking(targetUnit.Body.EquippingIV,damage)
-	breaking(targetUnit.Body.EquippingV,damage)
+func breakingEquip(targetUnit *unit.Unit, damage int) bool {
 
+	return breaking(targetUnit.Body.EquippingI, damage) ||
+		breaking(targetUnit.Body.EquippingII, damage) ||
+		breaking(targetUnit.Body.EquippingIII, damage) ||
+		breaking(targetUnit.Body.EquippingIV, damage) ||
+		breaking(targetUnit.Body.EquippingV, damage)
 }
 
-func breaking(equip map[int]*detail.BodyEquipSlot, damage int)  {
+func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
 	for _, equipSlot := range equip {
 		if equipSlot.Equip != nil {
-			equipSlot.HP -= damage/10 // todo условный дамаг в 10%, в итоге должен зависеть от скила игрока
+			equipSlot.HP -= damage / 10 // todo условный дамаг в 10%, в итоге должен зависеть от скила игрока
 		}
 	}
 }

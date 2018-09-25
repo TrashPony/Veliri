@@ -4,6 +4,7 @@ import (
 	"../../../gameObjects/detail"
 	"../../../gameObjects/unit"
 	"../../../localGame"
+	"../../../db/localGame/update"
 )
 
 func recovery(game *localGame.Game) {
@@ -32,6 +33,8 @@ func recovery(game *localGame.Game) {
 
 			recoveryEquips(gameUnit)
 			recoveryPower(gameUnit)
+
+			update.UnitEffects(gameUnit)
 		}
 	}
 }

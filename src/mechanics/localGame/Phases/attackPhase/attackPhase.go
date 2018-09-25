@@ -25,15 +25,18 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEqui
 }
 
 type ResultBattle struct {
-	AttackUnit  unit.Unit   `json:"attack_unit"`
-	TargetUnits []unit.Unit `json:"targets_units"`
-	Error       string      `json:"error"`
+	AttackUnit  unit.Unit    `json:"attack_unit"`
+	TargetUnits []TargetUnit `json:"targets_units"`
+	Error       string       `json:"error"`
+}
+type TargetUnit struct {
+	Unit          unit.Unit `json:"unit"`
+	Damage        int       `json:"damage"`
+	BreakingEquip bool      `json:"breaking_equip"` // если сломался хотя бы 1 эквип говорить об этом клиенту
 }
 
 type ResultEquip struct {
-
 }
-
 
 func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*ResultBattle) {
 	resultBattle = make([]*ResultBattle, 0)
