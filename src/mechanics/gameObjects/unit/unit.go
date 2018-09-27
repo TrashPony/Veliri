@@ -91,8 +91,6 @@ func (unit *Unit) SetAmmo() {
 
 }
 
-// // // //
-
 func (unit *Unit) SetQ(q int) {
 	unit.Q = q
 }
@@ -152,13 +150,87 @@ func (unit *Unit) CalculateParams() {
 	unit.WallHack = unit.Body.WallHack
 
 	// смотрим пасивное обородование
+	var checkEffect = func(equipEffect *effect.Effect, parameter *int) {
+		if equipEffect.Type == "enhances" {
+			if equipEffect.Percentages {
+				*parameter += *parameter / 100 * equipEffect.Quantity
+			} else {
+				*parameter += equipEffect.Quantity
+			}
+		}
+
+		if equipEffect.Type == "reduced" {
+			if equipEffect.Percentages {
+				*parameter += *parameter / 100 * equipEffect.Quantity
+			} else {
+				*parameter += equipEffect.Quantity
+			}
+		}
+	}
+
+	var checkParams = func(equipEffect *effect.Effect) {
+		if equipEffect.Parameter == "speed" {
+			checkEffect(equipEffect, &unit.Speed)
+		}
+
+		if equipEffect.Parameter == "initiative" {
+			checkEffect(equipEffect, &unit.Initiative)
+		}
+
+		if equipEffect.Parameter == "max_hp" {
+			checkEffect(equipEffect, &unit.MaxHP)
+		}
+
+		if equipEffect.Parameter == "armor" {
+			checkEffect(equipEffect, &unit.Armor)
+		}
+
+		if equipEffect.Parameter == "evasion_critical" {
+			checkEffect(equipEffect, &unit.EvasionCritical)
+		}
+
+		if equipEffect.Parameter == "vulnerability_to_kinetics" {
+			checkEffect(equipEffect, &unit.VulToKinetics)
+		}
+
+		if equipEffect.Parameter == "vulnerability_to_thermo" {
+			checkEffect(equipEffect, &unit.VulToThermo)
+		}
+
+		if equipEffect.Parameter == "vulnerability_to_em" {
+			checkEffect(equipEffect, &unit.VulToEM)
+		}
+
+		if equipEffect.Parameter == "vulnerability_to_explosion" {
+			checkEffect(equipEffect, &unit.VulToExplosion)
+		}
+
+		if equipEffect.Parameter == "range_view" {
+			checkEffect(equipEffect, &unit.RangeView)
+		}
+
+		if equipEffect.Parameter == "accuracy" {
+			checkEffect(equipEffect, &unit.Accuracy)
+		}
+
+		if equipEffect.Parameter == "max_power" {
+			checkEffect(equipEffect, &unit.MaxPower)
+		}
+
+		if equipEffect.Parameter == "recovery_power" {
+			checkEffect(equipEffect, &unit.RecoveryPower)
+		}
+
+		if equipEffect.Parameter == "recovery_hp" {
+			checkEffect(equipEffect, &unit.RecoveryHP)
+		}
+	}
+
 	var checkPassiveEquip = func(equip map[int]*detail.BodyEquipSlot, gameUnit *Unit) {
 		for _, slot := range equip {
 			if slot.Equip != nil && !slot.Equip.Active {
 				for _, equipEffect := range slot.Equip.Effects {
-					if equipEffect.Type == "enhances" || equipEffect.Type == "reduced" {
-						// todo
-					}
+					checkParams(equipEffect)
 				}
 			}
 		}
@@ -172,13 +244,11 @@ func (unit *Unit) CalculateParams() {
 
 	// смотрим наложеные в игре эфекты
 	for _, unitEffect := range unit.Effects {
-		if unitEffect.Type == "enhances" || unitEffect.Type == "reduced" {
-			// todo
-		}
+		checkParams(unitEffect)
 	}
 
 	// высчитывает повер рековери
 	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
-	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
-	// TODO штраф так же должен зависеть от скила пользвотеля
+	  // востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
+	  // штраф так же должен зависеть от скила пользвотеля
 }

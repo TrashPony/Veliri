@@ -14,6 +14,7 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 		gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
 		UnitEffects(gamePlayer.GetSquad().MatherShip)         // берем эфекты ms
 		addUnitToMap(units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
+		gamePlayer.GetSquad().MatherShip.CalculateParams()    // пересчитываем статы
 
 		for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
 			if playerUnit.Unit != nil {
@@ -33,7 +34,6 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 			}
 		}
 	}
-
 	return units, unitStorage
 }
 
