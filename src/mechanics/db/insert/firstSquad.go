@@ -83,5 +83,11 @@ func FirstSquad(userID int) (userSquad *squad.Squad) {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp) "+
+		"VALUES ($1, $2, $3, $4, $5, $6)",
+		userSquad.ID, 10, "equip", 5, 2, 100)
+	if err != nil {
+		log.Fatal("filling first squad" + err.Error())
+	}
 	return
 }

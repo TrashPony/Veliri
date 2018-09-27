@@ -39,7 +39,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"hp = $7, "+
 				"power = $9, "+
 				"action_point = $11, "+
-				"defend = $12, "+
+				"defend = $12 "+
 				"WHERE id_squad = $8 AND mother_ship = $10",
 			bodyID,
 			ship.Q,
@@ -56,7 +56,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 		)
 
 		if err != nil {
-			log.Fatal("update motherShip squad" + err.Error())
+			log.Fatal("update motherShip squad " + err.Error())
 		}
 
 	} else {
@@ -75,7 +75,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"mother_ship, "+
 				"on_map, "+
 				"action_point, "+
-				"defend, "+
+				"defend"+
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
 				squad.ID,
