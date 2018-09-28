@@ -25,7 +25,7 @@ function repairKitAnimate(unit) {
     repair.animations.play('RepairKit', 20, true, false);
     repair.anchor.set(0.5);
 
-    // таймер для repair таймер делает альфа:0 в течение 500 кадров хз что за линия автостарт через 1000мс //
+    // таймер для repair таймер делает альфа:0 в течение 500 мс, хз что за линия автостарт через 1000мс //
     let tween = game.add.tween(repair).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true, 1000);
     // функция выполняемая после завершение tween таймера в данном случае удаление спрайта анимации //
     tween.onComplete.add(function (repair) {

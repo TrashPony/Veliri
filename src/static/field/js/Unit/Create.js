@@ -55,21 +55,6 @@ function CreateUnit(unitStat, inVisible) {
     unitStat.sprite.healBar = healBar;
     unitStat.sprite.heal = heal;
 
-
-    // TODO эксперемент
-    let connectPoints = PositionAttachSprite(unitStat.rotate, body.width/2);
-    console.log(connectPoints);
-    let fireMuzzle = game.make.sprite(connectPoints.x, connectPoints.y, 'fireMuzzle_1', 2);
-    unit.addChild(fireMuzzle);
-    if (unitStat.rotate > 180) {
-        fireMuzzle.angle = unitStat.rotate - 360;
-    } else {
-        fireMuzzle.angle = unitStat.rotate;
-    }
-
-    fireMuzzle.anchor.setTo(0, 0.5);
-    // TODO эксперемент
-
     CalculateHealBar(unitStat);
 
     if (unitStat.effects !== null && unitStat.effects.length > 0) {

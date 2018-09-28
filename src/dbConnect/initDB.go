@@ -10,7 +10,7 @@ var DB *sql.DB
 
 func init() {
 	var err error
-	DB, err = sql.Open("postgres", "postgres://postgres:yxHie25@localhost:5432/game?sslmode=disable")
+	DB, err = sql.Open("postgres", "postgres://postgres:yxHie25@192.168.101.100:5432/game?sslmode=disable")
 
 	if err != nil {
 		log.Fatal(err)
