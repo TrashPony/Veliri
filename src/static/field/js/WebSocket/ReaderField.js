@@ -48,7 +48,8 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "UpdateUnit") {
-        UpdateUnit(jsonMessage);
+        let unitStat = JSON.parse(jsonMessage).unit;
+        UpdateUnit(unitStat);
     }
 
     if (event === "UseUnitEquip") {

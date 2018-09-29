@@ -10,16 +10,11 @@ import (
 
 func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
 
-	for _, weaponSlot := range attacking.Body.Weapons {
-		if weaponSlot.Weapon != nil {
-			if weaponSlot.AmmoQuantity > 0 {
-				weaponSlot.AmmoQuantity -= 1
-
-				return MapAttack(attacking, target, game, weaponSlot)
-			} else {
-				return &ResultBattle{Error: "no ammo"}
-			}
-		}
+	if attacking.GetWeaponSlot() != nil && attacking.GetAmmoCount() > 0 {
+		attacking.GetWeaponSlot().AmmoQuantity -= 1
+		return MapAttack(attacking, target, game, attacking.GetWeaponSlot())
+	} else {
+		return &ResultBattle{Error: "no ammo"}
 	}
 
 	return nil
@@ -95,7 +90,6 @@ func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
 			// дамаг в 20%, в итоге должен зависеть от скила игрока
 			if equipSlot.HP-damage/5 > 0 {
 				equipSlot.HP -= damage / 5
-				println(equipSlot.HP)
 				return false
 			} else {
 				equipSlot.HP = 0

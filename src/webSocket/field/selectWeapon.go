@@ -15,7 +15,7 @@ func SelectWeapon(msg Message, ws *websocket.Conn) {
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := Games.Get(client.GetGameID())
 
-	if findClient && findUnit && findGame {
+	if findClient && findUnit && findGame && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
 		if activeGame.Phase == "targeting" {
 			SelectTarget(client, gameUnit, activeGame, ws)
 		}

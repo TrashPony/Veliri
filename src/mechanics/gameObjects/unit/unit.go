@@ -131,6 +131,26 @@ func (unit *Unit) GetWallHack() bool {
 	return unit.WallHack
 }
 
+func (unit *Unit) GetAmmoCount() int { // по диз доку оружие в юните может быть только одно
+	for _, weaponSlot := range unit.Body.Weapons {
+		if weaponSlot.Weapon != nil {
+			return weaponSlot.AmmoQuantity
+		}
+	}
+
+	return 0
+}
+
+func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз доку оружие в юните может быть только одно
+	for _, weaponSlot := range unit.Body.Weapons {
+		if weaponSlot.Weapon != nil {
+			return weaponSlot
+		}
+	}
+
+	return nil
+}
+
 func (unit *Unit) CalculateParams() {
 	// начальные параметры тела
 	unit.Speed = unit.Body.Speed
@@ -249,6 +269,6 @@ func (unit *Unit) CalculateParams() {
 
 	// высчитывает повер рековери
 	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
-	  // востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
-	  // штраф так же должен зависеть от скила пользвотеля
+	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
+	// штраф так же должен зависеть от скила пользвотеля
 }
