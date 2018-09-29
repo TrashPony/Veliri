@@ -21,7 +21,7 @@ function AttackPhase(jsonMessage) {
                 let colorText;
 
                 if (resultBattle[i].targets_units[j].damage > 0) {
-                    damage = "-" + resultBattle[i].targets_units[j].damage
+                    damage = "-" + resultBattle[i].targets_units[j].damage;
                     colorText = "#C00";
                 } else if (resultBattle[i].targets_units[j].damage === 0) {
                     damage = "0";

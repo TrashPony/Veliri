@@ -1,10 +1,10 @@
 package attackPhase
 
 import (
+	"../../../db/localGame/update"
 	"../../../gameObjects/detail"
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"../../../db/localGame/update"
 )
 
 func recovery(game *localGame.Game) {
@@ -22,13 +22,24 @@ func recovery(game *localGame.Game) {
 				continue
 			}
 
+			// удаляем патроны если они кончились
+			for _, weaponSlot := range gameUnit.Body.Weapons {
+				if weaponSlot.Weapon != nil {
+					if weaponSlot.AmmoQuantity <= 0 {
+						weaponSlot.Ammo = nil
+					}
+				}
+			}
+
 			gameUnit.Target = nil
 			gameUnit.QueueAttack = 0
 			gameUnit.ActionPoints = gameUnit.Body.Speed
 			gameUnit.Defend = false
 
 			for _, effect := range gameUnit.Effects {
-				effect.StepsTime -= 1
+				if effect != nil {
+					effect.StepsTime -= 1
+				}
 			}
 
 			recoveryEquips(gameUnit)
@@ -58,7 +69,13 @@ func recoveryEquips(gameUnit *unit.Unit) {
 func recoveryEquip(equip map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equip {
 		if equipSlot.Equip != nil {
-			equipSlot.StepsForReload -= 1
+			if equipSlot.StepsForReload-1 == 0 {
+				equipSlot.StepsForReload = 0
+				equipSlot.Used = false
+			}
+			if equipSlot.StepsForReload-1 > 0 {
+				equipSlot.StepsForReload -= 1
+			}
 		}
 	}
 }
