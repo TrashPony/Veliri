@@ -9,15 +9,28 @@ function AttackPhase(jsonMessage) {
 
         let unit = GetGameUnitID(resultBattle[i].attack_unit.id);
 
-        Fire(unit);
-        UpdateUnit(unit);
+        if (unit) {
+            Fire(unit);
+            UpdateUnit(resultBattle[i].attack_unit);
+        }
+
         for (let j = 0; j < resultBattle[i].targets_units.length; j++) {
+
             let targetUnit = GetGameUnitID(resultBattle[i].targets_units[j].unit.id);
-            setTimeout(function () {
-                Explosion(targetUnit);
-                DamageText(targetUnit, resultBattle[i].targets_units[j].damage);
-                UpdateUnit(targetUnit);
-            }, 500);
+            
+            if (targetUnit) {
+                setTimeout(function () {
+                    Explosion(targetUnit);
+                    DamageText(targetUnit, resultBattle[i].targets_units[j].damage);
+                    UpdateUnit(resultBattle[i].targets_units[j].unit);
+                }, 500);
+            }
         }
     }
+
+    for (let i = 0; i < resultEquip.length; i++) {
+
+    }
+
+    UpdateWatchZone(watchNode)
 }

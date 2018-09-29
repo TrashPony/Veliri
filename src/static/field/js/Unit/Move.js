@@ -6,7 +6,7 @@ function CreatePathToUnit(jsonMessage) {
         let path = JSON.parse(jsonMessage).path;                           // берем масив данных очереди перемещения юнита
         let unitStat = JSON.parse(jsonMessage).unit;
 
-        let unitunit = GetGameUnitID(unitStat.id);         // берем юнита
+        let unit = GetGameUnitID(unitStat.id);         // берем юнита
         if (!unit) {
 
             let boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);
