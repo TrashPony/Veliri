@@ -19,8 +19,9 @@ func Ready(ws *websocket.Conn) {
 		ChangePhase(activeGame)
 
 		if activeGame.Phase == "attack" {
-			// todo бой
+			attack(activeGame)
 		}
+
 	} else {
 		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
 	}

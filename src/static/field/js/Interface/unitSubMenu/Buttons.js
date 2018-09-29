@@ -9,8 +9,8 @@ function ActionButton(equipPanel, unit, event, text) {
     let skipButton = document.createElement("input");
     skipButton.type = "button";
     skipButton.value = text;
-    console.log(unit);
-    if (unit.action_points >= unit.body.speed) {
+
+    if (unit.action_points >= unit.speed) {
         skipButton.className = "button unitSubMenu";
 
         skipButton.onclick = function () {

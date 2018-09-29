@@ -1,6 +1,6 @@
 function CalculateHealBar(unit) {
     let hp = unit.hp;
-    let maxHP = unit.body.max_hp;
+    let maxHP = unit.max_hp;
     let percentageHeal = hp * 100 / maxHP;
     let healSprite = unit.sprite.heal;
 

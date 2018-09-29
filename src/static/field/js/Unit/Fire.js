@@ -11,12 +11,18 @@ function Fire(unit) {
     fireMuzzle.anchor.setTo(0, 0.5);
 
     fireMuzzle.animations.add('fireMuzzle_1', [2,1,0]);
-    fireMuzzle.animations.play('fireMuzzle_1', 10, true, false);
-
-    let tween = game.add.tween(fireMuzzle).to({alpha: 0}, 5, Phaser.Easing.Linear.None, true, 250);
-    tween.onComplete.add(function (fireMuzzle) {
-        fireMuzzle.destroy();
-    }, fireMuzzle);
+    fireMuzzle.animations.play('fireMuzzle_1', 10, false, true);
 
     unit.sprite.addChild(fireMuzzle);
+}
+
+function Explosion(unit) {
+    let explosion = game.make.sprite(0, 0, 'explosion_1');
+
+    explosion.anchor.setTo(0.5);
+
+    explosion.animations.add('explosion_1');
+    explosion.animations.play('explosion_1', 10, false, true);
+
+    unit.sprite.addChild(explosion);
 }

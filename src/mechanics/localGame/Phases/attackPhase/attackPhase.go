@@ -29,6 +29,7 @@ type ResultBattle struct {
 	TargetUnits []TargetUnit `json:"targets_units"`
 	Error       string       `json:"error"`
 }
+
 type TargetUnit struct {
 	Unit          unit.Unit `json:"unit"`
 	Damage        int       `json:"damage"`
@@ -36,6 +37,7 @@ type TargetUnit struct {
 }
 
 type ResultEquip struct {
+	//todo
 }
 
 func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*ResultBattle) {

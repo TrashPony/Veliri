@@ -63,6 +63,10 @@ function ReadResponse(jsonMessage) {
         CreatePreviewPath(jsonMessage)
     }
 
+    if (event === "AttackPhase") {
+        AttackPhase(jsonMessage)
+    }
+
     if (event === "Error") {
         console.log(jsonMessage);
     }

@@ -13,6 +13,7 @@ import (
 var phasePipe = make(chan PhaseInfo)
 var targetPipe = make(chan Unit)
 var equipPipe = make(chan SendUseEquip)
+var attackPipe = make(chan AttackMessage)
 var move = make(chan Move)
 
 var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
@@ -178,6 +179,24 @@ func UnitSender() {
 func EquipSender() {
 	for {
 		resp := <-equipPipe
+		mutex.Lock()
+		for ws, client := range usersFieldWs {
+			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersFieldWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
+	}
+}
+
+func AttackSender() {
+	for {
+		resp := <-attackPipe
 		mutex.Lock()
 		for ws, client := range usersFieldWs {
 			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {

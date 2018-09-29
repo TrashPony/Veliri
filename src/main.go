@@ -29,6 +29,7 @@ func main() {
 	go field.UnitSender()
 	go field.PhaseSender()
 	go field.EquipSender()
+	go field.AttackSender()
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

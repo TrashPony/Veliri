@@ -2,34 +2,37 @@ package attackPhase
 
 import (
 	"../../../gameObjects/coordinate"
-	"../../../gameObjects/unit"
 	"../../../gameObjects/detail"
+	"../../../gameObjects/unit"
 	"../../../localGame"
 	"math/rand"
 )
 
 func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
 
-	if attacking.Body.Weapons[0].AmmoQuantity > 0 {
+	for _, weaponSlot := range attacking.Body.Weapons {
+		if weaponSlot.Weapon != nil {
+			weaponSlot.AmmoQuantity -= 1
 
-		attacking.Body.Weapons[0].AmmoQuantity -= 1
+			return MapAttack(attacking, target, game, weaponSlot)
 
-		return MapAttack(attacking, target, game)
-
-	} else {
-		return &ResultBattle{Error: "no ammo"}
+		} else {
+			return &ResultBattle{Error: "no ammo"}
+		}
 	}
+
+	return nil
 }
 
-func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
-	attackZone := coordinate.GetCoordinatesRadius(target, attacking.Body.Weapons[0].Ammo.AreaCovers)
+func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game, weapon *detail.BodyWeaponSlot) *ResultBattle {
+	attackZone := coordinate.GetCoordinatesRadius(target, weapon.Ammo.AreaCovers)
 	targetsUnit := make([]TargetUnit, 0)
 
 	for _, attackCoordinate := range attackZone {
 		targetUnit, find := game.GetUnit(attackCoordinate.Q, attackCoordinate.R)
 		if find {
 
-			damage := calculateDamage(targetUnit, attacking.Body.Weapons[0].Ammo.MaxDamage, attacking.Body.Weapons[0].Ammo.MinDamage)
+			damage := calculateDamage(targetUnit, weapon.Ammo.MaxDamage, weapon.Ammo.MinDamage)
 
 			targetUnit.HP -= damage
 
@@ -45,7 +48,7 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 	damage := rand.Intn(maxDamage-minDamage) + minDamage
 
-	armor := targetUnit.Body.Armor
+	armor := targetUnit.Armor
 
 	for _, effect := range targetUnit.Effects {
 		if effect.Parameter == "armor" {
@@ -87,7 +90,17 @@ func breakingEquip(targetUnit *unit.Unit, damage int) bool {
 func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
 	for _, equipSlot := range equip {
 		if equipSlot.Equip != nil {
-			equipSlot.HP -= damage / 10 // todo условный дамаг в 10%, в итоге должен зависеть от скила игрока
+			// дамаг в 10%, в итоге должен зависеть от скила игрока
+
+			if equipSlot.HP-damage/10 > 0 {
+				equipSlot.HP -= damage / 10
+				return false
+			} else {
+				equipSlot.HP = 0
+				return true
+			}
 		}
 	}
+
+	return false
 }

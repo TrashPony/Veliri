@@ -1,61 +1,28 @@
 package field
 
-/*func attack(activeGame *Mechanics.Game, activeUser []*Mechanics.Player, msg Message, phase string)  {
-	var resp Response
-	for _, player := range activeUser {
-		resp = Response{Event: msg.Event, UserName: player.GetLogin(), Phase: phase}
-		fieldPipe <- resp
-	}
+import (
+	"../../mechanics/localGame"
+	"../../mechanics/localGame/Phases/attackPhase"
+	"../../mechanics/localGame/map/watchZone"
+)
 
-	resultBattle := Mechanics.AttackPhase(activeGame, activeUser)
-
-	for _, attack := range resultBattle {
-		attackSender(&attack.AttackUnit, activeUser)
-		if attack.Delete {
-			DelUnit(&attack.TargetUnit, activeUser)
-		} else {
-			UpdateUnit(&attack.TargetUnit, activeUser)
-		}
-	}
+type AttackMessage struct {
+	Event        string                      `json:"event"`
+	UserName     string                      `json:"user_name"`
+	GameID       int                         `json:"game_id"`
+	ResultBattle []*attackPhase.ResultBattle `json:"result_battle"`
+	ResultEquip  []*attackPhase.ResultEquip  `json:"result_equip"`
+	WatchNode    *watchZone.UpdaterWatchZone `json:"watch_node"`
 }
 
+func attack(activeGame *localGame.Game) {
 
+	resultBattle, resultEquip := attackPhase.AttackPhase(activeGame)
 
-func attackSender(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
-
-	for _, client := range activeUser {
-		_, ok := client.GetUnit(unit.X, unit.Y)
-		if ok {
-			attackInfo := Response{Event: "Attack", UserName: client.GetLogin(), X: unit.X, Y: unit.Y, ToX: unit.Target.X, ToY: unit.Target.Y}
-			fieldPipe <- attackInfo
-		} else {
-			// TODO оповещение только об уроне
-			attackInfo := Response{Event: "Attack", UserName: client.GetLogin(), ToX: unit.Target.X, ToY: unit.Target.Y}
-			fieldPipe <- attackInfo
-		}
-	}
-
-	time.Sleep(1000 * time.Millisecond)
-
-	for _, client := range activeUser {
-		_, ok := client.GetUnit(unit.X, unit.Y)
-		if ok {
-			var unitsParameter InitUnit
-			unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
-		}
+	for _, player := range activeGame.GetPlayers() {
+		// todo препроцесинг данных, не все пользователи видят весь бой
+		attack := AttackMessage{Event: "AttackPhase", UserName: player.GetLogin(), GameID: player.GetGameID(),
+			ResultBattle: resultBattle, ResultEquip: resultEquip, WatchNode: watchZone.UpdateWatchZone(activeGame, player)}
+		attackPipe <- attack
 	}
 }
-
-func UpdateUnit(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
-	for _, client := range activeUser {
-		var unitsParameter InitUnit
-		unitsParameter.initUnit("InitUnit", unit, client.GetLogin())
-	}
-}
-
-func DelUnit(unit *Mechanics.Unit, activeUser []*Mechanics.Player) {
-	for _, client := range activeUser {
-		openCoordinate(client.GetLogin(), unit.X, unit.Y)
-		UpdateWatchZone(client, Games[client.GetGameID()], nil)
-	}
-}*/

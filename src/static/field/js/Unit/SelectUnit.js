@@ -1,5 +1,4 @@
 function SelectUnit() {
-    Fire(this);
 
     RemoveSelect();
 
