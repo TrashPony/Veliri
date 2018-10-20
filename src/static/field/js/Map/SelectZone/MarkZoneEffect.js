@@ -1,5 +1,5 @@
 function MarkZoneEffect(coordinate, x, y) {
-    let effectsLabel = game.floorObjectLayer.create(x-23, y+23, "labelEffects");
+    let effectsLabel = game.floorObjectLayer.create(x - 23, y + 23, "labelEffects");
 
     coordinate.effectsLabel = effectsLabel;
 
@@ -14,12 +14,18 @@ function MarkZoneEffect(coordinate, x, y) {
 }
 
 function DetailZoneEffects() {
-    this.effectsLabel.scale.setTo(1.05);
-    this.effectsLabel.alpha = 1;
-    if (!document.getElementById("effectDetailZonePanel")) {
+    if (game.input.activePointer.leftButton.isDown) {
+        this.effectsLabel.scale.setTo(1.05);
+        this.effectsLabel.alpha = 1;
+
         if (document.getElementById("effectZonePanel")) {
             document.getElementById("effectZonePanel").remove()
         }
+
+        if (document.getElementById("effectDetailZonePanel")) {
+            document.getElementById("effectDetailZonePanel").remove();
+        }
+
         createTipEffects(this.effects, true);
     }
 }
@@ -47,7 +53,7 @@ function createTipEffects(effects, detail) {
         effectPanel.id = "effectDetailZonePanel";
         let cancel = document.createElement("div");
         cancel.id = "cancelTipEffectsButton";
-        cancel.onclick = function (){
+        cancel.onclick = function () {
             effectPanel.remove();
         };
         effectPanel.appendChild(cancel);
