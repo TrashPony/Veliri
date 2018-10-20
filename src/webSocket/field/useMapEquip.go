@@ -30,7 +30,7 @@ func UseEquip(msg Message, ws *websocket.Conn) {
 
 	if findUnit && findClient && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
 		if equipSlot.Equip.Applicable == "map" {
-			gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.Q, msg.R)
+			gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.TargetQ, msg.TargetR)
 			if findCoordinate {
 				effectCoordinates, err := useEquip.ToMap(gameUnit, gameCoordinate, activeGame, equipSlot, client)
 				if err == nil {

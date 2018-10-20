@@ -68,7 +68,7 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) error {
 			if coordinateEffect.ID != 0 {
 
 				_, err := dbConnect.GetDBConnect().Exec("UPDATE action_game_zone_effects SET left_steps=$1, q=$2, r=$3, id_effect=$4 WHERE id=$5",
-					coordinateEffect.StepsTime, mapCoordinate.X, mapCoordinate.Y, coordinateEffect.TypeID, coordinateEffect.ID)
+					coordinateEffect.StepsTime, mapCoordinate.Q, mapCoordinate.R, coordinateEffect.TypeID, coordinateEffect.ID)
 
 				if err != nil {
 					println("Error update coordinate effect")
@@ -80,7 +80,7 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) error {
 
 				id := 0
 				err := dbConnect.GetDBConnect().QueryRow("INSERT INTO action_game_zone_effects (id_game, id_effect, q, r, left_steps) "+
-					"VALUES ($1, $2, $3, $4, $5) RETURNING id", mapCoordinate.GameID, coordinateEffect.TypeID, mapCoordinate.X, mapCoordinate.Y, coordinateEffect.StepsTime).Scan(&id)
+					"VALUES ($1, $2, $3, $4, $5) RETURNING id", mapCoordinate.GameID, coordinateEffect.TypeID, mapCoordinate.Q, mapCoordinate.R, coordinateEffect.StepsTime).Scan(&id)
 
 				if err != nil {
 					println("Error add new coordinate effect")

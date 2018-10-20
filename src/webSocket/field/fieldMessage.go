@@ -11,8 +11,8 @@ type Message struct {
 	R          int    `json:"r"`
 	ToQ        int    `json:"to_q"`
 	ToR        int    `json:"to_r"`
-	TargetX    int    `json:"target_x"`
-	TargetY    int    `json:"target_y"`
+	TargetQ    int    `json:"target_q"`
+	TargetR    int    `json:"target_r"`
 	EquipType  int    `json:"equip_type"`
 	NumberSlot int    `json:"number_slot"`
 }
