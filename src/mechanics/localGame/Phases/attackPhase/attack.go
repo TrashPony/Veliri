@@ -28,7 +28,14 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 		targetUnit, find := game.GetUnit(attackCoordinate.Q, attackCoordinate.R)
 		if find {
 
-			damage := calculateDamage(targetUnit, weapon.Ammo.MaxDamage, weapon.Ammo.MinDamage)
+			var damage int
+
+			if targetUnit.Q == target.Q && targetUnit.R == target.R {
+				damage = calculateDamage(targetUnit, weapon.Ammo.MaxDamage, weapon.Ammo.MinDamage)
+			} else {
+				//т.к. не эпичентер атаки юниты получают только 50% урона
+				damage = calculateDamage(targetUnit, weapon.Ammo.MaxDamage/2, weapon.Ammo.MinDamage/2)
+			}
 
 			targetUnit.HP -= damage
 
@@ -47,7 +54,7 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 	armor := targetUnit.Armor
 
 	for _, effect := range targetUnit.Effects {
-		if effect.Parameter == "armor" {
+		if effect != nil && effect.Parameter == "armor" {
 			if effect.Type == "enhances" {
 				if effect.Percentages {
 					armor += armor / 100 * effect.Quantity

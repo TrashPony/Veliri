@@ -14,7 +14,7 @@ function EffectsPanel(unitSubMenu, unit) {
     let count = 0;
 
     for (let j = 0; j < unit.effects.length; j++) {
-        if (unit.effects[j].type !== "unit_always_animate") {
+        if (unit.effects[j] && unit.effects[j].type !== "unit_always_animate") {
             if (count % 4 === 0) {
                 rowEffect = document.createElement("tr");
                 rowEffect.className = "row Effect";

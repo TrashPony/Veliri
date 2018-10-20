@@ -16,13 +16,9 @@ function Fire(unit) {
     unit.sprite.addChild(fireMuzzle);
 }
 
-function Explosion(unit) {
-    let explosion = game.make.sprite(0, 0, 'explosion_1');
-
-    explosion.anchor.setTo(0.5);
+function Explosion(coordinate) {
+    let explosion = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, 'explosion_1');
 
     explosion.animations.add('explosion_1');
     explosion.animations.play('explosion_1', 10, false, true);
-
-    unit.sprite.addChild(explosion);
 }

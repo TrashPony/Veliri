@@ -1,4 +1,4 @@
-function getMinMaxDamage(unit, targetUnit) {
+function getMinMaxDamage(unit, targetUnit, half) {
 
     let maxDamage;
     let minDamage;
@@ -8,6 +8,11 @@ function getMinMaxDamage(unit, targetUnit) {
             maxDamage = unit.body.weapons[weaponSlot].ammo.max_damage;
             minDamage = unit.body.weapons[weaponSlot].ammo.min_damage;
         }
+    }
+
+    if (half) {
+        minDamage = minDamage / 2;
+        maxDamage = maxDamage / 2;
     }
 
     if (minDamage - targetUnit.armor < 0) {
@@ -22,5 +27,5 @@ function getMinMaxDamage(unit, targetUnit) {
         maxDamage = maxDamage - targetUnit.armor
     }
 
-    return  minDamage + " - " + maxDamage
+    return minDamage + " - " + maxDamage
 }

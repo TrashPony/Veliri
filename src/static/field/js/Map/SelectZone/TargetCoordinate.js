@@ -30,13 +30,90 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                         selectSprite.inputEnabled = true;
 
                         selectSprite.events.onInputDown.add(func, selectSprite);
-                        selectSprite.events.onInputOver.add(animateTargetCoordinate, selectSprite);
-                        selectSprite.events.onInputOut.add(stopAnimateCoordinate, selectSprite);
+                        selectSprite.events.onInputOver.add(getTargetZone, selectSprite);
+                        selectSprite.events.onInputOut.add(removeTargetZone, selectSprite);
 
                         selectSprite.input.priorityID = 1; // утсанавливает повышеный приоритет среди спрайтов на которых мышь
 
+                        game.map.OneLayerMap[q][r].targetSelectSprite = selectSprite;
+
                         game.map.selectSprites.push(selectSprite);
                     }
+                }
+            }
+        }
+    }
+}
+
+function removeTargetZone(coordinate) {
+
+    let unit = GetGameUnitXY(coordinate.unitQ, coordinate.unitR);
+
+    let areaCovers;
+    for (let weaponSlot in unit.body.weapons) { // оружие может быть только 1 под диз доке, масив это обман
+        if (unit.body.weapons.hasOwnProperty(weaponSlot) && unit.body.weapons[weaponSlot].ammo) {
+            areaCovers = unit.body.weapons[weaponSlot].ammo.area_covers;
+        }
+    }
+    let targetCoordinate = game.map.OneLayerMap[coordinate.TargetQ][coordinate.TargetR];
+
+    let damageZone = getRadius(targetCoordinate.x, targetCoordinate.y, targetCoordinate.z, areaCovers);
+
+    for (let i in damageZone) {
+        let q = damageZone[i].Q;
+        let r = damageZone[i].R;
+        if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+            let animateCoordinate = game.map.OneLayerMap[q][r];
+
+            if (animateCoordinate.targetSelectSprite) {
+                stopAnimateCoordinate(animateCoordinate.targetSelectSprite);
+            }
+        }
+    }
+}
+
+function getTargetZone(coordinate) {
+
+    let unit = GetGameUnitXY(coordinate.unitQ, coordinate.unitR);
+
+    let areaCovers;
+    for (let weaponSlot in unit.body.weapons) { // оружие может быть только 1 под диз доке, масив это обман
+        if (unit.body.weapons.hasOwnProperty(weaponSlot) && unit.body.weapons[weaponSlot].ammo) {
+            areaCovers = unit.body.weapons[weaponSlot].ammo.area_covers;
+        }
+    }
+    let targetCoordinate = game.map.OneLayerMap[coordinate.TargetQ][coordinate.TargetR];
+
+    let damageZone = getRadius(targetCoordinate.x, targetCoordinate.y, targetCoordinate.z, areaCovers);
+
+    for (let i in damageZone) {
+        let q = damageZone[i].Q;
+        let r = damageZone[i].R;
+        if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+            let animateCoordinate = game.map.OneLayerMap[q][r];
+
+            if (animateCoordinate.targetSelectSprite) {
+                animateTargetCoordinate(animateCoordinate.targetSelectSprite);
+
+                let targetUnit = GetGameUnitXY(q, r);
+
+                if (targetUnit) {
+
+                    if (animateCoordinate.targetSelectSprite.damageText) {
+                        animateCoordinate.targetSelectSprite.damageText.destroy();
+                    }
+
+                    let style = {font: "20px Finger Paint", fill: "#C00"};
+                    let damageText;
+
+                    if (coordinate.TargetQ === q && coordinate.TargetR === r) {
+                        damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, false), style);
+                    } else {
+                        damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, true), style);
+                    }
+
+                    damageText.setShadow(1, -1, 'rgba(0,0,0,0.5)', 0);
+                    animateCoordinate.targetSelectSprite.damageText = damageText;
                 }
             }
         }
@@ -48,10 +125,10 @@ function SelectTargetUnit(jsonMessage) {
     let unit = JSON.parse(jsonMessage).unit;
     let equipSlot = JSON.parse(jsonMessage).equip_slot;
 
-    for (let i in units){
+    for (let i in units) {
         if (units.hasOwnProperty(i)) {
 
-            let func =()=> {
+            let func = () => {
                 field.send(JSON.stringify({
                     event: "UseUnitEquip",
                     unit_id: Number(unit.id),
@@ -72,6 +149,9 @@ function SelectTargetUnit(jsonMessage) {
 }
 
 function SelectWeaponTarget(selectSprite) {
+
+    removeTargetZone(selectSprite);
+
     if (game.input.activePointer.leftButton.isDown) {
         field.send(JSON.stringify({
             event: "SetWeaponTarget",

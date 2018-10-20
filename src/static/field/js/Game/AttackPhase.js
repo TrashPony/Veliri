@@ -38,7 +38,6 @@ function* PlayAttack(resultBattle) {
             game.camera.y = unit.sprite.y - game.camera.height / 2;
             setTimeout(function () {
                 Fire(unit);
-                UpdateUnit(resultBattle[i].attack_unit);
             }, 200);
         }
 
@@ -54,8 +53,8 @@ function* PlayAttack(resultBattle) {
                     game.camera.x = targetUnit.sprite.x - game.camera.width / 2; // наводим камеру на место событий
                     game.camera.y = targetUnit.sprite.y - game.camera.height / 2;
                     setTimeout(function () {
-
-                        Explosion(targetUnit);
+                        // взрыв происходит там куда упал снаряд
+                        Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
                         DamageText(targetUnit, resultBattle[i].targets_units[j].damage);
                         UpdateUnit(resultBattle[i].targets_units[j].unit);
                         CalculateHealBar(targetUnit);
@@ -67,6 +66,7 @@ function* PlayAttack(resultBattle) {
                 }, 500);
             }
         }
+        UpdateUnit(resultBattle[i].attack_unit);
         yield new Promise(resolve => setTimeout(resolve, 3000));
     }
 }
