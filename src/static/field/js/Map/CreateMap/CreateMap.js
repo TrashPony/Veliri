@@ -33,9 +33,8 @@ function CreateMap() {
             }
 
             if (coordinate.effects != null && coordinate.effects.length > 0) {
-                //MarkZoneEffect(coordinate)
+                MarkZoneEffect(coordinate, startX, startY)
             }
-
         }
     }
 }

@@ -1,0 +1,40 @@
+#effectZonePanel, #effectDetailZonePanel {
+    position: absolute;
+    animation: menuAnimation 3000ms linear infinite;
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px, 4px 4px, cover;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    display: inline-block;
+    border-radius: 5px;
+}
+
+#cancelTipEffectsButton {
+    float: right;
+    border: 1px solid #b3ddff;
+    height: 10px;
+    width: 10px;
+    border-radius: 5px;
+    margin-top: 2px;
+    margin-right: 2px;
+    line-height: 5px;
+    color: red;
+}
+
+#cancelTipEffectsButton:hover {
+    color: #fff91e;
+}
+
+#cancelTipEffectsButton:active {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+#cancelTipEffectsButton:after {
+    content: '\2716';
+    font-size: 9px;
+}
+
+

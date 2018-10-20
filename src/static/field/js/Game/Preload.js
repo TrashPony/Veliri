@@ -18,6 +18,7 @@ function preload() {
     //Equip_Animate
     game.load.spritesheet('EnergyShield', 'http://' + window.location.host + '/assets/equipAnimate/energy_shield_animate.png', 100, 100, 20);
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
+    game.load.image('labelEffects', 'http://' + window.location.host + '/assets/effects/label_effects.png');
 
     //MatherShips MotherTrucker
     game.load.spritesheet('Mother', 'http://' + window.location.host + '/assets/Mother360.png', 200, 200, 360);

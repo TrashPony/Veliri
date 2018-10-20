@@ -1,11 +1,11 @@
 function AnimateUseUnitEquip(jsonMessage) {
 
     let equip = JSON.parse(jsonMessage).applied_equip; // id:equip
-    let useUnit = GetGameUnitID(JSON.parse(jsonMessage).use_unit.id);
+    //let useUnit = GetGameUnitID(JSON.parse(jsonMessage).use_unit.id);
     let toUnit = GetGameUnitID(JSON.parse(jsonMessage).to_unit.id);
 
-    UpdateUnit(toUnit);
-    UpdateUnit(useUnit);
+    UpdateUnit(JSON.parse(jsonMessage).use_unit);
+    UpdateUnit(JSON.parse(jsonMessage).to_unit);
 
     if (equip.name === "repair_kit") {
         repairKitAnimate(toUnit);

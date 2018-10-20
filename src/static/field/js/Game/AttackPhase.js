@@ -69,6 +69,4 @@ function* PlayAttack(resultBattle) {
         }
         yield new Promise(resolve => setTimeout(resolve, 3000));
     }
-
-    return
 }
