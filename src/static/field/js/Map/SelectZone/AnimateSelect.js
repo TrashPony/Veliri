@@ -2,6 +2,8 @@ function animateMoveCoordinate(coordinate) {
     coordinate.animations.add('select');
     coordinate.animations.play('select', 5, true);
 
+    RemoveTargetLine();
+
     field.send(JSON.stringify({
         event: "GetTargetZone",
         unit_id: Number(coordinate.UnitID),
@@ -45,6 +47,17 @@ function animatePlaceCoordinate(coordinate) {
 }
 
 function animateTargetCoordinate(coordinate) {
+
+    let unit = GetGameUnitXY(coordinate.unitQ,coordinate.unitR);
+    let targetUnit = GetGameUnitXY(coordinate.TargetQ,coordinate.TargetR);
+
+    if (targetUnit) {
+        let style = {font: "24px Finger Paint", fill: "#C00"};
+        let damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit), style);
+        damageText.setShadow(1, -1, 'rgba(0,0,0,0.5)', 0);
+        coordinate.damageText = damageText;
+    }
+
     coordinate.animations.add('select', [1, 2]);
     coordinate.animations.play('select', 3, true);
 }
@@ -52,6 +65,10 @@ function animateTargetCoordinate(coordinate) {
 function stopAnimateCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(false);
     coordinate.animations.frame = 0;
+
+    if (coordinate.damageText) {
+        coordinate.damageText.destroy();
+    }
 
     if (game.Phase === "move") {
         game.SelectLineLayer.visible = true;

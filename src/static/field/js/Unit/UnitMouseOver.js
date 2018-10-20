@@ -1,4 +1,5 @@
 function UnitMouseOver() {
+    RemoveTargetLine();
     unitTip(this);
 
     CalculateHealBar(this);
@@ -21,7 +22,6 @@ function UnitMouseOut() {
     TipOff();
     DeleteMarkTarget(this.target);
     game.add.tween(this.sprite.healBar).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
-
 
     if (game.SelectLayer.children.length === 0) {
         RemoveTargetLine();
