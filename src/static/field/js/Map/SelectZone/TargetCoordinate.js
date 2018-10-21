@@ -14,11 +14,11 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                     let cellSprite = game.map.OneLayerMap[targetCoordinates[q][r].q][targetCoordinates[q][r].r].sprite;
 
                     if (event === "GetFirstTargets") {
-                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer);
+                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer, true);
                     }
 
                     if (event === "GetTargets" || event === "GetEquipMapTargets") {
-                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer);
+                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, true);
 
                         selectSprite.TargetQ = targetCoordinates[q][r].q;
                         selectSprite.TargetR = targetCoordinates[q][r].r;
@@ -68,6 +68,16 @@ function removeTargetZone(coordinate) {
             if (animateCoordinate.targetSelectSprite) {
                 stopAnimateCoordinate(animateCoordinate.targetSelectSprite);
             }
+
+            if (animateCoordinate.fastTargetSprite) {
+                stopAnimateCoordinate(animateCoordinate.fastTargetSprite);
+                animateCoordinate.fastTargetSprite.destroy();
+                animateCoordinate.fastTargetSprite = null;
+            }
+
+            if (animateCoordinate.damageText) {
+                animateCoordinate.damageText.destroy();
+            }
         }
     }
 }
@@ -94,29 +104,37 @@ function getTargetZone(coordinate) {
 
             if (animateCoordinate.targetSelectSprite) {
                 animateTargetCoordinate(animateCoordinate.targetSelectSprite);
-
-                let targetUnit = GetGameUnitXY(q, r);
-
-                if (targetUnit) {
-
-                    if (animateCoordinate.targetSelectSprite.damageText) {
-                        animateCoordinate.targetSelectSprite.damageText.destroy();
-                    }
-
-                    let style = {font: "20px Finger Paint", fill: "#C00"};
-                    let damageText;
-
-                    if (coordinate.TargetQ === q && coordinate.TargetR === r) {
-                        damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, false), style);
-                    } else {
-                        damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, true), style);
-                    }
-
-                    damageText.setShadow(1, -1, 'rgba(0,0,0,0.5)', 0);
-                    animateCoordinate.targetSelectSprite.damageText = damageText;
-                }
+                damageText(q, r, animateCoordinate, coordinate, unit)
+            } else {
+                let selectSprite = MarkZone(animateCoordinate.sprite, damageZone, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, false);
+                game.map.OneLayerMap[q][r].fastTargetSprite = selectSprite;
+                animateTargetCoordinate(selectSprite);
+                damageText(q, r, animateCoordinate, coordinate, unit)
             }
         }
+    }
+}
+
+function damageText(q, r, animateCoordinate, coordinate, unit) {
+    let targetUnit = GetGameUnitXY(q, r);
+
+    if (targetUnit) {
+
+        if (animateCoordinate.damageText) {
+            animateCoordinate.damageText.destroy();
+        }
+
+        let style = {font: "20px Finger Paint", fill: "#C00"};
+        let damageText;
+
+        if (coordinate.TargetQ === q && coordinate.TargetR === r) {
+            damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, false), style);
+        } else {
+            damageText = game.add.text(targetUnit.sprite.x + 20, targetUnit.sprite.y - 50, getMinMaxDamage(unit, targetUnit, true), style);
+        }
+
+        damageText.setShadow(1, -1, 'rgba(0,0,0,0.5)', 0);
+        animateCoordinate.damageText = damageText;
     }
 }
 

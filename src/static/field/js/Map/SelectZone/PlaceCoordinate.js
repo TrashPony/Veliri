@@ -12,7 +12,7 @@ function SelectCoordinateUnitCreate(jsonMessage) {
 
                     let cellSprite = game.map.OneLayerMap[placeCoordinate[q][r].q][placeCoordinate[q][r].r].sprite;
 
-                    let selectSprite = MarkZone(cellSprite, placeCoordinate, q, r, 'Place', true, game.SelectLineLayer, "place", game.SelectLayer);
+                    let selectSprite = MarkZone(cellSprite, placeCoordinate, q, r, 'Place', true, game.SelectLineLayer, "place", game.SelectLayer, true);
 
                     selectSprite.PlaceQ = placeCoordinate[q][r].q;
                     selectSprite.PlaceR = placeCoordinate[q][r].r;

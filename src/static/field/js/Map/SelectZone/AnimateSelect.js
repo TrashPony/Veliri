@@ -33,7 +33,7 @@ function animateMoveCoordinate(coordinate) {
             let r = circleCoordinates[i].R;
             if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
                 let animateCoordinate = game.map.OneLayerMap[q][r];
-                let selectSprite = MarkZone(animateCoordinate.sprite, circleCoordinates, q, r, 'Move', true, game.SelectRangeLayer, "move", game.SelectRangeLayer);
+                let selectSprite = MarkZone(animateCoordinate.sprite, circleCoordinates, q, r, 'Move', true, game.SelectRangeLayer, "move", game.SelectRangeLayer, false);
                 selectSprite.animations.add('select');
                 selectSprite.animations.play('select', 5, true);
             }
@@ -54,10 +54,6 @@ function animateTargetCoordinate(coordinate) {
 function stopAnimateCoordinate(coordinate) {
     coordinate.animations.getAnimation('select').stop(false);
     coordinate.animations.frame = 0;
-
-    if (coordinate.damageText) {
-        coordinate.damageText.destroy();
-    }
 
     if (game.Phase === "move") {
         game.SelectLineLayer.visible = true;

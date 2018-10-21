@@ -13,7 +13,7 @@ function SelectMoveCoordinateCreate(jsonMessage) {
 
                     let cellSprite = game.map.OneLayerMap[q][r].sprite;
 
-                    let selectSprite = MarkZone(cellSprite, moveCoordinate, q, r, 'Move', true, game.SelectLineLayer, "move", game.SelectLayer);
+                    let selectSprite = MarkZone(cellSprite, moveCoordinate, q, r, 'Move', true, game.SelectLineLayer, "move", game.SelectLayer, true);
 
                     selectSprite.MoveQ = q;
                     selectSprite.MoveR = r;
