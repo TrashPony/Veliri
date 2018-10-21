@@ -26,7 +26,7 @@ function unitTip(unit) {
         }
 
         if (ammo) {
-            document.getElementById("tipDamage").innerHTML = "<spen class='Value'>" + ammo.damage + "</spen>";
+            document.getElementById("tipDamage").innerHTML = "<spen class='Value'>" + ammo.min_damage + "-" + ammo.max_damage + "</spen>";
             document.getElementById("tipMove").innerHTML = "<spen class='Value'>" + unit.speed + "</spen>";
             document.getElementById("tipArea").innerHTML = "<spen class='Value'>" + ammo.area_covers + "</spen>";
             document.getElementById("tipTypeAttack").innerHTML = "<spen class='Value'>" + ammo.type_attack + "</spen>";

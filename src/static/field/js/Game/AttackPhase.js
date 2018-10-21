@@ -53,7 +53,7 @@ function* PlayAttack(resultBattle) {
                     game.camera.x = targetUnit.sprite.x - game.camera.width / 2; // наводим камеру на место событий
                     game.camera.y = targetUnit.sprite.y - game.camera.height / 2;
                     setTimeout(function () {
-                        // взрыв происходит там куда упал снаряд
+                        // взрыв происходит там куда упал снаряд, хотя тут он играется много раз отображается визуально только 1
                         Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
                         DamageText(targetUnit, resultBattle[i].targets_units[j].damage);
                         UpdateUnit(resultBattle[i].targets_units[j].unit);
