@@ -9,6 +9,10 @@ function RemoveSelect() {
     if (document.getElementById("UnitSubMenu")) {
         document.getElementById("UnitSubMenu").remove()
     }
+
+    if (document.getElementById("effectDetailZonePanel")) {
+        document.getElementById("effectDetailZonePanel").remove();
+    }
 }
 
 function RemoveSelectLine() {

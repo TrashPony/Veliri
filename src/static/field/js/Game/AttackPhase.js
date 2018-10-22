@@ -38,6 +38,9 @@ function* PlayAttack(resultBattle) {
             game.camera.y = unit.sprite.y - game.camera.height / 2;
             setTimeout(function () {
                 Fire(unit);
+                setTimeout(function () {
+                    Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
+                }, 100)
             }, 200);
         }
 
@@ -54,7 +57,6 @@ function* PlayAttack(resultBattle) {
                     game.camera.y = targetUnit.sprite.y - game.camera.height / 2;
                     setTimeout(function () {
                         // взрыв происходит там куда упал снаряд, хотя тут он играется много раз отображается визуально только 1
-                        Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
                         DamageText(targetUnit, resultBattle[i].targets_units[j].damage);
                         UpdateUnit(resultBattle[i].targets_units[j].unit);
                         CalculateHealBar(targetUnit);

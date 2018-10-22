@@ -1,5 +1,5 @@
 function MarkZoneEffect(coordinate, x, y) {
-    let effectsLabel = game.floorObjectLayer.create(x - 23, y + 23, "labelEffects");
+    let effectsLabel = game.effectsLayer.create(x - 23, y + 23, "labelEffects");
 
     coordinate.effectsLabel = effectsLabel;
 

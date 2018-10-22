@@ -28,6 +28,8 @@ function create() {
     game.SelectTargetLineLayer.alpha = 0.9;
     game.add.tween(game.SelectTargetLineLayer).to( { alpha: 0.4 }, 1500, "Linear").loop(true).yoyo(true).start();
 
+    game.effectsLayer = game.add.group();
+
     game.fogOfWar = game.add.group();
     game.fogOfWar.alpha = 0.5;
 

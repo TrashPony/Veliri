@@ -17,7 +17,7 @@ function Fire(unit) {
 }
 
 function Explosion(coordinate) {
-    let explosion = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, 'explosion_1');
+    let explosion = game.effectsLayer.create(coordinate.sprite.x, coordinate.sprite.y, 'explosion_1');
 
     explosion.animations.add('explosion_1');
     explosion.animations.play('explosion_1', 10, false, true);

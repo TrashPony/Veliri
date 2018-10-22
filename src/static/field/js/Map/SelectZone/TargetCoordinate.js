@@ -18,7 +18,7 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                     }
 
                     if (event === "GetTargets" || event === "GetEquipMapTargets") {
-                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, true);
+                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, false);
 
                         selectSprite.TargetQ = targetCoordinates[q][r].q;
                         selectSprite.TargetR = targetCoordinates[q][r].r;
@@ -33,7 +33,7 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
                         selectSprite.events.onInputOver.add(getTargetZone, selectSprite);
                         selectSprite.events.onInputOut.add(removeTargetZone, selectSprite);
 
-                        selectSprite.input.priorityID = 1; // утсанавливает повышеный приоритет среди спрайтов на которых мышь
+                        selectSprite.input.priorityID = 0; // утсанавливает повышеный приоритет среди спрайтов на которых мышь
 
                         game.map.OneLayerMap[q][r].targetSelectSprite = selectSprite;
 
@@ -78,11 +78,16 @@ function removeTargetZone(coordinate) {
             if (animateCoordinate.damageText) {
                 animateCoordinate.damageText.destroy();
             }
+
+            if (GetGameUnitXY(q, r)) {
+                HideUnitStatus(GetGameUnitXY(q, r))
+            }
         }
     }
 }
 
 function getTargetZone(coordinate) {
+    RemoveTargetLine();
 
     let unit = GetGameUnitXY(coordinate.unitQ, coordinate.unitR);
 
@@ -119,6 +124,8 @@ function damageText(q, r, animateCoordinate, coordinate, unit) {
     let targetUnit = GetGameUnitXY(q, r);
 
     if (targetUnit) {
+
+        VisibleUnitStatus(targetUnit);
 
         if (animateCoordinate.damageText) {
             animateCoordinate.damageText.destroy();
