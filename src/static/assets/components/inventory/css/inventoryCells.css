@@ -191,6 +191,10 @@
     cursor: pointer;
 }
 
+.InventoryCell.notAllow {
+    box-shadow: inset 0 0 25px 5px rgb(145, 145, 145);
+}
+
 .InventoryCell:active{
     -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);

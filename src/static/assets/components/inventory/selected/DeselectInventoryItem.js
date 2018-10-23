@@ -38,6 +38,12 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.style.cursor = "auto";
 
                 equipSlot.onmouseout = function () {
+
+                    for (let i = 1; i <= 40; i++) {
+                        let cell = document.getElementById("inventory " + i + 6);
+                        cell.className = "InventoryCell";
+                    }
+
                     this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
                     this.style.cursor = "auto";
                 };
@@ -60,6 +66,12 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.style.cursor = "auto";
 
                 equipSlot.onmouseout = function () {
+
+                    for (let i = 1; i <= 40; i++) {
+                        let cell = document.getElementById("inventory " + i + 6);
+                        cell.className = "InventoryCell";
+                    }
+
                     this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
                     this.style.cursor = "auto";
                 };

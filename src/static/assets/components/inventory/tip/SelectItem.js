@@ -1,4 +1,8 @@
 function InventorySelectTip(slot, x, y, first) {
+
+    if (!slot.item) {
+        return
+    }
     let tip = document.createElement("div");
     tip.style.top = y + "px";
     tip.style.left = x + "px";

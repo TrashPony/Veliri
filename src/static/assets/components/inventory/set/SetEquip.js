@@ -43,7 +43,12 @@ function EquipSlotMark(idPrefix, classPrefix, typeSlot, countSlots, func) {
             equipSlot.className = classPrefix + " active select";
             equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
             equipSlot.style.cursor = "pointer";
-            equipSlot.onmouseout = null;
+            equipSlot.onmouseout = function () {
+                for (let i = 1; i <= 40; i++) {
+                    let cell = document.getElementById("inventory " + i + 6);
+                    cell.className = "InventoryCell";
+                }
+            };
 
             equipSlot.onclick = function () {
                 func(JSON.parse(equipSlot.slotData));

@@ -59,6 +59,8 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
             let cell = document.getElementById("inventory " + i + 6);
             if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
                 cell.className = "InventoryCell hover";
+            } else if (cell.slotData && JSON.parse(cell.slotData).item.type_slot !== typeSlot) {
+                cell.className = "InventoryCell notAllow";
             }
         }
     };
