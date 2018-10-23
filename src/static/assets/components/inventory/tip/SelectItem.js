@@ -52,6 +52,19 @@ function CreateParamsTable(slot, tip) {
     let description = document.createElement("div");
     description.id = "description";
 
+
+    if (slot.item.type_slot === 1) {
+        table.appendChild(createRow("Slot type:", "I"));
+    } else if (slot.item.type_slot === 2) {
+        table.appendChild(createRow("Slot type:", "II"));
+    } else if (slot.item.type_slot === 3) {
+        table.appendChild(createRow("Slot type:", "III"));
+    } else if (slot.item.type_slot === 4) {
+        table.appendChild(createRow("Slot type:", "IV"));
+    } else if (slot.item.type_slot === 5) {
+        table.appendChild(createRow("Slot type:", "V"));
+    }
+
     if (slot.type === "weapon") {
         description.innerHTML = "<span class='Value'>Оружие универсального предназначения</span>";
         table.appendChild(createRow("Accuracy:", slot.item.accuracy));

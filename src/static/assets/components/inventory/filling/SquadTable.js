@@ -12,6 +12,7 @@ function SquadTable(squad) {
             }
 
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
+                cell.innerHTML = "";
                 cell.style.backgroundImage = "url(/assets/" + squad.mather_ship.units[slot].unit.body.name + ".png)";
                 let constructorUnit = document.getElementById("ConstructorUnit");
                 if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
@@ -22,6 +23,7 @@ function SquadTable(squad) {
             } else {
                 NoActiveUnitCell(unitSlot);
                 cell.style.backgroundImage = null;
+                cell.innerHTML = "<span> Ангар </span>"
             }
 
             cell.slotData = JSON.stringify(unitSlot);
@@ -31,7 +33,7 @@ function SquadTable(squad) {
             cell.onclick = null;
             cell.style.backgroundImage = null;
             cell.className = "inventoryUnit noActive";
-
+            cell.innerHTML = "";
             let constructorUnit = document.getElementById("ConstructorUnit");
             if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
                 constructorUnit.remove();
@@ -75,6 +77,9 @@ function OpenUnitEditor() {
     } else {
         let powerPanel = document.getElementById("unitPowerPanel");
         powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
+
+        let unitIcon = document.getElementById("UnitIcon");
+        unitIcon.innerHTML = "<span>Место для корпуса</span>";
     }
 }
 
@@ -103,6 +108,7 @@ function CreateUnitEquipSlots(constructorUnit) {
 
 function FillingSquadConstructor(slotData) {
     let unitIcon = document.getElementById("UnitIcon");
+    unitIcon.innerHTML = "";
     unitIcon.style.backgroundImage = "url(/assets/" + slotData.unit.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(slotData);
     unitIcon.unitBody = slotData.unit.body;

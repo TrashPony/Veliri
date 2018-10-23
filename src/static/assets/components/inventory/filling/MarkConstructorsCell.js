@@ -8,9 +8,9 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                 cell.slotData = JSON.stringify(shipSlots[slot]);
 
                 if (JSON.parse(cell.slotData).hasOwnProperty("weapon")) {
-                    UpdateWeapon(cell, classPrefix);
+                    UpdateWeapon(cell, classPrefix, typeSlot);
                 } else {
-                    UpdateEquips(cell, classPrefix);
+                    UpdateEquips(cell, classPrefix, typeSlot);
                 }
 
                 cell.addEventListener("mousemove", function (e) {
@@ -45,7 +45,7 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
     }
 }
 
-function UpdateEquips(cell, classPrefix) {
+function UpdateEquips(cell, classPrefix, typeSlot) {
     cell.className = classPrefix + " active";
 
     if (classPrefix === "inventoryEquipping") {
@@ -54,15 +54,42 @@ function UpdateEquips(cell, classPrefix) {
         cell.onclick = EquipUnitMenu;
     }
 
+    cell.onmouseover = function () {
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
+                cell.className = "InventoryCell hover";
+            }
+        }
+    };
+
     cell.onmouseout = function () {
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            cell.className = "InventoryCell";
+        }
+
         this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
         this.style.cursor = "auto";
     };
 
     if (JSON.parse(cell.slotData).equip !== null) {
         cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).equip.name + ".png)";
+        cell.innerHTML = "";
     } else {
         cell.style.backgroundImage = null;
+
+        if (typeSlot === 1) {
+            cell.innerHTML = "I";
+        } else if (typeSlot === 2) {
+            cell.innerHTML = "II";
+        } else if (typeSlot === 3) {
+            cell.innerHTML = "III";
+        } else if (typeSlot === 4) {
+            cell.innerHTML = "IV";
+        } else if (typeSlot === 5) {
+            cell.innerHTML = "V";
+        }
     }
 }
 
@@ -76,7 +103,21 @@ function UpdateWeapon(cell, classPrefix) {
         cell.onclick = WeaponUnitMenu;
     }
 
+    cell.onmouseover = function () {
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            if (cell.slotData && JSON.parse(cell.slotData).type === "weapon") {
+                cell.className = "InventoryCell hover";
+            }
+        }
+    };
+
     cell.onmouseout = function () {
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            cell.className = "InventoryCell";
+        }
+
         this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
         this.style.cursor = "auto";
     };

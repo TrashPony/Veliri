@@ -152,6 +152,27 @@ func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз док
 }
 
 func (unit *Unit) CalculateParams() {
+
+	if unit.Body == nil {
+		unit.Speed = 0
+		unit.Initiative = 0
+		unit.MaxHP = 0
+		unit.Armor = 0
+		unit.EvasionCritical = 0
+		unit.VulToKinetics = 0
+		unit.VulToThermo = 0
+		unit.VulToEM = 0
+		unit.VulToExplosion = 0
+		unit.RangeView = 0
+		unit.Accuracy = 0
+		unit.MaxPower = 0
+		unit.RecoveryPower = 0
+		unit.RecoveryHP = 0
+		unit.WallHack = false
+
+		return
+	}
+
 	// начальные параметры тела
 	unit.Speed = unit.Body.Speed
 	unit.Initiative = unit.Body.Initiative

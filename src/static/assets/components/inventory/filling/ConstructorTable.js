@@ -13,6 +13,7 @@ function ConstructorTable(ms) {
 
 function UpdateShipIcon(ms) {
     let unitIcon = document.getElementById("MSIcon");
+    unitIcon.innerHTML = "";
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + ms.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(ms.body);

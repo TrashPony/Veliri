@@ -9,6 +9,12 @@
     background-repeat: no-repeat;
     margin: 1px;
     vertical-align: top;
+    color: #00FFFD;
+    line-height: 30px
+}
+
+.inventoryEquipping.active {
+    line-height: 35px
 }
 
 .inventoryEquipping.active.select {
@@ -18,6 +24,7 @@
 
 .inventoryEquipping.active.weapon {
     box-shadow: 0 0 5px 3px rgb(255, 0, 0);
+    line-height: 0;
 }
 
 .inventoryEquipping.noActive:before {
@@ -96,6 +103,7 @@
             1px -1px 0   #382626,
             -1px  1px 0   #382626,
             1px  1px 0   #382626;
+    line-height: 45px;
 }
 
 .inventoryUnit.noActive {
@@ -105,12 +113,28 @@
 .inventoryUnit.select{
     -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+    color: #00fffd;
+    font-size: 11px;
+}
+
+.inventoryUnit.select span {
+    display: block;
+    margin-top: 15px;
+}
+
+.inventoryUnit.active {
+    color: #00fffd;
+    font-size: 11px;
+}
+
+.inventoryUnit.active span {
+    display: block;
+    margin-top: 15px;
 }
 
 .inventoryUnit.active:hover{
     -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
     box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
     cursor: pointer;
 }
 
@@ -154,6 +178,13 @@
 }
 
 .InventoryCell:hover {
+    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    color: #00fffd;
+    cursor: pointer;
+}
+
+.InventoryCell.hover {
     -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
     box-shadow: 0 0 5px 3px rgb(255, 149, 32);
     color: #00fffd;

@@ -14,6 +14,7 @@
     top: 25px;
     border-radius: 20px;
     text-align: center;
+    line-height: 20px;
 }
 
 #inventoryCloseButton:active {
@@ -121,6 +122,13 @@
     background-repeat: no-repeat;
     margin: 15px;
     vertical-align: middle;
+    color: #00FFFD;
+    line-height: 30px
+}
+
+#MSIcon span {
+    display: block;
+    margin-top: 90px;
 }
 
 .UnitIconSelect {
