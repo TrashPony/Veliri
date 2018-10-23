@@ -8,7 +8,7 @@ func Ready(msg Message, ws *websocket.Conn) {
 
 	game, ok := openGames[usersLobbyWs[ws].GetGameID()]
 	user := usersLobbyWs[ws]
-
+	// runtime error: invalid memory address or nil pointer dereference
 	if ok && user.GetSquad().MatherShip.Body != nil {
 
 		respawn, err := game.SetRespawnUser(user, msg.RespawnID)

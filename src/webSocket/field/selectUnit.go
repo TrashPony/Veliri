@@ -21,6 +21,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 		gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
 		gameUnit.Q = client.GetSquad().MatherShip.Q
 		gameUnit.R = client.GetSquad().MatherShip.R
+		SelectMove(client, gameUnit, activeGame, ws, msg.Event)
 	} else {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 	}

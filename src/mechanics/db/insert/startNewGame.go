@@ -44,6 +44,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 				slotUnit.Unit.OnMap = false
 				slotUnit.Unit.Target = nil
 				slotUnit.Unit.QueueAttack = 0
+				slotUnit.Unit.CalculateParams()
+				slotUnit.Unit.ActionPoints = slotUnit.Unit.Speed
 			}
 		}
 
