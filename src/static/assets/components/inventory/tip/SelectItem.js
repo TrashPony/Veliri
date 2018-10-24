@@ -1,6 +1,6 @@
 function InventorySelectTip(slot, x, y, first) {
 
-    if (!slot.item) {
+    if (!slot || !slot.item) {
         return
     }
     let tip = document.createElement("div");

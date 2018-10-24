@@ -14,7 +14,7 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 
 	msBody := user.GetSquad().MatherShip.Body
 
-	if equipItem.ItemID == idEquip {
+	if equipItem != nil && equipItem.ItemID == idEquip {
 		newEquip := get.TypeEquip(idEquip)
 		equipping := SelectType(typeEquipSlot, msBody)
 		if equipping != nil {

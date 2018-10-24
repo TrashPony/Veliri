@@ -12,7 +12,7 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 	weapon := user.GetSquad().Inventory[inventorySlot]
 	msBody := user.GetSquad().MatherShip.Body
 
-	if weapon.ItemID == idWeapon {
+	if weapon != nil && msBody != nil && weapon.ItemID == idWeapon {
 		newWeapon := get.Weapon(idWeapon)
 
 		weaponSlot, ok := msBody.Weapons[numEquipSlot]

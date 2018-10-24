@@ -26,16 +26,20 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                         ItemOverTip(e, weaponSlot)
                     }
                 });
-                cell.addEventListener("mouseover", function (e) {
+
+                cell.onmouseover = function () {
                     this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
                     this.style.cursor = "pointer";
-                });
-                cell.addEventListener("mouseout", function () {
+                };
+                cell.onmouseout = function () {
+                    this.style.cursor = "auto";
+                    this.style.boxShadow = "0 0 0 0 rgb(255, 149, 32)";
                     let inventoryTip = document.getElementById("InventoryTipOver");
                     if (inventoryTip) {
                         inventoryTip.remove()
                     }
-                });
+                };
+
             } else {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "";
