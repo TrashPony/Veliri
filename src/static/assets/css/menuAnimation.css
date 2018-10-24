@@ -1,16 +1,13 @@
 @keyframes menuAnimation {
     0% {
-        background-size: 5px 2px;
         background-position:1% 0;
     }
 
     50% {
-        background-size: 12px 2px;
         background-position:100% 0;
     }
 
     100% {
-        background-size: 5px 2px;
         background-position:1% 0;
     }
 }

@@ -22,8 +22,8 @@ input {
 }
 
 .info.subMenu {
+    background-size: 10px 2px;
     pointer-events:none;
-    animation: menuAnimation 70000ms linear infinite;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     transition-property: background-image;
@@ -80,7 +80,7 @@ input {
     position: absolute;
     display: inline-block;
     z-index: 901;
-    animation: menuAnimation 70000ms linear infinite;
+    background-size: 10px 2px;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     transition-property: background-image;
@@ -106,7 +106,7 @@ input {
     position: absolute;
     display: inline-block;
     z-index: 901;
-    animation: menuAnimation 70000ms linear infinite;
+    background-size: 10px 2px;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     transition-property: background-image;

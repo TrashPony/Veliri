@@ -25,7 +25,6 @@
     border-radius: 300px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    animation: menuAnimation 70000ms linear infinite;
     display: inline-block;
     padding: 5px;
     vertical-align: middle;
@@ -35,6 +34,7 @@
     position: absolute;
     left: 0;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-size: 10px 2px;
 }
 
 #powerPanel {
@@ -65,7 +65,6 @@
     border-radius: 10px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    animation: menuAnimation 70000ms linear infinite;
     display: inline-block;
     vertical-align: top;
     width: 150px;
@@ -73,6 +72,7 @@
     margin-right: 25px;
     padding-top: 5px;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-size: 10px 2px;
 }
 
 #Inventory {
@@ -80,7 +80,6 @@
     border-radius: 10px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    animation: menuAnimation 70000ms linear infinite;
     display: inline-block;
     vertical-align: top;
     width: 150px;
@@ -88,6 +87,7 @@
     margin-left: 25px;
     padding-top: 5px;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-size: 10px 2px;
 }
 
 #Squad {
@@ -95,7 +95,6 @@
     border-radius: 50px;
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    animation: menuAnimation 70000ms linear infinite;
     vertical-align: top;
     width: 370px;
     height: 60px;
@@ -105,6 +104,7 @@
     margin-left: auto;
     margin-right: auto;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-size: 10px 2px;
 }
 
 #MSIcon {

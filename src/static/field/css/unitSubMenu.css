@@ -12,7 +12,7 @@
     font-family: sans-serif;
     font-size: 9pt;
     z-index: 901;
-    animation: menuAnimation 70000ms linear infinite;
+    background-size: 10px 2px;
     border: 1px solid #25a0e1;
     transition-property: background-image;
     text-shadow: #28a5e4 0 0 4px;
@@ -42,7 +42,7 @@
     position: relative;
     top: 20px;
     border: 1px solid #25a0e1;
-    animation: menuAnimation 70000ms linear infinite;
+    background-size: 10px 2px;
     transition-property: background-image;
     text-shadow: #28a5e4 0 0 4px;
     border-radius: 20px;
