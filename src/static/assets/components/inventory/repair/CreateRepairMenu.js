@@ -19,12 +19,10 @@ function CreateRepairMenu() {
 
     document.getElementById("ConstructorBackGround").appendChild(repairMenu);
 
-    this.style.boxShadow = "0 0 2px 2px rgba(0, 255, 253, 0.6)";
-    this.style.border = "1px solid rgba(0, 255, 253, 0.6)";
+    this.className = "repairButtonActive";
 
     this.onclick = function () {
-        this.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
-        this.style.border = "1px solid black";
+        this.className = "repairButton";
         repairMenu.remove();
         this.onclick = CreateRepairMenu;
     }

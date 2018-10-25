@@ -14,12 +14,28 @@
     box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
+.repairButtonActive{
+    width: 40px;
+    height: 40px;
+    background: url(../img/repairButton.png) no-repeat 5px 5px;
+    background-color: rgba(0, 255, 253, 0.2);
+    background-size: 76%;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border-radius: 20px;
+    user-select: none;
+    -moz-user-select: none;
+    box-shadow: 0 0 2px 2px rgba(0, 255, 253, 0.6);
+    border: 1px solid rgba(0, 255, 253, 0.6);
+}
+
 .repairButton:hover {
     box-shadow: 0 0 2px 2px rgba(0, 255, 253, 0.6);
     border: 1px solid rgba(0, 255, 253, 0.6);
 }
 
-.repairButton:active {
+.repairButton:active , .repairButtonActive:active{
     top: 8px;
     right: 8px;
     width: 34px;
