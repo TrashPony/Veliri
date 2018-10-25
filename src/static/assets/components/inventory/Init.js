@@ -27,6 +27,11 @@ function InitInventoryMenu(closeFunc) {
 
         includeJS("../assets/components/inventory/repair/CreateRepairMenu.js");
 
+        includeJS("../assets/components/inventory/inventory/RecycleItems.js");
+        includeJS("../assets/components/inventory/inventory/SortingItems.js");
+        includeJS("../assets/components/inventory/inventory/ThrowItems.js");
+        includeJS("../assets/components/inventory/inventory/checkConfirmMenu.js");
+
         includeCSS("../assets/components/inventory/css/constructorMS.css");
         includeCSS("../assets/components/inventory/css/constructorUnit.css");
         includeCSS("../assets/components/inventory/css/equipMSBox.css");
@@ -34,6 +39,8 @@ function InitInventoryMenu(closeFunc) {
         includeCSS("../assets/components/inventory/css/inventoryCells.css");
         includeCSS("../assets/components/inventory/css/tip.css");
         includeCSS("../assets/components/inventory/css/repair.css");
+        includeCSS("../assets/components/inventory/css/inventory.css");
+
 
         return resolve();
     });

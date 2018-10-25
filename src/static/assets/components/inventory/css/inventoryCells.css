@@ -28,6 +28,10 @@
     line-height: 0;
 }
 
+.inventoryEquipping.noActive {
+    border: 1px solid #2c2c2c;
+}
+
 .inventoryEquipping.noActive:before {
     content: "N/A";
     font-family: Arial;
@@ -79,6 +83,10 @@
     margin: 1px;
     vertical-align: top;
     box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+}
+
+.inventoryUnit.noActive {
+    border: 1px solid #2c2c2c;
 }
 
 .inventoryUnit.noActive:before {
@@ -138,20 +146,6 @@
     cursor: pointer;
 }
 
-.InventoryCell {
-    border-radius: 5px;
-    width: 25px;
-    height: 25px;
-    display: inline-block;
-    border: 1px solid #959595;
-    background-color: #4c4c4c;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    vertical-align: top;
-    margin: 1px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
-}
-
 .QuantityItems {
     position: relative;
     bottom: 5px;
@@ -175,29 +169,6 @@
     1px -1px 1px #000000,
     -1px 1px 1px #000000,
     1px 1px 1px #000000;
-}
-
-.InventoryCell:hover {
-    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
-    cursor: pointer;
-}
-
-.InventoryCell.hover {
-    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
-    cursor: pointer;
-}
-
-.InventoryCell.notAllow {
-    box-shadow: inset 0 0 25px 5px rgb(145, 145, 145);
-}
-
-.InventoryCell:active {
-    -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
-    box-shadow: 0 0 5px 3px rgb(165, 213, 239);
 }
 
 .inventoryAmmoCell {
@@ -250,7 +221,7 @@
 
 .InventoryHead, .SquadHead {
     display: block;
-    width: 60px;
+    width: 65px;
     height: 17px;
     margin: 2px auto 3px;
     background: linear-gradient(0deg, red, yellow);
@@ -262,41 +233,4 @@
 .SquadHead {
     margin: -26px 0 0 84px;
     position: absolute;
-}
-
-.inventoryStorage {
-    margin: 8px auto 0;
-}
-
-.sortPanel {
-    width: 141px;
-    height: 15px;
-    margin: 4px auto;
-    border: 1px solid #4c4c4c;
-    background-color: #959595;
-    box-shadow: 0 0 10px rgba(0,0,0,1);
-    border-radius: 5px;
-}
-
-.sortPanel:after  {
-    content: "Сортировка:";
-    font-size: 11px;
-    line-height: 15px;
-    vertical-align: top;
-    color: #4c4c4c;
-}
-
-.sortPanel div {
-    width: 15px;
-    height: 11px;
-    border: 1px solid #4c4c4c;
-    float: right;
-    margin:1px 4px 0 0;
-    border-radius: 3px;
-    box-shadow: 0 0 1px rgba(0,0,0,1);
-    background: linear-gradient(-45deg, #28a5e4, #25e1a4);
-}
-
-.sortPanel div:active {
-    background: linear-gradient(45deg, #28a5e4, #25e1a4);
 }

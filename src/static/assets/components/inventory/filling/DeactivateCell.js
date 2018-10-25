@@ -6,7 +6,7 @@ function NoActiveCell() {
 
         cells[i].className = "inventoryEquipping noActive";
         cells[i].style.backgroundImage = "";
-        cells[i].style.boxShadow = "0 0 0 0 rgb(0, 0, 0)";
+        cells[i].style.boxShadow = "0 0 10px rgba(0, 0, 0, 1)";
 
         cells[i].onmouseout = null;
         cells[i].onmouseover = null;
@@ -40,7 +40,7 @@ function NoActiveUnitCell(slotData) {
 
                 cells[i].className = "UnitEquip noActive";
                 cells[i].style.backgroundImage = "";
-                cells[i].style.boxShadow = "0 0 0 0 rgb(0, 0, 0)";
+                cells[i].style.boxShadow = "0 0 10px rgba(0, 0, 0, 1)";
 
                 cells[i].onmouseout = null;
                 cells[i].onmouseover = null;

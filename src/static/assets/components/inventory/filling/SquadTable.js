@@ -17,8 +17,6 @@ function SquadTable(squad) {
                 let constructorUnit = document.getElementById("ConstructorUnit");
                 if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
                     FillingSquadConstructor(unitSlot);
-                    let unitIcon = document.getElementById("UnitIcon");
-                    unitIcon.className = null;
                 }
             } else {
                 NoActiveUnitCell(unitSlot);
