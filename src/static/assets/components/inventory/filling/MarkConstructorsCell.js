@@ -7,11 +7,12 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
             if (cell) {
                 cell.slotData = JSON.stringify(shipSlots[slot]);
 
-                if (JSON.parse(cell.slotData).hasOwnProperty("weapon")) {
+                if (shipSlots[slot].hasOwnProperty("weapon")) {
                     UpdateWeapon(cell, classPrefix, typeSlot);
                 } else {
                     UpdateEquips(cell, classPrefix, typeSlot);
                 }
+
 
                 cell.addEventListener("mousemove", function (e) {
                     if (JSON.parse(this.slotData).equip) {
@@ -26,20 +27,6 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                         ItemOverTip(e, weaponSlot)
                     }
                 });
-
-                cell.onmouseover = function () {
-                    this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
-                    this.style.cursor = "pointer";
-                };
-                cell.onmouseout = function () {
-                    this.style.cursor = "auto";
-                    this.style.boxShadow = "0 0 0 0 rgb(255, 149, 32)";
-                    let inventoryTip = document.getElementById("InventoryTipOver");
-                    if (inventoryTip) {
-                        inventoryTip.remove()
-                    }
-                };
-
             } else {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "";
@@ -51,6 +38,7 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
 
 function UpdateEquips(cell, classPrefix, typeSlot) {
     cell.className = classPrefix + " active";
+    cell.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
 
     if (classPrefix === "inventoryEquipping") {
         cell.onclick = EquipMSMenu;
@@ -59,6 +47,10 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     }
 
     cell.onmouseover = function () {
+
+        this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
+        this.style.cursor = "pointer";
+
         for (let i = 1; i <= 40; i++) {
             let cell = document.getElementById("inventory " + i + 6);
             if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
@@ -75,26 +67,31 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
             cell.className = "InventoryCell";
         }
 
-        this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
         this.style.cursor = "auto";
+        this.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
+        let inventoryTip = document.getElementById("InventoryTipOver");
+        if (inventoryTip) {
+            inventoryTip.remove()
+        }
     };
 
     if (JSON.parse(cell.slotData).equip !== null) {
         cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).equip.name + ".png)";
-        cell.innerHTML = "";
+        cell.innerText = "";
+        CreateHealBar(cell, "equip");
     } else {
         cell.style.backgroundImage = null;
 
         if (typeSlot === 1) {
-            cell.innerHTML = "I";
+            cell.innerText = "I";
         } else if (typeSlot === 2) {
-            cell.innerHTML = "II";
+            cell.innerText = "II";
         } else if (typeSlot === 3) {
-            cell.innerHTML = "III";
+            cell.innerText = "III";
         } else if (typeSlot === 4) {
-            cell.innerHTML = "IV";
+            cell.innerText = "IV";
         } else if (typeSlot === 5) {
-            cell.innerHTML = "V";
+            cell.innerText = "V";
         }
     }
 }
@@ -110,6 +107,10 @@ function UpdateWeapon(cell, classPrefix) {
     }
 
     cell.onmouseover = function () {
+
+        this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
+        this.style.cursor = "pointer";
+
         for (let i = 1; i <= 40; i++) {
             let cell = document.getElementById("inventory " + i + 6);
             if (cell.slotData && JSON.parse(cell.slotData).type === "weapon") {
@@ -124,14 +125,20 @@ function UpdateWeapon(cell, classPrefix) {
             cell.className = "InventoryCell";
         }
 
-        this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
         this.style.cursor = "auto";
+        this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+        let inventoryTip = document.getElementById("InventoryTipOver");
+        if (inventoryTip) {
+            inventoryTip.remove()
+        }
     };
 
     if (JSON.parse(cell.slotData).weapon !== null) {
         cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).weapon.name + ".png)";
     } else {
         cell.style.backgroundImage = null;
+        cell.innerHTML = "";
+        cell.ammoCell = null;
     }
 
     if (cell.ammoCell === null || cell.ammoCell === undefined) {
@@ -156,6 +163,10 @@ function UpdateWeapon(cell, classPrefix) {
             cell.ammoCell.style.backgroundImage = null;
             cell.ammoCell.innerHTML = "";
         }
+    }
+
+    if (JSON.parse(cell.slotData).weapon !== null) {
+        CreateHealBar(cell, "weapon");
     }
 }
 

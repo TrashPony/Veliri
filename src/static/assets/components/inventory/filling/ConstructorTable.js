@@ -16,15 +16,16 @@ function UpdateShipIcon(ms) {
     unitIcon.innerHTML = "";
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/" + ms.body.name + ".png)";
-    unitIcon.slotData = JSON.stringify(ms.body);
+    unitIcon.slotData = JSON.stringify(ms);
 
     unitIcon.onclick = BodyMSMenu;
 
     unitIcon.addEventListener("mousemove", function (e) {
         let slot = {};
-        slot.item = JSON.parse(this.slotData);
+        slot.item = ms.body;
         slot.type = "body";
         slot.hp = ms.hp;
+        slot.item.name = ms.body.name;
         ItemOverTip(e, slot)
     });
     unitIcon.addEventListener("mouseout", function () {
@@ -33,6 +34,8 @@ function UpdateShipIcon(ms) {
             inventoryTip.remove()
         }
     });
+
+    CreateHealBar(unitIcon, "body");
 }
 
 function ItemOverTip(e, slot) {

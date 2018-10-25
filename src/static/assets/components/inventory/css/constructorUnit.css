@@ -5,8 +5,9 @@
     border: 2px solid #6c6c6c;
     position: absolute;
     z-index: 910;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 1), rgba(37, 160, 225, 0.1411764705882353) 6px);
     background-size: 10px 2px;
+    box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
 #UnitIcon {
@@ -22,7 +23,8 @@
     margin-left: 35px;
     vertical-align: middle;
     color: #00FFFD;
-    line-height: 30px
+    line-height: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
 #UnitIcon span {
@@ -40,6 +42,7 @@
     border: 2px solid #6c6c6c;
     background-color: #4c4c4c;
     font-size: 11px;
+    box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
 .UnitEquip {
@@ -54,7 +57,8 @@
     vertical-align: top;
     margin: 2px;
     color: #00FFFD;
-    line-height: 30px
+    line-height: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,1);
 }
 
 .UnitEquip.active.select {

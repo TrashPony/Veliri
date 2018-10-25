@@ -94,6 +94,7 @@ function CreateUnitEquipSlots(constructorUnit) {
 
     let unitIcon = document.createElement("div");
     unitIcon.id = "UnitIcon";
+    unitIcon.className = "UnitIconNoSelect";
     constructorUnit.appendChild(unitIcon);
 
     let equippingPanelII = document.createElement("div");

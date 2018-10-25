@@ -3,6 +3,7 @@ function InventorySelectTip(slot, x, y, first) {
     if (!slot || !slot.item) {
         return
     }
+
     let tip = document.createElement("div");
     tip.style.top = y + "px";
     tip.style.left = x + "px";
@@ -89,6 +90,7 @@ function CreateParamsTable(slot, tip) {
         table.appendChild(createRow("HP:", slot.hp));
         table.appendChild(createRow("Use power:", slot.item.power));
     } else if (slot.type === "body") {
+
         if (slot.item.mother_ship) {
             description.innerHTML = "<span class='Value'>Корпус для материнской машины</span>";
         } else {
@@ -103,6 +105,7 @@ function CreateParamsTable(slot, tip) {
         table.appendChild(createRow("Wall hack:", slot.item.wall_hack));
         table.appendChild(createRow("HP:", slot.hp));
         table.appendChild(createRow("Power:", slot.item.max_power));
+
     } else if (slot.type === "ammo"){
         description.innerHTML = "<span class='Value'>Боеприпасы для оружия</span>";
         table.appendChild(createRow("Area covers:", slot.item.area_covers));

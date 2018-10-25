@@ -1,5 +1,5 @@
 function InitInventoryMenu(closeFunc) {
-
+    /* осталь надежду вся сюда входящий, это дерьмо уже не отрефачить */
     let promise = new Promise((resolve) => {
         includeJS("../assets/components/inventory/webSocket.js");
         includeJS("../assets/components/inventory/Create.js");
@@ -15,6 +15,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/filling/MarkConstructorsCell.js");
         includeJS("../assets/components/inventory/filling/DeactivateCell.js");
         includeJS("../assets/components/inventory/filling/PowerPanel.js");
+        includeJS("../assets/components/inventory/filling/HealBar.js");
 
         includeJS("../assets/components/inventory/tip/ClickTip.js");
         includeJS("../assets/components/inventory/tip/SelectItem.js");
@@ -24,12 +25,15 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/set/SetEquip.js");
         includeJS("../assets/components/inventory/set/SetWeapon.js");
 
+        includeJS("../assets/components/inventory/repair/CreateRepairMenu.js");
+
         includeCSS("../assets/components/inventory/css/constructorMS.css");
         includeCSS("../assets/components/inventory/css/constructorUnit.css");
         includeCSS("../assets/components/inventory/css/equipMSBox.css");
         includeCSS("../assets/components/inventory/css/equipUnitBox.css");
         includeCSS("../assets/components/inventory/css/inventoryCells.css");
         includeCSS("../assets/components/inventory/css/tip.css");
+        includeCSS("../assets/components/inventory/css/repair.css");
 
         return resolve();
     });

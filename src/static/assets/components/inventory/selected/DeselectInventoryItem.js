@@ -117,7 +117,7 @@ function cellAmmoDestroySelect() {
 
 function cellUnitIconDestroySelect() {
     let shipIcon = document.getElementById("MSIcon"); // обнуляем икноку мазершипа
-    shipIcon.className = "";
+    shipIcon.className = "UnitIconNoSelect";
 
     if (shipIcon.shipBody != null && shipIcon.shipBody !== undefined) {
         shipIcon.onclick = BodyMSMenu;
@@ -127,7 +127,7 @@ function cellUnitIconDestroySelect() {
 
     let unitIcon = document.getElementById("UnitIcon"); // обнуляем икноку мазершипа
     if (unitIcon) {
-        unitIcon.className = "";
+        unitIcon.className = "UnitIconNoSelect";
         if (unitIcon.unitBody != null && unitIcon.unitBody !== undefined) {
             unitIcon.onclick = BodyUnitMenu;
         } else {
