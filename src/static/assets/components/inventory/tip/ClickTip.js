@@ -40,3 +40,10 @@ function ClickTip(event, removeFunction) {
     tip.appendChild(cancelButton);
     document.body.appendChild(tip);
 }
+
+function OffTip() {
+    let inventoryTip = document.getElementById("InventoryTipOver");
+    if (inventoryTip) {
+        inventoryTip.remove()
+    }
+}

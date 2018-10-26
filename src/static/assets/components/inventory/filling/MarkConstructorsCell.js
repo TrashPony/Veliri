@@ -13,7 +13,6 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                     UpdateEquips(cell, classPrefix, typeSlot);
                 }
 
-
                 cell.addEventListener("mousemove", function (e) {
                     if (JSON.parse(this.slotData).equip) {
                         let equipSlot = JSON.parse(this.slotData);
@@ -78,7 +77,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     if (JSON.parse(cell.slotData).equip !== null) {
         cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).equip.name + ".png)";
         cell.innerText = "";
-        CreateHealBar(cell, "equip");
+        CreateHealBar(cell, "equip", true);
     } else {
         cell.style.backgroundImage = null;
 
@@ -166,7 +165,7 @@ function UpdateWeapon(cell, classPrefix) {
     }
 
     if (JSON.parse(cell.slotData).weapon !== null) {
-        CreateHealBar(cell, "weapon");
+        CreateHealBar(cell, "weapon", true);
     }
 }
 

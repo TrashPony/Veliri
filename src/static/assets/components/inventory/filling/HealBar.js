@@ -1,4 +1,4 @@
-function CreateHealBar(cell, type) {
+function CreateHealBar(cell, type, append) {
     let cellData = JSON.parse(cell.slotData);
 
     if (cellData.type !== "ammo") {
@@ -38,7 +38,11 @@ function CreateHealBar(cell, type) {
             // todo показывать что предмет сломан например box-shadow insert red
         }
 
-        backHealBar.appendChild(healBar);
-        cell.appendChild(backHealBar);
+        if (append) {
+            backHealBar.appendChild(healBar);
+            cell.appendChild(backHealBar);
+        }
+
+        return percentHP;
     }
 }

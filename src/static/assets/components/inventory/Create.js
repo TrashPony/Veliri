@@ -104,26 +104,6 @@ function CreateConstructorMenu() {
     let unitIcon = document.createElement("div");
     unitIcon.id = "MSIcon";
     unitIcon.className = "UnitIconNoSelect";
-    unitIcon.onmouseover = function() {
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            if (cell) {
-                if (cell.slotData && JSON.parse(cell.slotData).type === "body" && JSON.parse(cell.slotData).item.mother_ship) {
-                    cell.className = "InventoryCell hover";
-                } else if (cell.slotData && (JSON.parse(cell.slotData).type !== "body" || !JSON.parse(cell.slotData).item.mother_ship)) {
-                    cell.className = "InventoryCell notAllow";
-                }
-            }
-        }
-    };
-    unitIcon.onmouseout = function() {
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            if (cell) {
-                cell.className = "InventoryCell";
-            }
-        }
-    };
     constructorMS.appendChild(unitIcon);
 
     /* 2 type slots */
@@ -139,6 +119,7 @@ function CreateConstructorMenu() {
 
     let repairButton = document.createElement("div");
     repairButton.className = "repairButton";
+    repairButton.id = "repairButton";
     repairButton.onclick = CreateRepairMenu;
     constructorMS.appendChild(repairButton);
 }

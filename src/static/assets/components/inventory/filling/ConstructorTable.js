@@ -20,22 +20,39 @@ function UpdateShipIcon(ms) {
 
     unitIcon.onclick = BodyMSMenu;
 
-    unitIcon.addEventListener("mousemove", function (e) {
-        let slot = {};
-        slot.item = ms.body;
-        slot.type = "body";
-        slot.hp = ms.hp;
-        slot.item.name = ms.body.name;
-        ItemOverTip(e, slot)
-    });
-    unitIcon.addEventListener("mouseout", function () {
-        let inventoryTip = document.getElementById("InventoryTipOver");
-        if (inventoryTip) {
-            inventoryTip.remove()
+    unitIcon.onmousemove = function (e) {
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            if (cell) {
+                if (cell.slotData && JSON.parse(cell.slotData).type === "body" && JSON.parse(cell.slotData).item.mother_ship) {
+                    cell.className = "InventoryCell hover";
+                } else if (cell.slotData && (JSON.parse(cell.slotData).type !== "body" || !JSON.parse(cell.slotData).item.mother_ship)) {
+                    cell.className = "InventoryCell notAllow";
+                }
+            }
         }
-    });
 
-    CreateHealBar(unitIcon, "body");
+        if (unitIcon.shipBody) {
+            let slot = {};
+            slot.item = ms.body;
+            slot.type = "body";
+            slot.hp = ms.hp;
+            slot.item.name = ms.body.name;
+            ItemOverTip(e, slot)
+        }
+    };
+
+    unitIcon.onmouseout = function () {
+        OffTip();
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            if (cell) {
+                cell.className = "InventoryCell";
+            }
+        }
+    };
+
+    CreateHealBar(unitIcon, "body", true);
 }
 
 function ItemOverTip(e, slot) {

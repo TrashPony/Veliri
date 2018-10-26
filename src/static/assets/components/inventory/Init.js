@@ -26,11 +26,15 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/set/SetWeapon.js");
 
         includeJS("../assets/components/inventory/repair/CreateRepairMenu.js");
+        includeJS("../assets/components/inventory/repair/InventoryRepair.js");
+        includeJS("../assets/components/inventory/repair/EquipsRepair.js");
 
         includeJS("../assets/components/inventory/inventory/RecycleItems.js");
         includeJS("../assets/components/inventory/inventory/SortingItems.js");
         includeJS("../assets/components/inventory/inventory/ThrowItems.js");
         includeJS("../assets/components/inventory/inventory/checkConfirmMenu.js");
+        includeJS("../assets/components/inventory/inventory/SelectItems.js");
+        includeJS("../assets/components/inventory/inventory/BlockInterface.js");
 
         includeCSS("../assets/components/inventory/css/constructorMS.css");
         includeCSS("../assets/components/inventory/css/constructorUnit.css");

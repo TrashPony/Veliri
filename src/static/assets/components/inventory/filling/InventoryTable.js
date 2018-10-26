@@ -10,17 +10,12 @@ function InventoryTable(inventoryItems) {
             cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).item.name + ".png)";
             cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
 
-            CreateHealBar(cell, "inventory");
+            CreateHealBar(cell, "inventory", true);
 
             cell.onclick = SelectInventoryItem;
 
-            cell.addEventListener("mousemove", InventoryOverTip);
-            cell.addEventListener("mouseout", function () {
-                let inventoryTip = document.getElementById("InventoryTipOver");
-                if (inventoryTip) {
-                    inventoryTip.remove()
-                }
-            });
+            cell.onmousemove = InventoryOverTip;
+            cell.onmouseout = OffTip;
         } else {
 
             cell.slotData = null;
