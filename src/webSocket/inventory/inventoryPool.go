@@ -117,5 +117,9 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "RemoveUnitAmmo" {
 			RemoveUnitAmmo(ws, msg)
 		}
+
+		if msg.Event == "InventoryRepair" || msg.Event == "EquipsRepair" || msg.Event == "AllRepair" {
+			Repair(ws, msg)
+		}
 	}
 }

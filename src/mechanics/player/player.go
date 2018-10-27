@@ -7,9 +7,10 @@ import (
 )
 
 type Player struct {
-	// структура описывающая клиента ws соеденение
-	login string
-	id    int
+	id      int
+	login   string
+	email   string
+	credits int
 
 	watch        map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
 	unitStorage  []*unit.Unit
@@ -86,4 +87,20 @@ func (client *Player) GetSquads() []*squad.Squad {
 
 func (client *Player) SetSquads(squads []*squad.Squad) {
 	client.squads = squads
+}
+
+func (client *Player) SetEmail(email string) {
+	client.email = email
+}
+
+func (client *Player) GetEmail() string {
+	return client.email
+}
+
+func (client *Player) SetCredits(credits int) {
+	client.credits = credits
+}
+
+func (client *Player) GetCredits() int {
+	return client.credits
 }

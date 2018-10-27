@@ -13,7 +13,7 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                     UpdateEquips(cell, classPrefix, typeSlot);
                 }
 
-                cell.addEventListener("mousemove", function (e) {
+                cell.onmousemove = function (e) {
                     if (JSON.parse(this.slotData).equip) {
                         let equipSlot = JSON.parse(this.slotData);
                         equipSlot.item = JSON.parse(this.slotData).equip;
@@ -25,7 +25,7 @@ function UpdateCells(typeSlot, idPrefix, shipSlots, classPrefix) {
                         weaponSlot.type = "weapon";
                         ItemOverTip(e, weaponSlot)
                     }
-                });
+                }
             } else {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "";
@@ -114,6 +114,8 @@ function UpdateWeapon(cell, classPrefix) {
             let cell = document.getElementById("inventory " + i + 6);
             if (cell.slotData && JSON.parse(cell.slotData).type === "weapon") {
                 cell.className = "InventoryCell hover";
+            } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
+                cell.className = "InventoryCell notAllow";
             }
         }
     };
@@ -132,12 +134,16 @@ function UpdateWeapon(cell, classPrefix) {
         }
     };
 
+    if (cell.ammoCell) {
+        cell.ammoCell.remove();
+        cell.ammoCell = null;
+        cell.innerHTML = "";
+    }
+
     if (JSON.parse(cell.slotData).weapon !== null) {
         cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).weapon.name + ".png)";
     } else {
         cell.style.backgroundImage = null;
-        cell.innerHTML = "";
-        cell.ammoCell = null;
     }
 
     if (cell.ammoCell === null || cell.ammoCell === undefined) {
@@ -181,15 +187,20 @@ function CreateAmmoCell(cell, classPrefix) {
     }
 
     ammoCell.onmouseover = function (event) {
-        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
+
+    ammoCell.onmousemove = function (event) {
+        // todo подсказка о типе снаряда
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 
     ammoCell.onmouseout = function (event) {
-        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
         this.style.cursor = "auto";
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 
     if (JSON.parse(ammoCell.slotData).ammo !== null) {

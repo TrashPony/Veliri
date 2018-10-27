@@ -6,6 +6,11 @@ function EquipsRepair() {
 
 function overEquipButton() {
 
+    document.getElementById("MSIcon").className = "UnitIconSelectRepair";
+    if (document.getElementById("UnitIcon")) {
+        document.getElementById("UnitIcon").className = "UnitIconSelectRepair";
+    }
+
     if (document.getElementById("ConstructorUnit")) {
         let equippingCells = document.getElementsByClassName("UnitEquip");
 
@@ -39,7 +44,7 @@ function overEquipButton() {
 
             let body = JSON.parse(cell.slotData).unit.body;
 
-            if (body.hp < body.max_hp) {
+            if (JSON.parse(cell.slotData).unit.hp < body.max_hp) {
                 colored(cell)
             }
 
@@ -99,6 +104,11 @@ function overEquipButton() {
 }
 
 function outEquipButton() {
+
+    document.getElementById("MSIcon").className = "UnitIconNoSelect";
+    if (document.getElementById("UnitIcon")) {
+        document.getElementById("UnitIcon").className = "UnitIconNoSelect";
+    }
 
     let constructorUnit = document.getElementById("ConstructorUnit");
     if (constructorUnit) {

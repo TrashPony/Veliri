@@ -110,6 +110,10 @@
     box-shadow: 0 0 15px 13px rgb(255, 149, 32);
 }
 
+.UnitIconSelectRepair {
+    box-shadow: 0 0 5px 3px rgb(255, 243, 38);
+}
+
 .UnitIconSelect:active {
     box-shadow: 0 0 15px 13px rgb(165, 213, 239);
 }

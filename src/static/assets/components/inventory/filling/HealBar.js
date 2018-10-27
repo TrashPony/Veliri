@@ -34,6 +34,8 @@ function CreateHealBar(cell, type, append) {
         } else if (percentHP < 50 && percentHP > 25) {
             healBar.style.backgroundColor = "#fa7b31"
         } else if (percentHP < 25 && cellData.hp > 1) {
+            healBar.style.backgroundColor = "#ff2615"
+        } else if (cellData.hp === 0) {
             backHealBar.style.opacity = "0";
             // todo показывать что предмет сломан например box-shadow insert red
         }

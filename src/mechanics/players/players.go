@@ -1,6 +1,7 @@
 package players
 
 import (
+	"../db/get"
 	"../inventory"
 	"../player"
 	"sync"
@@ -30,13 +31,10 @@ func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 
-	newUser := player.Player{}
-	newUser.SetID(id)
-	newUser.SetLogin(login)
+	newUser := get.User(id, login)
 
-	inventory.GetInventory(&newUser)
-	//todo взятие ПОЛНОГО обьекта пользователя
-	usersStore.users[id] = &newUser
+	inventory.GetInventory(newUser)
+	usersStore.users[id] = newUser
 
-	return &newUser
+	return newUser
 }
