@@ -1,8 +1,10 @@
 #inventoryBox {
     position: absolute;
-    top: 50px;
+    top: 5px;
     z-index: 900;
-    width: 99%;
+    width: 690px;
+    left: 50%;           /* выравниваем по центру */
+    margin-left: -345px; /* выравниваем по центру */
 }
 
 #ConstructorMS {

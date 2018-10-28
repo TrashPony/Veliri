@@ -20,4 +20,26 @@ type InventorySlot struct {
 	ItemID     int         `json:"item_id"`
 	InsertToDB bool        `json:"insert_to_db"`
 	HP         int         `json:"hp"`
+	Size       float32     `json:"size"`
+}
+
+func (squad *Squad) GetUseAllInventorySize() float32 {
+	msBodySize := squad.MatherShip.Body.GetUseCapacitySize()
+
+	var inventorySquadSize float32
+	for _, slot := range squad.Inventory {
+		if slot.Item != nil {
+			inventorySquadSize = inventorySquadSize + slot.Size
+		}
+	}
+
+	var unitSquadSize float32
+	for _, squadUnit := range squad.MatherShip.Units {
+		if squadUnit.Unit != nil {
+			unitSquadSize = unitSquadSize + squadUnit.Unit.Body.GetUseCapacitySize()
+			unitSquadSize = unitSquadSize + squadUnit.Unit.Body.CapacitySize
+		}
+	}
+
+	return msBodySize + unitSquadSize + inventorySquadSize
 }

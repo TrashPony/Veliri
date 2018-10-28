@@ -181,7 +181,6 @@ func (unit *Unit) CalculateParams() {
 	unit.EvasionCritical = unit.Body.EvasionCritical
 	unit.VulToKinetics = unit.Body.VulToKinetics
 	unit.VulToThermo = unit.Body.VulToThermo
-	unit.VulToEM = unit.Body.VulToEM
 	unit.VulToExplosion = unit.Body.VulToExplosion
 	unit.RangeView = unit.Body.RangeView
 	unit.Accuracy = unit.Body.Accuracy

@@ -63,12 +63,13 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 
 func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int) {
 	if weaponSlot.Weapon != nil {
-		AddItem(user.GetSquad().Inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP)
+		AddItem(user.GetSquad().Inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1,
+			weaponSlot.HP, weaponSlot.Weapon.Size)
 		weaponSlot.Weapon = nil
 	}
 
 	if weaponSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1)
+		AddItem(user.GetSquad().Inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
 		weaponSlot.Ammo = nil
 	}
 

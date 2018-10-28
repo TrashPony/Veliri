@@ -13,7 +13,7 @@ func RemoveMSEquip(user *player.Player, numEquipSlot int, typeSlot int) {
 
 	if ok && slotEquip != nil && slotEquip.Equip != nil {
 
-		AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP)
+		AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP, slotEquip.Equip.Size)
 		slotEquip.Equip = nil
 
 		user.GetSquad().MatherShip.CalculateParams()
@@ -32,7 +32,7 @@ func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot
 
 		if ok && slotEquip != nil && slotEquip.Equip != nil {
 
-			AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP)
+			AddItem(user.GetSquad().Inventory, slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP, slotEquip.Equip.Size)
 			slotEquip.Equip = nil
 
 			unitSlot.Unit.CalculateParams()

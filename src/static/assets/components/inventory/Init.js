@@ -2,7 +2,13 @@ function InitInventoryMenu(closeFunc) {
     /* осталь надежду вся сюда входящий, это дерьмо уже не отрефачить */
     let promise = new Promise((resolve) => {
         includeJS("../assets/components/inventory/webSocket.js");
-        includeJS("../assets/components/inventory/Create.js");
+
+        includeJS("../assets/components/inventory/create/Create.js");
+        includeJS("../assets/components/inventory/create/Constructor.js");
+        includeJS("../assets/components/inventory/create/Inventory.js");
+        includeJS("../assets/components/inventory/create/MotherShipParams.js");
+        includeJS("../assets/components/inventory/create/Squad.js");
+        includeJS("../assets/components/inventory/create/UserStatus.js");
 
         includeJS("../assets/components/inventory/selected/SelectInventoryItem.js");
         includeJS("../assets/components/inventory/selected/DeselectInventoryItem.js");
@@ -44,7 +50,7 @@ function InitInventoryMenu(closeFunc) {
         includeCSS("../assets/components/inventory/css/tip.css");
         includeCSS("../assets/components/inventory/css/repair.css");
         includeCSS("../assets/components/inventory/css/inventory.css");
-
+        includeCSS("../assets/components/inventory/css/userStatus.css");
 
         return resolve();
     });

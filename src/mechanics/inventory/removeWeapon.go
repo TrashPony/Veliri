@@ -13,7 +13,8 @@ func RemoveMSWeapon(user *player.Player, numEquipSlot int) {
 			RemoveMSAmmo(user, numEquipSlot)
 		}
 
-		AddItem(user.GetSquad().Inventory, slotWeapon.Weapon, "weapon", slotWeapon.Weapon.ID, 1, slotWeapon.HP)
+		AddItem(user.GetSquad().Inventory, slotWeapon.Weapon, "weapon", slotWeapon.Weapon.ID, 1,
+			slotWeapon.HP, slotWeapon.Weapon.Size)
 		slotWeapon.Weapon = nil
 
 		user.GetSquad().MatherShip.CalculateParams()
@@ -33,7 +34,8 @@ func RemoveUnitWeapon(user *player.Player, numEquipSlot, numberUnitSlot int) {
 				RemoveUnitAmmo(user, numEquipSlot, numberUnitSlot)
 			}
 
-			AddItem(user.GetSquad().Inventory, slotWeapon.Weapon, "weapon", slotWeapon.Weapon.ID, 1, slotWeapon.HP)
+			AddItem(user.GetSquad().Inventory, slotWeapon.Weapon, "weapon", slotWeapon.Weapon.ID, 1,
+				slotWeapon.HP, slotWeapon.Weapon.Size)
 			slotWeapon.Weapon = nil
 
 			unitSlot.Unit.CalculateParams()

@@ -5,18 +5,22 @@ CREATE TABLE body_type (
   speed                      INT,
   initiative                 INT,
   max_hp                     INT,
-  armor                      INT, /* блокируемый урон в абсолюте */
+  armor                      INT,      /* блокируемый урон в абсолюте */
   evasion_critical           INT,
   vulnerability_to_kinetics  INT,
   vulnerability_to_thermo    INT,
-  vulnerability_to_em        INT,
   vulnerability_to_explosion INT,
   range_view                 INT,
   accuracy                   INT,
-  max_power                  INT, /* макс колво энергии */
-  recovery_power             INT, /* востановление энергии за ход */
-  recovery_hp                INT, /* востановление hp например за счет дронов */
-  wall_hack                  BOOLEAN
+  max_power                  INT,      /* макс колво энергии */
+  recovery_power             INT,      /* востановление энергии за ход */
+  recovery_hp                INT,      /* востановление hp например за счет дронов */
+  wall_hack                  BOOLEAN,
+  capacity_size              REAL,     /* вместимость корпуса к кубо-метрах а так же его вес */
+  standard_size              INT,      /* small - 1, medium - 2, big - 3, размер корпуса (если корпус мс то неучитывается)*/
+  standard_size_small        BOOLEAN,  /* оружие которое может использовать корпус small, medium, big */
+  standard_size_medium       BOOLEAN,  /* оружие которое может использовать корпус small, medium, big */
+  standard_size_big          BOOLEAN   /* оружие которое может использовать корпус small, medium, big */
 );
 
 CREATE TABLE body_slots (

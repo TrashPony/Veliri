@@ -16,7 +16,6 @@ type Body struct {
 	EvasionCritical int    `json:"evasion_critical"`
 	VulToKinetics   int    `json:"vul_to_kinetics"`
 	VulToThermo     int    `json:"vul_to_thermo"`
-	VulToEM         int    `json:"vul_to_em"`
 	VulToExplosion  int    `json:"vul_to_explosion"`
 	RangeView       int    `json:"range_view"`
 	Accuracy        int    `json:"accuracy"`
@@ -24,6 +23,12 @@ type Body struct {
 	RecoveryPower   int    `json:"recovery_power"`
 	RecoveryHP      int    `json:"recovery_hp"`
 	WallHack        bool   `json:"wall_hack"`
+
+	CapacitySize       float32 `json:"capacity_size"`        /* вместимость корпуса к кубо-метрах */
+	StandardSize       int     `json:"standard_size"`        /* small - 1, medium - 2, big - 3, размер корпуса (если корпус мс то неучитывается)*/
+	StandardSizeSmall  bool    `json:"standard_size_small"`  /* оружие которое может использовать корпус small, medium, big */
+	StandardSizeMedium bool    `json:"standard_size_medium"` /* оружие которое может использовать корпус small, medium, big */
+	StandardSizeBig    bool    `json:"standard_size_big"`    /* оружие которое может использовать корпус small, medium, big */
 
 	EquippingI   map[int]*BodyEquipSlot `json:"equippingI"`
 	EquippingII  map[int]*BodyEquipSlot `json:"equippingII"`
@@ -60,6 +65,38 @@ func (body *Body) GetUsePower() int {
 	}
 
 	return allPower
+}
+
+func (body *Body) GetUseCapacitySize() float32 {
+	var allSize float32
+
+	var counter = func(equip map[int]*BodyEquipSlot) float32 {
+		var size float32
+		for _, slot := range equip {
+			if slot.Equip != nil {
+				size = size + slot.Equip.Size
+			}
+		}
+		return size
+	}
+
+	allSize = allSize + counter(body.EquippingI)
+	allSize = allSize + counter(body.EquippingII)
+	allSize = allSize + counter(body.EquippingIII)
+	allSize = allSize + counter(body.EquippingIV)
+	allSize = allSize + counter(body.EquippingV)
+
+	for _, slot := range body.Weapons {
+		if slot.Weapon != nil {
+			allSize = allSize + slot.Weapon.Size
+
+			if slot.Ammo != nil {
+				allSize = allSize + slot.Ammo.Size*float32(slot.AmmoQuantity)
+			}
+		}
+	}
+
+	return allSize
 }
 
 type BodyEquipSlot struct {

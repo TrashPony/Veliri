@@ -7,7 +7,9 @@ import (
 )
 
 func User(id int, login string) *player.Player {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mail, credits FROM users WHERE id=$1 AND name=$2", id, login)
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mail, credits, experience_point "+
+		"FROM users "+
+		"WHERE id=$1 AND name=$2", id, login)
 	if err != nil {
 		log.Fatal("get user " + err.Error())
 	}
@@ -17,10 +19,10 @@ func User(id int, login string) *player.Player {
 
 	for rows.Next() {
 
-		var id, credits int
+		var id, credits, experiencePoint int
 		var name, mail string
 
-		err := rows.Scan(&id, &name, &mail, &credits)
+		err := rows.Scan(&id, &name, &mail, &credits, &experiencePoint)
 		if err != nil {
 			log.Fatal("get user " + err.Error())
 		}
@@ -29,7 +31,14 @@ func User(id int, login string) *player.Player {
 		newUser.SetLogin(name)
 		newUser.SetEmail(mail)
 		newUser.SetCredits(credits)
+		newUser.SetExperiencePoint(experiencePoint)
+
+		getUserSkills(&newUser)
 	}
 
 	return &newUser
+}
+
+func getUserSkills(user *player.Player) {
+
 }

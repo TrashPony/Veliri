@@ -7,10 +7,11 @@ import (
 )
 
 type Player struct {
-	id      int
-	login   string
-	email   string
-	credits int
+	id              int
+	login           string
+	email           string
+	credits         int
+	experiencePoint int
 
 	watch        map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
 	unitStorage  []*unit.Unit
@@ -103,4 +104,12 @@ func (client *Player) SetCredits(credits int) {
 
 func (client *Player) GetCredits() int {
 	return client.credits
+}
+
+func (client *Player) SetExperiencePoint(experiencePoint int) {
+	client.experiencePoint = experiencePoint
+}
+
+func (client *Player) GetExperiencePoint() int {
+	return client.experiencePoint
 }

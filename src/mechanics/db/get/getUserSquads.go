@@ -203,22 +203,34 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 		}
 
 		if inventorySlot.Type == "weapon" {
-			inventorySlot.Item = Weapon(inventorySlot.ItemID)
+			weapon := Weapon(inventorySlot.ItemID)
+			inventorySlot.Item = weapon
+			inventorySlot.Size = weapon.Size * float32(inventorySlot.Quantity)
+
 			inventory[slot] = &inventorySlot
 		}
 
 		if inventorySlot.Type == "ammo" {
-			inventorySlot.Item = Ammo(inventorySlot.ItemID)
+			ammo := Ammo(inventorySlot.ItemID)
+			inventorySlot.Item = ammo
+			inventorySlot.Size = ammo.Size * float32(inventorySlot.Quantity)
+
 			inventory[slot] = &inventorySlot
 		}
 
 		if inventorySlot.Type == "equip" {
-			inventorySlot.Item = TypeEquip(inventorySlot.ItemID)
+			equip := TypeEquip(inventorySlot.ItemID)
+			inventorySlot.Item = equip
+			inventorySlot.Size = equip.Size * float32(inventorySlot.Quantity)
+
 			inventory[slot] = &inventorySlot
 		}
 
 		if inventorySlot.Type == "body" {
-			inventorySlot.Item = Body(inventorySlot.ItemID)
+			body := Body(inventorySlot.ItemID)
+			inventorySlot.Item = body
+			inventorySlot.Size = body.CapacitySize * float32(inventorySlot.Quantity)
+
 			inventory[slot] = &inventorySlot
 		}
 	}

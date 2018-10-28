@@ -49,24 +49,24 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body, hp in
 	for _, weaponSlot := range Body.Weapons {
 
 		if weaponSlot.Weapon != nil {
-			AddItem(inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP)
+			AddItem(inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size)
 		}
 
 		if weaponSlot.Ammo != nil {
-			AddItem(inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1)
+			AddItem(inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
 		}
 
 		weaponSlot.Ammo = nil
 		weaponSlot.Weapon = nil
 	}
 
-	AddItem(inventory, Body, "body", Body.ID, 1, hp) // кидает боди в инвентарь
+	AddItem(inventory, Body, "body", Body.ID, 1, hp, Body.CapacitySize) // кидает боди в инвентарь
 }
 
 func removeAllEquippingBody(inventory map[int]*squad.InventorySlot, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP)
+			AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size)
 			equipSlot.Equip = nil
 		}
 	}

@@ -69,7 +69,7 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int) {
 
 	if equipSlot.Equip != nil {
-		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP)
+		AddItem(user.GetSquad().Inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size)
 		equipSlot.Equip = nil
 	}
 

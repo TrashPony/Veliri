@@ -20,14 +20,19 @@ func Body(id int) (body *detail.Body) {
 		"evasion_critical, "+
 		"vulnerability_to_kinetics, "+
 		"vulnerability_to_thermo, "+
-		"vulnerability_to_em, "+
 		"vulnerability_to_explosion, "+
 		"range_view, "+
 		"accuracy, "+
 		"max_power, "+
 		"recovery_power, "+
 		"wall_hack, "+
-		"recovery_hp "+
+		"recovery_hp, "+
+		"capacity_size, "+
+		"standard_size, "+
+		"standard_size_small, "+
+		"standard_size_medium, "+
+		"standard_size_big "+
+		""+
 		"FROM body_type "+
 		"WHERE id=$1", id)
 	if err != nil {
@@ -49,7 +54,6 @@ func Body(id int) (body *detail.Body) {
 			&body.EvasionCritical,
 			&body.VulToKinetics,
 			&body.VulToThermo,
-			&body.VulToEM,
 			&body.VulToExplosion,
 			&body.RangeView,
 			&body.Accuracy,
@@ -57,6 +61,11 @@ func Body(id int) (body *detail.Body) {
 			&body.RecoveryPower,
 			&body.WallHack,
 			&body.RecoveryHP,
+			&body.CapacitySize,
+			&body.StandardSize,
+			&body.StandardSizeSmall,
+			&body.StandardSizeMedium,
+			&body.StandardSizeBig,
 		)
 		if err != nil {
 			log.Fatal("get body: " + err.Error())
