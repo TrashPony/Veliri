@@ -53,17 +53,28 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 					if (equipSlot.Equip != nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
 						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
 
-						SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
-
-						unitSlot.Unit.CalculateParams()
+						if unitSlot.Unit.Body.GetUseCapacitySize()+newEquip.Size <= unitSlot.Unit.Body.CapacitySize {
+							SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+							unitSlot.Unit.CalculateParams()
+							return nil
+						} else {
+							return errors.New("lacking size")
+						}
 					} else {
 						return errors.New("lacking power")
 					}
+				} else {
+					return errors.New("wrong type slot")
 				}
+			} else {
+				return errors.New("wrong equip slot")
 			}
+		} else {
+			return errors.New("wrong unit")
 		}
+	} else {
+		return errors.New("wrong inventory slot")
 	}
-	return nil
 }
 
 func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int) {

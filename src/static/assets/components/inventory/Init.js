@@ -20,7 +20,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/filling/SquadTable.js");
         includeJS("../assets/components/inventory/filling/MarkConstructorsCell.js");
         includeJS("../assets/components/inventory/filling/DeactivateCell.js");
-        includeJS("../assets/components/inventory/filling/PowerPanel.js");
+        includeJS("../assets/components/inventory/filling/UnitPanel.js");
         includeJS("../assets/components/inventory/filling/HealBar.js");
 
         includeJS("../assets/components/inventory/tip/ClickTip.js");

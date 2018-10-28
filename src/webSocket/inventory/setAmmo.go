@@ -8,15 +8,21 @@ import (
 func SetMotherShipAmmo(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	inventory.SetMSAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot)
-
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
+	err := inventory.SetMSAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot)
+	if err != nil {
+		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
+	} else {
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	}
 }
 
 func SetUnitAmmo(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	inventory.SetUnitAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
-
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
+	err := inventory.SetUnitAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
+	if err != nil {
+		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
+	} else {
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	}
 }

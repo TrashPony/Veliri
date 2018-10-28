@@ -11,7 +11,11 @@ function FillingInventory(jsonData) {
         } else {
             NoActiveCell();
         }
+
+        inventoryMetaInfo(JSON.parse(jsonData))
+
     } else if (event === "ms error") {
+
         let powerPanel = document.getElementById("powerPanel");
 
         let start = Date.now();
@@ -30,22 +34,40 @@ function FillingInventory(jsonData) {
 
     } else if (event === "unit error") {
 
-        let powerPanel = document.getElementById("unitPowerPanel");
-        if (powerPanel) {
+        let panel;
 
+        if (JSON.parse(jsonData).error === "lacking size") {
+            panel = document.getElementById("unitCubePanel");
+        } else if (JSON.parse(jsonData).error === "lacking power") {
+            panel = document.getElementById("unitPowerPanel");
+        }
+
+        if (panel) {
             let start = Date.now();
-
             let timer = setInterval(function () {
                 let timePassed = Date.now() - start;
                 if (timePassed >= 600) {
                     clearInterval(timer);
-                    powerPanel.style.border = "1px solid #25a0e1";
-                    powerPanel.style.boxShadow = "none";
+                    panel.style.border = "1px solid #25a0e1";
+                    panel.style.boxShadow = "none";
                     return;
                 }
-                powerPanel.style.boxShadow = "inset 1px 1px 25px 1px rgba(255,0,0,1)";
-                powerPanel.style.border = "1px solid #e10006";
+                panel.style.boxShadow = "inset 1px 1px 25px 1px rgba(255,0,0,1)";
+                panel.style.border = "1px solid #e10006";
             }, 20);
         }
     }
+}
+
+function inventoryMetaInfo(data) {
+    let sizeBlock = document.getElementById("sizeInventoryInfo");
+    let textColor = "";
+    if (data.inventory_size > data.squad.mather_ship.body.capacity_size) {
+        textColor = "#b9281d"
+    } else {
+        textColor = "#decbcb"
+    }
+
+    sizeBlock.innerHTML = "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>";
+    sizeBlock.style.color = textColor;
 }

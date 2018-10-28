@@ -20,7 +20,8 @@ type Message struct {
 }
 
 type Response struct {
-	Event string       `json:"event"`
-	Squad *squad.Squad `json:"squad"`
-	Error string       `json:"error"`
+	Event         string       `json:"event"`
+	Squad         *squad.Squad `json:"squad"`
+	InventorySize float32      `json:"inventory_size"`
+	Error         string       `json:"error"`
 }

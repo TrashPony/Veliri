@@ -10,7 +10,7 @@ func RemoveMotherShipBody(ws *websocket.Conn) {
 
 	inventory.RemoveMSBody(user)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 }
 
 func RemoveUnitBody(ws *websocket.Conn, msg Message) {
@@ -18,5 +18,5 @@ func RemoveUnitBody(ws *websocket.Conn, msg Message) {
 
 	inventory.RemoveUnitBody(user, msg.UnitSlot)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 }

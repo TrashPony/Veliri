@@ -20,17 +20,31 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 			// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
 			if (weaponSlot.Weapon != nil && msBody.MaxPower-msBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
 				(weaponSlot.Weapon == nil && msBody.MaxPower-msBody.GetUsePower() >= newWeapon.Power) {
-
-				SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-
-				user.GetSquad().MatherShip.CalculateParams()
+				if newWeapon.StandardSize == 1 && msBody.StandardSizeSmall {
+					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+					user.GetSquad().MatherShip.CalculateParams()
+					return nil
+				}
+				if newWeapon.StandardSize == 2 && msBody.StandardSizeMedium {
+					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+					user.GetSquad().MatherShip.CalculateParams()
+					return nil
+				}
+				if newWeapon.StandardSize == 3 && msBody.StandardSizeBig {
+					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+					user.GetSquad().MatherShip.CalculateParams()
+					return nil
+				}
+				return errors.New("wrong standard size")
 			} else {
 				return errors.New("lacking power")
 			}
+		} else {
+			return errors.New("wrong weapon slot")
 		}
+	} else {
+		return errors.New("wrong inventory slot")
 	}
-
-	return nil
 }
 
 func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, numberUnitSlot int) error {
@@ -48,17 +62,38 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
 				if (weaponSlot.Weapon != nil && unitBody.MaxPower-unitBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
 					(weaponSlot.Weapon == nil && unitBody.MaxPower-unitBody.GetUsePower() >= newWeapon.Power) {
-					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-
-					unitSlot.Unit.CalculateParams()
+					if unitBody.GetUseCapacitySize()+newWeapon.Size <= unitBody.CapacitySize {
+						if newWeapon.StandardSize == 1 && unitBody.StandardSizeSmall {
+							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+							unitSlot.Unit.CalculateParams()
+							return nil
+						}
+						if newWeapon.StandardSize == 2 && unitBody.StandardSizeMedium {
+							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+							unitSlot.Unit.CalculateParams()
+							return nil
+						}
+						if newWeapon.StandardSize == 3 && unitBody.StandardSizeBig {
+							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
+							unitSlot.Unit.CalculateParams()
+							return nil
+						}
+						return errors.New("wrong standard size")
+					} else {
+						return errors.New("lacking size")
+					}
 				} else {
 					return errors.New("lacking power")
 				}
+			} else {
+				return errors.New("wrong weapon slot")
 			}
+		} else {
+			return errors.New("wrong unit")
 		}
+	} else {
+		return errors.New("wrong inventory slot")
 	}
-
-	return nil
 }
 
 func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int) {
@@ -69,7 +104,8 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 	}
 
 	if weaponSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
+		AddItem(user.GetSquad().Inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity,
+			1, weaponSlot.Ammo.Size)
 		weaponSlot.Ammo = nil
 	}
 

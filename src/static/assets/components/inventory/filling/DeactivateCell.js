@@ -62,5 +62,8 @@ function NoActiveUnitCell(slotData) {
 
         let powerPanel = document.getElementById("unitPowerPanel");
         powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
+
+        let unitCubePanel = document.getElementById("unitCubePanel");
+        unitCubePanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
     }
 }

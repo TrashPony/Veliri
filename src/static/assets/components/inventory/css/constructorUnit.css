@@ -31,17 +31,50 @@
     margin-top: 20px;
 }
 
-#unitPowerPanel {
+.powerIcon {
     position: absolute;
     top: 50px;
-    width: 40px;
-    left: 12px;
+    width: 30px;
+    left: 18px;
+    height: 20px;
+    background: url(../img/power.png) no-repeat 0 0;
+    background-size: 50%;
+}
+
+#unitPowerPanel {
+    position: absolute;
+    top: 68px;
+    width: 39px;
+    left: 3px;
     border-radius: 10px;
     height: 12px;
     border: 2px solid #6c6c6c;
     background-color: #4c4c4c;
     font-size: 11px;
     box-shadow: 0 0 10px rgba(0,0,0,1);
+}
+
+.cubeIcon {
+    position: absolute;
+    top: 90px;
+    width: 30px;
+    left: 15px;
+    height: 20px;
+    background: url(../img/cube.png) no-repeat 0 0;
+    background-size: 50%;
+}
+
+#unitCubePanel {
+    position: absolute;
+    top: 106px;
+    width: 36px;
+    left: 1px;
+    border-radius: 10px;
+    height: 12px;
+    border: 2px solid #6c6c6c;
+    background-color: #4c4c4c;
+    font-size: 11px;
+    box-shadow: 0 0 4px rgba(0,0,0,1);
 }
 
 .UnitEquip {

@@ -19,9 +19,12 @@ function CreateInventory() {
     throwButton.onclick = ThrowItems;
     inventory.appendChild(throwButton);
 
+    let sizeInventoryInfo = document.createElement("div");
+    sizeInventoryInfo.id = "sizeInventoryInfo";
+    inventory.appendChild(sizeInventoryInfo);
+
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
-
     CreateCells(6, 40, "InventoryCell", "inventory ", inventoryStorage);
     inventory.appendChild(inventoryStorage);
 
@@ -40,6 +43,5 @@ function CreateInventory() {
     sortButton3.sort = "3";
     sortButton3.onclick = SortingItems;
     sortPanel.appendChild(sortButton3);
-
     inventory.appendChild(sortPanel);
 }

@@ -1,7 +1,6 @@
 package inventory
 
 import (
-	"../../mechanics/gameObjects/squad"
 	"../../mechanics/inventory"
 	"github.com/gorilla/websocket"
 	"log"
@@ -14,13 +13,8 @@ func Open(ws *websocket.Conn, msg Message) {
 		inventory.GetInventory(user)
 	}
 
-	err := ws.WriteJSON(RespSquad{Event: msg.Event, Squad: user.GetSquad()})
+	err := ws.WriteJSON(Response{Event: msg.Event, Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-}
-
-type RespSquad struct {
-	Event string       `json:"event"`
-	Squad *squad.Squad `json:"squad"`
 }

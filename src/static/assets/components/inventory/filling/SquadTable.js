@@ -76,15 +76,30 @@ function OpenUnitEditor() {
         let powerPanel = document.getElementById("unitPowerPanel");
         powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
 
+        let unitCubePanel = document.getElementById("unitCubePanel");
+        unitCubePanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
+
         let unitIcon = document.getElementById("UnitIcon");
         unitIcon.innerHTML = "<span>Место для корпуса</span>";
     }
 }
 
 function CreateUnitEquipSlots(constructorUnit) {
+    let powerIcon = document.createElement("div");
+    powerIcon.className = "powerIcon";
+    constructorUnit.appendChild(powerIcon);
+
     let unitPowerPanel = document.createElement("div");
     unitPowerPanel.id = "unitPowerPanel";
     constructorUnit.appendChild(unitPowerPanel);
+
+    let cubeIcon = document.createElement("div");
+    cubeIcon.className = "cubeIcon";
+    constructorUnit.appendChild(cubeIcon);
+
+    let unitCubePanel = document.createElement("div");
+    unitCubePanel.id = "unitCubePanel";
+    constructorUnit.appendChild(unitCubePanel);
 
     let equippingPanelIII = document.createElement("div");
     CreateCells(3, 3, "UnitEquip noActive", "UnitEquip", equippingPanelIII);
@@ -114,6 +129,7 @@ function FillingSquadConstructor(slotData) {
     unitIcon.onclick = BodyUnitMenu;
 
     FillPowerPanel(slotData.unit.body, "unitPowerPanel");
+    FillCubePanel(slotData.unit.body, "unitCubePanel");
 
     UpdateCells(1, "UnitEquip", slotData.unit.body.equippingI, "UnitEquip");
     UpdateCells(2, "UnitEquip", slotData.unit.body.equippingII, "UnitEquip");

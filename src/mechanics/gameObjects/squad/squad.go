@@ -24,20 +24,25 @@ type InventorySlot struct {
 }
 
 func (squad *Squad) GetUseAllInventorySize() float32 {
-	msBodySize := squad.MatherShip.Body.GetUseCapacitySize()
+
+	var unitSquadSize float32
+	var msBodySize float32
+
+	if squad.MatherShip.Body != nil {
+		msBodySize = squad.MatherShip.Body.GetUseCapacitySize()
+
+		for _, squadUnit := range squad.MatherShip.Units {
+			if squadUnit.Unit != nil {
+				unitSquadSize = unitSquadSize + squadUnit.Unit.Body.GetUseCapacitySize()
+				unitSquadSize = unitSquadSize + squadUnit.Unit.Body.CapacitySize
+			}
+		}
+	}
 
 	var inventorySquadSize float32
 	for _, slot := range squad.Inventory {
 		if slot.Item != nil {
 			inventorySquadSize = inventorySquadSize + slot.Size
-		}
-	}
-
-	var unitSquadSize float32
-	for _, squadUnit := range squad.MatherShip.Units {
-		if squadUnit.Unit != nil {
-			unitSquadSize = unitSquadSize + squadUnit.Unit.Body.GetUseCapacitySize()
-			unitSquadSize = unitSquadSize + squadUnit.Unit.Body.CapacitySize
 		}
 	}
 
