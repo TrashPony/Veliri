@@ -7,3 +7,57 @@
     border: 1px solid #25a0e1;
     border-radius: 10px 100px 10px 10px;
 }
+
+#userIcon {
+    height: 63px;
+    width: 60px;
+    border: 1px solid #25a0e1;
+    float: left;
+    margin-top: 9px;
+    margin-left: 10px;
+    border-radius: 10px;
+}
+
+#userStatBlock {
+    float: left;
+    width: 120px;
+    margin-left: 10px;
+    margin-top: 1px;
+}
+
+#inventoryUserName {
+    height: 20px;
+    max-width: 120px;
+    border: 1px solid #25a0e1;
+    margin-top: 9px;
+    border-radius: 7px;
+    text-align: left;
+}
+
+#credits {
+    height: 20px;
+    max-width: 120px;
+    border: 1px solid #25a0e1;
+    margin-top: -1px;
+    border-radius: 7px;
+    text-align: left;
+}
+
+#expPoints {
+    height: 20px;
+    max-width: 120px;
+    border: 1px solid #25a0e1;
+    margin-top: -1px;
+    border-radius: 7px;
+    text-align: left;
+}
+
+#skills {
+    height: 63px;
+    width: 102px;
+    border: 1px solid #25a0e1;
+    float: right;
+    margin-top: 9px;
+    margin-right: 14px;
+    border-radius: 10px 60px 10px 10px;
+}

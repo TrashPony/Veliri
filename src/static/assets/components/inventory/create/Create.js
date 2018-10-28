@@ -1,4 +1,13 @@
 function CreateInventoryMenu(closeFunc) {
+
+    if (document.getElementById("mask")) {
+        document.getElementById("mask").remove();
+    }
+
+    if (document.getElementById("inventoryBox")) {
+        document.getElementById("inventoryBox").remove();
+    }
+
     let mask = document.createElement("div");
     mask.id = "mask";
     mask.style.display = "block";
