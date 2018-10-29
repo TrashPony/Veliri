@@ -58,12 +58,12 @@ function NoActiveUnitCell(slotData) {
             unitIcon.style.backgroundImage = null;
             unitIcon.onclick = null;
             unitIcon.shipBody = null;
+
+            let powerPanel = document.getElementById("unitPowerPanel");
+            powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
+
+            let unitCubePanel = document.getElementById("unitCubePanel");
+            unitCubePanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
         }
-
-        let powerPanel = document.getElementById("unitPowerPanel");
-        powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
-
-        let unitCubePanel = document.getElementById("unitCubePanel");
-        unitCubePanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
     }
 }
