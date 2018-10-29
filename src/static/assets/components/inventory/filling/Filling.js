@@ -60,6 +60,9 @@ function FillingInventory(jsonData) {
 }
 
 function inventoryMetaInfo(data) {
+
+    let percentFill = 100 / (data.squad.mather_ship.body.capacity_size / data.inventory_size);
+
     let sizeBlock = document.getElementById("sizeInventoryInfo");
     let textColor = "";
     if (data.inventory_size > data.squad.mather_ship.body.capacity_size) {
@@ -68,6 +71,8 @@ function inventoryMetaInfo(data) {
         textColor = "#decbcb"
     }
 
-    sizeBlock.innerHTML = "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>";
+    sizeBlock.innerHTML = "<div style='width:" + percentFill + "%'>" +
+        "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>" +
+        "</div>";
     sizeBlock.style.color = textColor;
 }

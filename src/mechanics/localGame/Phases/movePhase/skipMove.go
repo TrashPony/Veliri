@@ -13,5 +13,7 @@ func SkipMove(gameUnit *unit.Unit, game *localGame.Game, client *player.Player) 
 	queue := Queue(game)
 	gameUnit.QueueAttack = queue
 
+	QueueMove(client, game)
+
 	updateSquad.Squad(client.GetSquad())
 }

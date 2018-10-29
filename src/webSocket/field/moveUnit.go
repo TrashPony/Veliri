@@ -17,6 +17,7 @@ type Move struct {
 	Unit     *unit.Unit                 `json:"unit"`
 	Path     []*movePhase.TruePatchNode `json:"path"`
 	Error    string                     `json:"error"`
+	Move     bool                       `json:"move"`
 }
 
 /*
@@ -40,7 +41,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 
 	if findUnit && findClient && findGame {
-		if !client.GetReady() && gameUnit.ActionPoints > 0 && client.Move && !client.SubMove{
+		if !client.GetReady() && gameUnit.ActionPoints > 0 && client.Move && !client.SubMove {
 
 			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
@@ -51,6 +52,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 
 				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
 				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
+				QueueSender(activeGame, ws)
 			} else {
 				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
 				ws.WriteJSON(resp)
@@ -62,6 +64,24 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	} else {
 		resp := ErrorMessage{Event: msg.Event, Error: "not found unit"}
 		ws.WriteJSON(resp)
+	}
+}
+
+func QueueSender(game *localGame.Game, ws *websocket.Conn) {
+
+	allReady := true
+
+	for _, user := range game.GetPlayers() {
+		moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Move: user.Move}
+		move <- moves
+
+		if !user.Ready {
+			allReady = false
+		}
+	}
+
+	if allReady {
+		Ready(ws)
 	}
 }
 

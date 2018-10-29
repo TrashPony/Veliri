@@ -24,6 +24,7 @@ func Ready(ws *websocket.Conn) {
 
 	} else {
 		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
+		QueueSender(activeGame, ws) // если игрок ходил юнитами и завершил ход, надо опвестить нового игрока
 	}
 }
 

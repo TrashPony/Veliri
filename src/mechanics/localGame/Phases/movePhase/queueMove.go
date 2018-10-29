@@ -1,9 +1,9 @@
 package movePhase
 
 import (
+	"../../../db/localGame/update"
 	"../../../localGame"
 	"../../../player"
-	"../../../db/localGame/update"
 )
 
 func Queue(game *localGame.Game) int {
@@ -22,7 +22,7 @@ func Queue(game *localGame.Game) int {
 	return queue + 1
 }
 
-func queueMove(client *player.Player, game *localGame.Game) {
+func QueueMove(client *player.Player, game *localGame.Game) {
 
 	client.Move = false
 	client.SubMove = true
@@ -32,21 +32,6 @@ func queueMove(client *player.Player, game *localGame.Game) {
 
 	if canMoveUser(game) {
 
-		for i := client.QueueMovePos + 1; i <= len(game.GetPlayers()); i++ {
-			check := false
-			for _, gameUser := range game.GetPlayers() {
-				if i == gameUser.QueueMovePos && canMoveUnit(gameUser) {
-					gameUser.Move = true
-					update.Player(gameUser)
-					check = true
-					break
-				}
-			}
-			if check {
-				break
-			}
-		}
-
 		for _, gameUser := range game.GetPlayers() {
 			if !gameUser.SubMove {
 				newMoveCycle = false
@@ -54,25 +39,49 @@ func queueMove(client *player.Player, game *localGame.Game) {
 		}
 
 		if newMoveCycle {
-
 			for i := 1; i <= len(game.GetPlayers()); i++ {
+				check := false
 				for _, gameUser := range game.GetPlayers() {
-
-					gameUser.SubMove = false
-					update.Player(gameUser)
-
 					if gameUser.QueueMovePos == i && canMoveUnit(gameUser) {
 						gameUser.Move = true
 						gameUser.SubMove = false
 						update.Player(gameUser)
-						return
+						check = true
 					}
+				}
+				if check {
+					break
+				}
+			}
+
+			for _, gameUser := range game.GetPlayers() {
+				if canMoveUnit(gameUser) {
+					gameUser.SubMove = false
+					update.Player(gameUser)
+				}
+			}
+		} else {
+			for i := client.QueueMovePos + 1; i <= len(game.GetPlayers()); i++ {
+				check := false
+				for _, gameUser := range game.GetPlayers() {
+					if i == gameUser.QueueMovePos && canMoveUnit(gameUser) {
+						gameUser.Move = true
+						update.Player(gameUser)
+						check = true
+						break
+					}
+				}
+				if check {
+					break
 				}
 			}
 		}
 	} else {
 		println("все походили")
-		//TODO Все походили смена фазы
+		//Все походили смена фазы т.к. больше чего не кто не сможет сделать
+		for _, gameUser := range game.GetPlayers() {
+			gameUser.SetReady(true)
+		}
 	}
 }
 
@@ -88,6 +97,10 @@ func canMoveUser(game *localGame.Game) bool {
 
 func canMoveUnit(client *player.Player) bool {
 
+	if client.Ready {
+		return false
+	}
+
 	if client.GetSquad().MatherShip.ActionPoints > 0 {
 		return true
 	}
@@ -97,6 +110,12 @@ func canMoveUnit(client *player.Player) bool {
 			if unit.ActionPoints > 0 {
 				return true
 			}
+		}
+	}
+
+	for _, unit := range client.GetUnitsStorage() {
+		if unit.ActionPoints > 0 {
+			return true
 		}
 	}
 

@@ -123,29 +123,36 @@
 }
 
 #sizeInventoryInfo {
-    width: 84px;
+    width: 139px;
     height: 15px;
     border: 1px solid #4c4c4c;
     text-align: left;
     display: block;
-    margin: 8px 0 -4px 60px;
-    background-color: #959595;
+    margin: 8px 0 -4px 5px;
     box-shadow: 0 0 5px rgba(0,0,0,1);
     border-radius: 10px;
-    background-image: url(../img/cube.png);
-    background-repeat: no-repeat;
-    background-position: 64px 0;
-    background-size: 20%;
+    background-size: 12%;
+    overflow: hidden;
+    background-color: #959595;
+}
+
+#sizeInventoryInfo div {
+    overflow: visible;
+    background: rgba(255, 96, 0, 0.7)
 }
 
 #sizeInventoryInfo span {
     display: block;
     font-size: 12px;
     line-height: 16px;
-    width: 63px;
+    width: 139px;
     text-align: center;
     text-shadow: 1px 1px 1px rgba(0,0,0,1);
     font-weight: bold;
+    background-image: url(../img/cube.png);
+    background-repeat: no-repeat;
+    background-position: 119px 0;
+    background-size: 12%;
 }
 
 .utilButton, .destroyButton {

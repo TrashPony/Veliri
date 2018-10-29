@@ -4,11 +4,19 @@ import (
 	"../../db/localGame/update"
 	"../../db/updateSquad"
 	"../../localGame"
+	"../../localGame/Phases/movePhase"
 	"../../player"
 )
 
 func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 	client.SetReady(true)
+
+	/* -- это тут для фазы движени а то будет жопка */
+	if actionGame.Phase == "move" {
+		movePhase.QueueMove(client, actionGame)
+	}
+	/* -- это тут для фазы движени */
+
 	update.Player(client)
 
 	allReady := true
