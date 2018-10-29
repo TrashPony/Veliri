@@ -3,7 +3,7 @@ CREATE TABLE body_type (
   name                       VARCHAR(64),
   mother_ship                BOOLEAN,
   speed                      INT,
-  initiative                 INT,
+  initiative                 INT,      /*  */
   max_hp                     INT,
   armor                      INT,      /* блокируемый урон в абсолюте */
   evasion_critical           INT,

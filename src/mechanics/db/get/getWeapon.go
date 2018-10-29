@@ -19,7 +19,8 @@ func Weapon(id int) (weapon *detail.Weapon) {
 		" max_hp,"+
 		" type,"+
 		" standard_size,"+
-		" size "+
+		" size, "+
+		" initiative " +
 		""+
 		"FROM weapon_type "+
 		"WHERE id=$1", id)
@@ -33,7 +34,7 @@ func Weapon(id int) (weapon *detail.Weapon) {
 	for rows.Next() {
 		err := rows.Scan(&weapon.ID, &weapon.Name, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy,
 			&weapon.AmmoCapacity, &weapon.Artillery, &weapon.Power, &weapon.MaxHP, &weapon.Type, &weapon.StandardSize,
-			&weapon.Size)
+			&weapon.Size, &weapon.Initiative)
 		if err != nil {
 			log.Fatal("get scan weapon: " + err.Error())
 		}

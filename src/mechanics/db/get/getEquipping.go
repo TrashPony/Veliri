@@ -22,7 +22,8 @@ func TypeEquip(id int) *equip.Equip {
 		" use_power,"+
 		" max_hp,"+
 		" steps_time,"+
-		" size "+
+		" size, "+
+		" initiative " +
 		""+
 		"FROM equipping_type "+
 		"WHERE id=$1", id)
@@ -36,7 +37,8 @@ func TypeEquip(id int) *equip.Equip {
 	for rows.Next() {
 		err := rows.Scan(&equipType.ID, &equipType.Name, &equipType.Active, &equipType.Specification,
 			&equipType.Applicable, &equipType.Region, &equipType.Radius, &equipType.TypeSlot, &equipType.Reload,
-			&equipType.Power, &equipType.UsePower, &equipType.MaxHP, &equipType.StepsTime, &equipType.Size)
+			&equipType.Power, &equipType.UsePower, &equipType.MaxHP, &equipType.StepsTime, &equipType.Size,
+			&equipType.Initiative)
 		if err != nil {
 			log.Fatal("get scan type equip " + err.Error())
 		}

@@ -18,4 +18,5 @@ type Equip struct {
 	MaxHP         int              `json:"max_hp"`
 	StepsTime     int              `json:"steps_time"`
 	Size          float32          `json:"size"`
+	Initiative    int              `json:"initiative"`
 }

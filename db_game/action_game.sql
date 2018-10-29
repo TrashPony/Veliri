@@ -12,10 +12,13 @@ CREATE TABLE action_game_squads (              /* отряды которые у
   id_squad INT REFERENCES squads (id)
 );
 
-CREATE TABLE action_game_user (                /* пользователи которые участвуют в игре */
-  id_game INT REFERENCES action_games (id),
-  id_user INT REFERENCES users (id),
-  ready   BOOLEAN                              /* готовность пользователя */
+CREATE TABLE action_game_user (                       /* пользователи которые участвуют в игре */
+  id_game        INT REFERENCES action_games (id),
+  id_user        INT REFERENCES users (id),
+  ready          BOOLEAN,                             /* готовность пользователя */
+  move           BOOLEAN,                             /* может двигать юнита */
+  sub_move       BOOLEAN,                             /* флаг который говорит что за этот цикл юзер уже двигал юнита */
+  queue_move_pos INT                                  /* позиция в очереди движения */
 );
 
 CREATE TABLE action_game_unit_effects (        /* эфекты которые в данный момент висят на юнитах */

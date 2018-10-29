@@ -40,7 +40,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 
 	if findUnit && findClient && findGame {
-		if !client.GetReady() && gameUnit.ActionPoints > 0 {
+		if !client.GetReady() && gameUnit.ActionPoints > 0 && client.Move && !client.SubMove{
 
 			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]

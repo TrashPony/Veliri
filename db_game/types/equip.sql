@@ -12,7 +12,8 @@ CREATE TABLE equipping_type (
   use_power     INT,                 /* кол-во расходуемой энергии при активации */
   max_hp        INT,                 /* кол-во хп до половки оборудования */
   steps_time    INT,                 /* Время дейсвия эфектов в игровых ходах */
-  size          REAL                 /* занимаемый обьем в кубо метрах */
+  size          REAL,                /* занимаемый обьем в кубо метрах */
+  initiative    INT                  /* инициаива, определяет порядок действия в фазе атаки*/
 );
 
 CREATE TABLE equip_effects (

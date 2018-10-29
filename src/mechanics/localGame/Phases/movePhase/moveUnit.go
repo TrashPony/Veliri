@@ -64,8 +64,9 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 		gameUnit.QueueAttack = queue
 	}
 
-	gameUnit.OnMap = true
+	queueMove(client, game) // определяет какой игрок будет ходить следующим
 
+	gameUnit.OnMap = true
 	updateSquad.Squad(client.GetSquad())
 
 	return

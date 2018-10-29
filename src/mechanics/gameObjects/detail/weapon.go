@@ -13,4 +13,5 @@ type Weapon struct {
 	Type           string  `json:"type"`          /* firearms, missile_weapon, laser_weapon */
 	StandardSize   int     `json:"standard_size"` /* small - 1, medium - 2, big - 3 */
 	Size           float32 `json:"size"`          /* занимаемый обьем в кубо метрах */
+	Initiative     int     `json:"initiative"`
 }

@@ -10,7 +10,13 @@ import (
 
 func Players(game *localGame.Game) []*player.Player {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select users.name, agu.ready, users.id "+
+	rows, err := dbConnect.GetDBConnect().Query("Select users.name, " +
+		"agu.ready, " +
+		"users.id, " +
+		"agu.move, " +
+		"agu.sub_move, " +
+		"queue_move_pos " +
+		""+
 		"FROM action_game_user as agu, users "+
 		"WHERE agu.id_user=users.id AND agu.id_game=$1", game.Id)
 	if err != nil {
@@ -27,8 +33,11 @@ func Players(game *localGame.Game) []*player.Player {
 		var login string
 		var ready bool
 		var id int
+		var move bool
+		var subMove bool
+		var queueMovePos int
 
-		err := rows.Scan(&login, &ready, &id)
+		err := rows.Scan(&login, &ready, &id, &move, &subMove, &queueMovePos)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -41,6 +50,9 @@ func Players(game *localGame.Game) []*player.Player {
 
 		client.SetReady(ready)
 		client.SetGameID(game.Id)
+		client.Move = move
+		client.SubMove = subMove
+		client.QueueMovePos = queueMovePos
 
 		users = append(users, client)
 	}

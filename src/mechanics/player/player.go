@@ -17,9 +17,13 @@ type Player struct {
 	unitStorage  []*unit.Unit
 	units        map[string]map[string]*unit.Unit // map[X]map[Y]
 	squad        *squad.Squad
-	Ready        bool
 	hostileUnits map[string]map[string]*unit.Unit // map[X]map[Y]
 	gameID       int
+
+	Ready        bool
+	Move         bool
+	SubMove      bool
+	QueueMovePos int
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
