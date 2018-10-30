@@ -10,6 +10,10 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/create/Squad.js");
         includeJS("../assets/components/inventory/create/UserStatus.js");
 
+        includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
+        includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
+        includeJS("../assets/components/inventory/create/paramsPanel/NavInfo.js");
+
         includeJS("../assets/components/inventory/selected/SelectInventoryItem.js");
         includeJS("../assets/components/inventory/selected/DeselectInventoryItem.js");
         includeJS("../assets/components/inventory/selected/SelectEquip.js");

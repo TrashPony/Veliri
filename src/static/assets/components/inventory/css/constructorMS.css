@@ -60,7 +60,7 @@
     display: inline-block;
     vertical-align: top;
     width: 150px;
-    height: 270px;
+    height: 310px;
     margin-right: 25px;
     padding-top: 5px;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
@@ -126,24 +126,36 @@
 }
 
 .Value.params{
-    display: block;
     text-align: left;
-    margin-left: 10px;
+    display: block;
+    width: 136px;
+    padding-left: 10px;
+    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    color: #ffffff73;
+    border-radius: 4px;
+    margin: 2px 0 0 2px;
+    font-size: 12px;
+    height: 15px;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+.infoParams {
+    height: 83px;
+    width: 141px;
+    padding-left: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    margin: 2px 0 0 2px;
+    background: rgba(183, 195, 201, 0.29);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .Value.params:hover {
-    border-radius: 20px;
-    width: 130px;
-    -webkit-box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
-    cursor: pointer;
+    box-shadow: 0 0 5px rgb(125, 125, 125);
 }
 
 .Value.params:active {
-    display: inline-block;
-    width: 130px;
-    border-radius: 20px;
-    -webkit-box-shadow: 0 0 5px 3px rgb(165, 213, 239);
-    box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+    box-shadow: 0 0 5px rgb(255, 255, 255);
 }
