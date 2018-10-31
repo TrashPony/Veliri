@@ -18,6 +18,7 @@ func QueueMove(game *localGame.Game) {
 		for _, q := range game.GetUnits() { //находим юнита с макс инициативой
 			for _, gameUnit := range q {
 				if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
+					maxInitiative = gameUnit.Initiative
 					maxUnit = gameUnit
 				}
 			}
@@ -25,6 +26,7 @@ func QueueMove(game *localGame.Game) {
 
 		for _, gameUnit := range game.GetUnitsStorage() { //находим юнита с макс инициативой
 			if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
+				maxInitiative = gameUnit.Initiative
 				maxUnit = gameUnit
 			}
 		}

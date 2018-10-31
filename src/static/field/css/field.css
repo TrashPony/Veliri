@@ -144,7 +144,7 @@ input {
 
 #chatBlock {
     pointer-events:none;
-    bottom: 210px;
+    bottom: 240px;
     left: 3.2%;
     position: fixed;
     z-index: 900;

@@ -12,7 +12,6 @@ CREATE TABLE squad_units (
 
   /* из чего состоит юнит */
   id_body                    INT REFERENCES body_type (id), /* ид тела юнита */
-
   slot                       INT, /* номер слота который занимает юнит в материнской машине */
 
   /* Позиция */

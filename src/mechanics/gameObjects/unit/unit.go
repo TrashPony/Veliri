@@ -26,6 +26,7 @@ type Unit struct {
 	Power        int  `json:"power"`
 	ActionPoints int  `json:"action_points"`
 	Move         bool `json:"move"`
+	FindHostile  bool `json:"find_hostile"`
 
 	Speed           int  `json:"speed"`
 	Initiative      int  `json:"initiative"`

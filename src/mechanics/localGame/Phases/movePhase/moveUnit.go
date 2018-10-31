@@ -41,16 +41,27 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 			deleteUnit = false
 		}
 
-		errorMove, unitRotate := Move(gameUnit, pathNode, client, game, deleteUnit)
+		errorMove, unitRotate, watchNode := Move(gameUnit, pathNode, client, game, deleteUnit)
 
 		if errorMove != nil {
 			if errorMove.Error() == "cell is busy" {
 				break
 			}
+			if errorMove.Error() == "find hostile" { // если нашли юнита то выходим из цикла но добавляем последние клетки
+				truePatchNode := TruePatchNode{}
+
+				truePatchNode.WatchNode = watchNode // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
+				truePatchNode.UnitRotate = unitRotate
+				gameUnit.Rotate = unitRotate
+
+				path = append(path, &truePatchNode)
+				break
+			}
 		} else {
 			truePatchNode := TruePatchNode{}
 
-			truePatchNode.WatchNode = watchZone.UpdateWatchZone(game, client) // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+			truePatchNode.WatchNode = watchNode // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
 			truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
 			truePatchNode.UnitRotate = unitRotate
 			gameUnit.Rotate = unitRotate
@@ -59,7 +70,13 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 		}
 	}
 
-	QueueMove(game) // определяет какой игрок будет ходить следующим
+	if !gameUnit.FindHostile || gameUnit.ActionPoints == 0 {
+		gameUnit.Move = false
+		gameUnit.ActionPoints = 0
+		QueueMove(game) // определяет какой игрок будет ходить следующим
+	}
+
+	gameUnit.FindHostile = false
 
 	gameUnit.OnMap = true
 	updateSquad.Squad(client.GetSquad())
@@ -67,11 +84,11 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	return
 }
 
-func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, game *localGame.Game, deleteUnit bool) (error, int) {
+func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, game *localGame.Game, deleteUnit bool) (error, int, *watchZone.UpdaterWatchZone) {
 
 	_, ok := game.GetUnit(pathNode.Q, pathNode.R)
 	if ok || !checkMSPlace(client, pathNode, gameUnit, false) {
-		return errors.New("cell is busy"), 0 // если клетка занято то выходит из этого пути и генерить новый
+		return errors.New("cell is busy"), 0, nil // если клетка занято то выходит из этого пути и генерить новый
 	}
 
 	if deleteUnit {
@@ -88,7 +105,13 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 	game.SetUnit(gameUnit)
 	client.AddUnit(gameUnit) // добавляем новую позицию юнита
 
-	return nil, rotate
+	watchNode := watchZone.UpdateWatchZone(game, client) // смотри открыл он новых вражеских юнитов
+	if len(watchNode.OpenUnit) > 0 {
+		gameUnit.FindHostile = true
+		return errors.New("find hostile"), rotate, watchNode
+	}
+
+	return nil, rotate, watchNode
 }
 
 func findDirection(pathNode *coordinate.Coordinate, unit *unit.Unit) int {

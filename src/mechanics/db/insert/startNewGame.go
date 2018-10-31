@@ -92,6 +92,11 @@ func QueueMove(game *lobby.Game) {
 	var maxUnit *unit.Unit
 
 	for _, user := range game.Users {
+
+		if user.GetSquad().MatherShip.Initiative > maxInitiative {
+			maxUnit = user.GetSquad().MatherShip
+		}
+
 		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
 			if unitSlot.Unit != nil && unitSlot.Unit.Initiative > maxInitiative {
 				maxUnit = unitSlot.Unit
@@ -102,6 +107,11 @@ func QueueMove(game *lobby.Game) {
 	moveUnits := make([]*unit.Unit, 0)
 
 	for _, user := range game.Users {
+
+		if user.GetSquad().MatherShip.Initiative > maxInitiative {
+			moveUnits = append(moveUnits, user.GetSquad().MatherShip)
+		}
+
 		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
 			if unitSlot.Unit != nil && unitSlot.Unit.Initiative == maxUnit.Initiative {
 				moveUnits = append(moveUnits, unitSlot.Unit)

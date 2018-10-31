@@ -14,7 +14,7 @@ type UpdaterWatchZone struct {
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func UpdateWatchZone(activeGame *localGame.Game, client *player.Player) *UpdaterWatchZone {
+func UpdateWatchZone(activeGame *localGame.Game, client *player.Player	) *UpdaterWatchZone {
 	var updaterWatchZone UpdaterWatchZone
 
 	oldWatchZone := client.GetWatchCoordinates()
