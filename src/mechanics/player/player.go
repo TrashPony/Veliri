@@ -21,9 +21,6 @@ type Player struct {
 	gameID       int
 
 	Ready        bool
-	Move         bool
-	SubMove      bool
-	QueueMovePos int
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate

@@ -13,7 +13,7 @@ func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 
 	/* -- это тут для фазы движени а то будет жопка */
 	if actionGame.Phase == "move" {
-		movePhase.QueueMove(client, actionGame)
+		movePhase.QueueMove(actionGame)
 	}
 	/* -- это тут для фазы движени */
 

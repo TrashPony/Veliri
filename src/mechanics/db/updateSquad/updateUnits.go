@@ -51,14 +51,15 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"rotate, "+
 				"on_map, "+
 				"target, "+
-				"queue_attack, "+
 				"hp, "+
 				"power, "+
 				"mother_ship, "+
 				"action_point, "+
-				"defend"+
+				"defend, " +
+				"move " +
+				""+
 				") "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, 14$) RETURNING id",
 				squad.ID,
 				slotUnit.Unit.Body.ID,
 				slot,
@@ -67,12 +68,12 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				slotUnit.Unit.Rotate,
 				slotUnit.Unit.OnMap,
 				parseTarget(slotUnit.Unit),
-				slotUnit.Unit.QueueAttack,
 				slotUnit.Unit.HP,
 				slotUnit.Unit.Power,
 				false, //mother_ship
 				slotUnit.Unit.ActionPoints,
 				slotUnit.Unit.Defend,
+				slotUnit.Unit.Move,
 			).Scan(&id)
 			if err != nil {
 				log.Fatal("add new unit to squad " + err.Error())
@@ -90,26 +91,26 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"r = $3, "+
 					"rotate = $4, "+
 					"target = $5, "+
-					"queue_attack = $6, "+
-					"hp = $7, "+
-					"on_map = $10, "+
-					"power = $11, "+
-					"action_point = $12, "+
-					"defend = $13"+
-					"WHERE id_squad = $8 AND slot = $9",
+					"hp = $6, "+
+					"on_map = $7, "+
+					"power = $8, "+
+					"action_point = $9, "+
+					"defend = $10, " +
+					"move = $13 "+
+					"WHERE id_squad = $11 AND slot = $12",
 				slotUnit.Unit.Body.ID,
 				slotUnit.Unit.Q,
 				slotUnit.Unit.R,
 				slotUnit.Unit.Rotate,
 				parseTarget(slotUnit.Unit),
-				slotUnit.Unit.QueueAttack,
 				slotUnit.Unit.HP,
-				squad.ID,
-				slot,
 				slotUnit.Unit.OnMap,
 				slotUnit.Unit.Power,
 				slotUnit.Unit.ActionPoints,
 				slotUnit.Unit.Defend,
+				squad.ID,
+				slot,
+				slotUnit.Unit.Move,
 			)
 
 			if err != nil {

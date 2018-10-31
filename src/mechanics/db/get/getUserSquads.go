@@ -63,11 +63,12 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"r, "+
 			"rotate, "+
 			"target, "+
-			"queue_attack, "+
 			"power, mother_ship, "+
 			"action_point, "+
 			"on_map, "+
-			"defend "+
+			"defend, " +
+			"move " +
+			""+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
 	if err != nil {
@@ -90,12 +91,12 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			&ship.R,
 			&ship.Rotate,
 			&target,
-			&ship.QueueAttack,
 			&ship.Power,
 			&ship.MS,
 			&ship.ActionPoints,
 			&ship.OnMap,
 			&ship.Defend,
+			&ship.Move,
 		)
 
 		if err != nil {
@@ -129,12 +130,13 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"r, "+
 			"rotate, "+
 			"target, "+
-			"queue_attack, "+
 			"on_map, "+
 			"power, "+
 			"mother_ship, "+
 			"action_point, "+
-			"defend "+
+			"defend," +
+			"move " +
+			" "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
 	if err != nil {
@@ -155,12 +157,12 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			&squadUnit.R,
 			&squadUnit.Rotate,
 			&target,
-			&squadUnit.QueueAttack,
 			&squadUnit.OnMap,
 			&squadUnit.Power,
 			&squadUnit.MS,
 			&squadUnit.ActionPoints,
 			&squadUnit.Defend,
+			&squadUnit.Move,
 		)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())

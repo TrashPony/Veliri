@@ -1,80 +1,54 @@
 package movePhase
 
 import (
-	"../../../db/localGame/update"
 	"../../../localGame"
 	"../../../player"
+	"../../../gameObjects/unit"
+	"math/rand"
+	"time"
 )
 
-func Queue(game *localGame.Game) int {
-	queue := 0
-
-	for _, xLine := range game.GetUnits() {
-		for _, gameUnit := range xLine {
-			if gameUnit.ActionPoints == 0 {
-				if gameUnit.QueueAttack > queue {
-					queue = gameUnit.QueueAttack
-				}
-			}
-		}
-	}
-
-	return queue + 1
-}
-
-func QueueMove(client *player.Player, game *localGame.Game) {
-
-	client.Move = false
-	client.SubMove = true
-	update.Player(client)
-
-	newMoveCycle := true
+func QueueMove(game *localGame.Game) {
 
 	if canMoveUser(game) {
 
-		for _, gameUser := range game.GetPlayers() {
-			if !gameUser.SubMove {
-				newMoveCycle = false
+		maxInitiative := 0
+		var maxUnit *unit.Unit
+
+		for _, q := range game.GetUnits() { //находим юнита с макс инициативой
+			for _, gameUnit := range q {
+				if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
+					maxUnit = gameUnit
+				}
 			}
 		}
 
-		if newMoveCycle {
-			for i := 1; i <= len(game.GetPlayers()); i++ {
-				check := false
-				for _, gameUser := range game.GetPlayers() {
-					if gameUser.QueueMovePos == i && canMoveUnit(gameUser) {
-						gameUser.Move = true
-						gameUser.SubMove = false
-						update.Player(gameUser)
-						check = true
-					}
-				}
-				if check {
-					break
-				}
+		for _, gameUnit := range game.GetUnitsStorage() { //находим юнита с макс инициативой
+			if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
+				maxUnit = gameUnit
 			}
+		}
 
-			for _, gameUser := range game.GetPlayers() {
-				if canMoveUnit(gameUser) {
-					gameUser.SubMove = false
-					update.Player(gameUser)
+		moveUnits := make([]*unit.Unit, 0)
+
+		for _, q := range game.GetUnits() { //ищем юнитов с такойже инициативой
+			for _, gameUnit := range q {
+				if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative {
+					moveUnits = append(moveUnits, gameUnit)
 				}
 			}
+		}
+
+		for _, gameUnit := range game.GetUnitsStorage() { //ищем юнитов с такойже инициативой
+			if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative {
+				moveUnits = append(moveUnits, gameUnit)
+			}
+		}
+
+		if len(moveUnits) > 1 {
+			randomUnitMove(moveUnits).Move = true
 		} else {
-			for i := client.QueueMovePos + 1; i <= len(game.GetPlayers()); i++ {
-				check := false
-				for _, gameUser := range game.GetPlayers() {
-					if i == gameUser.QueueMovePos && canMoveUnit(gameUser) {
-						gameUser.Move = true
-						update.Player(gameUser)
-						check = true
-						break
-					}
-				}
-				if check {
-					break
-				}
-			}
+			moveUnits[0].Move = true
 		}
 	} else {
 		println("все походили")
@@ -83,6 +57,15 @@ func QueueMove(client *player.Player, game *localGame.Game) {
 			gameUser.SetReady(true)
 		}
 	}
+}
+
+func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {
+	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
+	// будет выдавать одну и ту же последовательность.
+	rand.Seed(time.Now().UnixNano())
+	numberUnit := rand.Intn(len(moveUnits))
+
+	return moveUnits[numberUnit]
 }
 
 func canMoveUser(game *localGame.Game) bool {
@@ -106,15 +89,15 @@ func canMoveUnit(client *player.Player) bool {
 	}
 
 	for _, q := range client.GetUnits() {
-		for _, unit := range q {
-			if unit.ActionPoints > 0 {
+		for _, gameUnit := range q {
+			if gameUnit.ActionPoints > 0 {
 				return true
 			}
 		}
 	}
 
-	for _, unit := range client.GetUnitsStorage() {
-		if unit.ActionPoints > 0 {
+	for _, gameUnit := range client.GetUnitsStorage() {
+		if gameUnit.ActionPoints > 0 {
 			return true
 		}
 	}

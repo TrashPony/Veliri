@@ -23,9 +23,9 @@ CREATE TABLE squad_units (
 
   /* Игровая статистика */
   target                     VARCHAR(64),
-  queue_attack               INT,
   defend                     BOOLEAN, /* означат что пользователь защищается юнитов в фазе атаки */
   mother_ship                BOOLEAN, /* является ли этот юнит мазршипом */
+  move                       BOOLEAN, /* говорит что сейчас ходит именно этот юнит */
 
   /* Характиристики */
   hp                         INT,

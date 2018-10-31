@@ -21,8 +21,8 @@ function UpdateUnit(unitStat) {
     unit.max_power = unitStat.max_power;
     unit.q = unitStat.q;
     unit.r = unitStat.r;
-    unit.queue_attack = unitStat.queue_attack;
     unit.range_view = unitStat.range_view;
+    unit.move = unitStat.move;
     unit.recovery_HP = unitStat.recovery_HP;
     unit.recovery_power = unitStat.recovery_power;
     unit.speed = unitStat.speed;

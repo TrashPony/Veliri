@@ -4,7 +4,6 @@ import (
 	"../../../db/updateSquad"
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"sort"
 )
 
 func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEquip []*ResultEquip) {
@@ -62,7 +61,7 @@ func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*Resul
 
 func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*unit.Unit) {
 
-	for _, xLine := range Units {
+	/*for _, xLine := range Units {
 		for _, gameUnit := range xLine {
 			gameUnit.QueueAttack += gameUnit.Body.Initiative
 			sortUnits = append(sortUnits, gameUnit)
@@ -71,7 +70,7 @@ func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*unit.Unit
 
 	sort.Slice(sortUnits, func(i, j int) bool {
 		return sortUnits[i].QueueAttack > sortUnits[j].QueueAttack
-	})
+	})*/
 
 	return
 }
