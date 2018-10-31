@@ -2,8 +2,10 @@ function UpdateUnit(unitStat) {
 
     let unit = GetGameUnitID(unitStat.id);
 
-    RemoveSelect();
-    DeleteMarkTarget(unitStat);
+    if (unitStat.owner === game.user.user_name) {
+        RemoveSelect();
+        DeleteMarkTarget(unitStat);
+    }
 
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;

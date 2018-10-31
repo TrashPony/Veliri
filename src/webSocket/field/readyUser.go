@@ -23,8 +23,27 @@ func Ready(ws *websocket.Conn) {
 		}
 
 	} else {
+
 		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
-		QueueSender(activeGame, ws) // если игрок ходил юнитами и завершил ход, надо опвестить нового игрока
+		step := false
+
+		for _, q := range client.GetUnits() {
+			for _, gameUnit := range q {
+				if gameUnit.Move {
+					step = true
+				}
+			}
+		}
+
+		for _, gameUnit := range client.GetUnitsStorage() {
+			if gameUnit.Move {
+				step = true
+			}
+		}
+
+		if step {
+			QueueSender(activeGame, ws) // если игрок ходил юнитами и завершил ход, надо опвестить нового игрока
+		}
 	}
 }
 

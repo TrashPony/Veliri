@@ -7,8 +7,8 @@ function create() {
     game.time.slowMotion = 0;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-    // todo  0.87 подгон под тестовую карту, костыль
-    game.world.setBounds(0, 0, (game.hexagonHeight * game.map.RSize) * 0.87, game.hexagonWidth * game.map.QSize); //размеры карты
+    // todo  неверно строиться размер карты
+    game.world.setBounds(0, 0, game.hexagonHeight * game.map.QSize, game.hexagonHeight * game.map.RSize); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.floorLayer = game.add.group();

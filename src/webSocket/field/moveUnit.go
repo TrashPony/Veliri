@@ -67,6 +67,24 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 }
 
+func UserQueueSender(client *player.Player, game *localGame.Game) {
+	for _, q := range client.GetUnits() {
+		for _, gameUnit := range q {
+			if gameUnit.Move {
+				moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
+				move <- moves
+			}
+		}
+	}
+
+	for _, gameUnit := range client.GetUnitsStorage() {
+		if gameUnit.Move {
+			moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
+			move <- moves
+		}
+	}
+}
+
 func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 
 	allReady := true

@@ -62,7 +62,6 @@
     <script src="js/LoadGame/LoadGameUnit.js"></script>
     <script src="js/LoadGame/LoadOpenCoordinate.js"></script>
     <script src="js/LoadGame/LoadHoldUnits.js"></script>
-    <script src="js/LoadGame/GetSizeWindow.js"></script>
 
     <script src="js/Unit/SelectUnit.js"></script>
     <script src="js/Unit/Move.js"></script>
@@ -105,128 +104,107 @@
 </head>
 
 <body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
+<div style="height:100vh; display: flex; flex-direction: column;">
 
-<div id="ControlPanel">
-    <table class="animateTable">
-        <tr align="center">
-            <th class="h" colspan="2"> Карта: <span class="moveWindow" onmousedown="moveWindow(event,'ControlPanel')">⇵</span> </th>
-        </tr>
-        <tr align="center">
-            <td> <input type="submit" class="button" onclick="SizeMap(1)" value="+"> </td>
-            <td> <input type="submit" class="button" onclick="SizeMap(2)" value="-"> </td>
-        </tr>
-        <tr align="center">
-            <td> <input type="submit" class="button" onclick="Rotate(0)" value="0"> </td>
-            <td> <input type="submit" class="button" onclick="Rotate(90)" value="90"> </td>
-        </tr>
-        <tr align="center">
-            <td> <input type="submit" class="button" onclick="Rotate(180)" value="180"> </td>
-            <td> <input type="submit" class="button" onclick="Rotate(270)" value="270"> </td>
-        </tr>
-    </table>
-</div>
+    <div id="main" align="center" onwheel="Wheel(event)"></div>
 
-<div id="chatBlock">
-    <div id="chat">
-        <div id="chatMenu" align="right"> <span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span> </div>
-
-        <div id="chatBox"></div>
-
-        <input type="text" placeholder="message" id="chatInput" onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
-        <input type="button" value="Send" class="button" onclick="chatMessage()">
-    </div>
-</div>
-
-<div id="main" align="center" onwheel="Wheel(event)">
-
-</div>
-
-<div class="info" align="center">
-    <div class="info subMenu" id="subMenu">
-
-        <table class="table" >
-            <tr align="center">
-                <th class="h" colspan="2" width="160"> Информация: <font class="moveWindow" onmousedown="moveWindow(event, 'subMenu')">⇵</font> </th>
-            </tr>
-            <tr align="center">
-                <td> Ход № </td>
-                <td> <font id="step" class="Value"> </font> </td>
-            </tr>
-            <tr align="center">
-                <td> Фаза: </td>
-                <td> <font id="phase" class="Value"> </font> </td>
-            </tr>
-        </table>
-
-        <div id="inventoryBlock"></div>
-
-        <table class="table" width="160">
-            <tr align="center">
-                <td> <input type="submit" id="Ready" class="button" onclick="Ready()" value="Завершить ход"> </td>
-            </tr>
-        </table>
-
-        <table class="table units" id="holdUnits" >
-            <tr align="center">
-                <th class="h" width="160" colspan="3"> Юниты в трюме: </th>
-            </tr>
-        </table>
-
-        <div id="BoxUnitSubMenu">
-
+    <div id="chatBlock">
+        <div id="chat">
+            <div id="chatMenu" align="right"><span class="moveWindow" onmousedown="moveWindow(event,'chat')">⇵</span>
+            </div>
+            <div id="chatBox"></div>
+            <input type="text" placeholder="message" id="chatInput"
+                   onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
+            <input type="button" value="Send" class="button" onclick="chatMessage()">
         </div>
     </div>
-</div>
 
-<div id="queue">
-    <div id="moveUnit"></div>
-    <div id="queueMove">
-        <div id="queueLine"></div>
+    <div class="info" align="center">
+
+        <div id="queue">
+            <div id="queueMove">
+                <div id="queueLine"></div>
+            </div>
+        </div>
+
+        <div class="info subMenu" id="subMenu">
+            <table class="table">
+                <tr align="center">
+                    <th class="h" colspan="2" width="160"> Информация: <font class="moveWindow"
+                                                                             onmousedown="moveWindow(event, 'subMenu')">⇵</font>
+                    </th>
+                </tr>
+                <tr align="center">
+                    <td> Ход №</td>
+                    <td><font id="step" class="Value"> </font></td>
+                </tr>
+                <tr align="center">
+                    <td> Фаза:</td>
+                    <td><font id="phase" class="Value"> </font></td>
+                </tr>
+            </table>
+
+            <div id="inventoryBlock"></div>
+
+            <table class="table" width="160" style="margin: 4px auto;">
+                <tr align="center">
+                    <td><input type="submit" id="Ready" class="button" onclick="Ready()" value="Завершить ход"></td>
+                </tr>
+            </table>
+
+            <table class="table units" id="holdUnits">
+                <tr align="center">
+                    <th class="h" width="160" colspan="3"> Юниты в трюме:</th>
+                </tr>
+            </table>
+
+            <div id="BoxUnitSubMenu"></div>
+        </div>
     </div>
-</div>
-<div id="unitTip">
-    <table class="animateTable" >
-        <tr align="center">
-            <th class="h" colspan="2" id="tipUnit"></th>
-        </tr>
-        <tr align="center">
-            <td> Владелец </td>
-            <td id="tipOwned"> </td>
-        </tr>
-        <tr align="center">
-            <td> HP </td>
-            <td id="tipHP"> </td>
-        </tr>
-        <tr align="center">
-            <td> Урон </td>
-            <td id="tipDamage"> </td>
-        </tr>
-        <tr align="center">
-            <td> Скорость </td>
-            <td id="tipMove"> </td>
-        </tr>
-        <tr align="center">
-            <td> Инициатива </td>
-            <td id="tipInit"> </td>
-        </tr>
-        <tr align="center">
-            <td> Дальность атаки </td>
-            <td id="tipRangeAttack"> </td>
-        </tr>
-        <tr align="center">
-            <td> Дальность обзора </td>
-            <td id="tipRangeView"> </td>
-        </tr>
 
-        <tr align="center">
-            <td> Площадь атаки </td>
-            <td id="tipArea"> </td>
-        </tr>
-        <tr align="center">
-            <td> Тип атаки </td>
-            <td id="tipTypeAttack"> </td>
-        </tr>
-    </table>
-</div>
+    <div id="unitTip">
+        <table class="animateTable">
+            <tr align="center">
+                <th class="h" colspan="2" id="tipUnit"></th>
+            </tr>
+            <tr align="center">
+                <td> Владелец</td>
+                <td id="tipOwned"></td>
+            </tr>
+            <tr align="center">
+                <td> HP</td>
+                <td id="tipHP"></td>
+            </tr>
+            <tr align="center">
+                <td> Урон</td>
+                <td id="tipDamage"></td>
+            </tr>
+            <tr align="center">
+                <td> Скорость</td>
+                <td id="tipMove"></td>
+            </tr>
+            <tr align="center">
+                <td> Инициатива</td>
+                <td id="tipInit"></td>
+            </tr>
+            <tr align="center">
+                <td> Дальность атаки</td>
+                <td id="tipRangeAttack"></td>
+            </tr>
+            <tr align="center">
+                <td> Дальность обзора</td>
+                <td id="tipRangeView"></td>
+            </tr>
+
+            <tr align="center">
+                <td> Площадь атаки</td>
+                <td id="tipArea"></td>
+            </tr>
+            <tr align="center">
+                <td> Тип атаки</td>
+                <td id="tipTypeAttack"></td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

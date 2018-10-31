@@ -4,6 +4,7 @@ import (
 	"../../../db/updateSquad"
 	"../../../gameObjects/unit"
 	"../../../localGame"
+	"../../../localGame/Phases/movePhase"
 )
 
 func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEquip []*ResultEquip) {
@@ -15,6 +16,8 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEqui
 	resultEquip = wageringEquip(sortUnits)
 	// востаналиываем энерги, даем актив поинты и снимаем флаги использованого снаряжения
 	recovery(game)
+	// находим кто будет ходить первым
+	movePhase.QueueMove(game)
 
 	for _, player := range game.GetPlayers() {
 		updateSquad.Squad(player.GetSquad()) // вносим все изменениея в базу данных

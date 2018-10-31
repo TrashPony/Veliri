@@ -6,7 +6,7 @@ function LoadGame(jsonMessage) {
     let hexagonWidth = 80;   // ширина
     let hexagonHeight = 100; // и высота спрайта в сетке грида
 
-    game = new Phaser.Game(GetWidth(hexagonWidth, gameMap), GetHeight(hexagonHeight, gameMap), Phaser.CANVAS, 'main', {
+    game = new Phaser.Game('100', '100', Phaser.CANVAS, 'main', {
         preload: preload,
         create: create,
         update: update,

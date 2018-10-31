@@ -11,12 +11,6 @@ import (
 func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 	client.SetReady(true)
 
-	/* -- это тут для фазы движени а то будет жопка */
-	if actionGame.Phase == "move" {
-		movePhase.QueueMove(actionGame)
-	}
-	/* -- это тут для фазы движени */
-
 	update.Player(client)
 
 	allReady := true
@@ -30,6 +24,11 @@ func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 
 	if allReady {
 		changeGamePhase(actionGame)
+	} else {
+		if actionGame.Phase == "move" {
+			/* -- это тут для фазы движени а то будет жопка */
+			movePhase.QueueMove(actionGame)
+		}
 	}
 
 	updateSquad.Squad(client.GetSquad())

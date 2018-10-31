@@ -37,7 +37,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			GamePhase:    loadGame.GetPhase()}
 		ws.WriteJSON(sendLoadGame)
 
-		QueueSender(loadGame, ws)
+		UserQueueSender(newClient, loadGame)
 
 	} else {
 		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "error"})

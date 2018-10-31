@@ -10,7 +10,9 @@ function CreateMap() {
     let startXInit = hexagonWidth / 2;
     let startYInit = hexagonHeight / 2;
 
-    for (let r = 0; r < game.map.QSize; r++) {
+    console.log(game.map);
+
+    for (let r = 0; r < game.map.RSize; r++) {
 
         if (r % 2 !== 0) {
             startX = 2 * startXInit;
@@ -20,7 +22,7 @@ function CreateMap() {
 
         startY = startYInit + (r * verticalOffset);
 
-        for (let q = 0; q < game.map.RSize; q++) {
+        for (let q = 0; q < game.map.QSize; q++) {
 
             let coordinate = game.map.OneLayerMap[q][r];
 
