@@ -68,50 +68,54 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 }
 
 func UserQueueSender(client *player.Player, game *localGame.Game) {
-	for _, q := range client.GetUnits() {
-		for _, gameUnit := range q {
+	if game.Phase == "move" {
+		for _, q := range client.GetUnits() {
+			for _, gameUnit := range q {
+				if gameUnit.Move {
+					moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
+					move <- moves
+				}
+			}
+		}
+
+		for _, gameUnit := range client.GetUnitsStorage() {
 			if gameUnit.Move {
 				moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
 				move <- moves
 			}
 		}
 	}
-
-	for _, gameUnit := range client.GetUnitsStorage() {
-		if gameUnit.Move {
-			moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
-			move <- moves
-		}
-	}
 }
 
 func QueueSender(game *localGame.Game, ws *websocket.Conn) {
+	if game.Phase == "move" {
 
-	allReady := true
+		allReady := true
 
-	for _, user := range game.GetPlayers() {
-		for _, q := range user.GetUnits() {
-			for _, gameUnit := range q {
+		for _, user := range game.GetPlayers() {
+			for _, q := range user.GetUnits() {
+				for _, gameUnit := range q {
+					if gameUnit.Move {
+						moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+						move <- moves
+					}
+				}
+				if !user.Ready {
+					allReady = false
+				}
+			}
+
+			for _, gameUnit := range user.GetUnitsStorage() {
 				if gameUnit.Move {
 					moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
 					move <- moves
 				}
 			}
-			if !user.Ready {
-				allReady = false
-			}
 		}
 
-		for _, gameUnit := range user.GetUnitsStorage() {
-			if gameUnit.Move {
-				moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-				move <- moves
-			}
+		if allReady {
+			Ready(ws)
 		}
-	}
-
-	if allReady {
-		Ready(ws)
 	}
 }
 

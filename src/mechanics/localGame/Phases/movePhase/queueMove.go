@@ -1,9 +1,9 @@
 package movePhase
 
 import (
+	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
-	"../../../gameObjects/unit"
 	"math/rand"
 	"time"
 )
@@ -15,35 +15,51 @@ func QueueMove(game *localGame.Game) {
 		maxInitiative := 0
 		var maxUnit *unit.Unit
 
-		for _, q := range game.GetUnits() { //находим юнита с макс инициативой
-			for _, gameUnit := range q {
-				if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
-					maxInitiative = gameUnit.Initiative
-					maxUnit = gameUnit
+		for _, gameUser := range game.GetPlayers() {
+			for _, q := range gameUser.GetUnits() { //находим юнита с макс инициативой
+				for _, gameUnit := range q {
+					if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative && canMoveUnit(gameUser) {
+						maxInitiative = gameUnit.Initiative
+						maxUnit = gameUnit
+					} else {
+						gameUnit.Move = false
+					}
 				}
 			}
 		}
 
-		for _, gameUnit := range game.GetUnitsStorage() { //находим юнита с макс инициативой
-			if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative {
-				maxInitiative = gameUnit.Initiative
-				maxUnit = gameUnit
+		for _, gameUser := range game.GetPlayers() {
+			for _, gameUnit := range gameUser.GetUnitsStorage() { //находим юнита с макс инициативой
+				if gameUnit.ActionPoints > 0 && gameUnit.Initiative > maxInitiative && canMoveUnit(gameUser) {
+					maxInitiative = gameUnit.Initiative
+					maxUnit = gameUnit
+				} else {
+					gameUnit.Move = false
+				}
 			}
 		}
 
 		moveUnits := make([]*unit.Unit, 0)
 
-		for _, q := range game.GetUnits() { //ищем юнитов с такойже инициативой
-			for _, gameUnit := range q {
-				if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative {
-					moveUnits = append(moveUnits, gameUnit)
+		for _, gameUser := range game.GetPlayers() {
+			for _, q := range gameUser.GetUnits() { //ищем юнитов с такойже инициативой
+				for _, gameUnit := range q {
+					if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative && canMoveUnit(gameUser) {
+						moveUnits = append(moveUnits, gameUnit)
+					} else {
+						gameUnit.Move = false
+					}
 				}
 			}
 		}
 
-		for _, gameUnit := range game.GetUnitsStorage() { //ищем юнитов с такойже инициативой
-			if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative {
-				moveUnits = append(moveUnits, gameUnit)
+		for _, gameUser := range game.GetPlayers() {
+			for _, gameUnit := range gameUser.GetUnitsStorage() { //ищем юнитов с такойже инициативой
+				if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative && canMoveUnit(gameUser) {
+					moveUnits = append(moveUnits, gameUnit)
+				} else {
+					gameUnit.Move = false
+				}
 			}
 		}
 

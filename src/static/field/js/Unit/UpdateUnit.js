@@ -2,7 +2,7 @@ function UpdateUnit(unitStat) {
 
     let unit = GetGameUnitID(unitStat.id);
 
-    if (unitStat.owner === game.user.user_name) {
+    if (unitStat.owner === game.user.name) {
         RemoveSelect();
         DeleteMarkTarget(unitStat);
     }

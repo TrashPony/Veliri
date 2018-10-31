@@ -32,6 +32,7 @@ function CreateUnitSubMenu(unit) {
             unitSubMenu.style.boxShadow = "none";
             unitSubMenu.style.animation = "none";
             unitSubMenu.style.border = "0px";
+            unitSubMenu.style.visibility = "hidden";
         }
 
         if (unit.effects !== null && unit.effects.length > 0) {

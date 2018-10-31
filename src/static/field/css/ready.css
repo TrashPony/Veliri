@@ -45,6 +45,7 @@
     line-height: 12px;
     margin-left: 10px;
     margin-right: 10px;
+    display: inline-block;
 }
 
 #confirmReady input:hover {
