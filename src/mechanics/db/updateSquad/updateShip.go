@@ -35,24 +35,24 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"r = $3, "+
 				"rotate = $4, "+
 				"target = $5, "+
-				"queue_attack = $6, "+
-				"hp = $7, "+
-				"power = $9, "+
-				"action_point = $11, "+
-				"defend = $12 "+
-				"WHERE id_squad = $8 AND mother_ship = $10",
+				"hp = $6, "+
+				"power = $7, "+
+				"action_point = $8, "+
+				"defend = $9," +
+				"move = $12 "+
+				"WHERE id_squad = $10 AND mother_ship = $11",
 			bodyID,
 			ship.Q,
 			ship.R,
 			ship.Rotate,
 			parseTarget(ship),
-			ship.QueueAttack,
 			ship.HP,
-			squad.ID,
 			ship.Power,
-			true, // mother_ship = $10
 			ship.ActionPoints,
 			ship.Defend,
+			squad.ID,
+			true, // mother_ship = $11
+			ship.Move,
 		)
 
 		if err != nil {
@@ -69,13 +69,13 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"r, "+
 				"rotate, "+
 				"target, "+
-				"queue_attack, "+
 				"hp, "+
 				"power, "+
 				"mother_ship, "+
 				"on_map, "+
 				"action_point, "+
-				"defend"+
+				"defend, " +
+				"move "+
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
 				squad.ID,
@@ -84,13 +84,13 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				ship.R,
 				ship.Rotate,
 				parseTarget(ship),
-				ship.QueueAttack,
 				ship.HP,
 				ship.Power,
 				true, // mother_ship
 				true, // on_map
 				ship.Speed,
 				ship.Defend,
+				ship.Move,
 			).Scan(&id)
 			if err != nil {
 				log.Fatal("add new ship to squad " + err.Error())

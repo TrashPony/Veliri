@@ -9,11 +9,9 @@ import (
 
 func SkipMove(gameUnit *unit.Unit, game *localGame.Game, client *player.Player) {
 	gameUnit.ActionPoints = 0
+	gameUnit.Move = false
 
-	queue := Queue(game)
-	gameUnit.QueueAttack = queue
-
-	QueueMove(client, game)
+	QueueMove(game)
 
 	updateSquad.Squad(client.GetSquad())
 }

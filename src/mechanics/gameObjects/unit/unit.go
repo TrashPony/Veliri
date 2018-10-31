@@ -19,13 +19,14 @@ type Unit struct {
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
 
-	Target      *coordinate.Coordinate `json:"target"`
-	QueueAttack int                    `json:"queue_attack"`
-	Defend      bool                   `json:"defend"`
+	Target *coordinate.Coordinate `json:"target"`
+	Defend bool                   `json:"defend"`
 
-	HP           int `json:"hp"`
-	Power        int `json:"power"`
-	ActionPoints int `json:"action_points"`
+	HP           int  `json:"hp"`
+	Power        int  `json:"power"`
+	ActionPoints int  `json:"action_points"`
+	Move         bool `json:"move"`
+	FindHostile  bool `json:"find_hostile"`
 
 	Speed           int  `json:"speed"`
 	Initiative      int  `json:"initiative"`

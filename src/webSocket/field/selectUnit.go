@@ -26,7 +26,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 	}
 
-	if findClient && findUnit && findGame && gameUnit.ActionPoints > 0 {
+	if findClient && findUnit && findGame {
 		if activeGame.Phase == "move" {
 			SelectMove(client, gameUnit, activeGame, ws, msg.Event)
 		}
@@ -35,7 +35,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 
 func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn, event string) {
 	if !client.GetReady() {
-		if gameUnit.ActionPoints > 0 && client.Move && !client.SubMove {
+		if gameUnit.ActionPoints > 0 && gameUnit.Move{
 			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame, event)})
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})

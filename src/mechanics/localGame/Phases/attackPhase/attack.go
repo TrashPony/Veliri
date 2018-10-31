@@ -6,6 +6,7 @@ import (
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"math/rand"
+	"time"
 )
 
 func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
@@ -49,6 +50,9 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 }
 
 func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
+	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
+	// будет выдавать одну и ту же последовательность.
+	rand.Seed(time.Now().UnixNano())
 	damage := rand.Intn(maxDamage-minDamage) + minDamage
 
 	armor := targetUnit.Armor

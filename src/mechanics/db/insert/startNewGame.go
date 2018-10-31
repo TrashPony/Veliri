@@ -6,7 +6,9 @@ import (
 	"../updateSquad"
 	"log"
 	"database/sql"
-	"../../player"
+	"../../gameObjects/unit"
+	"math/rand"
+	"time"
 )
 
 func StartNewGame(game *lobby.Game) (int, bool) {
@@ -38,8 +40,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 			return id, false
 		}
 
-		_, err = tx.Exec("INSERT INTO action_game_user (id_game, id_user, ready, move, sub_move) VALUES ($1, $2, $3, $4, $5)",
-			id, user.GetID(), false, false, false)
+		_, err = tx.Exec("INSERT INTO action_game_user (id_game, id_user, ready) VALUES ($1, $2, $3)",
+			id, user.GetID(), false)
 		if err != nil {
 			println("add user game error")
 			log.Fatal(err)
@@ -52,7 +54,7 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 				slotUnit.Unit.R = 0
 				slotUnit.Unit.OnMap = false
 				slotUnit.Unit.Target = nil
-				slotUnit.Unit.QueueAttack = 0
+				slotUnit.Unit.Move = false
 				slotUnit.Unit.CalculateParams()
 				slotUnit.Unit.ActionPoints = slotUnit.Unit.Speed
 			}
@@ -64,14 +66,14 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		user.GetSquad().MatherShip.Q = user.GetRespawn().X
 		user.GetSquad().MatherShip.R = user.GetRespawn().Y
 		user.GetSquad().MatherShip.Target = nil
-		user.GetSquad().MatherShip.QueueAttack = 0
+		user.GetSquad().MatherShip.Move = false
 		user.GetSquad().MatherShip.CalculateParams()
 		user.GetSquad().MatherShip.ActionPoints = user.GetSquad().MatherShip.Speed
 
 		updateSquad.Squad(user.GetSquad())
 	}
 
-	CreateMoveQueue(game, id, tx)
+	QueueMove(game)
 
 	err = AddCoordinateEffects(tx, game.Map.Id, id)
 	if err != nil {
@@ -84,56 +86,58 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 	return id, true
 }
 
-func CreateMoveQueue(game *lobby.Game, id int, tx *sql.Tx)  {
-	var searchMax = func(users map[string]*player.Player, SortUsers *[]*player.Player) {
+func QueueMove(game *lobby.Game) {
+	// да это не самый лучший код :(
+	maxInitiative := 0
+	var maxUnit *unit.Unit
 
-		maxInitiative := 0
-		var firstUser *player.Player
+	for _, user := range game.Users {
 
-		var checkUser = func(idSortUsers *[]*player.Player, searchUser *player.Player) bool {
-			for _, user := range *idSortUsers {
-				if user.GetID() == searchUser.GetID() {
-					return true
-				}
-			}
-			return false
+		if user.GetSquad().MatherShip.Initiative > maxInitiative {
+			maxUnit = user.GetSquad().MatherShip
 		}
 
-		for _, user := range users {
-			if maxInitiative < user.GetSquad().MatherShip.Initiative && !checkUser(SortUsers, user){
-				maxInitiative = user.GetSquad().MatherShip.Initiative
-				firstUser = user
+		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
+			if unitSlot.Unit != nil && unitSlot.Unit.Initiative > maxInitiative {
+				maxUnit = unitSlot.Unit
 			}
 		}
-
-		*SortUsers = append(*SortUsers, firstUser)
 	}
 
-	moveQueue := make([]*player.Player, 0)
+	moveUnits := make([]*unit.Unit, 0)
 
-	for i := 0; i < len(game.Users); i++ {
-		searchMax(game.Users, &moveQueue)
+	for _, user := range game.Users {
+
+		if user.GetSquad().MatherShip.Initiative > maxInitiative {
+			moveUnits = append(moveUnits, user.GetSquad().MatherShip)
+		}
+
+		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
+			if unitSlot.Unit != nil && unitSlot.Unit.Initiative == maxUnit.Initiative {
+				moveUnits = append(moveUnits, unitSlot.Unit)
+			}
+		}
 	}
-	// TODO если одинаковая инициатива то кидать жребья
-	for i, user := range moveQueue {
 
-		var move bool
+	if len(moveUnits) > 1 {
+		randomUnitMove(moveUnits).Move = true
+	} else {
+		moveUnits[0].Move = true
+	}
 
-		if i == 0 {
-			move = true
-		}
-
-		_, err := tx.Exec("Update action_game_user SET move=$4, queue_move_pos=$3 " +
-			" WHERE id_game=$1 AND id_user=$2",
-			id, user.GetID(), i+1, move)
-
-		if err != nil {
-			println("update game user stat")
-			log.Fatal(err)
-		}
+	for _, user := range game.Users {
+		updateSquad.Squad(user.GetSquad())
 	}
 }
 
+func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {
+	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
+	// будет выдавать одну и ту же последовательность.
+	rand.Seed(time.Now().UnixNano())
+	numberUnit := rand.Intn(len(moveUnits))
+
+	return moveUnits[numberUnit]
+}
 
 func AddCoordinateEffects(tx *sql.Tx, mapID, gameID int) error {
 

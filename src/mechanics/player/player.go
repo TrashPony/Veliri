@@ -13,21 +13,21 @@ type Player struct {
 	credits         int
 	experiencePoint int
 
-	watch        map[string]map[string]*coordinate.Coordinate // map[X]map[Y]
-	unitStorage  []*unit.Unit
-	units        map[string]map[string]*unit.Unit // map[X]map[Y]
-	squad        *squad.Squad
-	hostileUnits map[string]map[string]*unit.Unit // map[X]map[Y]
-	gameID       int
+	squad  *squad.Squad      // отряд игрока
+	squads []*squad.Squad    // пресеты отряда игрока, не реализовано
 
-	Ready        bool
-	Move         bool
-	SubMove      bool
-	QueueMovePos int
+	unitStorage []*unit.Unit // юниты которы находяться не на поле игры в трюме мса
+
+	watch              map[string]map[string]*coordinate.Coordinate // map[X]map[Y] координаты которые видит пользватель
+	units              map[string]map[string]*unit.Unit             // map[X]map[Y] свои юниты представленные ввиде карты на поле
+	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y] вражеские юниты которы видно в настоящее время
+	memoryHostileUnits []unit.Unit                                  // Юниты которые видел и запомнил пользователь за всю игру
+
+	gameID int
+	Ready  bool
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
-	squads     []*squad.Squad
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {

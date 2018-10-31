@@ -41,7 +41,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	}
 
 	if findUnit && findClient && findGame {
-		if !client.GetReady() && gameUnit.ActionPoints > 0 && client.Move && !client.SubMove {
+		if !client.GetReady() && gameUnit.ActionPoints > 0 {
 
 			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
@@ -72,11 +72,23 @@ func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 	allReady := true
 
 	for _, user := range game.GetPlayers() {
-		moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Move: user.Move}
-		move <- moves
+		for _, q := range user.GetUnits() {
+			for _, gameUnit := range q {
+				if gameUnit.Move {
+					moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+					move <- moves
+				}
+			}
+			if !user.Ready {
+				allReady = false
+			}
+		}
 
-		if !user.Ready {
-			allReady = false
+		for _, gameUnit := range user.GetUnitsStorage() {
+			if gameUnit.Move {
+				moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+				move <- moves
+			}
 		}
 	}
 
@@ -94,6 +106,8 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	if findUnit && findClient && findGame {
 		movePhase.SkipMove(gameUnit, activeGame, client)
 		ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
+
+		QueueSender(activeGame, ws)
 	} else {
 		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}
 		ws.WriteJSON(resp)

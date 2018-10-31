@@ -32,7 +32,6 @@ func recovery(game *localGame.Game) {
 			}
 
 			gameUnit.Target = nil
-			gameUnit.QueueAttack = 0
 			gameUnit.ActionPoints = gameUnit.Body.Speed
 			gameUnit.Defend = false
 
