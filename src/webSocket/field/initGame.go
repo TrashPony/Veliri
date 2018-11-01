@@ -25,16 +25,17 @@ func loadGame(msg Message, ws *websocket.Conn) {
 		usersFieldWs[ws] = player
 
 		var sendLoadGame = LoadGame{
-			Event:        "LoadGame",
-			UserName:     usersFieldWs[ws].GetLogin(),
-			Ready:        usersFieldWs[ws].GetReady(),
-			Units:        usersFieldWs[ws].GetUnits(),
-			HostileUnits: usersFieldWs[ws].GetHostileUnits(),
-			UnitStorage:  usersFieldWs[ws].GetUnitsStorage(),
-			Map:          loadGame.GetMap(),
-			Watch:        usersFieldWs[ws].GetWatchCoordinates(),
-			GameStep:     loadGame.GetStep(),
-			GamePhase:    loadGame.GetPhase()}
+			Event:             "LoadGame",
+			UserName:          usersFieldWs[ws].GetLogin(),
+			Ready:             usersFieldWs[ws].GetReady(),
+			Units:             usersFieldWs[ws].GetUnits(),
+			HostileUnits:      usersFieldWs[ws].GetHostileUnits(),
+			MemoryHostileUnit: usersFieldWs[ws].GetMemoryHostileUnits(),
+			UnitStorage:       usersFieldWs[ws].GetUnitsStorage(),
+			Map:               loadGame.GetMap(),
+			Watch:             usersFieldWs[ws].GetWatchCoordinates(),
+			GameStep:          loadGame.GetStep(),
+			GamePhase:         loadGame.GetPhase()}
 		ws.WriteJSON(sendLoadGame)
 
 		if loadGame.Phase == "move" {
@@ -47,15 +48,16 @@ func loadGame(msg Message, ws *websocket.Conn) {
 }
 
 type LoadGame struct {
-	Event        string                                       `json:"event"`
-	UserName     string                                       `json:"user_name"`
-	Ready        bool                                         `json:"ready"`
-	Equip        []*equip.Equip                               `json:"equip"`
-	Units        map[string]map[string]*unit.Unit             `json:"units"`
-	HostileUnits map[string]map[string]*unit.Unit             `json:"hostile_units"`
-	UnitStorage  []*unit.Unit                                 `json:"unit_storage"`
-	Map          *_map.Map                                    `json:"map"`
-	Watch        map[string]map[string]*coordinate.Coordinate `json:"watch"`
-	GameStep     int                                          `json:"game_step"`
-	GamePhase    string                                       `json:"game_phase"`
+	Event             string                                       `json:"event"`
+	UserName          string                                       `json:"user_name"`
+	Ready             bool                                         `json:"ready"`
+	Equip             []*equip.Equip                               `json:"equip"`
+	Units             map[string]map[string]*unit.Unit             `json:"units"`
+	HostileUnits      map[string]map[string]*unit.Unit             `json:"hostile_units"`
+	MemoryHostileUnit map[string]unit.Unit                         `json:"memory_hostile_unit"`
+	UnitStorage       []*unit.Unit                                 `json:"unit_storage"`
+	Map               *_map.Map                                    `json:"map"`
+	Watch             map[string]map[string]*coordinate.Coordinate `json:"watch"`
+	GameStep          int                                          `json:"game_step"`
+	GamePhase         string                                       `json:"game_phase"`
 }
