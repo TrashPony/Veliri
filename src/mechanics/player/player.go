@@ -13,15 +13,15 @@ type Player struct {
 	credits         int
 	experiencePoint int
 
-	squad  *squad.Squad      // отряд игрока
-	squads []*squad.Squad    // пресеты отряда игрока, не реализовано
+	squad  *squad.Squad   // отряд игрока
+	squads []*squad.Squad // пресеты отряда игрока, не реализовано
 
 	unitStorage []*unit.Unit // юниты которы находяться не на поле игры в трюме мса
 
 	watch              map[string]map[string]*coordinate.Coordinate // map[X]map[Y] координаты которые видит пользватель
 	units              map[string]map[string]*unit.Unit             // map[X]map[Y] свои юниты представленные ввиде карты на поле
 	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y] вражеские юниты которы видно в настоящее время
-	memoryHostileUnits []unit.Unit                                  // Юниты которые видел и запомнил пользователь за всю игру
+	memoryHostileUnits map[string]unit.Unit                         // Юниты которые видел и запомнил пользователь за всю игру
 
 	gameID int
 	Ready  bool

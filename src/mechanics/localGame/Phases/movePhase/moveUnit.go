@@ -1,6 +1,7 @@
 package movePhase
 
 import (
+	"../../../db/localGame/update"
 	"../../../db/updateSquad"
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
@@ -51,7 +52,7 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 				truePatchNode := TruePatchNode{}
 
 				truePatchNode.WatchNode = watchNode // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
-				truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
+				truePatchNode.PathNode = pathNode   // добавляем ячейку в путь
 				truePatchNode.UnitRotate = unitRotate
 				gameUnit.Rotate = unitRotate
 
@@ -62,7 +63,7 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 			truePatchNode := TruePatchNode{}
 
 			truePatchNode.WatchNode = watchNode // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
-			truePatchNode.PathNode = pathNode                                 // добавляем ячейку в путь
+			truePatchNode.PathNode = pathNode   // добавляем ячейку в путь
 			truePatchNode.UnitRotate = unitRotate
 			gameUnit.Rotate = unitRotate
 
@@ -77,9 +78,10 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	}
 
 	gameUnit.FindHostile = false
-
 	gameUnit.OnMap = true
+
 	updateSquad.Squad(client.GetSquad())
+	update.Player(client)
 
 	return
 }
@@ -107,6 +109,11 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 
 	watchNode := watchZone.UpdateWatchZone(game, client) // смотри открыл он новых вражеских юнитов
 	if len(watchNode.OpenUnit) > 0 {
+
+		for _, openHostileUnit := range watchNode.OpenUnit { // добавляем всех открытых юнитов в увидиные пользователем
+			client.AddNewMemoryHostileUnit(*openHostileUnit)
+		}
+
 		gameUnit.FindHostile = true
 		return errors.New("find hostile"), rotate, watchNode
 	}

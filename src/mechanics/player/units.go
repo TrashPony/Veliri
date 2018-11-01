@@ -126,6 +126,18 @@ func (client *Player) DelUnitStorage(id int) (find bool) {
 	return
 }
 
+func (client *Player) AddNewMemoryHostileUnit(newUnit unit.Unit) {
+	if client.memoryHostileUnits == nil {
+		client.memoryHostileUnits = make(map[string]unit.Unit)
+	}
+
+	client.memoryHostileUnits[strconv.Itoa(newUnit.ID)] = newUnit
+}
+
+func (client *Player) GetMemoryHostileUnits() map[string]unit.Unit {
+	return client.memoryHostileUnits
+}
+
 func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {
 	for i, v := range units {
 		if v == item {

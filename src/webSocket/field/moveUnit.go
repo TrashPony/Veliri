@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/db/localGame/update"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
@@ -207,6 +208,12 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 
 			// отправляем только тем кто видит хотя бы 1 клетку пути
 			if send || okGetUnit {
+
+				if !okGetUnit { // добавляем нового вражеского юнита тем юзерам кто его не видел до этого
+					user.AddNewMemoryHostileUnit(*gameUnit)
+					update.Player(user)
+				}
+
 				moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
 				move <- moves
 			}

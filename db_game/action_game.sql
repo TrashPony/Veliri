@@ -34,3 +34,13 @@ CREATE TABLE action_game_zone_effects (        /* эфекты которые в
   r          INT,
   left_steps INT                               /* сколько шагов ему еще висеть */
 );
+
+CREATE TABLE user_memory_unit (
+  id      SERIAL PRIMARY KEY,
+  id_user INT REFERENCES users (id),
+  id_game INT REFERENCES action_games (id),
+  id_unit INT REFERENCES squad_units(id),
+  unit    JSON                                 /* хранит текущие состояние юнита в виде строки json */
+)
+
+/* todo добавить таблицу для мемори юнитов*/
