@@ -1,7 +1,11 @@
 function GameInfo() {
-    var step = document.getElementById('step');
+    let step = document.getElementById('step');
     step.innerHTML = game.Step;
 
-    var phaseGame = document.getElementById('phase');
+    let phaseGame = document.getElementById('phase');
     phaseGame.innerHTML = game.Phase;
+
+    if (game.Phase !== "move") {
+        document.getElementById("queue").style.visibility = "hidden";
+    }
 }

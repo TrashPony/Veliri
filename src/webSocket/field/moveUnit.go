@@ -12,13 +12,14 @@ import (
 )
 
 type Move struct {
-	Event    string                     `json:"event"`
-	UserName string                     `json:"user_name"`
-	GameID   int                        `json:"game_id"`
-	Unit     *unit.Unit                 `json:"unit"`
-	Path     []*movePhase.TruePatchNode `json:"path"`
-	Error    string                     `json:"error"`
-	Move     bool                       `json:"move"`
+	Event             string                     `json:"event"`
+	UserName          string                     `json:"user_name"`
+	GameID            int                        `json:"game_id"`
+	Unit              *unit.Unit                 `json:"unit"`
+	Path              []*movePhase.TruePatchNode `json:"path"`
+	Error             string                     `json:"error"`
+	Move              bool                       `json:"move"`
+	MemoryHostileUnit map[string]unit.Unit       `json:"memory_hostile_unit"`
 }
 
 /*
@@ -112,6 +113,9 @@ func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 					move <- moves
 				}
 			}
+
+			moves := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
+			move <- moves
 		}
 
 		if allReady {
@@ -129,7 +133,6 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	if findUnit && findClient && findGame {
 		movePhase.SkipMove(gameUnit, activeGame, client)
 		ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
-
 		QueueSender(activeGame, ws)
 	} else {
 		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}

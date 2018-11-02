@@ -1,6 +1,7 @@
 package movePhase
 
 import (
+	"../../../db/updateSquad"
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
@@ -75,6 +76,12 @@ func QueueMove(game *localGame.Game) {
 			gameUser.SetReady(true)
 		}
 	}
+
+	for _, gameUser := range game.GetPlayers() {
+		updateSquad.Squad(gameUser.GetSquad())
+	}
+
+	updateMoveParamsMemoryUnits(game)
 }
 
 func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {

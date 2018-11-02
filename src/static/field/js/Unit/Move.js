@@ -35,6 +35,8 @@ function CreatePathToUnit(jsonMessage) {
             }
         }
     }
+
+    LoadQueueUnits(); // обновляем мув лайн
 }
 
 function MoveHostileUnit(jsonMessage) {
@@ -74,6 +76,8 @@ function MoveHostileUnit(jsonMessage) {
         patchNodes[patchNodes.length - 1].path_node.type !== "inToFog") {
         MarkLastPathCell(unit, patchNodes[patchNodes.length - 1].path_node);        // помечаем ячейку куда идет моб
     }
+
+    LoadQueueUnits(); // обновляем мув лайн
 }
 
 function CheckPath(unit) {

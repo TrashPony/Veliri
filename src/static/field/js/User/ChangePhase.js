@@ -4,13 +4,19 @@ function ChangePhase(jsonMessage) {
     game.Phase = JSON.parse(jsonMessage).game_phase;
     GameInfo();
 
+    if (game.Phase === "move") {
+        LoadQueueUnits();
+    } else {
+        document.getElementById("queue").style.visibility = "hidden";
+    }
+
     game.user.ready = JSON.parse(jsonMessage).ready;
     InitPlayer();
 
-    var units = JSON.parse(jsonMessage).units;
-    for (var x in units) {
+    let units = JSON.parse(jsonMessage).units;
+    for (let x in units) {
         if (units.hasOwnProperty(x)) {
-            for (var y in units[x]) {
+            for (let y in units[x]) {
                 if (units[x].hasOwnProperty(y)) {
                     if (game.units.hasOwnProperty(x)) {
                         if (game.units[x].hasOwnProperty(y)) {

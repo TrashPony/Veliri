@@ -63,13 +63,24 @@ func memoryPlayer(client *player.Player) {
 	}
 	defer rows.Close()
 
-	var jsonUnit []byte
-	var memoryUnit unit.Unit
-
 	for rows.Next() {
-		rows.Scan(&jsonUnit)
-	}
+		var jsonUnit []byte
+		var memoryUnit unit.Unit
 
-	json.Unmarshal(jsonUnit, &memoryUnit)
-	client.AddNewMemoryHostileUnit(memoryUnit)
+		rows.Scan(&jsonUnit)
+		json.Unmarshal(jsonUnit, &memoryUnit)
+
+		rows, err := dbConnect.GetDBConnect().Query(
+			"SELECT move, action_point FROM squad_units WHERE id=$1", memoryUnit.ID)
+		if err != nil {
+			println("get move params memory unit")
+			log.Fatal(err)
+		}
+
+		for rows.Next() {
+			rows.Scan(&memoryUnit.Move, &memoryUnit.ActionPoints)
+		}
+
+		client.AddNewMemoryHostileUnit(memoryUnit)
+	}
 }

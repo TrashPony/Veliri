@@ -126,6 +126,15 @@ func (client *Player) DelUnitStorage(id int) (find bool) {
 	return
 }
 
+func (client *Player) SetMoveParamsMemoryUnit(idUnit int, move bool, actionPoint int) {
+	memoryUnit, ok := client.memoryHostileUnits[strconv.Itoa(idUnit)]
+	if ok {
+		memoryUnit.Move = move
+		memoryUnit.ActionPoints = actionPoint
+		client.memoryHostileUnits[strconv.Itoa(idUnit)] = memoryUnit
+	}
+}
+
 func (client *Player) AddNewMemoryHostileUnit(newUnit unit.Unit) {
 	if client.memoryHostileUnits == nil {
 		client.memoryHostileUnits = make(map[string]unit.Unit)

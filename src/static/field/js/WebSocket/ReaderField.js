@@ -37,7 +37,7 @@ function ReadResponse(jsonMessage) {
 
     if (event === "ChangePhase") {
         ChangePhase(jsonMessage);
-        ChangePhaseNotification(jsonMessage)
+        ChangePhaseNotification(jsonMessage);
     }
 
     if (event === "MoveUnit") {
@@ -71,6 +71,10 @@ function ReadResponse(jsonMessage) {
 
     if (event === "QueueMove") {
         MoveNotification(jsonMessage)
+    }
+
+    if (event === "UpdateMemoryUnit") {
+        UpdateMemoryUnit(jsonMessage)
     }
 
     if (event === "Error") {
