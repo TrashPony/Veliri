@@ -1,6 +1,4 @@
 function LoadQueueUnits() {
-
-    // TODO game.unitStorage не учитывается
     document.getElementById("queueLine").innerHTML = "";
     document.getElementById("queue").style.visibility = "visible";
 
@@ -9,6 +7,12 @@ function LoadQueueUnits() {
     for (let i in game.memoryHostileUnit) {
         if (game.memoryHostileUnit.hasOwnProperty(i) && game.memoryHostileUnit[i].action_points > 0) {
             allActionUnits.push(game.memoryHostileUnit[i]);
+        }
+    }
+
+    for (let i in game.unitStorage) {
+        if (game.unitStorage.hasOwnProperty(i) && game.unitStorage[i].action_points > 0) {
+            allActionUnits.push(game.unitStorage[i]);
         }
     }
 
@@ -23,14 +27,13 @@ function LoadQueueUnits() {
             }
         }
     }
-    
+
     function initiativeSort(a, b) {
         if (a.initiative < b.initiative) return 1;
         if (a.initiative > b.initiative) return -1;
     }
 
     allActionUnits.sort(initiativeSort);
-    console.log(allActionUnits);
 
     let move = false;
     let randomUnit = [];

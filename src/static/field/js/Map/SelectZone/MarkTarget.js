@@ -18,9 +18,11 @@ function DeleteMarkTarget(target) {
         let q = target.q;
         let r = target.r;
 
-        for (let i in game.map.OneLayerMap[q][r].sprite.children) {
-            if (game.map.OneLayerMap[q][r].sprite.children[i].key === "MarkTarget") {
-                game.map.OneLayerMap[q][r].sprite.children[i].destroy()
+        if (game.map.OneLayerMap[q][r].sprite) {
+            for (let i in game.map.OneLayerMap[q][r].sprite.children) {
+                if (game.map.OneLayerMap[q][r].sprite.children[i].key === "MarkTarget") {
+                    game.map.OneLayerMap[q][r].sprite.children[i].destroy()
+                }
             }
         }
     }

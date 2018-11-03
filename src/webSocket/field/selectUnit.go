@@ -19,9 +19,11 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 	if msg.Event == "SelectStorageUnit" {
 		// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
 		gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
-		gameUnit.Q = client.GetSquad().MatherShip.Q
-		gameUnit.R = client.GetSquad().MatherShip.R
-		SelectMove(client, gameUnit, activeGame, ws, msg.Event)
+		if findUnit {
+			gameUnit.Q = client.GetSquad().MatherShip.Q
+			gameUnit.R = client.GetSquad().MatherShip.R
+			SelectMove(client, gameUnit, activeGame, ws, msg.Event)
+		}
 	} else {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 	}
@@ -35,7 +37,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 
 func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn, event string) {
 	if !client.GetReady() {
-		if gameUnit.ActionPoints > 0 && gameUnit.Move{
+		if gameUnit.ActionPoints > 0 && gameUnit.Move {
 			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame, event)})
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})

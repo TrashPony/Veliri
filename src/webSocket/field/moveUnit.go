@@ -97,10 +97,8 @@ func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 		for _, user := range game.GetPlayers() {
 			for _, q := range user.GetUnits() {
 				for _, gameUnit := range q {
-					if gameUnit.Move {
-						moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-						move <- moves
-					}
+					moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+					move <- moves
 				}
 				if !user.Ready {
 					allReady = false
@@ -108,10 +106,8 @@ func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 			}
 
 			for _, gameUnit := range user.GetUnitsStorage() {
-				if gameUnit.Move {
-					moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-					move <- moves
-				}
+				moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+				move <- moves
 			}
 
 			memoryUnits := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}

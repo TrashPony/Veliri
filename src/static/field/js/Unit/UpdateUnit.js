@@ -7,6 +7,10 @@ function UpdateUnit(unitStat) {
         DeleteMarkTarget(unitStat);
     }
 
+    if (!unit) {
+        unit = GetStorageUnit(unitStat.id)
+    }
+
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;
     unit.effects = unitStat.effects;

@@ -4,11 +4,8 @@ import (
 	"../../../dbConnect"
 	"../../lobby"
 	"../updateSquad"
-	"log"
 	"database/sql"
-	"../../gameObjects/unit"
-	"math/rand"
-	"time"
+	"log"
 )
 
 func StartNewGame(game *lobby.Game) (int, bool) {
@@ -73,8 +70,6 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		updateSquad.Squad(user.GetSquad())
 	}
 
-	QueueMove(game)
-
 	err = AddCoordinateEffects(tx, game.Map.Id, id)
 	if err != nil {
 		println("error db add coordinate effect new game")
@@ -84,59 +79,6 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 	tx.Commit()
 
 	return id, true
-}
-
-func QueueMove(game *lobby.Game) {
-	// да это не самый лучший код :(
-	maxInitiative := 0
-	var maxUnit *unit.Unit
-
-	for _, user := range game.Users {
-
-		if user.GetSquad().MatherShip.Initiative > maxInitiative {
-			maxUnit = user.GetSquad().MatherShip
-		}
-
-		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
-			if unitSlot.Unit != nil && unitSlot.Unit.Initiative > maxInitiative {
-				maxUnit = unitSlot.Unit
-			}
-		}
-	}
-
-	moveUnits := make([]*unit.Unit, 0)
-
-	for _, user := range game.Users {
-
-		if user.GetSquad().MatherShip.Initiative > maxInitiative {
-			moveUnits = append(moveUnits, user.GetSquad().MatherShip)
-		}
-
-		for _, unitSlot := range user.GetSquad().MatherShip.Units { //находим юнита с макс инициативой
-			if unitSlot.Unit != nil && unitSlot.Unit.Initiative == maxUnit.Initiative {
-				moveUnits = append(moveUnits, unitSlot.Unit)
-			}
-		}
-	}
-
-	if len(moveUnits) > 1 {
-		randomUnitMove(moveUnits).Move = true
-	} else {
-		moveUnits[0].Move = true
-	}
-
-	for _, user := range game.Users {
-		updateSquad.Squad(user.GetSquad())
-	}
-}
-
-func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {
-	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
-	// будет выдавать одну и ту же последовательность.
-	rand.Seed(time.Now().UnixNano())
-	numberUnit := rand.Intn(len(moveUnits))
-
-	return moveUnits[numberUnit]
 }
 
 func AddCoordinateEffects(tx *sql.Tx, mapID, gameID int) error {

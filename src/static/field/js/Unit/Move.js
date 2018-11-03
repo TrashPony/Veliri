@@ -175,7 +175,7 @@ function MoveUnit() {
 
                         if (Math.round(dist) >= -10 && Math.round(dist) <= 10) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
-                            delete game.units[unit.q][unit.r];
+                            delete game.units[unit.q][unit.r]; // TODO
 
                             unit.q = unit.movePoint.q;
                             unit.r = unit.movePoint.r;

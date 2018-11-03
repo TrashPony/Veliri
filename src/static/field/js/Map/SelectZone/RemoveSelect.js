@@ -16,21 +16,21 @@ function RemoveSelect() {
 }
 
 function RemoveSelectLine() {
-    while (game.SelectLineLayer.children.length > 0) {
+    while (game.SelectLineLayer && game.SelectLineLayer.children.length > 0) {
         let lineSprite = game.SelectLineLayer.children.shift();
         lineSprite.destroy();
     }
 }
 
 function RemoveTargetLine() {
-    while (game.SelectTargetLineLayer.children.length > 0) {
+    while (game.SelectTargetLineLayer && game.SelectTargetLineLayer.children.length > 0) {
         let lineSprite = game.SelectTargetLineLayer.children.shift();
         lineSprite.destroy();
     }
 }
 
 function RemoveSelectCoordinate() {
-    while (game.SelectLayer.children.length > 0) {
+    while (game.SelectLayer && game.SelectLayer.children.length > 0) {
         let sprite = game.SelectLayer.children.shift();
         sprite.destroy();
     }
@@ -48,7 +48,7 @@ function RemoveSelectCoordinate() {
 }
 
 function RemoveSelectRangeCoordinate() {
-    while (game.SelectRangeLayer.children.length > 0) {
+    while (game.SelectRangeLayer && game.SelectRangeLayer.children.length > 0) {
         let sprite = game.SelectRangeLayer.children.shift();
         sprite.destroy();
     }

@@ -3,6 +3,7 @@ package initGame
 import (
 	"../../db/localGame/get"
 	"../../localGame"
+	"../../localGame/Phases/movePhase"
 	"../../localGame/map/watchZone"
 )
 
@@ -21,7 +22,27 @@ func InitGame(idGAme int) (newGame *localGame.Game) {
 	newGame.SetUnitsStorage(unitStorage)
 
 	GetWatchPlayers(newGame)
+
+	if newGame.Phase == "move" {
+		checkMoveUnit(newGame)
+	}
+
 	return
+}
+
+func checkMoveUnit(game *localGame.Game) {
+	move := false
+	for _, q := range game.GetUnits() {
+		for _, unit := range q {
+			if unit.Move {
+				move = true
+			}
+		}
+	}
+
+	if !move {
+		movePhase.QueueMove(game)
+	}
 }
 
 func GetWatchPlayers(game *localGame.Game) {

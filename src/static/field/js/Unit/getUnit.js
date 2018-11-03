@@ -15,6 +15,19 @@ function GetGameUnitID(id) {
     }
 }
 
+function GetStorageUnit(id) {
+    let unit;
+
+    for (let i in game.unitStorage) {
+        if (game.unitStorage.hasOwnProperty(i)) {
+            if (id === game.unitStorage[i].id) {
+                unit = game.unitStorage[i];
+                return unit
+            }
+        }
+    }
+}
+
 function GetGameUnitXY(qUnit,rUnit) {
     let unit;
 

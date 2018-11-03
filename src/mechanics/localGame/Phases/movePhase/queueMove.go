@@ -23,6 +23,9 @@ func QueueMove(game *localGame.Game) {
 						maxInitiative = gameUnit.Initiative
 						maxUnit = gameUnit
 					} else {
+						if !canMoveUnit(gameUser) {
+							gameUnit.ActionPoints = 0
+						}
 						gameUnit.Move = false
 					}
 				}
@@ -35,6 +38,9 @@ func QueueMove(game *localGame.Game) {
 					maxInitiative = gameUnit.Initiative
 					maxUnit = gameUnit
 				} else {
+					if !canMoveUnit(gameUser) {
+						gameUnit.ActionPoints = 0
+					}
 					gameUnit.Move = false
 				}
 			}
@@ -47,8 +53,6 @@ func QueueMove(game *localGame.Game) {
 				for _, gameUnit := range q {
 					if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative && canMoveUnit(gameUser) {
 						moveUnits = append(moveUnits, gameUnit)
-					} else {
-						gameUnit.Move = false
 					}
 				}
 			}
@@ -58,8 +62,6 @@ func QueueMove(game *localGame.Game) {
 			for _, gameUnit := range gameUser.GetUnitsStorage() { //ищем юнитов с такойже инициативой
 				if gameUnit.ActionPoints > 0 && gameUnit.Initiative == maxUnit.Initiative && canMoveUnit(gameUser) {
 					moveUnits = append(moveUnits, gameUnit)
-				} else {
-					gameUnit.Move = false
 				}
 			}
 		}
