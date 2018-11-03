@@ -28,7 +28,7 @@ func (squad *Squad) GetUseAllInventorySize() float32 {
 	var unitSquadSize float32
 	var msBodySize float32
 
-	if squad.MatherShip.Body != nil {
+	if squad.MatherShip != nil && squad.MatherShip.Body != nil {
 		msBodySize = squad.MatherShip.Body.GetUseCapacitySize()
 
 		for _, squadUnit := range squad.MatherShip.Units {

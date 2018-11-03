@@ -53,14 +53,6 @@ function ReadResponse(jsonMessage) {
         UpdateUnit(unitStat);
     }
 
-    if (event === "UseUnitEquip") {
-        AnimateUseUnitEquip(jsonMessage);
-    }
-
-    if (event === "UseMapEquip") {
-        AnimateUseMapEquip(jsonMessage);
-    }
-
     if (event === "PreviewPath") {
         CreatePreviewPath(jsonMessage)
     }

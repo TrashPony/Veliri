@@ -7,12 +7,11 @@ function FillingInventory(jsonData) {
         SquadTable(squad);
         if (squad.mather_ship != null && squad.mather_ship.body != null) {
             ConstructorTable(squad.mather_ship);
-            FillPowerPanel(squad.mather_ship.body, "powerPanel")
+            FillPowerPanel(squad.mather_ship.body, "powerPanel");
+            inventoryMetaInfo(JSON.parse(jsonData))
         } else {
             NoActiveCell();
         }
-
-        inventoryMetaInfo(JSON.parse(jsonData))
 
     } else if (event === "ms error") {
 

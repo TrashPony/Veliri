@@ -7,7 +7,10 @@ function InventoryTable(inventoryItems) {
             cell.slotData = JSON.stringify(inventoryItems[i]);
             cell.number = i;
 
-            cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).item.name + ".png)";
+
+            cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
+
+
             cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
 
             CreateHealBar(cell, "inventory", true);

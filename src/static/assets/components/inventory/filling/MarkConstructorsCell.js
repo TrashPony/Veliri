@@ -75,7 +75,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     };
 
     if (JSON.parse(cell.slotData).equip !== null) {
-        cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).equip.name + ".png)";
+        cell.style.backgroundImage = "url(/assets/units/equip/" + JSON.parse(cell.slotData).equip.name + ".png)";
         cell.innerText = "";
         CreateHealBar(cell, "equip", true);
     } else {
@@ -141,7 +141,7 @@ function UpdateWeapon(cell, classPrefix) {
     }
 
     if (JSON.parse(cell.slotData).weapon !== null) {
-        cell.style.backgroundImage = "url(/assets/" + JSON.parse(cell.slotData).weapon.name + ".png)";
+        cell.style.backgroundImage = "url(/assets/units/weapon/" + JSON.parse(cell.slotData).weapon.name + ".png)";
     } else {
         cell.style.backgroundImage = null;
     }
@@ -204,7 +204,7 @@ function CreateAmmoCell(cell, classPrefix) {
     };
 
     if (JSON.parse(ammoCell.slotData).ammo !== null) {
-        ammoCell.style.backgroundImage = "url(/assets/" + JSON.parse(ammoCell.slotData).ammo.name + ".png)";
+        ammoCell.style.backgroundImage = "url(/assets/units/ammo/" + JSON.parse(ammoCell.slotData).ammo.name + ".png)";
         ammoCell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(ammoCell.slotData).ammo_quantity + "</span>";
     }
 

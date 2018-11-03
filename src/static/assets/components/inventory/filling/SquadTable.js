@@ -13,7 +13,7 @@ function SquadTable(squad) {
 
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
                 cell.innerHTML = "";
-                cell.style.backgroundImage = "url(/assets/" + squad.mather_ship.units[slot].unit.body.name + ".png)";
+                cell.style.backgroundImage = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png)";
                 let constructorUnit = document.getElementById("ConstructorUnit");
                 if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
                     FillingSquadConstructor(unitSlot);
@@ -123,7 +123,7 @@ function CreateUnitEquipSlots(constructorUnit) {
 function FillingSquadConstructor(slotData) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.innerHTML = "";
-    unitIcon.style.backgroundImage = "url(/assets/" + slotData.unit.body.name + ".png)";
+    unitIcon.style.backgroundImage = "url(/assets/units/body/" + slotData.unit.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(slotData);
     unitIcon.unitBody = slotData.unit.body;
     unitIcon.onclick = BodyUnitMenu;

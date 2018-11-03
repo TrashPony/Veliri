@@ -31,7 +31,7 @@ function FillSquadBlock(jsonMessage) {
     let matherShipTD = document.getElementById("matherShipTD");
 
     if (squad.mather_ship != null && squad.mather_ship.body) {
-        matherShipTD.style.backgroundImage = "url(/assets/" + squad.mather_ship.body.name + ".png)";
+        matherShipTD.style.backgroundImage = "url(/assets/units/body/" + squad.mather_ship.body.name + ".png)";
 
         if (squad.mather_ship.units) {
             let unitsTD = document.getElementById("unitsTD");
@@ -42,7 +42,7 @@ function FillSquadBlock(jsonMessage) {
                     if (unit) {
                         let unitDiv = document.createElement("div");
                         unitDiv.className = "lobbyUnitBox";
-                        unitDiv.style.backgroundImage = "url(/assets/" + unit.body.name + ".png)";
+                        unitDiv.style.backgroundImage = "url(/assets/units/body/" + unit.body.name + ".png)";
 
                         unitsTD.appendChild(unitDiv);
                     }
