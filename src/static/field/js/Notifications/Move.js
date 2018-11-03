@@ -1,4 +1,8 @@
 function MoveNotification(jsonMessage) {
+
+    let unitStat = JSON.parse(jsonMessage).unit;
+    UpdateUnit(unitStat);
+
     let notificationBlock = document.createElement("div");
     notificationBlock.className = "notificationBlock";
 

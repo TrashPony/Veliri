@@ -114,8 +114,8 @@ func QueueSender(game *localGame.Game, ws *websocket.Conn) {
 				}
 			}
 
-			moves := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
-			move <- moves
+			memoryUnits := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
+			move <- memoryUnits
 		}
 
 		if allReady {

@@ -33,12 +33,9 @@ function UpdateUnit(unitStat) {
     unit.vul_to_explosion = unitStat.vul_to_explosion;
     unit.vul_to_kinetics = unitStat.vul_to_kinetics;
     unit.vul_to_thermo = unitStat.vul_to_thermo;
-
-    LoadQueueUnits(); // обновляем мув лайн
 }
 
 function UpdateMemoryUnit(jsonMessage) {
-    console.log(jsonMessage);
     game.memoryHostileUnit = JSON.parse(jsonMessage).memory_hostile_unit;
     LoadQueueUnits();
 }

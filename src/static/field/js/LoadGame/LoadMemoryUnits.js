@@ -16,18 +16,21 @@ function LoadQueueUnits() {
         if (game.units.hasOwnProperty(q)) {
             for (let r in game.units[q]) {
                 if (game.units[q].hasOwnProperty(r) && game.units[q][r].action_points > 0) {
-                    allActionUnits.push(game.units[q][r]);
+                    if (game.user.name === game.units[q][r].owner) {
+                        allActionUnits.push(game.units[q][r]);
+                    }
                 }
             }
         }
     }
-
+    
     function initiativeSort(a, b) {
         if (a.initiative < b.initiative) return 1;
         if (a.initiative > b.initiative) return -1;
     }
 
     allActionUnits.sort(initiativeSort);
+    console.log(allActionUnits);
 
     let move = false;
     let randomUnit = [];
@@ -37,15 +40,17 @@ function LoadQueueUnits() {
         if (allActionUnits[i].move) {
             createQueueBlock([allActionUnits[i]], allActionUnits[i].move);
             move = true;
-
-            if (allActionUnits.length === i+1) {
+            if (allActionUnits.length === i + 1) {
                 createQueueBlock(randomUnit);
             }
 
             continue;
         }
-        if ((allActionUnits.length > i + 1 && allActionUnits[i].initiative !== allActionUnits[i + 1].initiative)
+
+        if ((allActionUnits.length > i + 1 && allActionUnits[i + 1] && allActionUnits[i].initiative !== allActionUnits[i + 1].initiative)
+            || allActionUnits.length > i + 2 && allActionUnits[i + 1].move && allActionUnits[i].initiative !== allActionUnits[i + 2].initiative
             || allActionUnits.length === i + 1) {
+
             randomUnit.push(allActionUnits[i]);
             createQueueBlock(randomUnit);
             randomUnit = [];
