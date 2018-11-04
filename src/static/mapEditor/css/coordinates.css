@@ -13,3 +13,82 @@
     margin-top: 16px;
     margin-left: 20px;
 }
+
+#effectZonePanel, #effectDetailZonePanel {
+    position: absolute;
+    border: 1px solid #25a0e1;
+    transition-property: background-image;
+    text-shadow: #28a5e4 0 0 4px;
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    display: inline-block;
+    border-radius: 5px;
+    background-size: 10px 2px;
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+}
+
+#cancelTipEffectsButton {
+    float: right;
+    border: 1px solid #b3ddff;
+    height: 10px;
+    width: 10px;
+    border-radius: 5px;
+    margin-top: 2px;
+    margin-right: 2px;
+    line-height: 5px;
+    color: red;
+}
+
+#cancelTipEffectsButton:hover {
+    color: #fff91e;
+}
+
+#cancelTipEffectsButton:active {
+    position: relative;
+    top: 1px;
+    left: 1px;
+}
+
+#cancelTipEffectsButton:after {
+    content: '\2716';
+    font-size: 9px;
+}
+
+.cell {
+    pointer-events:visible;
+    width: 17px;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid #959595;
+    background-color: #4c4c4c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.cell:hover {
+    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
+    color: #00fffd;
+    cursor: pointer;
+}
+
+#TipEffect {
+    pointer-events:none;
+    position: absolute;
+    display: inline-block;
+    z-index: 901;
+    background-size: 10px 2px;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    transition-property: background-image;
+    width: 90px;
+    padding: 5px;
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+}
+
+#TipEffect td{
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 6pt;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    color: #a5d5ef;
+}

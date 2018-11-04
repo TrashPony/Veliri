@@ -127,7 +127,7 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT et.id, et.name, et.level, et.type, et.parameter, et.quantity, et.percentages, et.forever "+
 		"FROM effects_type et, coordinate_type_effect cte, coordinate_type ct "+
-		"WHERE et.id = cte.id_effect AND ct.id = $1;", mapCoordinate.ID)
+		"WHERE et.id = cte.id_effect AND ct.id=cte.id_type AND ct.id = $1;", mapCoordinate.ID)
 	if err != nil {
 		println("get coordinate effects")
 		log.Fatal(err)

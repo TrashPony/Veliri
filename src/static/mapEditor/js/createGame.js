@@ -10,6 +10,8 @@ function createGame(jsonMessage) {
 
     game.hexagonWidth = 80;
     game.hexagonHeight = 100;
+    game.shadowXOffset = 8;
+    game.shadowYOffset = 10;
     game.map = JSON.parse(jsonMessage).map;
 }
 

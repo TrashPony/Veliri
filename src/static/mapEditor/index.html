@@ -12,7 +12,7 @@
     <script src="./js/ReaderMapEditor.js"></script>
     <script src="./js/GetMapList.js"></script>
     <script src="./js/createGame.js"></script>
-    <script src="./js/TipOff.js"></script>
+    <script src="./js/MouseOver.js"></script>
 
     <script src="./js/CreateMap/CreateMap.js"></script>
     <script src="./js/CreateMap/Objects.js"></script>
@@ -22,7 +22,7 @@
     <script src="../assets/lib/phaser.js"></script>
 
 </head>
-<body onload=OpenMapEditorSocket()>
+<body oncontextmenu="return false;" onload="OpenMapEditorSocket()" onmousemove="moveMouse(event)">
 <div id="main">
     <div id="head">
         <select title="mapSelector" id="mapSelector" onchange="selectMap();">

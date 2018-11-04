@@ -10,8 +10,6 @@ function CreateMap() {
     let startXInit = hexagonWidth / 2;
     let startYInit = hexagonHeight / 2;
 
-    console.log(game.map);
-
     for (let r = 0; r < game.map.RSize; r++) {
 
         if (r % 2 !== 0) {
@@ -35,8 +33,6 @@ function CreateMap() {
             }
 
             if (coordinate.effects != null && coordinate.effects.length > 0) {
-                console.log(coordinate.effects);
-
                 MarkZoneEffect(coordinate, startX, startY)
             }
         }
