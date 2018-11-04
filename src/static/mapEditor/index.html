@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Map Editor</title>
+
+    <link href="../assets/css/all.css" rel="stylesheet">
+    <link href="./css/head.css" rel="stylesheet">
+    <link href="./css/coordinates.css" rel="stylesheet">
+
+    <script src="./js/webSocket.js"></script>
+    <script src="./js/ReaderMapEditor.js"></script>
+    <script src="./js/GetMapList.js"></script>
+    <script src="./js/createGame.js"></script>
+    <script src="./js/TipOff.js"></script>
+
+    <script src="./js/CreateMap/CreateMap.js"></script>
+    <script src="./js/CreateMap/Objects.js"></script>
+    <script src="./js/CreateMap/Terrain.js"></script>
+    <script src="./js/CreateMap/MarkZoneEffect.js"></script>
+
+    <script src="../assets/lib/phaser.js"></script>
+
+</head>
+<body onload=OpenMapEditorSocket()>
+<div id="main">
+    <div id="head">
+        <select title="mapSelector" id="mapSelector" onchange="selectMap();">
+            <option value="" disabled selected>Выберите карту</option>
+        </select>
+    </div>
+    <div id="map">
+
+    </div>
+    <div id="coordinates">
+
+    </div>
+</div>
+</body>
+</html>

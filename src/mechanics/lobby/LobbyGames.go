@@ -20,7 +20,7 @@ type Game struct {
 func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player, id int) Game {
 
 	respawns := get.Respawns(mapID)
-	mp := get.Map(mapID)
+	mp := get.InfoMap(mapID)
 
 	game := Game{ID: id, Name: nameGame, Map: mp, Creator: creator.GetLogin(), Users: make(map[string]*player.Player, 0), Respawns: respawns}
 	game.Users[creator.GetLogin()] = creator

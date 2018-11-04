@@ -23,7 +23,7 @@ func TypeEquip(id int) *equip.Equip {
 		" max_hp,"+
 		" steps_time,"+
 		" size, "+
-		" initiative " +
+		" initiative "+
 		""+
 		"FROM equipping_type "+
 		"WHERE id=$1", id)

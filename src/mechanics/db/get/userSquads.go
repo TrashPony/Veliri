@@ -66,8 +66,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"power, mother_ship, "+
 			"action_point, "+
 			"on_map, "+
-			"defend, " +
-			"move " +
+			"defend, "+
+			"move "+
 			""+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
@@ -134,8 +134,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"power, "+
 			"mother_ship, "+
 			"action_point, "+
-			"defend," +
-			"move " +
+			"defend,"+
+			"move "+
 			" "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)

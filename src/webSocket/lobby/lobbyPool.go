@@ -51,7 +51,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MapView" {
-			var maps = get.MapList()
+			var maps = get.InfoMapList()
 			for _, Map := range maps {
 				var resp = Response{Event: msg.Event, Map: &Map}
 				ws.WriteJSON(resp)

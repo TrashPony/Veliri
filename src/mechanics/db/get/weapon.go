@@ -20,7 +20,7 @@ func Weapon(id int) (weapon *detail.Weapon) {
 		" type,"+
 		" standard_size,"+
 		" size, "+
-		" initiative " +
+		" initiative "+
 		""+
 		"FROM weapon_type "+
 		"WHERE id=$1", id)

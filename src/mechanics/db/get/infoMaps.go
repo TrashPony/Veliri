@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func MapList() []gameMap.Map {
+func InfoMapList() []gameMap.Map {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps")
 	if err != nil {
@@ -34,7 +34,7 @@ func MapList() []gameMap.Map {
 	return maps
 }
 
-func Map(id int) gameMap.Map {
+func InfoMap(id int) gameMap.Map {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps WHERE id=$1", id)
 	if err != nil {
