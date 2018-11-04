@@ -52,6 +52,10 @@ function UpdateShipIcon(ms) {
         }
     };
 
+    let slotData = {};
+    slotData.unit = ms;
+    UpdateWeaponIcon(unitIcon, "weaponIcon", slotData);
+
     CreateHealBar(unitIcon, "body", true);
 }
 
@@ -61,6 +65,6 @@ function ItemOverTip(e, slot) {
         inventoryTip.style.top = e.clientY + "px";
         inventoryTip.style.left = e.clientX + "px";
     } else {
-        InventorySelectTip(slot, e.clientX, e.clientY, true);
+        InventorySelectTip(slot, e.clientX, e.clientY, true, false);
     }
 }

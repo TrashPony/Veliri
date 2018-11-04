@@ -28,6 +28,8 @@ function NoActiveCell() {
 
     let powerPanel = document.getElementById("powerPanel");
     powerPanel.innerHTML = "<span class='Value'> Энергия: <br>" + 0 + "/" + 0 + "</span>";
+
+    document.getElementById("MSWeaponPanel").innerHTML = "";
 }
 
 function NoActiveUnitCell(slotData) {
@@ -64,6 +66,8 @@ function NoActiveUnitCell(slotData) {
 
             let unitCubePanel = document.getElementById("unitCubePanel");
             unitCubePanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
+
+            document.getElementById("weaponTypePanel").innerHTML = "";
         }
     }
 }

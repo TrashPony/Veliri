@@ -2,6 +2,7 @@ package squad
 
 import (
 	"../../gameObjects/unit"
+	"math"
 )
 
 type Squad struct {
@@ -25,20 +26,6 @@ type InventorySlot struct {
 
 func (squad *Squad) GetUseAllInventorySize() float32 {
 
-	var unitSquadSize float32
-	var msBodySize float32
-
-	if squad.MatherShip != nil && squad.MatherShip.Body != nil {
-		msBodySize = squad.MatherShip.Body.GetUseCapacitySize()
-
-		for _, squadUnit := range squad.MatherShip.Units {
-			if squadUnit.Unit != nil {
-				unitSquadSize = unitSquadSize + squadUnit.Unit.Body.GetUseCapacitySize()
-				unitSquadSize = unitSquadSize + squadUnit.Unit.Body.CapacitySize
-			}
-		}
-	}
-
 	var inventorySquadSize float32
 	for _, slot := range squad.Inventory {
 		if slot.Item != nil {
@@ -46,5 +33,19 @@ func (squad *Squad) GetUseAllInventorySize() float32 {
 		}
 	}
 
-	return msBodySize + unitSquadSize + inventorySquadSize
+	return float32(round(float64(inventorySquadSize), 1))
+}
+
+func round(x float64, prec int) float64 {
+	var rounder float64
+	pow := math.Pow(10, float64(prec))
+	intermed := x * pow
+	_, frac := math.Modf(intermed)
+	if frac >= 0.5 {
+		rounder = math.Ceil(intermed)
+	} else {
+		rounder = math.Floor(intermed)
+	}
+
+	return rounder / pow
 }

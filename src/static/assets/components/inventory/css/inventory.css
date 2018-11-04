@@ -136,9 +136,18 @@
     background-color: #959595;
 }
 
-#sizeInventoryInfo div {
+#sizeInventoryInfo #realSize {
     overflow: visible;
     background: rgba(255, 96, 0, 0.7)
+}
+
+#sizeInventoryInfo #itemSize {
+    position: relative;
+    left: 0;
+    top: -18px;
+    height: 20px;
+    overflow: visible;
+    background: rgba(45, 221, 255, 0.9)
 }
 
 #sizeInventoryInfo span {

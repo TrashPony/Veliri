@@ -26,6 +26,18 @@
     line-height: 30px;
 }
 
+.weaponUnitInnerIcon {
+    height: 100px;
+    width: 100px;
+    background-size: contain;
+}
+
+.weaponUnitIcon {
+    height: 50px;
+    width: 50px;
+    background-size: contain;
+}
+
 #UnitIcon span {
     display: block;
     margin-top: 20px;
@@ -33,9 +45,9 @@
 
 .powerIcon {
     position: absolute;
-    top: 50px;
+    top: 82px;
     width: 30px;
-    left: 18px;
+    left: 15px;
     height: 20px;
     background: url(../img/power.png) no-repeat 0 0;
     background-size: 50%;
@@ -43,9 +55,9 @@
 
 #unitPowerPanel {
     position: absolute;
-    top: 68px;
-    width: 39px;
-    left: 3px;
+    top: 100px;
+    width: 37px;
+    left: 0;
     border-radius: 10px;
     height: 12px;
     border: 2px solid #6c6c6c;
@@ -56,9 +68,9 @@
 
 .cubeIcon {
     position: absolute;
-    top: 90px;
+    top: 123px;
     width: 30px;
-    left: 15px;
+    left: 24px;
     height: 20px;
     background: url(../img/cube.png) no-repeat 0 0;
     background-size: 50%;
@@ -66,9 +78,9 @@
 
 #unitCubePanel {
     position: absolute;
-    top: 106px;
-    width: 36px;
-    left: 1px;
+    top: 139px;
+    width: 41px;
+    left: 13px;
     border-radius: 10px;
     height: 12px;
     border: 2px solid #6c6c6c;

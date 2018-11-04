@@ -40,6 +40,6 @@ function InventoryOverTip(e) {
         inventoryTip.style.top = e.clientY + "px";
         inventoryTip.style.left = e.clientX + "px";
     } else {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true);
+        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true, true);
     }
 }

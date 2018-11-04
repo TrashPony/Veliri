@@ -8,6 +8,7 @@ function FillingInventory(jsonData) {
         if (squad.mather_ship != null && squad.mather_ship.body != null) {
             ConstructorTable(squad.mather_ship);
             FillPowerPanel(squad.mather_ship.body, "powerPanel");
+            FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
             inventoryMetaInfo(JSON.parse(jsonData))
         } else {
             NoActiveCell();
@@ -39,6 +40,8 @@ function FillingInventory(jsonData) {
             panel = document.getElementById("unitCubePanel");
         } else if (JSON.parse(jsonData).error === "lacking power") {
             panel = document.getElementById("unitPowerPanel");
+        } else if (JSON.parse(jsonData).error === "wrong standard size") {
+            panel = document.getElementById("weaponTypePanel");
         }
 
         if (panel) {
@@ -70,7 +73,7 @@ function inventoryMetaInfo(data) {
         textColor = "#decbcb"
     }
 
-    sizeBlock.innerHTML = "<div style='width:" + percentFill + "%'>" +
+    sizeBlock.innerHTML = "<div id='realSize' style='width:" + percentFill + "%'>" +
         "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>" +
         "</div>";
     sizeBlock.style.color = textColor;

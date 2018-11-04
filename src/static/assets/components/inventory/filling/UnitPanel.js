@@ -58,3 +58,48 @@ function FillCubePanel(bodyShip, panel) {
 
     cubePanel.innerHTML = "<span class='Value'>" + useSize + "/" + bodyShip.capacity_size + "</span>";
 }
+
+function FillMSWeaponTypePanel(bodyShip, panel) {
+
+    let weaponPanel = document.getElementById(panel);
+    weaponPanel.innerHTML = "";
+
+    let weaponTypeIcon  = document.createElement("div");
+    weaponTypeIcon.id = "weaponTypeIcon";
+    weaponPanel.appendChild(weaponTypeIcon);
+
+    weaponTypePanel(bodyShip, weaponPanel, "weaponTypeAllow", "weaponTypeNotAllow")
+}
+
+
+function FillUnitWeaponTypePanel(bodyShip, panel) {
+    let weaponPanel = document.getElementById(panel);
+    weaponPanel.innerHTML = "";
+
+    weaponTypePanel(bodyShip, weaponPanel, "weaponUnitTypeAllow", "weaponUnitTypeNotAllow")
+}
+
+function weaponTypePanel(bodyShip, parent, classAllow, classNotAllow) {
+
+    let smallWeapon = document.createElement("div");
+    smallWeapon.className = classNotAllow;
+    parent.appendChild(smallWeapon);
+    let mediumWeapon = document.createElement("div");
+    mediumWeapon.className = classNotAllow;
+    parent.appendChild(mediumWeapon);
+    let heavyWeapon = document.createElement("div");
+    heavyWeapon.className = classNotAllow;
+    parent.appendChild(heavyWeapon);
+
+    if (bodyShip.standard_size_small) {
+        smallWeapon.className = classAllow;
+    }
+
+    if (bodyShip.standard_size_medium) {
+        mediumWeapon.className = classAllow;
+    }
+
+    if (bodyShip.standard_size_big) {
+        heavyWeapon.className = classAllow;
+    }
+}

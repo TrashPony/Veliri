@@ -4,6 +4,10 @@ function CreateConstructorMenu() {
     let powerPanel = document.createElement("div");
     powerPanel.id = "powerPanel";
 
+    let weaponType = document.createElement("div");
+    weaponType.id = "MSWeaponPanel";
+    constructorBackGround.appendChild(weaponType);
+
     let spanPower = document.createElement("span");
     spanPower.className = "Value";
     spanPower.innerHTML = "Энергия: Max/Use";

@@ -46,4 +46,9 @@ function OffTip() {
     if (inventoryTip) {
         inventoryTip.remove()
     }
+
+    let itemSize = document.getElementById("itemSize");
+    if (itemSize) {
+        itemSize.remove()
+    }
 }

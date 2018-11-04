@@ -24,7 +24,8 @@
 }
 
 #powerPanel {
-    left: 0;
+    right: 0;
+    bottom: 0;
     position: absolute;
     display: inline-block;
     width: 60px;
@@ -97,6 +98,13 @@
     vertical-align: middle;
     color: #00FFFD;
     line-height: 30px;
+}
+
+.weaponIcon {
+    height: 100px;
+    width: 100px;
+    background-size: contain;
+    margin: 50px 10px 10px 50px;
 }
 
 #MSIcon span {

@@ -14,6 +14,9 @@ function SquadTable(squad) {
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
                 cell.innerHTML = "";
                 cell.style.backgroundImage = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png)";
+
+                UpdateWeaponIcon(cell, "weaponUnitIcon", squad.mather_ship.units[slot]);
+
                 let constructorUnit = document.getElementById("ConstructorUnit");
                 if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
                     FillingSquadConstructor(unitSlot);
@@ -89,6 +92,14 @@ function CreateUnitEquipSlots(constructorUnit) {
     powerIcon.className = "powerIcon";
     constructorUnit.appendChild(powerIcon);
 
+    let weaponTypeIcon = document.createElement("div");
+    weaponTypeIcon.id = "weaponTypeUnitIcon";
+    constructorUnit.appendChild(weaponTypeIcon);
+
+    let weaponTypePanel = document.createElement("div");
+    weaponTypePanel.id = "weaponTypePanel";
+    constructorUnit.appendChild(weaponTypePanel);
+
     let unitPowerPanel = document.createElement("div");
     unitPowerPanel.id = "unitPowerPanel";
     constructorUnit.appendChild(unitPowerPanel);
@@ -128,8 +139,10 @@ function FillingSquadConstructor(slotData) {
     unitIcon.unitBody = slotData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
 
+    UpdateWeaponIcon(unitIcon, "weaponUnitInnerIcon", slotData);
     FillPowerPanel(slotData.unit.body, "unitPowerPanel");
     FillCubePanel(slotData.unit.body, "unitCubePanel");
+    FillUnitWeaponTypePanel(slotData.unit.body, "weaponTypePanel");
 
     UpdateCells(1, "UnitEquip", slotData.unit.body.equippingI, "UnitEquip");
     UpdateCells(2, "UnitEquip", slotData.unit.body.equippingII, "UnitEquip");

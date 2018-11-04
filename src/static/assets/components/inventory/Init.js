@@ -26,6 +26,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/filling/DeactivateCell.js");
         includeJS("../assets/components/inventory/filling/UnitPanel.js");
         includeJS("../assets/components/inventory/filling/HealBar.js");
+        includeJS("../assets/components/inventory/filling/UpdateWeaponIcon.js");
 
         includeJS("../assets/components/inventory/tip/ClickTip.js");
         includeJS("../assets/components/inventory/tip/SelectItem.js");
@@ -55,6 +56,7 @@ function InitInventoryMenu(closeFunc) {
         includeCSS("../assets/components/inventory/css/repair.css");
         includeCSS("../assets/components/inventory/css/inventory.css");
         includeCSS("../assets/components/inventory/css/userStatus.css");
+        includeCSS("../assets/components/inventory/css/weaponType.css");
 
         return resolve();
     });
