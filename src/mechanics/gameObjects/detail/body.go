@@ -2,6 +2,7 @@ package detail
 
 import (
 	"../ammo"
+	"../coordinate"
 	"../equip"
 )
 
@@ -100,13 +101,14 @@ func (body *Body) GetUseCapacitySize() float32 {
 }
 
 type BodyEquipSlot struct {
-	Type           int          `json:"type_slot"`
-	Number         int          `json:"number_slot"`
-	Equip          *equip.Equip `json:"equip"`
-	InsertToDB     bool         `json:"insert_to_db"`
-	Used           bool         `json:"used"` /* использовано или нет */
-	StepsForReload int          `json:"steps_for_reload"`
-	HP             int          `json:"hp"`
+	Type           int                    `json:"type_slot"`
+	Number         int                    `json:"number_slot"`
+	Equip          *equip.Equip           `json:"equip"`
+	InsertToDB     bool                   `json:"insert_to_db"`
+	Used           bool                   `json:"used"` /* использовано или нет */
+	StepsForReload int                    `json:"steps_for_reload"`
+	HP             int                    `json:"hp"`
+	Target         *coordinate.Coordinate `json:"target"`
 }
 
 type BodyWeaponSlot struct {

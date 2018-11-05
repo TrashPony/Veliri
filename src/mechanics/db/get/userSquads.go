@@ -244,10 +244,10 @@ func ParseTarget(targetKey string) *coordinate.Coordinate {
 	targetCell := strings.Split(targetKey, ":")
 
 	if len(targetCell) > 1 { // устанавливаем таргет если он есть
-		x, ok := strconv.Atoi(targetCell[0])
-		y, ok := strconv.Atoi(targetCell[1])
+		q, ok := strconv.Atoi(targetCell[0])
+		r, ok := strconv.Atoi(targetCell[1])
 		if ok == nil {
-			target := coordinate.Coordinate{X: x, Y: y}
+			target := coordinate.Coordinate{Q: q, R: r}
 			return &target
 		} else {
 			return nil

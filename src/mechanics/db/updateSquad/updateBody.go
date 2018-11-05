@@ -38,8 +38,9 @@ func UpdateBody(unit *unit.Unit, squadID int, tx *sql.Tx) {
 				"quantity, "+
 				"used, "+
 				"steps_for_reload, "+
-				"hp) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+				"hp, "+
+				"target ) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
 				squadID,
 				"weapon",
 				unit.GetID(),
@@ -50,6 +51,7 @@ func UpdateBody(unit *unit.Unit, squadID int, tx *sql.Tx) {
 				false,
 				0,
 				slot.HP,
+				"",
 			)
 			if err != nil {
 				log.Fatal("insert unit body weapon slot " + err.Error())
@@ -83,9 +85,9 @@ func UpdateBody(unit *unit.Unit, squadID int, tx *sql.Tx) {
 
 		if slot.Ammo != nil {
 			_, err = tx.Exec("INSERT INTO squad_units_equipping "+
-				" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload, hp)"+
-				" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
-				squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity, false, 0, 1)
+				" (id_squad, type, id_squad_unit, id_equipping, slot_in_body, type_slot, quantity, used, steps_for_reload, hp, target)"+
+				" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+				squadID, "ammo", unit.GetID(), slot.Ammo.ID, slot.Number, slot.Type, slot.AmmoQuantity, false, 0, 1, "")
 			if err != nil {
 				log.Fatal("insert ammo " + err.Error())
 			}
@@ -115,8 +117,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, unitI
 				"quantity, "+
 				"used, "+
 				"steps_for_reload, "+
-				"hp) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+				"hp, "+
+				"target ) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
 				squadID,
 				"equip",
 				unitID,
@@ -126,7 +129,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, unitI
 				1, // т.к. к 1 слот эквипа можно положить только 1 итем, возможно потом измениться
 				slot.Used,
 				slot.StepsForReload,
-				slot.HP)
+				slot.HP,
+				parseTarget(slot.Target),
+			)
 			if err != nil {
 				log.Fatal("insert unit body equip slot " + err.Error())
 			}
@@ -134,7 +139,7 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, unitI
 
 		if !slot.InsertToDB && slot.Equip != nil {
 			_, err := tx.Exec("UPDATE squad_units_equipping "+
-				" SET type = $1, id_equipping = $3, quantity = $7, used = $8, steps_for_reload = $9, hp = $10 "+
+				" SET type = $1, id_equipping = $3, quantity = $7, used = $8, steps_for_reload = $9, hp = $10, target = $11 "+
 				" WHERE id_squad = $4 AND id_squad_unit = $5 AND slot_in_body = $6 AND type_slot = $2",
 				"equip",
 				slot.Equip.TypeSlot,
@@ -145,7 +150,9 @@ func updateEquipping(Equipping map[int]*detail.BodyEquipSlot, squadID int, unitI
 				1, // т.к. к 1 слот эквипа можно положить только 1 итем, возможно потом измениться
 				slot.Used,
 				slot.StepsForReload,
-				slot.HP)
+				slot.HP,
+				parseTarget(slot.Target),
+			)
 			if err != nil {
 				log.Fatal("update unit body equip slot " + err.Error())
 			}

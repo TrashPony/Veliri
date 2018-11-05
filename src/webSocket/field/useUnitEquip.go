@@ -2,12 +2,8 @@ package field
 
 import (
 	"../../mechanics/gameObjects/detail"
-	"../../mechanics/gameObjects/equip"
 	"../../mechanics/gameObjects/unit"
-	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/targetPhase"
-	"../../mechanics/localGame/useEquip"
-	"../../mechanics/player"
 	"github.com/gorilla/websocket"
 )
 
@@ -51,28 +47,19 @@ func UseUnitEquip(msg Message, ws *websocket.Conn) {
 
 			for _, targetUnit := range targetUnits {
 				if targetUnit.Q == msg.ToQ && targetUnit.R == msg.ToR {
-					err := useEquip.ToUnit(gameUnit, targetUnit, equipSlot, client)
-					if err != nil {
-						ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
-					} else {
-						ws.WriteJSON(SendUseEquip{Event: "UseUnitEquip", UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: equipSlot.Equip})
-						updateUseUnitEquipHostileUser(client, activeGame, gameUnit, targetUnit, equipSlot.Equip)
+					targetCoordinate, ok := activeGame.Map.GetCoordinate(targetUnit.Q, targetUnit.R)
+					if ok {
+						err := targetPhase.SetEquipTarget(gameUnit, targetCoordinate, equipSlot, client)
+						if err != nil {
+							ws.WriteJSON(ErrorMessage{Event: "Error", Error: err.Error()})
+						} else {
+							ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
+						}
 					}
 				}
 			}
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
-		}
-	}
-}
-
-func updateUseUnitEquipHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit, targetUnit *unit.Unit, playerEquip *equip.Equip) {
-	for _, user := range activeGame.GetPlayers() {
-		if user.GetLogin() != client.GetLogin() {
-			_, watch := user.GetHostileUnit(targetUnit.Q, targetUnit.R)
-			if watch {
-				equipPipe <- SendUseEquip{Event: "UseUnitEquip", UserName: user.GetLogin(), GameID: activeGame.Id, UseUnit: gameUnit, ToUnit: targetUnit, AppliedEquip: playerEquip}
-			}
 		}
 	}
 }

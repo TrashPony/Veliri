@@ -1,9 +1,12 @@
 function CreateMyGameUnits() {
-    for (var x in game.units) {
+    for (let x in game.units) {
         if (game.units.hasOwnProperty(x)) {
-            for (var y in game.units[x]) {
+            for (let y in game.units[x]) {
                 if (game.units[x].hasOwnProperty(y)) {
                     CreateUnit(game.units[x][y]);
+                    if (game.units[x][y].target && game.Phase === "targeting") {
+                        CreateTargetLine(game.units[x][y]);
+                    }
                 }
             }
         }
@@ -11,9 +14,9 @@ function CreateMyGameUnits() {
 }
 
 function CreateHostileGameUnits() {
-    for (var x in game.hostileUnits) {
+    for (let x in game.hostileUnits) {
         if (game.hostileUnits.hasOwnProperty(x)) {
-            for (var y in game.hostileUnits[x]) {
+            for (let y in game.hostileUnits[x]) {
                 if (game.hostileUnits[x].hasOwnProperty(y)) {
                     CreateUnit(game.hostileUnits[x][y]);
                 }

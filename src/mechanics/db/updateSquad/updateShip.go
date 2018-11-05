@@ -38,14 +38,14 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"hp = $6, "+
 				"power = $7, "+
 				"action_point = $8, "+
-				"defend = $9," +
+				"defend = $9,"+
 				"move = $12 "+
 				"WHERE id_squad = $10 AND mother_ship = $11",
 			bodyID,
 			ship.Q,
 			ship.R,
 			ship.Rotate,
-			parseTarget(ship),
+			parseTarget(ship.GetTarget()),
 			ship.HP,
 			ship.Power,
 			ship.ActionPoints,
@@ -74,7 +74,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"mother_ship, "+
 				"on_map, "+
 				"action_point, "+
-				"defend, " +
+				"defend, "+
 				"move "+
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
@@ -83,7 +83,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				ship.Q,
 				ship.R,
 				ship.Rotate,
-				parseTarget(ship),
+				parseTarget(ship.GetTarget()),
 				ship.HP,
 				ship.Power,
 				true, // mother_ship

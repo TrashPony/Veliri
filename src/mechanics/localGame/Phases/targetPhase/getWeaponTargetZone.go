@@ -23,7 +23,15 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) 
 
 			for _, gameCoordinate := range zone {
 				if !(gameCoordinate.Q == gameUnit.Q && gameCoordinate.R == gameUnit.R) {
-					Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+					_, find := activeGame.GetUnit(gameCoordinate.Q, gameCoordinate.R)
+
+					if gameUnit.GetWeaponSlot().Weapon.Type == "firearms" {
+						Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+					} else {
+						if find {
+							Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+						}
+					}
 				}
 			}
 

@@ -21,7 +21,6 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 		if find {
 			targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
 			ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
-			updateUnitHostileUser(client, activeGame, gameUnit)
 		} else {
 			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
 		}

@@ -17,7 +17,7 @@ function CreateUnit(unitStat, inVisible) {
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
-    
+
     let bodyShadow;
     if (unitStat.body.mother_ship) {
         bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name);

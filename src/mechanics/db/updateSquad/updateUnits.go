@@ -1,8 +1,8 @@
 package updateSquad
 
 import (
+	"../../gameObjects/coordinate"
 	"../../gameObjects/squad"
-	"../../gameObjects/unit"
 	"database/sql"
 	"log"
 	"strconv"
@@ -55,8 +55,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"power, "+
 				"mother_ship, "+
 				"action_point, "+
-				"defend, " +
-				"move " +
+				"defend, "+
+				"move "+
 				""+
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
@@ -67,7 +67,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				slotUnit.Unit.R,
 				slotUnit.Unit.Rotate,
 				slotUnit.Unit.OnMap,
-				parseTarget(slotUnit.Unit),
+				parseTarget(slotUnit.Unit.GetTarget()),
 				slotUnit.Unit.HP,
 				slotUnit.Unit.Power,
 				false, //mother_ship
@@ -95,14 +95,14 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"on_map = $7, "+
 					"power = $8, "+
 					"action_point = $9, "+
-					"defend = $10, " +
+					"defend = $10, "+
 					"move = $13 "+
 					"WHERE id_squad = $11 AND slot = $12",
 				slotUnit.Unit.Body.ID,
 				slotUnit.Unit.Q,
 				slotUnit.Unit.R,
 				slotUnit.Unit.Rotate,
-				parseTarget(slotUnit.Unit),
+				parseTarget(slotUnit.Unit.GetTarget()),
 				slotUnit.Unit.HP,
 				slotUnit.Unit.OnMap,
 				slotUnit.Unit.Power,
@@ -122,11 +122,11 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 	}
 }
 
-func parseTarget(gameUnit *unit.Unit) string {
+func parseTarget(targetCoordinate *coordinate.Coordinate) string {
 	var target string
 
-	if gameUnit.GetTarget() != nil {
-		target = strconv.Itoa(gameUnit.GetTarget().X) + ":" + strconv.Itoa(gameUnit.GetTarget().Y)
+	if targetCoordinate != nil {
+		target = strconv.Itoa(targetCoordinate.Q) + ":" + strconv.Itoa(targetCoordinate.R)
 	}
 
 	return target

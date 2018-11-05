@@ -29,7 +29,6 @@ func main() {
 	go field.MoveSender()
 	go field.UnitSender()
 	go field.PhaseSender()
-	go field.EquipSender()
 	go field.AttackSender()
 
 	log.Println("http server started on :8080")

@@ -37,6 +37,8 @@ function UpdateUnit(unitStat) {
     unit.vul_to_explosion = unitStat.vul_to_explosion;
     unit.vul_to_kinetics = unitStat.vul_to_kinetics;
     unit.vul_to_thermo = unitStat.vul_to_thermo;
+
+    CreateTargetLine(unitStat)
 }
 
 function UpdateMemoryUnit(jsonMessage) {

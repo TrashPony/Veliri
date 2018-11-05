@@ -21,14 +21,14 @@ function VisibleUnitStatus(unit) {
         to_r: Number(unit.r)
     }));
 
-    if (unit.target) {
+    /*if (unit.target) {
         MarkTarget(unit.target)
-    }
+    }*/
 }
 
 function HideUnitStatus(unit) {
     TipOff();
-    DeleteMarkTarget(unit.target);
+    //DeleteMarkTarget(unit.target);
     game.add.tween(unit.sprite.healBar).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true);
 
     RemoveTargetLine();
