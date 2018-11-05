@@ -204,6 +204,12 @@ input {
     margin: 5px;
 }
 
+.weaponHoldUnit {
+    height: 35px;
+    width: 35px;
+    background-size: contain;
+}
+
 .boxUnit:hover {
     box-shadow: 0 0 30px 4px rgb(0, 195, 255);
     color: #00fffd;

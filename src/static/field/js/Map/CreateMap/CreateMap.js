@@ -10,8 +10,6 @@ function CreateMap() {
     let startXInit = hexagonWidth / 2;
     let startYInit = hexagonHeight / 2;
 
-    console.log(game.map);
-
     for (let r = 0; r < game.map.RSize; r++) {
 
         if (r % 2 !== 0) {

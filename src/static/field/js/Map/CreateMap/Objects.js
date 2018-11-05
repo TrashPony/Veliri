@@ -53,7 +53,7 @@ function gameObjectCreate(x, y, texture) {
     let object = game.floorObjectLayer.create(x - 100, y, texture);
     object.anchor.setTo(0, 0);
 
-    let shadow = game.floorObjectLayer.create(x - 100 + game.shadowXOffset, y - game.shadowYOffset, texture);
+    let shadow = game.floorObjectLayer.create(x - 100 + game.shadowXOffset, y - game.shadowYOffset+15, texture);
     shadow.anchor.setTo(0, 0);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;

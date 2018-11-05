@@ -10,7 +10,7 @@ function TipEquipOn(equip) {
     headTR.appendChild(headTH);
 
     let iconTD = document.createElement("td");
-    iconTD.style.backgroundImage = "url(/assets/" + equip.name + ".png)";
+    iconTD.style.backgroundImage = "url(/assets/units/equip/" + equip.name + ".png)";
     iconTD.style.width = "20px";
     iconTD.style.height = "20px";
     iconTD.style.borderRadius = "5px";

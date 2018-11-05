@@ -35,8 +35,8 @@ function LoadGame(jsonMessage) {
     game.hexagonWidth = hexagonWidth;
     game.hexagonHeight = hexagonHeight;
 
-    game.shadowXOffset = 3;
-    game.shadowYOffset = -3;
+    game.shadowXOffset = 8;
+    game.shadowYOffset = 10;
 
     GameInfo();
     InitPlayer();

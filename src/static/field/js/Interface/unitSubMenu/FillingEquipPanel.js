@@ -14,7 +14,7 @@ function FillingEquipPanel(equipPanel, unit) {
     for (let weaponSlot in unit.body.weapons) { // оружие может быть только 1 под диз доке, масив это обман
         if (unit.body.weapons.hasOwnProperty(weaponSlot) && unit.body.weapons[weaponSlot].weapon) {
             weapon.className = "weaponSlotSubMenu Active";
-            weapon.style.backgroundImage = "url(/assets/" + unit.body.weapons[weaponSlot].weapon.name + ".png)";
+            weapon.style.backgroundImage = "url(/assets/units/weapon/" + unit.body.weapons[weaponSlot].weapon.name + ".png)";
 
             weapon.onclick = function () {
                 RemoveSelect();
@@ -28,7 +28,7 @@ function FillingEquipPanel(equipPanel, unit) {
             let ammoBox = document.createElement("div");
             ammoBox.id = "ammoBox";
             if (unit.body.weapons[weaponSlot].ammo) {
-                ammoBox.style.backgroundImage = "url(/assets/" + unit.body.weapons[weaponSlot].ammo.name + ".png)";
+                ammoBox.style.backgroundImage = "url(/assets/units/ammo/" + unit.body.weapons[weaponSlot].ammo.name + ".png)";
             } else {
                 ammoBox.className = "blink"
             }
@@ -47,7 +47,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
         if (unit.body.equippingIII.hasOwnProperty(i) && unit.body.equippingIII[i].equip) {
 
-            equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingIII[i].equip.name + ".png)";
+            equipping.style.backgroundImage = "url(/assets/units/equip/" + unit.body.equippingIII[i].equip.name + ".png)";
 
             if (!unit.body.equippingIII[i].used && !(unit.power < unit.body.equippingIII[i].equip.use_power)) {
                 equipping.className = "equipSlotIII Active";
@@ -90,7 +90,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
         if (unit.body.equippingII.hasOwnProperty(i) && unit.body.equippingII[i].equip) {
 
-            equipping.style.backgroundImage = "url(/assets/" + unit.body.equippingII[i].equip.name + ".png)";
+            equipping.style.backgroundImage = "url(/assets/units/equip/" + unit.body.equippingII[i].equip.name + ".png)";
 
             if (!unit.body.equippingII[i].used && !(unit.power < unit.body.equippingII[i].equip.use_power)) {
                 equipping.className = "equipSlotII Active";

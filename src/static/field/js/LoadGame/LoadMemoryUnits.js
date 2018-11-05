@@ -1,6 +1,8 @@
 function LoadQueueUnits() {
     document.getElementById("queueLine").innerHTML = "";
     document.getElementById("queue").style.visibility = "visible";
+    let moveUnit = document.getElementById("moveUnit");
+    moveUnit.innerHTML = "";
 
     let allActionUnits = [];
 
@@ -64,7 +66,6 @@ function LoadQueueUnits() {
     }
 
     if (!move) {
-        let moveUnit = document.getElementById("moveUnit");
         moveUnit.style.backgroundImage = "url(/assets/unknown.png)";
         moveUnit.style.boxShadow = "inset 0px 0px 35px 1px rgba(255,0,0,0.8)";
     }
@@ -74,7 +75,17 @@ function createQueueBlock(units) {
     if (units.length === 1) {
         if (units[0].move) {
             let moveUnit = document.getElementById("moveUnit");
-            moveUnit.style.backgroundImage = "url(/assets/" + units[0].body.name + ".png)";
+            moveUnit.style.backgroundImage = "url(/assets/units/body/" + units[0].body.name + ".png)";
+
+            let weapon = document.createElement("div");
+            weapon.className = "weaponMoveUnit";
+            for (let i in units[0].body.weapons) {
+                if (units[0].body.weapons.hasOwnProperty(i) && units[0].body.weapons[i].weapon) {
+                    weapon.style.backgroundImage = "url(/assets/units/weapon/" + units[0].body.weapons[i].weapon.name + ".png)";
+                }
+            }
+            moveUnit.appendChild(weapon);
+
             if (game.user.name === units[0].owner) {
                 moveUnit.style.boxShadow = "inset 0px 0px 35px 1px rgba(0, 255, 64, 0.8)";
             } else {
@@ -86,7 +97,16 @@ function createQueueBlock(units) {
             let unitBlock = document.createElement("div");
             unitBlock.id = units[0].id;
             unitBlock.className = "queueLineUnitBlock";
-            unitBlock.style.backgroundImage = "url(/assets/" + units[0].body.name + ".png)";
+            unitBlock.style.backgroundImage = "url(/assets/units/body/" + units[0].body.name + ".png)";
+
+            let weapon = document.createElement("div");
+            weapon.className = "weaponQueueLineUnit";
+            for (let i in units[0].body.weapons) {
+                if (units[0].body.weapons.hasOwnProperty(i) && units[0].body.weapons[i].weapon) {
+                    weapon.style.backgroundImage = "url(/assets/units/weapon/" + units[0].body.weapons[i].weapon.name + ".png)";
+                }
+            }
+            unitBlock.appendChild(weapon);
 
             if (game.user.name === units[0].owner) {
                 unitBlock.style.boxShadow = "inset 0px 0px 35px 1px rgba(0, 255, 64, 0.8)";
@@ -122,7 +142,17 @@ function openDice() {
         for (let i = 0; i < this.units.length; i++) {
             let unitBlock = document.createElement("div");
             unitBlock.className = "diceUnitBlock";
-            unitBlock.style.backgroundImage = "url(/assets/" + this.units[i].body.name + ".png)";
+            unitBlock.style.backgroundImage = "url(/assets/units/body/" + this.units[i].body.name + ".png)";
+
+            let weapon = document.createElement("div");
+            weapon.className = "weaponDiceQueueUnit";
+            for (let j in this.units[i].body.weapons) {
+                if (this.units[i].body.weapons.hasOwnProperty(j) && this.units[i].body.weapons[j].weapon) {
+                    weapon.style.backgroundImage = "url(/assets/units/weapon/" + this.units[i].body.weapons[j].weapon.name + ".png)";
+                }
+            }
+            unitBlock.appendChild(weapon);
+
             if (game.user.name === this.units[i].owner) {
                 unitBlock.style.boxShadow = "inset 0px 0px 35px 1px rgba(0, 255, 64, 0.8)";
             } else {

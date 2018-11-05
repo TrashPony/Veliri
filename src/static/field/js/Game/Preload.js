@@ -21,10 +21,20 @@ function preload() {
     game.load.image('labelEffects', 'http://' + window.location.host + '/assets/effects/label_effects.png');
 
     //MatherShips MotherTrucker
-    game.load.spritesheet('Mother', 'http://' + window.location.host + '/assets/Mother360.png', 200, 200, 360);
+    game.load.image('Mother', 'http://' + window.location.host + '/assets/units/body/Mother.png');
 
     // Units
-    game.load.spritesheet('tank', 'http://' + window.location.host + '/assets/Tank360.png', 100, 100, 360);
+        //body
+    game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');
+    game.load.image('medium_tank', 'http://' + window.location.host + '/assets/units/body/medium_tank.png');
+    game.load.image('light_tank', 'http://' + window.location.host + '/assets/units/body/light_tank.png');
+        //weapon
+    game.load.image('big_missile', 'http://' + window.location.host + '/assets/units/weapon/big_missile.png');
+    game.load.image('artillery', 'http://' + window.location.host + '/assets/units/weapon/artillery.png');
+    game.load.image('big_laser', 'http://' + window.location.host + '/assets/units/weapon/big_laser.png');
+    game.load.image('small_laser', 'http://' + window.location.host + '/assets/units/weapon/small_laser.png');
+    game.load.image('small_missile', 'http://' + window.location.host + '/assets/units/weapon/small_missile.png');
+    game.load.image('tank_gun', 'http://' + window.location.host + '/assets/units/weapon/tank_gun.png');
 
     // Map Objects
     game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');

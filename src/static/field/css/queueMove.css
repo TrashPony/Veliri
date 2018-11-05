@@ -17,6 +17,13 @@
     animation: blinkMove 2s infinite;
 }
 
+.weaponMoveUnit {
+    height: 60px;
+    width: 60px;
+    background-size: contain;
+    margin: 29px 10px 10px 29px;
+}
+
 @keyframes blinkMove {
     0%   { opacity: 1; }
     50% { opacity: 0.7; }
@@ -55,6 +62,12 @@
     border-radius: 10px;
 }
 
+.weaponQueueLineUnit {
+    height: 95px;
+    width: 95px;
+    background-size: contain;
+}
+
 #unitDice {
     min-height: 60px;
     width: 60px;
@@ -73,4 +86,10 @@
     background-size: contain;
     margin: 5px auto;
     border: 1px solid rgba(255, 220, 0, 0.8509803921568627);
+}
+
+.weaponDiceQueueUnit {
+    height: 50px;
+    width: 50px;
+    background-size: contain;
 }

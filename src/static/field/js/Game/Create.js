@@ -14,6 +14,8 @@ function create() {
     game.floorLayer = game.add.group();
     game.floorObjectLayer = game.add.group();
 
+    game.unitLayer = game.add.group();
+
     game.SelectLayer = game.add.group();
     game.SelectLayer.alpha = 0.4;
 

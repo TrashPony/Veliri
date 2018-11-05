@@ -3,5 +3,5 @@ function update() {
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
     MoveUnit();
 
-    game.floorObjectLayer.sort('y', Phaser.Group.SORT_ASCENDING);
+    game.floorObjectLayer.sort('y', Phaser.Group.SORT_DESCENDING);
 }

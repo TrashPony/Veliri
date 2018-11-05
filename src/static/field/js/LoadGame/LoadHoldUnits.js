@@ -18,6 +18,16 @@ function LoadHoldUnits() {
                 boxUnit.unit = {};
                 boxUnit.unit.info = game.unitStorage[unit];
                 boxUnit.id = game.unitStorage[unit].id;
+                boxUnit.style.backgroundImage = "url(/assets/units/body/" + game.unitStorage[unit].body.name + ".png)";
+
+                let weapon = document.createElement("div");
+                weapon.className = "weaponHoldUnit";
+                for (let i in game.unitStorage[unit].body.weapons) {
+                    if (game.unitStorage[unit].body.weapons.hasOwnProperty(i) && game.unitStorage[unit].body.weapons[i].weapon) {
+                        weapon.style.backgroundImage = "url(/assets/units/weapon/" + game.unitStorage[unit].body.weapons[i].weapon.name + ".png)";
+                    }
+                }
+                boxUnit.appendChild(weapon);
 
                 boxUnit.onclick = function () {
                     field.send(JSON.stringify({

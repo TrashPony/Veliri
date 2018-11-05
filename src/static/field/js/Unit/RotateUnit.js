@@ -5,29 +5,24 @@ function UpdateRotateUnit() {
                 if (game.units[q].hasOwnProperty(r)) {
 
                     let unit = game.units[q][r];
+                    let spriteRotate = unit.sprite.unitBody.angle;
+                    let needRotate = unit.rotate + 90;
 
-                    if (unit.spriteAngle === undefined) {
-                        unit.spriteAngle = unit.rotate;
+                    if (spriteRotate < 0) {
+                        spriteRotate += 360;
                     }
 
-                    if (unit.spriteAngle !== unit.rotate) {
-                        if (directionRotate(unit.spriteAngle, unit.rotate)) {
-                            if (unit.spriteAngle >= 360) {
-                                unit.spriteAngle = 0;
-                            } else {
-                                unit.spriteAngle= unit.spriteAngle + 1;
-                            }
+                    if (needRotate > 360) {
+                        needRotate -= 360;
+                    }
+
+                    if (spriteRotate !== needRotate) {
+                        if (directionRotate(spriteRotate, needRotate)) {
+                            SetAngle(unit, spriteRotate + 1)
                         } else {
-                            if (unit.spriteAngle <= 0) {
-                                unit.spriteAngle = 360;
-                            } else {
-                                unit.spriteAngle= unit.spriteAngle - 1;
-                            }
+                            SetAngle(unit, spriteRotate - 1)
                         }
-                        unit.RotateUnit(unit.spriteAngle);
                     }
-
-                    unit = null;
                 }
             }
         }
@@ -59,10 +54,9 @@ function directionRotate(spriteAngle, rotate) {
     }
 }
 
-function RotateUnit(unit, angle) {
-    for (let sprite in unit) {
-        if (unit.hasOwnProperty(sprite) && unit[sprite] !== null && unit[sprite].hasOwnProperty('_frame')) {
-            unit[sprite].frame = angle;
-        }
-    }
+function SetAngle(unit, angle) {
+    unit.sprite.unitBody.angle = angle;
+    unit.sprite.bodyShadow.angle = angle;
+    unit.sprite.weaponShadow.angle = angle;
+    unit.sprite.weapon.angle = angle;
 }

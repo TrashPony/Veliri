@@ -13,7 +13,7 @@ function CreatePathToUnit(jsonMessage) {
             if (boxUnit) {
                 boxUnit.remove();
             }
-            
+
             unitStat.q = path[0].path_node.q;
             unitStat.r = path[0].path_node.r;
             unitStat.rotate = path[0].unit_rotate;
@@ -107,8 +107,8 @@ function CheckPath(unit) {
     }
 }
 
-function MoveToCell(unit) {
-    unit.sprite.body.velocity = game.physics.arcade.velocityFromAngle(unit.spriteAngle, 100); // устанавливаем скорость
+function MoveToCell(unit, x, y) {
+    game.physics.arcade.moveToXY(unit.sprite, x, y, 100);
 }
 
 function StopUnit(unit) {
@@ -119,22 +119,15 @@ function StopUnit(unit) {
 
 function HideUnit(unit) {
     game.add.tween(unit.sprite).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.unitBody).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.unitShadow).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.healBar).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.heal).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    // todo если нет спрайта ошибка game.add.tween(unit.sprite.shield).to({alpha: 0}, 1000, Phaser.Easing.Linear.None, true);
-    //TODO тут надо сделать `for in unit.sprite` но мне чето лень :D
 }
 
 function UncoverUnit(unit) {
-    console.log(unit);
     game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.unitBody).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.unitShadow).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.healBar).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    // todo если нет спрайта ошибка game.add.tween(unit.sprite.shield).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+    for (let i in unit.sprite) {
+        if (unit.sprite.hasOwnProperty(i)) {
+            game.add.tween(unit.sprite[i]).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
+        }
+    }
 }
 
 function MoveUnit() {
@@ -153,17 +146,24 @@ function MoveUnit() {
                         let x = moveSprite.x + moveSprite.width / 2;
                         let y = moveSprite.y + moveSprite.height / 2;
 
-                        if (unit.spriteAngle === unit.rotate) {
-                            MoveToCell(unit);
+                        let spriteRotate = unit.sprite.unitBody.angle;
+                        let needRotate = unit.rotate + 90;
+
+                        if (spriteRotate < 0) {
+                            spriteRotate += 360;
+                        }
+
+                        if (needRotate > 360) {
+                            needRotate -= 360;
+                        }
+
+                        if (spriteRotate === needRotate) {
+                            MoveToCell(unit, x, y);
                         } else {
 
                             let markerMove = game.add.sprite(x, y); // пустой спрайт что бы юнит мог ориентироваться
                             markerMove.anchor.setTo(0.5, 0.5);
 
-                            unit.rotate = Math.round(game.physics.arcade.angleBetween(unit.sprite, markerMove) * 180 / 3.14);
-                            if (unit.rotate < 0) { // тут мы берем реальные градусы до цели, что бы спрайт не уехал
-                                unit.rotate = unit.rotate + 360;
-                            }
                             StopUnit(unit);
 
                             moveSprite = null;    // если убрать это то будет утекать производительность
@@ -175,7 +175,7 @@ function MoveUnit() {
 
                         if (Math.round(dist) >= -10 && Math.round(dist) <= 10) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 
-                            delete game.units[unit.q][unit.r]; // TODO
+                            delete game.units[unit.q][unit.r];
 
                             unit.q = unit.movePoint.q;
                             unit.r = unit.movePoint.r;
@@ -203,7 +203,6 @@ function MoveUnit() {
                             }
                         }
                     }
-                    unit = null;
                 }
             }
         }
