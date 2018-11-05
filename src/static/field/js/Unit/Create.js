@@ -17,10 +17,21 @@ function CreateUnit(unitStat, inVisible) {
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
     unit.inputEnabled = true;             // включаем ивенты на спрайт
-
-    let bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name);
+    
+    let bodyShadow;
+    if (unitStat.body.mother_ship) {
+        bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name);
+    } else {
+        bodyShadow = game.make.sprite(game.shadowXOffset / 2, game.shadowYOffset / 2, unitStat.body.name);
+    }
     unit.addChild(bodyShadow);
-    bodyShadow.scale.setTo(0.5, 0.5);
+
+    if (unitStat.body.mother_ship) {
+        bodyShadow.scale.setTo(0.5, 0.5);
+    } else {
+        bodyShadow.scale.setTo(0.3, 0.3);
+    }
+
     bodyShadow.anchor.set(0.5);
     bodyShadow.tint = 0x000000;
     bodyShadow.alpha = 0.4;
@@ -31,16 +42,27 @@ function CreateUnit(unitStat, inVisible) {
     for (let i in unitStat.body.weapons) {
         if (unitStat.body.weapons.hasOwnProperty(i) && unitStat.body.weapons[i].weapon) {
             weapon = game.make.sprite(0, 0, unitStat.body.weapons[i].weapon.name);
-            weaponShadow = game.make.sprite(game.shadowXOffset/2, game.shadowYOffset/2, unitStat.body.weapons[i].weapon.name);
+            weaponShadow = game.make.sprite(game.shadowXOffset / 2, game.shadowYOffset / 2, unitStat.body.weapons[i].weapon.name);
         }
     }
 
     if (weapon) {
         weapon.anchor.setTo(0.5, 0.61);
-        weapon.scale.setTo(0.5, 0.5);
+
+        if (unitStat.body.mother_ship) {
+            weapon.scale.setTo(0.5, 0.5);
+        } else {
+            weapon.scale.setTo(0.3, 0.3);
+        }
 
         weaponShadow.anchor.setTo(0.5, 0.61);
-        weaponShadow.scale.setTo(0.5, 0.5);
+
+        if (unitStat.body.mother_ship) {
+            weaponShadow.scale.setTo(0.5, 0.5);
+        } else {
+            weaponShadow.scale.setTo(0.3, 0.3);
+        }
+
         weaponShadow.tint = 0x000000;
         weaponShadow.alpha = 0.4;
     }
@@ -48,7 +70,13 @@ function CreateUnit(unitStat, inVisible) {
     let body = game.make.sprite(0, 0, unitStat.body.name);
     unit.addChild(body);
     game.physics.arcade.enable(body);
-    body.scale.setTo(0.5, 0.5);
+
+    if (unitStat.body.mother_ship) {
+        body.scale.setTo(0.5, 0.5);
+    } else {
+        body.scale.setTo(0.3, 0.3);
+    }
+
     body.inputEnabled = true;             // включаем ивенты на спрайт
     body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта

@@ -1,6 +1,10 @@
 function LoadQueueUnits() {
     document.getElementById("queueLine").innerHTML = "";
-    document.getElementById("queue").style.visibility = "visible";
+
+    if (game.Phase === "move") {
+        document.getElementById("queue").style.visibility = "visible";
+    }
+
     let moveUnit = document.getElementById("moveUnit");
     moveUnit.innerHTML = "";
 
