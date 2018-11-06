@@ -11,11 +11,19 @@ import (
 
 func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game) *ResultBattle {
 
-	if attacking.GetWeaponSlot() != nil && attacking.GetAmmoCount() > 0 {
+	if attacking.GetWeaponSlot() != nil && attacking.GetAmmoCount() > 0 && attacking.GetWeaponSlot().HP > 0 {
 		attacking.GetWeaponSlot().AmmoQuantity -= 1
 		return MapAttack(attacking, target, game, attacking.GetWeaponSlot())
 	} else {
-		return &ResultBattle{Error: "no ammo"}
+		if attacking.GetAmmoCount() == 0 {
+			return &ResultBattle{Error: "no ammo"}
+		}
+		if attacking.GetWeaponSlot().HP == 0 {
+			return &ResultBattle{Error: "weapon breaking"}
+		}
+		if attacking.GetWeaponSlot() == nil {
+			return &ResultBattle{Error: "no find weapon"}
+		}
 	}
 
 	return nil
@@ -34,24 +42,22 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 			if targetUnit.Q == target.Q && targetUnit.R == target.R {
 				damage = calculateDamage(targetUnit, weapon.Ammo.MaxDamage, weapon.Ammo.MinDamage)
 			} else {
-				//т.к. не эпичентер атаки юниты получают только 50% урона
+				//т.к. не эпицентер атаки юниты получают только 50% урона
 				damage = calculateDamage(targetUnit, weapon.Ammo.MaxDamage/2, weapon.Ammo.MinDamage/2)
 			}
 
 			targetUnit.HP -= damage
 
-			broken := breakingEquip(targetUnit, damage)
+			broken := breakingEquip(targetUnit, damage) // TODO лазер
 
 			targetsUnit = append(targetsUnit, TargetUnit{Unit: *targetUnit, Damage: damage, BreakingEquip: broken})
 		}
 	}
 
-	return &ResultBattle{AttackUnit: *attacking, TargetUnits: targetsUnit}
+	return &ResultBattle{AttackUnit: *attacking, TargetUnits: targetsUnit, WeaponSlot: weapon, Target: target}
 }
 
 func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
-	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
-	// будет выдавать одну и ту же последовательность.
 	rand.Seed(time.Now().UnixNano())
 	damage := rand.Intn(maxDamage-minDamage) + minDamage
 
@@ -85,8 +91,7 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 	return damage
 }
 
-func breakingEquip(targetUnit *unit.Unit, damage int) bool {
-
+func breakingEquip(targetUnit *unit.Unit, damage int) bool { // если хотя бы 1 эквип сломался надо оповестить игроков об этом )
 	return breaking(targetUnit.Body.EquippingI, damage) ||
 		breaking(targetUnit.Body.EquippingII, damage) ||
 		breaking(targetUnit.Body.EquippingIII, damage) ||
@@ -98,7 +103,7 @@ func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
 	for _, equipSlot := range equip {
 		if equipSlot.Equip != nil {
 
-			// дамаг в 20%, в итоге должен зависеть от скила игрока
+			// TODO дамаг в 20%, в итоге должен зависеть от скила игрока и типа оружия
 			if equipSlot.HP-damage/5 > 0 {
 				equipSlot.HP -= damage / 5
 				return false

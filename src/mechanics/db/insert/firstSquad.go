@@ -138,30 +138,30 @@ func FirstSquad(userID int) (userSquad *squad.Squad) {
 	}
 
 	/* equip */
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp, target) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		userSquad.ID, 17, "equip", 1, 2, 100, "")
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp) "+
+		"VALUES ($1, $2, $3, $4, $5, $6)",
+		userSquad.ID, 17, "equip", 1, 2, 100)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp, target) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		userSquad.ID, 18, "equip", 2, 2, 100, "")
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp) "+
+		"VALUES ($1, $2, $3, $4, $5, $6)",
+		userSquad.ID, 18, "equip", 2, 2, 100)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp, target) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		userSquad.ID, 19, "equip", 3, 2, 100, "")
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp) "+
+		"VALUES ($1, $2, $3, $4, $5, $6)",
+		userSquad.ID, 19, "equip", 3, 2, 100)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}
 
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp, target) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		userSquad.ID, 20, "equip", 5, 2, 100, "")
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO squad_inventory (id_squad, slot, item_type, item_id, quantity, hp) "+
+		"VALUES ($1, $2, $3, $4, $5, $6)",
+		userSquad.ID, 20, "equip", 5, 2, 100)
 	if err != nil {
 		log.Fatal("filling first squad" + err.Error())
 	}

@@ -15,7 +15,7 @@ type QueueAttack struct {
 	sort           bool
 }
 
-func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*QueueAttack) {
+func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortItems []*QueueAttack) {
 
 	preloadQueue := make([]*QueueAttack, 0)
 
@@ -47,12 +47,12 @@ func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*QueueAtta
 		}
 	}
 
-	sortUnits = sortQueueAttack(&preloadQueue)
+	sortItems = sortQueueAttack(&preloadQueue)
 
 	return
 }
 
-func sortQueueAttack(preloadQueue *[]*QueueAttack) (sortUnits []*QueueAttack) {
+func sortQueueAttack(preloadQueue *[]*QueueAttack) (sortItems []*QueueAttack) {
 
 	var checkSortItems = func(preloadQueue *[]*QueueAttack) bool {
 		// проверяем есть ли еще не отсортированые итемы
@@ -65,10 +65,10 @@ func sortQueueAttack(preloadQueue *[]*QueueAttack) (sortUnits []*QueueAttack) {
 	}
 
 	for checkSortItems(preloadQueue) {
-		sortUnits = append(sortUnits, getMaxInitiativeItem(preloadQueue))
+		sortItems = append(sortItems, getMaxInitiativeItem(preloadQueue))
 	}
 
-	return sortUnits
+	return sortItems
 }
 
 func getMaxInitiativeItem(preloadQueue *[]*QueueAttack) *QueueAttack {

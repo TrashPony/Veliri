@@ -8,8 +8,8 @@ func Ready(msg Message, ws *websocket.Conn) {
 
 	game, ok := openGames[usersLobbyWs[ws].GetGameID()]
 	user := usersLobbyWs[ws]
-	// runtime error: invalid memory address or nil pointer dereference
-	if ok && user.GetSquad().MatherShip.Body != nil {
+
+	if ok && user.GetSquad() != nil && user.GetSquad().MatherShip != nil && user.GetSquad().MatherShip.Body != nil {
 
 		respawn, err := game.SetRespawnUser(user, msg.RespawnID)
 
@@ -25,7 +25,7 @@ func Ready(msg Message, ws *websocket.Conn) {
 			ws.WriteJSON(resp)
 		}
 	} else {
-		if user.GetSquad().MatherShip.Body == nil {
+		if user.GetSquad() == nil || user.GetSquad().MatherShip == nil || user.GetSquad().MatherShip.Body == nil {
 			resp := Response{Event: msg.Event, UserName: user.GetLogin(), NameGame: msg.GameName, Error: "не выбран или не настроен отряд"}
 			ws.WriteJSON(resp)
 		} else {

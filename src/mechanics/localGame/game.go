@@ -65,6 +65,17 @@ func (game *Game) GetUnit(q, r int) (unit *unit.Unit, find bool) {
 	return
 }
 
+func (game *Game) GetUnitByID(id int) (unit *unit.Unit, find bool) {
+	for _, q := range game.units {
+		for _, gameUnit := range q {
+			if unit.ID == id {
+				return gameUnit, true
+			}
+		}
+	}
+	return nil, false
+}
+
 func (game *Game) GetPlayers() (Players []*player.Player) {
 	return game.players
 }
