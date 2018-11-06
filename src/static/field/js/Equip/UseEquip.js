@@ -3,7 +3,7 @@ function UsedEquip() {
     RemoveSelect();
 
     field.send(JSON.stringify({
-        event: "UseMapEquip",
+        event: "SetTargetMapEquip",
         target_q: Number(this.targetQ),
         target_r: Number(this.targetR),
         q: Number(this.unitQ),

@@ -10,12 +10,13 @@ import (
 func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle, resultEquip []*ResultEquip) {
 
 	sortUnits := createQueueAttack(game.GetUnits())
+	println(sortUnits)
 	// отыгрываем бой
-	resultBattle = attack(sortUnits, game)
+	//resultBattle = attack(sortUnits, game)
 	// отыгрываем снаряжение и эфекты наложеные на юнитов
-	resultEquip = wageringEquip(sortUnits)
+	//resultEquip = wageringEquip(sortUnits)
 	// востаналиываем энерги, даем актив поинты и снимаем флаги использованого снаряжения
-	recovery(game)
+	//recovery(game)
 	// находим кто будет ходить первым
 	movePhase.QueueMove(game)
 
@@ -58,22 +59,6 @@ func attack(sortUnits []*unit.Unit, game *localGame.Game) (resultBattle []*Resul
 			}
 		}
 	}
-
-	return
-}
-
-func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortUnits []*unit.Unit) {
-
-	/*for _, xLine := range Units {
-		for _, gameUnit := range xLine {
-			gameUnit.QueueAttack += gameUnit.Body.Initiative
-			sortUnits = append(sortUnits, gameUnit)
-		}
-	}
-
-	sort.Slice(sortUnits, func(i, j int) bool {
-		return sortUnits[i].QueueAttack > sortUnits[j].QueueAttack
-	})*/
 
 	return
 }

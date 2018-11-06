@@ -21,7 +21,8 @@ func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetQ, targetR int, 
 
 func SetEquipTarget(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
 	if !useEquipSlot.Used && useUnit.Power >= useEquipSlot.Equip.UsePower {
-
+		// TODO проверка по энергии и отнимание энергии должна быть в фазе прицеливания, что бы сразу было понятно сколькко энергии еще осталось
+		// TODO а при снимание цели возвращать энергию в тело
 		useEquipSlot.Target = useCoordinate
 		updateSquad.Squad(client.GetSquad())
 

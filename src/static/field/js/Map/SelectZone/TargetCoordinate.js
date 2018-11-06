@@ -155,7 +155,7 @@ function SelectTargetUnit(jsonMessage) {
 
             let func = () => {
                 field.send(JSON.stringify({
-                    event: "UseUnitEquip",
+                    event: "SetTargetUnitEquip",
                     unit_id: Number(unit.id),
                     q: Number(unit.q),
                     r: Number(unit.r),

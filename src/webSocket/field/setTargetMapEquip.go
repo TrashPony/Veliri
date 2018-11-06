@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func UseEquip(msg Message, ws *websocket.Conn) {
+func SetTargetMapEquip(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
