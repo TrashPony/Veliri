@@ -70,7 +70,6 @@ func MoveEquip(useUnit *unit.Unit, game *localGame.Game, useEquipSlot *detail.Bo
 					gamePlayer.AddNewMemoryHostileUnit(*openHostileUnit)
 				}
 			}
-			resultAction.WatchNode = watchNode
 		} else {
 			_, find := gamePlayer.GetWatchCoordinate(useUnit.Q, useUnit.R)
 			if find {

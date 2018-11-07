@@ -10,6 +10,10 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 	for _, xLine := range activeGame.GetUnits() {
 		for _, gameUnit := range xLine {
 
+			if gameUnit.HP <= 0 { // если у юнита нет хп то он не может смотреть ¯\_(ツ)_/¯
+				continue
+			}
+
 			watchCoordinate, watchUnit, err := watch(gameUnit, client.GetLogin(), activeGame)
 
 			if err != nil { // если крип не мой то пропускаем дальнейшее действие

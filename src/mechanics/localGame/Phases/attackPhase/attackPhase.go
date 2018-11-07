@@ -8,6 +8,7 @@ import (
 	"../../../localGame"
 	"../../../localGame/Phases/movePhase"
 	"../../../localGame/map/watchZone"
+	"strconv"
 )
 
 func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
@@ -32,14 +33,14 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 }
 
 type ResultBattle struct {
-	AttackUnit  unit.Unit                   `json:"attack_unit"`
-	RotateTower int                         `json:"rotate_tower"`  // на сколько надо повернуть орудие
-	TargetUnits []TargetUnit                `json:"targets_units"` // юниты на которых воздействует действие
-	WeaponSlot  *detail.BodyWeaponSlot      `json:"weapon_slot"`   // Чем воздействуем (если оружием то EquipSlot == nil)
-	EquipSlot   *detail.BodyEquipSlot       `json:"equip_slot"`    // Чем воздействуем (если снарягой то WeaponSlot == nil)
-	Target      *coordinate.Coordinate      `json:"target"`        // куда летит снаряд, действие
-	WatchNode   *watchZone.UpdaterWatchZone `json:"watch_node"`    // если юнит переместился, то надо обновить зону выдимости
-	Error       string                      `json:"error"`
+	AttackUnit  unit.Unit                              `json:"attack_unit"`
+	RotateTower int                                    `json:"rotate_tower"`  // на сколько надо повернуть орудие
+	TargetUnits []TargetUnit                           `json:"targets_units"` // юниты на которых воздействует действие
+	WeaponSlot  *detail.BodyWeaponSlot                 `json:"weapon_slot"`   // Чем воздействуем (если оружием то EquipSlot == nil)
+	EquipSlot   *detail.BodyEquipSlot                  `json:"equip_slot"`    // Чем воздействуем (если снарягой то WeaponSlot == nil)
+	Target      *coordinate.Coordinate                 `json:"target"`        // куда летит снаряд, действие
+	WatchNode   map[string]*watchZone.UpdaterWatchZone `json:"watch_node"`    // расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
+	Error       string                                 `json:"error"`
 }
 
 type TargetUnit struct {
@@ -54,13 +55,16 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 	resultBattle = make([]*ResultBattle, 0)
 
 	for _, item := range sortItems {
+
+		var resultAction *ResultBattle
+
 		if item.ActionUnit.HP > 0 {
 			if item.WeaponSlot != nil {
 				// firearms может пулять куда угодно
 				if item.WeaponSlot.Weapon.Type == "firearms" {
 					targetCoordinate, ok := game.Map.GetCoordinate(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
 					if ok {
-						resultBattle = append(resultBattle, InitAttack(item.ActionUnit, targetCoordinate, game))
+						resultAction = InitAttack(item.ActionUnit, targetCoordinate, game)
 					}
 				}
 				// laser и missile только в юнитов
@@ -68,7 +72,7 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 					_, ok := game.GetUnit(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
 					if ok {
 						targetCoordinate, _ := game.Map.GetCoordinate(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
-						resultBattle = append(resultBattle, InitAttack(item.ActionUnit, targetCoordinate, game))
+						resultAction = InitAttack(item.ActionUnit, targetCoordinate, game)
 					}
 				}
 			} else {
@@ -76,45 +80,53 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 					if item.EquipSlot.Equip.Applicable == "my_units" {
 						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
 						if ok && targetUnit.Owner == item.ActionUnit.Owner {
-							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+							resultAction = ToUnit(item.ActionUnit, targetUnit, item.EquipSlot)
 						}
 					}
 
 					if item.EquipSlot.Equip.Applicable == "hostile_units" {
 						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
 						if ok && targetUnit.Owner != item.ActionUnit.Owner {
-							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+							resultAction = ToUnit(item.ActionUnit, targetUnit, item.EquipSlot)
 						}
 					}
 
 					if item.EquipSlot.Equip.Applicable == "all" {
 						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
 						if ok {
-							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+							resultAction = ToUnit(item.ActionUnit, targetUnit, item.EquipSlot)
 						}
 					}
 
 					if item.EquipSlot.Equip.Applicable == "myself" {
-						resultBattle = append(resultBattle, ToUnit(item.ActionUnit, item.ActionUnit, item.EquipSlot))
+						resultAction = ToUnit(item.ActionUnit, item.ActionUnit, item.EquipSlot)
 					}
 
 					if item.EquipSlot.Equip.Applicable == "myself_move" {
-						resultBattle = append(resultBattle, MoveEquip(item.ActionUnit, game, item.EquipSlot))
+						resultAction = MoveEquip(item.ActionUnit, game, item.EquipSlot)
 					}
 
 					if item.EquipSlot.Equip.Applicable == "map" {
 						targetCoordinate, ok := game.Map.GetCoordinate(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
 						if ok {
-							resultBattle = append(resultBattle, ToMap(item.ActionUnit, targetCoordinate, game, item.EquipSlot))
+							resultAction = ToMap(item.ActionUnit, targetCoordinate, game, item.EquipSlot)
 						}
 					}
 				} else {
-					resultBattle = append(resultBattle, &ResultBattle{Error: "equip breaking"})
+					resultAction = &ResultBattle{Error: "equip breaking"}
 				}
 			}
 		} else {
-			resultBattle = append(resultBattle, &ResultBattle{Error: "unit is dead"})
+			resultAction = &ResultBattle{Error: "unit is dead"}
 		}
+
+		resultAction.WatchNode = make(map[string]*watchZone.UpdaterWatchZone)
+		for _, gameUser := range game.GetPlayers() {
+			// расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
+			resultAction.WatchNode[strconv.Itoa(gameUser.GetID())] = watchZone.UpdateWatchZone(game, gameUser)
+		}
+
+		resultBattle = append(resultBattle, resultAction) // добавляем результат экшена
 	}
 
 	// завершительная часть боя, проигрых уже наложеных эффектов, сначала отнимаем все статы потом пополняем
