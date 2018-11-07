@@ -22,6 +22,8 @@ func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect, time int) {
 				} else {
 					gameUnit.Effects[i] = get.NewLvlEffect(unitEffect, newEffect.Level)
 				}
+				// это тут стоит если накладывают эффект пополнения то первый его шаг сразу проигрывается
+				gameUnit.Effects[i].Used = true
 				return
 			}
 		} else {

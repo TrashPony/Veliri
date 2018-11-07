@@ -11,13 +11,14 @@ func recovery(game *localGame.Game) {
 	for _, qLine := range game.GetUnits() {
 		for _, gameUnit := range qLine {
 
-			if gameUnit.HP < 0 {
+			if gameUnit.HP <= 0 {
 				game.DelUnit(gameUnit)
 
 				for _, player := range game.GetPlayers() {
 					// т.к. на одной точке не может стоять 2х юнитов в 1 момент времени эта операция безопасна :)
 					player.DelUnit(gameUnit, true)
 					player.DelHostileUnit(gameUnit.ID)
+					player.DelMemoryHostileUnits(gameUnit.ID)
 				}
 				continue
 			}
@@ -32,12 +33,13 @@ func recovery(game *localGame.Game) {
 			}
 
 			gameUnit.Target = nil
-			gameUnit.ActionPoints = gameUnit.Body.Speed
+			gameUnit.ActionPoints = gameUnit.Speed
 			gameUnit.Defend = false
 
 			for _, effect := range gameUnit.Effects {
 				if effect != nil {
 					effect.StepsTime -= 1
+					effect.Used = false
 				}
 			}
 
@@ -75,6 +77,8 @@ func recoveryEquip(equip map[int]*detail.BodyEquipSlot) {
 			if equipSlot.StepsForReload-1 > 0 {
 				equipSlot.StepsForReload -= 1
 			}
+
+			equipSlot.Target = nil
 		}
 	}
 }

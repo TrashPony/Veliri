@@ -2,10 +2,13 @@ package attackPhase
 
 import (
 	"../../../db/localGame/update"
+	"../../../gameObjects/coordinate"
 	"../../../gameObjects/detail"
+	"../../../gameObjects/equip"
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../localGame/map/watchZone"
+	"../../Phases"
 	"../../useEquip"
 )
 
@@ -20,27 +23,12 @@ func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot) *
 		useEquipSlot.Used = true
 
 		for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из него выбраному юниту
-			useEquip.AddNewUnitEffect(toUseUnit, effect, useEquipSlot.Equip.StepsTime)
 
-			if effect.Type == "replenishes" && effect.Parameter == "hp" {
-				toUseUnit.HP += effect.Quantity
-				targetsUnit = append(targetsUnit, TargetUnit{Unit: *toUseUnit, Heal: effect.Quantity})
+			if (useEquipSlot.Equip.StepsTime > 1) || (useEquipSlot.Equip.StepsTime == 1 && effect.Type != "replenishes" && effect.Type != "takes_away") {
+				useEquip.AddNewUnitEffect(toUseUnit, effect, useEquipSlot.Equip.StepsTime)
 			}
 
-			if effect.Type == "takes_away" && effect.Parameter == "hp" {
-				toUseUnit.HP -= effect.Quantity
-				targetsUnit = append(targetsUnit, TargetUnit{Unit: *toUseUnit, Damage: effect.Quantity})
-			}
-
-			if effect.Type == "replenishes" && effect.Parameter == "power" {
-				toUseUnit.Power += effect.Quantity
-				targetsUnit = append(targetsUnit, TargetUnit{Unit: *toUseUnit, Power: effect.Quantity})
-			}
-
-			if effect.Type == "takes_away" && effect.Parameter == "power" {
-				toUseUnit.Power -= effect.Quantity
-				targetsUnit = append(targetsUnit, TargetUnit{Unit: *toUseUnit, Power: -effect.Quantity})
-			}
+			powEnEffect(effect, toUseUnit, &targetsUnit)
 		}
 
 		toUseUnit.CalculateParams() // обновляем параметры юнита
@@ -93,4 +81,86 @@ func MoveEquip(useUnit *unit.Unit, game *localGame.Game, useEquipSlot *detail.Bo
 	game.SetUnit(useUnit)
 
 	return resultAction
+}
+
+func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame *localGame.Game, useEquipSlot *detail.BodyEquipSlot) *ResultBattle {
+	if useUnit.Power >= useEquipSlot.Equip.UsePower {
+
+		targetsUnit := make([]TargetUnit, 0)
+
+		useUnit.Power -= useEquipSlot.Equip.UsePower
+		useEquipSlot.StepsForReload = useEquipSlot.Equip.Reload // устанавливает время перезарядки
+
+		useEquipSlot.Used = true
+
+		if !(useEquipSlot.Equip.StepsTime == 1) { // если время действия эквипа 1 ход то вся анимация проигрывается сразу
+			AddAnchor(useCoordinate, useEquipSlot.Equip, "anchor")  // добавим эфект с якорем в центральную ячекй что бы знать куда ставить спрайт и анимацию
+			AddAnchor(useCoordinate, useEquipSlot.Equip, "animate") // добавим эфект с анимацией что бы проиграть анимация взрыва при фазе атаки
+		}
+
+		zoneCoordinates := coordinate.GetCoordinatesRadius(useCoordinate, useEquipSlot.Equip.Region)
+
+		effectCoordinates := make(map[string]map[string]*coordinate.Coordinate)
+
+		for _, zoneCoordinate := range zoneCoordinates {
+			gameCoordinate, find := activeGame.Map.GetCoordinate(zoneCoordinate.Q, zoneCoordinate.R)
+			gameUnit, findUnit := activeGame.GetUnit(zoneCoordinate.Q, zoneCoordinate.R)
+
+			if find {
+				for _, effect := range useEquipSlot.Equip.Effects { // переносим все эфекты из эквипа выбраной координате
+					if effect.Type != "anchor" && effect.Type != "animate" {
+
+						if (useEquipSlot.Equip.StepsTime > 1) || (useEquipSlot.Equip.StepsTime == 1 && effect.Type != "replenishes" && effect.Type != "takes_away") {
+							newEffect := *effect // создаем копию эфекта что бы обнулить ид и добавить в бд как новую
+							newEffect.ID = 0
+							useEquip.AddNewCoordinateEffect(gameCoordinate, &newEffect, useEquipSlot.Equip.StepsTime)
+
+							if findUnit {
+								// накладываем эфекты на всех юнитов которые стоят на зоне поражения
+								useEquip.AddNewUnitEffect(gameUnit, effect, useEquipSlot.Equip.StepsTime)
+							}
+						}
+
+						if findUnit {
+							powEnEffect(effect, gameUnit, &targetsUnit) // сразу отнимаем/даем хп или энергию
+						}
+					}
+				}
+				Phases.AddCoordinate(effectCoordinates, gameCoordinate)
+				update.CoordinateEffects(gameCoordinate)
+			}
+
+			if findUnit {
+				gameUnit.CalculateParams() // применяем все новые наложеные эффекты
+			}
+		}
+
+		// добавляет того кто использует т.к. у него отнимается энергия на использование
+		targetsUnit = append(targetsUnit, TargetUnit{Unit: *useUnit, Power: useEquipSlot.Equip.UsePower})
+
+		return &ResultBattle{AttackUnit: *useUnit, Target: useCoordinate, TargetUnits: targetsUnit, EquipSlot: useEquipSlot}
+	} else {
+		return &ResultBattle{Error: "no power"}
+	}
+}
+
+func AddAnchor(useCoordinate *coordinate.Coordinate, useEquip *equip.Equip, typeEffect string) {
+	addAEffect := true
+
+	for _, effect := range useEquip.Effects {
+		for _, coordinateEffect := range useCoordinate.Effects {
+			if coordinateEffect.Type == typeEffect && effect.Name == coordinateEffect.Name {
+				addAEffect = false
+			}
+		}
+	}
+
+	if addAEffect {
+		for _, effect := range useEquip.Effects {
+			if effect.Type == typeEffect {
+				effect.StepsTime = useEquip.StepsTime
+				useCoordinate.Effects = append(useCoordinate.Effects, effect)
+			}
+		}
+	}
 }

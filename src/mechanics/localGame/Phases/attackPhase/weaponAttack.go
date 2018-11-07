@@ -48,7 +48,7 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 
 			targetUnit.HP -= damage
 
-			broken := breakingEquip(targetUnit, damage) // TODO лазер
+			broken := breakingEquip(targetUnit, damage)
 
 			targetsUnit = append(targetsUnit, TargetUnit{Unit: *targetUnit, Damage: damage, BreakingEquip: broken})
 		}

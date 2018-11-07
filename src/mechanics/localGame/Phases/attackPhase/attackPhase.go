@@ -18,9 +18,7 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 	// отыгрываем бой
 	resultBattle = attack(sortItems, game)
 
-	// todo эфекты наложеные на юнитов
-
-	// востаналиываем энерги, даем актив поинты и снимаем флаги использованого снаряжения, снимаем цели юнитов todo и эквипа
+	// востаналиываем энерги, даем актив поинты и снимаем флаги использованого снаряжения, снимаем цели юнитов и эквипа
 	recovery(game)
 
 	// находим кто будет ходить первым
@@ -73,44 +71,79 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 					}
 				}
 			} else {
-				// TODO проверять не сломан ли эквип перед использованием
-				if item.EquipSlot.Equip.Applicable == "my_units" {
-					targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
-					if ok && targetUnit.Owner == item.ActionUnit.Owner {
-						resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+				if item.EquipSlot.HP > 0 {
+					if item.EquipSlot.Equip.Applicable == "my_units" {
+						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
+						if ok && targetUnit.Owner == item.ActionUnit.Owner {
+							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+						}
 					}
-				}
 
-				if item.EquipSlot.Equip.Applicable == "hostile_units" {
-					targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
-					if ok && targetUnit.Owner != item.ActionUnit.Owner {
-						resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+					if item.EquipSlot.Equip.Applicable == "hostile_units" {
+						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
+						if ok && targetUnit.Owner != item.ActionUnit.Owner {
+							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+						}
 					}
-				}
 
-				if item.EquipSlot.Equip.Applicable == "all" {
-					targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
-					if ok {
-						resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+					if item.EquipSlot.Equip.Applicable == "all" {
+						targetUnit, ok := game.GetUnit(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
+						if ok {
+							resultBattle = append(resultBattle, ToUnit(item.ActionUnit, targetUnit, item.EquipSlot))
+						}
 					}
-				}
 
-				if item.EquipSlot.Equip.Applicable == "myself" {
-					resultBattle = append(resultBattle, ToUnit(item.ActionUnit, item.ActionUnit, item.EquipSlot))
-				}
+					if item.EquipSlot.Equip.Applicable == "myself" {
+						resultBattle = append(resultBattle, ToUnit(item.ActionUnit, item.ActionUnit, item.EquipSlot))
+					}
 
-				if item.EquipSlot.Equip.Applicable == "myself_move" {
-					resultBattle = append(resultBattle, MoveEquip(item.ActionUnit, game, item.EquipSlot))
-				}
+					if item.EquipSlot.Equip.Applicable == "myself_move" {
+						resultBattle = append(resultBattle, MoveEquip(item.ActionUnit, game, item.EquipSlot))
+					}
 
-				if item.EquipSlot.Equip.Applicable == "map" {
-					// TODO на зону карты
+					if item.EquipSlot.Equip.Applicable == "map" {
+						targetCoordinate, ok := game.Map.GetCoordinate(item.EquipSlot.Target.Q, item.EquipSlot.Target.R)
+						if ok {
+							resultBattle = append(resultBattle, ToMap(item.ActionUnit, targetCoordinate, game, item.EquipSlot))
+						}
+					}
+				} else {
+					resultBattle = append(resultBattle, &ResultBattle{Error: "equip breaking"})
 				}
 			}
 		} else {
 			resultBattle = append(resultBattle, &ResultBattle{Error: "unit is dead"})
 		}
 	}
+
+	// завершительная часть боя, проигрых уже наложеных эффектов, сначала отнимаем все статы потом пополняем
+	targetsUnit := make([]TargetUnit, 0)
+
+	for _, q := range game.GetUnits() {
+		for _, gameUnit := range q {
+			if gameUnit.HP > 0 {
+				for _, effect := range gameUnit.Effects {
+					if effect.Type == "takes_away" && !effect.Used {
+						powEnEffect(effect, gameUnit, &targetsUnit)
+					}
+				}
+			}
+		}
+	}
+
+	for _, q := range game.GetUnits() {
+		for _, gameUnit := range q {
+			for _, effect := range gameUnit.Effects {
+				if gameUnit.HP > 0 {
+					if effect.Type == "replenishes" && !effect.Used {
+						powEnEffect(effect, gameUnit, &targetsUnit)
+					}
+				}
+			}
+		}
+	}
+
+	resultBattle = append(resultBattle, &ResultBattle{TargetUnits: targetsUnit})
 
 	return
 }

@@ -27,6 +27,11 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				}
 			}
 
+			_, err = tx.Exec("DELETE FROM user_memory_unit WHERE id_unit = $1", id)
+			if err != nil {
+				log.Fatal("delete memory unit " + err.Error())
+			}
+
 			_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit = $2",
 				squad.ID, id)
 			if err != nil {

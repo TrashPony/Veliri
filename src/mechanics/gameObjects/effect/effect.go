@@ -11,4 +11,5 @@ type Effect struct {
 	Quantity    int    `json:"quantity"`
 	Percentages bool   `json:"percentages"`
 	Forever     bool   `json:"forever"`
+	Used        bool
 }

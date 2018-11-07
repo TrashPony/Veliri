@@ -143,6 +143,10 @@ func (client *Player) AddNewMemoryHostileUnit(newUnit unit.Unit) {
 	client.memoryHostileUnits[strconv.Itoa(newUnit.ID)] = newUnit
 }
 
+func (client *Player) DelMemoryHostileUnits(id int) {
+	delete(client.memoryHostileUnits, strconv.Itoa(id))
+}
+
 func (client *Player) GetMemoryHostileUnits() map[string]unit.Unit {
 	return client.memoryHostileUnits
 }
