@@ -33,6 +33,7 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 
 type ResultBattle struct {
 	AttackUnit  unit.Unit                   `json:"attack_unit"`
+	RotateTower int                         `json:"rotate_tower"`  // на сколько надо повернуть орудие
 	TargetUnits []TargetUnit                `json:"targets_units"` // юниты на которых воздействует действие
 	WeaponSlot  *detail.BodyWeaponSlot      `json:"weapon_slot"`   // Чем воздействуем (если оружием то EquipSlot == nil)
 	EquipSlot   *detail.BodyEquipSlot       `json:"equip_slot"`    // Чем воздействуем (если снарягой то WeaponSlot == nil)

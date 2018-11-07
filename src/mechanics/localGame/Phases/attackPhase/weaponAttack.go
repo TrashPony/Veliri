@@ -30,6 +30,8 @@ func InitAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *local
 }
 
 func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localGame.Game, weapon *detail.BodyWeaponSlot) *ResultBattle {
+	unitCoordinate, _ := game.Map.GetCoordinate(attacking.Q, attacking.R)
+
 	attackZone := coordinate.GetCoordinatesRadius(target, weapon.Ammo.AreaCovers)
 	targetsUnit := make([]TargetUnit, 0)
 
@@ -54,7 +56,7 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 		}
 	}
 
-	return &ResultBattle{AttackUnit: *attacking, TargetUnits: targetsUnit, WeaponSlot: weapon, Target: target}
+	return &ResultBattle{AttackUnit: *attacking, Target: target, RotateTower: rotateTower(unitCoordinate, target), TargetUnits: targetsUnit, WeaponSlot: weapon}
 }
 
 func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
@@ -92,11 +94,21 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 }
 
 func breakingEquip(targetUnit *unit.Unit, damage int) bool { // если хотя бы 1 эквип сломался надо оповестить игроков об этом )
-	return breaking(targetUnit.Body.EquippingI, damage) ||
-		breaking(targetUnit.Body.EquippingII, damage) ||
-		breaking(targetUnit.Body.EquippingIII, damage) ||
-		breaking(targetUnit.Body.EquippingIV, damage) ||
-		breaking(targetUnit.Body.EquippingV, damage)
+
+	var breakingWeapon bool
+
+	// TODO дамаг в 20%, в итоге должен зависеть от скила игрока и типа оружия
+	if targetUnit.GetWeaponSlot().HP-damage/5 > 0 {
+		targetUnit.GetWeaponSlot().HP -= damage / 5
+		breakingWeapon = false
+	} else {
+		targetUnit.GetWeaponSlot().HP = 0
+		breakingWeapon = true
+	}
+
+	return breaking(targetUnit.Body.EquippingI, damage) || breaking(targetUnit.Body.EquippingII, damage) ||
+		breaking(targetUnit.Body.EquippingIII, damage) || breaking(targetUnit.Body.EquippingIV, damage) ||
+		breaking(targetUnit.Body.EquippingV, damage) || breakingWeapon
 }
 
 func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
