@@ -8,10 +8,17 @@ import (
 	"./webSocket/lobby"
 	"github.com/gorilla/mux"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 func main() {
+
+	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
+	// будет выдавать одну и ту же последовательность.
+	rand.Seed(time.Now().UnixNano())
+
 	router := mux.NewRouter()
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 	router.HandleFunc("/registration", auth.Registration)

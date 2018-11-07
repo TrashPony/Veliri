@@ -6,7 +6,6 @@ import (
 	"../../../localGame"
 	"../../../player"
 	"math/rand"
-	"time"
 )
 
 func QueueMove(game *localGame.Game) {
@@ -87,9 +86,7 @@ func QueueMove(game *localGame.Game) {
 }
 
 func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {
-	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
-	// будет выдавать одну и ту же последовательность.
-	rand.Seed(time.Now().UnixNano())
+
 	numberUnit := rand.Intn(len(moveUnits))
 
 	return moveUnits[numberUnit]

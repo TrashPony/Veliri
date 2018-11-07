@@ -4,7 +4,6 @@ import (
 	"../../../gameObjects/detail"
 	"../../../gameObjects/unit"
 	"math/rand"
-	"time"
 )
 
 type QueueAttack struct {
@@ -100,9 +99,6 @@ func getMaxInitiativeItem(preloadQueue *[]*QueueAttack) *QueueAttack {
 }
 
 func randomInitiativeSort(items []*QueueAttack) *QueueAttack {
-	//Генератор случайных чисел обычно нужно рандомизировать перед использованием, иначе, он, действительно,
-	// будет выдавать одну и ту же последовательность.
-	rand.Seed(time.Now().UnixNano())
 	numberUnit := rand.Intn(len(items))
 
 	return items[numberUnit]
