@@ -54,7 +54,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 
 				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
 				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
-				QueueSender(activeGame, ws)
+				QueueSender(activeGame)
 			} else {
 				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
 				ws.WriteJSON(resp)
@@ -89,34 +89,32 @@ func UserQueueSender(client *player.Player, game *localGame.Game) {
 	}
 }
 
-func QueueSender(game *localGame.Game, ws *websocket.Conn) {
-	if game.Phase == "move" {
+func QueueSender(game *localGame.Game) {
 
-		allReady := true
+	allReady := true
 
-		for _, user := range game.GetPlayers() {
-			for _, q := range user.GetUnits() {
-				for _, gameUnit := range q {
-					moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-					move <- moves
-				}
-				if !user.Ready {
-					allReady = false
-				}
-			}
-
-			for _, gameUnit := range user.GetUnitsStorage() {
+	for _, user := range game.GetPlayers() {
+		for _, q := range user.GetUnits() {
+			for _, gameUnit := range q {
 				moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
 				move <- moves
 			}
-
-			memoryUnits := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
-			move <- memoryUnits
+			if !user.Ready {
+				allReady = false
+			}
 		}
 
-		if allReady {
-			Ready(ws)
+		for _, gameUnit := range user.GetUnitsStorage() {
+			moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
+			move <- moves
 		}
+
+		memoryUnits := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
+		move <- memoryUnits
+	}
+
+	if allReady {
+		CheckAllReady(game)
 	}
 }
 
@@ -129,7 +127,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	if findUnit && findClient && findGame {
 		movePhase.SkipMove(gameUnit, activeGame, client)
 		ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
-		QueueSender(activeGame, ws)
+		QueueSender(activeGame)
 	} else {
 		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}
 		ws.WriteJSON(resp)

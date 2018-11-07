@@ -55,7 +55,7 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 		}
 	}
 
-	return &ResultBattle{AttackUnit: *attacking, Target: target, RotateTower: rotateTower(unitCoordinate, target), TargetUnits: targetsUnit, WeaponSlot: weapon}
+	return &ResultBattle{AttackUnit: *attacking, Target: *target, RotateTower: rotateTower(unitCoordinate, target), TargetUnits: targetsUnit, WeaponSlot: *weapon}
 }
 
 func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {

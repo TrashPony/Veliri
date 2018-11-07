@@ -49,6 +49,12 @@ func recovery(game *localGame.Game) {
 			update.UnitEffects(gameUnit)
 		}
 	}
+
+	for _, gameUnit := range game.GetUnitsStorage() {
+		gameUnit.Target = nil
+		gameUnit.ActionPoints = gameUnit.Speed
+		gameUnit.Defend = false
+	}
 }
 
 func recoveryPower(gameUnit *unit.Unit) {

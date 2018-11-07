@@ -8,11 +8,13 @@ import (
 	"../../player"
 )
 
-func UserReady(client *player.Player, actionGame *localGame.Game) bool {
+func UserReady(client *player.Player) {
 	client.SetReady(true)
-
 	update.Player(client)
+	updateSquad.Squad(client.GetSquad())
+}
 
+func AllReady(actionGame *localGame.Game) bool {
 	allReady := true
 
 	for _, user := range actionGame.GetPlayers() {
@@ -30,8 +32,6 @@ func UserReady(client *player.Player, actionGame *localGame.Game) bool {
 			movePhase.QueueMove(actionGame)
 		}
 	}
-
-	updateSquad.Squad(client.GetSquad())
 
 	return allReady
 }

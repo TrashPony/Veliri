@@ -8,11 +8,22 @@ import (
 )
 
 func Ready(ws *websocket.Conn) {
-
 	client := usersFieldWs[ws]
 	activeGame, _ := Games.Get(client.GetGameID())
 
-	changePhase := userReady.UserReady(client, activeGame)
+	userReady.UserReady(client)
+
+	changePhase := CheckAllReady(activeGame)
+
+	if !changePhase {
+		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
+		QueueSender(activeGame)
+	}
+}
+
+func CheckAllReady(activeGame *localGame.Game) bool {
+
+	changePhase := userReady.AllReady(activeGame)
 
 	if changePhase {
 
@@ -21,13 +32,9 @@ func Ready(ws *websocket.Conn) {
 		if activeGame.Phase == "attack" {
 			attack(activeGame)
 		}
-
-	} else {
-
-		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
-
-		QueueSender(activeGame, ws)
 	}
+
+	return changePhase
 }
 
 type UserReady struct {

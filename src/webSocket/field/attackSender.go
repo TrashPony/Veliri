@@ -3,6 +3,9 @@ package field
 import (
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/attackPhase"
+	"../../mechanics/localGame/map/watchZone"
+	"../../mechanics/player"
+	"strconv"
 )
 
 type AttackMessage struct {
@@ -16,19 +19,70 @@ func attack(activeGame *localGame.Game) {
 
 	resultBattle := attackPhase.AttackPhase(activeGame)
 
-	for _, player := range activeGame.GetPlayers() {
-		attack := AttackMessage{Event: "AttackPhase", UserName: player.GetLogin(), GameID: player.GetGameID(),
-			ResultBattle: dataPreparation(resultBattle)}
+	for _, gamePlayer := range activeGame.GetPlayers() {
+		attack := AttackMessage{Event: "AttackPhase", UserName: gamePlayer.GetLogin(), GameID: gamePlayer.GetGameID(),
+			ResultBattle: dataPreparation(resultBattle, gamePlayer)}
 		attackPipe <- attack
+
+		for _, q := range gamePlayer.GetUnits() {
+			for _, userUnit := range q {
+				// обновляем всю стату юнитов у всех пользователей
+				moves := Move{Event: "UpdateUnit", UserName: gamePlayer.GetLogin(), GameID: activeGame.Id, Unit: userUnit}
+				move <- moves
+			}
+		}
 	}
+
+	QueueSender(activeGame)
 }
 
-func dataPreparation(resultBattle []*attackPhase.ResultBattle) []attackPhase.ResultBattle {
+func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *player.Player) []attackPhase.ResultBattle {
 	watchResultBattle := make([]attackPhase.ResultBattle, 0)
-
+	// TODO на момент отдачи данных пользователи могут имеють другой обзор
 	for _, actionBattle := range resultBattle {
-		// todo не все пользователи видят весь бой, надо фильтровал
-		watchResultBattle = append(watchResultBattle, *actionBattle)
+		var preloadActionBattle attackPhase.ResultBattle
+
+		_, findAttackUnit := gamePlayer.GetWatchCoordinate(actionBattle.AttackUnit.Q, actionBattle.AttackUnit.R)
+		if findAttackUnit {
+			// если игрок видит юнита добавляем все что относиться к атаке
+			preloadActionBattle.AttackUnit = actionBattle.AttackUnit
+			preloadActionBattle.RotateTower = actionBattle.RotateTower
+		}
+
+		_, findTargetCoordinate := gamePlayer.GetWatchCoordinate(actionBattle.Target.Q, actionBattle.Target.R)
+		if findTargetCoordinate {
+			preloadActionBattle.Target = actionBattle.Target
+		}
+
+		// если игрок видит оружие/эквип или их воздействие то отдаем типы оружий и эквипа
+		if findAttackUnit || findTargetCoordinate {
+			if actionBattle.WeaponSlot.Weapon != nil {
+				preloadActionBattle.WeaponSlot.Weapon = actionBattle.WeaponSlot.Weapon
+			}
+			if actionBattle.EquipSlot.Equip != nil {
+				preloadActionBattle.EquipSlot.Equip = actionBattle.EquipSlot.Equip
+			}
+		}
+
+		preloadActionBattle.TargetUnits = make([]attackPhase.TargetUnit, 0)
+
+		for _, targetUnit := range actionBattle.TargetUnits {
+			_, findTargetUnit := gamePlayer.GetWatchCoordinate(targetUnit.Unit.Q, targetUnit.Unit.R)
+			// если игрок видит юнита добавляем его
+			if findTargetUnit {
+				preloadActionBattle.TargetUnits = append(preloadActionBattle.TargetUnits, targetUnit)
+			}
+		}
+
+		preloadActionBattle.WatchNode = make(map[string]*watchZone.UpdaterWatchZone)
+
+		for key, watch := range actionBattle.WatchNode {
+			if strconv.Itoa(gamePlayer.GetID()) == key {
+				preloadActionBattle.WatchNode[key] = watch
+			}
+		}
+
+		watchResultBattle = append(watchResultBattle, preloadActionBattle)
 	}
 
 	return watchResultBattle

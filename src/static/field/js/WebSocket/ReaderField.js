@@ -58,6 +58,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "AttackPhase") {
+        console.log(jsonMessage);
         AttackPhase(jsonMessage)
     }
 

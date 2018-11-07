@@ -37,14 +37,14 @@ func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot) *
 		// добавляет того кто использует т.к. у него отнимается энергия на использование
 		targetsUnit = append(targetsUnit, TargetUnit{Unit: *useUnit, Power: useEquipSlot.Equip.UsePower})
 
-		return &ResultBattle{AttackUnit: *useUnit, TargetUnits: targetsUnit, EquipSlot: useEquipSlot}
+		return &ResultBattle{AttackUnit: *useUnit, TargetUnits: targetsUnit, EquipSlot: *useEquipSlot}
 	} else {
 		return &ResultBattle{Error: "no power"}
 	}
 }
 
 func MoveEquip(useUnit *unit.Unit, game *localGame.Game, useEquipSlot *detail.BodyEquipSlot) *ResultBattle {
-	resultAction := &ResultBattle{AttackUnit: *useUnit, EquipSlot: useEquipSlot, Target: useEquipSlot.Target}
+	resultAction := &ResultBattle{AttackUnit: *useUnit, EquipSlot: *useEquipSlot, Target: *useEquipSlot.Target}
 	// тут мы обновляем позицию юнита для всех пользователей игры, + обновляем зону видимости владельца юнита
 	for _, gamePlayer := range game.GetPlayers() {
 		if gamePlayer.GetLogin() == useUnit.Owner {
@@ -137,7 +137,7 @@ func ToMap(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, activeGame 
 		// добавляет того кто использует т.к. у него отнимается энергия на использование
 		targetsUnit = append(targetsUnit, TargetUnit{Unit: *useUnit, Power: useEquipSlot.Equip.UsePower})
 
-		return &ResultBattle{AttackUnit: *useUnit, Target: useCoordinate, TargetUnits: targetsUnit, EquipSlot: useEquipSlot}
+		return &ResultBattle{AttackUnit: *useUnit, Target: *useCoordinate, TargetUnits: targetsUnit, EquipSlot: *useEquipSlot}
 	} else {
 		return &ResultBattle{Error: "no power"}
 	}
