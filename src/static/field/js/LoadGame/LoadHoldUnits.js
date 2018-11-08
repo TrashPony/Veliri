@@ -30,6 +30,9 @@ function LoadHoldUnits() {
                 boxUnit.appendChild(weapon);
 
                 boxUnit.onclick = function () {
+
+                    CreateUnitSubMenu(game.unitStorage[unit]);
+
                     field.send(JSON.stringify({
                         event: "SelectStorageUnit",
                         unit_id: Number(this.unit.info.id)

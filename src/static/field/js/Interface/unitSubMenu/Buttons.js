@@ -10,19 +10,16 @@ function ActionButton(equipPanel, unit, event, text) {
     skipButton.type = "button";
     skipButton.value = text;
 
-    if (unit.action_points >= unit.speed) {
-        skipButton.className = "button unitSubMenu";
+    skipButton.className = "button unitSubMenu";
 
-        skipButton.onclick = function () {
-            field.send(JSON.stringify({
-                event: event,
-                q: Number(unit.q),
-                r: Number(unit.r)
-            }));
-        };
-    } else {
-        skipButton.className = "button unitSubMenu noActive";
-    }
+    skipButton.onclick = function () {
+        field.send(JSON.stringify({
+            event: event,
+            q: Number(unit.q),
+            r: Number(unit.r),
+            unit_id: Number(unit.id)
+        }));
+    };
 
     tdSkip.appendChild(skipButton);
     trSkip.appendChild(tdSkip);

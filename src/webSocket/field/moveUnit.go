@@ -120,13 +120,18 @@ func QueueSender(game *localGame.Game) {
 
 func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnit(msg.Q, msg.R)
+	gameUnit, findUnit := usersFieldWs[ws].GetUnitStorage(msg.UnitID)
+
+	if gameUnit == nil {
+		gameUnit, findUnit = usersFieldWs[ws].GetUnit(msg.Q, msg.R)
+	}
+
 	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := Games.Get(client.GetGameID())
 
 	if findUnit && findClient && findGame {
 		movePhase.SkipMove(gameUnit, activeGame)
-		ws.WriteJSON(Move{Event: "MoveUnit", Unit: gameUnit, UserName: client.GetLogin()})
+		ws.WriteJSON(Move{Event: "UpdateUnit", Unit: gameUnit, UserName: client.GetLogin()})
 		QueueSender(activeGame)
 	} else {
 		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}

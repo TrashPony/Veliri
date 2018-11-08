@@ -1,14 +1,13 @@
 .notificationBlock {
     width: 240px;
-    height: 100px;
-    position: fixed;
-    top: 30%;
-    left: 50%;
-    margin-left: -120px;
+    height: 65px;
+    margin-left: 128px;
     background-size: 10px 2px;
     background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(0, 0, 0, 0.4), rgba(37, 160, 225, 0.1) 6px);
     border-radius: 50px;
     border: 2px solid #fdcc02;
+    animation: none;
+    text-align: center;
 }
 
 .notificationBlock h3 {
@@ -26,7 +25,7 @@
 .notificationBlock p {
     color: #f1ff08;
     text-shadow: #000000 0 0 4px;
-    margin: 12px 0 15px 0;
+    margin: 6px 0 15px 0;
 }
 
 .notificationBlock input {
@@ -52,4 +51,9 @@
 .notificationBlock input:active {
     background: linear-gradient(180deg, red, yellow);
     margin-top: 5px;
+}
+
+@keyframes notification {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
 }

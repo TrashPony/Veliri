@@ -49,7 +49,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/units/equip/" + unit.body.equippingIII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingIII[i].used && !(unit.power < unit.body.equippingIII[i].equip.use_power)) {
+            if (!unit.body.equippingIII[i].used && !(unit.power < unit.body.equippingIII[i].equip.use_power) && unit.on_map) {
                 equipping.className = "equipSlotIII Active";
                 equipping.onclick = function () {
                     RemoveSelect();
@@ -92,7 +92,7 @@ function FillingEquipPanel(equipPanel, unit) {
 
             equipping.style.backgroundImage = "url(/assets/units/equip/" + unit.body.equippingII[i].equip.name + ".png)";
 
-            if (!unit.body.equippingII[i].used && !(unit.power < unit.body.equippingII[i].equip.use_power)) {
+            if (!unit.body.equippingII[i].used && !(unit.power < unit.body.equippingII[i].equip.use_power) && unit.on_map) {
                 equipping.className = "equipSlotII Active";
                 equipping.onclick = function () {
                     RemoveSelect();

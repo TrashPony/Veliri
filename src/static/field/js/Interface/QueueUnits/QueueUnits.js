@@ -8,6 +8,11 @@ function LoadQueueUnits() {
     let moveUnit = document.getElementById("moveUnit");
     moveUnit.innerHTML = "";
 
+    let holdUnits = document.getElementsByClassName("boxUnit");
+    for (let i = 0; i < holdUnits.length; i++) {
+        holdUnits[i].className = "boxUnit";
+    }
+
     let allActionUnits = [];
 
     for (let i in game.memoryHostileUnit) {
@@ -72,6 +77,8 @@ function LoadQueueUnits() {
     if (!move) {
         moveUnit.style.backgroundImage = "url(/assets/unknown.png)";
         moveUnit.style.boxShadow = "inset 0px 0px 35px 1px rgba(255,0,0,0.8)";
+        moveUnit.style.animation = "none";
+        moveUnit.style.border = "3px solid rgba(108, 108, 108, 0.7)"
     }
 }
 
@@ -91,10 +98,36 @@ function createQueueBlock(units) {
             moveUnit.appendChild(weapon);
 
             if (game.user.name === units[0].owner) {
-                moveUnit.style.boxShadow = "inset 0px 0px 35px 1px rgba(0, 255, 64, 0.8)";
+                moveUnit.style.animation = "queuePulse 2s infinite";
+                moveUnit.style.border = "3px solid rgb(104, 255, 89)"
             } else {
-                moveUnit.style.boxShadow = "inset 0px 0px 35px 1px rgba(255,0,0,0.8)";
+                moveUnit.style.boxShadow = "none";
+                moveUnit.style.border = "3px solid rgba(108, 108, 108, 0.7)"
             }
+
+            if (units[0].on_map) {
+                moveUnit.onclick = function () {
+                    if (game.user.name === units[0].owner) {
+                        SelectUnit.call(units[0]);
+                    }
+                }
+            } else {
+                let boxUnit = document.getElementById(units[0].id);
+                if (boxUnit) {
+                    boxUnit.className = "boxUnit Move";
+
+                    moveUnit.onclick = function () {
+
+                        CreateUnitSubMenu(units[0]);
+
+                        field.send(JSON.stringify({
+                            event: "SelectStorageUnit",
+                            unit_id: Number(units[0].id)
+                        }));
+                    }
+                }
+            }
+
         } else {
             let queueLine = document.getElementById("queueLine");
 

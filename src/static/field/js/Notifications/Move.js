@@ -23,9 +23,10 @@ function MoveNotification(jsonMessage) {
             }
         }
     }
-    // нельзя использовать в фазе атаки метод общего апдейта т.к. будет ошибка смены координат при движение
 
-    if (unitStat.move) {
+    if (unitStat.move && game.Phase === "move") {
+        let queueBlock = document.getElementById("queue");
+
         let notificationBlock = document.createElement("div");
         notificationBlock.className = "notificationBlock";
 
@@ -37,14 +38,17 @@ function MoveNotification(jsonMessage) {
         text.innerHTML = "Твоя очередь двигать юнита";
         notificationBlock.appendChild(text);
 
-        let button = document.createElement("input");
-        button.type = "submit";
-        button.value = "OK";
-        button.onclick = function () {
-            notificationBlock.remove();
-        };
-        notificationBlock.appendChild(button);
+        if (queueBlock) {
+            queueBlock.appendChild(notificationBlock);
+        }
 
-        document.body.appendChild(notificationBlock)
+        let timeNotification = 500;
+        setTimeout(function () {
+            notificationBlock.style.animation = "notification "+ timeNotification +"ms 1";
+        }, 4000);
+
+        setTimeout(function () {
+            notificationBlock.style.display = "none";
+        }, 4000 + timeNotification)
     }
 }

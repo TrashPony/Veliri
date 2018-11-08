@@ -1,0 +1,51 @@
+.boxUnit {
+    pointer-events:visible;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    height: 35px;
+    line-height: 35px;
+    width: 35px;
+    border: 1px solid #25a0e1;
+    background-color: rgba(0, 0, 0, .4);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin: 5px;
+}
+
+.boxUnit.Move {
+    animation: boxUnitPulse 1000ms infinite;
+}
+
+.boxUnit:hover {
+    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
+    color: #00fffd;
+    cursor: pointer;
+}
+
+.UnitRow {
+    text-align: center;
+    vertical-align: middle;
+    width: 35px;
+}
+
+.weaponHoldUnit {
+    height: 35px;
+    width: 35px;
+    background-size: contain;
+}
+
+@keyframes boxUnitPulse {
+    0% {
+        -moz-box-shadow: 0 0 5px 0 rgb(255, 249, 30);
+        box-shadow: 0 0 5px 0 rgb(255, 249, 30);
+    }
+    70% {
+        -moz-box-shadow: 0 0 10px 10px rgba(204,169,44, 0);
+        box-shadow: 0 0 10px 10px rgba(204,169,44, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 10px 0 rgba(204,169,44, 0);
+        box-shadow: 0 0 0 10px rgba(204,169,44, 0);
+    }
+}

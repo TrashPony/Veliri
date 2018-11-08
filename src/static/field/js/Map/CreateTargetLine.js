@@ -1,5 +1,9 @@
-function CreateTargetLine(unitStat, type) {
+function CreateTargetLine(unitStat) {
     let unit = GetGameUnitID(unitStat.id);
+
+    if (!unit) {
+        unit = GetStorageUnit(unitStat.id)
+    }
 
     if (unit.targetLine) {
         unit.targetLine.destroy();
