@@ -6,6 +6,8 @@ function SelectUnit() {
 
     MarkUnitSelect(this, 1);
 
+    Fire(this);
+
     if (game.Phase === "targeting") {
         field.send(JSON.stringify({
             event: "SelectWeapon",

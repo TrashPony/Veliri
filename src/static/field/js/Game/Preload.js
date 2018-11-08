@@ -35,6 +35,12 @@ function preload() {
     game.load.image('small_laser', 'http://' + window.location.host + '/assets/units/weapon/small_laser.png');
     game.load.image('small_missile', 'http://' + window.location.host + '/assets/units/weapon/small_missile.png');
     game.load.image('tank_gun', 'http://' + window.location.host + '/assets/units/weapon/tank_gun.png');
+        // bullets
+    game.load.spritesheet('missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/rocket.png', 128, 128, 40);
+    game.load.image('smoke_puff', 'http://' + window.location.host + '/assets/fire_effects/smoke_puff.png');
+    game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');
+    game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
+    game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
 
     // Map Objects
     game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');

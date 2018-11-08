@@ -39,7 +39,7 @@ function* PlayAttack(resultBattle) {
             setTimeout(function () {
                 Fire(unit);
                 setTimeout(function () {
-                    Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
+                    //Explosion(game.map.OneLayerMap[resultBattle[i].attack_unit.target.q][resultBattle[i].attack_unit.target.r]);
                 }, 100)
             }, 200);
         }
@@ -68,7 +68,7 @@ function* PlayAttack(resultBattle) {
                 }, 500);
             }
         }
-        UpdateUnit(resultBattle[i].attack_unit);
+        //UpdateUnit(resultBattle[i].attack_unit);
         yield new Promise(resolve => setTimeout(resolve, 3000));
     }
 }
