@@ -1,8 +1,10 @@
 package field
 
 import (
+	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/Phases/attackPhase"
+	"../../mechanics/localGame/map/hexLineDraw"
 	"../../mechanics/localGame/map/watchZone"
 	"../../mechanics/player"
 	"strconv"
@@ -21,7 +23,7 @@ func attack(activeGame *localGame.Game) {
 
 	for _, gamePlayer := range activeGame.GetPlayers() {
 		attack := AttackMessage{Event: "AttackPhase", UserName: gamePlayer.GetLogin(), GameID: gamePlayer.GetGameID(),
-			ResultBattle: dataPreparation(resultBattle, gamePlayer)}
+			ResultBattle: dataPreparation(resultBattle, gamePlayer, activeGame)}
 		attackPipe <- attack
 
 		for _, q := range gamePlayer.GetUnits() {
@@ -36,7 +38,7 @@ func attack(activeGame *localGame.Game) {
 	QueueSender(activeGame)
 }
 
-func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *player.Player) []attackPhase.ResultBattle {
+func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *player.Player, activeGame *localGame.Game) []attackPhase.ResultBattle {
 	watchResultBattle := make([]attackPhase.ResultBattle, 0)
 	// TODO на момент отдачи данных пользователи могут имеють другой обзор
 	for _, actionBattle := range resultBattle {
@@ -61,6 +63,42 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 			}
 			if actionBattle.EquipSlot.Equip != nil {
 				preloadActionBattle.EquipSlot.Equip = actionBattle.EquipSlot.Equip
+			}
+		}
+
+		if !findAttackUnit && findTargetCoordinate {
+			// если игрок не видит кто стреляет но видит цель то надо снаряду проложить траекторию полета от первой точки видимости
+			unitCoordinate, find := activeGame.Map.GetCoordinate(actionBattle.AttackUnit.Q, actionBattle.AttackUnit.R)
+			if find {
+				flightPath := hexLineDraw.Draw(unitCoordinate, &actionBattle.Target, activeGame)
+
+				for _, coordinatePath := range flightPath {
+					firstNodePath, findCoordinate := gamePlayer.GetWatchCoordinate(coordinatePath.Q, coordinatePath.R)
+					if findCoordinate {
+						preloadActionBattle.StartWatchAttack = *firstNodePath
+						break
+					}
+				}
+			}
+		}
+
+		if findAttackUnit && !findTargetCoordinate {
+			// если игрок не видит куда прилетает снаряд но видит кто пуляет то надо снаряду проложить траекторию полета до последней точки видимости
+			unitCoordinate, find := activeGame.Map.GetCoordinate(actionBattle.AttackUnit.Q, actionBattle.AttackUnit.R)
+			if find {
+				flightPath := hexLineDraw.Draw(unitCoordinate, &actionBattle.Target, activeGame)
+
+				var endNodePath coordinate.Coordinate
+
+				for _, coordinatePath := range flightPath {
+					firstNodePath, findCoordinate := gamePlayer.GetWatchCoordinate(coordinatePath.Q, coordinatePath.R)
+					if findCoordinate {
+						endNodePath = *firstNodePath
+					} else {
+						break
+					}
+				}
+				preloadActionBattle.EndWatchAttack = endNodePath
 			}
 		}
 

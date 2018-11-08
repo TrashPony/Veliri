@@ -3,10 +3,9 @@ package movePhase
 import (
 	"../../../gameObjects/unit"
 	"../../../localGame"
-	"../../../player"
 )
 
-func SkipMove(gameUnit *unit.Unit, game *localGame.Game, client *player.Player) {
+func SkipMove(gameUnit *unit.Unit, game *localGame.Game) {
 	gameUnit.ActionPoints = 0
 	gameUnit.Move = false
 	QueueMove(game)
