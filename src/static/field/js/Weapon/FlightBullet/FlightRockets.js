@@ -2,7 +2,7 @@ function FlightRockets(bullet) {
     let dist = game.physics.arcade.distanceToXY(bullet, bullet.targetX, bullet.targetY);
 
     if (dist < 120) {
-        if (!bullet.slow) {
+        if (!bullet.slow && bullet.artillery) {
             bullet.slow = true;
 
             game.add.tween(bullet.shadow).to({x: game.shadowXOffset}, 900, Phaser.Easing.Linear.None, true, 0);
@@ -23,6 +23,8 @@ function FlightRockets(bullet) {
             setTimeout(function () {
                 game.physics.arcade.moveToXY(bullet, bullet.targetX, bullet.targetY, 100);
             }, 200);
+        } else if (!bullet.artillery && dist < 10) {
+            bullet.alive = false;
         }
     }
 
@@ -36,11 +38,9 @@ function FlightRockets(bullet) {
 
     bullet.fireTrail.emitParticle();
 
-    if (dist < 50) {
-        if (!bullet.alive) {
-            Explosion(bullet.x,bullet.y);
-            bullet.shadow.destroy();
-            bullet.destroy();
-        }
+    if (!bullet.alive) {
+        Explosion(bullet.x, bullet.y);
+        bullet.shadow.destroy();
+        bullet.destroy();
     }
 }

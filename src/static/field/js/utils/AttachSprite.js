@@ -13,7 +13,7 @@ function PositionAttachSprite(angle, a) {
     let psi = angle * Math.PI / 180.0;
     let fi = Math.atan2(a * Math.sin(psi), b * Math.cos(psi));
     let x = a * Math.cos(fi);
-    let y = b * Math.sin(fi) - 10;
+    let y = b * Math.sin(fi);
 
     return {x: x, y: y};
 }

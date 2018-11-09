@@ -6,7 +6,7 @@ function SelectUnit() {
 
     MarkUnitSelect(this, 1);
 
-    Fire(this);
+    Fire(this, game.map.OneLayerMap[10][2]);
 
     if (game.Phase === "targeting") {
         field.send(JSON.stringify({

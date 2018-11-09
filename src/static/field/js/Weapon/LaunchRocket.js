@@ -1,4 +1,4 @@
-function launchRocket(xStart,yStart, angle, target) {
+function launchRocket(xStart, yStart, angle, target, artillery) {
 
     let targetX = target.sprite.x + 50;
     let targetY = target.sprite.y + 40;
@@ -7,7 +7,6 @@ function launchRocket(xStart,yStart, angle, target) {
     missileBulletShadow.anchor.set(0.5);
     missileBulletShadow.tint = 0x000000;
     missileBulletShadow.alpha = 0.4;
-    missileBulletShadow.angle = 15;
 
     let missileBullet = game.bulletLayer.create(xStart, yStart, "missile_bullet", 0);
     missileBullet.angle = angle;
@@ -40,9 +39,8 @@ function launchRocket(xStart,yStart, angle, target) {
     smokeTrailShadow.gravity = -20;
     smokeTrailShadow.setAlpha(0, 0.1, 700, null, true);
 
-
     let fireTrail = game.add.emitter(0, 5, 100);
-    fireTrail.makeParticles( [ 'fire1', 'fire2', 'fire3'] );
+    fireTrail.makeParticles(['fire1', 'fire2', 'fire3']);
     fireTrail.lifespan = 200;
     fireTrail.setScale(0.15, 0, 0.15, 0, 500);
     fireTrail.setXSpeed(0, 0);
@@ -52,37 +50,46 @@ function launchRocket(xStart,yStart, angle, target) {
     missileBullet.smokeTrailShadow = smokeTrailShadow;
     missileBullet.fireTrail = fireTrail;
     missileBullet.addChild(fireTrail);
+
     missileBullet.typeBullet = "rocket";
-
-    game.add.tween(fireTrail).to({y: 10}, 700, Phaser.Easing.Linear.None, true, 0);
-
-    game.add.tween(missileBulletShadow).to({x: game.shadowXOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(missileBulletShadow).to({y: game.shadowYOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(missileBulletShadow).to({angle: 0}, 700, Phaser.Easing.Linear.None, true, 0);
-
-    game.add.tween(missileBullet.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(missileBullet).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true, 0);
-
+    missileBullet.artillery = artillery;
 
     game.physics.enable(missileBullet, Phaser.Physics.ARCADE);
 
-    missileBullet.shadow.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-    missileBullet.shadow.animations.play('launch', 30, false, false);
+    if (artillery) {
+        missileBulletShadow.angle = 15;
 
-    missileBullet.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-    missileBullet.animations.play('launch', 30, false, false);
+        game.add.tween(fireTrail).to({y: 10}, 700, Phaser.Easing.Linear.None, true, 0);
 
-    game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 50);
+        game.add.tween(missileBulletShadow).to({x: game.shadowXOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(missileBulletShadow).to({y: game.shadowYOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(missileBulletShadow).to({angle: 0}, 700, Phaser.Easing.Linear.None, true, 0);
 
-    setTimeout(function () {
-        game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 100);
-    }, 250);
+        game.add.tween(missileBullet.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(missileBullet).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true, 0);
 
-    setTimeout(function () {
-        game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 150);
-    }, 500);
+        missileBullet.shadow.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+        missileBullet.shadow.animations.play('launch', 30, false, false);
 
-    setTimeout(function () {
+        missileBullet.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+        missileBullet.animations.play('launch', 30, false, false);
+
+        game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 50);
+
+        setTimeout(function () {
+            game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 100);
+        }, 250);
+
+        setTimeout(function () {
+            game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 150);
+        }, 500);
+
+        setTimeout(function () {
+            game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 200);
+        }, 750);
+    } else {
+        missileBulletShadow.angle = 0;
+        missileBullet.frame = 20;
         game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 200);
-    }, 750);
+    }
 }
