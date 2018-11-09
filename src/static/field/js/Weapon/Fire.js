@@ -49,12 +49,12 @@ function Fire(unit, target) {
 
         if (weapon.type === "laser") {
             if (weapon.name === "small_laser") {
-                let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width);
+                let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width / 1.5);
                 LaunchLaser(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, target.sprite.x + 50, target.sprite.y + 40)
             }
             if (weapon.name === "big_laser") {
-                let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 85, unit.sprite.weapon.width);
-                let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle - 95, unit.sprite.weapon.width);
+                let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 85, unit.sprite.weapon.width / 1.5);
+                let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle - 95, unit.sprite.weapon.width / 1.5);
 
                 LaunchLaser(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, target.sprite.x + 50, target.sprite.y + 40);
                 LaunchLaser(unit.sprite.weapon.world.x + connectPointsTwo.x, unit.sprite.weapon.world.y + connectPointsTwo.y, angle, target.sprite.x + 50 / 1.2, target.sprite.y + 40 / 1.2);

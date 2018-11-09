@@ -2,52 +2,48 @@ function FlightLaser(bullet) {
 
     if (!bullet.alive) {
         bullet.destroy();
+        bullet.fakeBulletEnd.destroy();
+    }
+
+    let dist = game.physics.arcade.distanceToXY(bullet, bullet.targetX, bullet.targetY);
+    let distEnd = game.physics.arcade.distanceToXY(bullet.fakeBulletEnd, bullet.targetX, bullet.targetY);
+
+    if (dist < 50 && bullet.alive) {
+        bullet.body.angularVelocity = 0;
+        bullet.body.velocity.x = 0;
+        bullet.body.velocity.y = 0;
         setTimeout(function () {
-            bullet.laserTrail.destroy();
+            bullet.alive = false;
         }, 3000);
         setTimeout(function () {
-            bullet.laser.destroy();
-            bullet.laserNeon.destroy();
-        }, 100);
-    } else {
+            bullet.laserOut.destroy();
+            bullet.laserIn.destroy();
+        }, 200);
+    }
 
-        let dist = game.physics.arcade.distanceToXY(bullet, bullet.targetX, bullet.targetY);
+    if (distEnd < 50 && bullet.fakeBulletEnd.alive) {
+        bullet.fakeBulletEnd.body.angularVelocity = 0;
+        bullet.fakeBulletEnd.body.velocity.x = 0;
+        bullet.fakeBulletEnd.body.velocity.y = 0;
+        //bullet.alive = false;
+    }
 
-        if (dist < 60) {
-            bullet.alive = false;
-        }
+    bullet.laserOut.clear();
+    bullet.laserOut.lineStyle(6, 0x10EDFF, 1);
+    bullet.laserOut.moveTo(bullet.x, bullet.y);
+    bullet.laserOut.lineTo(bullet.fakeBulletEnd.x, bullet.fakeBulletEnd.y);
 
-        bullet.laser.x = bullet.x;
-        bullet.laser.y = bullet.y;
+    bullet.laserIn.clear();
+    bullet.laserIn.lineStyle(2, 0xFFFFFF, 1);
+    bullet.laserIn.moveTo(bullet.x, bullet.y);
+    bullet.laserIn.lineTo(bullet.fakeBulletEnd.x, bullet.fakeBulletEnd.y);
 
+    if (bullet.alive) {
         bullet.laserTrail.x = bullet.x;
         bullet.laserTrail.y = bullet.y;
-
-        bullet.laserNeon.x = bullet.x;
-        bullet.laserNeon.y = bullet.y;
-
-        bullet.laser.emitParticle();
         bullet.laserTrail.emitParticle();
-        bullet.laserNeon.emitParticle();
-
-        bullet.laser.forEach(function (item) {
-            item.scale.setTo(0.05, 0.22);
-            if (bullet.angle < 0) {
-                item.angle = bullet.angle - 1;
-            } else {
-                item.angle = bullet.angle + 1;
-            }
-            item.alpha = 1;
-        });
-
         bullet.laserTrail.forEach(function (item) {
             item.tint = 0x0000FF;
-        });
-
-        bullet.laserNeon.forEach(function (item) {
-            item.angle = bullet.angle;
-            item.scale.setTo(0.4, 0.3);
-            item.alpha = 0.05;
         });
     }
 }

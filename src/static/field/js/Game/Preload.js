@@ -1,6 +1,8 @@
 function preload() {
     game.stage.disableVisibilityChange = true; // не дает оставиться выполнения скрипта если окно скрыто
 
+    game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurX.js');
+    game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurY.js');
     // Select
         // line
     game.load.spritesheet('linePlace', 'http://' + window.location.host + '/assets/select/place.png', 80, 100, 6);
@@ -41,8 +43,6 @@ function preload() {
     game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
     game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
-    game.load.image('laserBall', 'http://' + window.location.host + '/assets/fire_effects/laserBall.png');
-
 
     // Map Objects
     game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');
