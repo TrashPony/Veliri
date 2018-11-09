@@ -8,7 +8,7 @@
 
 function PositionAttachSprite(angle, a) {
     // взятие координат угла элипса на изометричной окружности по радиусу
-    let b = a / 2;
+    let b = a; // тут было a/2 но у нас круг :)
 
     let psi = angle * Math.PI / 180.0;
     let fi = Math.atan2(a * Math.sin(psi), b * Math.cos(psi));

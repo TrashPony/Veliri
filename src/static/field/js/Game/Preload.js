@@ -41,6 +41,8 @@ function preload() {
     game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
     game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
+    game.load.image('laserBall', 'http://' + window.location.host + '/assets/fire_effects/laserBall.png');
+
 
     // Map Objects
     game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');

@@ -32,7 +32,7 @@ function create() {
 
     game.effectsLayer = game.add.group();
 
-    game.bulletLayer = game.add.group();
+    game.artilleryBulletLayer = game.add.group();
     game.weaponEffectsLayer = game.add.group();
 
     game.fogOfWar = game.add.group();

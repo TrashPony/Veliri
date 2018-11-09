@@ -3,12 +3,12 @@ function launchRocket(xStart, yStart, angle, target, artillery) {
     let targetX = target.sprite.x + 50;
     let targetY = target.sprite.y + 40;
 
-    let missileBulletShadow = game.bulletLayer.create(game.shadowXOffset * 2, game.shadowYOffset * 2, "missile_bullet", 0);
+    let missileBulletShadow = game.artilleryBulletLayer.create(game.shadowXOffset * 2, game.shadowYOffset * 2, "missile_bullet", 0);
     missileBulletShadow.anchor.set(0.5);
     missileBulletShadow.tint = 0x000000;
     missileBulletShadow.alpha = 0.4;
 
-    let missileBullet = game.bulletLayer.create(xStart, yStart, "missile_bullet", 0);
+    let missileBullet = game.artilleryBulletLayer.create(xStart, yStart, "missile_bullet", 0);
     missileBullet.angle = angle;
     missileBullet.anchor.setTo(0.5, 0.7);
     missileBullet.scale.setTo(0.5);
