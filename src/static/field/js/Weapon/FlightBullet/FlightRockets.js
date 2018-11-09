@@ -35,11 +35,13 @@ function FlightRockets(bullet) {
     bullet.smokeTrailShadow.x = bullet.shadow.world.x;
     bullet.smokeTrailShadow.y = bullet.shadow.world.y;
     bullet.smokeTrailShadow.emitParticle();
-
     bullet.fireTrail.emitParticle();
 
     if (!bullet.alive) {
         Explosion(bullet.x, bullet.y);
+        bullet.smokeTrailShadow.destroy();
+        bullet.smokeTrail.destroy();
+        bullet.fireTrail.destroy();
         bullet.shadow.destroy();
         bullet.destroy();
     }

@@ -1,8 +1,9 @@
 function FlightLaser(bullet) {
 
     if (!bullet.alive) {
-        bullet.destroy();
+        bullet.laserTrail.destroy();
         bullet.fakeBulletEnd.destroy();
+        bullet.destroy();
     }
 
     let dist = game.physics.arcade.distanceToXY(bullet, bullet.targetX, bullet.targetY);
@@ -25,7 +26,6 @@ function FlightLaser(bullet) {
         bullet.fakeBulletEnd.body.angularVelocity = 0;
         bullet.fakeBulletEnd.body.velocity.x = 0;
         bullet.fakeBulletEnd.body.velocity.y = 0;
-        //bullet.alive = false;
     }
 
     bullet.laserOut.clear();

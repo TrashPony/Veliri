@@ -36,15 +36,17 @@ function Fire(unit, target) {
         }
 
         if (weapon.type === "firearms") {
-            let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width);
-
-            let fireMuzzle = game.weaponEffectsLayer.create(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, 'fireMuzzle_1');
-
-            fireMuzzle.angle = unit.sprite.weapon.angle - 90;
-            fireMuzzle.anchor.setTo(0.5);
-            fireMuzzle.animations.add('fireMuzzle_1', [2, 1, 0]);
-            fireMuzzle.animations.play('fireMuzzle_1', 10, false, true);
-            // todo
+            if (weapon.artillery) {
+                let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 85, unit.sprite.weapon.width);
+                let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle - 95, unit.sprite.weapon.width);
+                LaunchArtilleryBallistics(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, target.sprite.x + 50, target.sprite.y + 40);
+                setTimeout(function () {
+                    LaunchArtilleryBallistics(unit.sprite.weapon.world.x + connectPointsTwo.x, unit.sprite.weapon.world.y + connectPointsTwo.y, angle, target.sprite.x + 50 / 1.2, target.sprite.y + 40 / 1.2);
+                }, 500);
+            } else {
+                let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width / 1.1);
+                LaunchSmallBallistics(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, target)
+            }
         }
 
         if (weapon.type === "laser") {

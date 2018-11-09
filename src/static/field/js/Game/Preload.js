@@ -39,6 +39,9 @@ function preload() {
     game.load.image('tank_gun', 'http://' + window.location.host + '/assets/units/weapon/tank_gun.png');
         // bullets
     game.load.spritesheet('missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/rocket.png', 128, 128, 40);
+    game.load.image('ballistics_small_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_small_bullet.png');
+    game.load.image('ballistics_artillery_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_artillery_bullet.png');
+        // fire effects
     game.load.image('smoke_puff', 'http://' + window.location.host + '/assets/fire_effects/smoke_puff.png');
     game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');

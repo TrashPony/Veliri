@@ -19,7 +19,7 @@ function LaunchLaser(xStart, yStart, angle, targetX, targetY) {
     laserTrail.setXSpeed(-50, 50);
     laserTrail.setYSpeed(-50, 50);
     laserTrail.gravity = 0;
-    laserTrail.setAlpha(0.03, 0, 3000, null, true);
+    laserTrail.setAlpha(0.03, 0, 500, null, true);
 
     let laserOut = game.add.graphics(0, 0);
     laserOut.lineStyle(6, 0x10EDFF, 1);
