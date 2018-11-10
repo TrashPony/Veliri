@@ -16,10 +16,21 @@ function SelectUnit() {
     //    console.log("dfdfd")
     //});
 
-    //Fire(this, game.map.OneLayerMap[1][2], "inFog");
-    //Fire(this, game.map.OneLayerMap[1][9], "coordinate");
-    //Fire(this, game.map.OneLayerMap[10][2], "coordinate");
-    //Fire(this, game.map.OneLayerMap[10][9], "coordinate");
+    /*let unit = this;
+
+    Fire(unit, game.map.OneLayerMap[1][2], "coordinate").then(
+        function () {
+            Fire(unit, game.map.OneLayerMap[1][9], "coordinate").then(
+                function () {
+                    Fire(unit, game.map.OneLayerMap[10][2], "coordinate").then(
+                        function () {
+                            Fire(unit, game.map.OneLayerMap[10][9], "coordinate");
+                        }
+                    );
+                }
+            );
+        }
+    );*/
 
     if (game.Phase === "targeting") {
         field.send(JSON.stringify({

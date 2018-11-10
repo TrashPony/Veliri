@@ -88,6 +88,11 @@ function createQueueBlock(units) {
             let moveUnit = document.getElementById("moveUnit");
             moveUnit.style.backgroundImage = "url(/assets/units/body/" + units[0].body.name + ".png)";
 
+            let weaponMoveUnit = document.getElementsByClassName("weaponMoveUnit");
+            while (weaponMoveUnit.childElementCount > 0) {
+                weaponMoveUnit.firstChild.remove();
+            }
+
             let weapon = document.createElement("div");
             weapon.className = "weaponMoveUnit";
             for (let i in units[0].body.weapons) {
@@ -95,6 +100,14 @@ function createQueueBlock(units) {
                     weapon.style.backgroundImage = "url(/assets/units/weapon/" + units[0].body.weapons[i].weapon.name + ".png)";
                 }
             }
+
+            if (units[0].body.mother_ship) {
+                weapon.style.backgroundSize = "50%";
+                weapon.style.backgroundRepeat = "no-repeat";
+                weapon.style.marginTop = "29px";
+                weapon.style.marginLeft = "29px";
+            }
+
             moveUnit.appendChild(weapon);
 
             if (game.user.name === units[0].owner) {
@@ -143,6 +156,14 @@ function createQueueBlock(units) {
                     weapon.style.backgroundImage = "url(/assets/units/weapon/" + units[0].body.weapons[i].weapon.name + ".png)";
                 }
             }
+
+            if (units[0].body.mother_ship) {
+                weapon.style.backgroundSize = "50%";
+                weapon.style.backgroundRepeat = "no-repeat";
+                weapon.style.marginTop = "25px";
+                weapon.style.marginLeft = "25px";
+            }
+
             unitBlock.appendChild(weapon);
 
             if (game.user.name === units[0].owner) {

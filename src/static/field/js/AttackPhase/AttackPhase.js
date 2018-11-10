@@ -1,6 +1,6 @@
 function AttackPhase(jsonMessage) {
 
-    // todo удалять таргет лайны
+    RemoveTargetsLine();
 
     let resultBattle = JSON.parse(jsonMessage).result_battle;
 
@@ -22,8 +22,6 @@ function* PlayAttack(resultBattle) {
     for (let i = 0; i < resultBattle.length; i++) {
 
         let resultAction = resultBattle[i];
-
-        console.log(resultAction);
 
         let unit = GetGameUnitID(resultAction.attack_unit.id);
         let target = null;

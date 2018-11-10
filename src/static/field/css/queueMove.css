@@ -17,10 +17,9 @@
 }
 
 .weaponMoveUnit {
-    height: 60px;
-    width: 60px;
+    height: 117px;
+    width: 117px;
     background-size: contain;
-    margin: 29px 10px 10px 29px;
 }
 
 @keyframes queuePulse {

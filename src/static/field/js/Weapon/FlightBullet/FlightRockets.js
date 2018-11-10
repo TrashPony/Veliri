@@ -12,10 +12,10 @@ function FlightRockets(bullet) {
                 game.add.tween(bullet.fireTrail).to({alpha: 0}, 500, Phaser.Easing.Linear.None, true, 0);
                 game.add.tween(bullet.smokeTrail).to({alpha: 0}, 1400, Phaser.Easing.Linear.None, true, 0);
             } else {
-                game.add.tween(bullet.shadow).to({x: game.shadowXOffset}, 900, Phaser.Easing.Linear.None, true, 0);
-                game.add.tween(bullet.shadow).to({y: game.shadowYOffset}, 900, Phaser.Easing.Linear.None, true, 0);
 
-                game.add.tween(bullet.shadow).to({angle: -10}, 900, Phaser.Easing.Linear.None, true, 0);
+                game.add.tween(bullet.shadow).to({x: bullet.targetX + game.shadowXOffset}, 900, Phaser.Easing.Linear.None, true, 0);
+                game.add.tween(bullet.shadow).to({y: bullet.targetY + game.shadowYOffset}, 900, Phaser.Easing.Linear.None, true, 0);
+                game.add.tween(bullet.shadow.scale).to({x: 0.45, y: 0.45}, 900, Phaser.Easing.Linear.None, true, 0);
 
                 game.add.tween(bullet.scale).to({x: 0.45, y: 0.45}, 900, Phaser.Easing.Linear.None, true, 0);
                 game.add.tween(bullet.fireTrail).to({y: 5}, 900, Phaser.Easing.Linear.None, true, 0);
@@ -34,6 +34,14 @@ function FlightRockets(bullet) {
         } else if (!bullet.artillery && dist < 10) {
             bullet.alive = false;
         }
+    }
+
+    if (!bullet.slow && bullet.artillery) {
+        game.add.tween(bullet.shadow).to({
+            x: bullet.x + game.shadowXOffset * 7, y: bullet.y + game.shadowYOffset * 7
+        }, 200, Phaser.Easing.Linear.None, true, 0);
+    } else if (!bullet.artillery) {
+
     }
 
     bullet.smokeTrail.x = bullet.x;
@@ -56,7 +64,8 @@ function FlightRockets(bullet) {
                 bullet.destroy();
                 setTimeout(function () {
                     bullet.smokeTrail.destroy();
-                }, 1400);            }
+                }, 1400);
+            }
         } else {
             Explosion(bullet.x, bullet.y);
             bullet.smokeTrailShadow.destroy();

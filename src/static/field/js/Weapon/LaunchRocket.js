@@ -1,7 +1,9 @@
 function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, targetType) {
 
-    let missileBulletShadow = game.artilleryBulletLayer.create(game.shadowXOffset * 2, game.shadowYOffset * 2, "missile_bullet", 0);
+    let missileBulletShadow = game.artilleryBulletLayer.create(xStart + game.shadowXOffset * 2, yStart + game.shadowYOffset * 2, "missile_bullet", 0);
+    missileBulletShadow.angle = angle;
     missileBulletShadow.anchor.set(0.5);
+    missileBulletShadow.scale.setTo(0.5);
     missileBulletShadow.tint = 0x000000;
     missileBulletShadow.alpha = 0.4;
 
@@ -13,7 +15,6 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
     missileBullet.targetX = targetX;
     missileBullet.targetY = targetY;
 
-    missileBullet.addChild(missileBulletShadow);
     missileBullet.shadow = missileBulletShadow;
 
     let smokeTrail = game.add.emitter(0, 0, 100);
@@ -53,29 +54,25 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
     missileBullet.artillery = artillery;
 
     game.physics.enable(missileBullet, Phaser.Physics.ARCADE);
+    game.physics.enable(missileBulletShadow, Phaser.Physics.ARCADE);
 
     if (artillery) {
         if (targetType === "outFog") {
 
-            missileBulletShadow.angle = 0;
+            missileBulletShadow.angle = angle;
             missileBulletShadow.frame = 20;
-            missileBulletShadow.x = game.shadowXOffset * 10;
-            missileBulletShadow.y = game.shadowYOffset * 10;
+            missileBulletShadow.x = xStart + game.shadowXOffset * 10;
+            missileBulletShadow.y = yStart + game.shadowYOffset * 10;
+            missileBulletShadow.scale.set(0.55);
 
             missileBullet.scale.set(0.55);
             missileBullet.frame = 20;
 
         } else {
-            missileBulletShadow.angle = 15;
-
             game.add.tween(fireTrail).to({y: 10}, 700, Phaser.Easing.Linear.None, true, 0);
 
-            game.add.tween(missileBulletShadow).to({x: game.shadowXOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(missileBulletShadow).to({y: game.shadowYOffset * 10}, 700, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(missileBulletShadow).to({angle: 0}, 700, Phaser.Easing.Linear.None, true, 0);
-
             game.add.tween(missileBullet.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(missileBullet).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true, 0);
+            game.add.tween(missileBulletShadow.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
 
             missileBullet.shadow.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
             missileBullet.shadow.animations.play('launch', 30, false, false);
@@ -98,9 +95,10 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
             }, 750);
         }
     } else {
-        missileBulletShadow.angle = 0;
+        missileBulletShadow.angle = angle;
         missileBullet.frame = 20;
         game.physics.arcade.moveToXY(missileBullet, targetX, targetY, 200);
+        game.physics.arcade.moveToXY(missileBulletShadow, targetX + game.shadowXOffset * 2, targetY + game.shadowYOffset * 2, 200);
     }
 
     if (targetType === "outFog") {

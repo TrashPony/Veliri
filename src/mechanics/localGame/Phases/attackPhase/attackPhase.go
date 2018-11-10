@@ -77,8 +77,8 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 				}
 				// laser и missile только в юнитов
 				if item.WeaponSlot.Weapon.Type == "laser" || item.WeaponSlot.Weapon.Type == "missile" {
-					_, ok := game.GetUnit(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
-					if ok {
+					targetUnit, ok := game.GetUnit(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
+					if ok && targetUnit.HP > 0 {
 						targetCoordinate, _ := game.Map.GetCoordinate(item.ActionUnit.Target.Q, item.ActionUnit.Target.R)
 						resultAction = InitAttack(item.ActionUnit, targetCoordinate, game)
 					}
@@ -128,8 +128,13 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 			resultAction = &ResultBattle{Error: "unit is dead"}
 		}
 
+		if resultAction == nil {
+			continue
+		}
+
 		resultAction.watchPlayer = make(map[string]map[string]map[string]*coordinate.Coordinate)
 		resultAction.WatchNode = make(map[string]*watchZone.UpdaterWatchZone)
+
 		for _, gameUser := range game.GetPlayers() {
 
 			resultAction.watchPlayer[strconv.Itoa(gameUser.GetID())] = gameUser.GetWatchCoordinates()

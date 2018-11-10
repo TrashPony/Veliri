@@ -106,8 +106,10 @@ function CreateUnit(unitStat, inVisible) {
     unitStat.sprite.bodyShadow = bodyShadow;
     unitStat.sprite.healBar = healBar;
     unitStat.sprite.heal = heal;
-    unitStat.sprite.weapon = weapon;
-    unitStat.sprite.weaponShadow = weaponShadow;
+    if (weapon) {
+        unitStat.sprite.weapon = weapon;
+        unitStat.sprite.weaponShadow = weaponShadow;
+    }
 
 
     CalculateHealBar(unitStat);

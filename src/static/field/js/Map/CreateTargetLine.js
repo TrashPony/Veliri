@@ -64,3 +64,23 @@ function createEquipLine(unit, target) {
         unit.targetsEquipLine.push(targetLine);
     }
 }
+
+function RemoveTargetsLine() {
+    for (let x in game.units) {
+        if (game.units.hasOwnProperty(x)) {
+            for (let y in game.units[x]) {
+                if (game.units[x].hasOwnProperty(y)) {
+                    let unit = game.units[x][y];
+                    if (unit.targetLine) {
+                        unit.targetLine.destroy();
+                    }
+                    if (unit.targetsEquipLine && unit.targetsEquipLine.length > 0) {
+                        for (let i = 0; i < unit.targetsEquipLine.length; i++) {
+                            unit.targetsEquipLine[i].destroy();
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

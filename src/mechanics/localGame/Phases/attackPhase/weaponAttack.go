@@ -38,6 +38,10 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 		targetUnit, find := game.GetUnit(attackCoordinate.Q, attackCoordinate.R)
 		if find {
 
+			if targetUnit.HP <= 0 {
+				continue
+			}
+
 			var damage int
 
 			if targetUnit.Q == target.Q && targetUnit.R == target.R {
