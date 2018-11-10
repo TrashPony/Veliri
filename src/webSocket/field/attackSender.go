@@ -40,20 +40,22 @@ func attack(activeGame *localGame.Game) {
 
 func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *player.Player, activeGame *localGame.Game) []attackPhase.ResultBattle {
 	watchResultBattle := make([]attackPhase.ResultBattle, 0)
-	// TODO на момент отдачи данных пользователи могут имеють другой обзор
+
 	for _, actionBattle := range resultBattle {
 		var preloadActionBattle attackPhase.ResultBattle
 
-		_, findAttackUnit := gamePlayer.GetWatchCoordinate(actionBattle.AttackUnit.Q, actionBattle.AttackUnit.R)
+		_, findAttackUnit := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), actionBattle.AttackUnit.Q, actionBattle.AttackUnit.R)
 		if findAttackUnit {
 			// если игрок видит юнита добавляем все что относиться к атаке
 			preloadActionBattle.AttackUnit = actionBattle.AttackUnit
 			preloadActionBattle.RotateTower = actionBattle.RotateTower
 		}
 
-		_, findTargetCoordinate := gamePlayer.GetWatchCoordinate(actionBattle.Target.Q, actionBattle.Target.R)
+		_, findTargetCoordinate := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), actionBattle.Target.Q, actionBattle.Target.R)
 		if findTargetCoordinate {
 			preloadActionBattle.Target = actionBattle.Target
+		} else {
+			preloadActionBattle.Target = coordinate.Coordinate{Type: "hide"}
 		}
 
 		// если игрок видит оружие/эквип или их воздействие то отдаем типы оружий и эквипа
@@ -73,11 +75,11 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 				flightPath := hexLineDraw.Draw(unitCoordinate, &actionBattle.Target, activeGame)
 
 				for _, coordinatePath := range flightPath {
-					firstNodePath, findCoordinate := gamePlayer.GetWatchCoordinate(coordinatePath.Q, coordinatePath.R)
+					_, findCoordinate := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), coordinatePath.Q, coordinatePath.R)
 					if findCoordinate {
-						preloadActionBattle.StartWatchAttack = *firstNodePath
 						break
 					}
+					preloadActionBattle.StartWatchAttack = *coordinatePath
 				}
 			}
 		}
@@ -91,10 +93,11 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 				var endNodePath coordinate.Coordinate
 
 				for _, coordinatePath := range flightPath {
-					firstNodePath, findCoordinate := gamePlayer.GetWatchCoordinate(coordinatePath.Q, coordinatePath.R)
-					if findCoordinate {
-						endNodePath = *firstNodePath
-					} else {
+					_, findCoordinate := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), coordinatePath.Q, coordinatePath.R)
+					if !findCoordinate {
+						endNodePath = *coordinatePath
+					}
+					if !findCoordinate {
 						break
 					}
 				}
@@ -105,7 +108,7 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 		preloadActionBattle.TargetUnits = make([]attackPhase.TargetUnit, 0)
 
 		for _, targetUnit := range actionBattle.TargetUnits {
-			_, findTargetUnit := gamePlayer.GetWatchCoordinate(targetUnit.Unit.Q, targetUnit.Unit.R)
+			_, findTargetUnit := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), targetUnit.Unit.Q, targetUnit.Unit.R)
 			// если игрок видит юнита добавляем его
 			if findTargetUnit {
 				preloadActionBattle.TargetUnits = append(preloadActionBattle.TargetUnits, targetUnit)

@@ -38,7 +38,7 @@ function UpdateUnit(unitStat) {
     unit.vul_to_kinetics = unitStat.vul_to_kinetics;
     unit.vul_to_thermo = unitStat.vul_to_thermo;
 
-    if (game.Phase !== "targeting") {
+    if (game.Phase === "targeting") {
         CreateTargetLine(unitStat)
     }
 }

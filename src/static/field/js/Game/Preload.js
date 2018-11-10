@@ -84,6 +84,7 @@ function preload() {
 
     //explosions
     game.load.spritesheet('explosion_1', 'http://' + window.location.host + '/assets/fire_effects/explosion_1.png', 100, 100, 30);
+    game.load.spritesheet('explosion_2', 'http://' + window.location.host + '/assets/fire_effects/explosion_2.png', 128, 128, 4);
 
     //  Load the Google WebFont Loader script
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');

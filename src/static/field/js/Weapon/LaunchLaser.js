@@ -48,9 +48,15 @@ function LaunchLaser(xStart, yStart, angle, targetX, targetY) {
     game.physics.enable(fakeBullet, Phaser.Physics.ARCADE);
     game.physics.enable(fakeBulletEnd, Phaser.Physics.ARCADE);
 
-    game.add.tween(fakeBullet).to({x: targetX, y: targetY}, 100, Phaser.Easing.Linear.None, true, 0);
+    let end = game.add.tween(fakeBullet).to({x: targetX, y: targetY}, 200, Phaser.Easing.Linear.None, true, 0);
 
     setTimeout(function () {
-        game.add.tween(fakeBulletEnd).to({x: targetX, y: targetY}, 100, Phaser.Easing.Linear.None, true, 0);
+        end = game.add.tween(fakeBulletEnd).to({x: targetX, y: targetY}, 200, Phaser.Easing.Linear.None, true, 0);
     }, 200);
+
+    return new Promise((resolve) => {
+        end.onComplete.add(function () {
+            resolve();
+        })
+    })
 }

@@ -33,16 +33,22 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 }
 
 type ResultBattle struct {
-	AttackUnit       unit.Unit                              `json:"attack_unit"`
-	RotateTower      int                                    `json:"rotate_tower"`       // на сколько надо повернуть орудие
-	TargetUnits      []TargetUnit                           `json:"targets_units"`      // юниты на которых воздействует действие
-	WeaponSlot       detail.BodyWeaponSlot                  `json:"weapon_slot"`        // Чем воздействуем (если оружием то EquipSlot == nil)
-	EquipSlot        detail.BodyEquipSlot                   `json:"equip_slot"`         // Чем воздействуем (если снарягой то WeaponSlot == nil)
-	StartWatchAttack coordinate.Coordinate                  `json:"start_watch_attack"` // Первая ячейка откуда игрок вижит летящий снаряд, расчитывается перед отправкой
-	EndWatchAttack   coordinate.Coordinate                  `json:"end_watch_attack"`   // последняя ячейка где игрок вижит летящий снаряд, расчитывается перед отправкой
-	Target           coordinate.Coordinate                  `json:"target"`             // куда летит снаряд, действие
-	WatchNode        map[string]*watchZone.UpdaterWatchZone `json:"watch_node"`         // расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
-	Error            string                                 `json:"error"`
+	AttackUnit       unit.Unit                                               `json:"attack_unit"`
+	RotateTower      int                                                     `json:"rotate_tower"`       // на сколько надо повернуть орудие
+	TargetUnits      []TargetUnit                                            `json:"targets_units"`      // юниты на которых воздействует действие
+	WeaponSlot       detail.BodyWeaponSlot                                   `json:"weapon_slot"`        // Чем воздействуем (если оружием то EquipSlot == nil)
+	EquipSlot        detail.BodyEquipSlot                                    `json:"equip_slot"`         // Чем воздействуем (если снарягой то WeaponSlot == nil)
+	StartWatchAttack coordinate.Coordinate                                   `json:"start_watch_attack"` // Первая ячейка откуда игрок вижит летящий снаряд, расчитывается перед отправкой
+	EndWatchAttack   coordinate.Coordinate                                   `json:"end_watch_attack"`   // последняя ячейка где игрок вижит летящий снаряд, расчитывается перед отправкой
+	Target           coordinate.Coordinate                                   `json:"target"`             // куда летит снаряд, действие
+	watchPlayer      map[string]map[string]map[string]*coordinate.Coordinate // видимые координаты пользователем на данный шаг, нужно при отправке данных
+	WatchNode        map[string]*watchZone.UpdaterWatchZone                  `json:"watch_node"` // расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
+	Error            string                                                  `json:"error"`
+}
+
+func (result *ResultBattle) GetUserWatchCoordinate(id, q, r int) (*coordinate.Coordinate, bool) {
+	gameCoordinate, find := result.watchPlayer[strconv.Itoa(id)][strconv.Itoa(q)][strconv.Itoa(r)]
+	return gameCoordinate, find
 }
 
 type TargetUnit struct {
@@ -122,8 +128,11 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 			resultAction = &ResultBattle{Error: "unit is dead"}
 		}
 
+		resultAction.watchPlayer = make(map[string]map[string]map[string]*coordinate.Coordinate)
 		resultAction.WatchNode = make(map[string]*watchZone.UpdaterWatchZone)
 		for _, gameUser := range game.GetPlayers() {
+
+			resultAction.watchPlayer[strconv.Itoa(gameUser.GetID())] = gameUser.GetWatchCoordinates()
 			// расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
 			resultAction.WatchNode[strconv.Itoa(gameUser.GetID())] = watchZone.UpdateWatchZone(game, gameUser)
 		}
@@ -138,7 +147,7 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 		for _, gameUnit := range q {
 			if gameUnit.HP > 0 {
 				for _, effect := range gameUnit.Effects {
-					if effect.Type == "takes_away" && !effect.Used {
+					if effect != nil && effect.Type == "takes_away" && !effect.Used {
 						powEnEffect(effect, gameUnit, &targetsUnit)
 					}
 				}
@@ -150,7 +159,7 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 		for _, gameUnit := range q {
 			for _, effect := range gameUnit.Effects {
 				if gameUnit.HP > 0 {
-					if effect.Type == "replenishes" && !effect.Used {
+					if effect != nil && effect.Type == "replenishes" && !effect.Used {
 						powEnEffect(effect, gameUnit, &targetsUnit)
 					}
 				}

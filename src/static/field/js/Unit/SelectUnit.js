@@ -6,7 +6,20 @@ function SelectUnit() {
 
     MarkUnitSelect(this, 1);
 
-    Fire(this, game.map.OneLayerMap[12][2]);
+
+    //let testWeapon = {};
+    //testWeapon.type = "laser";
+    //testWeapon.artillery = false;
+    //testWeapon.name = "big_laser";
+
+    //OutFogFire(game.map.OneLayerMap[10][2], game.map.OneLayerMap[1][2], testWeapon, "coordinate").then(function () {
+    //    console.log("dfdfd")
+    //});
+
+    //Fire(this, game.map.OneLayerMap[1][2], "inFog");
+    //Fire(this, game.map.OneLayerMap[1][9], "coordinate");
+    //Fire(this, game.map.OneLayerMap[10][2], "coordinate");
+    //Fire(this, game.map.OneLayerMap[10][9], "coordinate");
 
     if (game.Phase === "targeting") {
         field.send(JSON.stringify({

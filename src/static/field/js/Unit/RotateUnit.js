@@ -57,6 +57,9 @@ function directionRotate(spriteAngle, rotate) {
 function SetAngle(unit, angle) {
     unit.sprite.unitBody.angle = angle;
     unit.sprite.bodyShadow.angle = angle;
-    unit.sprite.weaponShadow.angle = angle;
-    unit.sprite.weapon.angle = angle;
+
+    if (unit.sprite.weapon) {
+        unit.sprite.weaponShadow.angle = angle;
+        unit.sprite.weapon.angle = angle;
+    }
 }

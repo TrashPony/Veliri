@@ -10,8 +10,8 @@ function CreateTerrain(coordinate, x, y, q, r) {
     coordinate.sprite = floorSprite;
     coordinate.fogSprite = fogSprite;
 
-    //let label = game.add.text(20, 15, q + "," + r);
-    //floorSprite.addChild(label);
+    let label = game.add.text(20, 15, q + "," + r);
+    floorSprite.addChild(label);
 
     coordinate.sprite = floorSprite;
     coordinate.fogSprite = fogSprite;
