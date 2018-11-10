@@ -19,6 +19,8 @@ function Fire(unit, target, targetType) {
         }
     }
 
+    if (!weapon) return;
+
     let rotate = Math.atan2(targetY - unit.sprite.weapon.world.y, targetX - unit.sprite.weapon.world.x);
     let angle = (rotate * 180 / 3.14) + 90;
 

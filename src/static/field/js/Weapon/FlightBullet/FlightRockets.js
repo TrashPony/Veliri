@@ -31,7 +31,7 @@ function FlightRockets(bullet) {
                     game.physics.arcade.moveToXY(bullet, bullet.targetX, bullet.targetY, 100);
                 }, 200);
             }
-        } else if (!bullet.artillery && dist < 10) {
+        } else if (!bullet.artillery) {
             bullet.alive = false;
         }
     }
@@ -40,8 +40,6 @@ function FlightRockets(bullet) {
         game.add.tween(bullet.shadow).to({
             x: bullet.x + game.shadowXOffset * 7, y: bullet.y + game.shadowYOffset * 7
         }, 200, Phaser.Easing.Linear.None, true, 0);
-    } else if (!bullet.artillery) {
-
     }
 
     bullet.smokeTrail.x = bullet.x;

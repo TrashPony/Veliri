@@ -26,12 +26,12 @@ function LaunchSmallBallistics(xStart, yStart, angle, targetX, targetY, targetTy
     let fire = game.add.tween(bullet).to({
         x: targetX,
         y: targetY
-    }, distToTarget * 20, Phaser.Easing.Linear.None, true, 0);
+    }, distToTarget * 2, Phaser.Easing.Linear.None, true, 0);
 
     game.add.tween(bulletShadow).to({
         x: targetX + game.shadowXOffset * 2,
         y: targetY + game.shadowYOffset * 2
-    }, distToTarget * 20, Phaser.Easing.Linear.None, true, 0);
+    }, distToTarget * 2, Phaser.Easing.Linear.None, true, 0);
 
     if (targetType === "outFog") {
         bullet.alpha = 0;

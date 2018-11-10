@@ -118,7 +118,7 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
     }
 
     return new Promise((resolve) => {
-        missileBullet.events.onKilled.add(function () {
+        missileBullet.events.onDestroy.add(function () {
             resolve();
         }, this);
     })
