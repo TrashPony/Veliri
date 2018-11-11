@@ -31,7 +31,7 @@ function FlightRockets(bullet) {
                     game.physics.arcade.moveToXY(bullet, bullet.targetX, bullet.targetY, 100);
                 }, 200);
             }
-        } else if (!bullet.artillery) {
+        } else if (!bullet.artillery && dist < 10) {
             bullet.alive = false;
         }
     }

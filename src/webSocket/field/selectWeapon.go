@@ -24,7 +24,7 @@ func SelectWeapon(msg Message, ws *websocket.Conn) {
 
 func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
 	if !client.GetReady() && !gameUnit.Defend {
-		ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Unit: gameUnit, Targets: targetPhase.GetWeaponTargetCoordinate(gameUnit, actionGame)})
+		ws.WriteJSON(TargetCoordinate{Event: "GetTargets", Unit: gameUnit, Targets: targetPhase.GetWeaponTargetCoordinate(gameUnit, actionGame, client, "GetTargets")})
 	} else {
 		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
 	}

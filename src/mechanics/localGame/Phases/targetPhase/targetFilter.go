@@ -9,7 +9,7 @@ import (
 )
 
 func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, game *localGame.Game, artillery bool) (targets map[string]*coordinate.Coordinate) {
-	// todo вохможно этот код можно легко обьеденить с localGame/map/watchZone/filterObstacles.go
+
 	targets = make(map[string]*coordinate.Coordinate)
 
 	watcherCoordinate, _ := game.GetMap().GetCoordinate(gameObject.GetQ(), gameObject.GetR())
@@ -20,7 +20,8 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 		watchCoordinate, find := game.GetMap().GetCoordinate(gameCoordinate.Q, gameCoordinate.R)
 		if find {
 			pathLine := hexLineDraw.Draw(watcherCoordinate, watchCoordinate, game)
-			// линия пути 0 элемент - начало
+
+			// до !каждой! координаты мы строим линию, если мы достигаем по этой линии координату то добавляем ее если нет то не добавляем
 			for i, pathCell := range pathLine {
 				pastCoordinate := &coordinate.Coordinate{} // предыдущая координата
 
@@ -32,10 +33,19 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 
 				if artillery {
 					// если стреляет арта то она игнорирует все препятвия
-					if len(pathLine) == i+1 {
+					lastCoordinate := pathLine[len(pathLine)-1]
+					targets[strconv.Itoa(lastCoordinate.Q)+":"+strconv.Itoa(lastCoordinate.R)] = lastCoordinate
+					break
+				}
+
+				// оружие без параметры артилерии не может стрелять сквозь других юнитов
+				if !(pathCell.Q == gameObject.GetQ() && pathCell.R == gameObject.GetR()) {
+					_, findUnit := game.GetUnit(pathCell.Q, pathCell.R)
+					if findUnit {
+						//добавляем самого юнита и выходим
 						targets[strconv.Itoa(pathCell.Q)+":"+strconv.Itoa(pathCell.R)] = pathCell
+						break
 					}
-					continue
 				}
 
 				if !pathCell.Attack || checkLevelViewCoordinate(pathCell, pastCoordinate) ||
@@ -59,7 +69,6 @@ func filter(gameObject watchZone.Watcher, coordinates []*coordinate.Coordinate, 
 			}
 		}
 	}
-
 	return
 }
 

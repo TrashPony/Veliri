@@ -80,14 +80,13 @@ function removeTargetZone(coordinate) {
             }
 
             if (GetGameUnitXY(q, r)) {
-                HideUnitStatus(GetGameUnitXY(q, r))
+                HideUnitStatus(GetGameUnitXY(q, r), "inTarget")
             }
         }
     }
 }
 
 function getTargetZone(coordinate) {
-    RemoveTargetLine();
 
     let unit = GetGameUnitXY(coordinate.unitQ, coordinate.unitR);
 
@@ -125,7 +124,7 @@ function damageText(q, r, animateCoordinate, coordinate, unit) {
 
     if (targetUnit) {
 
-        VisibleUnitStatus(targetUnit);
+        VisibleUnitStatus(targetUnit, "inTarget");
 
         if (animateCoordinate.damageText) {
             animateCoordinate.damageText.destroy();

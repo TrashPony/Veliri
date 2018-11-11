@@ -1,6 +1,5 @@
 function SelectUnit() {
 
-    RemoveSelect();
 
     CreateUnitSubMenu(this);
 
@@ -32,12 +31,18 @@ function SelectUnit() {
         }
     );*/
 
-    if (game.Phase === "targeting") {
+    //Fire(this, GetGameUnitID(357));
+
+    if (game.Phase === "targeting" && this.owner === game.user.name) {
         field.send(JSON.stringify({
             event: "SelectWeapon",
             q: Number(this.q),
             r: Number(this.r)
         }));
+        removeUnitInput();
+        RemoveSelect(true);
+    } else {
+        RemoveSelect(false);
     }
 
     field.send(JSON.stringify({

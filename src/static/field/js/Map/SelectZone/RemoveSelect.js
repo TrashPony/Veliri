@@ -1,7 +1,10 @@
-function RemoveSelect() {
+function RemoveSelect(target) {
     RemoveSelectLine();
     RemoveSelectCoordinate();
-    RemoveTargetLine();
+    if (!target) {
+        activateUnitInput();
+        RemoveTargetLine();
+    }
     TipEquipOff();
     RemoveUnitMarks();
     RemoveSelectRangeCoordinate();

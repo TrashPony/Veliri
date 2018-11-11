@@ -4,11 +4,12 @@ import (
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
 	"../../../localGame"
+	"../../../player"
 	"../../Phases"
 	"strconv"
 )
 
-func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {
+func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game, client *player.Player, typeTarget string) map[string]map[string]*coordinate.Coordinate {
 
 	if gameUnit.GetWeaponSlot() != nil {
 		targetCoordinate := make(map[string]map[string]*coordinate.Coordinate)
@@ -25,11 +26,14 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game) 
 				if !(gameCoordinate.Q == gameUnit.Q && gameCoordinate.R == gameUnit.R) {
 					_, find := activeGame.GetUnit(gameCoordinate.Q, gameCoordinate.R)
 
-					if gameUnit.GetWeaponSlot().Weapon.Type == "firearms" {
+					if gameUnit.GetWeaponSlot().Weapon.Type == "firearms" || typeTarget == "GetFirstTargets" {
 						Phases.AddCoordinate(targetCoordinate, gameCoordinate)
 					} else {
 						if find {
-							Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+							_, findWatch := client.GetWatchCoordinate(gameCoordinate.Q, gameCoordinate.R)
+							if findWatch {
+								Phases.AddCoordinate(targetCoordinate, gameCoordinate)
+							}
 						}
 					}
 				}

@@ -25,6 +25,6 @@ func GetTargetZone(msg Message, ws *websocket.Conn) {
 		tmpUnit.SetQ(msg.ToQ)
 		tmpUnit.SetR(msg.ToR)
 
-		ws.WriteJSON(TargetCoordinate{Event: "GetFirstTargets", Unit: gameUnit, Targets: targetPhase.GetWeaponTargetCoordinate(&tmpUnit, activeGame)})
+		ws.WriteJSON(TargetCoordinate{Event: "GetFirstTargets", Unit: gameUnit, Targets: targetPhase.GetWeaponTargetCoordinate(&tmpUnit, activeGame, client, "GetFirstTargets")})
 	}
 }
