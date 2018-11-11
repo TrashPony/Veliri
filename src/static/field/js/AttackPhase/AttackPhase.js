@@ -52,7 +52,6 @@ function* PlayAttack(resultBattle) {
             }
 
             if (!unit && target) { // не видит кто стреляет, видит куда
-
                 // startWatchAttack первая координата откуда видно стрельбу
                 let startWatchAttack = game.map.OneLayerMap[resultAction.start_watch_attack.q][resultAction.start_watch_attack.r];
                 let weapon = resultAction.weapon_slot.weapon;
@@ -69,12 +68,17 @@ function* PlayAttack(resultBattle) {
             }
         }
 
-        if (resultAction.equip_slot.equip) {  // юнит использует снарягу и юзер видит все
+        if (resultAction.equip_slot.equip) {  // юнит использует снарягу
             if (unit && unitInTargetCoordinate) {
 
             } else if (unit && target) {
 
             }
+        }
+
+        // если нечего не использовалось, значит это конец боя и отрабатывают наложеные эффекты
+        if (! resultAction.equip_slot.equip && !resultAction.weapon_slot.weapon) {
+            yield UpdateTargetUnits(resultAction)
         }
     }
 
