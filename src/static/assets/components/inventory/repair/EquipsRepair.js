@@ -6,9 +6,17 @@ function EquipsRepair() {
 
 function overEquipButton() {
 
-    document.getElementById("MSIcon").className = "UnitIconSelectRepair";
+    let msData = JSON.parse(document.getElementById("MSIcon").slotData);
+
+    if (msData.hp < msData.body.max_hp) {
+        document.getElementById("MSIcon").className = "UnitIconSelectRepair";
+    }
+
     if (document.getElementById("UnitIcon")) {
-        document.getElementById("UnitIcon").className = "UnitIconSelectRepair";
+        let unitData = JSON.parse(document.getElementById("UnitIcon").slotData);
+        if (unitData.unit.hp < unitData.unit.body.max_hp) {
+            document.getElementById("UnitIcon").className = "UnitIconSelectRepair";
+        }
     }
 
     if (document.getElementById("ConstructorUnit")) {

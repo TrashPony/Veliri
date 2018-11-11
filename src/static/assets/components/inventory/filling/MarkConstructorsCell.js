@@ -220,13 +220,15 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
     ammoCell.onmouseover = function (event) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            let slotData = JSON.parse(cell.slotData);
-            if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
-                cell.className = "InventoryCell hover";
-            } else if (slotData) {
-                cell.className = "InventoryCell notAllow";
+        if (weapon) {
+            for (let i = 1; i <= 40; i++) {
+                let cell = document.getElementById("inventory " + i + 6);
+                let slotData = JSON.parse(cell.slotData);
+                if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
+                    cell.className = "InventoryCell hover";
+                } else if (slotData) {
+                    cell.className = "InventoryCell notAllow";
+                }
             }
         }
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
