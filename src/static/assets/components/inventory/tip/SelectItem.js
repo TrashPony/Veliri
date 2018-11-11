@@ -78,8 +78,7 @@ function CreateParamsTable(slot, tip, size) {
         table.appendChild(createRow("Accuracy:", slot.item.accuracy));
         table.appendChild(createRow("Ammo capacity:", slot.item.ammo_capacity));
         table.appendChild(createRow("Artillery:", slot.item.artillery));
-        table.appendChild(createRow("Range:", slot.item.range));
-        table.appendChild(createRow("Min attack range:", slot.item.min_attack_range));
+        table.appendChild(createRow("Range:", slot.item.min_attack_range + "-" +slot.item.range));
         table.appendChild(createRow("HP:", slot.hp));
         table.appendChild(createRow("Use power:", slot.item.power));
     } else if (slot.type === "equip") {
@@ -113,6 +112,9 @@ function CreateParamsTable(slot, tip, size) {
 
     } else if (slot.type === "ammo") {
         description.innerHTML = "<span class='Value'>Боеприпасы для оружия</span>";
+
+        createTipWeaponType(table, slot, "weapon");
+
         table.appendChild(createRow("Area covers:", slot.item.area_covers));
         table.appendChild(createRow("Type:", slot.item.type));
         table.appendChild(createRow("Damage:", slot.item.min_damage + "-" + slot.item.max_damage));

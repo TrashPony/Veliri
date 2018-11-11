@@ -112,8 +112,39 @@ function UpdateWeapon(cell, classPrefix) {
 
         for (let i = 1; i <= 40; i++) {
             let cell = document.getElementById("inventory " + i + 6);
-            if (cell.slotData && JSON.parse(cell.slotData).type === "weapon") {
-                cell.className = "InventoryCell hover";
+
+            let slotData = JSON.parse(cell.slotData);
+
+            if (slotData && slotData.type === "weapon") {
+
+                let bodyData;
+                if (classPrefix === "inventoryEquipping") {
+                    bodyData = JSON.parse(document.getElementById("MSIcon").slotData).body;
+                } else {
+                    bodyData = document.getElementById("UnitIcon").unitBody;
+                }
+
+                if (bodyData) {
+                    if (bodyData.standard_size_big && slotData.item.standard_size === 3) {
+                        cell.className = "InventoryCell hover";
+                        continue
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+
+                    if (bodyData.standard_size_medium && slotData.item.standard_size === 2) {
+                        cell.className = "InventoryCell hover";
+                        continue
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+
+                    if (bodyData.standard_size_small && slotData.item.standard_size === 1) {
+                        cell.className = "InventoryCell hover";
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+                }
             } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
                 cell.className = "InventoryCell notAllow";
             }
@@ -148,7 +179,7 @@ function UpdateWeapon(cell, classPrefix) {
 
     if (cell.ammoCell === null || cell.ammoCell === undefined) {
 
-        let ammoCell = CreateAmmoCell(cell, classPrefix);
+        let ammoCell = CreateAmmoCell(cell, classPrefix, JSON.parse(cell.slotData).weapon);
         cell.appendChild(ammoCell);
         cell.ammoCell = ammoCell;
 
@@ -175,7 +206,7 @@ function UpdateWeapon(cell, classPrefix) {
     }
 }
 
-function CreateAmmoCell(cell, classPrefix) {
+function CreateAmmoCell(cell, classPrefix, weapon) {
     let ammoCell = document.createElement("div");
     ammoCell.slotData = cell.slotData;
     ammoCell.className = "inventoryAmmoCell " + classPrefix;
@@ -189,17 +220,29 @@ function CreateAmmoCell(cell, classPrefix) {
     ammoCell.onmouseover = function (event) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            let slotData = JSON.parse(cell.slotData);
+            if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
+                cell.className = "InventoryCell hover";
+            } else if (slotData) {
+                cell.className = "InventoryCell notAllow";
+            }
+        }
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 
     ammoCell.onmousemove = function (event) {
-        // todo подсказка о типе снаряда
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 
     ammoCell.onmouseout = function (event) {
         this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
         this.style.cursor = "auto";
+        for (let i = 1; i <= 40; i++) {
+            let cell = document.getElementById("inventory " + i + 6);
+            cell.className = "InventoryCell";
+        }
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 
