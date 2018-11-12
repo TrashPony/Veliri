@@ -6,7 +6,7 @@ import (
 	"./inventory"
 	"./lobby"
 	"./mapEditor"
-
+	"./market"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -43,5 +43,9 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 
 	if pool == "/wsMapEditor" {
 		mapEditor.AddNewUser(ws, login, id)
+	}
+
+	if pool == "/wsMarket" {
+		market.AddNewUser(ws, login, id)
 	}
 }

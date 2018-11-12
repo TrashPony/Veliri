@@ -101,7 +101,7 @@ func breakingEquip(targetUnit *unit.Unit, damage int) bool { // если хот�
 	var breakingWeapon bool
 
 	// TODO дамаг в 20%, в итоге должен зависеть от скила игрока и типа оружия
-	if targetUnit.GetWeaponSlot().HP-damage/5 > 0 {
+	if targetUnit.GetWeaponSlot() != nil && targetUnit.GetWeaponSlot().HP-damage/5 > 0 {
 		targetUnit.GetWeaponSlot().HP -= damage / 5
 		breakingWeapon = false
 	} else {
