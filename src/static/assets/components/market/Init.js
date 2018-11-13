@@ -5,6 +5,10 @@ function InitMarketMenu() {
         includeJS("../assets/components/market/create/CreateTables.js");
 
         includeCSS("../assets/components/market/css/main.css");
+        includeCSS("../assets/components/market/css/leftBar.css");
+        includeCSS("../assets/components/market/css/orderTables.css");
+        includeCSS("../assets/components/market/css/marketTopMenu.css");
+
         resolve();
     });
 

@@ -40,7 +40,6 @@ function CreateMarketMenu() {
     createListItemUI(listItem);
     ordersBlockUI(ordersBlock);
     footUI(foot);
-
 }
 
 function headUI(headMarket) {
@@ -85,14 +84,44 @@ function createListItemUI(listItem) {
 }
 
 function ordersBlockUI(ordersBlock) {
+    let menu = document.createElement("div");
+    menu.className = "marketTopMenu";
+
+    let allMarket = document.createElement("div");
+    allMarket.innerHTML = "Рынок";
+    allMarket.className = "activePin";
+
+    let myMarket = document.createElement("div");
+    myMarket.innerHTML = "Мои запросы/предложения";
+
+    menu.appendChild(allMarket);
+    menu.appendChild(myMarket);
+    ordersBlock.appendChild(menu);
+
     let selectItemIcon = document.createElement("div");
     selectItemIcon.id = "selectItemIcon";
     ordersBlock.appendChild(selectItemIcon);
+
+    let selectItemName = document.createElement("div");
+    selectItemName.id = "selectItemName";
+    selectItemName.innerHTML = "Item Name";
+    ordersBlock.appendChild(selectItemName);
+
+    let ordersBuyBlockHead = document.createElement("div");
+    ordersBuyBlockHead.className = "ordersHead";
+    ordersBuyBlockHead.innerHTML = "Предложения";
+    ordersBuyBlockHead.style.marginTop = "100px";
+    ordersBlock.appendChild(ordersBuyBlockHead);
 
     let sellOrdersBlock = document.createElement("div");
     sellOrdersBlock.id = "sellOrdersBlock";
     ordersBlock.appendChild(sellOrdersBlock);
     CreateSellTable(sellOrdersBlock);
+
+    let ordersSellBlockHead = document.createElement("div");
+    ordersSellBlockHead.className = "ordersHead";
+    ordersSellBlockHead.innerHTML = "Запросы";
+    ordersBlock.appendChild(ordersSellBlockHead);
 
     let BuyOrdersBlock = document.createElement("div");
     BuyOrdersBlock.id = "BuyOrdersBlock";
@@ -101,7 +130,6 @@ function ordersBlockUI(ordersBlock) {
 }
 
 function footUI(foot) {
-
     let panel = document.createElement("div");
     panel.id = "footPanel";
     foot.appendChild(panel);

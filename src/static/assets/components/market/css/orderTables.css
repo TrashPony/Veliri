@@ -1,0 +1,46 @@
+.ordersTable {
+    width: 100%;
+    margin: auto;
+    border-spacing: 0;
+}
+
+.ordersTable tr:first-child {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    border-radius: 5px;
+}
+
+.ordersTable tr:first-child td{
+    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 12px;
+    line-height: 14px;
+    height: 15px;
+    user-select: none;
+    margin: 2px auto;
+    border: 1px solid black;
+}
+
+.ordersTable tr:first-child td:first-child{
+    border-radius: 5px 0 0 0;
+}
+
+.ordersTable tr:first-child td:last-child{
+    border-radius: 0 5px 0 0;
+}
+
+.ordersTable tr {
+    height: 20px;
+    font-size: 12px;
+}
+
+.ordersTable td{
+
+}
+
+#marketBuyTable td{
+    width: 16%;
+}
+
+#marketSellTable td {
+    width: 20%;
+}

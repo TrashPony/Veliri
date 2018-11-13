@@ -1,6 +1,7 @@
 function CreateBuyTable(BuyOrdersBlock) {
     let buyTable = document.createElement("table");
     buyTable.className = "ordersTable";
+    buyTable.id = "marketBuyTable";
 
     let headRow = document.createElement("tr");
 
@@ -35,6 +36,7 @@ function CreateBuyTable(BuyOrdersBlock) {
 function CreateSellTable(SellOrdersBlock) {
     let sellTable = document.createElement("table");
     sellTable.className = "ordersTable";
+    sellTable.id = "marketSellTable";
 
     let headRow = document.createElement("tr");
 

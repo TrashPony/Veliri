@@ -1,0 +1,29 @@
+.marketTopMenu {
+    width: 310px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.marketTopMenu div {
+    display: inline-block;
+    width: 150px;
+    font-size: 12px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border: 1px solid rgb(58, 96, 134);
+    margin-left: -2px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 4px black;
+    box-shadow: 1px -1px 3px black;
+    user-select: none;
+    margin-top: 5px;
+}
+
+.marketTopMenu div:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.activePin {
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}

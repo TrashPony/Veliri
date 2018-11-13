@@ -13,64 +13,6 @@
     background-size: 10px 2px;
 }
 
-#leftBar {
-    width: 200px;
-    display: inline-block;
-}
-
-.headMarketHeading {
-    text-align: left;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    color: rgba(255, 255, 255, 0.85);
-    margin-left: 10px;
-}
-
-#headMarket {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    background: rgba(183, 195, 201, 0.29);
-    border-radius: 4px;
-    height: 90px;
-    width: 200px;
-    margin: 5px;
-    padding-top: 4px;
-}
-
-#listItem {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    background: rgba(183, 195, 201, 0.29);
-    border-radius: 4px;
-    height: 443px;
-    width: 200px;
-    margin: 0 5px 5px 5px;
-    padding-top: 4px;
-}
-
-#footMarket {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    background: rgba(183, 195, 201, 0.29);
-    border-radius: 4px;
-    height: 35px;
-    width: 200px;
-    margin: 5px;
-    padding-top: 4px;
-}
-
-#footPanel {
-    background: rgba(183, 195, 201, 0.29);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    border-radius: 5px;
-    height: 32px;
-    width: 190px;
-    margin-left: 5px;
-}
-
-.searchInput {
-    border-radius: 3px;
-    width: 180px;
-    margin-top: 49px;
-}
-
 #ordersBlock {
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     background: rgba(183, 195, 201, 0.29);
@@ -88,81 +30,35 @@
     background: rgba(63, 70, 74, 0.5);
     margin-top: 15px;
     margin-left: 15px;
+    border-radius: 5px;
+    float: left;
 }
 
-.categoryItem {
+#selectItemName {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 4px black;
+    min-width: 180px;
+    margin: 20px 0 0 15px;
+    float: left;
     text-align: left;
-    display: block;
-    width: 180px;
-    padding-left: 10px;
-    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    color: rgba(255, 255, 255, 0.85);
-    border-radius: 4px;
-    font-size: 12px;
-    line-height: 14px;
-    height: 15px;
-    user-select: none;
-    margin: 2px auto;
-}
-
-.categoryItem:hover {
-    box-shadow: 0 0 5px rgb(125, 125, 125);
-}
-
-.categoryItem:active {
-    box-shadow: 0 0 5px rgb(255, 255, 255);
 }
 
 #sellOrdersBlock, #BuyOrdersBlock {
-    height: 225px;
+    height: 212px;
     width: 770px;
-    margin: 50px 5px 5px 5px;
+    margin: 0 5px 5px 5px;
     background: rgba(183, 195, 201, 0.29);
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     overflow-y: scroll;
     border-radius: 5px;
 }
 
-#BuyOrdersBlock {
-    margin: 5px 5px 5px 5px;
-}
-
-.marketButton {
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 2px 10px 2px;
-    text-shadow: #28a5e4 0 0 4px;
-    z-index: 11;
-    margin: 5px;
-    width: 50px;
-    height: 15px;
-    background: linear-gradient(15deg, #28a5e4, #25e1a4);
-    font-size: 14px;
-    display: inline-block;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
-    user-select: none;
-}
-
-.marketButton:hover {
-    background: linear-gradient(0deg, red, yellow);
-}
-
-.marketButton:active {
-    background: linear-gradient(180deg, red, yellow);
-    box-shadow: none;
-}
-
-.ordersTable {
-    width: 750px;
-    margin: auto;
-}
-
-.ordersTable tr{
-    height: 20px;
-    font-size: 12px;
-}
-
-.ordersTable td{
-
+.ordersHead {
+    width: 110px;
+    border-radius: 5px 5px 0 0;
+    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
+    margin-left: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 4px black;
+    clear: both;
 }
