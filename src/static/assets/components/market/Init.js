@@ -1,15 +1,18 @@
 function InitMarketMenu() {
     let promise = new Promise((resolve) => {
         includeJS("../assets/components/market/webSocket.js");
+        includeJS("../assets/components/market/create/Create.js");
+        includeJS("../assets/components/market/create/CreateTables.js");
 
         includeCSS("../assets/components/market/css/main.css");
-        return resolve();
+        resolve();
     });
-    //todo чето я хз, промис не работает
+
     promise.then(
         () => {
             setTimeout(function () {
                 ConnectMarket();
+                CreateMarketMenu();
             }, 400);
         }
     );

@@ -18,6 +18,10 @@ var usersMarketWs = make(map[*websocket.Conn]*player.Player)
 type Order struct {
 }
 
+type Message struct {
+	Event string `json:"event"`
+}
+
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	mutex.Lock()
@@ -45,10 +49,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 func Reader(ws *websocket.Conn) {
 	for {
-		//var msg Message
+		var msg Message
 
-		//err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		println()
+		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
+		if err != nil {
+			println(err.Error())
+			utils.DelConn(ws, &usersMarketWs, err)
+			break
+		}
 	}
 }
 
