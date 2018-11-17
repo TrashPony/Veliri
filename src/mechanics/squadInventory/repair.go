@@ -1,4 +1,4 @@
-package inventory
+package squadInventory
 
 import (
 	"../db/get"
@@ -12,7 +12,7 @@ func ItemsRepair(user *player.Player) error {
 	// todo высчитывание денег и рем комплектов необходимых, отнимание денег или рем комплектов )
 
 	if user.GetCredits() > 100 {
-		for _, slot := range user.GetSquad().Inventory {
+		for _, slot := range user.GetSquad().Inventory.Slots {
 			if slot.Type == "body" {
 				slot.HP = get.Body(slot.ItemID).MaxHP
 			}

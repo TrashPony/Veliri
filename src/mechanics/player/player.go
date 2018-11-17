@@ -28,6 +28,7 @@ type Player struct {
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
+	InBaseID   int // ид базы в которой сидит игрок
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {

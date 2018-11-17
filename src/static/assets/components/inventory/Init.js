@@ -9,6 +9,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/create/MotherShipParams.js");
         includeJS("../assets/components/inventory/create/Squad.js");
         includeJS("../assets/components/inventory/create/UserStatus.js");
+        includeJS("../assets/components/inventory/create/Storage.js");
 
         includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
         includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
@@ -27,6 +28,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/filling/UnitPanel.js");
         includeJS("../assets/components/inventory/filling/HealBar.js");
         includeJS("../assets/components/inventory/filling/UpdateWeaponIcon.js");
+        includeJS("../assets/components/inventory/filling/Storage.js");
 
         includeJS("../assets/components/inventory/tip/ClickTip.js");
         includeJS("../assets/components/inventory/tip/SelectItem.js");
@@ -57,6 +59,7 @@ function InitInventoryMenu(closeFunc) {
         includeCSS("../assets/components/inventory/css/inventory.css");
         includeCSS("../assets/components/inventory/css/userStatus.css");
         includeCSS("../assets/components/inventory/css/weaponType.css");
+        includeCSS("../assets/components/inventory/css/storage.css");
 
         return resolve();
     });
@@ -64,8 +67,8 @@ function InitInventoryMenu(closeFunc) {
     promise.then(
         () => {
             setTimeout(function () {
-                ConnectInventory();
                 CreateInventoryMenu(closeFunc);
+                ConnectInventory();
             }, 400);
         }
     );

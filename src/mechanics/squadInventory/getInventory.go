@@ -1,4 +1,4 @@
-package inventory
+package squadInventory
 
 import (
 	"../db/get"

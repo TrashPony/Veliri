@@ -31,6 +31,7 @@ func main() {
 	router.HandleFunc("/wsGlobal", webSocket.HandleConnections)
 	router.HandleFunc("/wsChat", webSocket.HandleConnections)
 	router.HandleFunc("/wsMarket", webSocket.HandleConnections)
+	router.HandleFunc("/wsStorage", webSocket.HandleConnections)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
 

@@ -1,4 +1,4 @@
-package inventory
+package squadInventory
 
 import (
 	"../db/get"
@@ -10,7 +10,7 @@ import (
 )
 
 func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) error {
-	ammoItem := user.GetSquad().Inventory[inventorySlot]
+	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if ammoItem.ItemID == idAmmo {
 		newAmmo := get.Ammo(idAmmo)
@@ -31,7 +31,7 @@ func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) err
 }
 
 func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numberUnitSlot int) error {
-	ammoItem := user.GetSquad().Inventory[inventorySlot]
+	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if ammoItem.ItemID == idAmmo {
 		newAmmo := get.Ammo(idAmmo)
@@ -70,11 +70,11 @@ func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo
 	}
 
 	if ammoSlot.Ammo != nil {
-		AddItem(user.GetSquad().Inventory, ammoSlot.Ammo, "ammo", ammoSlot.Ammo.ID, ammoSlot.AmmoQuantity, 1, ammoSlot.Ammo.Size)
+		user.GetSquad().Inventory.AddItem(ammoSlot.Ammo, "ammo", ammoSlot.Ammo.ID, ammoSlot.AmmoQuantity, 1, ammoSlot.Ammo.Size)
 	}
 
 	ammoSlot.Ammo = newAmmo
-	ammoSlot.AmmoQuantity = RemoveInventoryItem(ammoSlot.Weapon.AmmoCapacity, user.GetSquad().Inventory[inventorySlot])
+	ammoSlot.AmmoQuantity = user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(ammoSlot.Weapon.AmmoCapacity)
 
 	updateSquad.Squad(user.GetSquad())
 

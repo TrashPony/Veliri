@@ -2,8 +2,8 @@ package players
 
 import (
 	"../db/get"
-	"../inventory"
 	"../player"
+	"../squadInventory"
 	"sync"
 )
 
@@ -33,7 +33,7 @@ func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 
 	newUser := get.User(id, login)
 
-	inventory.GetInventory(newUser)
+	squadInventory.GetInventory(newUser)
 	usersStore.users[id] = newUser
 
 	return newUser

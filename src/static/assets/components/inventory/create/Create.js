@@ -32,6 +32,10 @@ function CreateInventoryMenu(closeFunc) {
     inventory.id = "Inventory";
     inventoryBox.appendChild(inventory);
 
+    let storage = document.createElement("div");
+    storage.id = "storage";
+    inventoryBox.appendChild(storage);
+
     let squad = document.createElement("div");
     squad.id = "Squad";
     inventoryBox.appendChild(squad);
@@ -41,6 +45,7 @@ function CreateInventoryMenu(closeFunc) {
     CreateMotherShipParamsMenu();
     CreateConstructorMenu();
     CreateInventory();
+    CreateStorage();
     CreateSquadMenu();
     CreateUserStatus();
 
@@ -49,7 +54,7 @@ function CreateInventoryMenu(closeFunc) {
     closeButton.className = "button";
     closeButton.innerHTML = "Закрыть";
     closeButton.onclick = () => {InventoryClose(); closeFunc()};
-    inventory.appendChild(closeButton);
+    motherShipParams.appendChild(closeButton);
 }
 
 function InventoryClose() {

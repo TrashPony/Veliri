@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"../../mechanics/db/get"
+	"../../mechanics/db/insert"
 	"../../mechanics/lobby"
 	"../../mechanics/player"
 	"../../mechanics/players"
@@ -34,8 +35,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
-	NewLobbyUser(login, usersLobbyWs)
-	SentOnlineUser(login, usersLobbyWs)
+	insert.UserIntoBase(id, 1) // пока есть только 1 база
+	newPlayer.InBaseID = 1
 
 	Reader(ws)
 }

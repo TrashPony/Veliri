@@ -12,7 +12,7 @@ function ConnectMarket() {
     };
 
     marketSocket.onmessage = function(msg) {
-        FillingInventory(msg.data);
+        Filling(JSON.parse(msg.data));
     };
 
     marketSocket.onerror = function(msg) {

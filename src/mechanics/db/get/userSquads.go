@@ -3,6 +3,7 @@ package get
 import (
 	"../../../dbConnect"
 	"../../gameObjects/coordinate"
+	inv "../../gameObjects/inventory"
 	"../../gameObjects/squad"
 	"../../gameObjects/unit"
 	"database/sql"
@@ -182,7 +183,7 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	}
 }
 
-func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
+func SquadInventory(squadID int) (inventory inv.Inventory) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
 		"FROM squad_inventory "+
@@ -192,50 +193,9 @@ func SquadInventory(squadID int) (inventory map[int]*squad.InventorySlot) {
 	}
 	defer rows.Close()
 
-	inventory = make(map[int]*squad.InventorySlot)
+	inventory.Slots = make(map[int]*inv.Slot)
 
-	for rows.Next() {
-
-		var inventorySlot = squad.InventorySlot{}
-		var slot int
-
-		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity, &inventorySlot.HP)
-		if err != nil {
-			log.Fatal("get inventory squad " + err.Error())
-		}
-
-		if inventorySlot.Type == "weapon" {
-			weapon := Weapon(inventorySlot.ItemID)
-			inventorySlot.Item = weapon
-			inventorySlot.Size = weapon.Size * float32(inventorySlot.Quantity)
-
-			inventory[slot] = &inventorySlot
-		}
-
-		if inventorySlot.Type == "ammo" {
-			ammo := Ammo(inventorySlot.ItemID)
-			inventorySlot.Item = ammo
-			inventorySlot.Size = ammo.Size * float32(inventorySlot.Quantity)
-
-			inventory[slot] = &inventorySlot
-		}
-
-		if inventorySlot.Type == "equip" {
-			equip := TypeEquip(inventorySlot.ItemID)
-			inventorySlot.Item = equip
-			inventorySlot.Size = equip.Size * float32(inventorySlot.Quantity)
-
-			inventory[slot] = &inventorySlot
-		}
-
-		if inventorySlot.Type == "body" {
-			body := Body(inventorySlot.ItemID)
-			inventorySlot.Item = body
-			inventorySlot.Size = body.CapacitySize * float32(inventorySlot.Quantity)
-
-			inventory[slot] = &inventorySlot
-		}
-	}
+	FillInventory(&inventory, rows)
 
 	return
 }

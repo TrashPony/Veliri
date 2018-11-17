@@ -1,7 +1,7 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
+	"../../mechanics/squadInventory"
 	"github.com/gorilla/websocket"
 )
 
@@ -9,7 +9,7 @@ func Repair(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
 	if msg.Event == "InventoryRepair" {
-		err := inventory.ItemsRepair(user)
+		err := squadInventory.ItemsRepair(user)
 		if err != nil {
 			ws.WriteJSON(Response{Event: "repair error", Error: err.Error()})
 		} else {
@@ -18,7 +18,7 @@ func Repair(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Event == "EquipsRepair" {
-		err := inventory.EquipRepair(user)
+		err := squadInventory.EquipRepair(user)
 		if err != nil {
 			ws.WriteJSON(Response{Event: "repair error", Error: err.Error()})
 		} else {
@@ -27,7 +27,7 @@ func Repair(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Event == "AllRepair" {
-		err := inventory.AllRepair(user)
+		err := squadInventory.AllRepair(user)
 		if err != nil {
 			ws.WriteJSON(Response{Event: "repair error", Error: err.Error(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 		} else {

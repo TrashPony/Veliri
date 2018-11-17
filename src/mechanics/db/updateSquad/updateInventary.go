@@ -7,14 +7,14 @@ import (
 )
 
 func InventorySquad(squad *squad.Squad, tx *sql.Tx) {
-	for slotNum, slot := range squad.Inventory {
+	for slotNum, slot := range squad.Inventory.Slots {
 		if slot.Item == nil {
 			_, err := tx.Exec("DELETE FROM squad_inventory WHERE id_squad=$1 AND slot = $2",
 				squad.ID, slotNum)
 			if err != nil {
 				log.Fatal("delete item to inventory" + err.Error())
 			}
-			delete(squad.Inventory, slotNum)
+			delete(squad.Inventory.Slots, slotNum)
 		}
 
 		if slot.InsertToDB && slot.Item != nil {

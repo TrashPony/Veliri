@@ -1,9 +1,9 @@
-package inventory
+package squadInventory
 
 import (
 	"../../mechanics/db/updateSquad"
 	"../gameObjects/detail"
-	"../gameObjects/squad"
+	inv "../gameObjects/inventory"
 	"../player"
 )
 
@@ -38,7 +38,7 @@ func RemoveUnitBody(user *player.Player, unitSlot int) {
 	updateSquad.Squad(user.GetSquad())
 }
 
-func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body, hp int) {
+func BodyRemove(inventory inv.Inventory, Body *detail.Body, hp int) {
 
 	removeAllEquippingBody(inventory, Body.EquippingI)
 	removeAllEquippingBody(inventory, Body.EquippingII)
@@ -49,24 +49,24 @@ func BodyRemove(inventory map[int]*squad.InventorySlot, Body *detail.Body, hp in
 	for _, weaponSlot := range Body.Weapons {
 
 		if weaponSlot.Weapon != nil {
-			AddItem(inventory, weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size)
+			inventory.AddItem(weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size)
 		}
 
 		if weaponSlot.Ammo != nil {
-			AddItem(inventory, weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
+			inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
 		}
 
 		weaponSlot.Ammo = nil
 		weaponSlot.Weapon = nil
 	}
 
-	AddItem(inventory, Body, "body", Body.ID, 1, hp, Body.CapacitySize) // кидает боди в инвентарь
+	inventory.AddItem(Body, "body", Body.ID, 1, hp, Body.CapacitySize) // кидает боди в инвентарь
 }
 
-func removeAllEquippingBody(inventory map[int]*squad.InventorySlot, equipping map[int]*detail.BodyEquipSlot) {
+func removeAllEquippingBody(inventory inv.Inventory, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			AddItem(inventory, equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size)
+			inventory.AddItem(equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size)
 			equipSlot.Equip = nil
 		}
 	}

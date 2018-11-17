@@ -1,14 +1,14 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
+	"../../mechanics/squadInventory"
 	"github.com/gorilla/websocket"
 )
 
 func RemoveMotherShipWeapon(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	inventory.RemoveMSWeapon(user, msg.EquipSlot)
+	squadInventory.RemoveMSWeapon(user, msg.EquipSlot)
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 }
@@ -16,7 +16,7 @@ func RemoveMotherShipWeapon(ws *websocket.Conn, msg Message) {
 func RemoveUnitWeapon(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	inventory.RemoveUnitWeapon(user, msg.EquipSlot, msg.UnitSlot)
+	squadInventory.RemoveUnitWeapon(user, msg.EquipSlot, msg.UnitSlot)
 
 	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
 }

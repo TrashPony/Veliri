@@ -2,9 +2,9 @@
     position: absolute;
     top: 5px;
     z-index: 900;
-    width: 690px;
+    width: 710px;
     left: 50%;           /* выравниваем по центру */
-    margin-left: -345px; /* выравниваем по центру */
+    margin-left: -355px; /* выравниваем по центру */
 }
 
 #ConstructorMS {
@@ -62,10 +62,37 @@
     vertical-align: top;
     width: 150px;
     height: 310px;
-    margin-right: 25px;
+    margin-right: 10px;
     padding-top: 5px;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
     background-size: 10px 2px;
+    position: relative;
+}
+
+#inventoryCloseButton {
+    width: 60px;
+    height: 15px;
+    border: 1px solid #382626;
+    display: inline-block;
+    top: 323px;
+    left: 35px;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 15px;
+    background: linear-gradient(-45deg, #28a5e4, #25e1a4);
+    color: black;
+    -moz-user-select: none;
+    user-select: none;
+    position: absolute;
+}
+
+#inventoryCloseButton:hover {
+    background: linear-gradient(0deg, red, yellow);
+}
+
+#inventoryCloseButton:active {
+    background: linear-gradient(180deg, red, yellow);
+    top: 325px;
 }
 
 #Squad {
@@ -74,14 +101,14 @@
     -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
     vertical-align: top;
-    width: 370px;
+    width: 327px;
     height: 60px;
     padding-top: 5px;
-    margin-top: 25px;
+    margin-top: 23px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
     background-size: 10px 2px;
 }
 

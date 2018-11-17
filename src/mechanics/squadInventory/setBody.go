@@ -1,4 +1,4 @@
-package inventory
+package squadInventory
 
 import (
 	"../db/get"
@@ -8,7 +8,7 @@ import (
 )
 
 func SetMSBody(user *player.Player, idBody, inventorySlot int) {
-	body := user.GetSquad().Inventory[inventorySlot]
+	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if body != nil && body.ItemID == idBody {
 		newBody := get.Body(idBody)
@@ -26,7 +26,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 		user.GetSquad().MatherShip.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 		user.GetSquad().MatherShip.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
-		RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
+		user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
 		user.GetSquad().MatherShip.Body = newBody
 
 		user.GetSquad().MatherShip.Units = make(map[int]*unit.Slot) // заполняем ячейки юнитов
@@ -45,7 +45,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 }
 
 func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int) {
-	body := user.GetSquad().Inventory[inventorySlot]
+	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if body != nil && body.ItemID == idBody {
 		newBody := get.Body(idBody)
@@ -64,7 +64,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 			unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 			unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
-			RemoveInventoryItem(1, user.GetSquad().Inventory[inventorySlot])
+			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
 			unitSlot.Unit.Body = newBody
 		}
 

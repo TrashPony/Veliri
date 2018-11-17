@@ -1,0 +1,1 @@
+INSERT INTO bases (base_name) VALUES ('База 1');

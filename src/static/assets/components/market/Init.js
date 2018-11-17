@@ -3,6 +3,7 @@ function InitMarketMenu() {
         includeJS("../assets/components/market/webSocket.js");
         includeJS("../assets/components/market/create/Create.js");
         includeJS("../assets/components/market/create/CreateTables.js");
+        includeJS("../assets/components/market/Filling/Filling.js");
 
         includeCSS("../assets/components/market/css/main.css");
         includeCSS("../assets/components/market/css/leftBar.css");

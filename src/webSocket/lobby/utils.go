@@ -2,24 +2,7 @@ package lobby
 
 import (
 	"../../mechanics/player"
-	"github.com/gorilla/websocket"
 )
-
-func NewLobbyUser(login string, usersWs map[*websocket.Conn]*player.Player) {
-	for ws, client := range usersWs { // TODO concurrent map iteration and map write
-		var resp = Response{Event: "NewLobbyUser", UserName: client.GetLogin(), GameUser: login}
-		ws.WriteJSON(resp)
-	}
-}
-
-func SentOnlineUser(login string, usersWs map[*websocket.Conn]*player.Player) {
-	for ws, client := range usersWs {
-		if login != client.GetLogin() {
-			var resp = Response{Event: "NewLobbyUser", UserName: login, GameUser: client.GetLogin()}
-			ws.WriteJSON(resp)
-		}
-	}
-}
 
 func RefreshLobbyGames(user *player.Player) {
 	for _, client := range usersLobbyWs {

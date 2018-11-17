@@ -1,14 +1,14 @@
 package inventory
 
 import (
-	"../../mechanics/inventory"
+	"../../mechanics/squadInventory"
 	"github.com/gorilla/websocket"
 )
 
 func SetMotherShipEquip(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := inventory.SetMSEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType)
+	err := squadInventory.SetMSEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType)
 
 	if err != nil {
 		ws.WriteJSON(Response{Event: "ms error", Error: err.Error()})
@@ -20,7 +20,7 @@ func SetMotherShipEquip(ws *websocket.Conn, msg Message) {
 func SetUnitEquip(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := inventory.SetUnitEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot)
+	err := squadInventory.SetUnitEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot)
 
 	if err != nil {
 		ws.WriteJSON(Response{Event: "unit error", Error: err.Error()})

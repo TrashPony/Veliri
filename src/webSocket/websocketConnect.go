@@ -7,6 +7,7 @@ import (
 	"./lobby"
 	"./mapEditor"
 	"./market"
+	"./storage"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -47,5 +48,9 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 
 	if pool == "/wsMarket" {
 		market.AddNewUser(ws, login, id)
+	}
+
+	if pool == "/wsStorage" {
+		storage.AddNewUser(ws, login, id)
 	}
 }

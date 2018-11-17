@@ -1,10 +1,10 @@
-function InventoryTable(inventoryItems) {
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+function UpdateStorage(inventory) {
+    for (let i = 1; i <= 10; i++) {
+        let cell = document.getElementById("storage " + i + 6);
 
-        if (inventoryItems.slots.hasOwnProperty(i) && inventoryItems.slots[i].item !== null) {
+        if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
 
-            cell.slotData = JSON.stringify(inventoryItems.slots[i]);
+            cell.slotData = JSON.stringify(inventory.slots[i]);
             cell.number = i;
 
             cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
@@ -28,15 +28,5 @@ function InventoryTable(inventoryItems) {
                 DestroyInventoryTip();
             };
         }
-    }
-}
-
-function InventoryOverTip(e) {
-    let inventoryTip = document.getElementById("InventoryTipOver");
-    if (inventoryTip) {
-        inventoryTip.style.top = e.clientY + "px";
-        inventoryTip.style.left = e.clientX + "px";
-    } else {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true, true);
     }
 }
