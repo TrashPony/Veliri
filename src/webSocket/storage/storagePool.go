@@ -59,13 +59,27 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openStorage" {
-			ws.WriteJSON(storage.GetUserBaseStorage(usersStorageWs[ws]))
+			userStorage, ok := storage.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
+			if ok {
+				ws.WriteJSON(userStorage)
+			}
 		}
 	}
 }
 
 func Updater(userID int) {
-	// TODO когда происходит обновление инвентаря склада, а у пользователя он открыт
-	// TODO например произошла покупка итема и он упал в склад, надо обновить информацию у пользователя
-	// TODO найти его в соеденения и отправить ему на сокет новый инвентарь ws.WriteJSON(storage.GetUserBaseStorage(usersStorageWs[ws]))
+
+	// тут происходит обновление инвентаря склада когда произошло обновление, а у пользователя он открыт
+	// например произошла покупка итема и он упал в склад, надо обновить информацию у пользователя
+
+	mutex.Lock()
+	for ws, user := range usersStorageWs {
+		if user.GetID() == userID {
+			userStorage, ok := storage.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
+			if ok {
+				ws.WriteJSON(userStorage)
+			}
+		}
+	}
+	mutex.Unlock()
 }

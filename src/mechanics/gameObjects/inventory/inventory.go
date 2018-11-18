@@ -38,6 +38,7 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, qua
 }
 
 /* когда slot.Item = nil он удалиться из бд при обновление данных */
+// TODO переделать метод удаления на инвентарь целиком что бы была возможность удалять итемы из много столов сразу
 func (slot *Slot) RemoveItem(quantityRemove int) (CountRemove int) {
 	if quantityRemove < slot.Quantity {
 		// определяем вес 1 вещи
