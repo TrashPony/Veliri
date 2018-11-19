@@ -12,7 +12,7 @@ function CreateStorage(){
     inventoryStorage.className = "inventoryStorage";
     inventoryStorage.style.height = "58px";
     inventoryStorage.style.margin = "0";
-    CreateCells(6, 10, "InventoryCell", "storage ", inventoryStorage);
+    CreateCells(6, 40, "InventoryCell", "storage ", inventoryStorage);
     storage.appendChild(inventoryStorage);
 
     let sortPanel = document.createElement("div");

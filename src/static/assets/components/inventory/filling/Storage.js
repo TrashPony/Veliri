@@ -1,5 +1,5 @@
 function UpdateStorage(inventory) {
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 40; i++) {
         let cell = document.getElementById("storage " + i + 6);
 
         if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
@@ -12,7 +12,7 @@ function UpdateStorage(inventory) {
 
             CreateHealBar(cell, "inventory", true);
 
-            cell.onclick = SelectInventoryItem;
+            //cell.onclick = SelectInventoryItem;
 
             cell.onmousemove = InventoryOverTip;
             cell.onmouseout = OffTip;
