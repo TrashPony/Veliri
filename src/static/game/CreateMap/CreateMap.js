@@ -1,14 +1,11 @@
 function CreateMap() {
 
-    let hexagonWidth = 100;
-    let hexagonHeight = 111;
-
-    let verticalOffset = hexagonHeight * 3 / 4;
-    let horizontalOffset = hexagonWidth;
+    let verticalOffset = game.hexagonHeight * 3 / 4;
+    let horizontalOffset = game.hexagonWidth;
     let startX;
     let startY;
-    let startXInit = hexagonWidth / 2;
-    let startYInit = hexagonHeight / 2;
+    let startXInit = game.hexagonWidth / 2;
+    let startYInit = game.hexagonHeight / 2;
 
     for (let r = 0; r < game.map.RSize; r++) {
 

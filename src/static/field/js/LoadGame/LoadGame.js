@@ -1,17 +1,10 @@
 let game;
 
 function LoadGame(jsonMessage) {
-    let gameMap = JSON.parse(jsonMessage).map;
 
-    let hexagonWidth = 100;   // ширина
-    let hexagonHeight = 111; // и высота спрайта в сетке грида
+    game = CreateGame(JSON.parse(jsonMessage).map);
 
-    game = new Phaser.Game('100', '100', Phaser.AUTO, 'main', {
-        preload: preload,
-        create: create,
-        update: update,
-        render: render
-    }); //создаем игровое поле с высотой и шир
+    game.typeService = "battle";
 
     game.user = {};
     game.user.name = JSON.parse(jsonMessage).user_name;
@@ -24,19 +17,12 @@ function LoadGame(jsonMessage) {
     game.unitStorage = JSON.parse(jsonMessage).unit_storage;
 
     // Creates objects
-    game.map = gameMap;
     game.units = JSON.parse(jsonMessage).units;
     game.hostileUnits = JSON.parse(jsonMessage).hostile_units;
     game.memoryHostileUnit = JSON.parse(jsonMessage).memory_hostile_unit;
     game.user.watch = JSON.parse(jsonMessage).watch;
 
     game.map.selectSprites = [];
-
-    game.hexagonWidth = hexagonWidth;
-    game.hexagonHeight = hexagonHeight;
-
-    game.shadowXOffset = 8;
-    game.shadowYOffset = 10;
 
     GameInfo();
     InitPlayer();

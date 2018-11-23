@@ -16,6 +16,8 @@ function moveMouse(e) {
     // Положение от верхнего края окна браузера
     stylePositionParams.top = y + 10;
 
-    updatePositionTipEquip();
+    if (game && game.typeService === "battle") {
+        updatePositionTipEquip();
+    }
     updatePositionTipEffect();
 }

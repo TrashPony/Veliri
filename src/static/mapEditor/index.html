@@ -12,24 +12,37 @@
     <script src="./js/ReaderMapEditor.js"></script>
     <script src="./js/GetMapList.js"></script>
     <script src="./js/createGame.js"></script>
-    <script src="./js/MouseOver.js"></script>
 
-    <script src="./js/CreateMap/CreateMap.js"></script>
-    <script src="./js/CreateMap/Objects.js"></script>
-    <script src="./js/CreateMap/Terrain.js"></script>
-    <script src="./js/CreateMap/MarkZoneEffect.js"></script>
+    <script src="../game/Create.js"></script>
+    <script src="../game/Preload.js"></script>
+    <script src="../game/Render.js"></script>
+    <script src="../game/Update.js"></script>
+
+    <script src="../game/CreateMap/CreateMap.js"></script>
+    <script src="../game/CreateMap/Objects.js"></script>
+    <script src="../game/CreateMap/Terrain.js"></script>
+    <script src="../game/CreateMap/MarkZoneEffect.js"></script>
+
+    <script src="../game/Interface/GrabCamera.js"></script>
+    <script src="../game/Interface/MouseOver.js"></script>
+    <script src="../game/Interface/RotateMap.js"></script>
+    <script src="../game/Interface/SizeMap.js"></script>
+    <script src="../game/Interface/TipOff.js"></script>
+    <script src="../game/Interface/Wheel.js"></script>
+    <script src="../game/Interface/TipEffect.js"></script>
+    <script src="../game/Interface/ParseEquipEffect.js"></script>
 
     <script src="../assets/lib/phaser.js"></script>
 
 </head>
 <body oncontextmenu="return false;" onload="OpenMapEditorSocket()" onmousemove="moveMouse(event)">
-<div id="main">
+<div id="container">
     <div id="head">
         <select title="mapSelector" id="mapSelector" onchange="selectMap();">
             <option value="" disabled selected>Выберите карту</option>
         </select>
     </div>
-    <div id="map">
+    <div id="main">
 
     </div>
     <div id="coordinates">

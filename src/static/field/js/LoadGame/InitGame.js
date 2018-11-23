@@ -1,5 +1,5 @@
 function InitGame() {
-    var idGame = getCookie("idGame");
+    let idGame = getCookie("idGame");
     field.send(JSON.stringify({
         event: "InitGame",
         id_game: Number(idGame)
@@ -7,7 +7,7 @@ function InitGame() {
 }
 
 function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
+    let matches = document.cookie.match(new RegExp(
         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;

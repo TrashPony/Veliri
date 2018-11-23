@@ -1,4 +1,4 @@
-#main {
+#container {
     width: 1200px;
     margin: 0 auto;
 }
@@ -10,7 +10,7 @@
     border-radius: 10px;
 }
 
-#map {
+#main {
     float: left;
     height: 800px;
     width: 900px;

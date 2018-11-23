@@ -4,6 +4,8 @@ function GetMapList() {
     }));
 }
 
+let game;
+
 function CreateMapList(jsonMessage) {
 
     let maps = JSON.parse(jsonMessage).maps;
@@ -30,4 +32,8 @@ function selectMap() {
         event: "SelectMap",
         id: Number(selectedValue)
     }));
+}
+
+function createGame(jsonMessage) {
+    game = CreateGame(JSON.parse(jsonMessage).map);
 }

@@ -1,6 +1,10 @@
 function GrabCamera() {
     if (game.input.activePointer.rightButton.isDown) { // ловит нажатие правой кнопки маши в игре
-        RemoveSelect();
+
+        if (game && game.typeService === "battle") {
+            RemoveSelect();
+        }
+
         if (game.origDragPoint) {
             game.camera.x += game.origDragPoint.x - game.input.activePointer.position.x; // перемещать камеру по сумме, перемещенную мышью с момента последнего обновления
             game.camera.y += game.origDragPoint.y - game.input.activePointer.position.y;
