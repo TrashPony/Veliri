@@ -42,7 +42,7 @@ function CreateObjects(coordinate, x, y) {
     }
 
     if (coordinate.texture_object === "crater") {
-        object = game.floorObjectLayer.create(x - 90, y, coordinate.texture_object);
+        object = game.floorObjectLayer.create(x - 100, y+7, coordinate.texture_object);
     }
 
     coordinate.objectSprite = object;

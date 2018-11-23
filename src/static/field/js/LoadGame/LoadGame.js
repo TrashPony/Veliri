@@ -3,8 +3,8 @@ let game;
 function LoadGame(jsonMessage) {
     let gameMap = JSON.parse(jsonMessage).map;
 
-    let hexagonWidth = 80;   // ширина
-    let hexagonHeight = 100; // и высота спрайта в сетке грида
+    let hexagonWidth = 100;   // ширина
+    let hexagonHeight = 111; // и высота спрайта в сетке грида
 
     game = new Phaser.Game('100', '100', Phaser.AUTO, 'main', {
         preload: preload,

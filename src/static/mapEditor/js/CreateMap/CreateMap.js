@@ -1,7 +1,7 @@
 function CreateMap() {
 
-    let hexagonWidth = 80;
-    let hexagonHeight = 100;
+    let hexagonWidth = 100;
+    let hexagonHeight = 111;
 
     let verticalOffset = hexagonHeight * 3 / 4;
     let horizontalOffset = hexagonWidth;

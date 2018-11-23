@@ -8,7 +8,7 @@ function createGame(jsonMessage) {
         render: render
     });
 
-    game.hexagonWidth = 80;
+    game.hexagonWidth = 89;
     game.hexagonHeight = 100;
     game.shadowXOffset = 8;
     game.shadowYOffset = 10;
@@ -76,5 +76,5 @@ function GrabCamera() {
 
 function update() {
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
-    game.floorObjectLayer.sort('y', Phaser.Group.SORT_ASCENDING);
+    game.floorObjectLayer.sort('y', Phaser.Group.SORT_DESCENDING);
 }

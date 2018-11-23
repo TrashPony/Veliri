@@ -1,5 +1,6 @@
 function CreateTerrain(coordinate, x, y, q, r) {
     let floorSprite = game.floorLayer.create(x, y, "hexagon");
+    floorSprite.scale.set(0.5);
     coordinate.sprite = floorSprite;
 
     //let label = game.add.text(20, 15, q + "," + r);

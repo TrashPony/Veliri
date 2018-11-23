@@ -42,7 +42,7 @@ function CreateObjects(coordinate, x, y) {
     }
 
     if (coordinate.texture_object === "crater") {
-        object = game.floorObjectLayer.create(x - 90, y, coordinate.texture_object);
+        object = game.floorObjectLayer.create(x - 100, y+7, coordinate.texture_object);
     }
 
     coordinate.objectSprite = object;
@@ -53,7 +53,7 @@ function gameObjectCreate(x, y, texture) {
     let object = game.floorObjectLayer.create(x - 100, y, texture);
     object.anchor.setTo(0, 0);
 
-    let shadow = game.floorObjectLayer.create(x - 100 + game.shadowXOffset, y - game.shadowYOffset, texture);
+    let shadow = game.floorObjectLayer.create(x - 100 + game.shadowXOffset, y - game.shadowYOffset+15, texture);
     shadow.anchor.setTo(0, 0);
     shadow.tint = 0x000000;
     shadow.alpha = 0.6;

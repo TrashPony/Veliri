@@ -1,6 +1,8 @@
 function CreateTerrain(coordinate, x, y, q, r) {
     let floorSprite = game.floorLayer.create(x, y, "hexagon");
+    floorSprite.scale.set(0.5);
     let fogSprite = game.fogOfWar.create(x, y, 'FogOfWar');
+    fogSprite.scale.set(0.5);
 
     floorSprite.inputEnabled = true; // включаем ивенты на спрайт
     floorSprite.events.onInputOut.add(TipOff, floorSprite);
