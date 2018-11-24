@@ -2,6 +2,7 @@ package main
 
 import (
 	"./auth"
+	"./uploadFiles"
 	"./webSocket"
 	"./webSocket/chat"
 	"./webSocket/field"
@@ -22,6 +23,8 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
+
+	router.HandleFunc("/upload", uploadFiles.Upload) // метод для загрузки файлов на сервер
 
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections)

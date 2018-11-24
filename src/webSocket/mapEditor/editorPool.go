@@ -45,6 +45,18 @@ type Message struct {
 	ID    int    `json:"id"`
 	Q     int    `json:"q"`
 	R     int    `json:"r"`
+
+	IDType int `json:"id_type"`
+
+	TerrainName string `json:"terrain_name"`
+	ObjectName  string `json:"object_name"`
+	AnimateName string `json:"animate_name"`
+
+	Move   bool `json:"move"`
+	Watch  bool `json:"watch"`
+	Attack bool `json:"attack"`
+
+	Radius int `json:"radius"`
 }
 
 type Response struct {
@@ -85,6 +97,48 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "subtractHeightCoordinate" {
 			subtractHeightCoordinate(msg, ws)
+		}
+
+		if msg.Event == "placeCoordinate" {
+
+		}
+
+		if msg.Event == "loadNewTypeCoordinate" {
+			// TODO проверка на существование такого же файла что бы случайно не затереть старый
+		}
+
+		// ---------------------------- //
+		if msg.Event == "addStartRow" {
+
+		}
+
+		if msg.Event == "addEndRow" {
+
+		}
+
+		if msg.Event == "addStartRow" {
+
+		}
+
+		if msg.Event == "removeEndRow" {
+
+		}
+
+		// ---------------------------- //
+		if msg.Event == "addStartColumn" {
+
+		}
+
+		if msg.Event == "addEndColumn" {
+
+		}
+
+		if msg.Event == "removeStartColumn" {
+
+		}
+
+		if msg.Event == "removeEndColumn" {
+
 		}
 	}
 }

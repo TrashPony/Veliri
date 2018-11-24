@@ -47,22 +47,23 @@ function preload() {
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
     game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
 
+    // Map Terrains
+    game.load.image('desert', 'http://' + window.location.host + '/assets/map/terrain/desert.png');
+
     // Map Objects
-    game.load.image('desert', 'http://' + window.location.host + '/assets/map/desert.png');
+    game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/objects/terrain_1.png');
+    game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/objects/terrain_2.png');
+    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/objects/terrain_3.png');
+    game.load.image('crater', 'http://' + window.location.host + '/assets/map/objects/crater.png');
 
-    game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/terrain_1.png');
-    game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/terrain_2.png');
-    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/terrain_3.png');
-    game.load.image('crater', 'http://' + window.location.host + '/assets/map/crater.png');
+    game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/objects/sand_stone_04.png');
+    game.load.image('sand_stone_05', 'http://' + window.location.host + '/assets/map/objects/sand_stone_05.png');
+    game.load.image('sand_stone_06', 'http://' + window.location.host + '/assets/map/objects/sand_stone_06.png');
+    game.load.image('sand_stone_07', 'http://' + window.location.host + '/assets/map/objects/sand_stone_07.png');
+    game.load.image('sand_stone_08', 'http://' + window.location.host + '/assets/map/objects/sand_stone_08.png');
 
-    game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/sand_stone_04.png');
-    game.load.image('sand_stone_05', 'http://' + window.location.host + '/assets/map/sand_stone_05.png');
-    game.load.image('sand_stone_06', 'http://' + window.location.host + '/assets/map/sand_stone_06.png');
-    game.load.image('sand_stone_07', 'http://' + window.location.host + '/assets/map/sand_stone_07.png');
-    game.load.image('sand_stone_08', 'http://' + window.location.host + '/assets/map/sand_stone_08.png');
-
-    game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/fallen_01.png');
-    game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/fallen_02.png');
+    game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/objects/fallen_01.png');
+    game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
     // fog
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
@@ -92,4 +93,6 @@ function preload() {
     // Buttons
     game.load.image('buttonPlus', 'http://' + window.location.host + '/assets/buttons/buttonPlus.png');
     game.load.image('buttonMinus', 'http://' + window.location.host + '/assets/buttons/buttonMinus.png');
+
+    autoPreload();
 }

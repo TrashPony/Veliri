@@ -29,8 +29,7 @@ function CreateMapList(jsonMessage) {
 }
 
 function selectMap() {
-    let mapSelector = document.getElementById("mapSelector");
-    let selectedValue = mapSelector.options[mapSelector.selectedIndex].value;
+    let selectedValue = document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value;
 
     mapEditor.send(JSON.stringify({
         event: "SelectMap",
@@ -53,9 +52,9 @@ function appendRedactorEventsToFloor(game) {
                 for (let r in map[q]) {
                     if (map[q].hasOwnProperty(r)) {
 
-                        let buttonPlus = game.redactorButton.create(map[q][r].sprite.x + 33, map[q][r].sprite.y + 30, 'buttonPlus');
+                        let buttonPlus = game.redactorButton.create(map[q][r].sprite.x + 35, map[q][r].sprite.y + 30, 'buttonPlus');
                         buttonPlus.scale.set(0.15);
-                        let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 68, map[q][r].sprite.y + 30, 'buttonMinus');
+                        let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 70, map[q][r].sprite.y + 30, 'buttonMinus');
                         buttonMinus.scale.set(0.15);
 
                         buttonPlus.alpha = 0;
@@ -78,6 +77,7 @@ function appendRedactorEventsToFloor(game) {
                         });
 
                         map[q][r].sprite.events.onInputOver.add(function () {
+                            hideButtons(); // иногда кнопки не пропадают, а так норм )
                             buttonPlus.alpha = 1;
                             buttonMinus.alpha = 1;
                         });
@@ -95,18 +95,13 @@ function appendRedactorEventsToFloor(game) {
     }, 1000)
 }
 
-function addHeightCoordinate() {
-    mapEditor.send(JSON.stringify({
-        event: "addHeightCoordinate",
-        q: Number(this.q),
-        r: Number(this.r)
-    }));
-}
-
-function subtractHeightCoordinate() {
-    mapEditor.send(JSON.stringify({
-        event: "subtractHeightCoordinate",
-        q: Number(this.q),
-        r: Number(this.r)
-    }));
+function hideButtons() {
+    if (game.redactorButton) {
+        for (let i in game.redactorButton.children) {
+            if (game.redactorButton.children.hasOwnProperty(i)) {
+                game.redactorButton.children[i].alpha = 0;
+                game.redactorButton.children[i].events.onInputDown.removeAll();
+            }
+        }
+    }
 }
