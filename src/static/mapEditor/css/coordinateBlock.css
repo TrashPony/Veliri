@@ -2,7 +2,7 @@
     border: 1px solid #a2b6ca;
     width: 450px;
     margin: auto;
-    height: 608px;
+    height: 588px;
     border-radius: 5px;
     overflow-y: scroll;
     background: rgba(183, 195, 201, 0.29);
@@ -15,6 +15,15 @@
     margin-top: 10px;
     float: left;
 }
+
+#coordinateBlock .coordinateType:hover {
+    outline: 1px solid #f1ff08;
+}
+
+#coordinateBlock .coordinateType:active {
+    outline: 1px solid #ffffff;
+}
+
 
 #typeTip {
     border: 1px solid;

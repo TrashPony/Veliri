@@ -7,13 +7,15 @@ function ViewAllTypeCoordinate(typeCoordinates) {
         typeBlock.className = "coordinateType";
 
         if (typeCoordinates[i].texture_object === "") {
-            typeBlock.style.background = "url(/assets/map/" + typeCoordinates[i].texture_flore + ".png)  center center / contain no-repeat";
+            typeBlock.style.background = "url(/assets/map/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         } else {
-            typeBlock.style.background = "url(/assets/map/" + typeCoordinates[i].texture_object + ".png)  center center / contain no-repeat," +
-                " url(/assets/map/" + typeCoordinates[i].texture_flore + ".png)  center center / contain no-repeat";
+            typeBlock.style.background = "url(/assets/map/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
+                " url(/assets/map/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         }
 
         typeBlock.coordinateType = typeCoordinates[i];
+
+        typeBlock.onclick = PlaceCoordinate;
         typeBlock.onmousemove = tipTypeCoordinate;
         typeBlock.onmouseout = function () {
             if (document.getElementById("typeTip")) {
@@ -62,4 +64,22 @@ function CreateTipType(type) {
 
 
     document.body.appendChild(tip);
+}
+
+function PlaceCoordinate() {
+    // this.coordinateType
+    if (game && game.map && game.map.OneLayerMap) {
+
+        let map = game.map.OneLayerMap;
+
+        for (let q in map) {
+            if (map.hasOwnProperty(q)) {
+                for (let r in map[q]) {
+                    if (map[q].hasOwnProperty(r)) {
+                       // todo обозначение куда, эвент отправки сообщзения и возвращение эвентов которые были до этого
+                    }
+                }
+            }
+        }
+    }
 }

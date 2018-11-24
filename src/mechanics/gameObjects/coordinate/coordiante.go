@@ -6,25 +6,28 @@ import (
 )
 
 type Coordinate struct {
-	ID            int              `json:"id"`
-	Type          string           `json:"type"`
-	TextureFlore  string           `json:"texture_flore"`
-	TextureObject string           `json:"texture_object"`
-	GameID        int              `json:"game_id"`
-	X             int              `json:"x"`
-	Y             int              `json:"y"`
-	Z             int              `json:"z"`
-	R             int              `json:"r"`
-	Q             int              `json:"q"`
-	State         int              `json:"state"`
-	Effects       []*effect.Effect `json:"effects"`
-	Move          bool             `json:"move"`
-	View          bool             `json:"view"`
-	Attack        bool             `json:"attack"`
-	PassableEdges bool             `json:"passable_edges"`
-	Level         int              `json:"level"`
-	H, G, F       int
-	Parent        *Coordinate
+	ID                  int              `json:"id"`
+	Type                string           `json:"type"`
+	TextureFlore        string           `json:"texture_flore"`
+	TextureObject       string           `json:"texture_object"`
+	AnimateSpriteSheets string           `json:"animate_sprite_sheets"`
+	AnimateLoop         bool             `json:"animate_loop"`
+	ImpactRadius        int              `json:"impact_radius"`
+	Impact              *Coordinate      `json:"impact"`
+	GameID              int              `json:"game_id"`
+	X                   int              `json:"x"`
+	Y                   int              `json:"y"`
+	Z                   int              `json:"z"`
+	R                   int              `json:"r"`
+	Q                   int              `json:"q"`
+	State               int              `json:"state"`
+	Effects             []*effect.Effect `json:"effects"`
+	Move                bool             `json:"move"`
+	View                bool             `json:"view"`
+	Attack              bool             `json:"attack"`
+	Level               int              `json:"level"`
+	H, G, F             int
+	Parent              *Coordinate
 }
 
 func (coor *Coordinate) GetZ() int {

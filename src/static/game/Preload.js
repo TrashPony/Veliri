@@ -88,4 +88,8 @@ function preload() {
 
     //  Load the Google WebFont Loader script
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
+    // Buttons
+    game.load.image('buttonPlus', 'http://' + window.location.host + '/assets/buttons/buttonPlus.png');
+    game.load.image('buttonMinus', 'http://' + window.location.host + '/assets/buttons/buttonMinus.png');
 }

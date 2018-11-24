@@ -33,7 +33,9 @@ func Map(mapID int) _map.Map {
 func CoordinatesMap(mp *_map.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.q, mc.r, ct.type, ct.texture_flore, ct.texture_object, ct.move, ct.view, ct.attack, ct.passable_edges, mc.level "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.q, mc.r, ct.type, ct.texture_flore, "+
+		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
+		"ct.impact_radius, mc.impact "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -44,12 +46,17 @@ func CoordinatesMap(mp *_map.Map) {
 	defer rows.Close()
 
 	for rows.Next() { // заполняем карту значащами клетками
+		var impact string
 		var gameCoordinate coordinate.Coordinate
-		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.Q, &gameCoordinate.R, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
-			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.PassableEdges, &gameCoordinate.Level)
+		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.Q, &gameCoordinate.R, &gameCoordinate.Type,
+			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move, &gameCoordinate.View,
+			&gameCoordinate.Attack, &gameCoordinate.Level, &gameCoordinate.AnimateSpriteSheets,
+			&gameCoordinate.AnimateLoop, &gameCoordinate.ImpactRadius, &impact)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		gameCoordinate.Impact = ParseTarget(impact)
 
 		CoordinateEffects(&gameCoordinate)
 
@@ -98,7 +105,8 @@ func CoordinatesMap(mp *_map.Map) {
 }
 
 func DefaultCoordinateType(mp *_map.Map) coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT type, texture_flore, texture_object, move, view, attack, passable_edges "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT type, texture_flore, texture_object, move, view, "+
+		"attack, animate_sprite_sheets, animate_loop, impact_radius "+
 		"FROM coordinate_type "+
 		"WHERE id = $1;", strconv.Itoa(mp.DefaultTypeID))
 
@@ -113,7 +121,8 @@ func DefaultCoordinateType(mp *_map.Map) coordinate.Coordinate {
 
 	for rows.Next() {
 		err := rows.Scan(&gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
-			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.PassableEdges)
+			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
+			&gameCoordinate.AnimateLoop, &gameCoordinate.ImpactRadius)
 		if err != nil {
 			println("Get Default coordinate type")
 			log.Fatal(err)
@@ -149,7 +158,8 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 }
 
 func AllTypeCoordinate() []*coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, attack FROM coordinate_type")
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, " +
+		"attack, animate_sprite_sheets, animate_loop, impact_radius FROM coordinate_type")
 	if err != nil {
 		println("get all type coordinates")
 		log.Fatal(err)
@@ -160,8 +170,9 @@ func AllTypeCoordinate() []*coordinate.Coordinate {
 	for rows.Next() {
 		var gameCoordinate coordinate.Coordinate
 
-		rows.Scan(&gameCoordinate.ID, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move,
-			&gameCoordinate.View, &gameCoordinate.Attack)
+		rows.Scan(&gameCoordinate.ID, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
+			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
+			&gameCoordinate.AnimateLoop, &gameCoordinate.ImpactRadius)
 
 		CoordinateEffects(&gameCoordinate)
 		coordinates = append(coordinates, &gameCoordinate)

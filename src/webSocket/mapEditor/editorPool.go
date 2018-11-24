@@ -43,6 +43,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 type Message struct {
 	Event string `json:"event"`
 	ID    int    `json:"id"`
+	Q     int    `json:"q"`
+	R     int    `json:"r"`
 }
 
 type Response struct {
@@ -75,6 +77,14 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "getAllTypeCoordinate" {
 			getAllCoordinate(msg, ws)
+		}
+
+		if msg.Event == "addHeightCoordinate" {
+			addHeightCoordinate(msg, ws)
+		}
+
+		if msg.Event == "subtractHeightCoordinate" {
+			subtractHeightCoordinate(msg, ws)
 		}
 	}
 }

@@ -59,6 +59,8 @@ function create(game) {
     game.fogOfWar = game.add.group();
     game.fogOfWar.alpha = 0.5;
 
+    game.redactorButton = game.add.group();
+
     CreateMap();
     if (game && game.typeService === "battle") {
         CreateMyGameUnits();
