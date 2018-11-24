@@ -7,11 +7,12 @@
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="./css/head.css" rel="stylesheet">
     <link href="./css/coordinates.css" rel="stylesheet">
+    <link href="./css/coordinateBlock.css" rel="stylesheet">
 
     <script src="./js/webSocket.js"></script>
     <script src="./js/ReaderMapEditor.js"></script>
     <script src="./js/GetMapList.js"></script>
-    <script src="./js/createGame.js"></script>
+    <script src="./js/ViewAllTypeCoordinate.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -41,12 +42,40 @@
         <select title="mapSelector" id="mapSelector" onchange="selectMap();">
             <option value="" disabled selected>Выберите карту</option>
         </select>
+        <table>
+            <tr><td colspan="3">Столбецы:</td></tr>
+            <tr><td>Начало</td><td><input type="submit" value="+"></td><td><input type="submit" value="-"></td></tr>
+            <tr><td>Конец</td><td><input type="submit" value="+"></td><td><input type="submit" value="-"></td></tr>
+        </table>
+        <table>
+            <tr><td colspan="3">Строки:</td></tr>
+            <tr><td>Начало</td><td><input type="submit" value="+"></td><td><input type="submit" value="-"></td></tr>
+            <tr><td>Конец</td><td><input type="submit" value="+"></td><td><input type="submit" value="-"></td></tr>
+        </table>
     </div>
+    <div id="newCoordinate">
+        <h4>Создать новый тип координаты: </h4>
+
+        <table>
+            <tr><td> Текстура земли </td><td><input type="file"></td></tr>
+            <tr><td> Текстура обьекта </td><td><input type="file"></td></tr>
+            <tr><td> Анимация спрайта </td><td><input type="file"></td></tr>
+            <tr><td> Эффекты </td><td><input type="submit" value="+"><input type="submit" value="-"></td></tr>
+            <tr><td> Через нее можно смотреть </td><td><input type="checkbox" checked title="watch"></td></tr>
+            <tr><td> Через нее можно ходить </td><td><input type="checkbox" checked title="move"></td></tr>
+            <tr><td> Через нее можно стрелять </td><td><input type="checkbox" checked title="attack"></td></tr>
+        </table>
+
+        <input type="submit" value="Загрузить">
+    </div>
+
     <div id="main">
 
     </div>
-    <div id="coordinates">
 
+    <div id="coordinates">
+        <h3>Типы Координат</h3>
+        <div id="coordinateBlock"></div>
     </div>
 </div>
 </body>

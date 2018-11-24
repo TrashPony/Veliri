@@ -1,12 +1,4 @@
-#coordinates {
-    float: right;
-    height: 800px;
-    width: 280px;
-    margin-top: 10px;
-    background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    border-radius: 10px;
-}
+
 
 #mapSelector {
     float: left;

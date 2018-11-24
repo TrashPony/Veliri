@@ -1,8 +1,4 @@
 function CreateGame(map) {
-
-    let hexagonWidth = 100;   // ширина
-    let hexagonHeight = 111;  // и высота спрайта в сетке грида
-
     let game = new Phaser.Game('100', '100', Phaser.AUTO, 'main', {
         preload: preload,
         create: create,
@@ -14,8 +10,8 @@ function CreateGame(map) {
     game.map = map;
 
     // размеры гексов карты по умолчанию
-    game.hexagonWidth = hexagonWidth;
-    game.hexagonHeight = hexagonHeight;
+    game.hexagonWidth = 100;
+    game.hexagonHeight = 111;
 
     // параметры смещения тени игры
     game.shadowXOffset = 8;
@@ -33,7 +29,7 @@ function create(game) {
     game.time.slowMotion = 0;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-    game.world.setBounds(0, 0, game.hexagonHeight * game.map.QSize, game.hexagonHeight * game.map.RSize); //размеры карты
+    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize/2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.floorLayer = game.add.group();

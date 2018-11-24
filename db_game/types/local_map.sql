@@ -25,7 +25,7 @@ CREATE TABLE coordinate_type (
   move           BOOLEAN,     /* определяет можно ли ходить через эту координату */
   view           BOOLEAN,     /* определяет можно ли видить через эту координату */
   attack         BOOLEAN,     /* определяет можно ли атаковать через эту координату */
-  passable_edges BOOLEAN      /* определяет можно ли проходить на искосок от коорднаты */
+  passable_edges BOOLEAN      /* todo удолить т.к. у нас гексы */
 );
 
 CREATE TABLE coordinate_type_effect (

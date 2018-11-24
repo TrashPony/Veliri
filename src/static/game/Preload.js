@@ -48,11 +48,11 @@ function preload() {
     game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
 
     // Map Objects
-    game.load.image('hexagon', 'http://' + window.location.host + '/assets/map/hexagon.png');
+    game.load.image('desert', 'http://' + window.location.host + '/assets/map/desert.png');
 
-    game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/tree1.png');
-    game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/tree2.png');
-    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/tree3.png');
+    game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/terrain_1.png');
+    game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/terrain_2.png');
+    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/terrain_3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/crater.png');
 
     game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/sand_stone_04.png');

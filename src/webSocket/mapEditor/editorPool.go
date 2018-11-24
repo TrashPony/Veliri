@@ -1,6 +1,7 @@
 package mapEditor
 
 import (
+	"../../mechanics/gameObjects/coordinate"
 	gameMap "../../mechanics/gameObjects/map"
 	"../../mechanics/player"
 	"../../mechanics/players"
@@ -45,10 +46,11 @@ type Message struct {
 }
 
 type Response struct {
-	Event string        `json:"event"`
-	Map   gameMap.Map   `json:"map"`
-	Maps  []gameMap.Map `json:"maps"`
-	Error string        `json:"error"`
+	Event           string                   `json:"event"`
+	Map             gameMap.Map              `json:"map"`
+	Maps            []gameMap.Map            `json:"maps"`
+	TypeCoordinates []*coordinate.Coordinate `json:"type_coordinates"`
+	Error           string                   `json:"error"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -69,6 +71,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "SelectMap" {
 			selectMap(msg, ws)
+		}
+
+		if msg.Event == "getAllTypeCoordinate" {
+			getAllCoordinate(msg, ws)
 		}
 	}
 }

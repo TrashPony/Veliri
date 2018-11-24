@@ -147,3 +147,25 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 		mapCoordinate.Effects = append(mapCoordinate.Effects, &coordinateEffect)
 	}
 }
+
+func AllTypeCoordinate() []*coordinate.Coordinate {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, attack FROM coordinate_type")
+	if err != nil {
+		println("get all type coordinates")
+		log.Fatal(err)
+	}
+
+	coordinates := make([]*coordinate.Coordinate, 0)
+
+	for rows.Next() {
+		var gameCoordinate coordinate.Coordinate
+
+		rows.Scan(&gameCoordinate.ID, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move,
+			&gameCoordinate.View, &gameCoordinate.Attack)
+
+		CoordinateEffects(&gameCoordinate)
+		coordinates = append(coordinates, &gameCoordinate)
+	}
+
+	return coordinates
+}

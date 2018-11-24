@@ -119,3 +119,34 @@ input:hover {
 .moveWindow:hover {
     color: #00fffd;
 }
+
+/* CUSTOM SCROLLBAR */
+body ::-webkit-scrollbar,
+body ::-webkit-scrollbar:horizontal {
+    width: 12px;
+}
+
+body ::-webkit-scrollbar {
+    border-radius: 10px;
+    background: #a5d5ef;
+    border: 1px solid #25a0e1;
+
+}
+
+/* DISABLED STATES */
+body ::-webkit-scrollbar:disabled {
+    border-radius: 10px;
+    background: #a5d5ef;
+}
+
+/* HANDLE */
+body ::-webkit-scrollbar-thumb,
+body ::-webkit-scrollbar-thumb:window-inactive,
+body ::-webkit-scrollbar-thumb:disabled {
+    border-radius: 10px;
+    border: 1px solid #25a0e1;
+    background-size: 5px 2px;
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+}
+
+/*--------*/

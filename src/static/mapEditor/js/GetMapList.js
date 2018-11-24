@@ -2,6 +2,10 @@ function GetMapList() {
     mapEditor.send(JSON.stringify({
         event: "getMapList"
     }));
+
+    mapEditor.send(JSON.stringify({
+        event: "getAllTypeCoordinate"
+    }));
 }
 
 let game;
@@ -36,4 +40,6 @@ function selectMap() {
 
 function createGame(jsonMessage) {
     game = CreateGame(JSON.parse(jsonMessage).map);
+
+    // TODO создание эввентов на удаление терейнов game.map
 }
