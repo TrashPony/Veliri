@@ -49,6 +49,7 @@ function preload() {
 
     // Map Terrains
     game.load.image('desert', 'http://' + window.location.host + '/assets/map/terrain/desert.png');
+    game.load.image('desert_2', 'http://' + window.location.host + '/assets/map/terrain/desert_2.png');
 
     // Map Objects
     game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/objects/terrain_1.png');

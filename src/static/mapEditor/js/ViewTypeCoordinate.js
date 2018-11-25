@@ -1,7 +1,7 @@
 function ViewPatternCoordinate(typeCoordinates) {
 
     let coordinateBlock = document.getElementById("coordinateBlock");
-
+    console.log(typeCoordinates)
     for (let i = 0; i < typeCoordinates.length; i++) {
         let typeBlock = document.createElement("div");
         typeBlock.className = "coordinateType";
@@ -13,10 +13,14 @@ function ViewPatternCoordinate(typeCoordinates) {
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         }
 
+        if (typeCoordinates[i].type === "respawn") {
+            typeBlock.innerText = "RESPAWN";
+        }
+
         typeBlock.coordinateType = typeCoordinates[i];
 
         typeBlock.onclick = function (){
-            PlaceCoordinate("placeCoordinate");
+            PlaceCoordinate("placeCoordinate", typeCoordinates[i]);
         };
         typeBlock.onmousemove = tipTypeCoordinate;
         typeBlock.onmouseout = function () {
@@ -39,9 +43,10 @@ function ViewTerrainCoordinate(typeCoordinates) {
             typeBlock.style.background = "url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
 
             typeBlock.id = typeCoordinates[i].texture_flore;
+            typeBlock.coordinateType = typeCoordinates[i];
 
             typeBlock.onclick = function (){
-                PlaceCoordinate("placeTerrain");
+                PlaceCoordinate("placeTerrain", typeCoordinates[i]);
             };
             coordinateBlock.appendChild(typeBlock);
         }
@@ -60,9 +65,10 @@ function ViewObjectsCoordinate(typeCoordinates) {
             typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat";
 
             typeBlock.id = typeCoordinates[i].texture_object;
+            typeBlock.coordinateType = typeCoordinates[i];
 
             typeBlock.onclick = function (){
-                PlaceCoordinate("placeObjects");
+                PlaceCoordinate("placeObjects", typeCoordinates[i]);
             };
             coordinateBlock.appendChild(typeBlock);
         }
@@ -84,9 +90,10 @@ function ViewAnimateObjectsCoordinate(typeCoordinates) {
             typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / 90% no-repeat";
 
             typeBlock.id = typeCoordinates[i].animate_sprite_sheets;
+            typeBlock.coordinateType = typeCoordinates[i];
 
             typeBlock.onclick = function (){
-                PlaceCoordinate("placeAnimate");
+                PlaceCoordinate("placeAnimate", typeCoordinates[i]);
             };
             coordinateBlock.appendChild(typeBlock);
         }

@@ -1,22 +1,27 @@
 function addHeightCoordinate() {
-    mapEditor.send(JSON.stringify({
-        event: "addHeightCoordinate",
-        id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-        q: Number(this.q),
-        r: Number(this.r)
-    }));
+    if (game.input.activePointer.leftButton.isDown) {
+        mapEditor.send(JSON.stringify({
+            event: "addHeightCoordinate",
+            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+            q: Number(this.q),
+            r: Number(this.r)
+        }));
+    }
 }
 
 function subtractHeightCoordinate() {
-    mapEditor.send(JSON.stringify({
-        event: "subtractHeightCoordinate",
-        id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-        q: Number(this.q),
-        r: Number(this.r)
-    }));
+    if (game.input.activePointer.leftButton.isDown) {
+        mapEditor.send(JSON.stringify({
+            event: "subtractHeightCoordinate",
+            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+            q: Number(this.q),
+            r: Number(this.r)
+        }));
+    }
 }
 
-function PlaceCoordinate(event) {
+function PlaceCoordinate(event, type) {
+
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
@@ -31,10 +36,11 @@ function PlaceCoordinate(event) {
                         selectedSprite.inputEnabled = true;
 
                         selectedSprite.events.onInputDown.add(function () {
+                            console.log(this);
                             mapEditor.send(JSON.stringify({
                                 event: event,
                                 id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-                                id_type:  Number(this.id),
+                                id_type:  Number(type.id),
                                 q: Number(q),
                                 r: Number(r)
                             }));

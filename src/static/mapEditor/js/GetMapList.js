@@ -38,6 +38,11 @@ function selectMap() {
 }
 
 function createGame(jsonMessage) {
+
+    if (game) {
+        game.destroy();
+    }
+
     game = CreateGame(JSON.parse(jsonMessage).map);
     appendRedactorEventsToFloor(game)
 }
@@ -68,6 +73,7 @@ function appendRedactorEventsToFloor(game) {
                             buttonPlus.alpha = 1;
                             buttonMinus.alpha = 1;
                             buttonPlus.events.onInputDown.add(addHeightCoordinate, map[q][r]);
+
                         });
 
                         buttonMinus.events.onInputOver.add(function () {
@@ -92,7 +98,7 @@ function appendRedactorEventsToFloor(game) {
                 }
             }
         }
-    }, 2500)
+    }, 1500)
 }
 
 function hideButtons() {

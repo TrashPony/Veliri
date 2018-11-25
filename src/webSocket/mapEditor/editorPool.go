@@ -1,6 +1,8 @@
 package mapEditor
 
 import (
+	"../../mechanics/db/get"
+	"../../mechanics/db/mapEditor"
 	"../../mechanics/gameObjects/coordinate"
 	gameMap "../../mechanics/gameObjects/map"
 	"../../mechanics/player"
@@ -88,33 +90,32 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "getAllTypeCoordinate" {
-			getAllCoordinate(msg, ws)
+			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: get.AllTypeCoordinate()})
 		}
 
 		if msg.Event == "addHeightCoordinate" {
-			// TODO  увеличить высоту координате
-			addHeightCoordinate(msg, ws)
+			mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, 1)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "subtractHeightCoordinate" {
-			// TODO уменьшить высоту координате
-			subtractHeightCoordinate(msg, ws)
+			mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, -1)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeCoordinate" {
-			// TODO  просмот замена координаты на тип в id
+			mapEditor.PlaceCoordinate(msg.ID, msg.IDType, msg.Q, msg.R)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeTerrain" {
-			// TODO взять терейн из координаты по id, взятие координа на карте если там есть обьект
-			// TODO посмотреть есть ли в бд такая координата земля+обьект, если есть ставим ее, если нет создаем новую и ставим ее
-			// TODO все мето данные радиуса, разрешений берем из координаты на которой стоит обьект (обьект всезда задает все параметры)
+			mapEditor.PlaceTerrain(msg.ID, msg.IDType, msg.Q, msg.R)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeObjects" {
-			// TODO взять обьект из координаты по id, взять координату на карте и взять от туда терейн
-			// TODO посмотреть есть ли в бд такая координата земля+обьект, если есть ставим ее, если нет создаем новую и ставим ее
-			// TODO все мето данные радиуса, разрешений берем из координаты на которой стоит обьект (обьект всезда задает все параметры)
+			mapEditor.PlaceObject(msg.ID, msg.IDType, msg.Q, msg.R)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeAnimate" {

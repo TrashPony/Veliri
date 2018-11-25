@@ -2,7 +2,11 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
     let floorSprite = game.floorLayer.create(x, y, coordinate.texture_flore);
     floorSprite.scale.set(0.5);
+
     floorSprite.inputEnabled = true; // включаем ивенты на спрайт
+    floorSprite.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
+    floorSprite.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
+
     floorSprite.events.onInputOut.add(TipOff, floorSprite);
     floorSprite.z = 0;
     coordinate.sprite = floorSprite;
@@ -28,6 +32,12 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
     if (coordinate.level === 4) {
         let style = {font: "36px Arial", fill: "#fff523", align: "center"};
+        let label = game.add.text(50, 55, coordinate.level, style);
+        floorSprite.addChild(label);
+    }
+
+    if (coordinate.level === 5) {
+        let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
         let label = game.add.text(50, 55, coordinate.level, style);
         floorSprite.addChild(label);
     }
