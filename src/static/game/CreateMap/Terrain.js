@@ -15,17 +15,19 @@ function CreateTerrain(coordinate, x, y, q, r) {
         coordinate.fogSprite = fogSprite;
     }
 
-    //let label = game.add.text(20, 15, q + "," + r);
-    //floorSprite.addChild(label);
+    if (game && game.typeService !== "battle") {
+        let label = game.add.text(110, 35, q + "," + r);
+        floorSprite.addChild(label);
+    }
 
     if (coordinate.level === 3) {
-        let style = { font: "36px Arial", fill: "#68ff59", align: "center" };
+        let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
         let label = game.add.text(50, 55, coordinate.level, style);
         floorSprite.addChild(label);
     }
 
     if (coordinate.level === 4) {
-        let style = { font: "36px Arial", fill: "#fff523", align: "center" };
+        let style = {font: "36px Arial", fill: "#fff523", align: "center"};
         let label = game.add.text(50, 55, coordinate.level, style);
         floorSprite.addChild(label);
     }

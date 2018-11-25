@@ -1,0 +1,30 @@
+#navBar {
+    height: 20px;
+    width: 100%;
+    border-bottom: 0;
+    border-radius: 4px;
+}
+
+#navBar div {
+    height: 18px;
+    width: 107px;
+    border: 1px solid #a2b6ca;
+    border-top: 0;
+    border-radius: 4px;
+    float: left;
+    user-select: none;
+}
+
+#navBar div:hover {
+    background-color: #6c6c6c;
+}
+
+#navBar div:active {
+    background-color: #88a9c5;
+}
+
+#navBar .active {
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    background-color: rgba(137, 68, 18, 0.55);
+}

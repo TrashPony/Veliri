@@ -92,7 +92,7 @@ function appendRedactorEventsToFloor(game) {
                 }
             }
         }
-    }, 1000)
+    }, 2500)
 }
 
 function hideButtons() {

@@ -16,7 +16,7 @@ function subtractHeightCoordinate() {
     }));
 }
 
-function PlaceCoordinate() {
+function PlaceCoordinate(event) {
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
@@ -32,11 +32,11 @@ function PlaceCoordinate() {
 
                         selectedSprite.events.onInputDown.add(function () {
                             mapEditor.send(JSON.stringify({
-                                event: "placeCoordinate",
+                                event: event,
                                 id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-                                id_type: this.id,
-                                q: q,
-                                r: r
+                                id_type:  Number(this.id),
+                                q: Number(q),
+                                r: Number(r)
                             }));
 
                             while (game.SelectLayer && game.SelectLayer.children.length > 0) {

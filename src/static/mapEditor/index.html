@@ -8,13 +8,16 @@
     <link href="./css/head.css" rel="stylesheet">
     <link href="./css/coordinates.css" rel="stylesheet">
     <link href="./css/coordinateBlock.css" rel="stylesheet">
+    <link href="./css/navBar.css" rel="stylesheet">
 
     <script src="./js/webSocket.js"></script>
     <script src="./js/ReaderMapEditor.js"></script>
     <script src="./js/GetMapList.js"></script>
-    <script src="./js/ViewAllTypeCoordinate.js"></script>
+    <script src="./js/ViewTypeCoordinate.js"></script>
     <script src="./js/Editor.js"></script>
     <script src="./js/CreateNewType.js"></script>
+    <script src="./js/NavBar.js"></script>
+
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -78,7 +81,15 @@
 
     <div id="coordinates">
         <h3>Типы Координат</h3>
-        <div id="coordinateBlock"></div>
+
+        <div id="coordinateBlock">
+            <div id="navBar">
+                <div id="oneMenu" class="active" data-id-menu = "1" onclick="getTypesCoordinate(1)"> Шаблоны </div>
+                <div id="twoMenu" data-id-menu = "2" onclick="getTypesCoordinate(2)"> Местность </div>
+                <div id="threeMenu" data-id-menu = "3" onclick="getTypesCoordinate(3)"> Обьекты </div>
+                <div id="fourMenu" data-id-menu = "4" onclick="getTypesCoordinate(4)"> Аним. обьекты </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

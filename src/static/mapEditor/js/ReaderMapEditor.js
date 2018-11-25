@@ -9,6 +9,6 @@ function ReaderMapEditor(jsonMessage) {
     }
 
     if (JSON.parse(jsonMessage).event === "getAllTypeCoordinate") {
-        ViewAllTypeCoordinate(JSON.parse(jsonMessage).type_coordinates)
+        createCoordinateMenu(JSON.parse(jsonMessage).type_coordinates)
     }
 }
