@@ -17,7 +17,7 @@
     <script src="./js/Editor.js"></script>
     <script src="./js/CreateNewType.js"></script>
     <script src="./js/NavBar.js"></script>
-
+    <script src="./js/SizeMap.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -57,6 +57,12 @@
             <tr><td>Начало</td><td><input type="submit" value="+" onclick="SendCommand('addStartRow')"></td><td><input type="submit" value="-" onclick="SendCommand('removeStartRow')"></td></tr>
             <tr><td>Конец</td><td><input type="submit" value="+" onclick="SendCommand('addEndRow')"></td><td><input type="submit" value="-" onclick="SendCommand('removeEndRow')"></td></tr>
         </table>
+
+        <div id="sizeMap">
+            <h4>Масштаб карты</h4>
+            <input onclick="SizeGameMap(0.05)" type="submit" value="+" title="+">
+            <input onclick="SizeGameMap(-0.05)" type="submit" value="-" title="-">
+        </div>
     </div>
     <div id="newCoordinate">
         <h4>Создать новый тип координаты: </h4>
