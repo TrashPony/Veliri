@@ -121,7 +121,6 @@ func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int) {
 			mapCoor := getMapCoordinateInMC(idMap, coor.Q, coor.R)
 
 			if mapCoor != nil {
-				// TODO не происходит обновления
 				// добавляем тип координате такой же как у то что влияет, типо она под влияющей.
 				_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET id_type = $1, impact = $5 "+
 					" WHERE id_map = $2 AND q=$3 AND r = $4",

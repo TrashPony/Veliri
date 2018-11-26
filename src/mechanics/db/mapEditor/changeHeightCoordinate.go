@@ -11,6 +11,11 @@ func ChangeHeightCoordinate(idMap, q, r, change int) {
 
 	if changeCoordinate != nil {
 
+		if changeCoordinate.Impact != nil {
+			// todo если координата с радиусов то высоту выставлять сразу у всего радиуса
+			return
+		}
+
 		level := changeCoordinate.Level + change
 
 		if level > 5 {

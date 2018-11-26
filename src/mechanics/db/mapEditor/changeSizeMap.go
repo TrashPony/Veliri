@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// todo если есть координаты с радиусом часть которых вышла из небытия то этим координатам надо давать соответвующий тип и impact
 // ------ ROWS ------- //
 func AddStartRow(mapID int) {
 	rOffset(1, mapID)
@@ -31,7 +32,7 @@ func RemoveStartRow(mapID int) {
 
 func RemoveEndRow(mapID int) {
 	qSize, rSize := getSizeMap(mapID)
-	removeAllRCoordinate(rSize, mapID)
+	removeAllRCoordinate(rSize-1, mapID) // -1 потому что отсчет на карте идет с нуля
 	rSize--
 	setNewSizeMap(qSize, rSize, mapID)
 }
@@ -62,7 +63,7 @@ func RemoveStartColumn(mapID int) {
 
 func RemoveEndColumn(mapID int) {
 	qSize, rSize := getSizeMap(mapID)
-	removeAllQCoordinate(qSize, mapID)
+	removeAllQCoordinate(qSize-1, mapID) // -1 потому что отсчет на карте идет с нуля
 	qSize--
 	setNewSizeMap(qSize, rSize, mapID)
 }
