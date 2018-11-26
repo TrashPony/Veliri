@@ -94,3 +94,18 @@ func getDefaultMap(idMap int) (level, coordinateType int) {
 
 	return defaultLevel, defaultType
 }
+
+func getSizeMap(idMap int) (qSize, rSize int) {
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT q_size, r_size FROM maps WHERE id = $1", idMap)
+	if err != nil {
+		log.Fatal("get default level and type map in editor map " + err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		rows.Scan(&qSize, &rSize)
+	}
+
+	return qSize, rSize
+}

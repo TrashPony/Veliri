@@ -130,44 +130,44 @@ func Reader(ws *websocket.Conn) {
 
 		// ---------------------------- //
 		if msg.Event == "addStartRow" {
-			// todo перенести все обьекты +1 к R
-			// todo добавить строку
+			mapEditor.AddStartRow(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addEndRow" {
-			// todo просто увеличиваем высоту карты на 1
+			mapEditor.AddEndRow(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeStartRow" {
-			// todo удаляем все координаты из таблицы конструктор карты по первой строке,
-			// todo смещаем все обьекты вниз на -1 R,
-			// todo уменьшаем высоту карты на 1
+			mapEditor.RemoveStartRow(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeEndRow" {
-			// todo удаляем все координаты из таблицы конструктор карты по поледней строке,
-			// todo уменьшаем высоту карты на 1
+			mapEditor.RemoveEndRow(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		// ---------------------------- //
 		if msg.Event == "addStartColumn" {
-			// todo перенести все обьекты +1 к Q
-			// todo добавить столбец
+			mapEditor.AddStartColumn(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addEndColumn" {
-			// todo просто увеличиваем длинну карты на 1
+			mapEditor.AddEndColumn(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeStartColumn" {
-			// todo удаляем все координаты из таблицы конструктор карты по первому столбцу,
-			// todo смещаем все обьекты вправо на +1 Q,
-			// todo уменьшаем длинну карты на 1
+			mapEditor.RemoveStartColumn(msg.ID)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeEndColumn" {
-			// todo удаляем все координаты из таблицы конструктор карты по поледнему столбцу,
-			// todo уменьшаем высоту карты на 1
+			mapEditor.RemoveEndColumn(msg.ID)
+			selectMap(msg, ws)
 		}
 	}
 }
