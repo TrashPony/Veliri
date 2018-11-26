@@ -4,6 +4,8 @@ import (
 	"../../../dbConnect"
 	"../../gameObjects/coordinate"
 	"log"
+	"strconv"
+	"strings"
 )
 
 func getTypeByID(idType int) *coordinate.Coordinate {
@@ -56,8 +58,9 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	var level int
 	var idType int
 	var id int
+	var impact string
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type FROM map_constructor WHERE id_map = $1 AND q=$2 AND r = $3",
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type, impact FROM map_constructor WHERE id_map = $1 AND q=$2 AND r = $3",
 		idMap, q, r)
 	if err != nil {
 		log.Fatal("get mc coordinate in editor map " + err.Error())
@@ -65,7 +68,7 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&id, &level, &idType)
+		rows.Scan(&id, &level, &idType, &impact)
 	}
 
 	if id == 0 {
@@ -73,8 +76,25 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	} else {
 		mcCoordinate := getTypeByID(idType)
 		mcCoordinate.Level = level
-
+		mcCoordinate.Impact = ParseImpact(impact)
 		return mcCoordinate
+	}
+}
+
+func ParseImpact(targetKey string) *coordinate.Coordinate {
+	targetCell := strings.Split(targetKey, ":")
+
+	if len(targetCell) > 1 {
+		q, ok := strconv.Atoi(targetCell[0])
+		r, ok := strconv.Atoi(targetCell[1])
+		if ok == nil {
+			target := coordinate.Coordinate{Q: q, R: r}
+			return &target
+		} else {
+			return nil
+		}
+	} else {
+		return nil
 	}
 }
 

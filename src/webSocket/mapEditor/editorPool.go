@@ -119,9 +119,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "placeAnimate" {
-			// TODO взять анимацию из координаты по id, взять координату на карте и взять от туда терейн
-			// TODO посмотреть есть ли в бд такая координата земля+анимацию, если есть ставим ее, если нет создаем новую и ставим ее
-			// TODO все мето данные радиуса, разрешений берем из координаты на которой стоит анимацию (анимацию всезда задает все параметры)
+			mapEditor.PlaceAnimate(msg.ID, msg.IDType, msg.Q, msg.R)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "loadNewTypeCoordinate" {

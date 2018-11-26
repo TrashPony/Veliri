@@ -56,6 +56,7 @@ function preload() {
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/objects/terrain_2.png');
     game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/objects/terrain_3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/objects/crater.png');
+    game.load.image('base', 'http://' + window.location.host + '/assets/map/objects/base.png');
 
     game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/objects/sand_stone_04.png');
     game.load.image('sand_stone_05', 'http://' + window.location.host + '/assets/map/objects/sand_stone_05.png');

@@ -74,3 +74,9 @@ func (coor *Coordinate) Key() string { //создает уникальный к�
 func (coor *Coordinate) Equal(b *Coordinate) bool { // сравнивает точки на одинаковость
 	return coor.Q == b.Q && coor.R == b.R
 }
+
+func (coor *Coordinate) CalculateXYZ() {
+	coor.X = coor.Q - (coor.R-(coor.R&1))/2
+	coor.Z = coor.R
+	coor.Y = -coor.X - coor.Z
+}
