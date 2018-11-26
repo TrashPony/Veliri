@@ -11,8 +11,8 @@ func PlaceObject(idMap, idType, q, r int) {
 		oldType = getTypeByID(defaultType)
 		oldType.Level = defaultLevel
 	}
-
-	newType := getTypeByTerrainAndObject(oldType.TextureFlore, newObject.TextureObject)
+	// т.к. мы ставим именно обьект, то можем игнорировать анимацию
+	newType := getTypeByTerrainAndObject(oldType.TextureFlore, newObject.TextureObject, "")
 
 	if newType != nil {
 		PlaceCoordinate(idMap, newType.ID, q, r)

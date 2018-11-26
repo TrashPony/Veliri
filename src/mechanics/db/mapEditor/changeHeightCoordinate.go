@@ -17,6 +17,10 @@ func ChangeHeightCoordinate(idMap, q, r, change int) {
 			level = 5
 		}
 
+		if level < 0 {
+			level = 0
+		}
+
 		_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET level = $1 WHERE id_map = $2 AND q=$3 AND r = $4",
 			level, idMap, q, r)
 		if err != nil {
@@ -30,6 +34,10 @@ func ChangeHeightCoordinate(idMap, q, r, change int) {
 
 		if defaultLevel > 5 {
 			defaultLevel = 5
+		}
+
+		if defaultLevel < 0 {
+			defaultLevel = 0
 		}
 
 		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact) VALUES ($1, $2, $3, $4, $5, '')",

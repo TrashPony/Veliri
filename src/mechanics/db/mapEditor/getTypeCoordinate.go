@@ -25,11 +25,11 @@ func getTypeByID(idType int) *coordinate.Coordinate {
 	return &coordinateType
 }
 
-func getTypeByTerrainAndObject(textureFlore, textureObject string) *coordinate.Coordinate {
+func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coordinate.Coordinate {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, "+
-		"attack, animate_sprite_sheets, animate_loop, impact_radius FROM coordinate_type WHERE texture_flore=$1 AND texture_object=$2",
-		textureFlore, textureObject)
+		"attack, animate_sprite_sheets, animate_loop, impact_radius FROM coordinate_type WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
+		textureFlore, textureObject, animate)
 	if err != nil {
 		println("get by Flore and Object coordinates in map editor")
 		log.Fatal(err)

@@ -10,9 +10,9 @@ func PlaceTerrain(idMap, idType, q, r int) {
 	var newType *coordinate.Coordinate
 
 	if oldType != nil {
-		newType = getTypeByTerrainAndObject(newTerrain.TextureFlore, oldType.TextureObject)
+		newType = getTypeByTerrainAndObject(newTerrain.TextureFlore, oldType.TextureObject, oldType.AnimateSpriteSheets)
 	} else {
-		newType = getTypeByTerrainAndObject(newTerrain.TextureFlore, "")
+		newType = getTypeByTerrainAndObject(newTerrain.TextureFlore, "", "")
 	}
 
 	if newType != nil {
@@ -21,7 +21,7 @@ func PlaceTerrain(idMap, idType, q, r int) {
 		var newId int
 		if oldType != nil {
 			newId = AddNewTypeCoordinate("", newTerrain.TextureFlore, oldType.TextureObject,
-				"", false, oldType.Move, oldType.View, oldType.Attack, oldType.ImpactRadius)
+				oldType.AnimateSpriteSheets, false, oldType.Move, oldType.View, oldType.Attack, oldType.ImpactRadius)
 		} else {
 			// т.к. все настройки координаты зависят от обьекта делаем координату полностью открытой
 			newId = AddNewTypeCoordinate("", newTerrain.TextureFlore, "", "",

@@ -20,8 +20,31 @@ function CreateTerrain(coordinate, x, y, q, r) {
     }
 
     if (game && game.typeService !== "battle") {
-        let label = game.add.text(110, 35, q + "," + r);
-        floorSprite.addChild(label);
+        let style = {font: "12px Arial", fill: "#606060", align: "center"};
+        game.add.text(x + 50, y + 20, q + "," + r, style, game.weaponEffectsLayer);
+
+        let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
+        let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};
+
+        if (!(coordinate.move && coordinate.view && coordinate.attack)){
+            if (coordinate.move) {
+                game.add.text(x + 25, y + 45, 'm', allow, game.weaponEffectsLayer);
+            } else {
+                game.add.text(x + 25, y + 45, 'm', noAllow, game.weaponEffectsLayer);
+            }
+
+            if (coordinate.view) {
+                game.add.text(x + 40, y + 45, 'w', allow, game.weaponEffectsLayer);
+            } else {
+                game.add.text(x + 40, y + 45, 'w', noAllow, game.weaponEffectsLayer);
+            }
+
+            if (coordinate.attack) {
+                game.add.text(x + 55, y + 45, 'a', allow, game.weaponEffectsLayer);
+            } else {
+                game.add.text(x + 55, y + 45, 'a', noAllow, game.weaponEffectsLayer);
+            }
+        }
     }
 
     if (coordinate.level === 3) {
