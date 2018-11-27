@@ -25,6 +25,8 @@ function PlaceCoordinate(event, type) {
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
+        destroyAllSelectedSprite(map);
+        
         for (let q in map) {
             if (map.hasOwnProperty(q)) {
                 for (let r in map[q]) {
@@ -39,31 +41,59 @@ function PlaceCoordinate(event, type) {
                         selectedSprite.anchor.setTo(0.5);
                         selectedSprite.inputEnabled = true;
 
-                        selectedSprite.events.onInputDown.add(function () {
-                            console.log(this);
-                            mapEditor.send(JSON.stringify({
-                                event: event,
-                                id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-                                id_type:  Number(type.id),
-                                q: Number(q),
-                                r: Number(r)
-                            }));
+                        map[q][r].selectedSprite = selectedSprite;
 
-                            while (game.SelectLayer && game.SelectLayer.children.length > 0) {
-                                let sprite = game.SelectLayer.children.shift();
-                                sprite.destroy();
+                        selectedSprite.events.onInputDown.add(function () {
+                            if (game.input.activePointer.leftButton.isDown) {
+                                console.log(this);
+                                mapEditor.send(JSON.stringify({
+                                    event: event,
+                                    id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+                                    id_type: Number(type.id),
+                                    q: Number(q),
+                                    r: Number(r)
+                                }));
+
+                                while (game.SelectLayer && game.SelectLayer.children.length > 0) {
+                                    let sprite = game.SelectLayer.children.shift();
+                                    sprite.destroy();
+                                }
+                            } else {
+                                destroyAllSelectedSprite(map);
                             }
                         });
 
                         selectedSprite.events.onInputOver.add(function () {
-                            selectedSprite.animations.add('select');
-                            selectedSprite.animations.play('select', 5, true);
+                            if (type.impact_radius > 0) {
+                                radiusAnimate(map[q][r], type)
+                            } else {
+                                selectedSprite.animations.add('select');
+                                selectedSprite.animations.play('select', 5, true);
+                            }
                         });
 
                         selectedSprite.events.onInputOut.add(function () {
-                            selectedSprite.animations.getAnimation('select').stop(false);
-                            selectedSprite.animations.frame = 0;
+                            if (type.impact_radius > 0) {
+                                stopRadiusAnimate(map[q][r], type)
+                            } else {
+                                selectedSprite.animations.getAnimation('select').stop(false);
+                                selectedSprite.animations.frame = 0;
+                            }
                         });
+                    }
+                }
+            }
+        }
+    }
+}
+
+function destroyAllSelectedSprite(map) {
+    for (let q in map) {
+        if (map.hasOwnProperty(q)) {
+            for (let r in map[q]) {
+                if (map[q].hasOwnProperty(r)) {
+                    if (map[q][r].selectedSprite) {
+                        map[q][r].selectedSprite.destroy();
                     }
                 }
             }
@@ -76,4 +106,32 @@ function SendCommand(command) {
         event: command,
         id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value)
     }));
+}
+
+function stopRadiusAnimate(center, type) {
+    let centerCoordinate = game.map.OneLayerMap[center.q][center.r];
+    let circleCoordinates = getRadius(centerCoordinate.x, centerCoordinate.y, centerCoordinate.z, type.impact_radius);
+    for (let i in circleCoordinates) {
+        let q = circleCoordinates[i].Q;
+        let r = circleCoordinates[i].R;
+        if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+            let animateCoordinate = game.map.OneLayerMap[q][r].selectedSprite;
+            animateCoordinate.animations.getAnimation('select').stop(false);
+            animateCoordinate.animations.frame = 0;
+        }
+    }
+}
+
+function radiusAnimate(center, type) {
+    let centerCoordinate = game.map.OneLayerMap[center.q][center.r];
+    let circleCoordinates = getRadius(centerCoordinate.x, centerCoordinate.y, centerCoordinate.z, type.impact_radius);
+    for (let i in circleCoordinates) {
+        let q = circleCoordinates[i].Q;
+        let r = circleCoordinates[i].R;
+        if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
+            let animateCoordinate = game.map.OneLayerMap[q][r].selectedSprite;
+            animateCoordinate.animations.add('select');
+            animateCoordinate.animations.play('select', 5, true);
+        }
+    }
 }
