@@ -18,6 +18,8 @@
     <script src="./js/CreateNewType.js"></script>
     <script src="./js/NavBar.js"></script>
     <script src="./js/SizeMap.js"></script>
+    <script src="./js/UpdateMap.js"></script>
+    <script src="./js/HideMeta.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -63,7 +65,9 @@
             <input onclick="SizeGameMap(0.05)" type="submit" value="+" title="+">
             <input onclick="SizeGameMap(-0.05)" type="submit" value="-" title="-">
         </div>
+        <div id="hideMeta" onclick="HideMeta()"> Скрыть мето данные </div>
     </div>
+
     <div id="newCoordinate">
         <h4>Создать новый тип координаты: </h4>
         <form name="uploadNewCoordinate" onsubmit="return false;">

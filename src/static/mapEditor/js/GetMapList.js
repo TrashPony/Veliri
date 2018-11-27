@@ -38,13 +38,12 @@ function selectMap() {
 }
 
 function createGame(jsonMessage) {
-
     if (game) {
-        game.destroy();
+        UpdateMap(JSON.parse(jsonMessage).map, game);
+    } else {
+        game = CreateGame(JSON.parse(jsonMessage).map);
+        appendRedactorEventsToFloor(game)
     }
-
-    game = CreateGame(JSON.parse(jsonMessage).map);
-    appendRedactorEventsToFloor(game)
 }
 
 function appendRedactorEventsToFloor(game) {
@@ -52,57 +51,61 @@ function appendRedactorEventsToFloor(game) {
 
     setTimeout(function () {
         //костыль, если без таймаута то карта не успевает заполниться спрайтами
-        for (let q in map) {
-            if (map.hasOwnProperty(q)) {
-                for (let r in map[q]) {
-                    if (map[q].hasOwnProperty(r)) {
+        addButtons(map)
+    }, 2500)
+}
 
-                        if (map[q][r].impact) {
-                            continue
-                        }
+function addButtons(map) {
+    for (let q in map) {
+        if (map.hasOwnProperty(q)) {
+            for (let r in map[q]) {
+                if (map[q].hasOwnProperty(r)) {
 
-                        let buttonPlus = game.redactorButton.create(map[q][r].sprite.x - 30, map[q][r].sprite.y - 30, 'buttonPlus');
-                        buttonPlus.scale.set(0.15);
-                        let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 5, map[q][r].sprite.y - 30, 'buttonMinus');
-                        buttonMinus.scale.set(0.15);
+                    if (map[q][r].impact) {
+                        continue
+                    }
 
+                    let buttonPlus = game.redactorButton.create(map[q][r].sprite.x - 30, map[q][r].sprite.y - 30, 'buttonPlus');
+                    buttonPlus.scale.set(0.15);
+                    let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 5, map[q][r].sprite.y - 30, 'buttonMinus');
+                    buttonMinus.scale.set(0.15);
+
+                    buttonPlus.alpha = 0;
+                    buttonMinus.alpha = 0;
+
+
+                    buttonPlus.inputEnabled = true;
+                    buttonMinus.inputEnabled = true;
+
+                    buttonPlus.events.onInputOver.add(function () {
+                        buttonPlus.alpha = 1;
+                        buttonMinus.alpha = 1;
+                        buttonPlus.events.onInputDown.add(addHeightCoordinate, map[q][r]);
+
+                    });
+
+                    buttonMinus.events.onInputOver.add(function () {
+                        buttonMinus.alpha = 1;
+                        buttonPlus.alpha = 1;
+                        buttonMinus.events.onInputDown.add(subtractHeightCoordinate, map[q][r]);
+                    });
+
+                    map[q][r].sprite.events.onInputOver.add(function () {
+                        hideButtons(); // иногда кнопки не пропадают, а так норм )
+                        buttonPlus.alpha = 1;
+                        buttonMinus.alpha = 1;
+                    });
+
+                    map[q][r].sprite.events.onInputOut.add(function () {
                         buttonPlus.alpha = 0;
                         buttonMinus.alpha = 0;
-
-
-                        buttonPlus.inputEnabled = true;
-                        buttonMinus.inputEnabled = true;
-
-                        buttonPlus.events.onInputOver.add(function () {
-                            buttonPlus.alpha = 1;
-                            buttonMinus.alpha = 1;
-                            buttonPlus.events.onInputDown.add(addHeightCoordinate, map[q][r]);
-
-                        });
-
-                        buttonMinus.events.onInputOver.add(function () {
-                            buttonMinus.alpha = 1;
-                            buttonPlus.alpha = 1;
-                            buttonMinus.events.onInputDown.add(subtractHeightCoordinate, map[q][r]);
-                        });
-
-                        map[q][r].sprite.events.onInputOver.add(function () {
-                            hideButtons(); // иногда кнопки не пропадают, а так норм )
-                            buttonPlus.alpha = 1;
-                            buttonMinus.alpha = 1;
-                        });
-
-                        map[q][r].sprite.events.onInputOut.add(function () {
-                            buttonPlus.alpha = 0;
-                            buttonMinus.alpha = 0;
-                            buttonPlus.events.onInputDown.removeAll();
-                            buttonMinus.events.onInputDown.removeAll();
-                        });
-                    }
+                        buttonPlus.events.onInputDown.removeAll();
+                        buttonMinus.events.onInputDown.removeAll();
+                    });
                 }
             }
         }
-    }, 2500)
+    }
 }
 
 function hideButtons() {

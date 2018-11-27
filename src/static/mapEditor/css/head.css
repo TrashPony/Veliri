@@ -4,7 +4,7 @@
 }
 
 #head {
-    height: 245px;
+    height: 280px;
     width: 150px;
     background-size: 5px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
@@ -129,4 +129,28 @@
     text-shadow: 0 0 2px black;
     margin: 5px auto;
     border-radius: 5px;
+}
+
+#hideMeta {
+    float: left;
+    width: 100%;
+    height: 20px;
+    margin-left: 8px;
+    margin-top: 40px;
+    border-radius: 10px;
+    border: 1px solid #25a0e1;
+    box-shadow: 0 1px 2px rgba(0,0,0,1);
+    background-size: 5px 2px;
+    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.61), rgba(37, 160, 225, 0.14) 6px);
+    user-select: none;
+}
+
+#hideMeta:hover {
+    background-size: 5px 2px;
+    background-image: linear-gradient(1deg, rgba(21, 108, 159, 0.61), rgba(37, 160, 225, 0.14) 6px);
+}
+
+#hideMeta:active {
+    position: relative;
+    top: 2px;
 }
