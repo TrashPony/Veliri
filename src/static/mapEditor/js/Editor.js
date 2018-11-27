@@ -31,8 +31,8 @@ function PlaceCoordinate(event, type) {
                     if (map[q].hasOwnProperty(r)) {
 
                         let coordinateSprite = map[q][r].sprite;
-                        let selectedSprite = game.SelectLayer.create(coordinateSprite.x + 22, coordinateSprite.y + 15, 'selectEmpty');
-
+                        let selectedSprite = game.SelectLayer.create(coordinateSprite.x, coordinateSprite.y, 'selectEmpty');
+                        selectedSprite.anchor.setTo(0.5);
                         selectedSprite.inputEnabled = true;
 
                         selectedSprite.events.onInputDown.add(function () {
