@@ -23,53 +23,54 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
     if (game && game.typeService !== "battle") {
         let style = {font: "12px Arial", fill: "#606060", align: "center"};
-        game.add.text(x-10, y - 40, q + "," + r, style, game.weaponEffectsLayer);
+        game.add.text(x - 10, y - 40, q + "," + r, style, game.redactorMetaText);
 
         let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
         let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};
 
-        if (!(coordinate.move && coordinate.view && coordinate.attack)){
+        if (!(coordinate.move && coordinate.view && coordinate.attack)) {
             if (coordinate.move) {
-                game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', allow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', allow, game.redactorMetaText);
             } else {
-                game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', noAllow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', noAllow, game.redactorMetaText);
             }
 
             if (coordinate.view) {
-                game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', allow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', allow, game.redactorMetaText);
             } else {
-                game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', noAllow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', noAllow, game.redactorMetaText);
             }
 
             if (coordinate.attack) {
-                game.add.text(floorSprite.x- 10, floorSprite.y - 25, 'a', allow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 10, floorSprite.y - 25, 'a', allow, game.redactorMetaText);
             } else {
-                game.add.text(floorSprite.x- 10, floorSprite.y - 25, 'a', noAllow, game.weaponEffectsLayer);
+                game.add.text(floorSprite.x - 10, floorSprite.y - 25, 'a', noAllow, game.redactorMetaText);
             }
         }
     }
 
+    if (coordinate.level === 0) {
+        let style = {font: "36px Arial", fill: "#bbfff1", align: "center"};
+        game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+    }
+
     if (coordinate.level === 1) {
         let style = {font: "36px Arial", fill: "#35daff", align: "center"};
-        let label = game.add.text(-50, -25, coordinate.level, style);
-        floorSprite.addChild(label);
+        game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 3) {
         let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
-        let label = game.add.text(-50, -25, coordinate.level, style);
-        floorSprite.addChild(label);
+        game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 4) {
         let style = {font: "36px Arial", fill: "#fff523", align: "center"};
-        let label = game.add.text(-50, -25, coordinate.level, style);
-        floorSprite.addChild(label);
+        game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 5) {
         let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
-        let label = game.add.text(-50, -25, coordinate.level, style);
-        floorSprite.addChild(label);
+        game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
     }
 }

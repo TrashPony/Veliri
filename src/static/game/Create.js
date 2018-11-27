@@ -60,6 +60,7 @@ function create(game) {
     game.fogOfWar.alpha = 0.5;
 
     game.redactorButton = game.add.group();
+    game.redactorMetaText = game.add.group();
 
     CreateMap();
     if (game && game.typeService === "battle") {

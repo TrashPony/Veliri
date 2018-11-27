@@ -57,6 +57,10 @@ function appendRedactorEventsToFloor(game) {
                 for (let r in map[q]) {
                     if (map[q].hasOwnProperty(r)) {
 
+                        if (map[q][r].impact) {
+                            continue
+                        }
+
                         let buttonPlus = game.redactorButton.create(map[q][r].sprite.x - 30, map[q][r].sprite.y - 30, 'buttonPlus');
                         buttonPlus.scale.set(0.15);
                         let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 5, map[q][r].sprite.y - 30, 'buttonMinus');
