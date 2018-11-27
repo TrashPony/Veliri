@@ -1,14 +1,24 @@
-function CreateNewCoordinate() {
+function CreateNewTerrain() {
 
-    let formData = new FormData(document.forms.uploadNewCoordinate);
+    let formData = new FormData(document.forms.uploadNewTerrain);
 
     let terrainName;
-    let objectName;
-    let animateName;
 
     if (formData.get("terrainTexture").name !== "") {
         terrainName = formData.get("terrainTexture").name;
     }
+
+    mapEditor.send(JSON.stringify({
+        event: "loadNewTypeTerrain",
+        terrain_name: terrainName.substr(0, terrainName.lastIndexOf('.')) || terrainName
+    }));
+}
+
+function CreateNewObject() {
+    let formData = new FormData(document.forms.uploadNewObject);
+
+    let objectName = "";
+    let animateName = "";
 
     if (formData.get("objectTexture").name !== "") {
         objectName = formData.get("objectTexture").name;
@@ -42,22 +52,12 @@ function CreateNewCoordinate() {
     let Radius = formData.get("radius");
 
     mapEditor.send(JSON.stringify({
-        event: "loadNewTypeCoordinate",
-        terrain_name: terrainName,
-        object_name: objectName,
-        animate_name: animateName,
+        event: "loadNewTypeObject",
+        object_name: objectName.substr(0, objectName.lastIndexOf('.')) || objectName,
+        animate_name: animateName.substr(0, animateName.lastIndexOf('.')) || animateName,
         move: Move,
         watch: Watch,
         attack: Attack,
         radius: Number(Radius)
     }));
-}
-
-function sendFiles() {
-    // todo вызвать этот метод только когда по сокетам вернулось что все окей
-    // загрузка файлов новой координаты
-    let formData = new FormData(document.forms.uploadNewCoordinate);
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://642e0559eb9c.sn.mynetname.net:8080/upload");
-    xhr.send(formData);
 }

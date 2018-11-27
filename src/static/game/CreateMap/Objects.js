@@ -7,55 +7,59 @@ function CreateObjects(coordinate, x, y) {
 
     if (coordinate.texture_object === "terrain_1") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "terrain_2") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "terrain_3") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "sand_stone_04") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "sand_stone_05") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "sand_stone_06") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "sand_stone_07") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "sand_stone_08") {
         object = gameObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
-    }
+    } else
 
     if (coordinate.texture_object === "fallen_01") {
         object = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
         object.anchor.setTo(0.5, 0.5);
         object.scale.set(0.4);
-    }
+    } else
 
     if (coordinate.texture_object === "fallen_02") {
         object = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
         object.anchor.setTo(0.5, 0.5);
         object.scale.set(0.4);
-    }
+    } else
 
     if (coordinate.texture_object === "crater") {
         object = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
         object.anchor.setTo(0.5, 0.5);
         object.scale.set(0.4);
-    }
+    } else
 
     if (coordinate.texture_object === "base") {
+        object = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
+        object.anchor.setTo(0.5, 0.5);
+        object.scale.set(0.4);
+    } else {
         object = game.floorObjectLayer.create(coordinate.sprite.x, coordinate.sprite.y, coordinate.texture_object);
         object.anchor.setTo(0.5, 0.5);
         object.scale.set(0.4);

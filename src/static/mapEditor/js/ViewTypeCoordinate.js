@@ -1,7 +1,7 @@
 function ViewPatternCoordinate(typeCoordinates) {
 
     let coordinateBlock = document.getElementById("coordinateBlock");
-    console.log(typeCoordinates)
+
     for (let i = 0; i < typeCoordinates.length; i++) {
         let typeBlock = document.createElement("div");
         typeBlock.className = "coordinateType";

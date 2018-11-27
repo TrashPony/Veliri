@@ -72,18 +72,23 @@
 
     <div id="newCoordinate">
         <h4>Создать новый тип координаты: </h4>
-        <form name="uploadNewCoordinate" onsubmit="return false;">
-            <table>
+        <form name="uploadNewTerrain" onsubmit="return false;">
+            <table style="float: right;">
                 <tr><td> Текстура земли </td><td><input required type="file" name="terrainTexture"></td></tr>
+            </table>
+            <input style="margin: 5px; width: 82px;" type="submit" value="Загрузить" onclick="CreateNewTerrain()">
+        </form>
+
+        <form name="uploadNewObject" onsubmit="return false;">
+            <table>
                 <tr><td> Текстура обьекта </td><td><input type="file" name="objectTexture"></td></tr>
                 <tr><td> Анимация спрайта </td><td><input type="file" name="animateSprite"></td></tr>
-                <!--<tr><td> Эффекты </td><td><input type="submit" value="+"><input type="submit" value="-"></td></tr>-->
                 <tr><td> Через нее можно смотреть </td><td><input type="checkbox" checked name="watch" title="watch"></td></tr>
                 <tr><td> Через нее можно ходить </td><td><input type="checkbox" checked name="move" title="move"></td></tr>
                 <tr><td> Через нее можно стрелять </td><td><input type="checkbox" checked name="attack" title="attack"></td></tr>
                 <tr><td> Радиус воздействия </td><td><input type="number" value="0" name="radius" title="radius"></td></tr>
             </table>
-            <input type="submit" value="Загрузить" onclick="CreateNewCoordinate()">
+            <input type="submit" value="Загрузить" onclick="CreateNewObject()">
         </form>
     </div>
 

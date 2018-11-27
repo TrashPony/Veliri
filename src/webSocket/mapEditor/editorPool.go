@@ -66,6 +66,7 @@ type Response struct {
 	Map             gameMap.Map              `json:"map"`
 	Maps            []gameMap.Map            `json:"maps"`
 	TypeCoordinates []*coordinate.Coordinate `json:"type_coordinates"`
+	Success         bool                     `json:"success"`
 	Error           string                   `json:"error"`
 }
 
@@ -123,8 +124,13 @@ func Reader(ws *websocket.Conn) {
 			selectMap(msg, ws)
 		}
 
-		if msg.Event == "loadNewTypeCoordinate" {
-			// TODO проверка на существование такого же файла что бы случайно не затереть старый
+		if msg.Event == "loadNewTypeTerrain" {
+			ws.WriteJSON(Response{Event: "loadNewTypeTerrain", Success: mapEditor.CreateNewTerrain(msg.TerrainName)})
+		}
+
+		if msg.Event == "loadNewTypeObject" {
+			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch, msg.Attack, msg.Radius)
+			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
 		}
 
 		// ---------------------------- //

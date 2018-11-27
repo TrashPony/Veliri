@@ -19,11 +19,6 @@ function getTypesCoordinate(menuId) {
         document.getElementById("fourMenu").className = "active";
     }
 
-    let typesCoordinate = document.getElementsByClassName('coordinateType');
-    while(typesCoordinate.length > 0){
-        typesCoordinate[0].parentNode.removeChild(typesCoordinate[0]);
-    }
-
     mapEditor.send(JSON.stringify({
         event: "getAllTypeCoordinate"
     }));
@@ -31,6 +26,11 @@ function getTypesCoordinate(menuId) {
 
 function createCoordinateMenu(typeCoordinates) {
     let menu = document.getElementsByClassName('active');
+
+    let typesCoordinate = document.getElementsByClassName('coordinateType');
+    while(typesCoordinate.length > 0){
+        typesCoordinate[0].parentNode.removeChild(typesCoordinate[0]);
+    }
 
     if (menu[0]) {
         if (menu[0].dataset.idMenu === "1"){
