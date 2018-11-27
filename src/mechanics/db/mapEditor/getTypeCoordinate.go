@@ -77,8 +77,48 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 		mcCoordinate := getTypeByID(idType)
 		mcCoordinate.Level = level
 		mcCoordinate.Impact = ParseImpact(impact)
+		mcCoordinate.Q = q
+		mcCoordinate.R = r
 		return mcCoordinate
 	}
+}
+
+func getMapALLCoordinateInMC(idMap int) []*coordinate.Coordinate {
+
+	var level int
+	var idType int
+	var impact string
+	var q int
+	var r int
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id_type, level, q, r, impact "+
+		"FROM map_constructor "+
+		"WHERE id_map = $1",
+		idMap)
+	if err != nil {
+		log.Fatal("get mc coordinate in editor map " + err.Error())
+	}
+	defer rows.Close()
+
+	coordinates := make([]*coordinate.Coordinate, 0)
+
+	for rows.Next() {
+
+		rows.Scan(&idType, &level, &q, &r, &impact)
+
+		mcCoordinate := getTypeByID(idType)
+
+		mcCoordinate.Level = level
+		mcCoordinate.Impact = ParseImpact(impact)
+		mcCoordinate.Q = q
+		mcCoordinate.R = r
+
+		mcCoordinate.CalculateXYZ()
+
+		coordinates = append(coordinates, mcCoordinate)
+	}
+
+	return coordinates
 }
 
 func ParseImpact(targetKey string) *coordinate.Coordinate {

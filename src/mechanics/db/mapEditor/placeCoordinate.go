@@ -40,7 +40,7 @@ func PlaceCoordinate(idMap, idType, q, r int) {
 					// т.к. q и r одиновые у старой и новой координаты то сначало удались старые ключи
 					removeImpact(newType, idMap)
 					// и уже добавим новые
-					placeRadiusCoordinate(newType, idMap)
+					placeRadiusCoordinate(newType, idMap, true)
 				}
 			} else {
 				if newType.ImpactRadius != 0 {
@@ -52,7 +52,7 @@ func PlaceCoordinate(idMap, idType, q, r int) {
 							log.Fatal("remove old type in mc " + err.Error())
 						}
 
-						placeRadiusCoordinate(newType, idMap)
+						placeRadiusCoordinate(newType, idMap, true)
 					}
 				}
 
@@ -78,7 +78,7 @@ func PlaceCoordinate(idMap, idType, q, r int) {
 			}
 		} else {
 			if checkRadiusCoordinate(newType, idMap) {
-				placeRadiusCoordinate(newType, idMap)
+				placeRadiusCoordinate(newType, idMap, true)
 			}
 		}
 	}
@@ -111,11 +111,23 @@ func checkRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int) bo
 	return passed
 }
 
-func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int) {
+func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int, add bool) {
 
 	radiusCoordinates := coordinate.GetCoordinatesRadius(placeCoordinate, placeCoordinate.ImpactRadius)
 
+	qSize, rSize := getSizeMap(idMap)
+
 	for _, coor := range radiusCoordinates {
+
+		if coor.Q < 0 || coor.R < 0 {
+			// координата провалилась за пределы карты, удаляем ее
+			continue
+		}
+
+		if coor.Q > qSize-1 || coor.R > rSize-1 {
+			// координата провалилась за пределы карты, удаляем ее
+			//continue
+		}
 
 		if !(coor.Q == placeCoordinate.Q && coor.R == placeCoordinate.R) {
 			mapCoor := getMapCoordinateInMC(idMap, coor.Q, coor.R)
@@ -143,11 +155,13 @@ func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int) {
 		}
 	}
 
-	// у самой влияющей координаты нет значения impact и это говорит клиенту что рисовать обьект надо именно тут а не в подчиненных
-	_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact) VALUES ($1, $2, $3, $4, $5, '')",
-		idMap, placeCoordinate.ID, placeCoordinate.Q, placeCoordinate.R, placeCoordinate.Level)
-	if err != nil {
-		log.Fatal("add new impact type in mc " + err.Error())
+	if add {
+		// у самой влияющей координаты нет значения impact и это говорит клиенту что рисовать обьект надо именно тут а не в подчиненных
+		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact) VALUES ($1, $2, $3, $4, $5, '')",
+			idMap, placeCoordinate.ID, placeCoordinate.Q, placeCoordinate.R, placeCoordinate.Level)
+		if err != nil {
+			log.Fatal("add new impact type in mc " + err.Error())
+		}
 	}
 }
 
