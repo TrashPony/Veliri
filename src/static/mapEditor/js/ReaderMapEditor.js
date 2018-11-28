@@ -23,12 +23,14 @@ function ReaderMapEditor(jsonMessage) {
                 event: "getAllTypeCoordinate"
             }));
 
-            let terrainName = terrainData.get("terrainTexture").name;
-            game.load.image(terrainName.substr(0, terrainName.lastIndexOf('.')) || terrainName,
-                'http://' + window.location.host + '/assets/map/terrain/' + terrainName);
-            setTimeout(function () {
-                game.load.start();
-            }, 1500)
+            if (game) {
+                let terrainName = terrainData.get("terrainTexture").name;
+                game.load.image(terrainName.substr(0, terrainName.lastIndexOf('.')) || terrainName,
+                    'http://' + window.location.host + '/assets/map/terrain/' + terrainName);
+                setTimeout(function () {
+                    game.load.start();
+                }, 1500)
+            }
         } else {
             alert("Тип с таким именем уже существует");
         }
@@ -47,13 +49,14 @@ function ReaderMapEditor(jsonMessage) {
                 event: "getAllTypeCoordinate"
             }));
 
-            let objectName = objectData.get("objectTexture").name;
-            game.load.image(objectName.substr(0, objectName.lastIndexOf('.')) || objectName,
-                'http://' + window.location.host + '/assets/map/objects/' + objectName);
-            setTimeout(function () {
-                game.load.start();
-            }, 1500)
-
+            if (game) {
+                let objectName = objectData.get("objectTexture").name;
+                game.load.image(objectName.substr(0, objectName.lastIndexOf('.')) || objectName,
+                    'http://' + window.location.host + '/assets/map/objects/' + objectName);
+                setTimeout(function () {
+                    game.load.start();
+                }, 1500)
+            }
         } else {
             alert("Тип с таким именем уже существует");
         }
