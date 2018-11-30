@@ -116,8 +116,10 @@ function stopRadiusAnimate(center, type) {
         let r = circleCoordinates[i].R;
         if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
             let animateCoordinate = game.map.OneLayerMap[q][r].selectedSprite;
-            animateCoordinate.animations.getAnimation('select').stop(false);
-            animateCoordinate.animations.frame = 0;
+            if (animateCoordinate) {
+                animateCoordinate.animations.getAnimation('select').stop(false);
+                animateCoordinate.animations.frame = 0;
+            }
         }
     }
 }
@@ -130,8 +132,10 @@ function radiusAnimate(center, type) {
         let r = circleCoordinates[i].R;
         if (game.map.OneLayerMap.hasOwnProperty(q) && game.map.OneLayerMap[q].hasOwnProperty(r)) {
             let animateCoordinate = game.map.OneLayerMap[q][r].selectedSprite;
-            animateCoordinate.animations.add('select');
-            animateCoordinate.animations.play('select', 5, true);
+            if (animateCoordinate) {
+                animateCoordinate.animations.add('select');
+                animateCoordinate.animations.play('select', 5, true);
+            }
         }
     }
 }

@@ -50,6 +50,9 @@ type Message struct {
 
 	IDType int `json:"id_type"`
 
+	NewIDType int `json:"new_id_type"`
+	OldIDType int `json:"old_id_type"`
+
 	TerrainName string `json:"terrain_name"`
 	ObjectName  string `json:"object_name"`
 	AnimateName string `json:"animate_name"`
@@ -131,6 +134,16 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "loadNewTypeObject" {
 			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch, msg.Attack, msg.Radius)
 			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
+		}
+
+		if msg.Event == "deleteType" {
+			mapEditor.DeleteType(msg.IDType)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "replaceCoordinateType" {
+			mapEditor.ReplaceType(msg.OldIDType, msg.NewIDType)
+			selectMap(msg, ws)
 		}
 
 		// ---------------------------- //

@@ -56,13 +56,6 @@ function ViewTerrainCoordinate(typeCoordinates) {
                 PlaceCoordinate("placeTerrain", typeCoordinates[i]);
             };
 
-            let menuBlock = document.createElement("div");
-            menuBlock.className = "menuButton";
-            menuBlock.onclick = function() {
-                CreateSubMenu(typeCoordinates[i])
-            };
-            typeBlock.appendChild(menuBlock);
-
             coordinateBlock.appendChild(typeBlock);
         }
     }
@@ -85,13 +78,6 @@ function ViewObjectsCoordinate(typeCoordinates) {
             typeBlock.onclick = function (){
                 PlaceCoordinate("placeObjects", typeCoordinates[i]);
             };
-
-            let menuBlock = document.createElement("div");
-            menuBlock.className = "menuButton";
-            menuBlock.onclick = function() {
-                CreateSubMenu(typeCoordinates[i])
-            };
-            typeBlock.appendChild(menuBlock);
 
             coordinateBlock.appendChild(typeBlock);
         }
@@ -118,13 +104,6 @@ function ViewAnimateObjectsCoordinate(typeCoordinates) {
             typeBlock.onclick = function (){
                 PlaceCoordinate("placeAnimate", typeCoordinates[i]);
             };
-
-            let menuBlock = document.createElement("div");
-            menuBlock.className = "menuButton";
-            menuBlock.onclick = function() {
-                CreateSubMenu(typeCoordinates[i])
-            };
-            typeBlock.appendChild(menuBlock);
 
             coordinateBlock.appendChild(typeBlock);
         }

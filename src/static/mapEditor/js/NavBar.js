@@ -3,13 +3,7 @@ function getTypesCoordinate(menuId) {
     let menu = document.getElementsByClassName('active');
     menu[0].className ="";
 
-    if (document.getElementById("menuBlock")) {
-        document.getElementById("menuBlock").remove();
-    }
-
-    if (document.getElementById("typeTip")) {
-        document.getElementById("typeTip").remove()
-    }
+    removeSubMenus();
 
     if (menuId === 1) {
         document.getElementById("oneMenu").className = "active";
@@ -34,6 +28,8 @@ function getTypesCoordinate(menuId) {
 
 function createCoordinateMenu(typeCoordinates) {
     let menu = document.getElementsByClassName('active');
+
+    removeSubMenus();
 
     let typesCoordinate = document.getElementsByClassName('coordinateType');
     while(typesCoordinate.length > 0){

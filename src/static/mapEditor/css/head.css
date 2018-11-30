@@ -57,6 +57,7 @@
 }
 
 #coordinates {
+    position: relative;
     float: right;
     height: 615px;
     width: 460px;
