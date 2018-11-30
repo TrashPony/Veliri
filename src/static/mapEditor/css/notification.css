@@ -12,8 +12,12 @@
 #coordinates #notification h5 {
     color: #ff0202;
     font-size: 20px;
-    margin-top: 0;
     background: linear-gradient(22deg, rgb(147, 147, 147), #a2b6ca);
+    margin: 10px;
+}
+
+#coordinates #notification h4 {
+    margin: 10px;
 }
 
 #coordinates #notification h4:before {

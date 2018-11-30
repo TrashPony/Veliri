@@ -25,4 +25,8 @@ function removeSubMenus() {
     if (document.getElementById("notification")) {
         document.getElementById("notification").remove()
     }
+
+    if (document.getElementById("changeType")) {
+        document.getElementById("changeType").remove()
+    }
 }

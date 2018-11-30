@@ -19,7 +19,8 @@ func PlaceAnimate(idMap, idType, q, r int) {
 	} else {
 		// создаем новый тип
 		newId := AddNewTypeCoordinate("", oldType.TextureFlore, "",
-			newObject.AnimateSpriteSheets, true, newObject.Move, newObject.View, newObject.Attack, newObject.ImpactRadius)
+			newObject.AnimateSpriteSheets, true, newObject.Move, newObject.View, newObject.Attack,
+			newObject.ImpactRadius, newObject.Scale, newObject.Shadow)
 
 		PlaceCoordinate(idMap, newId, q, r)
 	}

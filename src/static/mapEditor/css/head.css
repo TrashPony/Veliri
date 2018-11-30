@@ -59,7 +59,7 @@
 #coordinates {
     position: relative;
     float: right;
-    height: 615px;
+    height: 570px;
     width: 460px;
     margin-top: 10px;
     background-size: 5px 2px;
@@ -78,7 +78,7 @@
 
 #newCoordinate {
     float: right;
-    height: 265px;
+    height: 310px;
     width: 460px;
     border-radius: 10px;
     background-size: 5px 2px;

@@ -19,7 +19,8 @@ func PlaceObject(idMap, idType, q, r int) {
 	} else {
 		// создаем новый тип
 		newId := AddNewTypeCoordinate("", oldType.TextureFlore, newObject.TextureObject,
-			"", false, newObject.Move, newObject.View, newObject.Attack, newObject.ImpactRadius)
+			"", false, newObject.Move, newObject.View, newObject.Attack,
+			newObject.ImpactRadius, newObject.Scale, newObject.Shadow)
 
 		PlaceCoordinate(idMap, newId, q, r)
 	}

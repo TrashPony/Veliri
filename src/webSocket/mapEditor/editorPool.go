@@ -61,6 +61,9 @@ type Message struct {
 	Watch  bool `json:"watch"`
 	Attack bool `json:"attack"`
 
+	Scale  int  `json:"scale"`
+	Shadow bool `json:"shadow"`
+
 	Radius int `json:"radius"`
 }
 
@@ -132,7 +135,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "loadNewTypeObject" {
-			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch, msg.Attack, msg.Radius)
+			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch,
+				msg.Attack, msg.Radius, msg.Scale, msg.Shadow)
 			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
 		}
 
@@ -143,6 +147,11 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "replaceCoordinateType" {
 			mapEditor.ReplaceType(msg.OldIDType, msg.NewIDType)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "changeType" {
+			mapEditor.ChangeType(msg.IDType, msg.Scale, msg.Shadow)
 			selectMap(msg, ws)
 		}
 

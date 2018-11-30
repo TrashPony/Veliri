@@ -2,8 +2,8 @@ package mapEditor
 
 import (
 	"../../../dbConnect"
-	"log"
 	"io/ioutil"
+	"log"
 	"strings"
 )
 
@@ -14,7 +14,7 @@ func CreateNewTerrain(terrainName string) bool {
 	} else {
 
 		AddNewTypeCoordinate("", terrainName, "",
-			"", false, true, true, true, 0)
+			"", false, true, true, true, 0, 0, false)
 
 		addJSPreloadFile(terrainName, "terrain")
 
@@ -22,7 +22,7 @@ func CreateNewTerrain(terrainName string) bool {
 	}
 }
 
-func CreateNewObject(objectName, animateName string, move, watch, attack bool, radius int) bool {
+func CreateNewObject(objectName, animateName string, move, watch, attack bool, radius int, scale int, shadow bool) bool {
 	if objectName != "" {
 		rows, err := dbConnect.GetDBConnect().Query("SELECT id FROM coordinate_type WHERE texture_object=$1", objectName)
 		if err != nil {
@@ -40,7 +40,7 @@ func CreateNewObject(objectName, animateName string, move, watch, attack bool, r
 		} else {
 			// desert тип по умолчанию
 			AddNewTypeCoordinate("", "desert", objectName,
-				"", false, move, watch, attack, radius)
+				"", false, move, watch, attack, radius, scale, shadow)
 
 			addJSPreloadFile(objectName, "objects")
 

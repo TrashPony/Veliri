@@ -11,6 +11,7 @@
     <link href="./css/navBar.css" rel="stylesheet">
     <link href="./css/subMenu.css" rel="stylesheet">
     <link href="./css/notification.css" rel="stylesheet">
+    <link href="./css/changeType.css" rel="stylesheet">
 
     <script src="./js/webSocket.js"></script>
     <script src="./js/ReaderMapEditor.js"></script>
@@ -89,7 +90,9 @@
                 <tr><td> Через нее можно смотреть </td><td><input type="checkbox" checked name="watch" title="watch"></td></tr>
                 <tr><td> Через нее можно ходить </td><td><input type="checkbox" checked name="move" title="move"></td></tr>
                 <tr><td> Через нее можно стрелять </td><td><input type="checkbox" checked name="attack" title="attack"></td></tr>
+                <tr><td> Обьект отбрасывает тень </td><td><input type="checkbox" checked name="shadow" title="shadow"></td></tr>
                 <tr><td> Радиус воздействия </td><td><input type="number" value="0" name="radius" title="radius"></td></tr>
+                <tr><td> Размер (1=1% 100 = 100%)</td><td><input type="number" value="100" name="scale" title="scale"></td></tr>
             </table>
             <input type="submit" value="Загрузить" onclick="CreateNewObject()">
         </form>

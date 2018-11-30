@@ -26,6 +26,8 @@ type Coordinate struct {
 	View                bool             `json:"view"`
 	Attack              bool             `json:"attack"`
 	Level               int              `json:"level"`
+	Scale               int              `json:"scale"`
+	Shadow              bool             `json:"shadow"`
 	H, G, F             int
 	Parent              *Coordinate
 }

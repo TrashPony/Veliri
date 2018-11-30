@@ -36,6 +36,7 @@ function CreateNewObject() {
     let Move = false;
     let Watch = false;
     let Attack = false;
+    let Shadow = false;
 
     if (formData.get("move")) {
         Move = true;
@@ -49,7 +50,12 @@ function CreateNewObject() {
         Attack = true;
     }
 
+    if (formData.get("shadow")) {
+        Attack = true;
+    }
+
     let Radius = formData.get("radius");
+    let Scale = formData.get("scale");
 
     mapEditor.send(JSON.stringify({
         event: "loadNewTypeObject",
@@ -58,6 +64,8 @@ function CreateNewObject() {
         move: Move,
         watch: Watch,
         attack: Attack,
-        radius: Number(Radius)
+        radius: Number(Radius),
+        scale: Number(Scale),
+        shadow: Number(Shadow)
     }));
 }
