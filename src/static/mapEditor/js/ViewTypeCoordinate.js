@@ -6,9 +6,16 @@ function ViewPatternCoordinate(typeCoordinates) {
         let typeBlock = document.createElement("div");
         typeBlock.className = "coordinateType";
 
-        if (typeCoordinates[i].texture_object === "") {
+        if (typeCoordinates[i].texture_object === "" && typeCoordinates[i].animate_sprite_sheets === "") {
+
             typeBlock.style.background = "url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+
+        } else if (typeCoordinates[i].animate_sprite_sheets !== "") {
+
+            typeBlock.style.background = "url(/assets/map/animate/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / contain no-repeat," +
+                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         } else {
+
             typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         }
@@ -19,7 +26,7 @@ function ViewPatternCoordinate(typeCoordinates) {
 
         typeBlock.coordinateType = typeCoordinates[i];
 
-        typeBlock.onclick = function (){
+        typeBlock.onclick = function () {
             PlaceCoordinate("placeCoordinate", typeCoordinates[i]);
         };
         typeBlock.onmousemove = tipTypeCoordinate;
@@ -31,7 +38,7 @@ function ViewPatternCoordinate(typeCoordinates) {
 
         let menuBlock = document.createElement("div");
         menuBlock.className = "menuButton";
-        menuBlock.onclick = function() {
+        menuBlock.onclick = function () {
             CreateSubMenu(typeCoordinates[i])
         };
 
@@ -52,7 +59,7 @@ function ViewTerrainCoordinate(typeCoordinates) {
             typeBlock.id = typeCoordinates[i].texture_flore;
             typeBlock.coordinateType = typeCoordinates[i];
 
-            typeBlock.onclick = function (){
+            typeBlock.onclick = function () {
                 PlaceCoordinate("placeTerrain", typeCoordinates[i]);
             };
 
@@ -75,7 +82,7 @@ function ViewObjectsCoordinate(typeCoordinates) {
             typeBlock.id = typeCoordinates[i].texture_object;
             typeBlock.coordinateType = typeCoordinates[i];
 
-            typeBlock.onclick = function (){
+            typeBlock.onclick = function () {
                 PlaceCoordinate("placeObjects", typeCoordinates[i]);
             };
 
@@ -96,12 +103,12 @@ function ViewAnimateObjectsCoordinate(typeCoordinates) {
 
             // TODO анимировать спрайты в беграунде
             // TODO https://medium.com/@vladimirmorulus/%D0%B2%D0%B5%D0%B1-%D0%B0%D0%BD%D0%B8%D0%BC%D0%B0%D1%86%D0%B8%D1%8F-%D0%BD%D0%B0-%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B5-%D1%81%D0%BF%D1%80%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-8786a9cce59b
-            typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / 90% no-repeat";
+            typeBlock.style.background = "url(/assets/map/animate/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / 90% no-repeat";
 
             typeBlock.id = typeCoordinates[i].animate_sprite_sheets;
             typeBlock.coordinateType = typeCoordinates[i];
 
-            typeBlock.onclick = function (){
+            typeBlock.onclick = function () {
                 PlaceCoordinate("placeAnimate", typeCoordinates[i]);
             };
 

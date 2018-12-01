@@ -56,6 +56,9 @@ function CreateNewObject() {
 
     let Radius = formData.get("radius");
     let Scale = formData.get("scale");
+    let CountSprites = formData.get("countSprite");
+    let xSize = formData.get("xSize");
+    let ySize = formData.get("ySize");
 
     mapEditor.send(JSON.stringify({
         event: "loadNewTypeObject",
@@ -66,6 +69,9 @@ function CreateNewObject() {
         attack: Attack,
         radius: Number(Radius),
         scale: Number(Scale),
-        shadow: Number(Shadow)
+        shadow: Shadow,
+        count_sprites: Number(CountSprites),
+        x_size: Number(xSize),
+        y_size: Number(ySize)
     }));
 }

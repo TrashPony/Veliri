@@ -21,7 +21,7 @@ func PlaceTerrain(idMap, idType, q, r int) {
 		var newId int
 		if oldType != nil {
 			newId = AddNewTypeCoordinate("", newTerrain.TextureFlore, oldType.TextureObject,
-				oldType.AnimateSpriteSheets, false, oldType.Move, oldType.View, oldType.Attack,
+				oldType.AnimateSpriteSheets, oldType.AnimateLoop, oldType.Move, oldType.View, oldType.Attack,
 				oldType.ImpactRadius, oldType.Scale, oldType.Shadow)
 		} else {
 			// т.к. все настройки координаты зависят от обьекта делаем координату полностью открытой

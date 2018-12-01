@@ -67,6 +67,10 @@ type Message struct {
 	Rotate int `json:"rotate"`
 
 	Radius int `json:"radius"`
+
+	CountSprites int `json:"count_sprites"`
+	XSize        int `json:"x_size"`
+	YSize        int `json:"y_size"`
 }
 
 type Response struct {
@@ -138,7 +142,7 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "loadNewTypeObject" {
 			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch,
-				msg.Attack, msg.Radius, msg.Scale, msg.Shadow)
+				msg.Attack, msg.Radius, msg.Scale, msg.Shadow, msg.CountSprites, msg.XSize, msg.YSize)
 			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
 		}
 

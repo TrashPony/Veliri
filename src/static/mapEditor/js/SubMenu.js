@@ -30,6 +30,7 @@ function CreateSubMenu(typeCoordinate) {
         notification.id = "notification";
 
         let head = document.createElement("h4");
+        head.innerHTML = "Выбери на что заменить";
 
         let error = document.createElement("h5");
 
@@ -75,15 +76,41 @@ function CreateSubMenu(typeCoordinate) {
     del.type = "submit";
     del.value = "удалить";
     del.onclick = function () {
-        mapEditor.send(JSON.stringify({
-            event: "deleteType",
-            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            id_type: Number(typeCoordinate.id),
-        }));
+        let block = document.getElementById("coordinates");
+        let notification = document.createElement("div");
+        notification.id = "notification";
 
-        mapEditor.send(JSON.stringify({
-            event: "getAllTypeCoordinate"
-        }));
+        let head = document.createElement("h4");
+        head.innerHTML = "Выуверены что ходитет удолить?";
+
+        let ok = document.createElement("input");
+        ok.value = "УДОЛИ!";
+        ok.type = "submit";
+        ok.onclick = function(){
+            mapEditor.send(JSON.stringify({
+                event: "deleteType",
+                id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+                id_type: Number(typeCoordinate.id),
+            }));
+
+            mapEditor.send(JSON.stringify({
+                event: "getAllTypeCoordinate"
+            }));
+        };
+
+        let cancel = document.createElement("input");
+        cancel.value = "Отменить";
+        cancel.type = "submit";
+        cancel.onclick = function(){
+            mapEditor.send(JSON.stringify({
+                event: "getAllTypeCoordinate"
+            }));
+        };
+
+        notification.appendChild(head);
+        notification.appendChild(cancel);
+        notification.appendChild(ok);
+        block.appendChild(notification);
     };
     menu.appendChild(del);
 

@@ -29,6 +29,10 @@ function CreateMap() {
                 CreateObjects(coordinate);
             }
 
+            if (coordinate.animate_sprite_sheets !== "") {
+                CreateAnimate(coordinate);
+            }
+
             if (coordinate.effects != null && coordinate.effects.length > 0) {
                 MarkZoneEffect(coordinate)
             }
