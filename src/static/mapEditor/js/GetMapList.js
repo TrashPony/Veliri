@@ -64,24 +64,27 @@ function addButtons(map) {
                     if (map[q][r].impact) {
                         continue
                     }
-
+                    // todo кнопки поворота
                     let buttonPlus = game.redactorButton.create(map[q][r].sprite.x - 30, map[q][r].sprite.y - 30, 'buttonPlus');
                     buttonPlus.scale.set(0.15);
                     let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 5, map[q][r].sprite.y - 30, 'buttonMinus');
                     buttonMinus.scale.set(0.15);
 
+                    let buttonRotate = game.redactorButton.create(map[q][r].sprite.x - 20, map[q][r].sprite.y + 20, 'buttonRotate');
+                    buttonRotate.scale.set(0.25);
+
                     buttonPlus.alpha = 0;
                     buttonMinus.alpha = 0;
-
+                    buttonRotate.alpha = 0;
 
                     buttonPlus.inputEnabled = true;
                     buttonMinus.inputEnabled = true;
+                    buttonRotate.inputEnabled = true;
 
                     buttonPlus.events.onInputOver.add(function () {
                         buttonPlus.alpha = 1;
                         buttonMinus.alpha = 1;
                         buttonPlus.events.onInputDown.add(addHeightCoordinate, map[q][r]);
-
                     });
 
                     buttonMinus.events.onInputOver.add(function () {
@@ -90,17 +93,29 @@ function addButtons(map) {
                         buttonMinus.events.onInputDown.add(subtractHeightCoordinate, map[q][r]);
                     });
 
+                    buttonRotate.events.onInputOver.add(function () {
+                        if (map[q][r].objectSprite) {
+                            buttonRotate.alpha = 1;
+                            buttonRotate.events.onInputDown.add(RotateSprite, map[q][r]);
+                        }
+                    });
+
                     map[q][r].sprite.events.onInputOver.add(function () {
                         hideButtons(); // иногда кнопки не пропадают, а так норм )
                         buttonPlus.alpha = 1;
                         buttonMinus.alpha = 1;
+                        if (map[q][r].objectSprite) {
+                            buttonRotate.alpha = 1;
+                        }
                     });
 
                     map[q][r].sprite.events.onInputOut.add(function () {
                         buttonPlus.alpha = 0;
                         buttonMinus.alpha = 0;
+                        buttonRotate.alpha = 0;
                         buttonPlus.events.onInputDown.removeAll();
                         buttonMinus.events.onInputDown.removeAll();
+                        buttonRotate.events.onInputDown.removeAll();
                     });
                 }
             }

@@ -17,7 +17,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT mc.q, mc.r, ct.type, ct.texture_flore, ct.texture_object, "+
 		"ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, ct.impact_radius, mc.impact, "+
-		"ct.scale, ct.shadow "+
+		"ct.scale, ct.shadow, mc.rotate "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -34,7 +34,7 @@ func CoordinatesMap(mp *_map.Map, game *localGame.Game) {
 		err := rows.Scan(&gameCoordinate.Q, &gameCoordinate.R, &gameCoordinate.Type, &gameCoordinate.TextureFlore,
 			&gameCoordinate.TextureObject, &gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack,
 			&gameCoordinate.Level, &gameCoordinate.AnimateSpriteSheets, &gameCoordinate.AnimateLoop,
-			&gameCoordinate.ImpactRadius, &impact, &gameCoordinate.Scale, &gameCoordinate.Shadow)
+			&gameCoordinate.ImpactRadius, &impact, &gameCoordinate.Scale, &gameCoordinate.Shadow, &gameCoordinate.ObjRotate)
 		if err != nil {
 			log.Fatal(err)
 		}

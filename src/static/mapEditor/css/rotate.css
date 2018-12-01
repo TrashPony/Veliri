@@ -1,0 +1,21 @@
+#rotateBlock {
+    position: absolute;
+    top: 0;
+    left: -275px;
+    background: linear-gradient(22deg, rgb(221, 112, 52), #ffa50f);
+    height: 82px;
+    border-radius: 10px;
+    text-shadow: 0 0 2px black;
+    padding-top: 10px;
+    text-align: left;
+    width: 270px;
+}
+
+#rotateBlock input[type = range] {
+    width: 254px;
+}
+
+#rotateBlock input[type = submit] {
+    margin-top: 10px;
+    margin-left: 35px;
+}

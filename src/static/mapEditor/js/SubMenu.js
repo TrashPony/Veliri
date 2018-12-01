@@ -91,11 +91,32 @@ function CreateSubMenu(typeCoordinate) {
     edit.type = "submit";
     edit.value = "изменить";
     edit.onclick = function () {
-        // todo добавить изменение move, attack, watch
+
         let block = document.getElementById("coordinates");
 
         let changeType = document.createElement("div");
         changeType.id = "changeType";
+
+        let watchText = document.createElement("span");
+        watchText.innerHTML = "Обзор";
+        let watch = document.createElement("input");
+        watch.id = "changeWatch";
+        watch.type = "checkbox";
+        watch.checked = typeCoordinate.view;
+
+        let moveText = document.createElement("span");
+        moveText.innerHTML = "Движение";
+        let move = document.createElement("input");
+        move.id = "changeMove";
+        move.type = "checkbox";
+        move.checked = typeCoordinate.move;
+
+        let attackText = document.createElement("span");
+        attackText.innerHTML = "Атака";
+        let attack = document.createElement("input");
+        attack.id = "changeAttack";
+        attack.type = "checkbox";
+        attack.checked = typeCoordinate.attack;
 
         let shadowText = document.createElement("span");
         shadowText.innerHTML = "Тень";
@@ -103,7 +124,6 @@ function CreateSubMenu(typeCoordinate) {
         shadow.id = "changeShadow";
         shadow.type = "checkbox";
         shadow.checked = typeCoordinate.shadow;
-
         let scaleText = document.createElement("span");
         scaleText.innerHTML = "Размер";
         let scale = document.createElement("input");
@@ -120,7 +140,10 @@ function CreateSubMenu(typeCoordinate) {
                 id_type: Number(typeCoordinate.id),
                 id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
                 scale: Number(document.getElementById("changeScale").value),
-                shadow: document.getElementById("changeShadow").checked
+                shadow: document.getElementById("changeShadow").checked,
+                move: document.getElementById("changeMove").checked,
+                watch: document.getElementById("changeWatch").checked,
+                attack: document.getElementById("changeAttack").checked,
             }));
 
             mapEditor.send(JSON.stringify({
@@ -137,9 +160,21 @@ function CreateSubMenu(typeCoordinate) {
             }));
         };
 
+
+        changeType.appendChild(watchText);
+        changeType.appendChild(watch);
+        changeType.appendChild(document.createElement("br"));
+
+        changeType.appendChild(moveText);
+        changeType.appendChild(move);
+        changeType.appendChild(document.createElement("br"));
+
+        changeType.appendChild(attackText);
+        changeType.appendChild(attack);
+        changeType.appendChild(document.createElement("br"));
+
         changeType.appendChild(shadowText);
         changeType.appendChild(shadow);
-
         changeType.appendChild(document.createElement("br"));
 
         changeType.appendChild(scaleText);

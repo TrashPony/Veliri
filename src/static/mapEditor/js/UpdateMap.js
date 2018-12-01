@@ -29,4 +29,8 @@ function removeSubMenus() {
     if (document.getElementById("changeType")) {
         document.getElementById("changeType").remove()
     }
+
+    if (document.getElementById("rotateBlock")) {
+        document.getElementById("rotateBlock").remove()
+    }
 }

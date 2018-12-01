@@ -3,7 +3,7 @@
     top: 0;
     left: -210px;
     background: linear-gradient(22deg, rgb(221, 112, 52), #ffa50f);
-    height: 75px;
+    height: 135px;
     border-radius: 10px;
     text-shadow: 0 0 2px black;
     padding-top: 10px;
@@ -13,7 +13,7 @@
 
 #changeType span {
     display: inline-block;
-    width: 50px;
+    width: 60px;
     margin-left: 10px;
     margin-right: 15px;
 }

@@ -26,11 +26,11 @@ function CreateMap() {
             startX += horizontalOffset;
 
             if (coordinate.texture_object !== "") {
-                CreateObjects(coordinate, startX, startY);
+                CreateObjects(coordinate);
             }
 
             if (coordinate.effects != null && coordinate.effects.length > 0) {
-                MarkZoneEffect(coordinate, startX, startY)
+                MarkZoneEffect(coordinate)
             }
         }
     }

@@ -28,6 +28,7 @@ type Coordinate struct {
 	Level               int              `json:"level"`
 	Scale               int              `json:"scale"`
 	Shadow              bool             `json:"shadow"`
+	ObjRotate           int              `json:"obj_rotate"`
 	H, G, F             int
 	Parent              *Coordinate
 }

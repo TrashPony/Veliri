@@ -96,5 +96,8 @@ function preload() {
     game.load.image('buttonPlus', 'http://' + window.location.host + '/assets/buttons/buttonPlus.png');
     game.load.image('buttonMinus', 'http://' + window.location.host + '/assets/buttons/buttonMinus.png');
 
+    // Buttons
+    game.load.image('buttonRotate', 'http://' + window.location.host + '/assets/buttons/rotate.png');
+
     autoPreload();
 }
