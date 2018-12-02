@@ -6,23 +6,23 @@ function CreateAnimate(coordinate) {
     }
 
     animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
-        coordinate.shadow, coordinate.obj_rotate);
+        coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset);
 
     coordinate.objectSprite = animate;
 }
 
-function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate) {
+function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset) {
 
-    let object = game.floorObjectLayer.create(x, y, texture);
+    let object = game.floorObjectLayer.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5, 0.5);
     object.scale.set(scale / 100);
     object.angle = rotate;
 
     object.animations.add('objAnimate');
-    object.animations.play('objAnimate', 15, true);
+    object.animations.play('objAnimate', speed, true);
 
     if (needShadow) {
-        let shadow = game.floorObjectLayer.create(x + game.shadowXOffset, y - game.shadowYOffset + 20, texture);
+        let shadow = game.floorObjectLayer.create(x + game.shadowXOffset + xOffset, y - game.shadowYOffset + 20 + yOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
         shadow.scale.set(scale / 100);
         shadow.tint = 0x000000;
@@ -30,7 +30,7 @@ function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate) {
         shadow.angle = rotate;
 
         shadow.animations.add('objAnimate');
-        shadow.animations.play('objAnimate', 15, true);
+        shadow.animations.play('objAnimate', speed, true);
 
         object.shadow = shadow;
     }

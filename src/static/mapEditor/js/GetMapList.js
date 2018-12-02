@@ -96,7 +96,7 @@ function addButtons(map) {
                     buttonRotate.events.onInputOver.add(function () {
                         if (map[q][r].objectSprite) {
                             buttonRotate.alpha = 1;
-                            buttonRotate.events.onInputDown.add(RotateSprite, map[q][r]);
+                            buttonRotate.events.onInputDown.add(ChangeOptionSprite, map[q][r]);
                         }
                     });
 

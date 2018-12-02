@@ -71,8 +71,10 @@ func PlaceCoordinate(idMap, idType, q, r int) {
 		newType.Level = defaultLevel
 
 		if newType.ImpactRadius == 0 {
-			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate) VALUES ($1, $2, $3, $4, $5, '', $6)",
-				idMap, idType, q, r, defaultLevel, 0)
+			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed, "+
+				"x_offset, y_offset)"+
+				" VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9)",
+				idMap, idType, q, r, defaultLevel, 0, 60, 0, 0)
 			if err != nil {
 				log.Fatal("add new type in mc " + err.Error())
 			}
@@ -144,9 +146,10 @@ func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int, ad
 			} else {
 
 				// добавляем тип координате такой же как у то что влияет, типо она под влияющей.
-				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate) "+
-					" VALUES ($1, $2, $3, $4, $5, $6, $7)",
-					idMap, placeCoordinate.ID, coor.Q, coor.R, placeCoordinate.Level, parseImpactToString(placeCoordinate), 0)
+				_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, "+
+					"animate_speed, x_offset, y_offset) "+
+					" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+					idMap, placeCoordinate.ID, coor.Q, coor.R, placeCoordinate.Level, parseImpactToString(placeCoordinate), 0, 60, 0, 0)
 				if err != nil {
 					log.Fatal("add new radius impact type in mc " + err.Error())
 				}
@@ -157,8 +160,10 @@ func placeRadiusCoordinate(placeCoordinate *coordinate.Coordinate, idMap int, ad
 
 	if add {
 		// у самой влияющей координаты нет значения impact и это говорит клиенту что рисовать обьект надо именно тут а не в подчиненных
-		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate) VALUES ($1, $2, $3, $4, $5, '', $6)",
-			idMap, placeCoordinate.ID, placeCoordinate.Q, placeCoordinate.R, placeCoordinate.Level, 0)
+		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed,"+
+			" x_offset, y_offset) "+
+			"VALUES ($1, $2, $3, $4, $5, '', $6, $7)",
+			idMap, placeCoordinate.ID, placeCoordinate.Q, placeCoordinate.R, placeCoordinate.Level, 0, 60, 0, 0)
 		if err != nil {
 			log.Fatal("add new impact type in mc " + err.Error())
 		}

@@ -30,7 +30,8 @@ func getTypeByID(idType int) *coordinate.Coordinate {
 func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coordinate.Coordinate {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, "+
-		"attack, animate_sprite_sheets, animate_loop, impact_radius, scale, shadow FROM coordinate_type WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
+		"attack, animate_sprite_sheets, animate_loop, impact_radius, scale, shadow FROM coordinate_type "+
+		"WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
 		textureFlore, textureObject, animate)
 	if err != nil {
 		println("get by Flore and Object coordinates in map editor")
@@ -60,8 +61,13 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	var id int
 	var impact string
 	var rotate int
+	var animateSpeed int
+	var xOffset int
+	var yOffset int
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type, impact, rotate FROM map_constructor WHERE id_map = $1 AND q=$2 AND r = $3",
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type, impact, rotate, animate_speed, x_offset, y_offset "+
+		"FROM map_constructor "+
+		"WHERE id_map = $1 AND q=$2 AND r = $3",
 		idMap, q, r)
 	if err != nil {
 		log.Fatal("get mc coordinate in editor map " + err.Error())
@@ -69,7 +75,7 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&id, &level, &idType, &impact, &rotate)
+		rows.Scan(&id, &level, &idType, &impact, &rotate, &animateSpeed, &xOffset, &yOffset)
 	}
 
 	if id == 0 {
@@ -81,6 +87,11 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 		mcCoordinate.Q = q
 		mcCoordinate.R = r
 		mcCoordinate.ObjRotate = rotate
+		mcCoordinate.AnimationSpeed = animateSpeed
+
+		mcCoordinate.XOffset = xOffset
+		mcCoordinate.YOffset = yOffset
+
 		return mcCoordinate
 	}
 }
@@ -93,8 +104,11 @@ func getMapALLCoordinateInMC(idMap int) []*coordinate.Coordinate {
 	var q int
 	var r int
 	var rotate int
+	var animateSpeed int
+	var xOffset int
+	var yOffset int
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id_type, level, q, r, impact, rotate "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id_type, level, q, r, impact, rotate, animate_speed, x_offset, y_offset "+
 		"FROM map_constructor "+
 		"WHERE id_map = $1",
 		idMap)
@@ -107,7 +121,7 @@ func getMapALLCoordinateInMC(idMap int) []*coordinate.Coordinate {
 
 	for rows.Next() {
 
-		rows.Scan(&idType, &level, &q, &r, &impact, &rotate)
+		rows.Scan(&idType, &level, &q, &r, &impact, &rotate, &animateSpeed, &xOffset, &yOffset)
 
 		mcCoordinate := getTypeByID(idType)
 
@@ -116,6 +130,10 @@ func getMapALLCoordinateInMC(idMap int) []*coordinate.Coordinate {
 		mcCoordinate.Q = q
 		mcCoordinate.R = r
 		mcCoordinate.ObjRotate = rotate
+		mcCoordinate.AnimationSpeed = animateSpeed
+
+		mcCoordinate.XOffset = xOffset
+		mcCoordinate.YOffset = yOffset
 
 		mcCoordinate.CalculateXYZ()
 

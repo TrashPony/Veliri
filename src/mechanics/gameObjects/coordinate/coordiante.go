@@ -29,6 +29,9 @@ type Coordinate struct {
 	Scale               int              `json:"scale"`
 	Shadow              bool             `json:"shadow"`
 	ObjRotate           int              `json:"obj_rotate"`
+	AnimationSpeed      int              `json:"animation_speed"`
+	XOffset             int              `json:"x_offset"`
+	YOffset             int              `json:"y_offset"`
 	H, G, F             int
 	Parent              *Coordinate
 }
