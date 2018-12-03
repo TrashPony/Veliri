@@ -69,58 +69,14 @@ function addButtons(map) {
                     if (map[q][r].impact) {
                         continue
                     }
-                    // todo кнопки поворота
-                    let buttonPlus = game.redactorButton.create(map[q][r].sprite.x - 30, map[q][r].sprite.y - 30, 'buttonPlus');
-                    buttonPlus.scale.set(0.15);
-                    let buttonMinus = game.redactorButton.create(map[q][r].sprite.x + 5, map[q][r].sprite.y - 30, 'buttonMinus');
-                    buttonMinus.scale.set(0.15);
-
-                    let buttonRotate = game.redactorButton.create(map[q][r].sprite.x - 20, map[q][r].sprite.y + 20, 'buttonRotate');
-                    buttonRotate.scale.set(0.25);
-
-                    buttonPlus.alpha = 0;
-                    buttonMinus.alpha = 0;
-                    buttonRotate.alpha = 0;
-
-                    buttonPlus.inputEnabled = true;
-                    buttonMinus.inputEnabled = true;
-                    buttonRotate.inputEnabled = true;
-
-                    buttonPlus.events.onInputOver.add(function () {
-                        buttonPlus.alpha = 1;
-                        buttonMinus.alpha = 1;
-                        buttonPlus.events.onInputDown.add(addHeightCoordinate, map[q][r]);
-                    });
-
-                    buttonMinus.events.onInputOver.add(function () {
-                        buttonMinus.alpha = 1;
-                        buttonPlus.alpha = 1;
-                        buttonMinus.events.onInputDown.add(subtractHeightCoordinate, map[q][r]);
-                    });
-
-                    buttonRotate.events.onInputOver.add(function () {
-                        if (map[q][r].objectSprite) {
-                            buttonRotate.alpha = 1;
-                            buttonRotate.events.onInputDown.add(ChangeOptionSprite, map[q][r]);
-                        }
-                    });
 
                     map[q][r].sprite.events.onInputOver.add(function () {
-                        hideButtons(); // иногда кнопки не пропадают, а так норм )
-                        buttonPlus.alpha = 1;
-                        buttonMinus.alpha = 1;
-                        if (map[q][r].objectSprite) {
-                            buttonRotate.alpha = 1;
-                        }
+                        createButtons(map[q][r].sprite)
                     });
 
                     map[q][r].sprite.events.onInputOut.add(function () {
-                        buttonPlus.alpha = 0;
-                        buttonMinus.alpha = 0;
-                        buttonRotate.alpha = 0;
-                        buttonPlus.events.onInputDown.removeAll();
-                        buttonMinus.events.onInputDown.removeAll();
-                        buttonRotate.events.onInputDown.removeAll();
+                        // TODO срабатывает когда наводишь на кнопку т.к. мыш уходит с спрайта земли
+                        removeButtons();
                     });
                 }
             }
@@ -128,12 +84,38 @@ function addButtons(map) {
     }
 }
 
-function hideButtons() {
+function createButtons(coordinate) {
+    let buttonPlus = game.redactorButton.create(coordinate.x - 30, coordinate.y - 30, 'buttonPlus');
+    buttonPlus.scale.set(0.15);
+    let buttonMinus = game.redactorButton.create(coordinate.x + 5, coordinate.y - 30, 'buttonMinus');
+    buttonMinus.scale.set(0.15);
+    let buttonRotate = game.redactorButton.create(coordinate.x - 20, coordinate.y + 20, 'buttonRotate');
+    buttonRotate.scale.set(0.25);
+
+    buttonPlus.inputEnabled = true;
+    buttonMinus.inputEnabled = true;
+    buttonRotate.inputEnabled = true;
+
+    buttonPlus.events.onInputOver.add(function () {
+        buttonPlus.events.onInputDown.add(addHeightCoordinate, coordinate);
+    });
+
+    buttonMinus.events.onInputOver.add(function () {
+        buttonMinus.events.onInputDown.add(subtractHeightCoordinate, coordinate);
+    });
+
+    buttonRotate.events.onInputOver.add(function () {
+        if (coordinate.objectSprite) {
+            buttonRotate.events.onInputDown.add(ChangeOptionSprite, coordinate);
+        }
+    });
+}
+
+function removeButtons() {
     if (game.redactorButton) {
         for (let i in game.redactorButton.children) {
             if (game.redactorButton.children.hasOwnProperty(i)) {
-                game.redactorButton.children[i].alpha = 0;
-                game.redactorButton.children[i].events.onInputDown.removeAll();
+                game.redactorButton.children[i].kill()
             }
         }
     }

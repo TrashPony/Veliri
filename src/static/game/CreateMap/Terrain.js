@@ -4,6 +4,8 @@ function CreateTerrain(coordinate, x, y, q, r) {
     floorSprite.anchor.setTo(0.5);
     floorSprite.scale.set(0.5);
 
+    floorSprite.autoCull = true; // убивает спрайт если он за пределами экрана, увеличивает немного фпс
+
     floorSprite.inputEnabled = true; // включаем ивенты на спрайт
     floorSprite.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     floorSprite.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
@@ -23,7 +25,9 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
     if (game && game.typeService !== "battle") {
         let style = {font: "12px Arial", fill: "#606060", align: "center"};
-        game.add.text(x - 10, y - 40, q + "," + r, style, game.redactorMetaText);
+        let text = game.add.text(x - 10, y - 40, q + "," + r, style, game.redactorMetaText);
+
+        text.autoCull = true; // убивает спрайт если он за пределами экрана, увеличивает немного фпс
 
         let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
         let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};

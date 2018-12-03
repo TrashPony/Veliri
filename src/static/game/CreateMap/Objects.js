@@ -1,6 +1,6 @@
 function CreateObjects(coordinate) {
     let object;
-    console.log(coordinate)
+
     if (coordinate.impact) {
         return
     }
