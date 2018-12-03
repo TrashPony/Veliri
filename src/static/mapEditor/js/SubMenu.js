@@ -151,12 +151,20 @@ function CreateSubMenu(typeCoordinate) {
         shadow.id = "changeShadow";
         shadow.type = "checkbox";
         shadow.checked = typeCoordinate.shadow;
+
         let scaleText = document.createElement("span");
         scaleText.innerHTML = "Размер";
         let scale = document.createElement("input");
         scale.id = "changeScale";
         scale.type = "number";
         scale.value = typeCoordinate.scale;
+
+        let impactText = document.createElement("span");
+        impactText.innerHTML = "Радиус воздействия";
+        let impact = document.createElement("input");
+        impact.id = "changeImpact";
+        impact.type = "number";
+        impact.value = typeCoordinate.impact_radius;
 
         let apply = document.createElement("input");
         apply.value = "Применить";
@@ -171,6 +179,7 @@ function CreateSubMenu(typeCoordinate) {
                 move: document.getElementById("changeMove").checked,
                 watch: document.getElementById("changeWatch").checked,
                 attack: document.getElementById("changeAttack").checked,
+                radius: Number(document.getElementById("changeImpact").value),
             }));
 
             mapEditor.send(JSON.stringify({
@@ -206,6 +215,9 @@ function CreateSubMenu(typeCoordinate) {
 
         changeType.appendChild(scaleText);
         changeType.appendChild(scale);
+
+        changeType.appendChild(impactText);
+        changeType.appendChild(impact);
 
         changeType.appendChild(cancel);
         changeType.appendChild(apply);

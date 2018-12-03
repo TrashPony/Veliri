@@ -9,7 +9,8 @@ import (
 
 func Map(game *localGame.Game) _map.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps WHERE id = $1", game.MapID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification, global, in_game "+
+		"FROM maps WHERE id = $1", game.MapID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -17,7 +18,8 @@ func Map(game *localGame.Game) _map.Map {
 
 	var mp _map.Map
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel,
+			&mp.Specification, &mp.Global, &mp.InGame)
 		if err != nil {
 			log.Fatal(err)
 		}

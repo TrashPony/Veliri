@@ -8,7 +8,8 @@ import (
 
 func InfoMapList() []gameMap.Map {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification FROM maps")
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, q_size, r_size, id_type, level, specification, global "+
+		"FROM maps WHERE in_game=$1", false)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,7 +19,7 @@ func InfoMapList() []gameMap.Map {
 	var mp gameMap.Map
 
 	for rows.Next() {
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification, &mp.Global)
 		if err != nil {
 			log.Fatal(err)
 		}

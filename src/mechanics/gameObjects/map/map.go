@@ -14,6 +14,8 @@ type Map struct {
 	Specification string
 	OneLayerMap   map[int]map[int]*coordinate.Coordinate
 	Respawns      int
+	Global        bool `json:"global"`
+	InGame        bool `json:"in_game"`
 }
 
 func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {

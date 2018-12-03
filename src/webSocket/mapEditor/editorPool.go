@@ -160,7 +160,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "changeType" {
-			mapEditor.ChangeType(msg.IDType, msg.Scale, msg.Shadow, msg.Move, msg.Watch, msg.Attack)
+			mapEditor.ChangeType(msg.IDType, msg.Scale, msg.Shadow, msg.Move, msg.Watch, msg.Attack, msg.Radius)
 			selectMap(msg, ws)
 		}
 

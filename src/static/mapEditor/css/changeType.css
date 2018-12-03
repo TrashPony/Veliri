@@ -3,12 +3,12 @@
     top: 0;
     left: -210px;
     background: linear-gradient(22deg, rgb(221, 112, 52), #ffa50f);
-    height: 135px;
+    height: 170px;
     border-radius: 10px;
     text-shadow: 0 0 2px black;
     padding-top: 10px;
     text-align: left;
-    width: 194px;
+    width: 195px;
 }
 
 #changeType span {

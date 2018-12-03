@@ -20,10 +20,15 @@ function CreateMapList(jsonMessage) {
         if (document.getElementById(maps[i].Id)) {
             continue;
         }
+
         let option = document.createElement("option");
         option.id = maps[i].Id;
         option.value = maps[i].Id;
-        option.innerHTML = maps[i].Name;
+        if (maps[i].global) {
+            option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
+        } else {
+            option.innerHTML = maps[i].Name;
+        }
         mapSelect.appendChild(option);
     }
 }

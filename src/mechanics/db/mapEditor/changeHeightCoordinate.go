@@ -57,10 +57,10 @@ func insertNewHeightCoordinate(idMap, q, r, change int) {
 
 	_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed, "+
 		"x_offset, y_offset) "+
-		"VALUES ($1, $2, $3, $4, $5, '', $6, $7)",
+		"VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9)",
 		idMap, defaultType, q, r, defaultLevel, 0, 60, 0, 0)
 	if err != nil {
-		log.Fatal("add new level in map editor" + err.Error())
+		log.Fatal("add new level in map editor " + err.Error())
 	}
 }
 
