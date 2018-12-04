@@ -36,6 +36,10 @@ function PlaceCoordinate(event, type) {
                             continue
                         }
 
+                        if (!map[q][r].sprite) {
+                            continue
+                        }
+
                         let coordinateSprite = map[q][r].sprite;
                         let selectedSprite = game.SelectLayer.create(coordinateSprite.x, coordinateSprite.y, 'selectEmpty');
                         selectedSprite.anchor.setTo(0.5);

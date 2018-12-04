@@ -1,5 +1,5 @@
 function update() {
-    // todo передача функций для input'ов координат
+
     dynamicMap(game.floorLayer, game.mapPoints);
 
     if (game && game.typeService === "battle") {
@@ -48,7 +48,9 @@ function dynamicMap(group, points) {
                 if (coordinate.objectSprite.shadow) {
                     coordinate.objectSprite.shadow.destroy()
                 }
-                coordinate.objectSprite.destroy()
+                coordinate.objectSprite.destroy();
+
+                coordinate.objectSprite = null
             }
 
             if (coordinate.coordinateText) {
@@ -57,10 +59,12 @@ function dynamicMap(group, points) {
                         coordinate.coordinateText[i].destroy();
                     }
                 }
+
+                coordinate.coordinateText = null
             }
 
-            !game.map.OneLayerMap[point.q][point.r].sprite.destroy();
-            game.map.OneLayerMap[point.q][point.r].sprite = null;
+            coordinate.sprite.destroy();
+            coordinate.sprite = null;
         }
     });
 }

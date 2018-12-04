@@ -48,6 +48,20 @@ function CreateTerrain(coordinate, x, y, q, r) {
                 coordinate.coordinateText.attack = game.add.text(floorSprite.x - 10, floorSprite.y - 25, 'a', noAllow, game.redactorMetaText);
             }
         }
+
+        if (!coordinate.impact) {
+            let buttons = createButtons(coordinate);
+
+            floorSprite.events.onInputOver.add(function () {
+                buttons.plus.visible = true;
+                buttons.minus.visible = true;
+                buttons.rotate.visible = true;
+            });
+
+            floorSprite.events.onInputOut.add(function () {
+                hideButtons();
+            });
+        }
     }
 
     if (coordinate.level === 0) {
@@ -73,5 +87,48 @@ function CreateTerrain(coordinate, x, y, q, r) {
     if (coordinate.level === 5) {
         let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
         coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+    }
+}
+
+function createButtons(coordinate) {
+    let buttonPlus = game.redactorButton.create(coordinate.sprite.x - 30, coordinate.sprite.y - 30, 'buttonPlus');
+    buttonPlus.scale.set(0.15);
+    let buttonMinus = game.redactorButton.create(coordinate.sprite.x + 5, coordinate.sprite.y - 30, 'buttonMinus');
+    buttonMinus.scale.set(0.15);
+    let buttonRotate = game.redactorButton.create(coordinate.sprite.x - 20, coordinate.sprite.y + 20, 'buttonRotate');
+    buttonRotate.scale.set(0.25);
+
+    buttonPlus.inputEnabled = true;
+    buttonMinus.inputEnabled = true;
+    buttonRotate.inputEnabled = true;
+
+    buttonPlus.events.onInputOver.add(function () {
+        buttonPlus.visible = true;
+        buttonPlus.events.onInputDown.add(addHeightCoordinate, coordinate);
+    });
+
+    buttonMinus.events.onInputOver.add(function () {
+        buttonMinus.visible = true;
+        buttonMinus.events.onInputDown.add(subtractHeightCoordinate, coordinate);
+    });
+
+    buttonRotate.events.onInputOver.add(function () {
+        if (coordinate.objectSprite) {
+            buttonRotate.visible = true;
+            buttonRotate.events.onInputDown.add(ChangeOptionSprite, coordinate);
+        }
+    });
+
+    hideButtons();
+    return {plus: buttonPlus, minus: buttonMinus, rotate: buttonRotate}
+}
+
+function hideButtons() {
+    if (game.redactorButton) {
+        for (let i in game.redactorButton.children) {
+            if (game.redactorButton.children.hasOwnProperty(i)) {
+                game.redactorButton.children[i].visible = false;
+            }
+        }
     }
 }
