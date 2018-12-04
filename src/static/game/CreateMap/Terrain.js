@@ -26,6 +26,10 @@ function CreateTerrain(coordinate, x, y, q, r) {
         coordinate.coordinateText = {};
         coordinate.coordinateText.qr = game.add.text(x - 10, y - 40, q + "," + r, style, game.redactorMetaText);
 
+        if (metaAlpha === 0){
+            coordinate.coordinateText.qr.alpha = metaAlpha;
+        }
+
         let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
         let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};
 
@@ -51,6 +55,8 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
         if (!coordinate.impact) {
             let buttons = createButtons(coordinate);
+
+            coordinate.buttons = buttons;
 
             floorSprite.events.onInputOver.add(function () {
                 buttons.plus.visible = true;

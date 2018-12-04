@@ -16,12 +16,12 @@ function update() {
 function dynamicMap(group, points) {
     points.forEach(function (point) {
 
-        let distCam = 850/game.camera.scale.x;
+        let distCam = 850 / game.camera.scale.x;
 
         let camX = (game.camera.view.width / 2 + game.camera.view.x) / game.camera.scale.x;
         let camY = (game.camera.view.height / 2 + game.camera.view.y) / game.camera.scale.y;
 
-        let dist = Phaser.Math.distance(point.x,point.y, camX, camY);
+        let dist = Phaser.Math.distance(point.x, point.y, camX, camY);
         if (dist < distCam && !game.map.OneLayerMap[point.q][point.r].sprite) {
 
             let coordinate = game.map.OneLayerMap[point.q][point.r];
@@ -40,7 +40,7 @@ function dynamicMap(group, points) {
                 MarkZoneEffect(coordinate)
             }
 
-        } else if(dist > distCam && game.map.OneLayerMap[point.q][point.r].sprite) {
+        } else if (dist > distCam && game.map.OneLayerMap[point.q][point.r].sprite) {
 
             let coordinate = game.map.OneLayerMap[point.q][point.r];
 
@@ -49,17 +49,22 @@ function dynamicMap(group, points) {
                     coordinate.objectSprite.shadow.destroy()
                 }
                 coordinate.objectSprite.destroy();
-
                 coordinate.objectSprite = null
             }
 
             if (coordinate.coordinateText) {
                 for (let i in coordinate.coordinateText) {
-                    if (coordinate.coordinateText.hasOwnProperty(i)){
+                    if (coordinate.coordinateText.hasOwnProperty(i)) {
                         coordinate.coordinateText[i].destroy();
                     }
                 }
+                coordinate.coordinateText = null
+            }
 
+            if (coordinate.buttons) {
+                for (let i in coordinate.buttons) {
+                    coordinate.buttons[i].destroy();
+                }
                 coordinate.coordinateText = null
             }
 
