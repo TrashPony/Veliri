@@ -56,7 +56,7 @@ function appendRedactorEventsToFloor(game) {
 
     setTimeout(function () {
         //костыль, если без таймаута то карта не успевает заполниться спрайтами
-        addButtons(map)
+        //addButtons(map)
     }, 2500)
 }
 

@@ -7,6 +7,8 @@ function CreateMap() {
     let startXInit = game.hexagonWidth / 2;
     let startYInit = game.hexagonHeight / 2;
 
+    game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
+
     for (let r = 0; r < game.map.RSize; r++) {
 
         if (r % 2 !== 0) {
@@ -18,24 +20,8 @@ function CreateMap() {
         startY = startYInit + (r * verticalOffset);
 
         for (let q = 0; q < game.map.QSize; q++) {
-
-            let coordinate = game.map.OneLayerMap[q][r];
-
-            CreateTerrain(coordinate, startX, startY, q, r);
-
+            game.mapPoints.push({x: startX, y: startY, q: q, r:r}); // x y - пиксельная координата положения, q r гексовая сеть
             startX += horizontalOffset;
-
-            if (coordinate.texture_object !== "") {
-                CreateObjects(coordinate);
-            }
-
-            if (coordinate.animate_sprite_sheets !== "") {
-                CreateAnimate(coordinate);
-            }
-
-            if (coordinate.effects != null && coordinate.effects.length > 0) {
-                MarkZoneEffect(coordinate)
-            }
         }
     }
 }

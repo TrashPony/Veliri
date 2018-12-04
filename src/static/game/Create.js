@@ -1,5 +1,5 @@
 function CreateGame(map) {
-    let game = new Phaser.Game('100', '100', Phaser.AUTO, 'main', {
+    let game = new Phaser.Game('100', '100', Phaser.CANVAS, 'main', {
         preload: preload,
         create: create,
         update: update,
