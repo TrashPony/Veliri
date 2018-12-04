@@ -77,4 +77,8 @@ function inventoryMetaInfo(data) {
         "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>" +
         "</div>";
     sizeBlock.style.color = textColor;
+
+    if (document.getElementById("InventoryTip")){
+        document.getElementById("InventoryTip").remove();
+    }
 }

@@ -1,4 +1,4 @@
-function InventorySelectTip(slot, x, y, first, size) {
+function InventorySelectTip(slot, x, y, first, size, numberSlot) {
 
     if (!slot || !slot.item) {
         return
@@ -45,12 +45,29 @@ function InventorySelectTip(slot, x, y, first, size) {
         detailedButton.style.pointerEvents = "auto";
         // TODO detailedButton.onclick = функция вывода подробной информации
         tip.appendChild(detailedButton);
+
+        let toStorage = document.createElement("input");
+        toStorage.type = "button";
+        toStorage.className = "lobbyButton inventoryTip";
+        toStorage.value = "На склад";
+        toStorage.style.pointerEvents = "auto";
+        toStorage.onclick = function() {
+            inventorySocket.send(JSON.stringify({
+                event: "itemToStorage",
+                inventory_slot: Number(numberSlot)
+            }));
+        };
+        tip.appendChild(toStorage);
     }
 
     document.body.appendChild(tip);
 }
 
 function CreateParamsTable(slot, tip, size) {
+    if (size) {
+        notificationInventorySize(slot.size);
+    }
+
     let table = document.createElement("table");
     table.id = "paramsItemTable";
 
@@ -121,10 +138,6 @@ function CreateParamsTable(slot, tip, size) {
     }
 
     table.appendChild(createRow("Size:", slot.size));
-
-    if (size) {
-        notificationInventorySize(slot.size);
-    }
 
     function createRow(params, count) {
         let tr = document.createElement("tr");

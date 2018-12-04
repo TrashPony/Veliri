@@ -70,7 +70,28 @@ func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 	}
 }
 
-func RemoveItem(userId, baseId, numberSlot, quantityRemove int) {
-	// TODO добавлять/удалять итемы методом инвентаря что бы избежать проблем со слотами
-	// TODO и обновлять данные в бд отдельным методом
+func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) bool {
+
+	p.mx.Lock()
+	defer p.mx.Unlock()
+
+	userStorages, userOk := p.storages[userId]
+	if userOk {
+		baseStorage, baseOk := userStorages[baseId]
+		if baseOk {
+			slot, ok := baseStorage.Slots[numberSlot]
+			if ok {
+				slot.RemoveItem(slot.Quantity)
+				updateStorage.Inventory(baseStorage, userId, baseId)
+				return true
+			} else {
+				return false
+			}
+		} else {
+			return false
+		}
+	} else {
+		return false
+	}
+	return false
 }

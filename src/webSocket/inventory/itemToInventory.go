@@ -6,10 +6,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func itemToStorage(ws *websocket.Conn, msg Message) {
+func itemToInventory(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := squadInventory.ItemToStorage(user, msg.InventorySlot)
+	err := squadInventory.ItemToInventory(user, msg.StorageSlot)
 
 	if err != nil {
 		// TODO

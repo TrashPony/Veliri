@@ -118,8 +118,12 @@ func Reader(ws *websocket.Conn) {
 			RemoveUnitAmmo(ws, msg)
 		}
 
-		if msg.Event == "itemToStorage" {
+		if msg.Event == "itemToStorage" { // из инвентаря в хранилище
 			itemToStorage(ws, msg)
+		}
+
+		if msg.Event == "itemToInventory" { // из хранилища в инвентарь
+			itemToInventory(ws, msg)
 		}
 
 		if msg.Event == "InventoryRepair" || msg.Event == "EquipsRepair" || msg.Event == "AllRepair" {
