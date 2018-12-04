@@ -148,9 +148,13 @@ function CreateTipType(type) {
         attack = "#0F0";
     }
 
+    console.log(type);
+
     tip.innerHTML = "<div><span> Move </span><span style=color:" + move + ">" + type.move + "</span></div>" +
         "<div><span> Watch </span><span style=color:" + view + ">" + type.view + "</span></div>" +
-        "<div><span> Attack </span><span style=color:" + attack + ">" + type.attack + "</span></div>";
+        "<div><span> Attack </span><span style=color:" + attack + ">" + type.attack + "</span></div>" +
+        "<div><span> Размер </span><span style=color:#fff91e>" + type.scale + " %</span></div>" +
+        "<div><span> Радиус </span><span style=color:#fff91e>" + type.impact_radius + "</span></div>";
 
 
     document.body.appendChild(tip);
