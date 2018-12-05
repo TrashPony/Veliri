@@ -4,6 +4,7 @@ import (
 	"../player"
 	"../storage"
 	"errors"
+	"../db/updateSquad"
 )
 
 func ItemToStorage(user *player.Player, inventorySlot int) error {
@@ -21,6 +22,7 @@ func ItemToStorage(user *player.Player, inventorySlot int) error {
 			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(slot.Quantity)
 		}
 
+		updateSquad.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("user not in base")

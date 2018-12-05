@@ -6,13 +6,14 @@ function UpdateStorage(inventory) {
 
             cell.slotData = JSON.stringify(inventory.slots[i]);
             cell.number = i;
+            cell.inventoryType = 'storage';
 
             cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
             cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
 
             CreateHealBar(cell, "inventory", true);
 
-            //cell.onclick = SelectInventoryItem;
+            cell.onclick = SelectInventoryItem;
 
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;

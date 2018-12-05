@@ -4,6 +4,7 @@ import (
 	"../player"
 	"../storage"
 	"errors"
+	"../db/updateSquad"
 )
 
 func ItemToInventory(user *player.Player, storageSlot int) error {
@@ -17,12 +18,13 @@ func ItemToInventory(user *player.Player, storageSlot int) error {
 			return errors.New("no find slot")
 		}
 
-		ok := storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, slot.Quantity)
+		ok := user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.Size/float32(slot.Quantity))
 
 		if ok {
-			user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.Size)
+			storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, slot.Quantity)
 		}
 
+		updateSquad.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("user not in base")

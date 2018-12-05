@@ -1,4 +1,4 @@
-function InventorySelectTip(slot, x, y, first, size, numberSlot) {
+function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
 
     if (!slot || !slot.item) {
         return
@@ -46,18 +46,30 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot) {
         // TODO detailedButton.onclick = функция вывода подробной информации
         tip.appendChild(detailedButton);
 
-        let toStorage = document.createElement("input");
-        toStorage.type = "button";
-        toStorage.className = "lobbyButton inventoryTip";
-        toStorage.value = "На склад";
-        toStorage.style.pointerEvents = "auto";
-        toStorage.onclick = function() {
-            inventorySocket.send(JSON.stringify({
-                event: "itemToStorage",
-                inventory_slot: Number(numberSlot)
-            }));
-        };
-        tip.appendChild(toStorage);
+        let to = document.createElement("input");
+        to.type = "button";
+        to.className = "lobbyButton inventoryTip";
+        to.style.pointerEvents = "auto";
+
+        if (storage) {
+            to.value = "В инвентарь";
+            to.onclick = function() {
+                inventorySocket.send(JSON.stringify({
+                    event: "itemToInventory",
+                    storage_slot: Number(numberSlot)
+                }));
+            };
+        } else {
+            to.value = "На склад";
+            to.onclick = function() {
+                inventorySocket.send(JSON.stringify({
+                    event: "itemToStorage",
+                    inventory_slot: Number(numberSlot)
+                }));
+            };
+        }
+
+        tip.appendChild(to);
     }
 
     document.body.appendChild(tip);
