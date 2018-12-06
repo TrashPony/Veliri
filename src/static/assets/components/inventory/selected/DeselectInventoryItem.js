@@ -8,6 +8,10 @@ function DestroyInventoryTip() {
     if (document.getElementById("InventoryTipSelect")) {
         document.getElementById("InventoryTipSelect").remove();
     }
+
+    if (document.getElementById("itemSize")) {
+        document.getElementById("itemSize").remove();
+    }
 }
 
 function DestroyInventoryClickEvent() {

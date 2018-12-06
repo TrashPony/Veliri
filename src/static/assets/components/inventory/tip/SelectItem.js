@@ -7,8 +7,67 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
     let tip = document.createElement("div");
     tip.style.top = y + "px";
     tip.style.left = x + "px";
+
+    if (size) {
+        notificationInventorySize(slot.size);
+    }
+
     if (!first) {
         tip.id = "InventoryTip";
+        function createInput(value) {
+            let button = document.createElement("input");
+            button.type = "button";
+            button.className = "lobbyButton inventoryTip";
+            button.value = value;
+            button.style.pointerEvents = "auto";
+            tip.appendChild(button);
+            return button
+        }
+
+        let detailedButton = createInput("Подробнее");
+        detailedButton.onclick = function () {
+            tip.remove();
+
+            let tipDetail = document.createElement("div");
+            tipDetail.id = "InventoryTip";
+            tipDetail.style.top = y + "px";
+            tipDetail.style.left = x + "px";
+
+            CreateParamsTable(slot, tipDetail);
+            document.body.appendChild(tipDetail);
+        };
+
+        let sellButton = createInput("Продать");
+        sellButton.onclick = function () {
+            // TODO идалоговое окно продажи
+            // надо бырать количество которое продаешь
+            // надо выбрать цену продажи за штуку
+            // кнопка отмена, продать
+        };
+
+        if (storage) {
+            let to = createInput("В инвентарь");
+            to.onclick = function () {
+                inventorySocket.send(JSON.stringify({
+                    event: "itemToInventory",
+                    storage_slot: Number(numberSlot)
+                }));
+            };
+        } else {
+            let to = createInput("На склад");
+            to.onclick = function () {
+                inventorySocket.send(JSON.stringify({
+                    event: "itemToStorage",
+                    inventory_slot: Number(numberSlot)
+                }));
+            };
+        }
+
+        let cancelButton = createInput("Отменить");
+        cancelButton.onclick = function () {
+            DestroyInventoryClickEvent();
+            DestroyInventoryTip();
+        };
     } else {
         let inventoryTip = document.getElementById("InventoryTip");
         if (!inventoryTip) {
@@ -17,68 +76,17 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
             tip.remove();
             return
         }
-    }
 
-    let name = document.createElement("span");
-    name.className = "InventoryTipName";
-    name.innerHTML = slot.item.name;
-    tip.appendChild(name);
-
-    CreateParamsTable(slot, tip, size);
-
-    if (!first) {
-        let cancelButton = document.createElement("input");
-        cancelButton.type = "button";
-        cancelButton.className = "lobbyButton inventoryTip";
-        cancelButton.value = "Отменить";
-        cancelButton.style.pointerEvents = "auto";
-        cancelButton.onclick = function () {
-            DestroyInventoryClickEvent();
-            DestroyInventoryTip();
-        };
-        tip.appendChild(cancelButton);
-
-        let detailedButton = document.createElement("input");
-        detailedButton.type = "button";
-        detailedButton.className = "lobbyButton inventoryTip";
-        detailedButton.value = "Подробнее";
-        detailedButton.style.pointerEvents = "auto";
-        // TODO detailedButton.onclick = функция вывода подробной информации
-        tip.appendChild(detailedButton);
-
-        let to = document.createElement("input");
-        to.type = "button";
-        to.className = "lobbyButton inventoryTip";
-        to.style.pointerEvents = "auto";
-
-        if (storage) {
-            to.value = "В инвентарь";
-            to.onclick = function() {
-                inventorySocket.send(JSON.stringify({
-                    event: "itemToInventory",
-                    storage_slot: Number(numberSlot)
-                }));
-            };
-        } else {
-            to.value = "На склад";
-            to.onclick = function() {
-                inventorySocket.send(JSON.stringify({
-                    event: "itemToStorage",
-                    inventory_slot: Number(numberSlot)
-                }));
-            };
-        }
-
-        tip.appendChild(to);
+        let name = document.createElement("span");
+        name.className = "InventoryTipName";
+        name.innerHTML = slot.item.name;
+        tip.appendChild(name);
     }
 
     document.body.appendChild(tip);
 }
 
-function CreateParamsTable(slot, tip, size) {
-    if (size) {
-        notificationInventorySize(slot.size);
-    }
+function CreateParamsTable(slot, tip) {
 
     let table = document.createElement("table");
     table.id = "paramsItemTable";
@@ -107,7 +115,7 @@ function CreateParamsTable(slot, tip, size) {
         table.appendChild(createRow("Accuracy:", slot.item.accuracy));
         table.appendChild(createRow("Ammo capacity:", slot.item.ammo_capacity));
         table.appendChild(createRow("Artillery:", slot.item.artillery));
-        table.appendChild(createRow("Range:", slot.item.min_attack_range + "-" +slot.item.range));
+        table.appendChild(createRow("Range:", slot.item.min_attack_range + "-" + slot.item.range));
         table.appendChild(createRow("HP:", slot.hp));
         table.appendChild(createRow("Use power:", slot.item.power));
     } else if (slot.type === "equip") {
@@ -229,6 +237,11 @@ function notificationInventorySize(size) {
 
     let unitIcon = document.getElementById("MSIcon");
     if (unitIcon.slotData) {
+
+        if (document.getElementById("itemSize")) {
+            document.getElementById("itemSize").remove();
+        }
+
         let slotData = JSON.parse(unitIcon.slotData);
         let percentFill = 100 / (slotData.body.capacity_size / size);
 
