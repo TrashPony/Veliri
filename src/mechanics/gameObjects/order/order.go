@@ -15,4 +15,7 @@ type Order struct {
 	PlaceName string /* место продажи */
 	PlaceID   int    /* ид места продажи */
 	Item      interface{}
+
+	ItemSize float32 /* сколько весит 1 итем нужен что бы класть его в склад */
+	ItemHP   int     /* уоличество хп итема, нужен что бы класть его в склад */
 }

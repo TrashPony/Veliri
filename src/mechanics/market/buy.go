@@ -1,7 +1,10 @@
 package market
 
 import (
+	"../db/dbPlayer"
+	"../db/market"
 	"../player"
+	"../storage"
 	"errors"
 )
 
@@ -12,11 +15,21 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 
 	if find {
 		if user.GetCredits() >= buyOrder.Price*count && buyOrder.Count >= count {
+
 			user.SetCredits(user.GetCredits() - buyOrder.Price*count) // отнимаем деньги :)
+			buyOrder.Count -= count                                   // отнимаем количество покупаемых итемов у ордера
 
-			// 3 обновляем ордер в бд, в фабрике
-			// 4 кладем новый итем в количестве купленых штук в склад той базы где был ордер
+			if buyOrder.Count > 0 {
+				market.UpdateOrder(buyOrder)
+			} else {
+				market.RemoveOrder(buyOrder)
+				delete(o.orders, buyOrder.Id) // удаляем из фабрики т.к. мьютекс тут работает, это безопасно
+			}
 
+			storage.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
+				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count))
+
+			dbPlayer.UpdateUser(user)
 		} else {
 			if user.GetCredits() < buyOrder.Price*count {
 				return errors.New("no credits")

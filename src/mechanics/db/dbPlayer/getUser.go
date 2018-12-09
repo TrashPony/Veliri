@@ -1,4 +1,4 @@
-package get
+package dbPlayer
 
 import (
 	"../../../dbConnect"

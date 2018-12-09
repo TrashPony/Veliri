@@ -25,11 +25,11 @@ func (o *OrdersPool) GetOrders() map[int]*order.Order {
 	return o.orders
 }
 
-func (o *OrdersPool) GetOrder(id int) (bool, *order.Order, sync.Mutex) {
+func (o *OrdersPool) GetOrder(id int) (bool, *order.Order, *sync.Mutex) {
 	o.mx.Lock()
 	openOrder, find := o.orders[id]
 	// 3тий ретурн это мх, его надо вызрывать только после всех изменений с ордером
-	return find, openOrder, o.mx
+	return find, openOrder, &o.mx
 }
 
 func (o *OrdersPool) AddNewOrder(newOrder order.Order) {

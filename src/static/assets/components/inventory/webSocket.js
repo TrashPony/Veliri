@@ -59,6 +59,9 @@ function ConnectMarket() {
     };
 
     marketSocket.onmessage = function(msg) {
+        if(JSON.parse(msg.data).error) {
+            alert(JSON.parse(msg.data).error);
+        }
     };
 
     marketSocket.onerror = function(msg) {

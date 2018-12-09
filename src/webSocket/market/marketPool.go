@@ -80,8 +80,6 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "placeNewSellOrder" {
 			err := market.Orders.PlaceNewSellOrder(msg.StorageSlot, msg.Price, msg.Quantity, msg.MinBuyOut, msg.Expires, usersMarketWs[ws])
 			if err != nil {
-				println(err.Error())
-
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
 				storage.Updater(usersMarketWs[ws].GetID())

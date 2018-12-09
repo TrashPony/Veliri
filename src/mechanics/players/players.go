@@ -1,7 +1,7 @@
 package players
 
 import (
-	"../db/get"
+	"../db/dbPlayer"
 	"../player"
 	"../squadInventory"
 	"sync"
@@ -31,7 +31,7 @@ func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 
-	newUser := get.User(id, login)
+	newUser := dbPlayer.User(id, login)
 
 	squadInventory.GetInventory(newUser)
 	usersStore.users[id] = newUser

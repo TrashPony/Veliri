@@ -5,7 +5,6 @@ function Filling(data) {
     for (let i in data.orders) {
         if (data.orders.hasOwnProperty(i)) {
             let order = data.orders[i];
-            console.log(order);
 
             if (order.Type === "sell") {
                 fillSellTable(order);

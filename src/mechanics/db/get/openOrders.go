@@ -24,19 +24,35 @@ func OpenOrders() map[int]*order.Order {
 			&mOrder.IdItem, &mOrder.Expires, &mOrder.PlaceName, &mOrder.PlaceID)
 
 		if mOrder.TypeItem == "weapon" {
-			mOrder.Item = Weapon(mOrder.IdItem)
+			weapon := Weapon(mOrder.IdItem)
+
+			mOrder.Item = weapon
+			mOrder.ItemSize = weapon.Size
+			mOrder.ItemHP = weapon.MaxHP
 		}
 
 		if mOrder.TypeItem == "body" {
-			mOrder.Item = Body(mOrder.IdItem)
+			body := Body(mOrder.IdItem)
+
+			mOrder.Item = body
+			mOrder.ItemSize = body.CapacitySize
+			mOrder.ItemHP = body.MaxHP
 		}
 
 		if mOrder.TypeItem == "ammo" {
-			mOrder.Item = Ammo(mOrder.IdItem)
+			ammo := Ammo(mOrder.IdItem)
+
+			mOrder.Item = ammo
+			mOrder.ItemSize = ammo.Size
+			mOrder.ItemHP = 1
 		}
 
 		if mOrder.TypeItem == "equip" {
-			mOrder.Item = TypeEquip(mOrder.IdItem)
+			equip := TypeEquip(mOrder.IdItem)
+
+			mOrder.Item = equip
+			mOrder.ItemSize = equip.Size
+			mOrder.ItemHP = equip.MaxHP
 		}
 
 		orders[mOrder.Id] = &mOrder
