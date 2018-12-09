@@ -6,8 +6,9 @@ import (
 	"log"
 )
 
-func OpenOrders() []*order.Order {
-	orders := make([]*order.Order, 0)
+func OpenOrders() map[int]*order.Order {
+
+	var orders = make(map[int]*order.Order)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, id_user, price, count, type, min_buy_out, type_item," +
 		" id_item, expires, place_name, place FROM orders")
@@ -38,7 +39,7 @@ func OpenOrders() []*order.Order {
 			mOrder.Item = TypeEquip(mOrder.IdItem)
 		}
 
-		orders = append(orders, &mOrder)
+		orders[mOrder.Id] = &mOrder
 	}
 
 	return orders

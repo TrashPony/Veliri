@@ -3,12 +3,15 @@ package market
 import (
 	"../db/market"
 	"../db/updateSquad"
+	"../gameObjects/order"
 	"../player"
 	"../storage"
 	"errors"
+	"time"
 )
 
-func PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, user *player.Player) error {
+func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, user *player.Player) error {
+
 	if user.InBaseID > 0 {
 
 		baseStorage, _ := storage.Storages.Get(user.GetID(), user.InBaseID)
@@ -20,16 +23,27 @@ func PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, use
 
 		if slot.MaxHP == slot.HP && quantity <= slot.Quantity {
 
-			// добавляем их в магазин
-			market.PlaceNewOrder(user.GetID(), price, quantity, minBuyOut, slot.ItemID, expires, user.InBaseID,
-				"sell", slot.Type, "База 1")
+			newOrder := order.Order{IdUser: user.GetID(), Price: price, Count: quantity, Type: "sell",
+				MinBuyOut: minBuyOut, TypeItem: slot.Type, IdItem: slot.ItemID, Expires: time.Now(),
+				PlaceName: "База 1", PlaceID: user.InBaseID, Item: slot.Item}
+
 			// todo имя базы захарджкожено
-			// todo если expires 0 то ставим месяц
+			// todo если expires 0 то ставим 1 месяц
 			// todo если minBuyOut 0 то ставим 1
+			// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
-			// удаляем из инвентаря
-			storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, quantity)
+			// добавляем их в магазин
+			id := market.PlaceNewOrder(&newOrder)
 
+			if id > 0 {
+				newOrder.Id = id
+				// добавляем его на фабрику
+				o.AddNewOrder(newOrder)
+				// удаляем итем со склада
+				storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, quantity)
+			} else {
+				return errors.New("unknown error")
+			}
 		} else {
 			if slot.MaxHP > slot.HP {
 				return errors.New("equip is damage")

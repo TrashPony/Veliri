@@ -1,7 +1,6 @@
 package market
 
 import (
-	"../../mechanics/db/get"
 	"../../mechanics/gameObjects/order"
 	"../../mechanics/market"
 	"../../mechanics/player"
@@ -14,22 +13,24 @@ import (
 	"sync"
 )
 
+// TODO !------------------ ОПСНОСТЭ ---------------------!
+// TODO для того что бы исключить дюп итемов из рынка, надо создать фабрику ордеров и каждое изменение в любом оредере
+// TODO мьютить, тоесть 1 доступ к карте ордеров одновременно все остальные ждут
+
 var mutex = &sync.Mutex{}
 
 var usersMarketWs = make(map[*websocket.Conn]*player.Player)
 
-type Order struct {
-}
-
 type Message struct {
-	Event       string         `json:"event"`
-	Orders      []*order.Order `json:"orders"`
-	StorageSlot int            `json:"storage_slot"`
-	Price       int            `json:"price"`
-	Quantity    int            `json:"quantity"`
-	MinBuyOut   int            `json:"min_buy_out"`
-	Expires     int            `json:"expires"`
-	Error       string         `json:"error"`
+	Event       string               `json:"event"`
+	Orders      map[int]*order.Order `json:"orders"`
+	OrderID     int                  `json:"order_id"`
+	StorageSlot int                  `json:"storage_slot"`
+	Price       int                  `json:"price"`
+	Quantity    int                  `json:"quantity"`
+	MinBuyOut   int                  `json:"min_buy_out"`
+	Expires     int                  `json:"expires"`
+	Error       string               `json:"error"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -77,8 +78,10 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "placeNewSellOrder" {
-			err := market.PlaceNewSellOrder(msg.StorageSlot, msg.Price, msg.Quantity, msg.MinBuyOut, msg.Expires, usersMarketWs[ws])
+			err := market.Orders.PlaceNewSellOrder(msg.StorageSlot, msg.Price, msg.Quantity, msg.MinBuyOut, msg.Expires, usersMarketWs[ws])
 			if err != nil {
+				println(err.Error())
+
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
 				storage.Updater(usersMarketWs[ws].GetID())
@@ -95,7 +98,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "buy" {
-			// todo покупка в открытый оредар или частичный выкуп, оповестить других участников рынка
+			err := market.Orders.Buy(msg.OrderID, msg.Quantity, usersMarketWs[ws])
+			if err != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
+			} else {
+				storage.Updater(usersMarketWs[ws].GetID())
+				OrderSender()
+			}
 		}
 
 		if msg.Event == "sell" {
@@ -107,7 +116,7 @@ func Reader(ws *websocket.Conn) {
 func OrderSender() {
 	mutex.Lock()
 	for ws := range usersMarketWs {
-		err := ws.WriteJSON(Message{Event: "openMarket", Orders: get.OpenOrders()})
+		err := ws.WriteJSON(Message{Event: "openMarket", Orders: market.Orders.GetOrders()})
 		if err != nil {
 			log.Printf("error: %v", err)
 			ws.Close()

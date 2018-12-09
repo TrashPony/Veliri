@@ -2,15 +2,16 @@ function Filling(data) {
 
     deleteOldRows();
 
-    for (let i = 0; i < data.orders.length; i++) {
+    for (let i in data.orders) {
+        if (data.orders.hasOwnProperty(i)) {
+            let order = data.orders[i];
+            console.log(order);
 
-        let order = data.orders[i];
-        console.log(order);
+            if (order.Type === "sell") {
+                fillSellTable(order);
+            } else {
 
-        if (order.Type === "sell") {
-            fillSellTable(order);
-        } else {
-
+            }
         }
     }
 }
@@ -69,18 +70,51 @@ function buyDialog(order, e) {
     dialogBlock.style.top = e.clientY + "px";
     dialogBlock.style.left = e.clientX + "px";
 
-    dialogBlock.innerHTML = "<h2>Покупака " + order.Item.name + "</h2>" +
-        "<div><input type='number' min='0' value='" + order.Count + "' max='" + order.Count + "'> <span>штук</span><br>" +
-        "<span> за " + order.Count * order.Price + " кредитов </span></div>";
+    let head = document.createElement("h2");
+    head.innerHTML = "Покупака " + order.Item.name;
+    dialogBlock.appendChild(head);
+
+    let input = document.createElement("input");
+    input.type = "number";
+    input.min = 0;
+    input.max = order.Count;
+    input.value = order.Count;
+    dialogBlock.appendChild(input);
+
+    let span = document.createElement("span");
+    span.innerHTML = "штук";
+    dialogBlock.appendChild(span);
+
+    dialogBlock.appendChild(document.createElement("br"));
+
+    let resultSpan = document.createElement("span");
+    resultSpan.id = "dialogResultSpan";
+    resultSpan.innerHTML = "за <span style='color: chartreuse'>" + order.Count * order.Price + "</span> кредитов";
+    dialogBlock.appendChild(resultSpan);
+
+    dialogBlock.appendChild(document.createElement("br"));
+
+    input.oninput = function () {
+        resultSpan.innerHTML = "за <span style='color: chartreuse'>" + this.value * order.Price + " </span> кредитов";
+    };
 
     let closeButton = createInput("Отменить", dialogBlock);
     closeButton.onclick = function () {
         dialogBlock.remove();
     };
 
-    let sellButton = createInput("Продать", dialogBlock);
+    let sellButton = createInput("Купить", dialogBlock);
     sellButton.onclick = function () {
-
+        if (input.value > 0) {
+            marketSocket.send(JSON.stringify({
+                event: 'buy',
+                order_id: Number(order.Id),
+                quantity: Number(input.value)
+            }));
+            dialogBlock.remove();
+        } else {
+            alert("нельзя купить 0 предметов")
+        }
     };
 
     document.body.appendChild(dialogBlock);
