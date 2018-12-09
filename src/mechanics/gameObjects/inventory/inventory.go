@@ -11,6 +11,7 @@ type Slot struct {
 	ItemID     int         `json:"item_id"`
 	InsertToDB bool        `json:"insert_to_db"`
 	HP         int         `json:"hp"`
+	MaxHP      int         `json:"max_hp"`
 	Size       float32     `json:"size"`
 }
 

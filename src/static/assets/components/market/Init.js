@@ -9,6 +9,7 @@ function InitMarketMenu() {
         includeCSS("../assets/components/market/css/leftBar.css");
         includeCSS("../assets/components/market/css/orderTables.css");
         includeCSS("../assets/components/market/css/marketTopMenu.css");
+        includeCSS("../assets/components/market/css/marketRow.css");
 
         resolve();
     });

@@ -19,8 +19,8 @@ func OpenOrders() []*order.Order {
 	for rows.Next() {
 		var mOrder order.Order
 
-		rows.Scan(mOrder.Id, mOrder.IdUser, mOrder.Price, mOrder.Count, mOrder.Type, mOrder.MinBuyOut, mOrder.TypeItem,
-			mOrder.IdItem, mOrder.Expires, mOrder.PlaceName, mOrder.PlaceID)
+		rows.Scan(&mOrder.Id, &mOrder.IdUser, &mOrder.Price, &mOrder.Count, &mOrder.Type, &mOrder.MinBuyOut, &mOrder.TypeItem,
+			&mOrder.IdItem, &mOrder.Expires, &mOrder.PlaceName, &mOrder.PlaceID)
 
 		if mOrder.TypeItem == "weapon" {
 			mOrder.Item = Weapon(mOrder.IdItem)

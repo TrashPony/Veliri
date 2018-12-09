@@ -1,9 +1,12 @@
 package market
 
 import (
+	"../../mechanics/db/get"
 	"../../mechanics/gameObjects/order"
+	"../../mechanics/market"
 	"../../mechanics/player"
 	"../../mechanics/players"
+	"../storage"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"log"
@@ -13,15 +16,20 @@ import (
 
 var mutex = &sync.Mutex{}
 
-var orderPipe = make(chan Order)
 var usersMarketWs = make(map[*websocket.Conn]*player.Player)
 
 type Order struct {
 }
 
 type Message struct {
-	Event  string         `json:"event"`
-	Orders []*order.Order `json:"orders"`
+	Event       string         `json:"event"`
+	Orders      []*order.Order `json:"orders"`
+	StorageSlot int            `json:"storage_slot"`
+	Price       int            `json:"price"`
+	Quantity    int            `json:"quantity"`
+	MinBuyOut   int            `json:"min_buy_out"`
+	Expires     int            `json:"expires"`
+	Error       string         `json:"error"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -69,7 +77,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "placeNewSellOrder" {
-			// todo открытие нового ордера на продажу, оповестить других участников рынка
+			err := market.PlaceNewSellOrder(msg.StorageSlot, msg.Price, msg.Quantity, msg.MinBuyOut, msg.Expires, usersMarketWs[ws])
+			if err != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
+			} else {
+				storage.Updater(usersMarketWs[ws].GetID())
+				OrderSender()
+			}
 		}
 
 		if msg.Event == "cancelBuyOrder" {
@@ -91,17 +105,14 @@ func Reader(ws *websocket.Conn) {
 }
 
 func OrderSender() {
-	for {
-		resp := <-orderPipe
-		mutex.Lock()
-		for ws := range usersMarketWs {
-			err := ws.WriteJSON(resp)
-			if err != nil {
-				log.Printf("error: %v", err)
-				ws.Close()
-				delete(usersMarketWs, ws)
-			}
+	mutex.Lock()
+	for ws := range usersMarketWs {
+		err := ws.WriteJSON(Message{Event: "openMarket", Orders: get.OpenOrders()})
+		if err != nil {
+			log.Printf("error: %v", err)
+			ws.Close()
+			delete(usersMarketWs, ws)
 		}
-		mutex.Unlock()
 	}
+	mutex.Unlock()
 }

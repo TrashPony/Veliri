@@ -25,5 +25,6 @@ type Response struct {
 	Event         string       `json:"event"`
 	Squad         *squad.Squad `json:"squad"`
 	InventorySize float32      `json:"inventory_size"`
+	InBase        bool         `json:"in_base"`
 	Error         string       `json:"error"`
 }

@@ -10,6 +10,7 @@ function InitInventoryMenu(closeFunc) {
         includeJS("../assets/components/inventory/create/Squad.js");
         includeJS("../assets/components/inventory/create/UserStatus.js");
         includeJS("../assets/components/inventory/create/Storage.js");
+        includeJS("../assets/components/inventory/create/Button.js");
 
         includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
         includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
@@ -60,6 +61,7 @@ function InitInventoryMenu(closeFunc) {
         includeCSS("../assets/components/inventory/css/userStatus.css");
         includeCSS("../assets/components/inventory/css/weaponType.css");
         includeCSS("../assets/components/inventory/css/storage.css");
+        includeCSS("../assets/components/inventory/css/marketDialog.css");
 
         return resolve();
     });

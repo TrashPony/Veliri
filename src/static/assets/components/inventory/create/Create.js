@@ -45,7 +45,6 @@ function CreateInventoryMenu(closeFunc) {
     CreateMotherShipParamsMenu();
     CreateConstructorMenu();
     CreateInventory();
-    CreateStorage();
     CreateSquadMenu();
     CreateUserStatus();
 

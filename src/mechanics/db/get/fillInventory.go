@@ -21,6 +21,7 @@ func FillInventory(inventory *inv.Inventory, rows *sql.Rows) {
 			weapon := Weapon(inventorySlot.ItemID)
 			inventorySlot.Item = weapon
 			inventorySlot.Size = weapon.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = weapon.MaxHP
 
 			inventory.Slots[slot] = &inventorySlot
 		}
@@ -29,6 +30,7 @@ func FillInventory(inventory *inv.Inventory, rows *sql.Rows) {
 			ammo := Ammo(inventorySlot.ItemID)
 			inventorySlot.Item = ammo
 			inventorySlot.Size = ammo.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у аммо нет хп
 
 			inventory.Slots[slot] = &inventorySlot
 		}
@@ -37,6 +39,7 @@ func FillInventory(inventory *inv.Inventory, rows *sql.Rows) {
 			equip := TypeEquip(inventorySlot.ItemID)
 			inventorySlot.Item = equip
 			inventorySlot.Size = equip.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = equip.MaxHP
 
 			inventory.Slots[slot] = &inventorySlot
 		}
@@ -45,6 +48,7 @@ func FillInventory(inventory *inv.Inventory, rows *sql.Rows) {
 			body := Body(inventorySlot.ItemID)
 			inventorySlot.Item = body
 			inventorySlot.Size = body.CapacitySize * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = body.MaxHP
 
 			inventory.Slots[slot] = &inventorySlot
 		}

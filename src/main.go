@@ -7,7 +7,6 @@ import (
 	"./webSocket/chat"
 	"./webSocket/field"
 	"./webSocket/lobby"
-	"./webSocket/market"
 	"github.com/gorilla/mux"
 	"log"
 	"math/rand"
@@ -45,8 +44,6 @@ func main() {
 	go field.UnitSender()
 	go field.PhaseSender()
 	go field.AttackSender()
-
-	go market.OrderSender()
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

@@ -14,6 +14,12 @@ function FillingInventory(jsonData) {
             NoActiveCell();
         }
 
+        // склад и магазин поднимаются только тогда когда игрок на базе
+        if (JSON.parse(jsonData).in_base) {
+            CreateStorage();
+            ConnectMarket();
+        }
+
     } else if (event === "ms error") {
 
         let powerPanel = document.getElementById("powerPanel");

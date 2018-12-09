@@ -14,17 +14,8 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
 
     if (!first) {
         tip.id = "InventoryTip";
-        function createInput(value) {
-            let button = document.createElement("input");
-            button.type = "button";
-            button.className = "lobbyButton inventoryTip";
-            button.value = value;
-            button.style.pointerEvents = "auto";
-            tip.appendChild(button);
-            return button
-        }
 
-        let detailedButton = createInput("Подробнее");
+        let detailedButton = createInput("Подробнее", tip);
         detailedButton.onclick = function () {
             tip.remove();
 
@@ -37,16 +28,14 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
             document.body.appendChild(tipDetail);
         };
 
-        let sellButton = createInput("Продать");
-        sellButton.onclick = function () {
-            // TODO идалоговое окно продажи
-            // надо бырать количество которое продаешь
-            // надо выбрать цену продажи за штуку
-            // кнопка отмена, продать
-        };
-
         if (storage) {
-            let to = createInput("В инвентарь");
+            let sellButton = createInput("Продать", tip);
+            sellButton.onclick = function () {
+                tip.remove();
+                CreateSellDialog(x, y, numberSlot, slot)
+            };
+
+            let to = createInput("В инвентарь", tip);
             to.onclick = function () {
                 inventorySocket.send(JSON.stringify({
                     event: "itemToInventory",
@@ -54,7 +43,7 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
                 }));
             };
         } else {
-            let to = createInput("На склад");
+            let to = createInput("На склад", tip);
             to.onclick = function () {
                 inventorySocket.send(JSON.stringify({
                     event: "itemToStorage",
@@ -63,7 +52,7 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
             };
         }
 
-        let cancelButton = createInput("Отменить");
+        let cancelButton = createInput("Отменить", tip);
         cancelButton.onclick = function () {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
@@ -84,6 +73,42 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
     }
 
     document.body.appendChild(tip);
+}
+
+function CreateSellDialog(x, y, numberSlot, slot) {
+    let sellBlock = document.createElement("div");
+    sellBlock.id = "sellDialog";
+    sellBlock.style.top = y + "px";
+    sellBlock.style.left = x + "px";
+
+    sellBlock.innerHTML = "<h2>Быстрая продажа</h2>" +
+        "<div><span>Кол-во</span><input id='sellQuantity' type='number' min='0' value='" + slot.quantity + "' max='" + slot.quantity + "'></div><br>" +
+        "<div><span>Цена за шт.</span><input id='sellPrice' min='0' type='number'></div><br>";
+
+    let closeButton = createInput("Отменить", sellBlock);
+    closeButton.onclick = function () {
+        sellBlock.remove();
+    };
+
+    let sellButton = createInput("Продать", sellBlock);
+    sellButton.onclick = function () {
+        let quantity = Number(document.getElementById("sellQuantity").value);
+        let price = Number(document.getElementById("sellPrice").value);
+
+        if (quantity > 0 && price > 0) {
+            marketSocket.send(JSON.stringify({
+                event: 'placeNewSellOrder',
+                storage_slot: Number(numberSlot),
+                quantity: quantity,
+                price: price,
+            }));
+            sellBlock.remove();
+        } else {
+            alert("не заполнены поля")
+        }
+    };
+
+    document.body.appendChild(sellBlock)
 }
 
 function CreateParamsTable(slot, tip) {

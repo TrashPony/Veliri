@@ -1,10 +1,10 @@
 package squadInventory
 
 import (
+	"../db/updateSquad"
 	"../player"
 	"../storage"
 	"errors"
-	"../db/updateSquad"
 )
 
 func ItemToStorage(user *player.Player, inventorySlot int) error {
