@@ -15,7 +15,7 @@ type Slot struct {
 	Size       float32     `json:"size"`
 }
 
-func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32) bool {
+func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
 
 	for _, slot := range inv.Slots { // ищем стопку с такими же элементами
 		if slot.ItemID == itemID && slot.Type == itemType && slot.HP == hp && slot.Item != nil {
@@ -29,7 +29,7 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, qua
 		_, ok := inv.Slots[i]
 		if !ok {
 			newItem := Slot{Item: item, Type: itemType, ItemID: itemID, InsertToDB: true,
-				Quantity: quantity, HP: hp, Size: itemSize * float32(quantity)}
+				Quantity: quantity, HP: hp, MaxHP: maxHP, Size: itemSize * float32(quantity)}
 			inv.Slots[i] = &newItem
 			return true
 		}

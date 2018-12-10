@@ -42,7 +42,7 @@ func (p *Pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	}
 }
 
-func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32) bool {
+func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
@@ -51,7 +51,7 @@ func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 		baseStorage, baseOk := userStorages[baseId]
 		if baseOk {
 
-			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize)
+			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize, maxHP)
 			if ok {
 				updateStorage.Inventory(baseStorage, userId, baseId)
 			}
@@ -61,12 +61,12 @@ func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 		} else {
 			p.storages[userId][baseId] = get.UserStorage(userId, baseId)
 			p.mx.Unlock()
-			return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize)
+			return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP)
 		}
 	} else {
 		p.storages[userId] = make(map[int]*inv.Inventory)
 		p.mx.Unlock()
-		return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize)
+		return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP)
 	}
 }
 
@@ -81,7 +81,7 @@ func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) bool {
 		if baseOk {
 			slot, ok := baseStorage.Slots[numberSlot]
 			if ok {
-				slot.RemoveItem(slot.Quantity)
+				slot.RemoveItem(quantityRemove)
 				updateStorage.Inventory(baseStorage, userId, baseId)
 				return true
 			} else {

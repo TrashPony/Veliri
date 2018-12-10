@@ -18,7 +18,7 @@ func ItemToInventory(user *player.Player, storageSlot int) error {
 			return errors.New("no find slot")
 		}
 
-		ok := user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.Size/float32(slot.Quantity))
+		ok := user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
 
 		if ok {
 			storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, slot.Quantity)

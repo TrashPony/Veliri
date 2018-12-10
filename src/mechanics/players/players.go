@@ -43,7 +43,7 @@ func (usersStore *UsersStore) AddCash(userID, appendCash int) { // appendCash н
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 
-	user, find := usersStore.Get(userID)
+	user, find := usersStore.users[userID]
 	if find { // если юзер уже в карте то обновляем его инфу
 		user.SetCredits(user.GetCredits() + appendCash) // добавляем кредиты юзеру
 	}

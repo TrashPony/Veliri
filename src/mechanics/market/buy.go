@@ -4,9 +4,9 @@ import (
 	"../db/dbPlayer"
 	"../db/market"
 	"../player"
+	"../players"
 	"../storage"
 	"errors"
-	"../players"
 )
 
 func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
@@ -28,7 +28,7 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 			}
 
 			storage.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
-				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count))
+				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count), buyOrder.ItemHP)
 
 			dbPlayer.UpdateUser(user)
 

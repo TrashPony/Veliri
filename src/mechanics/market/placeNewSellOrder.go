@@ -48,6 +48,11 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 			if slot.MaxHP > slot.HP {
 				return errors.New("equip is damage")
 			}
+
+			if slot.MaxHP < slot.HP {
+				return errors.New("wrong hp")
+			}
+
 			if quantity > slot.Quantity {
 				return errors.New("low amount")
 			}

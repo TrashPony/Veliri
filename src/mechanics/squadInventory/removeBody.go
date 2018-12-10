@@ -49,24 +49,24 @@ func BodyRemove(inventory inv.Inventory, Body *detail.Body, hp int) {
 	for _, weaponSlot := range Body.Weapons {
 
 		if weaponSlot.Weapon != nil {
-			inventory.AddItem(weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size)
+			inventory.AddItem(weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size, weaponSlot.Weapon.MaxHP)
 		}
 
 		if weaponSlot.Ammo != nil {
-			inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size)
+			inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size, weaponSlot.Weapon.MaxHP)
 		}
 
 		weaponSlot.Ammo = nil
 		weaponSlot.Weapon = nil
 	}
 
-	inventory.AddItem(Body, "body", Body.ID, 1, hp, Body.CapacitySize) // кидает боди в инвентарь
+	inventory.AddItem(Body, "body", Body.ID, 1, hp, Body.CapacitySize, Body.MaxHP) // кидает боди в инвентарь
 }
 
 func removeAllEquippingBody(inventory inv.Inventory, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			inventory.AddItem(equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size)
+			inventory.AddItem(equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size, equipSlot.Equip.MaxHP)
 			equipSlot.Equip = nil
 		}
 	}
