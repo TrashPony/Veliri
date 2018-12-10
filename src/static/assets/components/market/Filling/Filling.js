@@ -2,6 +2,8 @@ function Filling(data) {
 
     deleteOldRows();
 
+    document.getElementById("balance").innerHTML = "Мой баланс: <span>" + data.credits + "</span>";
+
     for (let i in data.orders) {
         if (data.orders.hasOwnProperty(i)) {
             let order = data.orders[i];

@@ -13,10 +13,6 @@ import (
 	"sync"
 )
 
-// TODO !------------------ ОПСНОСТЭ ---------------------!
-// TODO для того что бы исключить дюп итемов из рынка, надо создать фабрику ордеров и каждое изменение в любом оредере
-// TODO мьютить, тоесть 1 доступ к карте ордеров одновременно все остальные ждут
-
 var mutex = &sync.Mutex{}
 
 var usersMarketWs = make(map[*websocket.Conn]*player.Player)
@@ -31,6 +27,7 @@ type Message struct {
 	MinBuyOut   int                  `json:"min_buy_out"`
 	Expires     int                  `json:"expires"`
 	Error       string               `json:"error"`
+	Credits     int                  `json:"credits"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -70,7 +67,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openMarket" {
-			OpenMarket(msg, ws)
+			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetOrders(), Credits: usersMarketWs[ws].GetCredits()})
 		}
 
 		if msg.Event == "placeNewBuyOrder" {
@@ -114,7 +111,9 @@ func Reader(ws *websocket.Conn) {
 func OrderSender() {
 	mutex.Lock()
 	for ws := range usersMarketWs {
-		err := ws.WriteJSON(Message{Event: "openMarket", Orders: market.Orders.GetOrders()})
+		err := ws.WriteJSON(Message{Event: "openMarket",
+			Orders: market.Orders.GetOrders(),
+			Credits: usersMarketWs[ws].GetCredits()})
 		if err != nil {
 			log.Printf("error: %v", err)
 			ws.Close()

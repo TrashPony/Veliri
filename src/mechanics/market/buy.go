@@ -6,6 +6,7 @@ import (
 	"../player"
 	"../storage"
 	"errors"
+	"../players"
 )
 
 func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
@@ -30,6 +31,8 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count))
 
 			dbPlayer.UpdateUser(user)
+
+			players.Users.AddCash(buyOrder.IdUser, buyOrder.Price*count) // пополням баланс продавца
 		} else {
 			if user.GetCredits() < buyOrder.Price*count {
 				return errors.New("no credits")

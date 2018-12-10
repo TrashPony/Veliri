@@ -48,6 +48,10 @@ function headUI(headMarket) {
     headMarketHeading.className = "headMarketHeading";
     headMarket.appendChild(headMarketHeading);
 
+    let balance = document.createElement("div");
+    balance.id = "balance";
+    headMarket.appendChild(balance);
+
     let searchInput = document.createElement("input");
     searchInput.innerHTML = "Поиск";
     searchInput.className = "searchInput";

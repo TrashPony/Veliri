@@ -38,3 +38,15 @@ func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 
 	return newUser
 }
+
+func (usersStore *UsersStore) AddCash(userID, appendCash int) { // appendCash насколько увеличить баланс
+	usersStore.mx.Lock()
+	defer usersStore.mx.Unlock()
+
+	user, find := usersStore.Get(userID)
+	if find { // если юзер уже в карте то обновляем его инфу
+		user.SetCredits(user.GetCredits() + appendCash) // добавляем кредиты юзеру
+	}
+
+	dbPlayer.AddCash(userID, appendCash) // обновляем кеш в бд
+}
