@@ -4,6 +4,12 @@ function InitMarketMenu() {
         includeJS("../assets/components/market/create/Create.js");
         includeJS("../assets/components/market/create/CreateTables.js");
         includeJS("../assets/components/market/Filling/Filling.js");
+        includeJS("../assets/components/market/Assortment/Assortment.js");
+        includeJS("../assets/components/market/Assortment/fillEquip.js");
+        includeJS("../assets/components/market/Assortment/fillCabs.js");
+        includeJS("../assets/components/market/Assortment/fillWeapon.js");
+        includeJS("../assets/components/market/Assortment/fillAmmo.js");
+        includeJS("../assets/components/market/Assortment/fillRes.js");
 
         includeCSS("../assets/components/market/css/main.css");
         includeCSS("../assets/components/market/css/leftBar.css");

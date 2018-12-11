@@ -52,30 +52,42 @@
     width: 200px;
     margin: 0 5px 5px 5px;
     padding-top: 4px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .categoryItem {
     text-align: left;
     display: block;
-    width: 180px;
+    width: 170px;
     padding-left: 10px;
-    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
+    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c) center top / 190px 15px no-repeat;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     color: rgba(255, 255, 255, 0.85);
     border-radius: 4px;
     font-size: 12px;
     line-height: 14px;
-    height: 15px;
+    min-height: 15px;
     user-select: none;
     margin: 2px auto;
 }
 
-.categoryItem:hover {
-    box-shadow: 0 0 5px rgb(125, 125, 125);
+.categoryItem div > span {
+    border-radius: 4px;
+    display: block;
+    min-height: 15px;
+    user-select: none;
+    background: linear-gradient(22deg, rgba(183, 195, 201, 0.29), rgba(183, 195, 201, 0.29)) center top / 190px 15px no-repeat;
+    margin: 2px auto;
+    padding-left: 10px;
 }
 
-.categoryItem:active {
-    box-shadow: 0 0 5px rgb(255, 255, 255);
+.categoryItem div > span:hover {
+    background: linear-gradient(22deg, rgba(3, 201, 15, 0.29), rgba(7, 201, 15, 0.29)) center top / 190px 15px no-repeat;
+}
+
+.categoryItem:hover {
+    box-shadow: 0 0 5px rgb(125, 125, 125);
 }
 
 #footMarket {
@@ -111,6 +123,8 @@
     display: inline-block;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     user-select: none;
+    text-align: center;
+    color: black;
 }
 
 .marketButton:hover {

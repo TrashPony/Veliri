@@ -20,6 +20,7 @@ var usersMarketWs = make(map[*websocket.Conn]*player.Player)
 type Message struct {
 	Event       string               `json:"event"`
 	Orders      map[int]*order.Order `json:"orders"`
+	Assortment  *market.Assortment   `json:"assortment"`
 	OrderID     int                  `json:"order_id"`
 	StorageSlot int                  `json:"storage_slot"`
 	Price       int                  `json:"price"`
@@ -67,7 +68,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openMarket" {
-			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetOrders(), Credits: usersMarketWs[ws].GetCredits()})
+			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetOrders(),
+				Credits: usersMarketWs[ws].GetCredits(), Assortment: market.GetAssortment()})
 		}
 
 		if msg.Event == "placeNewBuyOrder" {
@@ -92,7 +94,7 @@ func Reader(ws *websocket.Conn) {
 			// todo отмена ордера на продажу, оповестить других участников рынка
 		}
 
-		if msg.Event == "buy" {
+		if msg.Event == "buy" { // покупака из существующего ордера
 			err := market.Orders.Buy(msg.OrderID, msg.Quantity, usersMarketWs[ws])
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
@@ -102,7 +104,7 @@ func Reader(ws *websocket.Conn) {
 			}
 		}
 
-		if msg.Event == "sell" {
+		if msg.Event == "sell" { // продажа в существующий ордер
 			// todo продажа в открытый оредар или частичный выкуп, оповестить других участников рынка
 		}
 	}

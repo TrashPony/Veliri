@@ -63,26 +63,31 @@ function headUI(headMarket) {
 function createListItemUI(listItem) {
     let ammo = document.createElement("div");
     ammo.className = "categoryItem";
+    ammo.id = "ammoCategoryItem";
     ammo.innerHTML = " ▶ Боеприпасы";
     listItem.appendChild(ammo);
 
     let weapon = document.createElement("div");
     weapon.className = "categoryItem";
+    weapon.id = "weaponCategoryItem";
     weapon.innerHTML = " ▶ Оружие";
     listItem.appendChild(weapon);
 
     let cabs = document.createElement("div");
     cabs.className = "categoryItem";
+    cabs.id = "cabsCategoryItem";
     cabs.innerHTML = " ▶ Корпуса";
     listItem.appendChild(cabs);
 
     let equip = document.createElement("div");
     equip.className = "categoryItem";
+    equip.id = "equipCategoryItem";
     equip.innerHTML = " ▶ Оборудование";
     listItem.appendChild(equip);
 
     let res = document.createElement("div");
     res.className = "categoryItem";
+    res.id = "resCategoryItem";
     res.innerHTML = " ▶ Ресурсы";
     listItem.appendChild(res);
 }
@@ -108,7 +113,6 @@ function ordersBlockUI(ordersBlock) {
 
     let selectItemName = document.createElement("div");
     selectItemName.id = "selectItemName";
-    selectItemName.innerHTML = "Item Name";
     ordersBlock.appendChild(selectItemName);
 
     let ordersBuyBlockHead = document.createElement("div");
@@ -137,11 +141,6 @@ function footUI(foot) {
     let panel = document.createElement("div");
     panel.id = "footPanel";
     foot.appendChild(panel);
-
-    let placeBuyOrderButton = document.createElement("div");
-    placeBuyOrderButton.className = "marketButton";
-    placeBuyOrderButton.innerHTML = "Купить";
-    panel.appendChild(placeBuyOrderButton);
 
     let SellOrderButton = document.createElement("div");
     SellOrderButton.className = "marketButton";

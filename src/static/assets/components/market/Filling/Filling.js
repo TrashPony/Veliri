@@ -1,5 +1,9 @@
 function Filling(data) {
 
+    if (data.assortment) {
+        FillAssortment(data.assortment)
+    }
+
     deleteOldRows();
 
     document.getElementById("balance").innerHTML = "Мой баланс: <span>" + data.credits + "</span>";
@@ -25,9 +29,15 @@ function deleteOldRows() {
 }
 
 function fillSellTable(order) {
+
     let table = document.getElementById("marketSellTable");
     let tr = document.createElement("tr");
     tr.className = "marketRow";
+    tr.order = order;
+
+    if (!(order.IdItem === filterKey.id && order.TypeItem === filterKey.type)) {
+        tr.style.display = none;
+    }
 
     let td1 = document.createElement("td");
     td1.innerHTML = "0";
