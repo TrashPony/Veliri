@@ -1,7 +1,7 @@
 package movePhase
 
 import (
-	"../../../db/updateSquad"
+	"../../../db/squad/update"
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
@@ -79,7 +79,7 @@ func QueueMove(game *localGame.Game) {
 	}
 
 	for _, gameUser := range game.GetPlayers() {
-		updateSquad.Squad(gameUser.GetSquad())
+		update.Squad(gameUser.GetSquad())
 	}
 
 	updateMoveParamsMemoryUnits(game)

@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/gameTypes"
 	"../gameObjects/detail"
 	"../player"
 	"errors"
@@ -13,7 +13,7 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 	msBody := user.GetSquad().MatherShip.Body
 
 	if weapon != nil && msBody != nil && weapon.ItemID == idWeapon {
-		newWeapon := get.Weapon(idWeapon)
+		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
 
 		weaponSlot, ok := msBody.Weapons[numEquipSlot]
 		if ok {
@@ -51,7 +51,8 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 	weapon := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if weapon.ItemID == idWeapon {
-		newWeapon := get.Weapon(idWeapon)
+		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
+
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 		if ok && unitSlot.Unit != nil {
 
@@ -109,7 +110,7 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 		weaponSlot.Ammo = nil
 	}
 
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 
 	weaponSlot.HP = hp
 
@@ -117,5 +118,5 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 	weaponSlot.Weapon = newWeapon
 	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне
 
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 }

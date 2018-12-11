@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../db/get"
+	"../factories/maps"
 	"../gameObjects/coordinate"
 	LocalMap "../gameObjects/map"
 	"../player"
@@ -19,8 +19,8 @@ type Game struct {
 
 func CreateNewLobbyGame(nameGame string, mapID int, creator *player.Player, id int) Game {
 
-	respawns := get.Respawns(mapID)
-	mp := get.InfoMap(mapID)
+	respawns := maps.Maps.GetRespawns(mapID)
+	mp := maps.Maps.GetInfoMap(mapID)
 
 	game := Game{ID: id, Name: nameGame, Map: mp, Creator: creator.GetLogin(), Users: make(map[string]*player.Player, 0), Respawns: respawns}
 	game.Users[creator.GetLogin()] = creator

@@ -1,9 +1,9 @@
 package squadInventory
 
 import (
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/storages"
 	"../player"
-	"../storage"
 	"errors"
 )
 
@@ -15,14 +15,14 @@ func ItemToStorage(user *player.Player, inventorySlot int) error {
 			return errors.New("no find slot")
 		}
 
-		ok := storage.Storages.AddItem(user.GetID(), user.InBaseID, slot.Item, slot.Type, slot.ItemID, slot.Quantity,
+		ok := storages.Storages.AddItem(user.GetID(), user.InBaseID, slot.Item, slot.Type, slot.ItemID, slot.Quantity,
 			slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
 
 		if ok {
 			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(slot.Quantity)
 		}
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("user not in base")

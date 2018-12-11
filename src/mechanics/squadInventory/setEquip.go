@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/gameTypes"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
 	"../player"
@@ -15,7 +15,9 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 	msBody := user.GetSquad().MatherShip.Body
 
 	if equipItem != nil && equipItem.ItemID == idEquip {
-		newEquip := get.TypeEquip(idEquip)
+
+		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
+
 		equipping := SelectType(typeEquipSlot, msBody)
 		if equipping != nil {
 			equipSlot, ok := equipping[numEquipSlot]
@@ -41,7 +43,9 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 	equipItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if equipItem.ItemID == idEquip {
-		newEquip := get.TypeEquip(idEquip)
+
+		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
+
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 		if ok && unitSlot.Unit != nil {
 			equipping := SelectType(typeEquipSlot, unitSlot.Unit.Body)
@@ -87,11 +91,11 @@ func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *eq
 	equipSlot.HP = hp
 	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
 
-	updateSquad.Squad(user.GetSquad()) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
+	update.Squad(user.GetSquad()) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 
 	equipSlot.Equip = newEquip
 	equipSlot.InsertToDB = true
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 }
 
 func SelectType(typeEquipSlot int, body *detail.Body) map[int]*detail.BodyEquipSlot {

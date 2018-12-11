@@ -1,6 +1,8 @@
 package detail
 
 type Weapon struct {
+	// если тут появяться ссылочные типы данных включая срезы, карты и тд, надо будет делать глубокое копирование в
+	// factory/gameTypes/weapons
 	ID             int     `json:"id"`
 	Name           string  `json:"name"`
 	MinAttackRange int     `json:"min_attack_range"`

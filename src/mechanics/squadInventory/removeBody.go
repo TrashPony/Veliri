@@ -1,7 +1,7 @@
 package squadInventory
 
 import (
-	"../../mechanics/db/updateSquad"
+	"../../mechanics/db/squad/update"
 	"../gameObjects/detail"
 	inv "../gameObjects/inventory"
 	"../player"
@@ -24,7 +24,7 @@ func RemoveMSBody(user *player.Player) {
 		user.GetSquad().MatherShip.CalculateParams()
 	}
 
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 }
 
 func RemoveUnitBody(user *player.Player, unitSlot int) {
@@ -35,7 +35,7 @@ func RemoveUnitBody(user *player.Player, unitSlot int) {
 		}
 	}
 
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 }
 
 func BodyRemove(inventory inv.Inventory, Body *detail.Body, hp int) {

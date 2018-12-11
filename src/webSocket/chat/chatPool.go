@@ -1,8 +1,8 @@
 package chat
 
 import (
+	"../../mechanics/factories/players"
 	"../../mechanics/player"
-	"../../mechanics/players"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"

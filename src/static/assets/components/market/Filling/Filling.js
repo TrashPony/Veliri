@@ -36,7 +36,9 @@ function fillSellTable(order) {
     tr.order = order;
 
     if (!(order.IdItem === filterKey.id && order.TypeItem === filterKey.type)) {
-        tr.style.display = none;
+        if (filterKey.type !== '') {
+            tr.style.display = "none";
+        }
     }
 
     let td1 = document.createElement("td");

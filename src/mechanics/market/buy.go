@@ -1,11 +1,11 @@
 package market
 
 import (
-	"../db/dbPlayer"
 	"../db/market"
+	dbPlayer "../db/player"
+	"../factories/players"
+	"../factories/storages"
 	"../player"
-	"../players"
-	"../storage"
 	"errors"
 )
 
@@ -27,7 +27,7 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 				delete(o.orders, buyOrder.Id) // удаляем из фабрики т.к. мьютекс тут работает, это безопасно
 			}
 
-			storage.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
+			storages.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
 				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count), buyOrder.ItemHP)
 
 			dbPlayer.UpdateUser(user)

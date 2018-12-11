@@ -2,6 +2,7 @@ package field
 
 import (
 	"../../mechanics/db/localGame/update"
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
@@ -33,7 +34,7 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 	var event string
 
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if !findUnit {
@@ -127,7 +128,7 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 	}
 
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	if findUnit && findClient && findGame {
 		movePhase.SkipMove(gameUnit, activeGame)

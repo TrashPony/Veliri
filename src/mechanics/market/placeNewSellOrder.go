@@ -2,10 +2,10 @@ package market
 
 import (
 	"../db/market"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/storages"
 	"../gameObjects/order"
 	"../player"
-	"../storage"
 	"errors"
 	"time"
 )
@@ -14,7 +14,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 	if user.InBaseID > 0 {
 
-		baseStorage, _ := storage.Storages.Get(user.GetID(), user.InBaseID)
+		baseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
 
 		slot := baseStorage.Slots[storageSlot]
 		if slot == nil {
@@ -40,7 +40,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 				// добавляем его на фабрику
 				o.AddNewOrder(newOrder)
 				// удаляем итем со склада
-				storage.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, quantity)
+				storages.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, quantity)
 			} else {
 				return errors.New("unknown error")
 			}
@@ -58,7 +58,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 			}
 		}
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("user not in base")

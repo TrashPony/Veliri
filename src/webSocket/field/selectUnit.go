@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
@@ -14,7 +15,7 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 	var gameUnit *unit.Unit
 
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	if msg.Event == "SelectStorageUnit" {
 		// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.

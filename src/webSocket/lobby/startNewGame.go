@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../mechanics/db/insert"
+	"../../mechanics/db/localGame"
 	"../../mechanics/lobby"
 	"errors"
 	"github.com/gorilla/websocket"
@@ -19,7 +19,7 @@ func StartNewGame(msg Message, ws *websocket.Conn) {
 
 			if allReady {
 
-				id, success := insert.StartNewGame(game)
+				id, success := localGame.StartNewGame(game)
 
 				if success {
 

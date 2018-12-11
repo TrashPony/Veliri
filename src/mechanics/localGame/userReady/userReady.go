@@ -2,7 +2,7 @@ package userReady
 
 import (
 	"../../db/localGame/update"
-	"../../db/updateSquad"
+	squadUpdate "../../db/squad/update"
 	"../../localGame"
 	"../../localGame/Phases/movePhase"
 	"../../player"
@@ -11,7 +11,7 @@ import (
 func UserReady(client *player.Player) {
 	client.SetReady(true)
 	update.Player(client)
-	updateSquad.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad())
 }
 
 func AllReady(actionGame *localGame.Game) bool {

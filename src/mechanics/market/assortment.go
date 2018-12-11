@@ -1,10 +1,9 @@
 package market
 
 import (
-	"../gameObjects/detail"
 	"../gameObjects/ammo"
+	"../gameObjects/detail"
 	"../gameObjects/equip"
-	"../db/get"
 )
 
 type Assortment struct {
@@ -14,6 +13,6 @@ type Assortment struct {
 	Equips  []*equip.Equip   `json:"equips"`
 }
 
-func GetAssortment() *Assortment{
-	return &Assortment{Bodies: get.GetBodiesType(), Weapons:get.GetWeaponsType(), Ammo: get.GetAmmoType(), Equips: get.GetEquipsType()}
+func GetAssortment() *Assortment {
+	return nil //&Assortment{Bodies: get.BodiesType(), Weapons:get.WeaponsType(), Ammo: get.AmmoType(), Equips: get.EquipsType()}
 }

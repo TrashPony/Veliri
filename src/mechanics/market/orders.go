@@ -1,7 +1,7 @@
 package market
 
 import (
-	"../db/get"
+	"../db/market"
 	"../gameObjects/order"
 	"sync"
 )
@@ -15,7 +15,7 @@ var Orders = NewOrdersPool()
 
 func NewOrdersPool() *OrdersPool {
 	return &OrdersPool{
-		orders: get.OpenOrders(),
+		orders: market.OpenOrders(),
 	}
 }
 

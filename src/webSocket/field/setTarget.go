@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
@@ -11,7 +12,7 @@ func SetTarget(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Defend && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
 

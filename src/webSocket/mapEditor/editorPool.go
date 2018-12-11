@@ -3,10 +3,10 @@ package mapEditor
 import (
 	"../../mechanics/db/get"
 	"../../mechanics/db/mapEditor"
+	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/coordinate"
 	gameMap "../../mechanics/gameObjects/map"
 	"../../mechanics/player"
-	"../../mechanics/players"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"strconv"

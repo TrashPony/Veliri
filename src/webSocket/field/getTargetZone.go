@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 )
@@ -8,7 +9,7 @@ import (
 func GetTargetZone(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if !findUnit {

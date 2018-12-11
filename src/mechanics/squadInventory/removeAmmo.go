@@ -1,7 +1,7 @@
 package squadInventory
 
 import (
-	"../db/updateSquad"
+	"../db/squad/update"
 	"../player"
 )
 
@@ -12,7 +12,7 @@ func RemoveMSAmmo(user *player.Player, numEquipSlot int) {
 		user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
 		slotAmmo.Ammo = nil
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 	}
 }
 
@@ -27,7 +27,7 @@ func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int) {
 			user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
 			slotAmmo.Ammo = nil
 
-			updateSquad.Squad(user.GetSquad())
+			update.Squad(user.GetSquad())
 		}
 	}
 }

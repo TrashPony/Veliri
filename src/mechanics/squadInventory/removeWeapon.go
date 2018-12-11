@@ -1,7 +1,7 @@
 package squadInventory
 
 import (
-	"../db/updateSquad"
+	"../db/squad/update"
 	"../player"
 )
 
@@ -19,7 +19,7 @@ func RemoveMSWeapon(user *player.Player, numEquipSlot int) {
 
 		user.GetSquad().MatherShip.CalculateParams()
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 	}
 }
 
@@ -40,7 +40,7 @@ func RemoveUnitWeapon(user *player.Player, numEquipSlot, numberUnitSlot int) {
 
 			unitSlot.Unit.CalculateParams()
 
-			updateSquad.Squad(user.GetSquad())
+			update.Squad(user.GetSquad())
 		}
 	}
 }

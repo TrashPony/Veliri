@@ -2,7 +2,7 @@ package movePhase
 
 import (
 	"../../../db/localGame/update"
-	"../../../db/updateSquad"
+	squadUpdate "../../../db/squad/update"
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/unit"
 	"../../../localGame"
@@ -80,7 +80,7 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	gameUnit.FindHostile = false
 	gameUnit.OnMap = true
 
-	updateSquad.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad())
 	update.Player(client)
 
 	return

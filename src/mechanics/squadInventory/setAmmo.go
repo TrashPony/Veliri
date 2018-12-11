@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/gameTypes"
 	"../gameObjects/ammo"
 	"../gameObjects/detail"
 	"../player"
@@ -13,7 +13,7 @@ func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) err
 	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if ammoItem.ItemID == idAmmo {
-		newAmmo := get.Ammo(idAmmo)
+		newAmmo, _ := gameTypes.Ammo.GetByID(idAmmo)
 
 		ammoSlot, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
 		if ok {
@@ -34,7 +34,7 @@ func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numbe
 	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if ammoItem.ItemID == idAmmo {
-		newAmmo := get.Ammo(idAmmo)
+		newAmmo, _ := gameTypes.Ammo.GetByID(idAmmo)
 
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 		if ok && unitSlot.Unit != nil {
@@ -76,7 +76,7 @@ func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo
 	ammoSlot.Ammo = newAmmo
 	ammoSlot.AmmoQuantity = user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(ammoSlot.Weapon.AmmoCapacity)
 
-	updateSquad.Squad(user.GetSquad())
+	update.Squad(user.GetSquad())
 
 	return nil
 }

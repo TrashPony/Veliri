@@ -1,9 +1,9 @@
 package storage
 
 import (
+	"../../mechanics/factories/players"
+	"../../mechanics/factories/storages"
 	"../../mechanics/player"
-	"../../mechanics/players"
-	"../../mechanics/storage"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"strconv"
@@ -59,7 +59,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openStorage" {
-			userStorage, ok := storage.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
+			userStorage, ok := storages.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
 			if ok {
 				ws.WriteJSON(userStorage)
 			}
@@ -75,7 +75,7 @@ func Updater(userID int) {
 	mutex.Lock()
 	for ws, user := range usersStorageWs {
 		if user.GetID() == userID {
-			userStorage, ok := storage.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
+			userStorage, ok := storages.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
 			if ok {
 				ws.WriteJSON(userStorage)
 			}

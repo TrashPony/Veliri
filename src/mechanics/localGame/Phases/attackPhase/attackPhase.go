@@ -1,7 +1,7 @@
 package attackPhase
 
 import (
-	"../../../db/updateSquad"
+	"../../../db/squad/update"
 	"../../../gameObjects/coordinate"
 	"../../../gameObjects/detail"
 	"../../../gameObjects/unit"
@@ -26,7 +26,7 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 	movePhase.QueueMove(game)
 
 	for _, player := range game.GetPlayers() {
-		updateSquad.Squad(player.GetSquad()) // вносим все изменениея в базу данных
+		update.Squad(player.GetSquad()) // вносим все изменениея в базу данных
 	}
 
 	return

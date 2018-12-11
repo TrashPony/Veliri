@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/unit"
@@ -12,7 +13,7 @@ func SelectEquip(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	ok := false
 	equipSlot := &detail.BodyEquipSlot{}

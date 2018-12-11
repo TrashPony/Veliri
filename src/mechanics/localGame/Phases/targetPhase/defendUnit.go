@@ -2,7 +2,7 @@ package targetPhase
 
 import (
 	"../../../db/localGame/update"
-	"../../../db/updateSquad"
+	squadUpdate "../../../db/squad/update"
 	"../../../gameObjects/effect"
 	"../../../gameObjects/unit"
 	"../../../player"
@@ -17,6 +17,6 @@ func DefendTarget(gameUnit *unit.Unit, client *player.Player) {
 	useEquip.AddNewUnitEffect(gameUnit, &defendEffect, 1)
 
 	gameUnit.CalculateParams()
-	updateSquad.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad())
 	update.UnitEffects(gameUnit)
 }

@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
@@ -13,7 +14,7 @@ func SelectWeapon(msg Message, ws *websocket.Conn) {
 
 	client, findClient := usersFieldWs[ws]
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	if findClient && findUnit && findGame && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
 		if activeGame.Phase == "targeting" {

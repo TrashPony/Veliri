@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/equip"
 	"../../mechanics/gameObjects/map"
@@ -10,12 +11,12 @@ import (
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
-	loadGame, ok := Games.Get(msg.IdGame)
+	loadGame, ok := games.Games.Get(msg.IdGame)
 	newClient, _ := usersFieldWs[ws]
 
 	if !ok {
 		loadGame = initGame.InitGame(msg.IdGame)
-		Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
+		games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
 	}
 
 	player := loadGame.GetPlayer(newClient.GetID(), newClient.GetLogin())

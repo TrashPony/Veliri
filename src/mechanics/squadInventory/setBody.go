@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/gameTypes"
 	"../gameObjects/unit"
 	"../player"
 )
@@ -11,7 +11,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if body != nil && body.ItemID == idBody {
-		newBody := get.Body(idBody)
+		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 		if user.GetSquad().MatherShip == nil {
 			user.GetSquad().MatherShip = &unit.Unit{}
@@ -40,7 +40,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 
 		user.GetSquad().MatherShip.CalculateParams()
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 	}
 }
 
@@ -48,7 +48,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
 	if body != nil && body.ItemID == idBody {
-		newBody := get.Body(idBody)
+		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 
@@ -70,6 +70,6 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 
 		unitSlot.Unit.CalculateParams()
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 	}
 }

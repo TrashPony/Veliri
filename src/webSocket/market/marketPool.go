@@ -1,10 +1,10 @@
 package market
 
 import (
+	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/order"
 	"../../mechanics/market"
 	"../../mechanics/player"
-	"../../mechanics/players"
 	"../storage"
 	"../utils"
 	"github.com/gorilla/websocket"
@@ -114,7 +114,7 @@ func OrderSender() {
 	mutex.Lock()
 	for ws := range usersMarketWs {
 		err := ws.WriteJSON(Message{Event: "openMarket",
-			Orders: market.Orders.GetOrders(),
+			Orders:  market.Orders.GetOrders(),
 			Credits: usersMarketWs[ws].GetCredits()})
 		if err != nil {
 			log.Printf("error: %v", err)

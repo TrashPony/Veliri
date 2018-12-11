@@ -1,6 +1,8 @@
 package ammo
 
 type Ammo struct {
+	// если тут появяться ссылочные типы данных включая срезы, карты и тд, надо будет делать глубокое копирование в
+	// factory/gameTypes/ammo
 	ID           int     `json:"id"`
 	Name         string  `json:"name"`
 	Type         string  `json:"type"`

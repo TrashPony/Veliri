@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/localGame/Phases/movePhase"
 	"github.com/gorilla/websocket"
@@ -12,7 +13,7 @@ func GetPreviewPath(msg Message, ws *websocket.Conn) {
 	var event string
 
 	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if findUnit {

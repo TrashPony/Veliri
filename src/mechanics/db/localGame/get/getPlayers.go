@@ -2,10 +2,10 @@ package get
 
 import (
 	"../../../../dbConnect"
+	"../../../factories/players"
 	"../../../gameObjects/unit"
 	"../../../localGame"
 	"../../../player"
-	"../../../players"
 	"encoding/json"
 	"log"
 )

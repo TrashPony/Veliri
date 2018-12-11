@@ -1,8 +1,8 @@
 package inventory
 
 import (
+	"../../mechanics/factories/players"
 	"../../mechanics/player"
-	"../../mechanics/players"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"strconv"

@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/insert"
+	"../db/squad"
+	"../db/squad/get"
 	"../player"
 	"log"
 )
@@ -24,7 +24,7 @@ func GetInventory(client *player.Player) {
 			}
 		}
 	} else {
-		newSquad := insert.FirstSquad(client.GetID())
+		newSquad := squad.FirstSquad(client.GetID())
 		newSquad.Inventory = get.SquadInventory(newSquad.ID)
 		client.SetSquad(newSquad)
 	}

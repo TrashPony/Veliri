@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/get"
-	"../db/updateSquad"
+	"../db/squad/update"
+	"../factories/gameTypes"
 	"../gameObjects/detail"
 	"../player"
 	"errors"
@@ -14,19 +14,22 @@ func ItemsRepair(user *player.Player) error {
 	if user.GetCredits() > 100 {
 		for _, slot := range user.GetSquad().Inventory.Slots {
 			if slot.Type == "body" {
-				slot.HP = get.Body(slot.ItemID).MaxHP
+				body, _ := gameTypes.Bodies.GetByID(slot.ItemID)
+				slot.HP = body.MaxHP
 			}
 
 			if slot.Type == "equip" {
-				slot.HP = get.TypeEquip(slot.ItemID).MaxHP
+				equip, _ := gameTypes.Equips.GetByID(slot.ItemID)
+				slot.HP = equip.MaxHP
 			}
 
 			if slot.Type == "weapon" {
-				slot.HP = get.Weapon(slot.ItemID).MaxHP
+				weapon, _ := gameTypes.Weapons.GetByID(slot.ItemID)
+				slot.HP = weapon.MaxHP
 			}
 		}
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("no credits")
@@ -78,7 +81,7 @@ func EquipRepair(user *player.Player) error {
 			}
 		}
 
-		updateSquad.Squad(user.GetSquad())
+		update.Squad(user.GetSquad())
 		return nil
 	} else {
 		return errors.New("no credits")

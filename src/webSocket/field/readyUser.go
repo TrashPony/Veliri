@@ -1,6 +1,7 @@
 package field
 
 import (
+	"../../mechanics/factories/games"
 	"../../mechanics/gameObjects/unit"
 	"../../mechanics/localGame"
 	"../../mechanics/localGame/userReady"
@@ -9,7 +10,7 @@ import (
 
 func Ready(ws *websocket.Conn) {
 	client := usersFieldWs[ws]
-	activeGame, _ := Games.Get(client.GetGameID())
+	activeGame, _ := games.Games.Get(client.GetGameID())
 
 	userReady.UserReady(client)
 

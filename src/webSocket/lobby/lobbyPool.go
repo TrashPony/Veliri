@@ -1,11 +1,12 @@
 package lobby
 
 import (
-	"../../mechanics/db/get"
-	"../../mechanics/db/insert"
+	"../../mechanics/db/base"
+	"../../mechanics/db/localGame"
+	"../../mechanics/factories/maps"
+	"../../mechanics/factories/players"
 	"../../mechanics/lobby"
 	"../../mechanics/player"
-	"../../mechanics/players"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"log"
@@ -35,7 +36,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
-	insert.UserIntoBase(id, 1) // пока есть только 1 база
+	base.UserIntoBase(id, 1) // пока есть только 1 база
 	newPlayer.InBaseID = 1
 
 	Reader(ws)
@@ -52,8 +53,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MapView" {
-			var maps = get.InfoMapList()
-			for _, Map := range maps {
+			var allMaps = maps.Maps.GetAllMap()
+			for _, Map := range allMaps {
 				var resp = Response{Event: msg.Event, Map: &Map}
 				ws.WriteJSON(resp)
 			}
@@ -114,7 +115,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "DontEndGamesList" {
 			user := usersLobbyWs[ws]
 			usersLobbyWs[ws].GetLogin()
-			games := get.GetNotFinishedGames(user.GetID())
+			games := localGame.GetNotFinishedGames(user.GetID())
 
 			var resp = Response{Event: msg.Event, UserName: usersLobbyWs[ws].GetLogin(), DontEndGames: games}
 			ws.WriteJSON(resp)
