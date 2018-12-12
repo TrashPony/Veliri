@@ -16,20 +16,22 @@ function CreateMapList(jsonMessage) {
 
     let mapSelect = document.getElementById("mapSelector");
 
-    for (let i = 0; i < maps.length; i++) {
-        if (document.getElementById(maps[i].Id)) {
-            continue;
-        }
+    for (let i in maps) {
+        if (maps.hasOwnProperty(i)) {
+            if (document.getElementById(maps[i].Id)) {
+                continue;
+            }
 
-        let option = document.createElement("option");
-        option.id = maps[i].Id;
-        option.value = maps[i].Id;
-        if (maps[i].global) {
-            option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
-        } else {
-            option.innerHTML = maps[i].Name;
+            let option = document.createElement("option");
+            option.id = maps[i].Id;
+            option.value = maps[i].Id;
+            if (maps[i].global) {
+                option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
+            } else {
+                option.innerHTML = maps[i].Name;
+            }
+            mapSelect.appendChild(option);
         }
-        mapSelect.appendChild(option);
     }
 }
 

@@ -70,9 +70,9 @@ func BodiesType() map[int]detail.Body {
 			log.Fatal("get scan all type body: " + err.Error())
 		}
 
-		allType[body.ID] = body
-
 		BodySlots(&body)
+
+		allType[body.ID] = body
 	}
 
 	return allType

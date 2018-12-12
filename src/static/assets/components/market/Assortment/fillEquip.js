@@ -4,10 +4,10 @@ function fillEquip(types) {
     equipTypes = types;
 
     let filterBlock = document.getElementById("equipCategoryItem");
-    filterBlock.onclick = openScroll;
+    filterBlock.onclick = openEquipScroll;
 }
 
-function openScroll() {
+function openEquipScroll() {
     this.innerText = " ▼ Оборудование";
 
     let scroll = document.createElement("div");
@@ -28,7 +28,7 @@ function openScroll() {
 
     this.onclick = function () {
         this.innerHTML = " ▶ Оборудование";
-        this.onclick = openScroll;
+        this.onclick = openEquipScroll;
     }
 }
 
@@ -54,33 +54,7 @@ function openDeepEquip(numberTypeSlot, parent) {
             equip.innerText = equipTypes[i].name;
             equip.onclick = function() {
                 event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
-                filterKey.type = "equip";
-                filterKey.id = equipTypes[i].id;
-
-                let marketRows = document.getElementsByClassName("marketRow");
-                for (let j = 0; j < marketRows.length; j++) {
-                    if (marketRows[j].order.IdItem === filterKey.id && marketRows[j].order.TypeItem === filterKey.type) {
-                        marketRows[j].style.display = "table-row";
-                    } else {
-                        marketRows[j].style.display = "none";
-                    }
-                }
-
-                document.getElementById("selectItemIcon").style.background = "url(/assets/units/equip/" +
-                    equipTypes[i].name + ".png) center / cover";
-
-                let headEquip = document.getElementById("selectItemName");
-                headEquip.innerHTML = "<span>" + equipTypes[i].name + "</span><br>";
-
-                let placeBuyOrderButton = document.createElement("div");
-                placeBuyOrderButton.className = "marketButton";
-                placeBuyOrderButton.innerHTML = "Купить";
-                placeBuyOrderButton.style.margin = "20px auto";
-
-                // todo функция покупки итема на кнопку
-
-                headEquip.appendChild(placeBuyOrderButton);
+                selectItem(equipTypes[i].id, "equip", equipTypes[i].name, "url(/assets/units/equip/");
             };
 
             scroll.appendChild(equip);

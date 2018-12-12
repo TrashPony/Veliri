@@ -3,6 +3,7 @@ package gameTypes
 import (
 	"../../db/get"
 	"../../gameObjects/detail"
+	"github.com/getlantern/deepcopy"
 )
 
 type BodyStore struct {
@@ -16,8 +17,17 @@ func NewBodyStore() *BodyStore {
 }
 
 func (b *BodyStore) GetByID(id int) (*detail.Body, bool) {
-	// TODO копировать слоты снаряжения и оружия, т.к. это сылочные типы данных
 	var newBody detail.Body
-	newBody, ok := b.bodies[id]
+	factoryBody, ok := b.bodies[id]
+
+	err := deepcopy.Copy(&newBody, &factoryBody) // функция глубокого копировния (very slow, but work)
+	if err != nil {
+		println(err.Error())
+	}
+
 	return &newBody, ok
+}
+
+func (b *BodyStore) GetAllType() (map[int]detail.Body) {
+	return b.bodies
 }

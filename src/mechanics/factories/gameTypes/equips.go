@@ -3,6 +3,7 @@ package gameTypes
 import (
 	"../../db/get"
 	"../../gameObjects/equip"
+	"github.com/getlantern/deepcopy"
 )
 
 type EquipStore struct {
@@ -16,8 +17,18 @@ func NewEquipStore() *EquipStore {
 }
 
 func (e *EquipStore) GetByID(id int) (*equip.Equip, bool) {
-	// TODO копировать эффекты из обьекта в карте в новый эквип т.к. это сылочный тип данных
+
 	var newEquip equip.Equip
-	newEquip, ok := e.equips[id]
+	factoryEquip, ok := e.equips[id]
+
+	err := deepcopy.Copy(&newEquip, &factoryEquip) // функция глубокого копировния (very slow, but work)
+	if err != nil {
+		println(err.Error())
+	}
+
 	return &newEquip, ok
+}
+
+func (e *EquipStore) GetAllType() (map[int]equip.Equip) {
+	return e.equips
 }

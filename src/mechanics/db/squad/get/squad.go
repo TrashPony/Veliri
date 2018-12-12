@@ -7,7 +7,6 @@ import (
 	inv "../../../gameObjects/inventory"
 	"../../../gameObjects/squad"
 	"../../../gameObjects/unit"
-	fillInventory "../../inventory"
 	"database/sql"
 	"log"
 	"strconv"
@@ -48,7 +47,6 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 		}
 
 		userSquad.Inventory = SquadInventory(userSquad.ID)
-
 		squads = append(squads, &userSquad)
 	}
 
@@ -187,7 +185,14 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 
 func SquadInventory(squadID int) (inventory inv.Inventory) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
+	rows, err := dbConnect.GetDBConnect().Query("" +
+		"SELECT " +
+		"slot, " +
+		"item_type, " +
+		"item_id, " +
+		"quantity, " +
+		"hp " +
+		""+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)
 	if err != nil {
@@ -196,8 +201,7 @@ func SquadInventory(squadID int) (inventory inv.Inventory) {
 	defer rows.Close()
 
 	inventory.Slots = make(map[int]*inv.Slot)
-
-	fillInventory.FillInventory(&inventory, rows)
+	inventory.FillInventory(rows)
 
 	return
 }

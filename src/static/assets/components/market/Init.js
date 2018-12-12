@@ -10,6 +10,7 @@ function InitMarketMenu() {
         includeJS("../assets/components/market/Assortment/fillWeapon.js");
         includeJS("../assets/components/market/Assortment/fillAmmo.js");
         includeJS("../assets/components/market/Assortment/fillRes.js");
+        includeJS("../assets/components/market/Assortment/CreateFilter.js");
 
         includeCSS("../assets/components/market/css/main.css");
         includeCSS("../assets/components/market/css/leftBar.css");

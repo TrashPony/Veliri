@@ -20,3 +20,7 @@ func (a *AmmoStore) GetByID(id int) (*ammo.Ammo, bool) {
 	newAmmo, ok := a.ammo[id]
 	return &newAmmo, ok
 }
+
+func (a *AmmoStore) GetAllType() (map[int]ammo.Ammo) {
+	return a.ammo
+}

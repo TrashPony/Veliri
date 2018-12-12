@@ -20,3 +20,7 @@ func (w *WeaponsStore) GetByID(id int) (*detail.Weapon, bool) {
 	newWeapon, ok := w.weapons[id]
 	return &newWeapon, ok
 }
+
+func (w *WeaponsStore) GetAllType() (map[int]detail.Weapon) {
+	return w.weapons
+}

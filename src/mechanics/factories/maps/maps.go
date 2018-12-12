@@ -13,8 +13,22 @@ type MapStore struct {
 var Maps = NewMapStore()
 
 func NewMapStore() *MapStore {
-	// todo тут можно сразу заполнять инфу например о респаунах
-	return &MapStore{maps: get.Maps()}
+	m := &MapStore{maps: get.Maps()}
+
+	for id, mp := range m.maps {
+		respawns := 0
+		for _, q := range mp.OneLayerMap { // считает количество респаунов на карте
+			for _, mapCoordinate := range q {
+				if mapCoordinate.Type == "respawn" {
+					respawns++
+				}
+			}
+		}
+		mp.Respawns = respawns
+		m.maps[id] = mp
+	}
+
+	return m
 }
 
 func (m *MapStore) GetByID(id int) (*_map.Map, bool) {
@@ -23,43 +37,8 @@ func (m *MapStore) GetByID(id int) (*_map.Map, bool) {
 	return &newMap, ok
 }
 
-func (m *MapStore) GetInfoMap(id int) _map.Map {
-	var newMap _map.Map
-	newMap, _ = m.maps[id]
-
-	respawns := 0
-
-	for _, q := range newMap.OneLayerMap { // считает количество респаунов на карте
-		for _, mapCoordinate := range q {
-			if mapCoordinate.Type == "respawn" {
-				respawns++
-			}
-		}
-	}
-	newMap.Respawns = respawns
-
-	return newMap
-}
-
-func (m *MapStore) GetAllMap() []_map.Map {
-	mps := make([]_map.Map, 0)
-
-	for _, mp := range m.maps {
-		respawns := 0
-
-		for _, q := range mp.OneLayerMap { // считает количество респаунов на карте
-			for _, mapCoordinate := range q {
-				if mapCoordinate.Type == "respawn" {
-					respawns++
-				}
-			}
-		}
-
-		mp.Respawns = respawns
-		mps = append(mps, mp)
-	}
-
-	return mps
+func (m *MapStore) GetAllMap() map[int]_map.Map {
+	return m.maps
 }
 
 func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
@@ -70,6 +49,7 @@ func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	for _, q := range newMap.OneLayerMap { // считает количество респаунов на карте
 		for _, mapCoordinate := range q {
 			if mapCoordinate.Type == "respawn" {
+				mapCoordinate.ID = len(respawns)+1
 				respawns[len(respawns)+1] = mapCoordinate
 			}
 		}

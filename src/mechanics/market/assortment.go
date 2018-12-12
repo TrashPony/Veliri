@@ -4,15 +4,17 @@ import (
 	"../gameObjects/ammo"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
+	"../factories/gameTypes"
 )
 
 type Assortment struct {
-	Bodies  []*detail.Body   `json:"bodies"`
-	Weapons []*detail.Weapon `json:"weapons"`
-	Ammo    []*ammo.Ammo     `json:"ammo"`
-	Equips  []*equip.Equip   `json:"equips"`
+	Bodies  map[int]detail.Body   `json:"bodies"`
+	Weapons map[int]detail.Weapon `json:"weapons"`
+	Ammo    map[int]ammo.Ammo     `json:"ammo"`
+	Equips  map[int]equip.Equip   `json:"equips"`
 }
 
 func GetAssortment() *Assortment {
-	return nil //&Assortment{Bodies: get.BodiesType(), Weapons:get.WeaponsType(), Ammo: get.AmmoType(), Equips: get.EquipsType()}
+	return &Assortment{Bodies: gameTypes.Bodies.GetAllType(), Weapons: gameTypes.Weapons.GetAllType(),
+		Ammo: gameTypes.Ammo.GetAllType(), Equips: gameTypes.Equips.GetAllType()}
 }
