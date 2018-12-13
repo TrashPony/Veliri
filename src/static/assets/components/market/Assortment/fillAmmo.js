@@ -118,7 +118,7 @@ function openDeepAmmo(type, nameType, sizeType, parent) {
 
             let ammo = document.createElement("span");
             ammo.innerText = types[i].name;
-    
+
             ammo.onclick = function () {
                 event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
                 selectItem(types[i].id, "ammo", types[i].name, "url(/assets/units/" + url + "/");
