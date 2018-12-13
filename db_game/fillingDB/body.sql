@@ -74,9 +74,9 @@ VALUES (2, 3, 2, false, '');
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
 VALUES (2, 3, 3, true, '');
 /* IV */
-INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 4, 1, false, '');
-INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 4, 2, false, '');
-INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (2, 4, 3, false, '');
+INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type, standard_size)
+VALUES (2, 4, 1, false, '', 1);
+INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type, standard_size)
+VALUES (2, 4, 2, false, '', 2);
+INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type, standard_size)
+VALUES (2, 4, 3, false, '', 3);

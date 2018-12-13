@@ -47,29 +47,42 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int) {
 	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
+	if user.GetSquad().MatherShip == nil || user.GetSquad().MatherShip.Body == nil {
+		return // todo ошибка, нет мазершипа
+	}
+
+	unitSlot, ok := user.GetSquad().MatherShip.Body.EquippingIV[numberUnitSlot]
+	if !ok {
+		return // todo ошибка, нет слота
+	}
+
 	if body != nil && body.ItemID == idBody {
 		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
-		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
+		if newBody.StandardSize <= unitSlot.StandardSize {
+			unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 
-		if ok {
-			if unitSlot.Unit == nil {
-				unitSlot.Unit = &unit.Unit{}
-			} else {
-				RemoveUnitBody(user, numberUnitSlot)
-				unitSlot.Unit = &unit.Unit{}
+			if ok {
+				if unitSlot.Unit == nil {
+					unitSlot.Unit = &unit.Unit{}
+				} else {
+					RemoveUnitBody(user, numberUnitSlot)
+					unitSlot.Unit = &unit.Unit{}
+				}
+
+				unitSlot.Unit.HP = body.HP                 // устанавливает колво хп как у тела
+				unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
+				unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
+
+				user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
+				unitSlot.Unit.Body = newBody
 			}
 
-			unitSlot.Unit.HP = body.HP                 // устанавливает колво хп как у тела
-			unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
-			unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
+			unitSlot.Unit.CalculateParams()
 
-			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
-			unitSlot.Unit.Body = newBody
+			update.Squad(user.GetSquad())
+		} else {
+			return // todo ошибка , несовместимый стандарт
 		}
-
-		unitSlot.Unit.CalculateParams()
-
-		update.Squad(user.GetSquad())
 	}
 }

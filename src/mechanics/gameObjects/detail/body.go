@@ -109,6 +109,7 @@ type BodyEquipSlot struct {
 	StepsForReload int                    `json:"steps_for_reload"`
 	HP             int                    `json:"hp"`
 	Target         *coordinate.Coordinate `json:"target"`
+	StandardSize   int                    `json:"standard_size"` /* определяет тип вмещаемого юнита если это ангар */
 }
 
 type BodyWeaponSlot struct {

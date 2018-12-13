@@ -79,7 +79,7 @@ func BodiesType() map[int]detail.Body {
 }
 
 func BodySlots(body *detail.Body) {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT type_slot, number_slot, weapon, weapon_type "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT type_slot, number_slot, weapon, weapon_type, standard_size "+
 		"FROM body_slots "+
 		"WHERE id_body = $1", body.ID)
 	if err != nil {
@@ -100,8 +100,9 @@ func BodySlots(body *detail.Body) {
 		var slotNumber int
 		var slotWeapon bool
 		var slotWeaponType string
+		var slotStandardSize int
 
-		err := rows.Scan(&slotType, &slotNumber, &slotWeapon, &slotWeaponType)
+		err := rows.Scan(&slotType, &slotNumber, &slotWeapon, &slotWeaponType, &slotStandardSize)
 		if err != nil {
 			log.Fatal("get body slot " + err.Error())
 		}
@@ -123,7 +124,7 @@ func BodySlots(body *detail.Body) {
 				body.EquippingIII[slotNumber] = &equipSlot
 			}
 			if slotType == 4 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, StandardSize: slotStandardSize}
 				body.EquippingIV[slotNumber] = &equipSlot
 			}
 			if slotType == 5 {

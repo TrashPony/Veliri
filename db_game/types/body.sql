@@ -24,9 +24,10 @@ CREATE TABLE body_type (
 );
 
 CREATE TABLE body_slots (
-  id_body     INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/
-  type_slot   INT,                           /* тип слота куда встаривается оборудование I (1) , II (2), III (3), IV (4), V (5) */
-  number_slot INT,                           /* номер слота в корпусе */
-  weapon      BOOLEAN,                       /* труе если слот приналдлежит оружию */
-  weapon_type varchar(64)                    /* тип оружия например "artillery" */
+  id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/
+  type_slot     INT,                           /* тип слота куда встаривается оборудование I (1) , II (2), III (3), IV (4), V (5) */
+  number_slot   INT,                           /* номер слота в корпусе */
+  weapon        BOOLEAN,                       /* труе если слот приналдлежит оружию */
+  weapon_type   varchar(64),                   /* тип оружия например "artillery" */
+  standard_size INT                            /* определяет тип вмещаемого юнита если это ангар */
 );
