@@ -94,12 +94,14 @@ func Reader(ws *websocket.Conn) {
 			}
 		}
 
-		if msg.Event == "cancelBuyOrder" {
-			// todo отмена ордера на продажу, оповестить других участников рынка
-		}
-
-		if msg.Event == "cancelSellOrder" {
-			// todo отмена ордера на продажу, оповестить других участников рынка
+		if msg.Event == "cancelOrder" {
+			err := market.Orders.Cancel(msg.OrderID, usersMarketWs[ws])
+			if err != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
+			} else {
+				storage.Updater(usersMarketWs[ws].GetID())
+				OrderSender()
+			}
 		}
 
 		if msg.Event == "buy" { // покупака из существующего ордера
