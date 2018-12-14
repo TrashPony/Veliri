@@ -18,6 +18,8 @@
     user-select: none;
     margin: 2px auto;
     border: 1px solid black;
+    position: sticky;
+    top: 0;
 }
 
 .ordersTable tr:first-child td:first-child{

@@ -1,12 +1,13 @@
 package market
 
 import (
-	"../player"
-	"errors"
+	"../db/market"
+	dbPlayer "../db/player"
 	"../factories/gameTypes"
 	"../gameObjects/order"
+	"../player"
+	"errors"
 	"time"
-	"../db/market"
 )
 
 func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expires int, itemType string, user *player.Player) error {
@@ -70,16 +71,17 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 				MinBuyOut: minBuyOut, TypeItem: itemType, IdItem: itemId, Expires: time.Now(),
 				PlaceName: "База 1", PlaceID: user.InBaseID, Item: item}
 
-			// добавляем их в магазин
+			// добавляем ордер в магазин
 			id := market.PlaceNewOrder(&newOrder)
 
 			if id > 0 {
 				newOrder.Id = id
 
-				// добавляем его на фабрику
+				// добавляем ордер на фабрику
 				o.AddNewOrder(newOrder)
 				// отнимаем деньги :)
 				user.SetCredits(user.GetCredits() - price*quantity)
+				dbPlayer.UpdateUser(user)
 			}
 		} else {
 			return errors.New("no item")

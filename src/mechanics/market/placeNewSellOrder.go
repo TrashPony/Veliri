@@ -34,9 +34,15 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 			for _, marketOrder := range o.orders {
 				if marketOrder.IdItem == slot.ItemID && marketOrder.TypeItem == slot.Type && marketOrder.Price >= price {
 					if marketOrder.Count > quantity {
-						// полный выкуп
+						err := o.Sell(marketOrder.Id, quantity, user)
+						if err == nil {
+							return nil // т.к. мы продали все итемы то ордер создавать не ненадо
+						}
 					} else {
-						// частичный выкуп
+						err := o.Sell(marketOrder.Id, marketOrder.Count, user)
+						if err == nil {
+							quantity -= marketOrder.Count
+						}
 					}
 				}
 			}

@@ -113,7 +113,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "sell" { // продажа в существующий ордер
-			// todo продажа в открытый оредар или частичный выкуп, оповестить других участников рынка
+			err := market.Orders.Sell(msg.OrderID, msg.Quantity, usersMarketWs[ws])
+			if err != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
+			} else {
+				storage.Updater(usersMarketWs[ws].GetID())
+				OrderSender()
+			}
 		}
 	}
 }
@@ -122,7 +128,7 @@ func OrderSender() {
 	mutex.Lock()
 	for ws := range usersMarketWs {
 		err := ws.WriteJSON(Message{Event: "openMarket",
-			Orders: market.Orders.GetOrders(),
+			Orders:  market.Orders.GetOrders(),
 			Credits: usersMarketWs[ws].GetCredits()})
 		if err != nil {
 			log.Printf("error: %v", err)

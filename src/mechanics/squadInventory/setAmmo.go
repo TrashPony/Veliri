@@ -74,7 +74,7 @@ func SetAmmo(ammoSlot *detail.BodyWeaponSlot, user *player.Player, newAmmo *ammo
 	}
 
 	ammoSlot.Ammo = newAmmo
-	ammoSlot.AmmoQuantity = user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(ammoSlot.Weapon.AmmoCapacity)
+	ammoSlot.AmmoQuantity = user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(ammoSlot.Weapon.AmmoCapacity)
 
 	update.Squad(user.GetSquad())
 

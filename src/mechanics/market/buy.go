@@ -18,7 +18,9 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 		if user.GetCredits() >= buyOrder.Price*count && buyOrder.Count >= count {
 
 			user.SetCredits(user.GetCredits() - buyOrder.Price*count) // отнимаем деньги :)
-			buyOrder.Count -= count                                   // отнимаем количество покупаемых итемов у ордера
+			dbPlayer.UpdateUser(user)
+
+			buyOrder.Count -= count // отнимаем количество покупаемых итемов у ордера
 
 			if buyOrder.Count > 0 {
 				market.UpdateOrder(buyOrder)
@@ -29,8 +31,6 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 
 			storages.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
 				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count), buyOrder.ItemHP)
-
-			dbPlayer.UpdateUser(user)
 
 			players.Users.AddCash(buyOrder.IdUser, buyOrder.Price*count) // пополням баланс продавца
 		} else {

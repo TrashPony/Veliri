@@ -89,7 +89,7 @@ func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *eq
 	}
 
 	equipSlot.HP = hp
-	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
+	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
 
 	update.Squad(user.GetSquad()) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 

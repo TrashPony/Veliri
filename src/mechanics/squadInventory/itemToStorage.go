@@ -19,7 +19,7 @@ func ItemToStorage(user *player.Player, inventorySlot int) error {
 			slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
 
 		if ok {
-			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(slot.Quantity)
+			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(slot.Quantity)
 		}
 
 		update.Squad(user.GetSquad())

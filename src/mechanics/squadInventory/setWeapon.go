@@ -114,7 +114,7 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 
 	weaponSlot.HP = hp
 
-	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItem(1)
+	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
 	weaponSlot.Weapon = newWeapon
 	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне
 

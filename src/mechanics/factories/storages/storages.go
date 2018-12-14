@@ -80,7 +80,7 @@ func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) bool {
 		if baseOk {
 			slot, ok := baseStorage.Slots[numberSlot]
 			if ok {
-				slot.RemoveItem(quantityRemove)
+				slot.RemoveItemBySlot(quantityRemove)
 				storage.Inventory(baseStorage, userId, baseId)
 				return true
 			} else {
