@@ -11,6 +11,9 @@ import (
 )
 
 func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, user *player.Player) error {
+	// todo имя базы захарджкожено
+	// todo если expires 0 то ставим 1 месяц
+	// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
 	if user.InBaseID > 0 {
 
@@ -23,14 +26,24 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 		if slot.MaxHP == slot.HP && quantity <= slot.Quantity {
 
+			if minBuyOut == 0 {
+				minBuyOut = 1
+			}
+
+			// смотрит есть ли на рынке итемы которые уже подходят под условия цены, и если есть покупаем
+			for _, marketOrder := range o.orders {
+				if marketOrder.IdItem == slot.ItemID && marketOrder.TypeItem == slot.Type && marketOrder.Price >= price {
+					if marketOrder.Count > quantity {
+						// полный выкуп
+					} else {
+						// частичный выкуп
+					}
+				}
+			}
+
 			newOrder := order.Order{IdUser: user.GetID(), Price: price, Count: quantity, Type: "sell",
 				MinBuyOut: minBuyOut, TypeItem: slot.Type, IdItem: slot.ItemID, Expires: time.Now(),
 				PlaceName: "База 1", PlaceID: user.InBaseID, Item: slot.Item}
-
-			// todo имя базы захарджкожено
-			// todo если expires 0 то ставим 1 месяц
-			// todo если minBuyOut 0 то ставим 1
-			// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
 			// добавляем их в магазин
 			id := market.PlaceNewOrder(&newOrder)

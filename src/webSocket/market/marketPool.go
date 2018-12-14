@@ -29,6 +29,8 @@ type Message struct {
 	Expires     int                  `json:"expires"`
 	Error       string               `json:"error"`
 	Credits     int                  `json:"credits"`
+	ItemID      int                  `json:"item_id"`
+	ItemType    string               `json:"item_type"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -73,7 +75,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "placeNewBuyOrder" {
-			// todo открытие нового ордера на покупку, оповестить других участников рынка
+			err := market.Orders.PlaceNewBuyOrder(msg.ItemID, msg.Price, msg.Quantity, msg.MinBuyOut, msg.Expires, msg.ItemType, usersMarketWs[ws])
+			if err != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
+			} else {
+				storage.Updater(usersMarketWs[ws].GetID())
+				OrderSender()
+			}
 		}
 
 		if msg.Event == "placeNewSellOrder" {
@@ -114,7 +122,7 @@ func OrderSender() {
 	mutex.Lock()
 	for ws := range usersMarketWs {
 		err := ws.WriteJSON(Message{Event: "openMarket",
-			Orders:  market.Orders.GetOrders(),
+			Orders: market.Orders.GetOrders(),
 			Credits: usersMarketWs[ws].GetCredits()})
 		if err != nil {
 			log.Printf("error: %v", err)

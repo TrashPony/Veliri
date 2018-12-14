@@ -43,9 +43,18 @@
 
 #dialogBlock span, #dialogBlock input[type=number] {
     font-size: 18px;
+    width: 60px;
+}
+
+#dialogBlock input[type=number] {
+    margin-right: 8px;
 }
 
 #dialogBlock input[type=button] {
    position: static;
     margin: 6px;
+}
+
+#dialogBlock div {
+    text-align: left;
 }
