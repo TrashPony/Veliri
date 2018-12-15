@@ -65,8 +65,6 @@ func Registration(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkAvailableLogin(login string) (checkLogin bool) {
-	// TODO неверно делает сравнение
-
 	user := GetUsers("WHERE name='" + login + "'")
 
 	if user.Name != "" {
@@ -97,7 +95,8 @@ func SuccessRegistration(login, email, password string) {
 		panic(err)
 	}
 
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO users (name, password, mail) VALUES ($1, $2, $3)", login, hashPassword, email)
+	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO users (name, password, mail, credits, experience_point) "+
+		"VALUES ($1, $2, $3, $4, $5)", login, hashPassword, email, 200, 100)
 
 	if err != nil {
 		log.Fatal(err)

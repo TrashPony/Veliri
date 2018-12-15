@@ -5,6 +5,7 @@ function MarkLastPathCell(unit, cellState) {
     let r = cellState.r;
 
     let mark = game.add.sprite(0, 0, 'MarkMoveLastCell'); // создаем метку
+    mark.anchor.setTo(0.5);
     mark.scale.set(.32);
     mark.alpha = 0.8;
     mark.z = 1;

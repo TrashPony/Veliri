@@ -41,10 +41,12 @@
 <body>
 <div id="main">
     <div class="info" align="left">
-        <table class="table" id="UsersInLobby" width="200">
+        <table class="table" id="" width="200">
             <tr align="center" class="h">
-                <th> Игроки в сети</th>
+                <th> Сервисы </th>
             </tr>
+            <tr><td><input type="button" class="button" value="Market" onclick="InitMarketMenu()"></td></tr>
+            <tr><td><input type="button" class="button" value="Inventory" onclick="InitInventoryMenu()"></td></tr>
         </table>
     </div>
 
@@ -85,7 +87,6 @@
         <div id="logout">
             <div id="login">Вы зашли как:</div>
             <input type="button" class="button" value="Logout" onclick="Logout()">
-            <input type="button" class="button" value="Market" onclick="InitMarketMenu()">
         </div>
         <p>
         <div id="SelectInfo">

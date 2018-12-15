@@ -33,6 +33,8 @@ function SelectUnit() {
 
     //Fire(this, GetGameUnitID(357));
 
+    game.camera.focusOn(this.sprite);
+
     if (game.Phase === "targeting" && this.owner === game.user.name) {
         field.send(JSON.stringify({
             event: "SelectWeapon",

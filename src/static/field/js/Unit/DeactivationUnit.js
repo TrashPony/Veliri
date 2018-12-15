@@ -25,8 +25,10 @@ function activateUnitInput() {
         if (game.units.hasOwnProperty(x)) {
             for (let y in game.units[x]) {
                 if (game.units[x].hasOwnProperty(y)) {
-                    game.units[x][y].sprite.unitBody.events.onInputOver.add(UnitMouseOver, game.units[x][y]); // обрабатываем наведение мышки
-                    game.units[x][y].sprite.unitBody.events.onInputOut.add(UnitMouseOut, game.units[x][y]);   // обрабатываем убирание мышки
+                    if (game.units[x][y].sprite) {
+                        game.units[x][y].sprite.unitBody.events.onInputOver.add(UnitMouseOver, game.units[x][y]); // обрабатываем наведение мышки
+                        game.units[x][y].sprite.unitBody.events.onInputOut.add(UnitMouseOut, game.units[x][y]);   // обрабатываем убирание мышки
+                    }
                 }
             }
         }

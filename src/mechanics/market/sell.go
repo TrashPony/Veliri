@@ -13,7 +13,7 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 	find, sellOrder, mx := o.GetOrder(orderID)
 	defer mx.Unlock()
 
-	if find {
+	if find && sellOrder.Type == "buy" {
 		if sellOrder.Count >= count && count%sellOrder.MinBuyOut == 0 {
 
 			// пытаемся удалить итемы у продовца
@@ -39,6 +39,14 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 				sellOrder.IdItem, count, sellOrder.ItemHP, sellOrder.ItemSize*float32(count), sellOrder.ItemHP)
 		} else {
 			return errors.New("wrong count")
+		}
+	} else {
+		if !find {
+			return errors.New("no find order")
+		}
+
+		if sellOrder.Type != "buy" {
+			return errors.New("wrong order type")
 		}
 	}
 	return nil

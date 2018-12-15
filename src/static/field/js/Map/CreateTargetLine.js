@@ -43,7 +43,7 @@ function createWeaponLine(unit) {
         let targetLine = game.add.graphics(0, 0);
         targetLine.lineStyle(6, 0xff0000, 0.3);
         targetLine.moveTo(unit.sprite.x, unit.sprite.y);
-        targetLine.lineTo(target.x + 50, target.y + 50);
+        targetLine.lineTo(target.x, target.y);
         targetLine.endFill();
 
         unit.targetLine = targetLine;
@@ -58,7 +58,7 @@ function createEquipLine(unit, target) {
         let targetLine = game.add.graphics(0, 0);
         targetLine.lineStyle(6, 0x0000FF, 0.3);
         targetLine.moveTo(unit.sprite.x, unit.sprite.y);
-        targetLine.lineTo(target.x + 50, target.y + 50);
+        targetLine.lineTo(target.x, target.y);
         targetLine.endFill();
 
         unit.targetsEquipLine.push(targetLine);

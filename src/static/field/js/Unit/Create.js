@@ -2,14 +2,23 @@ function CreateUnit(unitStat, inVisible) {
     let q = unitStat.q;
     let r = unitStat.r;
 
-    let cell = game.map.OneLayerMap[q][r].sprite;
-    let x = cell.x + cell.width / 2;
-    let y = cell.y + cell.height / 2;
+    let x = 0;
+    let y = 0;
+
+    game.mapPoints.forEach(function (point) {
+        if (point.q === q && point.r === r){
+            x = point.x;
+            y = point.y;
+        }
+    });
 
     let unit;
 
     if (game.user.name === unitStat.owner) {
         unit = game.unitLayer.create(x, y, 'MySelectUnit', 0);
+        if (unitStat.body.mother_ship){
+            game.camera.focusOn(unit);
+        }
     } else {
         unit = game.unitLayer.create(x, y, 'HostileSelectUnit', 0);
     }

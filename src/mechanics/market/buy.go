@@ -14,7 +14,7 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 	find, buyOrder, mx := o.GetOrder(orderID)
 	defer mx.Unlock()
 
-	if find {
+	if find && buyOrder.Type == "sell" {
 		if user.GetCredits() >= buyOrder.Price*count && buyOrder.Count >= count {
 
 			user.SetCredits(user.GetCredits() - buyOrder.Price*count) // отнимаем деньги :)
@@ -42,7 +42,13 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 			}
 		}
 	} else {
-		return errors.New("no find order")
+		if !find {
+			return errors.New("no find order")
+		}
+
+		if buyOrder.Type != "sell" {
+			return errors.New("wrong order type")
+		}
 	}
 
 	return nil

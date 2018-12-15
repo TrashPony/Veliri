@@ -143,8 +143,8 @@ function MoveUnit() {
 
                         let moveSprite = game.map.OneLayerMap[unit.movePoint.q][unit.movePoint.r].sprite;
 
-                        let x = moveSprite.x + moveSprite.width / 2;
-                        let y = moveSprite.y + moveSprite.height / 2;
+                        let x = moveSprite.x;
+                        let y = moveSprite.y;
 
                         let spriteRotate = unit.sprite.unitBody.angle;
                         let needRotate = unit.rotate + 90;

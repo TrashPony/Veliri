@@ -16,7 +16,7 @@ function update() {
 function dynamicMap(group, points) {
     points.forEach(function (point) {
 
-        let distCam = 850 / game.camera.scale.x;
+        let distCam = 1050 / game.camera.scale.x;
 
         let camX = (game.camera.view.width / 2 + game.camera.view.x) / game.camera.scale.x;
         let camY = (game.camera.view.height / 2 + game.camera.view.y) / game.camera.scale.y;
@@ -27,6 +27,10 @@ function dynamicMap(group, points) {
             let coordinate = game.map.OneLayerMap[point.q][point.r];
 
             CreateTerrain(coordinate, point.x, point.y, point.q, point.r);
+
+            if (coordinate.fogSprite && coordinate.open) {
+                game.add.tween(coordinate.fogSprite).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true, 0);
+            }
 
             if (coordinate.texture_object !== "") {
                 CreateObjects(coordinate);
@@ -66,6 +70,10 @@ function dynamicMap(group, points) {
                     coordinate.buttons[i].destroy();
                 }
                 coordinate.coordinateText = null
+            }
+
+            if (coordinate.fogSprite) {
+                coordinate.fogSprite.destroy();
             }
 
             coordinate.sprite.destroy();

@@ -60,8 +60,8 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		// todo обновление информации внутри сквада для мазр шипов, положение, на карте, снять все прошлые эффекты и тд
 		// todo обновление информации внутри сквада для эквипа, обнулить перезарядку
 
-		user.GetSquad().MatherShip.Q = user.GetRespawn().X
-		user.GetSquad().MatherShip.R = user.GetRespawn().Y
+		user.GetSquad().MatherShip.Q = user.GetRespawn().Q
+		user.GetSquad().MatherShip.R = user.GetRespawn().R
 		user.GetSquad().MatherShip.Target = nil
 		user.GetSquad().MatherShip.Move = false
 		user.GetSquad().MatherShip.CalculateParams()

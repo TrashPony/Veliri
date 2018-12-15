@@ -30,15 +30,7 @@ function CreateLobbyMenu(id, error, hoster) {
         inventory.className = "lobbyButton";
         inventory.value = "Инвентарь";
         inventory.onclick = () => {
-            InitInventoryMenu(
-                () => {
-                    lobby.send(
-                        JSON.stringify({
-                            event: "GetSquad"
-                        })
-                    )
-                }
-            );
+            OpenInventory()
         };
         parentElem.appendChild(inventory);
 

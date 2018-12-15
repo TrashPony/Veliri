@@ -51,5 +51,47 @@ function fillBuyTable(order) {
 }
 
 function sellDialog(order, e) {
+    let dialogBlock = document.createElement("div");
+    dialogBlock.id = "dialogBlock";
 
+    dialogBlock.style.top = e.clientY + "px";
+    dialogBlock.style.left = e.clientX + "px";
+
+    let head = document.createElement("h2");
+    head.innerHTML = "Продажа    " + order.Item.name;
+    dialogBlock.appendChild(head);
+
+    // todo имеется на складе
+
+    let div = createNumberInput(0, order.Count, order.Count, "штук");
+    dialogBlock.appendChild(div);
+
+    let resultSpan = document.createElement("div");
+    resultSpan.innerHTML = "за <span style='color: chartreuse'>" + order.Count * order.Price + "</span> кредитов";
+    dialogBlock.appendChild(resultSpan);
+
+    div.inputBlock.oninput = function () {
+        resultSpan.innerHTML = "за <span style='color: chartreuse'>" + this.value * order.Price + " </span> кредитов";
+    };
+
+    let closeButton = createInput("Отменить", dialogBlock);
+    closeButton.onclick = function () {
+        dialogBlock.remove();
+    };
+
+    let sellButton = createInput("Продать", dialogBlock);
+    sellButton.onclick = function () {
+        if (div.inputBlock.value > 0) {
+            marketSocket.send(JSON.stringify({
+                event: 'sell',
+                order_id: Number(order.Id),
+                quantity: Number(div.inputBlock.value)
+            }));
+            dialogBlock.remove();
+        } else {
+            alert("нельзя продать 0 предметов")
+        }
+    };
+
+    document.body.appendChild(dialogBlock);
 }

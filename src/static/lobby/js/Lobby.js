@@ -70,3 +70,13 @@ function DelElements(ClassElements) {
         SelectMap[0].parentNode.removeChild(SelectMap[0]);
     }
 }
+
+function OpenInventory() {
+    InitInventoryMenu(() => {
+        lobby.send(
+            JSON.stringify({
+                event: "GetSquad"
+            })
+        )
+    });
+}

@@ -52,7 +52,12 @@ function CreateInventoryMenu(closeFunc) {
     closeButton.id = "inventoryCloseButton";
     closeButton.className = "button";
     closeButton.innerHTML = "Закрыть";
-    closeButton.onclick = () => {InventoryClose(); closeFunc()};
+    closeButton.onclick = () => {
+        InventoryClose();
+        if (closeFunc) {
+            closeFunc()
+        }
+    };
     motherShipParams.appendChild(closeButton);
 }
 

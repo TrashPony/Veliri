@@ -5,6 +5,7 @@ function UpdateRotateUnit() {
                 if (game.units[q].hasOwnProperty(r)) {
 
                     let unit = game.units[q][r];
+
                     let spriteRotate = unit.sprite.unitBody.angle;
                     let needRotate = unit.rotate + 90;
 

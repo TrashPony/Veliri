@@ -8,6 +8,10 @@ function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typ
 
     let sprite;
 
+    if (!cellSprite) {
+        return
+    }
+
     /*
         соседи гексов беруться по разному в зависимости от четности строки
         // even {Q,R}
@@ -85,33 +89,39 @@ function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typ
     }
     
     if (addEmpty) {
-        if (selector === "move" || selector === "place") sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectEmpty');
-        if (selector === "target") sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectTarget');
+        if (selector === "move" || selector === "place"){
+            sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectEmpty');
+            sprite.anchor.setTo(0.5);
+        }
+        if (selector === "target"){
+            sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectTarget');
+            sprite.anchor.setTo(0.5);
+        }
     }
 
     if (drawLine) {
         if (!left) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 4);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 4).anchor.setTo(0.5);
         }
 
         if (!right) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 1);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 1).anchor.setTo(0.5);
         }
 
         if (!topLeft) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 5);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 5).anchor.setTo(0.5);
         }
 
         if (!topRight) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 0);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 0).anchor.setTo(0.5);
         }
 
         if (!botLeft) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 3);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 3).anchor.setTo(0.5);
         }
 
         if (!botRight) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 2);
+            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 2).anchor.setTo(0.5);
         }
     }
 
