@@ -13,6 +13,9 @@ function openAmmoOneScroll(type, parent) {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     parent.appendChild(scroll);
 
     let names = ['Лазерные', 'Ракетные', 'Балистические'];
@@ -42,6 +45,9 @@ function openAmmoTwoScroll(type, name, parent) {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     parent.appendChild(scroll);
 
     let size = ['Малые', 'Средние', 'Большие'];
@@ -101,6 +107,9 @@ function openDeepAmmo(type, nameType, sizeType, parent) {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     parent.appendChild(scroll);
 
     let types;
@@ -121,7 +130,7 @@ function openDeepAmmo(type, nameType, sizeType, parent) {
 
             ammo.onclick = function () {
                 event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-                selectItem(types[i].id, "ammo", types[i].name, "url(/assets/units/" + url + "/");
+                selectItem(types[i].id, url, types[i].name, "url(/assets/units/" + url + "/");
             };
 
             scroll.appendChild(ammo);

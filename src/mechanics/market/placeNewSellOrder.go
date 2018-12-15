@@ -12,7 +12,7 @@ import (
 
 func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, user *player.Player) error {
 	// todo имя базы захарджкожено
-	// todo если expires 0 то ставим 1 месяц
+	// todo если expires 0 то ставим 14 дней
 	// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
 	if user.InBaseID > 0 {
@@ -39,9 +39,10 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 							return nil // т.к. мы продали все итемы то ордер создавать не ненадо
 						}
 					} else {
+						countOrder := marketOrder.Count // т.к. при продаже удалиться count у ордера, сохраним его
 						err := o.Sell(marketOrder.Id, marketOrder.Count, user)
 						if err == nil {
-							quantity -= marketOrder.Count
+							quantity -= countOrder
 						}
 					}
 				}

@@ -13,10 +13,10 @@ import (
 func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expires int, itemType string, user *player.Player) error {
 
 	// todo имя базы захарджкожено
-	// todo если expires 0 то ставим 1 месяц
+	// todo если expires 0 то ставим 14 дней
 	// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
-	if user.GetCredits() >= price*quantity {
+	if user.GetCredits() >= price*quantity && (minBuyOut == 0 || quantity%minBuyOut == 0) {
 
 		var item interface{}
 		var ok bool
@@ -53,14 +53,16 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 						}
 					} else {
 						if marketOrder.Count%minBuyOut == 0 {
+							countOrder := marketOrder.Count // т.к. при продаже удалиться count у ордера, сохраним его
 							err := o.Buy(marketOrder.Id, marketOrder.Count, user)
 							if err == nil {
-								quantity -= marketOrder.Count
+								quantity -= countOrder
 							}
 						} else {
+							countOrder := marketOrder.Count - marketOrder.Count%minBuyOut
 							err := o.Buy(marketOrder.Id, marketOrder.Count-marketOrder.Count%minBuyOut, user)
 							if err == nil {
-								quantity -= marketOrder.Count - marketOrder.Count%minBuyOut
+								quantity -= countOrder
 							}
 						}
 					}
@@ -87,7 +89,12 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 			return errors.New("no item")
 		}
 	} else {
-		return errors.New("no credits")
+		if user.GetCredits() < price*quantity {
+			return errors.New("no credits")
+		}
+		if minBuyOut != 0 && quantity%minBuyOut != 0 {
+			return errors.New("wrong count")
+		}
 	}
 
 	return nil

@@ -12,6 +12,9 @@ function openCabsScroll() {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     this.appendChild(scroll);
 
     let names = ['MS', 'Тяжелые', 'Средние', 'Легкие'];
@@ -61,6 +64,9 @@ function openDeepCabs(nameType, parent) {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     parent.appendChild(scroll);
 
     for (let i in bodyTypes) {

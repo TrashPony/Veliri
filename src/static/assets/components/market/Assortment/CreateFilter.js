@@ -75,6 +75,7 @@ function placeBuyDialog(type, id, name, e) {
             if (divCount.inputBlock.value === "0" || this.value === "0") {
                 return
             } else {
+                divCount.inputBlock.step = divMinCount.inputBlock.value;
                 divCount.inputBlock.value = Number(divCount.inputBlock.value) - 1;
                 divCalculate.innerHTML = divCount.inputBlock.value + " за " + divCount.inputBlock.value * divPrice.inputBlock.value + " кредитов";
             }
@@ -86,7 +87,7 @@ function placeBuyDialog(type, id, name, e) {
     button.className = "lobbyButton inventoryTip";
     button.value = "Разместить заказ";
     button.onclick = function () {
-        if (divCount.inputBlock.value > 0 && divPrice.inputBlock.value > 0) {
+        if (Number(divCount.inputBlock.value) > 0 && Number(divPrice.inputBlock.value) > 0) {
             marketSocket.send(JSON.stringify({
                 event: 'placeNewBuyOrder',
                 item_id: Number(id),

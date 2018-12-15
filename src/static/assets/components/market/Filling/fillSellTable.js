@@ -12,7 +12,7 @@ function fillSellTable(order) {
     }
 
     let td1 = document.createElement("td");
-    td1.innerHTML = "0";
+    td1.innerHTML = "База"; // todo захардкожаная база
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");

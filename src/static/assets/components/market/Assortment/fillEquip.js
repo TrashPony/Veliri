@@ -12,6 +12,9 @@ function openEquipScroll() {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     this.appendChild(scroll);
 
     for (let i = 0; i < 5; i++) {
@@ -46,6 +49,9 @@ function openDeepEquip(numberTypeSlot, parent) {
 
     let scroll = document.createElement("div");
     scroll.className = "scrollFilter";
+    scroll.onclick = function(){
+        event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+    };
     parent.appendChild(scroll);
 
     for (let i in equipTypes) {
