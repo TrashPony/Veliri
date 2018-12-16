@@ -1,31 +1,37 @@
+let initMarket = false;
+
 function InitMarketMenu() {
     let promise = new Promise((resolve) => {
-        includeJS("../assets/components/market/webSocket.js");
-        includeJS("../assets/components/market/create/Create.js");
-        includeJS("../assets/components/market/create/CreateTables.js");
-        includeJS("../assets/components/market/Filling/Filling.js");
-        includeJS("../assets/components/market/Filling/fillSellTable.js");
-        includeJS("../assets/components/market/Filling/fillBuyTable.js");
+        if (!initMarket) {
+            if (typeof webSocketInit === 'undefined' || webSocketInit === null) {
+                includeJS("../assets/components/servicesWebSockets.js");
+            }
+            includeJS("../assets/components/market/create/Create.js");
+            includeJS("../assets/components/market/create/CreateTables.js");
+            includeJS("../assets/components/market/Filling/Filling.js");
+            includeJS("../assets/components/market/Filling/fillSellTable.js");
+            includeJS("../assets/components/market/Filling/fillBuyTable.js");
 
-        includeJS("../assets/components/market/Assortment/Assortment.js");
-        includeJS("../assets/components/market/Assortment/fillEquip.js");
-        includeJS("../assets/components/market/Assortment/fillCabs.js");
-        includeJS("../assets/components/market/Assortment/fillWeapon.js");
-        includeJS("../assets/components/market/Assortment/fillAmmo.js");
-        includeJS("../assets/components/market/Assortment/fillRes.js");
-        includeJS("../assets/components/market/Assortment/CreateFilter.js");
+            includeJS("../assets/components/market/Assortment/Assortment.js");
+            includeJS("../assets/components/market/Assortment/fillEquip.js");
+            includeJS("../assets/components/market/Assortment/fillCabs.js");
+            includeJS("../assets/components/market/Assortment/fillWeapon.js");
+            includeJS("../assets/components/market/Assortment/fillAmmo.js");
+            includeJS("../assets/components/market/Assortment/fillRes.js");
+            includeJS("../assets/components/market/Assortment/CreateFilter.js");
 
-        includeCSS("../assets/components/market/css/main.css");
-        includeCSS("../assets/components/market/css/leftBar.css");
-        includeCSS("../assets/components/market/css/orderTables.css");
-        includeCSS("../assets/components/market/css/marketTopMenu.css");
-        includeCSS("../assets/components/market/css/marketRow.css");
-
+            includeCSS("../assets/components/market/css/main.css");
+            includeCSS("../assets/components/market/css/leftBar.css");
+            includeCSS("../assets/components/market/css/orderTables.css");
+            includeCSS("../assets/components/market/css/marketTopMenu.css");
+            includeCSS("../assets/components/market/css/marketRow.css");
+        }
         resolve();
     });
 
     promise.then(
         () => {
+            initMarket = true;
             setTimeout(function () {
                 ConnectMarket();
                 CreateMarketMenu();

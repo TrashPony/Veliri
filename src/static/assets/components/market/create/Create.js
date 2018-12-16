@@ -102,6 +102,9 @@ function ordersBlockUI(ordersBlock) {
 
     let myMarket = document.createElement("div");
     myMarket.innerHTML = "Мои запросы/предложения";
+    myMarket.onclick = function(){
+      // todo функция переключения
+    };
 
     menu.appendChild(allMarket);
     menu.appendChild(myMarket);
@@ -142,8 +145,18 @@ function footUI(foot) {
     panel.id = "footPanel";
     foot.appendChild(panel);
 
-    let SellOrderButton = document.createElement("div");
-    SellOrderButton.className = "marketButton";
-    SellOrderButton.innerHTML = "Продать";
-    panel.appendChild(SellOrderButton);
+    let Close = document.createElement("div");
+    Close.className = "marketButton";
+    Close.innerHTML = "Закрыть";
+    Close.onclick = function () {
+        if (document.getElementById("mask")) {
+            document.getElementById("mask").remove();
+        }
+
+        if (document.getElementById("marketBox")) {
+            document.getElementById("marketBox").remove();
+        }
+        marketSocket.close();
+    };
+    panel.appendChild(Close);
 }

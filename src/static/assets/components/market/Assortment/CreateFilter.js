@@ -102,8 +102,17 @@ function placeBuyDialog(type, id, name, e) {
             alert("ошибка ввода")
         }
     };
-
     dialogBlock.appendChild(button);
+
+    let close = document.createElement("input");
+    close.type = "button";
+    close.className = "lobbyButton inventoryTip";
+    close.value = "Отмена";
+    close.onclick = function (){
+        document.getElementById("dialogBlock").remove();
+    };
+    dialogBlock.appendChild(close);
+
     document.body.appendChild(dialogBlock);
 }
 
