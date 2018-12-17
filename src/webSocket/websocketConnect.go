@@ -3,6 +3,7 @@ package webSocket
 import (
 	"./chat"
 	"./field"
+	"./globalGame"
 	"./inventory"
 	"./lobby"
 	"./mapEditor"
@@ -52,5 +53,9 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 
 	if pool == "/wsStorage" {
 		storage.AddNewUser(ws, login, id)
+	}
+
+	if pool == "/wsGlobal" {
+		globalGame.AddNewUser(ws, login, id)
 	}
 }

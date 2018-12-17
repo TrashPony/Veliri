@@ -1,5 +1,5 @@
 function FillMyOrders(orders) {
-    
+
     let table = document.getElementById("marketMyTable");
     let ordersBlock = document.getElementById("MyOrdersBlock");
 
