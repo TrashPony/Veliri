@@ -123,6 +123,10 @@ func Reader(ws *websocket.Conn) {
 				OrderSender()
 			}
 		}
+
+		if msg.Event == "getMyOrders" {
+			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetUserOrders(usersMarketWs[ws].GetID())})
+		}
 	}
 }
 

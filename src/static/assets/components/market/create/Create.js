@@ -103,7 +103,7 @@ function ordersBlockUI(ordersBlock) {
     let myMarket = document.createElement("div");
     myMarket.innerHTML = "Мои запросы/предложения";
     myMarket.onclick = function(){
-      // todo функция переключения
+        MyOrdersTab(myMarket, allMarket)
     };
 
     menu.appendChild(allMarket);

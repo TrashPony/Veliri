@@ -19,6 +19,18 @@ func NewOrdersPool() *OrdersPool {
 	}
 }
 
+func (o *OrdersPool) GetUserOrders(userID int) map[int]*order.Order {
+	userOrders := make(map[int]*order.Order)
+
+	for _, poolOrder := range o.orders {
+		if poolOrder.IdUser == userID {
+			userOrders[poolOrder.Id] = poolOrder
+		}
+	}
+
+	return userOrders
+}
+
 func (o *OrdersPool) GetOrders() map[int]*order.Order {
 	o.mx.Lock()
 	defer o.mx.Unlock()
@@ -28,7 +40,7 @@ func (o *OrdersPool) GetOrders() map[int]*order.Order {
 func (o *OrdersPool) GetOrder(id int) (bool, *order.Order, *sync.Mutex) {
 	o.mx.Lock()
 	openOrder, find := o.orders[id]
-	// 3тий ретурн это мх, его надо вызрывать только после всех изменений с ордером
+	// 3тий ретурн это мх, его надо закрывать только после всех изменений с ордером
 	return find, openOrder, &o.mx
 }
 

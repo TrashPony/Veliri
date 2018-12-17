@@ -6,11 +6,16 @@ function InitMarketMenu() {
             if (typeof webSocketInit === 'undefined' || webSocketInit === null) {
                 includeJS("../assets/components/servicesWebSockets.js");
             }
+
+            includeJS("../assets/components/market/ToggleTab.js");
+
             includeJS("../assets/components/market/create/Create.js");
             includeJS("../assets/components/market/create/CreateTables.js");
+
             includeJS("../assets/components/market/Filling/Filling.js");
             includeJS("../assets/components/market/Filling/fillSellTable.js");
             includeJS("../assets/components/market/Filling/fillBuyTable.js");
+            includeJS("../assets/components/market/Filling/myOrders.js");
 
             includeJS("../assets/components/market/Assortment/Assortment.js");
             includeJS("../assets/components/market/Assortment/fillEquip.js");

@@ -43,7 +43,7 @@
     text-align: left;
 }
 
-#sellOrdersBlock, #BuyOrdersBlock {
+#sellOrdersBlock, #BuyOrdersBlock, #MyOrdersBlock {
     height: 212px;
     width: 770px;
     margin: 0 5px 5px 5px;
@@ -51,6 +51,11 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     overflow-y: scroll;
     border-radius: 5px;
+}
+
+#MyOrdersBlock {
+    margin-top: 50px;
+    height: 515px;
 }
 
 .ordersHead {
