@@ -101,6 +101,7 @@ func Reader(ws *websocket.Conn) {
 			} else {
 				storage.Updater(usersMarketWs[ws].GetID())
 				OrderSender()
+				ws.WriteJSON(Message{Event: "getMyOrders", Orders: market.Orders.GetUserOrders(usersMarketWs[ws].GetID())})
 			}
 		}
 

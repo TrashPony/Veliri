@@ -50,3 +50,12 @@
 #MyOrdersBlock td {
     width: 9%;
 }
+
+.button.cancel.order{
+    outline: none;
+    border: transparent;
+    border-radius: 0;
+    padding: 2px 10px 2px;
+    text-shadow: #28a5e4 0 0 4px;
+    z-index: 11;
+}

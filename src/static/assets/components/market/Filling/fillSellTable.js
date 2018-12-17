@@ -20,7 +20,7 @@ function fillSellTable(order) {
     tr.appendChild(td2);
 
     let td3 = document.createElement("td");
-    td3.innerHTML = order.Price;
+    td3.innerHTML = order.Price + " cr.";
     tr.appendChild(td3);
 
     let td4 = document.createElement("td");
