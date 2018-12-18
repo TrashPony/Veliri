@@ -72,4 +72,12 @@ function ReaderLobby(jsonMessage) {
     if (event === "GetSquad") {
         FillSquadBlock(jsonMessage)
     }
+
+    if (event === "OutBase") {
+        location.href = "http://" + window.location.host + "/global";
+    }
+
+    if (event === "Error") {
+        alert(JSON.parse(jsonMessage).error)
+    }
 }

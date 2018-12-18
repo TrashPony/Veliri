@@ -34,9 +34,30 @@ func User(id int, login string) *player.Player {
 		newUser.SetExperiencePoint(experiencePoint)
 
 		getUserSkills(&newUser)
+		getUserBase(&newUser)
 	}
 
 	return &newUser
+}
+
+func getUserBase(user *player.Player) {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT base_id "+
+		"FROM base_users "+
+		"WHERE user_id=$1", user.GetID())
+	if err != nil {
+		log.Fatal("get base user " + err.Error())
+	}
+	defer rows.Close()
+
+	id := 0
+
+	for rows.Next() {
+		err := rows.Scan(&id)
+		if err != nil {
+			println("get base user " + err.Error())
+		}
+		user.InBaseID = id
+	}
 }
 
 func getUserSkills(user *player.Player) {

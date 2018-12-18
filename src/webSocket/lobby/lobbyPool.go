@@ -1,7 +1,6 @@
 package lobby
 
 import (
-	"../../mechanics/db/base"
 	"../../mechanics/db/localGame"
 	"../../mechanics/factories/maps"
 	"../../mechanics/factories/players"
@@ -30,14 +29,16 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer = players.Users.Add(id, login)
 	}
 
+	if newPlayer.InBaseID == 0 { // если игрок находиться не на базе то говорим ему что он загружал глобальную игру
+		ws.WriteJSON(Response{Event: "OutBase"})
+		return
+	}
+
 	usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента
 
 	print("WS lobby Сессия: ") // просто смотрим новое подключение
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
-
-	base.UserIntoBase(id, 1) // пока есть только 1 база
-	newPlayer.InBaseID = 1
 
 	Reader(ws)
 }
@@ -128,6 +129,15 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "GetSquad" {
 			var resp = Response{Event: "GetSquad", Squad: usersLobbyWs[ws].GetSquad()}
 			ws.WriteJSON(resp)
+		}
+
+		if msg.Event == "OutBase" {
+			err := lobby.OutBase(usersLobbyWs[ws])
+			if err != nil {
+				ws.WriteJSON(Response{Event: "Error", Error: err.Error()})
+			} else {
+				ws.WriteJSON(Response{Event: msg.Event})
+			}
 		}
 	}
 }

@@ -1,9 +1,14 @@
 CREATE TABLE squads (
   id      SERIAL PRIMARY KEY,
   name    VARCHAR(64),
-  active  BOOLEAN, /* у игрока может быть в 1 момент времени только 1 отряд, это переменная говорит какой */
+  active  BOOLEAN,                   /* у игрока может быть в 1 момент времени только 1 отряд, это переменная говорит какой */
   id_user INT REFERENCES users (id), /* кому принадлежит */
-  in_game BOOLEAN                     /* отряд в бою */
+  in_game BOOLEAN,                   /* отряд в бою */
+
+  /* позиция отряда на глобальной карте */
+  q       int,
+  r       int,
+  id_map  INT REFERENCES maps (id)
 );
 
 CREATE TABLE squad_units (

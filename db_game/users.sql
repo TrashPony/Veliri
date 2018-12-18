@@ -4,5 +4,5 @@ CREATE TABLE users (
   password         VARCHAR(255),
   mail             VARCHAR(64),
   credits          INT, /* внутреигровая валюта  */
-  experience_point INT /* накопленые очки опыта */
+  experience_point INT  /* накопленые очки опыта */
 );

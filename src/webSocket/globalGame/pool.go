@@ -1,6 +1,9 @@
 package globalGame
 
 import (
+	"../../mechanics/gameObjects/map"
+	"../../mechanics/factories/maps"
+	"../../mechanics/gameObjects/squad"
 	"../../mechanics/factories/players"
 	"../../mechanics/player"
 	"../utils"
@@ -14,7 +17,11 @@ var mutex = &sync.Mutex{}
 var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 
 type Message struct {
-	Event string `json:"event"`
+	Event string         `json:"event"`
+	Map   *_map.Map      `json:"map"`
+	Error string         `json:"error"`
+	Squad *squad.Squad   `json:"squad"`
+	User  *player.Player `json:"user"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -65,7 +72,14 @@ func Reader(ws *websocket.Conn) {
 		*/
 
 		if msg.Event == "InitGame" {
-			// todo загрузка карты сектора, определение положения игрока
+			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
+			user := usersGlobalWs[ws]
+
+			if find && user != nil {
+				ws.WriteJSON(Message{Event: msg.Event, Map: mp, User: user, Squad: user.GetSquad()})
+			} else {
+				ws.WriteJSON(Message{Event: "Error", Error: "map not find"})
+			}
 		}
 
 		if msg.Event == "MoveTo" {

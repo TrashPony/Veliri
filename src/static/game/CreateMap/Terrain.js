@@ -23,7 +23,7 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
     coordinate.coordinateText = {};
 
-    if (game && game.typeService !== "battle") {
+    if (game && game.typeService !== "battle" && game.typeService !== "global") {
         let style = {font: "12px Arial", fill: "#606060", align: "center"};
         coordinate.coordinateText.qr = game.add.text(x - 10, y - 40, q + "," + r, style, game.redactorMetaText);
 

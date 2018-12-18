@@ -13,6 +13,9 @@ type Squad struct {
 	MatherShip *unit.Unit          `json:"mather_ship"`
 	Inventory  inventory.Inventory `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
 	InGame     bool                `json:"in_game"`
+	Q          int                 `json:"q"`
+	R          int                 `json:"r"`
+	MapID      int                 `json:"map_id"`
 }
 
 func (squad *Squad) GetUseAllInventorySize() float32 {

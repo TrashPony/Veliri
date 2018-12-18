@@ -15,7 +15,7 @@ import (
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game FROM squads WHERE id_user=$1", userID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, q, r, id_map FROM squads WHERE id_user=$1", userID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +26,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 	for rows.Next() {
 		var userSquad squad.Squad
 
-		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame)
+		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.Q, &userSquad.R, &userSquad.MapID)
 		if err != nil {
 			log.Fatal(err)
 		}
