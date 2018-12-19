@@ -8,7 +8,7 @@ CREATE TABLE squads (
   /* позиция отряда на глобальной карте */
   q       int,
   r       int,
-  id_map  INT REFERENCES maps (id)
+  id_map  INT REFERENCES maps (id),
 );
 
 CREATE TABLE squad_units (

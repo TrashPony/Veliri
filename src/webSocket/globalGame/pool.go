@@ -18,6 +18,11 @@ var mutex = &sync.Mutex{}
 
 var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 
+const HexagonHeight  = 111 // Константы описывающие свойства гексов на игровом поле
+const HexagonWidth  = 100
+const VerticalOffset = HexagonHeight * 3 / 4
+const HorizontalOffset = HexagonWidth
+
 type Message struct {
 	Event string             `json:"event"`
 	Map   *_map.Map          `json:"map"`
@@ -25,6 +30,8 @@ type Message struct {
 	Squad *squad.Squad       `json:"squad"`
 	User  *player.Player     `json:"user"`
 	Bases map[int]*base.Base `json:"bases"`
+	ToX   int                `json:"to_x"`
+	ToY   int                `json:"to_y"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -63,14 +70,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		/*
-				TODO Механика глоабльной карты не продуманая часть:
-
-					1) реал тайм рпг каждый клик игрока МГНОВЕННО просчитывается на бекенде (сложно, небезопасно)
-
-					2) псевдопошаговая рпг это когда за ход береться не готовность игроков, а время. Например 1 секунда
-					игрок тыкнул куда хочет идти, дожидается пока закончится текущий ход (меньше секунды), начинается новый ход
-					юнит проходит ровно столько пикселей за ход, сколько ему позволяет скорость, начинается новый ход юнит
-					продолжает движение. (безопасно, сложно сделать движения бесшовными)
+		TODO Механика глоабльной карты не продуманая часть:
+			реал тайм рпг каждый клик игрока мгновенно просчитывается на бекенде
 
 			Сервер знает что игрок находится в позиции (10, 10); клиент говорит: «Я хочу подвинуться на единицу вправо».
 			Сервер обновляет позицию игрока на (11, 10), производя все необходимые проверки, а затем отвечает игроку: «Вы на (11, 10)»:
@@ -80,8 +81,17 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "InitGame" {
 			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 			user := usersGlobalWs[ws]
-			// todo отдача других игроков
+
+			// определяем положение отряда на пиксельной сети, через глобальную гексову сеть
+			if user.GetSquad().R%2 != 0 {
+				user.GetSquad().GlobalX = HexagonWidth + (HorizontalOffset * user.GetSquad().Q)
+			} else {
+				user.GetSquad().GlobalX = HexagonWidth/2 + (HorizontalOffset * user.GetSquad().Q)
+			}
+			user.GetSquad().GlobalY = HexagonHeight/2 + (user.GetSquad().R * VerticalOffset)
+
 			if find && user != nil {
+				// todo отдача других игроков
 				ws.WriteJSON(Message{
 					Event: msg.Event,
 					Map:   mp, User: user,
@@ -94,7 +104,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MoveTo" {
-			// todo игрок двигает мс в точку
+			// todo игрок двигает мс в точку ToX ToY
 		}
 
 		if msg.Event == "IntoToBase" {

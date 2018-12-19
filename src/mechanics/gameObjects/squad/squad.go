@@ -15,6 +15,8 @@ type Squad struct {
 	InGame     bool                `json:"in_game"`
 	Q          int                 `json:"q"`
 	R          int                 `json:"r"`
+	GlobalX    int                 `json:"global_x"`  /* вычасляема координата на пиксельной сетке */
+	GlobalY    int                 `json:"global_y"`  /* вычасляема координата на пиксельной сетке */
 	MapID      int                 `json:"map_id"`
 }
 
