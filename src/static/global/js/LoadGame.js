@@ -6,7 +6,17 @@ function LoadGame(jsonData) {
 
     setTimeout(function () { // todo костыль связаной с прогрузкой карты )
         CreateSquad(jsonData.squad);
+        game.input.onDown.add(initMove, game);
+        console.log(game.squad)
     }, 1500);
+}
+
+function initMove(e) {
+    game.squad.toMove = {x: e.worldX, y: e.worldY};
+    if (game.squad.tweenTo) {
+        game.squad.tweenTo.stop();
+        game.squad.tweenTo = null;
+    }
 }
 
 function CreateSquad(squad) {
@@ -76,6 +86,7 @@ function CreateSquad(squad) {
         squad.sprite.weaponShadow = weaponShadow;
     }
 
+    game.squad = squad;
     //body.events.onInputDown.add(SelectUnit, unitStat);    // обрабатываем наведение мышки
     //body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
     //body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки

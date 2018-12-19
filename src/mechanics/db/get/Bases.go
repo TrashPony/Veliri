@@ -1,8 +1,8 @@
 package get
 
 import (
+	"../../../dbConnect"
 	"../../gameObjects/base"
-	"dbConnect"
 	"log"
 )
 

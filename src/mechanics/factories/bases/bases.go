@@ -1,9 +1,9 @@
 package bases
 
 import (
-	"sync"
-	"../../gameObjects/base"
 	"../../db/get"
+	"../../gameObjects/base"
+	"sync"
 )
 
 type Store struct {
@@ -24,4 +24,19 @@ func (b *Store) Get(id int) (*base.Base, bool) {
 	defer b.mx.Unlock()
 	val, ok := b.bases[id]
 	return val, ok
+}
+
+func (b *Store) GetBasesByMap(mapID int) map[int]*base.Base {
+	b.mx.Lock()
+	defer b.mx.Unlock()
+
+	bases := make(map[int]*base.Base)
+
+	for _, mapBase := range b.bases {
+		if mapBase.MapID == mapID {
+			bases[mapBase.ID] = mapBase
+		}
+	}
+
+	return bases
 }
