@@ -73,15 +73,6 @@ func Reader(ws *websocket.Conn) {
 			break
 		}
 
-		/*
-			TODO Механика глоабльной карты не продуманая часть:
-				реал тайм рпг каждый клик игрока мгновенно просчитывается на бекенде
-
-				Сервер знает что игрок находится в позиции (10, 10); клиент говорит: «Я хочу подвинуться на единицу вправо».
-				Сервер обновляет позицию игрока на (11, 10), производя все необходимые проверки, а затем отвечает игроку: «Вы на (11, 10)»:
-
-		*/
-
 		if msg.Event == "InitGame" {
 			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 			user := usersGlobalWs[ws]
@@ -122,17 +113,11 @@ func Reader(ws *websocket.Conn) {
 			dist := 900.0
 
 			for {
+				// находим длинную вектора до цели
 				dist = math.Sqrt(((forecastX - msg.ToX) * (forecastX - msg.ToX)) + ((forecastY - msg.ToY) * (forecastY - msg.ToY)))
 				if dist < 10 {
 					break
 				}
-
-				radRotate := float64(rotate) * math.Pi / 180
-				stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
-				stopY := float64(speed) * math.Sin(radRotate)
-
-				forecastX = forecastX + stopX // находим новое положение корпуса на глобальной карте
-				forecastY = forecastY + stopY
 
 				for i := 0; i < speed; i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 					needRad := math.Atan2(msg.ToY-forecastY, msg.ToX-forecastX)
@@ -153,7 +138,23 @@ func Reader(ws *websocket.Conn) {
 					}
 				}
 
-				ws.WriteJSON(Message{Event: msg.Event, Path: globalGame.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100}})
+				minDist := float64(speed) / ((2 * math.Pi) / float64(360 / speed)) // TODO не правильно
+
+				if  diffRotate < 2 || dist > minDist {
+					radRotate := float64(rotate) * math.Pi / 180
+					stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
+					stopY := float64(speed) * math.Sin(radRotate)
+
+					forecastX = forecastX + stopX // находим новое положение корпуса на глобальной карте
+					forecastY = forecastY + stopY
+				}
+
+				println(int(minDist))
+
+				err := ws.WriteJSON(Message{Event: msg.Event, Path: globalGame.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100}})
+				if err != nil {
+					break
+				}
 
 				user.GetSquad().MatherShip.Rotate = rotate
 				user.GetSquad().GlobalX = int(forecastX)
