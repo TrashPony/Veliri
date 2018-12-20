@@ -11,31 +11,25 @@ import (
 	"../../mechanics/player"
 	"../utils"
 	"github.com/gorilla/websocket"
-	"math"
 	"strconv"
 	"sync"
-	"time"
 )
 
 var mutex = &sync.Mutex{}
 
 var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 
-const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
-const HexagonWidth = 100
-const VerticalOffset = HexagonHeight * 3 / 4
-const HorizontalOffset = HexagonWidth
-
 type Message struct {
-	Event string              `json:"event"`
-	Map   *_map.Map           `json:"map"`
-	Error string              `json:"error"`
-	Squad *squad.Squad        `json:"squad"`
-	User  *player.Player      `json:"user"`
-	Bases map[int]*base.Base  `json:"bases"`
-	ToX   float64             `json:"to_x"`
-	ToY   float64             `json:"to_y"`
-	Path  globalGame.PathUnit `json:"path"`
+	Event    string                `json:"event"`
+	Map      *_map.Map             `json:"map"`
+	Error    string                `json:"error"`
+	Squad    *squad.Squad          `json:"squad"`
+	User     *player.Player        `json:"user"`
+	Bases    map[int]*base.Base    `json:"bases"`
+	ToX      float64               `json:"to_x"`
+	ToY      float64               `json:"to_y"`
+	PathUnit globalGame.PathUnit   `json:"path_unit"`
+	Path     []globalGame.PathUnit `json:"path"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -64,6 +58,10 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 func Reader(ws *websocket.Conn) {
+
+	stopMove := make(chan bool)
+	move := false
+
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
@@ -77,13 +75,11 @@ func Reader(ws *websocket.Conn) {
 			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 			user := usersGlobalWs[ws]
 
-			// определяем положение отряда на пиксельной сети, через глобальную гексову сеть
-			if user.GetSquad().R%2 != 0 {
-				user.GetSquad().GlobalX = HexagonWidth + (HorizontalOffset * user.GetSquad().Q)
-			} else {
-				user.GetSquad().GlobalX = HexagonWidth/2 + (HorizontalOffset * user.GetSquad().Q)
+			if user.GetSquad().GlobalX == 0 && user.GetSquad().GlobalY == 0 {
+				x, y := globalGame.GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
+				user.GetSquad().GlobalX = x
+				user.GetSquad().GlobalY = y
 			}
-			user.GetSquad().GlobalY = HexagonHeight/2 + (user.GetSquad().R * VerticalOffset)
 
 			if find && user != nil {
 				// todo отдача других игроков
@@ -99,70 +95,29 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MoveTo" {
+			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
+			if find {
 
-			user := usersGlobalWs[ws]
+				if move {
 
-			//path := make([]globalGame.PathUnit, 0)
+					// TODO иногда случает деадлок
+					// канал не буфиризирован, и там осталась переменная
+					// но нет горутин которые могут ее считать, получаем деадлок
 
-			forecastX := float64(user.GetSquad().GlobalX)
-			forecastY := float64(user.GetSquad().GlobalY)
-			speed := user.GetSquad().MatherShip.Speed * 3
-			rotate := user.GetSquad().MatherShip.Rotate
-
-			diffRotate := 0 // разница между углом цели и носа корпуса
-			dist := 900.0
-
-			for {
-				// находим длинную вектора до цели
-				dist = math.Sqrt(((forecastX - msg.ToX) * (forecastX - msg.ToX)) + ((forecastY - msg.ToY) * (forecastY - msg.ToY)))
-				if dist < 10 {
-					break
+					stopMove <- true // останавливаем прошлое движение
 				}
 
-				for i := 0; i < speed; i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
-					needRad := math.Atan2(msg.ToY-forecastY, msg.ToX-forecastX)
-					needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу
+				user := usersGlobalWs[ws]
+				path := globalGame.MoveTo(user, msg.ToX, msg.ToY, mp)
 
-					newRotate := globalGame.RotateUnit(&rotate, &needRotate)
-
-					if rotate >= needRotate {
-						diffRotate = rotate - needRotate
-					} else {
-						diffRotate = needRotate - rotate
-					}
-
-					if diffRotate != 0 { // если разница есть то поворачиваем корпус
-						rotate += newRotate
-					} else {
-						break
-					}
-				}
-
-				minDist := float64(speed) / ((2 * math.Pi) / float64(360 / speed)) // TODO не правильно
-
-				if  diffRotate < 2 || dist > minDist {
-					radRotate := float64(rotate) * math.Pi / 180
-					stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
-					stopY := float64(speed) * math.Sin(radRotate)
-
-					forecastX = forecastX + stopX // находим новое положение корпуса на глобальной карте
-					forecastY = forecastY + stopY
-				}
-
-				println(int(minDist))
-
-				err := ws.WriteJSON(Message{Event: msg.Event, Path: globalGame.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100}})
+				err := ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
 				if err != nil {
-					break
+					println(err.Error())
 				}
 
-				user.GetSquad().MatherShip.Rotate = rotate
-				user.GetSquad().GlobalX = int(forecastX)
-				user.GetSquad().GlobalY = int(forecastY)
-
-				time.Sleep(100 * time.Millisecond)
+				go MoveUserMS(ws, msg, user, path, stopMove, &move)
+				move = true
 			}
-
 		}
 
 		if msg.Event == "IntoToBase" {
