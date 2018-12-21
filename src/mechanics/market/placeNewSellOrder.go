@@ -3,6 +3,7 @@ package market
 import (
 	"../db/market"
 	"../db/squad/update"
+	"../factories/bases"
 	"../factories/storages"
 	"../gameObjects/order"
 	"../player"
@@ -11,7 +12,7 @@ import (
 )
 
 func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, expires int, user *player.Player) error {
-	// todo имя базы захарджкожено
+
 	// todo если expires 0 то ставим 14 дней
 	// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
@@ -24,7 +25,9 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 			return errors.New("no find slot")
 		}
 
-		if slot.MaxHP == slot.HP && quantity <= slot.Quantity {
+		base, findBase := bases.Bases.Get(user.InBaseID)
+
+		if slot.MaxHP == slot.HP && quantity <= slot.Quantity && findBase {
 
 			if minBuyOut == 0 {
 				minBuyOut = 1
@@ -32,7 +35,8 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 			// смотрит есть ли на рынке итемы которые уже подходят под условия цены, и если есть покупаем
 			for _, marketOrder := range o.orders {
-				if marketOrder.IdItem == slot.ItemID && marketOrder.TypeItem == slot.Type && marketOrder.Price >= price {
+				if marketOrder.IdItem == slot.ItemID && marketOrder.TypeItem == slot.Type &&
+					marketOrder.Price >= price && base.ID == marketOrder.PlaceID {
 					if marketOrder.Count > quantity {
 						err := o.Sell(marketOrder.Id, quantity, user)
 						if err == nil {
@@ -50,7 +54,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 			newOrder := order.Order{IdUser: user.GetID(), Price: price, Count: quantity, Type: "sell",
 				MinBuyOut: minBuyOut, TypeItem: slot.Type, IdItem: slot.ItemID, Expires: time.Now(),
-				PlaceName: "База 1", PlaceID: user.InBaseID, Item: slot.Item}
+				PlaceName: base.Name, PlaceID: base.ID, Item: slot.Item}
 
 			// добавляем их в магазин
 			id := market.PlaceNewOrder(&newOrder)
@@ -75,6 +79,10 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 			if quantity > slot.Quantity {
 				return errors.New("low amount")
+			}
+
+			if !findBase {
+				return errors.New("wrong base")
 			}
 		}
 

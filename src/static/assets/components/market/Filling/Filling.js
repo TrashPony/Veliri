@@ -6,6 +6,7 @@ function Filling(data) {
 
     deleteOldRows();
 
+    document.getElementById("BaseName").innerHTML = "Рынок: " + data.base_name;
     document.getElementById("balance").innerHTML = "Мой баланс: <span>" + data.credits + "</span> cr.";
 
     for (let i in data.orders) {
@@ -13,9 +14,9 @@ function Filling(data) {
             let order = data.orders[i];
 
             if (order.Type === "sell") {
-                fillSellTable(order);
+                fillSellTable(order, data.base_name);
             } else {
-                fillBuyTable(order);
+                fillBuyTable(order, data.base_name);
             }
         }
     }

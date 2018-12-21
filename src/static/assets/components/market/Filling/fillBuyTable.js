@@ -1,5 +1,5 @@
 
-function fillBuyTable(order) {
+function fillBuyTable(order, baseName) {
     let table = document.getElementById("marketBuyTable");
     let tr = document.createElement("tr");
     tr.className = "marketRow";
@@ -12,7 +12,7 @@ function fillBuyTable(order) {
     }
 
     let td1 = document.createElement("td");
-    td1.innerHTML = "База"; // todo захардкожаная база
+    td1.innerHTML = "0"; // todo захардкожаное растояние
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");

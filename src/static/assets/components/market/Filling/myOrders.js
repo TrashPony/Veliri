@@ -1,4 +1,4 @@
-function FillMyOrders(orders) {
+function FillMyOrders(orders, baseName) {
 
     let table = document.getElementById("marketMyTable");
     let ordersBlock = document.getElementById("MyOrdersBlock");
@@ -13,12 +13,12 @@ function FillMyOrders(orders) {
 
     for (let i in orders) {
         if (orders.hasOwnProperty(i)) {
-            addMyOrder(orders[i])
+            addMyOrder(orders[i], baseName)
         }
     }
 }
 
-function addMyOrder(order) {
+function addMyOrder(order, baseName) {
     let table = document.getElementById("marketMyTable");
 
     let tr = document.createElement("tr");
@@ -26,7 +26,7 @@ function addMyOrder(order) {
     tr.order = order;
 
     let td1 = document.createElement("td");
-    td1.innerHTML = "База"; // todo захардкожаная база
+    td1.innerHTML = "0"; // todo захардкожаное растояние
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");

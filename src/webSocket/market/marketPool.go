@@ -1,6 +1,7 @@
 package market
 
 import (
+	"../../mechanics/factories/bases"
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/order"
 	"../../mechanics/market"
@@ -31,6 +32,7 @@ type Message struct {
 	Credits     int                  `json:"credits"`
 	ItemID      int                  `json:"item_id"`
 	ItemType    string               `json:"item_type"`
+	BaseName    string               `json:"base_name"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -70,8 +72,15 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openMarket" {
+			base, find := bases.Bases.Get(usersMarketWs[ws].InBaseID)
+
+			if !find {
+				return
+			}
+
 			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetOrders(),
-				Credits: usersMarketWs[ws].GetCredits(), Assortment: market.GetAssortment()})
+				Credits: usersMarketWs[ws].GetCredits(), Assortment: market.GetAssortment(),
+				BaseName: base.Name})
 		}
 
 		if msg.Event == "placeNewBuyOrder" {

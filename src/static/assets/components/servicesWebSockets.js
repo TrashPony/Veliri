@@ -68,7 +68,7 @@ function ConnectMarket() {
             alert(JSON.parse(msg.data).error);
         } else if (document.getElementById("marketBox")) {
             if (JSON.parse(msg.data).event === "getMyOrders") {
-                FillMyOrders(JSON.parse(msg.data).orders)
+                FillMyOrders(JSON.parse(msg.data).orders, JSON.parse(msg.data).base_name)
             } else {
                 Filling(JSON.parse(msg.data));
             }

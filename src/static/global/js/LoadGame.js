@@ -22,11 +22,13 @@ function CreateBase(bases) {
                 coordinate.objectSprite.input.pixelPerfectClick = true;
 
                 coordinate.objectSprite.events.onInputDown.add(function () {
-                    game.squad.toBase = {
-                        baseID: bases[i].id,
-                        into: true,
-                        x: coordinate.sprite.world.x,
-                        y: coordinate.sprite.world.y
+                    if (game.input.activePointer.leftButton.isDown) {
+                        game.squad.toBase = {
+                            baseID: bases[i].id,
+                            into: true,
+                            x: coordinate.sprite.world.x,
+                            y: coordinate.sprite.world.y
+                        }
                     }
                 });
             }

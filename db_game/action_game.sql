@@ -42,5 +42,3 @@ CREATE TABLE user_memory_unit (
   id_unit INT REFERENCES squad_units(id),
   unit    JSON                                 /* хранит текущие состояние юнита в виде строки json */
 )
-
-/* todo добавить таблицу для мемори юнитов*/

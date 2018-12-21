@@ -44,8 +44,9 @@ function CreateMarketMenu() {
 
 function headUI(headMarket) {
     let headMarketHeading = document.createElement("div");
-    headMarketHeading.innerHTML = "Рынок Базы 1";
+    headMarketHeading.innerHTML = "Рынок: ";
     headMarketHeading.className = "headMarketHeading";
+    headMarketHeading.id = "BaseName";
     headMarket.appendChild(headMarketHeading);
 
     let balance = document.createElement("div");

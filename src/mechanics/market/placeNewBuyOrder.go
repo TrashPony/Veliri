@@ -3,6 +3,7 @@ package market
 import (
 	"../db/market"
 	dbPlayer "../db/player"
+	"../factories/bases"
 	"../factories/gameTypes"
 	"../gameObjects/order"
 	"../player"
@@ -12,11 +13,12 @@ import (
 
 func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expires int, itemType string, user *player.Player) error {
 
-	// todo имя базы захарджкожено
 	// todo если expires 0 то ставим 14 дней
 	// todo expires в днях, надо брать текущее время  + expires и это значение класть в бд
 
-	if user.GetCredits() >= price*quantity && (minBuyOut == 0 || quantity%minBuyOut == 0) {
+	base, findBase := bases.Bases.Get(user.InBaseID)
+
+	if user.GetCredits() >= price*quantity && (minBuyOut == 0 || quantity%minBuyOut == 0) && findBase {
 
 		var item interface{}
 		var ok bool
@@ -45,7 +47,8 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 
 			// смотрит есть ли на рынке итемы которые уже подходят под условия цены, и если есть покупаем
 			for _, marketOrder := range o.orders {
-				if marketOrder.IdItem == itemId && marketOrder.TypeItem == itemType && marketOrder.Price <= price {
+				if marketOrder.IdItem == itemId && marketOrder.TypeItem == itemType &&
+					marketOrder.Price <= price && base.ID == marketOrder.PlaceID {
 					if marketOrder.Count > quantity {
 						err := o.Buy(marketOrder.Id, quantity, user)
 						if err == nil {
@@ -71,7 +74,7 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 
 			newOrder := order.Order{IdUser: user.GetID(), Price: price, Count: quantity, Type: "buy",
 				MinBuyOut: minBuyOut, TypeItem: itemType, IdItem: itemId, Expires: time.Now(),
-				PlaceName: "База 1", PlaceID: user.InBaseID, Item: item}
+				PlaceName: base.Name, PlaceID: base.ID, Item: item}
 
 			// добавляем ордер в магазин
 			id := market.PlaceNewOrder(&newOrder)
@@ -94,6 +97,9 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 		}
 		if minBuyOut != 0 && quantity%minBuyOut != 0 {
 			return errors.New("wrong count")
+		}
+		if !findBase {
+			return errors.New("wrong base")
 		}
 	}
 
