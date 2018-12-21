@@ -2,7 +2,12 @@
 function dynamicMap(group, points) {
     points.forEach(function (point) {
 
-        let distCam = 1050 / game.camera.scale.x;
+        let distCam;
+        if (game.camera.view.width > game.camera.view.height) {
+            distCam = game.camera.view.width / 2 + 300;
+        } else {
+            distCam = game.camera.view.height / 2 + 300;
+        }
 
         let camX = (game.camera.view.width / 2 + game.camera.view.x) / game.camera.scale.x;
         let camY = (game.camera.view.height / 2 + game.camera.view.y) / game.camera.scale.y;

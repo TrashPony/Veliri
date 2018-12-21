@@ -2,6 +2,7 @@ package market
 
 import (
 	"../db/market"
+	"../factories/bases"
 	"../factories/players"
 	"../factories/storages"
 	"../player"
@@ -13,8 +14,10 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 	find, sellOrder, mx := o.GetOrder(orderID)
 	defer mx.Unlock()
 
-	if find && sellOrder.Type == "buy" {
-		if sellOrder.Count >= count && count%sellOrder.MinBuyOut == 0 {
+	base, findBase := bases.Bases.Get(user.InBaseID)
+
+	if find && sellOrder.Type == "buy" && findBase {
+		if sellOrder.Count >= count && count%sellOrder.MinBuyOut == 0 && base.ID == sellOrder.PlaceID {
 
 			// пытаемся удалить итемы у продовца
 			sellUserBaseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
@@ -38,7 +41,12 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 			storages.Storages.AddItem(sellOrder.IdUser, sellOrder.PlaceID, sellOrder.Item, sellOrder.TypeItem,
 				sellOrder.IdItem, count, sellOrder.ItemHP, sellOrder.ItemSize*float32(count), sellOrder.ItemHP)
 		} else {
-			return errors.New("wrong count")
+			if sellOrder.Count < count || count%sellOrder.MinBuyOut != 0 {
+				return errors.New("wrong count")
+			}
+			if base.ID != sellOrder.PlaceID {
+				return errors.New("wrong base")
+			}
 		}
 	} else {
 		if !find {
