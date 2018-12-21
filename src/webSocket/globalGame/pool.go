@@ -1,8 +1,6 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/bases"
-	"../../mechanics/factories/maps"
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/map"
@@ -20,17 +18,50 @@ var mutex = &sync.Mutex{}
 var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 
 type Message struct {
-	Event    string                `json:"event"`
-	Map      *_map.Map             `json:"map"`
-	Error    string                `json:"error"`
-	Squad    *squad.Squad          `json:"squad"`
-	User     *player.Player        `json:"user"`
-	Bases    map[int]*base.Base    `json:"bases"`
-	ToX      float64               `json:"to_x"`
-	ToY      float64               `json:"to_y"`
-	PathUnit globalGame.PathUnit   `json:"path_unit"`
-	Path     []globalGame.PathUnit `json:"path"`
-	BaseID   int                   `json:"base_id"`
+	Event      string                `json:"event"`
+	Map        *_map.Map             `json:"map"`
+	Error      string                `json:"error"`
+	Squad      *squad.Squad          `json:"squad"`
+	User       *player.Player        `json:"user"`
+	Bases      map[int]*base.Base    `json:"bases"`
+	ToX        float64               `json:"to_x"`
+	ToY        float64               `json:"to_y"`
+	PathUnit   globalGame.PathUnit   `json:"path_unit"`
+	Path       []globalGame.PathUnit `json:"path"`
+	BaseID     int                   `json:"base_id"`
+	OtherUser  *hostileMS            `json:"other_user"`
+	OtherUsers []*hostileMS          `json:"other_users"`
+}
+
+type hostileMS struct {
+	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
+	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
+	UserName   string `json:"user_name"`
+	X          int    `json:"x"`
+	Y          int    `json:"y"`
+	Q          int    `json:"q"`
+	R          int    `json:"r"`
+	BodyName   string `json:"body_name"`
+	WeaponName string `json:"weapon_name"`
+	Rotate     int    `json:"rotate"`
+}
+
+func GetShortUserInfo(user *player.Player) *hostileMS {
+	var hostile hostileMS
+
+	hostile.UserName = user.GetLogin()
+	hostile.X = user.GetSquad().GlobalX
+	hostile.Y = user.GetSquad().GlobalY
+	hostile.Q = user.GetSquad().Q
+	hostile.R = user.GetSquad().R
+	hostile.Rotate = user.GetSquad().MatherShip.Rotate
+	hostile.BodyName = user.GetSquad().MatherShip.Body.Name
+
+	if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
+		hostile.WeaponName = user.GetSquad().MatherShip.GetWeaponSlot().Weapon.Name
+	}
+
+	return &hostile
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -61,85 +92,28 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 func Reader(ws *websocket.Conn) {
 
 	stopMove := make(chan bool)
-	move := false
+	moveChecker := false
 
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
+			DisconnectUser(usersGlobalWs[ws])
 			utils.DelConn(ws, &usersGlobalWs, err)
 			break
 		}
 
 		if msg.Event == "InitGame" {
-			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
-			user := usersGlobalWs[ws]
-
-			if user.GetSquad().GlobalX == 0 && user.GetSquad().GlobalY == 0 {
-				x, y := globalGame.GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
-				user.GetSquad().GlobalX = x
-				user.GetSquad().GlobalY = y
-			}
-
-			if find && user != nil && user.InBaseID == 0 {
-				ws.WriteJSON(Message{
-					Event: msg.Event,
-					Map:   mp, User: user,
-					Squad: user.GetSquad(),
-					Bases: bases.Bases.GetBasesByMap(usersGlobalWs[ws].GetSquad().MapID),
-					// todo отдача других игроков
-				})
-			} else {
-				ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
-			}
+			loadGame(ws, msg)
 		}
 
 		if msg.Event == "MoveTo" {
-			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
-			user := usersGlobalWs[ws]
-
-			if find && user.InBaseID == 0 {
-				if move {
-					stopMove <- true // останавливаем прошлое движение
-				}
-
-				path := globalGame.MoveTo(user, msg.ToX, msg.ToY, mp)
-
-				err := ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
-				if err != nil {
-					println(err.Error())
-				}
-
-				go MoveUserMS(ws, msg, user, path, stopMove, &move)
-				move = true
-			}
+			move(ws, msg, stopMove, &moveChecker)
 		}
 
 		if msg.Event == "IntoToBase" {
-
-			user := usersGlobalWs[ws]
-
-			if move {
-				stopMove <- true // останавливаем прошлое движение
-			}
-
-			intoBase, _ := bases.Bases.Get(msg.BaseID)
-			x, y := globalGame.GetXYCenterHex(intoBase.Q, intoBase.R)
-
-			dist := ((user.GetSquad().GlobalX - x) * (user.GetSquad().GlobalX - x)) +
-				((user.GetSquad().GlobalY - y) * (user.GetSquad().GlobalX - y))
-
-			if dist < 400*400 { // 400*400 это 400 пикселей, выбрано рандомно
-				user.InBaseID = intoBase.ID
-				bases.UserIntoBase(user.GetID(), intoBase.ID)
-				user.GetSquad().GlobalX = 0
-				user.GetSquad().GlobalY = 0
-
-				ws.WriteJSON(Message{Event: "IntoToBase"})
-			} else {
-				ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
-			}
+			intoToBase(ws, msg, stopMove, &moveChecker)
 		}
 	}
 }

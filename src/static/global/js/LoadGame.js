@@ -5,10 +5,40 @@ function LoadGame(jsonData) {
     game.typeService = "global";
 
     setTimeout(function () { // todo костыль связаной с прогрузкой карты )
-        CreateSquad(jsonData.squad);
+        CreateUser(jsonData.squad);
         game.input.onDown.add(initMove, game);
-        CreateBase(jsonData.bases)
+        CreateBase(jsonData.bases);
+        CreateOtherUsers(jsonData.other_users);
     }, 1500);
+}
+
+function CreateUser(squad) {
+    let x = squad.global_x;
+    let y = squad.global_y;
+    let weaponName;
+
+    for (let i in squad.mather_ship.body.weapons) {
+        if (squad.mather_ship.body.weapons.hasOwnProperty(i) && squad.mather_ship.body.weapons[i].weapon) {
+            weaponName = squad.mather_ship.body.weapons[i].weapon.name
+        }
+    }
+
+    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate + 90, true);
+    game.squad = squad;
+}
+
+function CreateOtherUsers(otherUsers) {
+    game.otherUsers = [];
+    for (let i = 0; i < otherUsers.length; i++){
+        CreateOtherUser(otherUsers[i])
+    }
+}
+
+function CreateOtherUser(otherUser) {
+    let x = otherUser.x;
+    let y = otherUser.y;
+    CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name,otherUser.rotate + 90);
+    game.otherUsers.push(otherUser)
 }
 
 function CreateBase(bases) {
@@ -26,8 +56,8 @@ function CreateBase(bases) {
                         game.squad.toBase = {
                             baseID: bases[i].id,
                             into: true,
-                            x: coordinate.sprite.world.x,
-                            y: coordinate.sprite.world.y
+                            x: coordinate.sprite.x,
+                            y: coordinate.sprite.y
                         }
                     }
                 });

@@ -16,7 +16,6 @@ function update() {
                     event: "IntoToBase",
                     base_id: game.squad.toBase.baseID
                 }));
-                game.squad.toBase.into = false
             }
         }
     }

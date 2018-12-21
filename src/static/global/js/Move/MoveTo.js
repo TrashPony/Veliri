@@ -7,6 +7,19 @@ function MoveTo(jsonData) {
     SetMSAngle(game.squad, jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
 }
 
+function MoveOther(jsonData) {
+    for (let i = 0; i < game.otherUsers.length; i++) {
+        if (game.otherUsers[i].user_name === jsonData.other_user.user_name) {
+            game.add.tween(game.otherUsers[i].sprite).to({
+                    x: jsonData.path_unit.x,
+                    y: jsonData.path_unit.y
+                }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
+            );
+            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
+        }
+    }
+}
+
 function SetMSAngle(unit, angle, time) {
     if (angle > 180) {
         angle -= 360
