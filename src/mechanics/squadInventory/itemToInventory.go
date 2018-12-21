@@ -24,7 +24,7 @@ func ItemToInventory(user *player.Player, storageSlot int) error {
 			storages.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, slot.Quantity)
 		}
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		return errors.New("user not in base")

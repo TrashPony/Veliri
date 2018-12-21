@@ -67,7 +67,7 @@ func StartNewGame(game *lobby.Game) (int, bool) {
 		user.GetSquad().MatherShip.CalculateParams()
 		user.GetSquad().MatherShip.ActionPoints = user.GetSquad().MatherShip.Speed
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 	}
 
 	err = AddCoordinateEffects(tx, game.Map.Id, id)

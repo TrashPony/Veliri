@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func Squad(squad *squad.Squad) {
+func Squad(squad *squad.Squad, full bool) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
@@ -21,10 +21,11 @@ func Squad(squad *squad.Squad) {
 		log.Fatal("update squad" + err.Error())
 	}
 
-	// todo if full, параметр который говорит обновить весь отряд или только мета данные
-	InventorySquad(squad, tx)
+	if full {
+		InventorySquad(squad, tx)
+		Units(squad, tx)
+	}
 	MotherShip(squad, tx)
-	Units(squad, tx)
 
 	tx.Commit()
 }

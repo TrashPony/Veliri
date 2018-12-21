@@ -24,7 +24,7 @@ func OutBase(user *player.Player) error {
 		base.UserOutBase(user.GetID())
 		user.InBaseID = 0
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		if user.GetSquad().MatherShip.Body == nil {

@@ -15,7 +15,7 @@ func SetTarget(gameUnit *unit.Unit, game *localGame.Game, targetQ, targetR int, 
 	target, _ := game.Map.GetCoordinate(targetQ, targetR)
 	gameUnit.Target = target
 
-	update.Squad(client.GetSquad())
+	update.Squad(client.GetSquad(), true)
 }
 
 func SetEquipTarget(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, useEquipSlot *detail.BodyEquipSlot, client *player.Player) error {
@@ -23,7 +23,7 @@ func SetEquipTarget(useUnit *unit.Unit, useCoordinate *coordinate.Coordinate, us
 		// TODO проверка по энергии и отнимание энергии должна быть в фазе прицеливания, что бы сразу было понятно сколькко энергии еще осталось
 		// TODO а при снимание цели возвращать энергию в тело
 		useEquipSlot.Target = useCoordinate
-		update.Squad(client.GetSquad())
+		update.Squad(client.GetSquad(), true)
 
 		return nil
 	} else {

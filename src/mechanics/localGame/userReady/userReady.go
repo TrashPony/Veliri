@@ -11,7 +11,7 @@ import (
 func UserReady(client *player.Player) {
 	client.SetReady(true)
 	update.Player(client)
-	squadUpdate.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad(), true)
 }
 
 func AllReady(actionGame *localGame.Game) bool {

@@ -17,6 +17,6 @@ func DefendTarget(gameUnit *unit.Unit, client *player.Player) {
 	useEquip.AddNewUnitEffect(gameUnit, &defendEffect, 1)
 
 	gameUnit.CalculateParams()
-	squadUpdate.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad(), true)
 	update.UnitEffects(gameUnit)
 }

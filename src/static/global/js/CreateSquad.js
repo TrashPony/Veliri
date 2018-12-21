@@ -59,8 +59,4 @@ function CreateSquad(squad) {
     SetAngle(squad, squad.mather_ship.rotate + 90);
 
     game.squad = squad;
-
-    //body.events.onInputDown.add(SelectUnit, unitStat);    // обрабатываем наведение мышки
-    //body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
-    //body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки
 }

@@ -5,15 +5,17 @@ import (
 	"../../mechanics/player"
 	"github.com/gorilla/websocket"
 	"time"
+	"../../mechanics/db/squad/update"
 )
 
 func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, move *bool) {
+	oldQ := 0
+	oldR := 0
 
 	for _, pathUnit := range path {
-
 		select {
-		case exit := <-exit:
-			if exit {
+		case exitNow := <-exit:
+			if exitNow {
 				*move = false
 				return
 			}
@@ -28,6 +30,16 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)
 			user.GetSquad().GlobalY = int(pathUnit.Y)
+
+			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != oldQ && pathUnit.R != oldR) {
+				user.GetSquad().Q = pathUnit.Q
+				user.GetSquad().R = pathUnit.R
+
+				oldQ = pathUnit.Q
+				oldR = pathUnit.R
+
+				go update.Squad(user.GetSquad(), false)
+			}
 		}
 	}
 	*move = false

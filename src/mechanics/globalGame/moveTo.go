@@ -14,6 +14,8 @@ const HorizontalOffset = HexagonWidth
 type PathUnit struct {
 	X           int `json:"x"`
 	Y           int `json:"y"`
+	Q           int `json:"q"`
+	R           int `json:"r"`
 	Rotate      int `json:"rotate"`
 	Millisecond int `json:"millisecond"`
 }
@@ -31,6 +33,8 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 	dist := 900.0
 
 	for {
+		forecastQ := 0
+		forecastR := 0
 		// находим длинную вектора до цели
 		dist = math.Sqrt(((forecastX - ToX) * (forecastX - ToX)) + ((forecastY - ToY) * (forecastY - ToY)))
 		if dist < 10 {
@@ -58,54 +62,69 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
-		if diffRotate == 0 || dist > minDist {
-			radRotate := float64(rotate) * math.Pi / 180
-			stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
-			stopY := float64(speed) * math.Sin(radRotate)
+		radRotate := float64(rotate) * math.Pi / 180
+		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(speed) * math.Sin(radRotate)
 
-			forecastX = forecastX + stopX // находим новое положение корпуса на глобальной карте
+		possibleMove, q, r := CheckXYinMove(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
+
+		if (diffRotate == 0 || dist > minDist) && possibleMove {
+			forecastX = forecastX + stopX
 			forecastY = forecastY + stopY
+
+			forecastQ = q
+			forecastR = r
+		} else {
+			if diffRotate == 0 {
+				break
+			}
 		}
 
-		if !CheckXYinMove(int(forecastX), int(forecastY), mp) {
-			break
-		}
-
-		path = append(path, PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100})
+		path = append(path, PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100, Q: forecastQ, R: forecastR})
 	}
 
 	return path
 }
 
-func CheckXYinMove(x, y int, mp *_map.Map) bool {
-	bodyRadius := 45 // размеры подобраны методом тыка)
-	coordinateRadius := 120
+func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
+	bodyRadius := 55 // размеры подобраны методом тыка)
+	coordinateRadius := HexagonHeight/2
 
-	for _, q := range mp.OneLayerMap {
-		for _, mapCoordinate := range q {
+	minDist := 999
+
+	var q, r int
+
+	for _, qLine := range mp.OneLayerMap {
+		for _, mapCoordinate := range qLine {
 			xc, yc := GetXYCenterHex(mapCoordinate.Q, mapCoordinate.R)
 
 			//находим растояние координаты от места остановки
 			dist := (x-xc)*(x-xc) + (y-yc)*(y-yc)
 
 			// если координата находиться в теоритическом радиусе радиусе то проверяем на колизии
-			if dist < coordinateRadius*coordinateRadius {
-				for i := 0; i < 360; i++ {
+			if dist <= HexagonHeight*HexagonHeight {
 
+				if minDist > dist {
+					minDist = dist
+					q = mapCoordinate.Q
+					r = mapCoordinate.R
+				}
+
+				for i := rotate - 35; i < rotate + 35; i++ { // смотрим только предметы по курсу )
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
 					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
 
-					if ((bX-xc)*(bX-xc) + (bY-yc)*(bY-yc)) < coordinateRadius*coordinateRadius {
+					if ((bX-xc)*(bX-xc) + (bY-yc)*(bY-yc)) <= coordinateRadius*coordinateRadius {
 						if !mapCoordinate.Move {
-							return false
+							return false, q, r
 						}
 					}
 				}
 			}
 		}
 	}
-	return true
+	return true, q, r
 }
 
 func GetXYCenterHex(q, r int) (int, int) {

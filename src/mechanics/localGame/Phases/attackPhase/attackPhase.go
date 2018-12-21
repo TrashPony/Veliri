@@ -26,7 +26,7 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 	movePhase.QueueMove(game)
 
 	for _, player := range game.GetPlayers() {
-		update.Squad(player.GetSquad()) // вносим все изменениея в базу данных
+		update.Squad(player.GetSquad(), true) // вносим все изменениея в базу данных
 	}
 
 	return

@@ -80,7 +80,7 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	gameUnit.FindHostile = false
 	gameUnit.OnMap = true
 
-	squadUpdate.Squad(client.GetSquad())
+	squadUpdate.Squad(client.GetSquad(), true)
 	update.Player(client)
 
 	return

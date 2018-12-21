@@ -30,6 +30,7 @@ type Message struct {
 	ToY      float64               `json:"to_y"`
 	PathUnit globalGame.PathUnit   `json:"path_unit"`
 	Path     []globalGame.PathUnit `json:"path"`
+	BaseID   int                   `json:"base_id"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -81,23 +82,24 @@ func Reader(ws *websocket.Conn) {
 				user.GetSquad().GlobalY = y
 			}
 
-			if find && user != nil {
-				// todo отдача других игроков
+			if find && user != nil && user.InBaseID == 0 {
 				ws.WriteJSON(Message{
 					Event: msg.Event,
 					Map:   mp, User: user,
 					Squad: user.GetSquad(),
 					Bases: bases.Bases.GetBasesByMap(usersGlobalWs[ws].GetSquad().MapID),
+					// todo отдача других игроков
 				})
 			} else {
-				ws.WriteJSON(Message{Event: "Error", Error: "map not find"})
+				ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
 			}
 		}
 
 		if msg.Event == "MoveTo" {
 			mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
-			if find {
+			user := usersGlobalWs[ws]
 
+			if find && user.InBaseID == 0 {
 				if move {
 
 					// TODO иногда случает деадлок
@@ -107,7 +109,6 @@ func Reader(ws *websocket.Conn) {
 					stopMove <- true // останавливаем прошлое движение
 				}
 
-				user := usersGlobalWs[ws]
 				path := globalGame.MoveTo(user, msg.ToX, msg.ToY, mp)
 
 				err := ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
@@ -121,7 +122,34 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "IntoToBase" {
-			// todo игрок заходит на базу
+
+			user := usersGlobalWs[ws]
+
+			if move {
+
+				// TODO иногда случает деадлок
+				// канал не буфиризирован, и там осталась переменная
+				// но нет горутин которые могут ее считать, получаем деадлок
+
+				stopMove <- true // останавливаем прошлое движение
+			}
+
+			intoBase, _ := bases.Bases.Get(msg.BaseID)
+			x, y := globalGame.GetXYCenterHex(intoBase.Q, intoBase.R)
+
+			dist := ((user.GetSquad().GlobalX - x) * (user.GetSquad().GlobalX - x)) +
+				((user.GetSquad().GlobalY - y) * (user.GetSquad().GlobalX - y))
+
+			if dist < 400*400 { // 400*400 это 400 пикселей, выбрано рандомно
+				user.InBaseID = intoBase.ID
+				bases.UserIntoBase(user.GetID(), intoBase.ID)
+				user.GetSquad().GlobalX = 0
+				user.GetSquad().GlobalY = 0
+
+				ws.WriteJSON(Message{Event: "IntoToBase"})
+			} else {
+				ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
+			}
 		}
 	}
 }

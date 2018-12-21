@@ -110,7 +110,7 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 		weaponSlot.Ammo = nil
 	}
 
-	update.Squad(user.GetSquad())
+	update.Squad(user.GetSquad(), true)
 
 	weaponSlot.HP = hp
 
@@ -118,5 +118,5 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 	weaponSlot.Weapon = newWeapon
 	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне
 
-	update.Squad(user.GetSquad())
+	update.Squad(user.GetSquad(), true)
 }

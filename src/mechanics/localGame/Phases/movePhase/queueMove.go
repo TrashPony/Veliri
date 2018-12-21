@@ -79,7 +79,7 @@ func QueueMove(game *localGame.Game) {
 	}
 
 	for _, gameUser := range game.GetPlayers() {
-		update.Squad(gameUser.GetSquad())
+		update.Squad(gameUser.GetSquad(), true)
 	}
 
 	updateMoveParamsMemoryUnits(game)

@@ -29,7 +29,7 @@ func ItemsRepair(user *player.Player) error {
 			}
 		}
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		return errors.New("no credits")
@@ -81,7 +81,7 @@ func EquipRepair(user *player.Player) error {
 			}
 		}
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		return errors.New("no credits")

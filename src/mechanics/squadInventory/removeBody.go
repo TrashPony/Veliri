@@ -24,7 +24,7 @@ func RemoveMSBody(user *player.Player) {
 		user.GetSquad().MatherShip.CalculateParams()
 	}
 
-	update.Squad(user.GetSquad())
+	update.Squad(user.GetSquad(), true)
 }
 
 func RemoveUnitBody(user *player.Player, unitSlot int) {
@@ -35,7 +35,7 @@ func RemoveUnitBody(user *player.Player, unitSlot int) {
 		}
 	}
 
-	update.Squad(user.GetSquad())
+	update.Squad(user.GetSquad(), true)
 }
 
 func BodyRemove(inventory inv.Inventory, Body *detail.Body, hp int) {

@@ -91,11 +91,11 @@ func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *eq
 	equipSlot.HP = hp
 	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
 
-	update.Squad(user.GetSquad()) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
+	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 
 	equipSlot.Equip = newEquip
 	equipSlot.InsertToDB = true
-	update.Squad(user.GetSquad())
+	update.Squad(user.GetSquad(), true)
 }
 
 func SelectType(typeEquipSlot int, body *detail.Body) map[int]*detail.BodyEquipSlot {

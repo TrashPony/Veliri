@@ -78,7 +78,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 			}
 		}
 
-		update.Squad(user.GetSquad())
+		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		return errors.New("user not in base")
