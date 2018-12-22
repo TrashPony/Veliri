@@ -9,6 +9,7 @@ function LoadGame(jsonData) {
         game.input.onDown.add(initMove, game);
         CreateBase(jsonData.bases);
         CreateOtherUsers(jsonData.other_users);
+        CreateMiniMap(jsonData.map);
     }, 1500);
 }
 

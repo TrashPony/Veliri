@@ -2,7 +2,7 @@ let stylePositionParams = {};
 
 function moveMouse(e) {
 
-    let w = 150; // Ширина слоя
+    let w = 110; // Ширина слоя
     let x = e.pageX; // Координата X курсора
     let y = e.pageY; // Координата Y курсора
 
@@ -19,5 +19,8 @@ function moveMouse(e) {
     if (game && game.typeService === "battle") {
         updatePositionTipEquip();
     }
-    updatePositionTipEffect();
+
+    if (game && game.typeService !== "lobby") {
+        updatePositionTipEffect();
+    }
 }

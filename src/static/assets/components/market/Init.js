@@ -1,6 +1,6 @@
 let initMarket = false;
 
-function InitMarketMenu() {
+function InitMarketMenu(noMask) {
     let promise = new Promise((resolve) => {
         if (!initMarket) {
             if (typeof webSocketInit === 'undefined' || webSocketInit === null) {
@@ -39,7 +39,7 @@ function InitMarketMenu() {
             initMarket = true;
             setTimeout(function () {
                 ConnectMarket();
-                CreateMarketMenu();
+                CreateMarketMenu(noMask);
             }, 400);
         }
     );

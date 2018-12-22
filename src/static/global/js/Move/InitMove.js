@@ -6,8 +6,8 @@ function initMove(e) {
 
         global.send(JSON.stringify({
             event: "MoveTo",
-            to_x: e.worldX,
-            to_y: e.worldY
+            to_x: e.worldX / game.camera.scale.x,
+            to_y: e.worldY / game.camera.scale.y
         }));
     }
 }

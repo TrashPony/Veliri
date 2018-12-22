@@ -1,9 +1,4 @@
 function UpdateMap(newMap, game) {
-
-    // todo изменение размера игрового мира
-
-
-
     removeSubMenus();
     game.floorLayer.forEach(function (c) { c.kill(); });
     game.floorObjectLayer.forEach(function (c) { c.kill(); });
@@ -14,9 +9,8 @@ function UpdateMap(newMap, game) {
     game.map = newMap;
     game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize/2); //размеры карты
 
+    CreateLabelBase(JSON.parse(jsonMessage).bases);
     CreateMap();
-
-    addButtons(game.map.OneLayerMap);
 }
 
 function removeSubMenus() {

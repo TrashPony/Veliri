@@ -3,11 +3,16 @@
 
 <head>
     <title>Veliri</title>
+    <link href="./css/miniMap.css" rel="stylesheet">
+    <link href="./css/squadMenu.css" rel="stylesheet">
+
     <link href="../assets/css/all.css" rel="stylesheet">
+    <link href="../assets/components/chat/chat.css" rel="stylesheet">
 
     <script src="js/WebSocket/OpenSockets.js"></script>
     <script src="js/WebSocket/ReadResponse.js"></script>
 
+    <script src="js/Services.js"></script>
     <script src="js/CreateSquad.js"></script>
     <script src="js/LoadGame.js"></script>
     <script src="js/DisconnectUser.js"></script>
@@ -15,6 +20,10 @@
     <script src="js/Move/MoveTo.js"></script>
     <script src="js/Move/PreviewPath.js"></script>
     <script src="js/Move/InitMove.js"></script>
+
+    <script src="js/Interface/FocusMS.js"></script>
+    <script src="js/Interface/MouseZoomPress.js"></script>
+    <script src="js/Interface/HideMap.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -29,24 +38,57 @@
     <script src="../game/Render.js"></script>
 
     <script src="../game/Interface/GrabCamera.js"></script>
-    <script src="../game/Interface/MouseOver.js"></script>
     <script src="../game/Interface/TipOff.js"></script>
     <script src="../game/Interface/RotateMap.js"></script>
     <script src="../game/Interface/SizeMap.js"></script>
     <script src="../game/Interface/Wheel.js"></script>
     <script src="../game/Interface/TipEffect.js"></script>
     <script src="../game/Interface/ParseEquipEffect.js"></script>
+    <script src="../game/Interface/CreateMiniMap.js"></script>
 
     <script src="../game/utils/hexRadius.js"></script>
     <script src="../game/utils/AttachSprite.js"></script>
     <script src="../game/utils/dynamicMap.js"></script>
     <script src="../game/utils/rotateUnit.js"></script>
+
+    <script src="../assets/components/MoveWindow.js"></script>
+    <script src="../assets/components/chat/Chat.js"></script>
+    <script src="../assets/components/inventory/Init.js"></script>
+    <script src="../assets/components/MouseOver.js"></script>
+    <script src="../assets/components/market/Init.js"></script>
+
     <script src="../assets/lib/phaser.js"></script>
 </head>
 
-<body oncontextmenu="return false;" onload="openSockets()">
+<body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
 <div id="container" style="height:100vh;">
-    <div id="main" style="width: 100%; height: 100%;"></div>
+    <div id="main" style="width: 100%; height: 100%;">
+        <div id="miniMap">
+            <div class="topButton" onclick="HideMap()"> _ </div>
+            <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿ </div>
+            <canvas id="canvasMap"></canvas>
+            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')" onmouseup="mouseZoomPress('')"> + </div>
+            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')" onmouseup="mouseZoomPress('')"> - </div>
+            <div class="zoomButton" onmousedown="FocusMS()"> &#128065; </div>
+        </div>
+        <div id="chat">
+            <div class="tabs"></div>
+            <div class="topButton" onclick="HideChat()"> _ </div>
+            <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿ </div>
+            <div id="chatBox"></div><div id="usersBox"></div>
+            <input type="text" placeholder="message" id="chatInput"
+                   onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
+            <script>ConnectChat()</script>
+        </div>
+        <div id="globalMenu">
+            <div onclick="OpenInventory()"><img src="https://img.icons8.com/color/80/000000/move-by-trolley.png"></div>
+            <div><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div>
+            <div><img src="https://img.icons8.com/office/50/000000/survey.png"></div>
+            <div onclick="OpenMarket()"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
+            <div><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
+            <div><img src="https://img.icons8.com/office/40/000000/support.png"></div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

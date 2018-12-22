@@ -4,9 +4,9 @@ function dynamicMap(group, points) {
 
         let distCam;
         if (game.camera.view.width > game.camera.view.height) {
-            distCam = game.camera.view.width / 2 + 300;
+            distCam = (game.camera.view.width / 2 + 300) / game.camera.scale.x;
         } else {
-            distCam = game.camera.view.height / 2 + 300;
+            distCam = (game.camera.view.height / 2 + 300) / game.camera.scale.y;
         }
 
         let camX = (game.camera.view.width / 2 + game.camera.view.x) / game.camera.scale.x;

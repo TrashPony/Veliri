@@ -1,14 +1,13 @@
-
 function moveWindow(event, id) {
 
-    var window = document.getElementById(id);
+    let window = document.getElementById(id);
 
     window.style.marginTop = "0px";
 
-    var coordinates = getCoordinates(window);
+    let coordinates = getCoordinates(window);
 
-    var shiftX = event.pageX - coordinates.left + document.body.scrollLeft;
-    var shiftY = event.pageY - coordinates.top + document.body.scrollTop;
+    let shiftX = event.pageX - coordinates.left + document.body.scrollLeft;
+    let shiftY = event.pageY - coordinates.top + document.body.scrollTop;
 
     document.body.appendChild(window);
     moveAt(event);

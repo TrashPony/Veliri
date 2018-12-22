@@ -1,0 +1,91 @@
+#chat {
+    position: absolute;
+    display: block;
+    border-radius: 5px;
+    width: 300px;
+    height: 200px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    bottom: 15px;
+    left: 15px;
+}
+
+.topButton {
+    margin-top: 2px;
+    color: #f9ff00;
+    float: right;
+    border-radius: 2px;
+    height: 15px;
+    width: 30px;
+    background-size: 5px 2px;
+    background-image:linear-gradient(1deg, rgba(23, 114, 166, 0.9), rgba(19, 76, 105, 0.9) 6px);
+    margin-right: 10px;
+    line-height: 13px;
+    font-size: 23px;
+    user-select: none;
+}
+
+.topButton:hover {
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+}
+
+#chat .topButton:nth-child(2){
+    font-size: 22px;
+    line-height: 0;
+}
+
+#chat .tabs {
+    height: 15px;
+    width: 220px;
+    float: left;
+    margin: 2px 0;
+    user-select: none;
+}
+
+#chat input {
+    width: 284px;
+    height: 30px;
+    border-radius: 0 0 5px 5px;
+    border: 0;
+    margin-left: 0;
+    background: rgba(91, 98, 104, 0.9);
+    box-shadow: none;
+    color: #ffef0f;
+}
+
+#chat input::placeholder {
+    color: rgba(255, 239, 15, 0.34);
+}
+
+#chatBox, #usersBox {
+    padding: 10px;
+    word-wrap: break-word;
+    overflow-y: scroll;
+    border-radius: 5px 9px 9px 0;
+    text-align: left;
+    margin: auto auto 2px 3px;
+    width: 195px;
+    height: 125px;
+    text-shadow: #28a5e4 0 0 4px;
+    font-family: sans-serif;
+    font-size: 9pt;
+    background: rgba(91, 98, 104, 0.9);
+    float: left;
+}
+
+#usersBox {
+    border-top-left-radius: 0;
+    float: right;
+    margin: auto 3px 2px 0;
+    width: 57px;
+}
+
+.ChatUserName {
+    color: #ffffff;
+}
+
+.ChatText {
+    color: #ffef0f;
+}

@@ -1,4 +1,5 @@
 let lobby;
+let game = {typeService: "lobby"};
 
 function ConnectLobby() {
     lobby = new WebSocket("ws://" + window.location.host + "/wsLobby");

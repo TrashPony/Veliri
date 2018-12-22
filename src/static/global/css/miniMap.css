@@ -1,0 +1,59 @@
+#miniMap, #miniMap .zoomButton {
+    background-size: 5px 2px;
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    border: 1px solid #25a0e1;
+}
+
+#miniMap {
+    position: absolute;
+    height: 230px;
+    width: 220px;
+    border-radius: 10px;
+    top: 15px;
+    left: 15px;
+    user-select: none;
+}
+
+#canvasMap {
+    border-radius: 2px;
+    margin-top: 3px;
+    height: 200px;
+    width: 200px;
+    background: rgba(183, 195, 201, 0.6);
+    transition: 1s;
+}
+
+#miniMap .zoomButton {
+    height: 20px;
+    width: 64px;
+    float: left;
+    margin-top: 6px;
+    margin-left: 5px;
+    background-image:linear-gradient(1deg, rgba(23, 114, 166, 0.9), rgba(19, 76, 105, 0.9) 6px);
+    border-top: transparent;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    color: #f9ff00;
+    font-size: 29px;
+    line-height: 20px;
+    font-weight: 900;
+    transition: 1s;
+}
+
+#miniMap .zoomButton:hover {
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+}
+
+#miniMap .zoomButton:nth-child(5){
+    line-height: 15px;
+}
+
+#miniMap .zoomButton:nth-child(6){
+    font-weight: 100;
+}
+
+#miniMap .topButton:nth-child(1){
+    font-size: 22px;
+    line-height: 0;
+}

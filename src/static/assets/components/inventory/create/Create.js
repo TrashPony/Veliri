@@ -1,4 +1,4 @@
-function CreateInventoryMenu(closeFunc) {
+function CreateInventoryMenu(closeFunc, option) {
 
     if (document.getElementById("mask")) {
         document.getElementById("mask").remove();
@@ -6,6 +6,17 @@ function CreateInventoryMenu(closeFunc) {
 
     if (document.getElementById("inventoryBox")) {
         document.getElementById("inventoryBox").remove();
+    }
+
+    if (option === 'inventory') {
+        let inventory = document.createElement("div");
+        inventory.id = "Inventory";
+        inventory.style.position = "absolute";
+        inventory.style.bottom = "70px";
+        inventory.style.right = "15px";
+        document.body.appendChild(inventory);
+        CreateInventory();
+        return
     }
 
     let mask = document.createElement("div");

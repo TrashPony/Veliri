@@ -1,5 +1,5 @@
 let initInventory = false;
-function InitInventoryMenu(closeFunc) {
+function InitInventoryMenu(closeFunc, option) {
     /* осталь надежду вся сюда входящий, это дерьмо уже не отрефачить */
     let promise = new Promise((resolve) => {
         if (!initInventory) {
@@ -73,7 +73,7 @@ function InitInventoryMenu(closeFunc) {
         () => {
             initInventory = true;
             setTimeout(function () {
-                CreateInventoryMenu(closeFunc);
+                CreateInventoryMenu(closeFunc, option);
                 ConnectInventory();
             }, 400);
         }

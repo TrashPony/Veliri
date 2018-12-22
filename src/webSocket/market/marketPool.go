@@ -74,13 +74,16 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "openMarket" {
 			base, find := bases.Bases.Get(usersMarketWs[ws].InBaseID)
 
+			var marketName string
 			if !find {
-				return
+				marketName = "Пустош"
+			} else {
+				marketName = base.Name
 			}
 
 			ws.WriteJSON(Message{Event: msg.Event, Orders: market.Orders.GetOrders(),
 				Credits: usersMarketWs[ws].GetCredits(), Assortment: market.GetAssortment(),
-				BaseName: base.Name})
+				BaseName: marketName})
 		}
 
 		if msg.Event == "placeNewBuyOrder" {

@@ -5,8 +5,8 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
     }
 
     let tip = document.createElement("div");
-    tip.style.top = y + "px";
-    tip.style.left = x + "px";
+    tip.style.top = stylePositionParams.top + "px";
+    tip.style.left = stylePositionParams.left + "px";
 
     if (size) {
         notificationInventorySize(slot.size);
@@ -21,11 +21,17 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
 
             let tipDetail = document.createElement("div");
             tipDetail.id = "InventoryTip";
-            tipDetail.style.top = y + "px";
-            tipDetail.style.left = x + "px";
+            tipDetail.style.top = stylePositionParams.top + "px";
+            tipDetail.style.left = stylePositionParams.left + "px";
 
             CreateParamsTable(slot, tipDetail);
             document.body.appendChild(tipDetail);
+        };
+
+        let throwButton = createInput("Выбросить", tip);
+        throwButton.onclick = function () {
+            tip.remove();
+            // TODO выбросить
         };
 
         if (storage) {
@@ -43,13 +49,15 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
                 }));
             };
         } else {
-            let to = createInput("На склад", tip);
-            to.onclick = function () {
-                inventorySocket.send(JSON.stringify({
-                    event: "itemToStorage",
-                    inventory_slot: Number(numberSlot)
-                }));
-            };
+            if (document.getElementById("inventoryBox")) {
+                let to = createInput("На склад", tip);
+                to.onclick = function () {
+                    inventorySocket.send(JSON.stringify({
+                        event: "itemToStorage",
+                        inventory_slot: Number(numberSlot)
+                    }));
+                };
+            }
         }
 
         let cancelButton = createInput("Отменить", tip);
@@ -257,18 +265,16 @@ function createTipWeaponType(table, slot, type) {
     }
 }
 
-function notificationInventorySize(size) {
+function notificationInventorySize(loadSize) {
     let realSize = document.getElementById("sizeInventoryInfo");
 
-    let unitIcon = document.getElementById("MSIcon");
-    if (unitIcon.slotData) {
+    if (size > 0) {
 
         if (document.getElementById("itemSize")) {
             document.getElementById("itemSize").remove();
         }
 
-        let slotData = JSON.parse(unitIcon.slotData);
-        let percentFill = 100 / (slotData.body.capacity_size / size);
+        let percentFill = 100 / (size / loadSize);
 
         let itemSize = document.createElement("div");
         itemSize.id = "itemSize";

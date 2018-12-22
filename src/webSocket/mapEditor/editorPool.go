@@ -4,6 +4,7 @@ import (
 	"../../mechanics/db/get"
 	"../../mechanics/db/mapEditor"
 	"../../mechanics/factories/players"
+	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/coordinate"
 	gameMap "../../mechanics/gameObjects/map"
 	"../../mechanics/player"
@@ -82,6 +83,7 @@ type Response struct {
 	Maps            map[int]gameMap.Map      `json:"maps"`
 	TypeCoordinates []*coordinate.Coordinate `json:"type_coordinates"`
 	Success         bool                     `json:"success"`
+	Bases           map[int]*base.Base       `json:"bases"`
 	Error           string                   `json:"error"`
 }
 

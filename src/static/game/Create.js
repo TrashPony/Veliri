@@ -62,6 +62,8 @@ function create(game) {
     game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
 
+    game.icon = game.add.group();
+
     CreateMap();
     if (game && game.typeService === "battle") {
         CreateMyGameUnits();

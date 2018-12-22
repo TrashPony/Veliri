@@ -49,26 +49,37 @@ function createGame(jsonMessage) {
         UpdateMap(JSON.parse(jsonMessage).map, game);
     } else {
         game = CreateGame(JSON.parse(jsonMessage).map);
-        appendRedactorEventsToFloor(game)
+
+        setTimeout(function () {
+            CreateLabelBase(JSON.parse(jsonMessage).bases)
+        }, 1500);
     }
 }
 
-function appendRedactorEventsToFloor(game) {
-    let map = game.map.OneLayerMap;
-}
+function CreateLabelBase(bases) {
+    console.log(bases
+    /*
+        id: 1
+        map_id: 2
+        name: "База 1"
+        q: 5
+        r: 2
+        resp_q: 7
+        resp_r: 4
+    */);
 
-function addButtons(map) {
-    for (let q in map) {
-        if (map.hasOwnProperty(q)) {
-            for (let r in map[q]) {
-                if (map[q].hasOwnProperty(r)) {
+    for (let i in bases){
+        if (bases.hasOwnProperty(i) && game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
+            let coordinateBase = game.map.OneLayerMap[bases[i].q][bases[i].r].sprite;
+            let base = game.icon.create(coordinateBase.x, coordinateBase.y, 'baseIcon');
+            base.anchor.setTo(0.5);
+            base.scale.setTo(0.1);
 
-                    if (map[q][r].impact) {
-                        continue
-                    }
-
-
-                }
+            if (game.map.OneLayerMap.hasOwnProperty(bases[i].resp_q) && game.map.OneLayerMap.hasOwnProperty(bases[i].resp_r)) {
+                let coordinateResp = game.map.OneLayerMap[bases[i].resp_q][bases[i].resp_r].sprite;
+                let baseResp = game.icon.create(coordinateResp.x, coordinateResp.y, 'baseResp');
+                baseResp.anchor.setTo(0.5);
+                baseResp.scale.setTo(0.05);
             }
         }
     }

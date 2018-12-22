@@ -1,4 +1,4 @@
-function CreateMarketMenu() {
+function CreateMarketMenu(noMask) {
     if (document.getElementById("mask")) {
         document.getElementById("mask").remove();
     }
@@ -7,10 +7,12 @@ function CreateMarketMenu() {
         document.getElementById("marketBox").remove();
     }
 
-    let mask = document.createElement("div");
-    mask.id = "mask";
-    mask.style.display = "block";
-    document.body.appendChild(mask);
+    if (!noMask) {
+        let mask = document.createElement("div");
+        mask.id = "mask";
+        mask.style.display = "block";
+        document.body.appendChild(mask);
+    }
 
     let marketBox = document.createElement("div");
     marketBox.id = "marketBox";

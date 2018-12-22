@@ -34,8 +34,8 @@ function InventoryTable(inventoryItems) {
 function InventoryOverTip(e) {
     let inventoryTip = document.getElementById("InventoryTipOver");
     if (inventoryTip) {
-        inventoryTip.style.top = e.clientY + "px";
-        inventoryTip.style.left = e.clientX + "px";
+        inventoryTip.style.top = stylePositionParams.top + "px";
+        inventoryTip.style.left = stylePositionParams.left + "px";
     } else {
         InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true, true);
     }

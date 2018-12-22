@@ -3,18 +3,21 @@ function CreateInventory() {
 
     let spanInventory = document.createElement("span");
     spanInventory.className = "InventoryHead";
+    spanInventory.id = "InventoryHead";
     spanInventory.innerHTML = "ТРЮМ";
     spanInventory.style.margin = "2px 0 3px 12px";
     inventory.appendChild(spanInventory);
 
     let recycleButton = document.createElement("div");
     recycleButton.className = "utilButton";
+    recycleButton.id = "utilButton";
     recycleButton.innerHTML = "<div></div>";
     recycleButton.onclick = RecycleItems;
     inventory.appendChild(recycleButton);
 
     let throwButton = document.createElement("div");
     throwButton.className = "destroyButton";
+    throwButton.id = "destroyButton";
     throwButton.innerHTML = "<div></div>";
     throwButton.onclick = ThrowItems;
     inventory.appendChild(throwButton);

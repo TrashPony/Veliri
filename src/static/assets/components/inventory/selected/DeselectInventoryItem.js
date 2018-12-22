@@ -33,6 +33,8 @@ function DestroyInventoryClickEvent() {
 }
 
 function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
+    if (!document.getElementById("inventoryBox")) return;
+
     for (let i = 1; i <= count; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
         if (equipSlot.className === classPrefix + " active select") {
@@ -97,6 +99,8 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
 }
 
 function cellAmmoDestroySelect() {
+    if (!document.getElementById("inventoryBox")) return;
+
     let ammoCells = document.getElementsByClassName("inventoryAmmoCell"); // обнуляем ячейки боеприпасов
     for (let i = 0; i < ammoCells.length; i++) {
         ammoCells[i].onmouseout = function (event) {
@@ -120,6 +124,8 @@ function cellAmmoDestroySelect() {
 }
 
 function cellUnitIconDestroySelect() {
+    if (!document.getElementById("inventoryBox")) return;
+
     let shipIcon = document.getElementById("MSIcon"); // обнуляем икноку мазершипа
     shipIcon.className = "UnitIconNoSelect";
 
