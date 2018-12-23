@@ -2,7 +2,7 @@ function SetAmmo(ammo, slot) {
 
     let ammoCells = document.getElementsByClassName("inventoryAmmoCell");
 
-    for (let i = 0; i < ammoCells.length; i++) {
+    for (let i = 0; ammoCells && i < ammoCells.length; i++) {
         ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         ammoCells[i].style.cursor = "pointer";
         ammoCells[i].onmouseout = null;

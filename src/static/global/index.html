@@ -5,6 +5,7 @@
     <title>Veliri</title>
     <link href="./css/miniMap.css" rel="stylesheet">
     <link href="./css/squadMenu.css" rel="stylesheet">
+    <link href="./css/openBox.css" rel="stylesheet">
 
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
@@ -14,8 +15,12 @@
 
     <script src="js/Services.js"></script>
     <script src="js/CreateSquad.js"></script>
-    <script src="js/LoadGame.js"></script>
     <script src="js/DisconnectUser.js"></script>
+
+    <script src="js/LoadGame/Game.js"></script>
+    <script src="js/LoadGame/Users.js"></script>
+    <script src="js/LoadGame/Bases.js"></script>
+    <script src="js/LoadGame/Boxes.js"></script>
 
     <script src="js/Move/MoveTo.js"></script>
     <script src="js/Move/PreviewPath.js"></script>
@@ -24,6 +29,8 @@
     <script src="js/Interface/FocusMS.js"></script>
     <script src="js/Interface/MouseZoomPress.js"></script>
     <script src="js/Interface/HideMap.js"></script>
+    <script src="js/Interface/OpenBox.js"></script>
+    <script src="js/Interface/ControlButtons.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -50,6 +57,7 @@
     <script src="../game/utils/AttachSprite.js"></script>
     <script src="../game/utils/dynamicMap.js"></script>
     <script src="../game/utils/rotateUnit.js"></script>
+    <script src="../game/utils/getXYCenterHex.js"></script>
 
     <script src="../assets/components/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
@@ -81,12 +89,14 @@
             <script>ConnectChat()</script>
         </div>
         <div id="globalMenu">
+            <div><img src="https://img.icons8.com/color/30/000000/development-skill.png"></div> <!-- скилы -->
             <div onclick="OpenInventory()"><img src="https://img.icons8.com/color/80/000000/move-by-trolley.png"></div>
-            <div><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div>
-            <div><img src="https://img.icons8.com/office/50/000000/survey.png"></div>
+            <div><img src="https://img.icons8.com/office/30/000000/tank.png"></div> <!-- меню оснащения отряда -->
+            <div><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div> <!-- карта мира -->
+            <div><img src="https://img.icons8.com/office/50/000000/survey.png"></div> <!-- невыполненые задания -->
             <div onclick="OpenMarket()"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
-            <div><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
-            <div><img src="https://img.icons8.com/office/40/000000/support.png"></div>
+            <div><img src="https://img.icons8.com/color/40/000000/drone.png"></div> <!-- эвакуация, возможно надо перместить на минимапу -->
+            <div><img src="https://img.icons8.com/office/40/000000/support.png"></div> <!-- настройки -->
         </div>
     </div>
 </div>

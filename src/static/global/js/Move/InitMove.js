@@ -4,6 +4,10 @@ function initMove(e) {
             game.squad.toBase.into = false
         }
 
+        if (game.squad.toBox) {
+            game.squad.toBox.to = false
+        }
+
         global.send(JSON.stringify({
             event: "MoveTo",
             to_x: e.worldX / game.camera.scale.x,

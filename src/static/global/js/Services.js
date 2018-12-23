@@ -8,19 +8,13 @@ function OpenInventory() {
 
     setTimeout(function () { // todo костыль
         document.getElementById("utilButton").remove();
-        document.getElementById("destroyButton").style.left = "80px";
+        document.getElementById("destroyButton").style.left = "78px";
         document.getElementById("InventoryHead").style.margin = "2px 0px 3px 6px";
         document.getElementById("Inventory").style.marginLeft = "0";
 
-        let hideButton = document.createElement("div");
-        hideButton.className = "topButton";
-        hideButton.innerText = "_";
-        hideButton.style.position = "absolute";
-        hideButton.style.top = "0";
-        hideButton.style.left = "135px";
-        hideButton.style.width = "22px";
-        hideButton.style.lineHeight = "0";
-        hideButton.onclick = function () {
+        let buttons = CreateControlButtons("0", "23px", "-3px", "-3px");
+        buttons.hide.style.width = "22px";
+        buttons.hide.onclick = function () {
             if (!hideInventory) {
                 document.getElementById("Inventory").style.height = "14px";
                 document.getElementById("Inventory").style.overflow = "hidden";
@@ -37,26 +31,17 @@ function OpenInventory() {
                 hideInventory = false;
             }
         };
-        document.getElementById("Inventory").appendChild(hideButton);
+        document.getElementById("Inventory").appendChild(buttons.hide);
 
-        let moveButton = document.createElement("div");
-        moveButton.className = "topButton";
-        moveButton.innerText = "⇿";
-        moveButton.style.position = "absolute";
-        moveButton.style.top = "0";
-        moveButton.style.left = "108px";
-        moveButton.style.width = "22px";
-        moveButton.style.fontSize = "20px";
-        moveButton.onmousedown = function (event) {
+        buttons.move.style.width = "22px";
+        buttons.move.onmousedown = function (event) {
             moveWindow(event, 'Inventory')
         };
-        document.getElementById("Inventory").appendChild(moveButton);
+        document.getElementById("Inventory").appendChild(buttons.move);
 
     }, 500)
 
 }
-
-let hideMarket = false;
 
 function OpenMarket() {
     if (document.getElementById("marketBox")) {
@@ -71,40 +56,11 @@ function OpenMarket() {
         document.getElementById("marketBox").style.left = "unset";
         document.getElementById("marketBox").style.right = "15px";
         document.getElementById("marketBox").style.backgroundImage = "linear-gradient(1deg,rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px)"
-        let hideButton = document.createElement("div");
-        hideButton.className = "topButton";
-        hideButton.innerText = "_";
-        hideButton.style.position = "absolute";
-        hideButton.style.top = "3px";
-        hideButton.style.right = "0px";
-        hideButton.style.lineHeight = "0";
-        hideButton.onclick = function(){
-            if (!hideMarket) {
-                document.getElementById("marketBox").style.height = "24px";
-                document.getElementById("marketBox").style.width = "200px";
-                document.getElementById("marketBox").style.overflow = "hidden";
-                document.getElementById("headMarket").style.opacity = "0";
-                hideMarket = true;
-            } else {
-                document.getElementById("marketBox").style.height = "600px";
-                document.getElementById("marketBox").style.width = "1000px";
-                document.getElementById("marketBox").style.overflow = "visible";
-                document.getElementById("headMarket").style.opacity = "1";
-                hideMarket = false;
-            }
-        };
-        document.getElementById("marketBox").appendChild(hideButton);
 
-        let moveButton = document.createElement("div");
-        moveButton.className = "topButton";
-        moveButton.innerText = "⇿";
-        moveButton.style.position = "absolute";
-        moveButton.style.top = "3px";
-        moveButton.style.right = "35px";
-        moveButton.style.fontSize = "20px";
-        moveButton.onmousedown = function (event) {
+        let buttons = CreateControlButtons("3px", "35px", "-3px", "-3px");
+        buttons.move.onmousedown = function (event) {
             moveWindow(event, 'marketBox');
         };
-        document.getElementById("marketBox").appendChild(moveButton);
+        document.getElementById("marketBox").appendChild(buttons.move);
     }, 500)
 }

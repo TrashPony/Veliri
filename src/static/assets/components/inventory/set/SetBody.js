@@ -2,17 +2,19 @@ function SetBody(body, slot) {
     if (body.mother_ship) {
         let shipIcon = document.getElementById("MSIcon");
 
-        shipIcon.className = "UnitIconSelect";
-        shipIcon.onclick = function () {
+        if (shipIcon) {
+            shipIcon.className = "UnitIconSelect";
+            shipIcon.onclick = function () {
 
-            inventorySocket.send(JSON.stringify({
-                event: "SetMotherShipBody",
-                id_body: Number(body.id),
-                inventory_slot: Number(slot)
-            }));
+                inventorySocket.send(JSON.stringify({
+                    event: "SetMotherShipBody",
+                    id_body: Number(body.id),
+                    inventory_slot: Number(slot)
+                }));
 
-            DestroyInventoryClickEvent();
-            DestroyInventoryTip();
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
         }
     } else {
         let unitIcon = document.getElementById("UnitIcon");

@@ -22,6 +22,13 @@ type Slot struct {
 	Size       float32     `json:"size"`
 }
 
+func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
+	ok := inv.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity,
+		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
+
+	return ok
+}
+
 func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
 
 	for _, slot := range inv.Slots { // ищем стопку с такими же элементами

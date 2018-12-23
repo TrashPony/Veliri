@@ -36,7 +36,7 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 		forecastQ := 0
 		forecastR := 0
 		// находим длинную вектора до цели
-		dist = math.Sqrt(((forecastX - ToX) * (forecastX - ToX)) + ((forecastY - ToY) * (forecastY - ToY)))
+		dist = GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
 		if dist < 10 {
 			break
 		}
@@ -88,7 +88,7 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
 	bodyRadius := 55 // размеры подобраны методом тыка)
-	coordinateRadius := HexagonHeight/2
+	coordinateRadius := HexagonHeight / 2
 
 	minDist := 999
 
@@ -99,10 +99,10 @@ func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
 			xc, yc := GetXYCenterHex(mapCoordinate.Q, mapCoordinate.R)
 
 			//находим растояние координаты от места остановки
-			dist := (x-xc)*(x-xc) + (y-yc)*(y-yc)
+			dist := int(GetBetweenDist(x, y, xc, yc))
 
 			// если координата находиться в теоритическом радиусе радиусе то проверяем на колизии
-			if dist <= HexagonHeight*HexagonHeight {
+			if dist <= HexagonHeight {
 
 				if minDist > dist {
 					minDist = dist
@@ -110,7 +110,7 @@ func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
 					r = mapCoordinate.R
 				}
 
-				for i := rotate - 35; i < rotate + 35; i++ { // смотрим только предметы по курсу )
+				for i := rotate - 35; i < rotate+35; i++ { // смотрим только предметы по курсу )
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
 					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
@@ -125,72 +125,4 @@ func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
 		}
 	}
 	return true, q, r
-}
-
-func GetXYCenterHex(q, r int) (int, int) {
-	var x, y int
-
-	if r%2 != 0 {
-		x = HexagonWidth + (HorizontalOffset * q)
-	} else {
-		x = HexagonWidth/2 + (HorizontalOffset * q)
-	}
-	y = HexagonHeight/2 + (r * VerticalOffset)
-
-	return x, y
-}
-
-func RotateUnit(unitRotate, needRotate *int) int {
-
-	if *unitRotate < 0 {
-		*unitRotate += 360
-	}
-
-	if *unitRotate > 360 {
-		*unitRotate -= 360
-	}
-
-	if *needRotate < 0 {
-		*needRotate += 360
-	}
-
-	if *needRotate > 360 {
-		*needRotate -= 360
-	}
-
-	if unitRotate != needRotate {
-		if directionRotate(*unitRotate, *needRotate) {
-			return 1
-		} else {
-			return -1
-		}
-	}
-	return 0
-}
-
-func directionRotate(unitAngle, needAngle int) bool {
-	// true ++
-	// false --
-	count := 0
-	direction := false
-
-	if unitAngle < needAngle {
-		for unitAngle < needAngle {
-			count++
-			direction = true
-			unitAngle++
-		}
-	} else {
-		for unitAngle > needAngle {
-			count++
-			direction = false
-			needAngle++
-		}
-	}
-
-	if direction {
-		return count <= 180
-	} else {
-		return !(count <= 180)
-	}
 }

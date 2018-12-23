@@ -57,17 +57,6 @@ function createGame(jsonMessage) {
 }
 
 function CreateLabelBase(bases) {
-    console.log(bases
-    /*
-        id: 1
-        map_id: 2
-        name: "База 1"
-        q: 5
-        r: 2
-        resp_q: 7
-        resp_r: 4
-    */);
-
     for (let i in bases){
         if (bases.hasOwnProperty(i) && game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
             let coordinateBase = game.map.OneLayerMap[bases[i].q][bases[i].r].sprite;

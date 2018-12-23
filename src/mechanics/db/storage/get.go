@@ -18,7 +18,6 @@ func UserStorage(userId, baseId int) *inv.Inventory {
 	}
 	defer rows.Close()
 
-	userInventory.Slots = make(map[int]*inv.Slot)
 	userInventory.FillInventory(rows)
 
 	return &userInventory

@@ -3,6 +3,8 @@ package globalGame
 import (
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
+	"../../mechanics/gameObjects/box"
+	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
 	"../../mechanics/gameObjects/squad"
 	"../../mechanics/globalGame"
@@ -24,6 +26,8 @@ type Message struct {
 	Squad      *squad.Squad          `json:"squad"`
 	User       *player.Player        `json:"user"`
 	Bases      map[int]*base.Base    `json:"bases"`
+	X          int                   `json:"x"`
+	Y          int                   `json:"y"`
 	ToX        float64               `json:"to_x"`
 	ToY        float64               `json:"to_y"`
 	PathUnit   globalGame.PathUnit   `json:"path_unit"`
@@ -31,6 +35,11 @@ type Message struct {
 	BaseID     int                   `json:"base_id"`
 	OtherUser  *hostileMS            `json:"other_user"`
 	OtherUsers []*hostileMS          `json:"other_users"`
+	ThrowItems []inventory.Slot      `json:"throw_items"`
+	Boxes      []*box.Box            `json:"boxes"`
+	Box        *box.Box              `json:"box"`
+	BoxID      int                   `json:"box_id"`
+	Inventory  *inventory.Inventory  `json:"inventory"`
 }
 
 type hostileMS struct {
@@ -114,6 +123,14 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "IntoToBase" {
 			intoToBase(ws, msg, stopMove, &moveChecker)
+		}
+
+		if msg.Event == "ThrowItems" {
+			throwItems(ws, msg)
+		}
+
+		if msg.Event == "openBox" {
+			openBox(ws, msg, stopMove, &moveChecker)
 		}
 	}
 }

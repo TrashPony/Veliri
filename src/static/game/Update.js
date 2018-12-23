@@ -18,6 +18,16 @@ function update() {
                 }));
             }
         }
+
+        if (game.squad && game.squad.toBox && game.squad.toBox.to) {
+            let dist = game.physics.arcade.distanceToXY(game.squad.sprite, game.squad.toBox.x, game.squad.toBox.y);
+            if (dist < 300) {
+                global.send(JSON.stringify({
+                    event: "openBox",
+                    box_id: game.squad.toBox.boxID
+                }));
+            }
+        }
     }
 
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */

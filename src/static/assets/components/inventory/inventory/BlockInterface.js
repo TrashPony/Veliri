@@ -2,8 +2,11 @@ function RemoveActionConstructorMenu() { // отключает ивенты ме
 
     if (document.getElementById("ConstructorUnit")) document.getElementById("ConstructorUnit").remove();
     if (document.getElementById("repairMenu")) document.getElementById("repairMenu").remove();
-    document.getElementById("repairButton").onclick = null;
-    document.getElementById("repairButton").className = "repairButton";
+
+    if (document.getElementById("repairMenu")) {
+        document.getElementById("repairButton").onclick = null;
+        document.getElementById("repairButton").className = "repairButton";
+    }
 
     let unitCells = document.getElementsByClassName("inventoryUnit");
 
@@ -35,18 +38,20 @@ function RemoveActionConstructorMenu() { // отключает ивенты ме
     }
 
     let unitIcon = document.getElementById("MSIcon");
-    unitIcon.onclickBack = unitIcon.onclick;
-    unitIcon.onmousemoveBack = unitIcon.onmousemove;
-    unitIcon.onmouseoutBack = unitIcon.onmouseout;
+    if (unitIcon) {
+        unitIcon.onclickBack = unitIcon.onclick;
+        unitIcon.onmousemoveBack = unitIcon.onmousemove;
+        unitIcon.onmouseoutBack = unitIcon.onmouseout;
 
-    unitIcon.onclick = null;
-    unitIcon.onmousemove = null;
-    unitIcon.onmouseout = null;
+        unitIcon.onclick = null;
+        unitIcon.onmousemove = null;
+        unitIcon.onmouseout = null;
+    }
 }
 
 function ActionConstructorMenu() {
 
-    document.getElementById("repairButton").onclick = CreateRepairMenu;
+    if (document.getElementById("repairMenu")) document.getElementById("repairButton").onclick = CreateRepairMenu;
 
     let unitCells = document.getElementsByClassName("inventoryUnit");
 
@@ -73,11 +78,13 @@ function ActionConstructorMenu() {
     }
 
     let unitIcon = document.getElementById("MSIcon");
-    unitIcon.onclick = unitIcon.onclickBack;
-    unitIcon.onmousemove = unitIcon.onmousemoveBack;
-    unitIcon.onmouseout = unitIcon.onmouseoutBack;
+    if (unitIcon) {
+        unitIcon.onclick = unitIcon.onclickBack;
+        unitIcon.onmousemove = unitIcon.onmousemoveBack;
+        unitIcon.onmouseout = unitIcon.onmouseoutBack;
 
-    unitIcon.onclickBack = null;
-    unitIcon.onmousemoveBack = null;
-    unitIcon.onmouseoutBack = null;
+        unitIcon.onclickBack = null;
+        unitIcon.onmousemoveBack = null;
+        unitIcon.onmouseoutBack = null;
+    }
 }

@@ -1,6 +1,6 @@
 function ReadResponse(jsonData) {
     if (jsonData.event === "InitGame") {
-        LoadGame(jsonData);
+        Game(jsonData);
     }
 
     if (jsonData.event === "Error") {
@@ -25,6 +25,20 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "ConnectNewUser") {
         CreateOtherUser(jsonData.other_user);
+    }
+
+    if (jsonData.event === "openBox"){
+        OpenBox(jsonData.inventory, jsonData.box_id)
+    }
+
+    if (jsonData.event === "NewBox") {
+        CreateBox(jsonData.box)
+    }
+
+    if (jsonData.event === "UpdateInventory") { // говорит клиенту обновлить инвентарь
+        if (document.getElementById("Inventory")) {
+            if (inventorySocket) inventorySocket.send(JSON.stringify({event: "openInventory"}))
+        }
     }
 
     if (jsonData.event === "IntoToBase") {

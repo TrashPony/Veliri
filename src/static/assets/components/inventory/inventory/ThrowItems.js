@@ -3,7 +3,12 @@ function ThrowItems() {
     let throwItems = [];
 
     let acceptFunc = function () {
-        //todo
+        if (global){
+            global.send(JSON.stringify({
+                event: "ThrowItems",
+                throw_items: throwItems
+            }))
+        }
         console.log(throwItems, "Выбросить");
         cancelThrow();
     };

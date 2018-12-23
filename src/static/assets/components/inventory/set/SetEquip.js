@@ -38,7 +38,7 @@ function SetEquip(equip, slot) {
 function EquipSlotMark(idPrefix, classPrefix, typeSlot, countSlots, func) {
     for (let i = 1; i <= countSlots; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
-        if (equipSlot.className === classPrefix + " active") {
+        if (equipSlot && equipSlot.className === classPrefix + " active") {
 
             equipSlot.className = classPrefix + " active select";
             equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";

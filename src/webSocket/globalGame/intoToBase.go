@@ -12,10 +12,8 @@ func intoToBase(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker
 	intoBase, _ := bases.Bases.Get(msg.BaseID)
 	x, y := globalGame.GetXYCenterHex(intoBase.Q, intoBase.R)
 
-	dist := ((user.GetSquad().GlobalX - x) * (user.GetSquad().GlobalX - x)) +
-		((user.GetSquad().GlobalY - y) * (user.GetSquad().GlobalX - y))
-
-	if dist < 320*320 { // 320*320 это 320 пикселей, выбрано рандомно
+	dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+	if dist < 220 { // 220 пикселей, выбрано рандомно
 
 		if *moveChecker {
 			stopMove <- true // останавливаем движение

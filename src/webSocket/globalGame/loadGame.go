@@ -2,6 +2,7 @@ package globalGame
 
 import (
 	"../../mechanics/factories/bases"
+	"../../mechanics/factories/boxes"
 	"../../mechanics/factories/maps"
 	"../../mechanics/globalGame"
 	"github.com/gorilla/websocket"
@@ -28,11 +29,13 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 	if find && user != nil && user.InBaseID == 0 {
 		ws.WriteJSON(Message{
-			Event: msg.Event,
-			Map:   mp, User: user,
+			Event:      msg.Event,
+			Map:        mp,
+			User:       user,
 			Squad:      user.GetSquad(),
-			Bases:      bases.Bases.GetBasesByMap(usersGlobalWs[ws].GetSquad().MapID),
+			Bases:      bases.Bases.GetBasesByMap(mp.Id),
 			OtherUsers: otherUsers,
+			Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
 		})
 	} else {
 		ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
