@@ -18,6 +18,7 @@ type PathUnit struct {
 	R           int `json:"r"`
 	Rotate      int `json:"rotate"`
 	Millisecond int `json:"millisecond"`
+	Speed       float64
 }
 
 func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
@@ -26,8 +27,16 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 	forecastX := float64(user.GetSquad().GlobalX)
 	forecastY := float64(user.GetSquad().GlobalY)
-	speed := user.GetSquad().MatherShip.Speed * 3
 	rotate := user.GetSquad().MatherShip.Rotate
+
+	maxSpeed := float64(user.GetSquad().MatherShip.Speed * 3)
+	minSpeed := float64(user.GetSquad().MatherShip.Speed)
+	speed := float64(user.GetSquad().MatherShip.Speed)
+
+	// если текущая скорость выше стартовой то берем ее
+	if float64(user.GetSquad().MatherShip.Speed) < user.GetSquad().CurrentSpeed {
+		speed = user.GetSquad().CurrentSpeed
+	}
 
 	diffRotate := 0 // разница между углом цели и носа корпуса
 	dist := 900.0
@@ -41,7 +50,27 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 			break
 		}
 
-		for i := 0; i < speed; i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
+		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
+
+		if dist > 200 {
+			if maxSpeed > speed {
+				if len(path)%2 == 0 {
+					speed += float64(user.GetSquad().MatherShip.Speed) / 10
+				}
+			} else {
+				speed = maxSpeed
+			}
+		} else {
+			if minSpeed < speed {
+				if len(path)%2 == 0 {
+					speed -= float64(user.GetSquad().MatherShip.Speed) / 10
+				}
+			} else {
+				speed = minSpeed
+			}
+		}
+
+		for i := 0; i < int(speed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 			needRad := math.Atan2(ToY-forecastY, ToX-forecastX)
 			needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу
 
@@ -59,8 +88,6 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 				break
 			}
 		}
-
-		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
 		radRotate := float64(rotate) * math.Pi / 180
 		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
@@ -80,7 +107,8 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 			}
 		}
 
-		path = append(path, PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100, Q: forecastQ, R: forecastR})
+		path = append(path, PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
+			Q: forecastQ, R: forecastR, Speed: speed})
 	}
 
 	return path

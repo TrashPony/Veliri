@@ -61,6 +61,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)
 			user.GetSquad().GlobalY = int(pathUnit.Y)
+			user.GetSquad().CurrentSpeed = pathUnit.Speed
 
 			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R) {
 				user.GetSquad().Q = pathUnit.Q
