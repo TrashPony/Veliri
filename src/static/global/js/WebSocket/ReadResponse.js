@@ -28,7 +28,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "openBox"){
-        OpenBox(jsonData.inventory, jsonData.box_id)
+        OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
     }
 
     if (jsonData.event === "NewBox") {

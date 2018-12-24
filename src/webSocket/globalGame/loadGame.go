@@ -16,6 +16,7 @@ func loadGame(ws *websocket.Conn, msg Message) {
 		x, y := globalGame.GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
 		user.GetSquad().GlobalX = x
 		user.GetSquad().GlobalY = y
+		user.GetSquad().CurrentSpeed = 0
 	}
 
 	otherUsers := make([]*hostileMS, 0)

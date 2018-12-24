@@ -23,7 +23,8 @@ function dynamicMap(group, points) {
                 game.add.tween(coordinate.fogSprite).to({alpha: 0}, 100, Phaser.Easing.Linear.None, true, 0);
             }
 
-            if (coordinate.texture_object !== "") {
+            // && !coordinate.base что бы не уничтожались значимые спрайты с их ивентами)
+            if (coordinate.texture_object !== "" && !coordinate.base) {
                 CreateObjects(coordinate);
             }
 
@@ -39,7 +40,7 @@ function dynamicMap(group, points) {
 
             let coordinate = game.map.OneLayerMap[point.q][point.r];
 
-            if (coordinate.objectSprite) {
+            if (coordinate.objectSprite && !coordinate.base) {
                 if (coordinate.objectSprite.shadow) {
                     coordinate.objectSprite.shadow.destroy()
                 }

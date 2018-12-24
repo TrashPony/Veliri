@@ -1,15 +1,16 @@
 .openBox {
-    height: 150px;
+    height: 170px;
     width: 150px;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     vertical-align: top;
     padding-top: 5px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px);
     background-size: 10px 2px;
     position: absolute;
 }
 
+/* todo эти свойства почти все продублированы из ксс инвентаря, надо будет потом обьеденить */
 .openBox > span {
     display: block;
     width: 65px;
@@ -24,7 +25,7 @@
     top: 3px;
 }
 
-.openBox .storageCell{
+.openBox .storageCell {
     margin: 24px auto 0;
     overflow-y: scroll;
     height: 120px;
@@ -75,12 +76,45 @@
     1px 1px 1px #000000;
 }
 
-.openBox  .InventoryCell:hover {
+.openBox .InventoryCell:hover {
     box-shadow: 0 0 5px 2px rgb(255, 149, 32);
     color: #00fffd;
     cursor: pointer;
 }
 
-.openBox  .InventoryCell:active {
+.openBox .InventoryCell:active {
     box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+}
+
+.sizeInventoryInfo {
+    width: 138px;
+    height: 15px;
+    border: 1px solid #4c4c4c;
+    text-align: left;
+    display: block;
+    margin: 23px 0 -20px 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    border-radius: 10px;
+    background-size: 12%;
+    overflow: hidden;
+    background-color: #959595;
+}
+
+.sizeInventoryInfo span {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+    width: 139px;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: bold;
+    background-image: url('../../assets/components/inventory/img/cube.png');
+    background-repeat: no-repeat;
+    background-position: 105px 0;
+    background-size: 12%;
+}
+
+.sizeInventoryInfo .realSize {
+    overflow: visible;
+    background: rgba(255, 96, 0, 0.7);
 }

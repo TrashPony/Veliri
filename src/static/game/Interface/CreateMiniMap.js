@@ -38,7 +38,6 @@ function CreateMiniMap(map) {
             }
         }
 
-
         for (let i = 0; i < mapPoints.length; i++) {
             if (mapPoints[i].move) {
                 ctx.fillStyle = "#7f8189";
@@ -46,6 +45,11 @@ function CreateMiniMap(map) {
                 ctx.fillStyle = "#000000";
             }
             ctx.fillRect(mapPoints[i].x, mapPoints[i].y, hexagonWidth, hexagonHeight);
+        }
+
+        if (game.squad) {
+            ctx.fillStyle = "#19ff00";
+            ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight)
         }
 
         ctx.strokeStyle = "#fffc1f";

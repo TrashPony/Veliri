@@ -1,4 +1,6 @@
 function MoveTo(jsonData) {
+    CreateMiniMap();
+
     game.add.tween(game.squad.sprite).to({
             x: jsonData.path_unit.x,
             y: jsonData.path_unit.y

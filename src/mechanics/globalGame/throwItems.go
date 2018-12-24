@@ -30,6 +30,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, *box.Box) {
 
 	hexCoordinate := GetQRfromXY(int(forecastX), int(forecastY), mp)
 	if hexCoordinate.Move {
+		// TODO провекра на существование ящика в координатах qr если есть то не создаем новый а докидываем итемы старому
 		newBox := box.Box{Q: hexCoordinate.Q, R: hexCoordinate.R, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
 			DestroyTime: time.Now()}
 

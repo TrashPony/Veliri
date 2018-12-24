@@ -39,6 +39,7 @@ type Message struct {
 	Boxes      []*box.Box            `json:"boxes"`
 	Box        *box.Box              `json:"box"`
 	BoxID      int                   `json:"box_id"`
+	Size       float32               `json:"size"`
 	Inventory  *inventory.Inventory  `json:"inventory"`
 }
 

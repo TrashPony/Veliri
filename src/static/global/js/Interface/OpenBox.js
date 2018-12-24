@@ -1,5 +1,4 @@
-function OpenBox(inventory, boxID) {
-    console.log(inventory, boxID);
+function OpenBox(inventory, boxID, capacitySize) {
 
     if (game.squad.toBox) {
         game.squad.toBox.to = false
@@ -29,6 +28,12 @@ function OpenBox(inventory, boxID) {
     };
     openBox.appendChild(buttons.move);
 
+    let sizeInfo = document.createElement("div");
+    sizeInfo.className = "sizeInventoryInfo";
+    sizeBox(sizeInfo, capacitySize, inventory);
+
+    openBox.appendChild(sizeInfo);
+
     let storageCell = document.createElement("div");
     storageCell.className = "storageCell";
     fillInventory(storageCell, inventory);
@@ -49,4 +54,28 @@ function fillInventory(parent, inventory) {
             parent.appendChild(slot);
         }
     }
+}
+
+function sizeBox(sizeInfo, capacitySize, inventory) {
+    let size = 0;
+
+    for (let i in inventory.slots) {
+        if (inventory.slots.hasOwnProperty(i)) {
+            size += inventory.slots[i].quantity * inventory.slots[i].item.size
+        }
+    }
+
+    let percentFill = 100 / (capacitySize / size);
+
+    let textColor = "";
+    if (size > capacitySize) {
+        textColor = "#b9281d"
+    } else {
+        textColor = "#decbcb"
+    }
+
+    sizeInfo.innerHTML = "<div class='realSize' style='width:" + percentFill + "%'>" +
+        "<span>" + size.toFixed(1) + " / " + capacitySize + "</span>" +
+        "</div>";
+    sizeInfo.style.color = textColor;
 }

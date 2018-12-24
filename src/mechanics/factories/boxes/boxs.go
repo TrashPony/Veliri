@@ -40,6 +40,15 @@ func (b *store) Get(id int) *box.Box {
 	return nil
 }
 
+func (b *store) GetByQR(q, r, mapID int) *box.Box {
+	for _, mapBox := range b.boxes {
+		if mapBox.ID == mapID && mapBox.Q == q && mapBox.R == r{
+			return mapBox
+		}
+	}
+	return nil
+}
+
 func (b *store) DestroyBox(destroyBox *box.Box) {
 	// todo удаление из бд, удаление из фабрики
 }

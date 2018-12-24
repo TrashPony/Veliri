@@ -7,6 +7,7 @@ function CreateBase(bases) {
                 coordinate.objectSprite.inputEnabled = true;
                 coordinate.objectSprite.input.pixelPerfectOver = true;
                 coordinate.objectSprite.input.pixelPerfectClick = true;
+                coordinate.base = true;
 
                 coordinate.objectSprite.events.onInputDown.add(function () {
                     if (game.input.activePointer.leftButton.isDown) {

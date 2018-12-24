@@ -52,7 +52,7 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
-		if dist > 200 {
+		if dist > maxSpeed * 25 {
 			if maxSpeed > speed {
 				if len(path)%2 == 0 {
 					speed += float64(user.GetSquad().MatherShip.Speed) / 10

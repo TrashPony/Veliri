@@ -20,7 +20,7 @@ func openBox(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *b
 			if *moveChecker {
 				stopMove <- true // останавливаем движение
 			}
-			ws.WriteJSON(Message{Event: msg.Event, BoxID: box.ID, Inventory: box.GetStorage()})
+			ws.WriteJSON(Message{Event: msg.Event, BoxID: box.ID, Inventory: box.GetStorage(), Size: box.CapacitySize})
 		}
 	}
 }
