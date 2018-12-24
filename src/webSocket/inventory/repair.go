@@ -13,7 +13,7 @@ func Repair(ws *websocket.Conn, msg Message) {
 		if err != nil {
 			ws.WriteJSON(Response{Event: "repair error", Error: err.Error()})
 		} else {
-			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 		}
 	}
 
@@ -22,16 +22,16 @@ func Repair(ws *websocket.Conn, msg Message) {
 		if err != nil {
 			ws.WriteJSON(Response{Event: "repair error", Error: err.Error()})
 		} else {
-			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 		}
 	}
 
 	if msg.Event == "AllRepair" {
 		err := squadInventory.AllRepair(user)
 		if err != nil {
-			ws.WriteJSON(Response{Event: "repair error", Error: err.Error(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+			ws.WriteJSON(Response{Event: "repair error", Error: err.Error(), InventorySize: user.GetSquad().Inventory.GetSize()})
 		} else {
-			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 		}
 	}
 }

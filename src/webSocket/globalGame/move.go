@@ -12,7 +12,7 @@ import (
 func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool) {
 	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 	user := usersGlobalWs[ws]
-
+	// TODO попробовать использовать контекст
 	if find && user.InBaseID == 0 {
 		if *moveChecker {
 			stopMove <- true // останавливаем прошлое движение

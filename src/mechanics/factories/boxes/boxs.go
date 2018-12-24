@@ -54,7 +54,7 @@ func (b *store) DestroyBox(destroyBox *box.Box) {
 }
 
 func (b *store) UpdateBox(updateBox *box.Box) {
-	// todo обновление в бд
+	dbBox.Inventory(updateBox)
 }
 
 func (b *store) InsertNewBox(newBox *box.Box) *box.Box {

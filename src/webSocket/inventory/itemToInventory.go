@@ -15,6 +15,6 @@ func itemToInventory(ws *websocket.Conn, msg Message) {
 		// TODO
 	} else {
 		storage.Updater(user.GetID())
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 	}
 }

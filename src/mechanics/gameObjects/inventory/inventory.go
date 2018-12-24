@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"math"
 )
 
 type Inventory struct {
@@ -27,6 +28,31 @@ func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
 		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
 
 	return ok
+}
+
+func (inv *Inventory) GetSize() float32 {
+	var inventorySquadSize float32
+	for _, slot := range inv.Slots {
+		if slot.Item != nil {
+			inventorySquadSize = inventorySquadSize + slot.Size
+		}
+	}
+
+	return float32(round(float64(inventorySquadSize), 1))
+}
+
+func round(x float64, prec int) float64 {
+	var rounder float64
+	pow := math.Pow(10, float64(prec))
+	intermed := x * pow
+	_, frac := math.Modf(intermed)
+	if frac >= 0.5 {
+		rounder = math.Ceil(intermed)
+	} else {
+		rounder = math.Floor(intermed)
+	}
+
+	return rounder / pow
 }
 
 func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {

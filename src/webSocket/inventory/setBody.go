@@ -10,7 +10,7 @@ func SetMotherShipBody(ws *websocket.Conn, msg Message) {
 
 	squadInventory.SetMSBody(user, msg.BodyID, msg.InventorySlot)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 }
 
 func SetUnitBody(ws *websocket.Conn, msg Message) {
@@ -18,5 +18,5 @@ func SetUnitBody(ws *websocket.Conn, msg Message) {
 
 	squadInventory.SetUnitBody(user, msg.BodyID, msg.InventorySlot, msg.UnitSlot)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 }

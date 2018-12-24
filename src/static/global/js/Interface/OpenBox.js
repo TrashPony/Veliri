@@ -36,13 +36,13 @@ function OpenBox(inventory, boxID, capacitySize) {
 
     let storageCell = document.createElement("div");
     storageCell.className = "storageCell";
-    fillInventory(storageCell, inventory);
+    fillInventory(storageCell, inventory, boxID);
 
     openBox.appendChild(storageCell);
     document.body.appendChild(openBox);
 }
 
-function fillInventory(parent, inventory) {
+function fillInventory(parent, inventory, boxID) {
     for (let i in inventory.slots) {
         if (inventory.slots.hasOwnProperty(i)) {
             let slot = document.createElement("div");
@@ -50,6 +50,14 @@ function fillInventory(parent, inventory) {
             slot.number = i;
             slot.style.backgroundImage = "url(/assets/units/" + inventory.slots[i].type + "/" + inventory.slots[i].item.name + ".png)";
             slot.innerHTML = "<span class='QuantityItems'>" + inventory.slots[i].quantity + "</span>";
+
+            slot.onclick = function () {
+                global.send(JSON.stringify({
+                    event: "getItemFromBox",
+                    box_id: Number(boxID),
+                    slot: Number(i)
+                }))
+            };
 
             parent.appendChild(slot);
         }

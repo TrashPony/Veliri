@@ -27,8 +27,15 @@ function ReadResponse(jsonData) {
         CreateOtherUser(jsonData.other_user);
     }
 
-    if (jsonData.event === "openBox"){
+    if (jsonData.event === "openBox") {
         OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
+    }
+
+    if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто
+        console.log("1")
+        if (document.getElementById("openBox" + jsonData.box_id)) {
+            OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
+        }
     }
 
     if (jsonData.event === "NewBox") {

@@ -10,7 +10,7 @@ func RemoveMotherShipWeapon(ws *websocket.Conn, msg Message) {
 
 	squadInventory.RemoveMSWeapon(user, msg.EquipSlot)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 }
 
 func RemoveUnitWeapon(ws *websocket.Conn, msg Message) {
@@ -18,5 +18,5 @@ func RemoveUnitWeapon(ws *websocket.Conn, msg Message) {
 
 	squadInventory.RemoveUnitWeapon(user, msg.EquipSlot, msg.UnitSlot)
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 }

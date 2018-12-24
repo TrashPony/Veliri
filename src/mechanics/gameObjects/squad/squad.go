@@ -3,7 +3,6 @@ package squad
 import (
 	"../../gameObjects/inventory"
 	"../../gameObjects/unit"
-	"math"
 )
 
 type Squad struct {
@@ -19,30 +18,4 @@ type Squad struct {
 	GlobalY      int                 `json:"global_y"` /* вычасляема координата на пиксельной сетке */
 	MapID        int                 `json:"map_id"`
 	CurrentSpeed float64             `json:"current_speed"`
-}
-
-func (squad *Squad) GetUseAllInventorySize() float32 {
-
-	var inventorySquadSize float32
-	for _, slot := range squad.Inventory.Slots {
-		if slot.Item != nil {
-			inventorySquadSize = inventorySquadSize + slot.Size
-		}
-	}
-
-	return float32(round(float64(inventorySquadSize), 1))
-}
-
-func round(x float64, prec int) float64 {
-	var rounder float64
-	pow := math.Pow(10, float64(prec))
-	intermed := x * pow
-	_, frac := math.Modf(intermed)
-	if frac >= 0.5 {
-		rounder = math.Ceil(intermed)
-	} else {
-		rounder = math.Floor(intermed)
-	}
-
-	return rounder / pow
 }

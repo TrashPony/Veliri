@@ -12,7 +12,7 @@ func SetMotherShipAmmo(ws *websocket.Conn, msg Message) {
 	if err != nil {
 		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
 	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 	}
 }
 
@@ -23,6 +23,6 @@ func SetUnitAmmo(ws *websocket.Conn, msg Message) {
 	if err != nil {
 		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
 	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().GetUseAllInventorySize()})
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 	}
 }
