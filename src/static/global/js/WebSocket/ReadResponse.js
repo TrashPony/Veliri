@@ -44,7 +44,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ReturnEvacuation") {
-        evacuationMove(jsonData, game.squad.sprite)
+        evacuationMove(jsonData, true)
     }
 
     if (jsonData.event === "stopEvacuation") {

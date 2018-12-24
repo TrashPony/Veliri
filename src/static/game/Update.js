@@ -1,6 +1,8 @@
 function update() {
 
-    dynamicMap(game.floorLayer, game.mapPoints);
+    if (game && game.mapPoints) {
+        dynamicMap(game.floorLayer, game.mapPoints);
+    }
 
     if (game && game.typeService === "battle") {
         UpdateRotateUnit(); // функция для повора юнитовский спрайтов

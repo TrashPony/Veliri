@@ -1,16 +1,19 @@
 let game;
+let Data;
 
 function Game(jsonData) {
-    game = CreateGame(jsonData.map);
+    Data = jsonData;
+    game = CreateGame(jsonData.map, LoadGame);
     game.typeService = "global";
     game.evacuations = [];
+}
 
-    setTimeout(function () { // todo костыль связаной с прогрузкой карты )
-        CreateUser(jsonData.squad);
-        game.input.onDown.add(initMove, game);
-        CreateBase(jsonData.bases);
-        CreateOtherUsers(jsonData.other_users);
-        CreateMiniMap(jsonData.map);
-        CreateBoxes(jsonData.boxes)
-    }, 1500);
+function LoadGame() {
+    game.input.onDown.add(initMove, game);
+
+    CreateUser(Data.squad);
+    CreateBase(Data.bases);
+    CreateOtherUsers(Data.other_users);
+    CreateMiniMap(Data.map);
+    CreateBoxes(Data.boxes)
 }

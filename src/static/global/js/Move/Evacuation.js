@@ -5,16 +5,24 @@ function Evacuation() {
 }
 
 function startMoveEvacuation(jsonData) {
-    FocusMS();
 
     let x = jsonData.path_unit.x;
     let y = jsonData.path_unit.y;
 
-    let tween = game.add.tween(game.squad.sprite.unitBody).to({alpha: 0.6}, 200, "Linear", true, 0, -1);
-    tween.yoyo(true, 1000);
+    if (game.squad.id === jsonData.other_user.squad_id) {
+        FocusMS();
+        let tween = game.add.tween(game.squad.sprite.unitBody).to({alpha: 0.6}, 200, "Linear", true, 0, -1);
+        tween.yoyo(true, 1000);
+    } else {
+        for (let j = 0; j < game.otherUsers.length; j++) {
+            if (game.otherUsers[j].squad_id === jsonData.other_user.squad_id) {
+                let tween = game.add.tween(game.otherUsers[j].sprite.unitBody).to({alpha: 0.6}, 200, "Linear", true, 0, -1);
+                tween.yoyo(true, 1000);
+            }
+        }
+    }
 
     setTimeout(function () {
-        game.camera.focusOnXY(x * game.camera.scale.x, y * game.camera.scale.y);
         CreateMiniMap(game.map);
 
         let shadow = game.flyObjectsLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'evacuation');
@@ -31,6 +39,10 @@ function startMoveEvacuation(jsonData) {
         evacuation.shadow = shadow;
         evacuation.id = jsonData.base_id;
 
+        if (game.squad.id === jsonData.other_user.squad_id) {
+            game.camera.follow(evacuation);
+        }
+
         game.evacuations.push(evacuation);
 
         game.add.tween(shadow).to({angle: 360}, 3000, Phaser.Easing.Linear.None, true, 0, 0, false).loop(true);
@@ -39,18 +51,71 @@ function startMoveEvacuation(jsonData) {
         game.add.tween(evacuation).to({alpha: 1}, 700, Phaser.Easing.Linear.None, true, 0);
 
         setTimeout(function () {
-            game.add.tween(shadow).to({
-                x: x + game.shadowXOffset * 10,
-                y: y + game.shadowYOffset * 10
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(shadow.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(evacuation.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
+            EvacuationUp(evacuation)
         }, 700);
 
     }, 500);
 }
 
-function evacuationMove(jsonData, squad) {
+function EvacuationUp(sprite, squad) {
+    game.add.tween(sprite.shadow).to({
+        x: sprite.x + game.shadowXOffset * 10,
+        y: sprite.y + game.shadowYOffset * 10
+    }, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.shadow.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
+
+    if (squad) {
+        game.add.tween(squad.bodyShadow).to({
+            x: game.shadowXOffset * 10,
+            y: game.shadowYOffset * 10
+        }, 1000, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(squad.scale).to({x: 1.1, y: 1.1}, 1000, Phaser.Easing.Linear.None, true, 0);
+        squad.x = sprite.x;
+        squad.y = sprite.y;
+    }
+}
+
+function EvacuationDown(sprite, squad, destroy) {
+    let tween = game.add.tween(sprite.shadow).to({
+        x: sprite.x + game.shadowXOffset,
+        y: sprite.y + game.shadowYOffset
+    }, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.shadow.scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
+
+    if (squad) {
+        game.add.tween(squad.bodyShadow).to({
+            x: game.shadowXOffset,
+            y: game.shadowYOffset
+        }, 1000, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(squad.scale).to({x: 1, y: 1}, 1000, Phaser.Easing.Linear.None, true, 0);
+    }
+
+    if (destroy) {
+        tween.onComplete.add(function () {
+            sprite.destroy();
+            sprite.shadow.destroy();
+        })
+    }
+}
+
+function evacuationMove(jsonData, squadMove) {
+    CreateMiniMap();
+    let squad;
+
+    if (jsonData.other_user) {
+        if (game.squad.id === jsonData.other_user.squad_id) {
+            squad = game.squad.sprite
+        } else {
+            for (let j = 0; j < game.otherUsers.length; j++) {
+                if (game.otherUsers[j].squad_id === jsonData.other_user.squad_id) {
+                    squad = game.otherUsers[j].sprite;
+                }
+            }
+        }
+    }
+
     for (let i = 0; i < game.evacuations.length; i++) {
         if (game.evacuations[i].id === jsonData.base_id) {
             game.add.tween(game.evacuations[i]).to({
@@ -65,7 +130,7 @@ function evacuationMove(jsonData, squad) {
                 }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
             );
 
-            if (squad) {
+            if (squad && squadMove) {
                 game.add.tween(squad).to({
                         x: jsonData.path_unit.x,
                         y: jsonData.path_unit.y
@@ -79,22 +144,16 @@ function evacuationMove(jsonData, squad) {
 function stopEvacuation(jsonData) {
     for (let i = 0; i < game.evacuations.length; i++) {
         if (game.evacuations[i].id === jsonData.base_id) {
-            game.add.tween(game.evacuations[i].shadow).to({
-                x: game.evacuations[i].x + game.shadowXOffset,
-                y: game.evacuations[i].y + game.shadowYOffset
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
 
-            game.add.tween(game.evacuations[i].shadow.scale).to({
-                x: 0.2,
-                y: 0.2
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(game.evacuations[i].scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
-
-            game.add.tween(game.squad.sprite.bodyShadow).to({
-                x: game.shadowXOffset,
-                y: game.shadowYOffset
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(game.squad.sprite.scale).to({x: 1, y: 1}, 1000, Phaser.Easing.Linear.None, true, 0);
+            if (game.squad.id === jsonData.other_user.squad_id) {
+                EvacuationDown(game.evacuations[i], game.squad.sprite, true);
+            } else {
+                for (let j = 0; j < game.otherUsers.length; j++) {
+                    if (game.otherUsers[j].squad_id === jsonData.other_user.squad_id) {
+                        EvacuationDown(game.evacuations[i], game.otherUsers[j].sprite, true);
+                    }
+                }
+            }
         }
     }
 }
@@ -102,40 +161,17 @@ function stopEvacuation(jsonData) {
 function placeEvacuation(jsonData) {
     for (let i = 0; i < game.evacuations.length; i++) {
         if (game.evacuations[i].id === jsonData.base_id) {
-
-            game.add.tween(game.evacuations[i].shadow).to({
-                x: game.evacuations[i].x + game.shadowXOffset,
-                y: game.evacuations[i].y + game.shadowYOffset
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
-
-            game.add.tween(game.evacuations[i].shadow.scale).to({
-                x: 0.2,
-                y: 0.2
-            }, 1000, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(game.evacuations[i].scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
-
+            EvacuationDown(game.evacuations[i]);
             setTimeout(function () {
-                game.add.tween(game.evacuations[i].shadow).to({
-                    x: game.evacuations[i].x + game.shadowXOffset * 10,
-                    y: game.evacuations[i].y + game.shadowYOffset * 10
-                }, 1000, Phaser.Easing.Linear.None, true, 0);
-                game.add.tween(game.evacuations[i].shadow.scale).to({
-                    x: 0.3,
-                    y: 0.3
-                }, 1000, Phaser.Easing.Linear.None, true, 0);
-                game.add.tween(game.evacuations[i].scale).to({
-                    x: 0.3,
-                    y: 0.3
-                }, 1000, Phaser.Easing.Linear.None, true, 0);
-
-                game.add.tween(game.squad.sprite.bodyShadow).to({
-                    x: game.shadowXOffset * 10,
-                    y: game.shadowYOffset * 10
-                }, 1000, Phaser.Easing.Linear.None, true, 0);
-                game.add.tween(game.squad.sprite.scale).to({x: 1.1, y: 1.1}, 1000, Phaser.Easing.Linear.None, true, 0);
-
-                game.squad.sprite.x = game.evacuations[i].x;
-                game.squad.sprite.y = game.evacuations[i].y;
+                if (game.squad.id === jsonData.other_user.squad_id) {
+                    EvacuationUp(game.evacuations[i], game.squad.sprite);
+                } else {
+                    for (let j = 0; j < game.otherUsers.length; j++) {
+                        if (game.otherUsers[j].squad_id === jsonData.other_user.squad_id) {
+                            EvacuationUp(game.evacuations[i], game.otherUsers[j].sprite);
+                        }
+                    }
+                }
             }, 1200)
         }
     }

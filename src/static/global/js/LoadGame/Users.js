@@ -14,15 +14,33 @@ function CreateUser(squad) {
 }
 
 function CreateOtherUsers(otherUsers) {
-    game.otherUsers = [];
-    for (let i = 0; i < otherUsers.length; i++){
+    if (!game.otherUsers) game.otherUsers = [];
+    for (let i = 0; i < otherUsers.length; i++) { // создаем новых
         CreateOtherUser(otherUsers[i])
+    }
+
+    for (let i = 0; i < game.otherUsers.length; i++) { // докидываем тех кто долетел до загрузки и не смог создатся т.к. небыло группы
+        CreateOtherUser(game.otherUsers[i])
     }
 }
 
 function CreateOtherUser(otherUser) {
     let x = otherUser.x;
     let y = otherUser.y;
-    CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name,otherUser.rotate + 90);
-    game.otherUsers.push(otherUser)
+
+    if (!game.otherUsers) game.otherUsers = [];
+    let find = false;
+    let sprite = false;
+
+    for (let i = 0; i < game.otherUsers.length; i++) {
+        if (game.otherUsers[i].squad_id === otherUser.squad_id) {
+            find = true;
+            if (game.otherUsers[i].sprite !== undefined) {
+                sprite = true
+            }
+        }
+    }
+    
+    if (!find) game.otherUsers.push(otherUser);
+    if (!sprite) CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate + 90);
 }

@@ -1,4 +1,7 @@
 function MoveTo(jsonData) {
+
+    if (!game) return;
+
     CreateMiniMap();
 
     game.add.tween(game.squad.sprite).to({
@@ -10,8 +13,11 @@ function MoveTo(jsonData) {
 }
 
 function MoveOther(jsonData) {
-    for (let i = 0; i < game.otherUsers.length; i++) {
+    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
         if (game.otherUsers[i].user_name === jsonData.other_user.user_name) {
+
+            if (!game.otherUsers[i].sprite) CreateOtherUser(game.otherUsers[i]);
+
             game.add.tween(game.otherUsers[i].sprite).to({
                     x: jsonData.path_unit.x,
                     y: jsonData.path_unit.y

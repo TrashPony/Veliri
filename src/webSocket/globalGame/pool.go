@@ -47,6 +47,7 @@ type Message struct {
 type hostileMS struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
+	SquadID    int    `json:"squad_id"`
 	UserName   string `json:"user_name"`
 	X          int    `json:"x"`
 	Y          int    `json:"y"`
@@ -60,6 +61,7 @@ type hostileMS struct {
 func GetShortUserInfo(user *player.Player) *hostileMS {
 	var hostile hostileMS
 
+	hostile.SquadID = user.GetSquad().ID
 	hostile.UserName = user.GetLogin()
 	hostile.X = user.GetSquad().GlobalX
 	hostile.Y = user.GetSquad().GlobalY
@@ -126,7 +128,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "IntoToBase" {
-			intoToBase(ws, msg, stopMove, &moveChecker)
+			intoToBase(ws, msg, stopMove, &moveChecker, false)
 		}
 
 		if msg.Event == "ThrowItems" {

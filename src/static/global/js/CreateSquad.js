@@ -1,6 +1,8 @@
 function CreateSquad(squad, x, y, bodyName, weaponName, rotate, focus) {
     let unit;
 
+    if (!game.unitLayer) return;
+
     unit = game.unitLayer.create(x, y, 'MySelectUnit', 0);
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);

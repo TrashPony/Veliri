@@ -1,26 +1,28 @@
-function CreateGame(map) {
-    let game = new Phaser.Game('100', '100', Phaser.CANVAS, 'main', {
+let LoadFunc;
+let Map;
+
+function CreateGame(map, loadFunc) {
+    LoadFunc = loadFunc;
+    Map = map;
+
+    return new Phaser.Game('100', '100', Phaser.CANVAS, 'main', {
         preload: preload,
         create: create,
         update: update,
         render: render
     });
+}
 
-    // игровая карта, без карты нельзя построить игру
-    game.map = map;
+function create(game) {
 
     // размеры гексов карты по умолчанию
     game.hexagonWidth = 100;
     game.hexagonHeight = 111;
-
     // параметры смещения тени игры
     game.shadowXOffset = 8;
     game.shadowYOffset = 10;
-
-    return game
-}
-
-function create(game) {
+    // игровая карта
+    game.map = Map;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -29,7 +31,7 @@ function create(game) {
     game.time.slowMotion = 0;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize/2); //размеры карты
+    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.floorLayer = game.add.group();
@@ -46,11 +48,11 @@ function create(game) {
 
     game.SelectLineLayer = game.add.group();
     game.SelectLineLayer.alpha = 0.9;
-    game.add.tween(game.SelectLineLayer).to( { alpha: 0.4 }, 1500, "Linear").loop(true).yoyo(true).start();
+    game.add.tween(game.SelectLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
 
     game.SelectTargetLineLayer = game.add.group();
     game.SelectTargetLineLayer.alpha = 0.9;
-    game.add.tween(game.SelectTargetLineLayer).to( { alpha: 0.4 }, 1500, "Linear").loop(true).yoyo(true).start();
+    game.add.tween(game.SelectTargetLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
 
     game.effectsLayer = game.add.group();
 
@@ -66,10 +68,13 @@ function create(game) {
 
     game.icon = game.add.group();
 
-    CreateMap();
-    if (game && game.typeService === "battle") {
-        CreateMyGameUnits();
-        CreateHostileGameUnits();
-        LoadOpenCoordinate();
-    }
+    CreateMap().then(function () {
+        LoadFunc();
+
+        if (game.typeService === "battle") {
+            CreateMyGameUnits();
+            CreateHostileGameUnits();
+            LoadOpenCoordinate();
+        }
+    });
 }

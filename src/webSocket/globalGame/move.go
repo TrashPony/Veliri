@@ -48,7 +48,9 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 
 			for ws, otherUser := range usersGlobalWs {
 				if otherUser.GetID() != user.GetID() {
+					mutex.Lock()
 					ws.WriteJSON(Message{Event: "MoveOtherUser", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit})
+					mutex.Unlock()
 				}
 			}
 
