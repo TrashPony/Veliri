@@ -39,20 +39,8 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				return
 			}
 		default:
-			err := ws.WriteJSON(Message{Event: msg.Event, PathUnit: pathUnit})
-			if err != nil {
-				DisconnectUser(usersGlobalWs[ws])
-				*moveChecker = false
-				return
-			}
 
-			for ws, otherUser := range usersGlobalWs {
-				if otherUser.GetID() != user.GetID() {
-					mutex.Lock()
-					ws.WriteJSON(Message{Event: "MoveOtherUser", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit})
-					mutex.Unlock()
-				}
-			}
+			globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), PathUnit: pathUnit}
 
 			if i+1 != len(path) { // бeз этого ифа канал будет ловить деад лок
 				time.Sleep(100 * time.Millisecond)

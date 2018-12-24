@@ -1,13 +1,15 @@
 CREATE TABLE bases (
-  id        SERIAL PRIMARY KEY,
-  base_name varchar(64),
+  id              SERIAL PRIMARY KEY,
+  base_name       varchar(64),
   /* id сектора то есть карты где находиться база */
-  id_map    INT REFERENCES maps (id),
+  id_map          INT REFERENCES maps (id),
   /* позиция базы, на иговой карте берется обьект на этой координате и накладывается событие при нажатии */
-  q         int,
-  r         int,
-  resp_q    int, /* resp q,r это точка выхода из базы, когда игрок нажимает выйти из базы он попадает сюда */
-  resp_r    int
+  q               int,
+  r               int,
+  resp_q          int, /* resp q,r это точка выхода из базы, когда игрок нажимает выйти из базы он попадает сюда */
+  resp_r          int,
+  transport_count int, /* количество эвакуатор у базы */
+  defender_count  int  /* количество защитников */
 );
 
 CREATE TABLE base_users ( /* игроки которые сейчас сидят на конкретной базу */

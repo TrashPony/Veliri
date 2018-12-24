@@ -1,5 +1,8 @@
 function CreateMiniMap(map) {
     let canvas = document.getElementById("canvasMap");
+
+    if (!game.map) return;
+
     if (canvas) {
         let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -50,6 +53,26 @@ function CreateMiniMap(map) {
         if (game.squad) {
             ctx.fillStyle = "#19ff00";
             ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight)
+        }
+
+        if (game.otherUsers) {
+            ctx.fillStyle = "#ff7a00";
+            for (let i = 0; i < game.otherUsers.length; i++) {
+                if (game.otherUsers[i].sprite) {
+                    ctx.fillRect(game.otherUsers[i].sprite.x / kX, game.otherUsers[i].sprite.y / kY,
+                        hexagonWidth, hexagonHeight)
+                }
+            }
+        }
+        //game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite
+        for (let i in game.bases) {
+            ctx.fillStyle = "#1efcff";
+            for (let j in game.bases[i].transports) {
+                if (game.bases[i].transports[j].sprite) {
+                    ctx.fillRect(game.bases[i].transports[j].sprite.x / kX, game.bases[i].transports[j].sprite.y / kY,
+                        hexagonWidth, hexagonHeight)
+                }
+            }
         }
 
         ctx.strokeStyle = "#fffc1f";

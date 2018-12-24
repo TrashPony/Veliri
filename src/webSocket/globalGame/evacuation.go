@@ -19,42 +19,53 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 			stopMove <- true // останавливаем движение
 		}
 
-		path, baseID := globalGame.LaunchEvacuation(user, mp)
-
-		for ws := range usersGlobalWs {
-			ws.WriteJSON(Message{Event: "startMoveEvacuation", OtherUser: GetShortUserInfo(user), PathUnit: path[0], BaseID: baseID})
+		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
+		if err != nil {
+			ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+			return
 		}
 
+		globalPipe <- Message{Event: "startMoveEvacuation", OtherUser: GetShortUserInfo(user),
+			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)
 
 		for _, pathUnit := range path {
-			for ws := range usersGlobalWs {
-				ws.WriteJSON(Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID})
-			}
+			globalPipe <- Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
+				TransportID: transport.ID}
+
+			transport.X = pathUnit.X
+			transport.Y = pathUnit.Y
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		for ws := range usersGlobalWs {
-			ws.WriteJSON(Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID})
-		}
-
+		globalPipe <- Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
+			TransportID: transport.ID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
 		path = globalGame.ReturnEvacuation(user, mp, baseID)
+
 		for _, pathUnit := range path {
-			for ws := range usersGlobalWs {
-				ws.WriteJSON(Message{Event: "ReturnEvacuation", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, BaseID: baseID})
-			}
+			globalPipe <- Message{Event: "ReturnEvacuation", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit,
+				BaseID: baseID, TransportID: transport.ID}
+
+			transport.X = pathUnit.X
+			transport.Y = pathUnit.Y
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		for ws := range usersGlobalWs {
-			ws.WriteJSON(Message{Event: "stopEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID})
-		}
-
+		globalPipe <- Message{Event: "stopEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
+			TransportID: transport.ID}
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 
-		msg.BaseID = baseID
-		intoToBase(ws, msg, stopMove, moveChecker, true)
+		user.InBaseID = baseID
+		user.GetSquad().GlobalX = 0
+		user.GetSquad().GlobalY = 0
+
+		globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID()}
+
+		DisconnectUser(user)
+
+		*evacuation = false
+		transport.Job = false
 	}
 }

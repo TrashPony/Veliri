@@ -4,12 +4,16 @@ function MoveTo(jsonData) {
 
     CreateMiniMap();
 
-    game.add.tween(game.squad.sprite).to({
-            x: jsonData.path_unit.x,
-            y: jsonData.path_unit.y
-        }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
-    );
-    SetMSAngle(game.squad, jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
+    if (jsonData.other_user.squad_id === game.squad.id) {
+        game.add.tween(game.squad.sprite).to({
+                x: jsonData.path_unit.x,
+                y: jsonData.path_unit.y
+            }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
+        );
+        SetMSAngle(game.squad, jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
+    } else {
+        MoveOther(jsonData)
+    }
 }
 
 function MoveOther(jsonData) {

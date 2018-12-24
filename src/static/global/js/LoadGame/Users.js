@@ -40,7 +40,7 @@ function CreateOtherUser(otherUser) {
             }
         }
     }
-    
+
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate + 90);
 }

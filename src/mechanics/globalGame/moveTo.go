@@ -1,11 +1,13 @@
 package globalGame
 
 import (
-	"../gameObjects/map"
-	"../player"
-	"math"
 	"../factories/bases"
 	"../gameObjects/base"
+	"../gameObjects/map"
+	"../player"
+	"errors"
+	"math"
+	"sync"
 )
 
 const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
@@ -40,28 +42,53 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 	return MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false)
 }
 
-func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int) {
+func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base.Transport, error) {
 	mapBases := bases.Bases.GetBasesByMap(mp.Id)
 	minDist := 0.0
 	evacuationBase := &base.Base{}
 
+	var mutex = &sync.Mutex{}
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	for _, mapBase := range mapBases {
+
 		x, y := GetXYCenterHex(mapBase.Q, mapBase.R)
 		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-		if dist < minDist || minDist == 0 {
+		transport := mapBase.GetFreeTransport()
+
+		if (dist < minDist || minDist == 0) && transport != nil {
 			minDist = dist
 			evacuationBase = mapBase
 		}
 	}
 
-	startX, startY := GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
+	if evacuationBase != nil {
+		transport := evacuationBase.GetFreeTransport()
+		if transport != nil {
+			var startX, startY int
 
-	return MoveTo(float64(startX), float64(startY), 250, 15, 15,
-		float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true),
-		evacuationBase.ID
+			transport.Job = true
+
+			if transport.X == 0 && transport.Y == 0 {
+				startX, startY = GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
+			} else {
+				startX = transport.X
+				startY = transport.Y
+			}
+
+			return MoveTo(float64(startX), float64(startY), 250, 15, 15,
+					float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true),
+				evacuationBase.ID, transport, nil
+		} else {
+			return nil, 0, nil, errors.New("no available transport")
+		}
+	} else {
+		return nil, 0, nil, errors.New("no available base")
+	}
 }
 
-func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) ([]PathUnit) {
+func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 

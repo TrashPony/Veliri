@@ -11,6 +11,7 @@ import (
 	"../../mechanics/player"
 	"../utils"
 	"github.com/gorilla/websocket"
+	"log"
 	"strconv"
 	"sync"
 )
@@ -18,30 +19,34 @@ import (
 var mutex = &sync.Mutex{}
 
 var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
+var globalPipe = make(chan Message)
 
 type Message struct {
-	Event      string                `json:"event"`
-	Map        *_map.Map             `json:"map"`
-	Error      string                `json:"error"`
-	Squad      *squad.Squad          `json:"squad"`
-	User       *player.Player        `json:"user"`
-	Bases      map[int]*base.Base    `json:"bases"`
-	X          int                   `json:"x"`
-	Y          int                   `json:"y"`
-	ToX        float64               `json:"to_x"`
-	ToY        float64               `json:"to_y"`
-	PathUnit   globalGame.PathUnit   `json:"path_unit"`
-	Path       []globalGame.PathUnit `json:"path"`
-	BaseID     int                   `json:"base_id"`
-	OtherUser  *hostileMS            `json:"other_user"`
-	OtherUsers []*hostileMS          `json:"other_users"`
-	ThrowItems []inventory.Slot      `json:"throw_items"`
-	Boxes      []*box.Box            `json:"boxes"`
-	Box        *box.Box              `json:"box"`
-	BoxID      int                   `json:"box_id"`
-	Slot       int                   `json:"slot"`
-	Size       float32               `json:"size"`
-	Inventory  *inventory.Inventory  `json:"inventory"`
+	idSender    int
+	idUserSend  int
+	Event       string                `json:"event"`
+	Map         *_map.Map             `json:"map"`
+	Error       string                `json:"error"`
+	Squad       *squad.Squad          `json:"squad"`
+	User        *player.Player        `json:"user"`
+	Bases       map[int]*base.Base    `json:"bases"`
+	X           int                   `json:"x"`
+	Y           int                   `json:"y"`
+	ToX         float64               `json:"to_x"`
+	ToY         float64               `json:"to_y"`
+	PathUnit    globalGame.PathUnit   `json:"path_unit"`
+	Path        []globalGame.PathUnit `json:"path"`
+	BaseID      int                   `json:"base_id"`
+	OtherUser   *hostileMS            `json:"other_user"`
+	OtherUsers  []*hostileMS          `json:"other_users"`
+	ThrowItems  []inventory.Slot      `json:"throw_items"`
+	Boxes       []*box.Box            `json:"boxes"`
+	Box         *box.Box              `json:"box"`
+	BoxID       int                   `json:"box_id"`
+	Slot        int                   `json:"slot"`
+	Size        float32               `json:"size"`
+	Inventory   *inventory.Inventory  `json:"inventory"`
+	TransportID int                   `json:"transport_id"`
 }
 
 type hostileMS struct {
@@ -110,6 +115,10 @@ func Reader(ws *websocket.Conn) {
 
 	for {
 
+		if evacuation {
+			continue
+		}
+
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
@@ -128,7 +137,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "IntoToBase" {
-			intoToBase(ws, msg, stopMove, &moveChecker, false)
+			intoToBase(ws, msg, stopMove, &moveChecker)
 		}
 
 		if msg.Event == "ThrowItems" {
@@ -150,5 +159,26 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "evacuation" {
 			evacuationSquad(ws, msg, stopMove, &moveChecker, &evacuation)
 		}
+	}
+}
+
+func MoveSender() {
+	for {
+		resp := <-globalPipe
+		mutex.Lock()
+		for ws, client := range usersGlobalWs {
+			if (client.GetID() != resp.idSender && resp.idSender > 0) ||
+				(client.GetID() == resp.idUserSend && resp.idUserSend > 0) ||
+				(resp.idSender == 0 && resp.idUserSend == 0) {
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					DisconnectUser(usersGlobalWs[ws])
+					log.Printf("error: %v", err)
+					ws.Close()
+					delete(usersGlobalWs, ws)
+				}
+			}
+		}
+		mutex.Unlock()
 	}
 }

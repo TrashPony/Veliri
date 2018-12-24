@@ -6,6 +6,7 @@ import (
 	"./webSocket"
 	"./webSocket/chat"
 	"./webSocket/field"
+	"./webSocket/globalGame"
 	"./webSocket/lobby"
 	"github.com/gorilla/mux"
 	"log"
@@ -44,6 +45,7 @@ func main() {
 	go field.UnitSender()
 	go field.PhaseSender()
 	go field.AttackSender()
+	go globalGame.MoveSender()
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

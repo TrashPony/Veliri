@@ -1,4 +1,4 @@
-package get
+package base
 
 import (
 	"../../../dbConnect"
@@ -17,8 +17,10 @@ func Bases() map[int]*base.Base {
 		" r," +
 		" id_map," +
 		" resp_q," +
-		" resp_r" +
-		"" +
+		" resp_r," +
+		" transport_count," +
+		" defender_count" +
+		" " +
 		" FROM bases")
 	if err != nil {
 		log.Fatal("get all bases " + err.Error())
@@ -27,11 +29,18 @@ func Bases() map[int]*base.Base {
 
 	for rows.Next() {
 		var gameBase base.Base
+		var transports int
+		var defenders int
 
-		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &gameBase.RespQ, &gameBase.RespR)
+		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &gameBase.RespQ,
+			&gameBase.RespR, &transports, &defenders)
 		if err != nil {
 			log.Fatal("get scan all base " + err.Error())
 		}
+
+		gameBase.CreateTransports(transports)
+		gameBase.CreateDefenders(defenders)
+
 		bases[gameBase.ID] = &gameBase
 	}
 

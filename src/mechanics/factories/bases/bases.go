@@ -1,7 +1,6 @@
 package bases
 
 import (
-	"../../db/get"
 	dbBase "../../db/base"
 	"../../gameObjects/base"
 	"sync"
@@ -16,11 +15,11 @@ var Bases = NewBasesStore()
 
 func NewBasesStore() *Store {
 	return &Store{
-		bases: get.Bases(),
+		bases: dbBase.Bases(),
 	}
 }
 
-func UserIntoBase(userID, baseID int)  {
+func UserIntoBase(userID, baseID int) {
 	dbBase.UserIntoBase(userID, baseID)
 }
 

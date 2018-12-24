@@ -15,10 +15,6 @@ function ReadResponse(jsonData) {
         MoveTo(jsonData);
     }
 
-    if (jsonData.event === "MoveOtherUser") {
-        MoveOther(jsonData);
-    }
-
     if (jsonData.event === "DisconnectUser") {
         DisconnectUser(jsonData);
     }
@@ -32,23 +28,23 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "startMoveEvacuation"){
-        startMoveEvacuation(jsonData)
+        if (game.bases) startMoveEvacuation(jsonData)
     }
 
     if (jsonData.event === "MoveEvacuation") {
-        evacuationMove(jsonData, null)
+        if (game.bases) evacuationMove(jsonData, null)
     }
 
     if (jsonData.event === "placeEvacuation") {
-        placeEvacuation(jsonData)
+        if (game.bases) placeEvacuation(jsonData)
     }
 
     if (jsonData.event === "ReturnEvacuation") {
-        evacuationMove(jsonData, true)
+        if (game.bases) evacuationMove(jsonData, true)
     }
 
     if (jsonData.event === "stopEvacuation") {
-        stopEvacuation(jsonData)
+        if (game.bases) stopEvacuation(jsonData)
     }
 
     if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто

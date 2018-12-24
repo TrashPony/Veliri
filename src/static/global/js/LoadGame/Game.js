@@ -12,8 +12,8 @@ function LoadGame() {
     game.input.onDown.add(initMove, game);
 
     CreateUser(Data.squad);
-    CreateBase(Data.bases);
     CreateOtherUsers(Data.other_users);
+    CreateBase(Data.bases);
+    CreateBoxes(Data.boxes);
     CreateMiniMap(Data.map);
-    CreateBoxes(Data.boxes)
 }
