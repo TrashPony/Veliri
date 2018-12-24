@@ -3,6 +3,7 @@ let game;
 function Game(jsonData) {
     game = CreateGame(jsonData.map);
     game.typeService = "global";
+    game.evacuations = [];
 
     setTimeout(function () { // todo костыль связаной с прогрузкой карты )
         CreateUser(jsonData.squad);

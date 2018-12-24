@@ -4,6 +4,8 @@ import (
 	"../gameObjects/map"
 	"../player"
 	"math"
+	"../factories/bases"
+	"../gameObjects/base"
 )
 
 const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
@@ -21,12 +23,9 @@ type PathUnit struct {
 	Speed       float64
 }
 
-func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
-
-	path := make([]PathUnit, 0)
-
-	forecastX := float64(user.GetSquad().GlobalX)
-	forecastY := float64(user.GetSquad().GlobalY)
+func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
+	startX := float64(user.GetSquad().GlobalX)
+	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
 
 	maxSpeed := float64(user.GetSquad().MatherShip.Speed * 3)
@@ -37,6 +36,42 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 	if float64(user.GetSquad().MatherShip.Speed) < user.GetSquad().CurrentSpeed {
 		speed = user.GetSquad().CurrentSpeed
 	}
+
+	return MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false)
+}
+
+func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int) {
+	mapBases := bases.Bases.GetBasesByMap(mp.Id)
+	minDist := 0.0
+	evacuationBase := &base.Base{}
+
+	for _, mapBase := range mapBases {
+		x, y := GetXYCenterHex(mapBase.Q, mapBase.R)
+		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+		if dist < minDist || minDist == 0 {
+			minDist = dist
+			evacuationBase = mapBase
+		}
+	}
+
+	startX, startY := GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
+
+	return MoveTo(float64(startX), float64(startY), 250, 15, 15,
+		float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true),
+		evacuationBase.ID
+}
+
+func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) ([]PathUnit) {
+	mapBase, _ := bases.Bases.Get(baseID)
+	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
+
+	return MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
+		float64(endX), float64(endY), 0, mp, true)
+}
+
+func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map, ignoreObstacle bool) []PathUnit {
+
+	path := make([]PathUnit, 0)
 
 	diffRotate := 0 // разница между углом цели и носа корпуса
 	dist := 900.0
@@ -52,10 +87,10 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
-		if dist > maxSpeed * 25 {
+		if dist > maxSpeed*25 {
 			if maxSpeed > speed {
 				if len(path)%2 == 0 {
-					speed += float64(user.GetSquad().MatherShip.Speed) / 10
+					speed += minSpeed / 10
 				}
 			} else {
 				speed = maxSpeed
@@ -63,7 +98,7 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 		} else {
 			if minSpeed < speed {
 				if len(path)%2 == 0 {
-					speed -= float64(user.GetSquad().MatherShip.Speed) / 10
+					speed -= minSpeed / 10
 				}
 			} else {
 				speed = minSpeed
@@ -95,7 +130,7 @@ func MoveTo(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 
 		possibleMove, q, r := CheckXYinMove(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
 
-		if (diffRotate == 0 || dist > minDist) && possibleMove {
+		if (diffRotate == 0 || dist > minDist) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
 			forecastY = forecastY + stopY
 

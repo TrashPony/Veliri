@@ -31,8 +31,27 @@ function ReadResponse(jsonData) {
         OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
     }
 
+    if (jsonData.event === "startMoveEvacuation"){
+        startMoveEvacuation(jsonData)
+    }
+
+    if (jsonData.event === "MoveEvacuation") {
+        evacuationMove(jsonData, null)
+    }
+
+    if (jsonData.event === "placeEvacuation") {
+        placeEvacuation(jsonData)
+    }
+
+    if (jsonData.event === "ReturnEvacuation") {
+        evacuationMove(jsonData, game.squad.sprite)
+    }
+
+    if (jsonData.event === "stopEvacuation") {
+        stopEvacuation(jsonData)
+    }
+
     if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто
-        console.log("1")
         if (document.getElementById("openBox" + jsonData.box_id)) {
             OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
         }

@@ -68,6 +68,7 @@ function preload() {
     game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
     game.load.image('box', 'http://' + window.location.host + '/assets/map/box/simpleBox.png');
+    game.load.image('evacuation', 'http://' + window.location.host + '/assets/map/objects/evacuation.png');
     // fog
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
 

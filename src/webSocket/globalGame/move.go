@@ -18,7 +18,7 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			stopMove <- true // останавливаем прошлое движение
 		}
 
-		path := globalGame.MoveTo(user, msg.ToX, msg.ToY, mp)
+		path := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 
 		err := ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
 		if err != nil {

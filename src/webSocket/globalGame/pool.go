@@ -104,8 +104,10 @@ func Reader(ws *websocket.Conn) {
 
 	stopMove := make(chan bool)
 	moveChecker := false
+	evacuation := false
 
 	for {
+
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
@@ -141,6 +143,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "placeItemToBox" {
 			useBox(ws, msg)
+		}
+
+		if msg.Event == "evacuation" {
+			evacuationSquad(ws, msg, stopMove, &moveChecker, &evacuation)
 		}
 	}
 }

@@ -57,6 +57,7 @@ function create(game) {
     game.artilleryBulletLayer = game.add.group();
     game.weaponEffectsLayer = game.add.group();
 
+    game.flyObjectsLayer = game.add.group();
     game.fogOfWar = game.add.group();
     game.fogOfWar.alpha = 0.5;
 
