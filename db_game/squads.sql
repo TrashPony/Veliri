@@ -1,14 +1,21 @@
 CREATE TABLE squads (
   id      SERIAL PRIMARY KEY,
   name    VARCHAR(64),
-  active  BOOLEAN,                   /* у игрока может быть в 1 момент времени только 1 отряд, это переменная говорит какой */
+  active  BOOLEAN, /* у игрока может быть в 1 момент времени только 1 отряд, это переменная говорит какой */
   id_user INT REFERENCES users (id), /* кому принадлежит */
-  in_game BOOLEAN,                   /* отряд в бою */
+  in_game BOOLEAN, /* отряд в бою */
 
   /* позиция отряда на глобальной карте */
   q       int,
   r       int,
-  id_map  INT REFERENCES maps (id),
+  id_map  INT REFERENCES maps (id)
+);
+
+CREATE TABLE squad_thorium_slots (
+  id       SERIAL PRIMARY KEY,
+  id_squad INT REFERENCES squads (id), /* ид отряда к которому принадлежит  */
+  slot     INT, /* слот тория в мсе */
+  thorium  INT                            /* сколько тория заряжено в слот */
 );
 
 CREATE TABLE squad_units (
@@ -56,7 +63,7 @@ CREATE TABLE squad_inventory (/* инвентарь отряда не боево
   id        SERIAL PRIMARY KEY,
   id_squad  INT REFERENCES squads (id), /* какому отряду принаджелит */
   slot      INT, /* какой слот занимает итем */
-  item_type VARCHAR(64), /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body) */
+  item_type VARCHAR(64), /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource), переработака (recycle) */
   item_id   INT, /* ид итема определяет конкретный итем тип + ид*/
   quantity  INT, /* количество предметов в слоте */
   hp        INT  /* сколько осталось хп у эквипа, до поломки*/

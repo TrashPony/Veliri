@@ -14,7 +14,7 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 
 	msBody := user.GetSquad().MatherShip.Body
 
-	if equipItem != nil && equipItem.ItemID == idEquip {
+	if equipItem != nil && equipItem.ItemID == idEquip && equipItem.Type == "equip" {
 
 		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
 
@@ -42,7 +42,7 @@ func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeE
 func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) error {
 	equipItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	if equipItem.ItemID == idEquip {
+	if equipItem != nil && equipItem.ItemID == idEquip && equipItem.Type == "equip" {
 
 		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
 

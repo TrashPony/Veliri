@@ -110,6 +110,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			ship.Body, _ = gameTypes.Bodies.GetByID(int(idBody.Int64))
 			BodyEquip(ship)
 
+			SquadThorium(ship, squadID)
+
 			ship.CalculateParams()
 
 		} else {
@@ -118,6 +120,35 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 	}
 
 	return
+}
+
+func SquadThorium(ship *unit.Unit, squadID int) {
+	rows, err := dbConnect.GetDBConnect().Query("" +
+		"SELECT " +
+		"slot, " +
+		"thorium " +
+		""+
+		"FROM squad_thorium_slots " +
+		"WHERE id_squad = $1", squadID)
+	if err != nil {
+		log.Fatal("get thorium squad" + err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var slotNumber, thorium int
+
+		err = rows.Scan(&slotNumber, &thorium)
+		if err != nil {
+			log.Fatal("get thorium squad " + err.Error())
+		}
+
+		for _, slot := range ship.Body.ThoriumSlots {
+			if slot.Number == slotNumber {
+				ship.Body.ThoriumSlots[slotNumber].Count = thorium
+			}
+		}
+	}
 }
 
 func SquadUnits(squadID int, slot int) *unit.Unit {

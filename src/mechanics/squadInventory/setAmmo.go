@@ -12,7 +12,7 @@ import (
 func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) error {
 	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	if ammoItem.ItemID == idAmmo {
+	if ammoItem.Item != nil && ammoItem.ItemID == idAmmo && ammoItem.Type == "ammo" {
 		newAmmo, _ := gameTypes.Ammo.GetByID(idAmmo)
 
 		ammoSlot, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
@@ -33,7 +33,7 @@ func SetMSAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int) err
 func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numberUnitSlot int) error {
 	ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	if ammoItem.ItemID == idAmmo {
+	if ammoItem.Item != nil && ammoItem.ItemID == idAmmo && ammoItem.Type == "ammo" {
 		newAmmo, _ := gameTypes.Ammo.GetByID(idAmmo)
 
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]

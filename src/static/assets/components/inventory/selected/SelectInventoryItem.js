@@ -23,5 +23,12 @@ function SelectInventoryItem(e) {
         if (JSON.parse(this.slotData).type === "ammo") {
             SetAmmo(JSON.parse(this.slotData).item, this.number)
         }
+
+        if (JSON.parse(this.slotData).type === "resource") {
+        }
+
+        if (JSON.parse(this.slotData).type === "recycle" && JSON.parse(this.slotData).item.name === "enriched_thorium") {
+            SetThorium(JSON.parse(this.slotData).item, this.number)
+        }
     }
 }

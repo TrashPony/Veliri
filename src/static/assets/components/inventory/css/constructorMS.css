@@ -125,6 +125,7 @@
     vertical-align: middle;
     color: #00FFFD;
     line-height: 30px;
+    position: relative;
 }
 
 .weaponIcon {
@@ -139,8 +140,52 @@
     margin-top: 90px;
 }
 
+#MSIcon #thorium {
+    min-height: 35px;
+    min-width: 35px;
+    position: absolute;
+    bottom: 16px;
+}
+
+#MSIcon .thoriumSlots, #MSIcon #thorium #efficiency {
+    height: 30px;
+    width: 30px;
+    float: left;
+    background-size: cover;
+    border-radius: 5px;
+    border: 1px solid #959595;
+    background-color: #4c4c4c;
+    background-repeat: no-repeat;
+    margin: 1px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
+    font-family: Arial;
+    font-size: 9px;
+    color: #00FFFD;
+    line-height: 46px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#MSIcon #thorium #efficiency {
+    height: 15px;
+    width: 30px;
+    position: absolute;
+    top: -16px;
+    left: calc(50% - 17px);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    line-height: 18px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .UnitIconNoSelect {
-    box-shadow: 0 0 10px rgba(0,0,0,1);
+    box-shadow: inset 0 0 10px rgba(0,0,0,1);
 }
 
 .UnitIconSelect {

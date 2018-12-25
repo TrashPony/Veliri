@@ -41,6 +41,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/set/SetBody.js");
             includeJS("../assets/components/inventory/set/SetEquip.js");
             includeJS("../assets/components/inventory/set/SetWeapon.js");
+            includeJS("../assets/components/inventory/set/SetThorium.js");
 
             includeJS("../assets/components/inventory/repair/CreateRepairMenu.js");
             includeJS("../assets/components/inventory/repair/InventoryRepair.js");

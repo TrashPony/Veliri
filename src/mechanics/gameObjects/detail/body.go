@@ -37,6 +37,8 @@ type Body struct {
 	EquippingIV  map[int]*BodyEquipSlot `json:"equippingIV"`
 	EquippingV   map[int]*BodyEquipSlot `json:"equippingV"`
 
+	ThoriumSlots map[int]*ThoriumSlot `json:"thorium_slots"` /* слоты в которых хранится топливо */
+
 	Weapons map[int]*BodyWeaponSlot `json:"weapons"`
 }
 
@@ -110,6 +112,12 @@ type BodyEquipSlot struct {
 	HP             int                    `json:"hp"`
 	Target         *coordinate.Coordinate `json:"target"`
 	StandardSize   int                    `json:"standard_size"` /* определяет тип вмещаемого юнита если это ангар */
+}
+
+type ThoriumSlot struct {
+	Number   int `json:"number_slot"`
+	Count    int `json:"count"`
+	MaxCount int `json:"max_count"`
 }
 
 type BodyWeaponSlot struct {

@@ -18,6 +18,7 @@ function DestroyInventoryClickEvent() {
     cellUnitIconDestroySelect();
 
     cellAmmoDestroySelect();
+    cellThorium();
 
     cellEquipDestroySelect(1, 5, "inventoryEquip", "inventoryEquipping"); // обнуляем ячейки эквипа мса
     cellEquipDestroySelect(2, 5, "inventoryEquip", "inventoryEquipping");
@@ -29,6 +30,15 @@ function DestroyInventoryClickEvent() {
         cellEquipDestroySelect(1, 3, "UnitEquip", "UnitEquip"); // обнуляем ячейки эквипа юнита
         cellEquipDestroySelect(2, 3, "UnitEquip", "UnitEquip");
         cellEquipDestroySelect(3, 3, "UnitEquip", "UnitEquip");
+    }
+}
+
+function cellThorium() {
+    let thoriumCells = document.getElementsByClassName("thoriumSlots");
+
+    for (let i = 0; thoriumCells && i < thoriumCells.length; i++) {
+        thoriumCells[i].style.boxShadow = "inset 0 0 5px rgba(0, 0, 0, 1)";
+        thoriumCells[i].style.cursor = "auto";
     }
 }
 

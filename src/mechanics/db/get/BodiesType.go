@@ -71,11 +71,35 @@ func BodiesType() map[int]detail.Body {
 		}
 
 		BodySlots(&body)
+		BodyThoriumSlots(&body)
 
 		allType[body.ID] = body
 	}
 
 	return allType
+}
+
+func BodyThoriumSlots(body *detail.Body) {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT number_slot, max_thorium "+
+		"FROM body_thorium_slots "+
+		"WHERE id_body = $1", body.ID)
+	if err != nil {
+		log.Fatal("get body thorium slot " + err.Error())
+	}
+	defer rows.Close()
+
+	body.ThoriumSlots = make(map[int]*detail.ThoriumSlot)
+
+	for rows.Next() {
+		var thoriumSlot detail.ThoriumSlot
+
+		err := rows.Scan(&thoriumSlot.Number, &thoriumSlot.MaxCount)
+		if err != nil {
+			log.Fatal("get body thorium slot " + err.Error())
+		}
+
+		body.ThoriumSlots[thoriumSlot.Number] = &thoriumSlot
+	}
 }
 
 func BodySlots(body *detail.Body) {

@@ -7,7 +7,12 @@ function InventoryTable(inventoryItems) {
             cell.slotData = JSON.stringify(inventoryItems.slots[i]);
             cell.number = i;
 
-            cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
+            if (JSON.parse(cell.slotData).type === "resource" || JSON.parse(cell.slotData).type === "recycle") {
+                cell.style.backgroundImage = "url(/assets/resource/" + JSON.parse(cell.slotData).item.name + ".png)";
+            } else {
+                cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
+            }
+
             cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
 
             CreateHealBar(cell, "inventory", true);

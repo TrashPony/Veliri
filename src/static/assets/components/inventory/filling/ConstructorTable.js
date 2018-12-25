@@ -54,9 +54,78 @@ function UpdateShipIcon(ms) {
 
     let slotData = {};
     slotData.unit = ms;
-    UpdateWeaponIcon(unitIcon, "weaponIcon", slotData);
 
+    CreateThoriumSlots(unitIcon, ms);
+    UpdateWeaponIcon(unitIcon, "weaponIcon", slotData);
     CreateHealBar(unitIcon, "body", true);
+}
+
+function CreateThoriumSlots(unitIcon, ms) {
+
+    let div = document.createElement("div");
+    div.id = "thorium";
+
+    let efficiency = document.createElement("div");
+    efficiency.id = "efficiency";
+    div.appendChild(efficiency);
+
+    let countSlot = 0;
+    let fullCount = 0;
+
+    for (let i in ms.body.thorium_slots) {
+
+        countSlot++;
+
+        let thoriumSlots = document.createElement("div");
+        thoriumSlots.className = "thoriumSlots";
+
+        if (ms.body.thorium_slots[i].count > 0) {
+            fullCount++;
+            thoriumSlots.style.backgroundImage = "url(/assets/resource/enriched_thorium.png)";
+        }
+
+        thoriumSlots.innerHTML = ms.body.thorium_slots[i].count + "/" + ms.body.thorium_slots[i].max_count;
+        thoriumSlots.count = ms.body.thorium_slots[i].count;
+        thoriumSlots.maxCount = ms.body.thorium_slots[i].max_count;
+        thoriumSlots.numberSlot = i;
+
+        thoriumSlots.onmouseover = function () {
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
+        };
+
+        thoriumSlots.onmousemove = function () {
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
+        };
+
+        thoriumSlots.onclick = function () {
+            event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
+
+        };
+
+        div.appendChild(thoriumSlots);
+    }
+
+    let efficiencyCalc = 0;
+
+    if (fullCount > 0) {
+        efficiencyCalc = countSlot / fullCount
+    }
+
+    if (efficiencyCalc < 33) {
+        efficiency.style.color = "#FF0000";
+    } else if (efficiencyCalc < 66) {
+        efficiency.style.color = "#FFF000";
+    } else if (efficiencyCalc < 66) {
+        efficiency.style.color = "#00FF00";
+    }
+
+    efficiency.innerHTML = efficiencyCalc + "%";
+
+    div.style.left = "calc(50% - " + (countSlot * 34) / 2 + "px)";
+
+    unitIcon.appendChild(div);
 }
 
 function ItemOverTip(e, slot) {

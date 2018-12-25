@@ -4,6 +4,7 @@ import (
 	"../../../../dbConnect"
 	"../../../gameObjects/squad"
 	"log"
+	"database/sql"
 )
 
 func Squad(squad *squad.Squad, full bool) {
@@ -25,7 +26,28 @@ func Squad(squad *squad.Squad, full bool) {
 		InventorySquad(squad, tx)
 		Units(squad, tx)
 	}
+
 	MotherShip(squad, tx)
+	SquadThorium(squad, tx)
 
 	tx.Commit()
+}
+
+func SquadThorium(squad *squad.Squad, tx *sql.Tx) {
+	_, err := tx.Exec("DELETE FROM squad_thorium_slots WHERE id_squad = $1", squad.ID)
+	if err != nil {
+		log.Fatal("delete thorium" + err.Error())
+	}
+
+	if squad.MatherShip.Body == nil {
+		return
+	}
+
+	for _, slot := range squad.MatherShip.Body.ThoriumSlots {
+		_, err := tx.Exec("INSERT INTO squad_thorium_slots (id_squad, slot, thorium) VALUES ($1, $2, $3)",
+			squad.ID, slot.Number, slot.Count)
+		if err != nil {
+			log.Fatal("add new thorium slot" + err.Error())
+		}
+	}
 }

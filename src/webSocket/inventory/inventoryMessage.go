@@ -18,7 +18,8 @@ type Message struct {
 	EquipSlot     int `json:"equip_slot"`
 	EquipSlotType int `json:"equip_slot_type"`
 
-	UnitSlot int `json:"unit_slot"`
+	UnitSlot    int `json:"unit_slot"`
+	ThoriumSlot int `json:"thorium_slot"`
 }
 
 type Response struct {

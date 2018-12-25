@@ -12,7 +12,7 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 	weapon := user.GetSquad().Inventory.Slots[inventorySlot]
 	msBody := user.GetSquad().MatherShip.Body
 
-	if weapon != nil && msBody != nil && weapon.ItemID == idWeapon {
+	if weapon != nil && msBody != nil && weapon.ItemID == idWeapon && weapon.Type == "weapon"{
 		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
 
 		weaponSlot, ok := msBody.Weapons[numEquipSlot]
@@ -50,7 +50,7 @@ func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int)
 func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, numberUnitSlot int) error {
 	weapon := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	if weapon.ItemID == idWeapon {
+	if weapon.Item != nil && weapon.ItemID == idWeapon && weapon.Type == "weapon"{
 		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
 
 		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
@@ -106,7 +106,7 @@ func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 
 	if weaponSlot.Ammo != nil {
 		user.GetSquad().Inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity,
-			1, weaponSlot.Ammo.Size, weaponSlot.Weapon.MaxHP)
+			1, weaponSlot.Ammo.Size, 1)
 		weaponSlot.Ammo = nil
 	}
 

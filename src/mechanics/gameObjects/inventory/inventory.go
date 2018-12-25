@@ -172,5 +172,25 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 
 			inv.Slots[slot] = &inventorySlot
 		}
+
+		if inventorySlot.Type == "resource" {
+			resource, _ := gameTypes.Resource.GetBaseByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = resource
+			inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у ресов нет хп
+
+			inv.Slots[slot] = &inventorySlot
+ 		}
+
+		if inventorySlot.Type == "recycle" {
+			resource, _ := gameTypes.Resource.GetRecycledByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = resource
+			inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у ресов нет хп
+
+			inv.Slots[slot] = &inventorySlot
+		}
 	}
 }

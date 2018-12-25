@@ -10,7 +10,7 @@ import (
 func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 	body := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	if body != nil && body.ItemID == idBody {
+	if body != nil && body.ItemID == idBody && body.Type == "body" {
 		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 		if user.GetSquad().MatherShip == nil {
@@ -56,7 +56,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 		return // todo ошибка, нет слота
 	}
 
-	if body != nil && body.ItemID == idBody {
+	if body != nil && body.ItemID == idBody && body.Type == "body" {
 		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 		if newBody.StandardSize <= unitSlot.StandardSize {

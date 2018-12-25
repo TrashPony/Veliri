@@ -80,3 +80,11 @@ INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type, st
 VALUES (2, 4, 2, false, '', 2);
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type, standard_size)
 VALUES (2, 4, 3, false, '', 3);
+
+/* ячейки с торием */
+INSERT INTO body_thorium_slots (id_body, number_slot, max_thorium)
+VALUES (2, 1, 100);
+INSERT INTO body_thorium_slots (id_body, number_slot, max_thorium)
+VALUES (2, 2, 100);
+INSERT INTO body_thorium_slots (id_body, number_slot, max_thorium)
+VALUES (2, 3, 100);

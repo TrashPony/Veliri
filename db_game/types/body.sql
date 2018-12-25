@@ -23,6 +23,13 @@ CREATE TABLE body_type (
   standard_size_big          BOOLEAN   /* оружие которое может использовать корпус small, medium, big */
 );
 
+CREATE TABLE body_thorium_slots (
+  id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/
+  number_slot   INT,                           /* номер слота в корпусе */
+  max_thorium   INT                            /* сколько макс, тория помещается в ячейке */
+);
+
+
 CREATE TABLE body_slots (
   id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/
   type_slot     INT,                           /* тип слота куда встаривается оборудование I (1) , II (2), III (3), IV (4), V (5) */
