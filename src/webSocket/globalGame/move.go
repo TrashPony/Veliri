@@ -28,12 +28,12 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			DisconnectUser(usersGlobalWs[ws])
 		}
 
-		go MoveUserMS(msg, user, path, stopMove, moveChecker)
+		go MoveUserMS(ws, msg, user, path, stopMove, moveChecker)
 		*moveChecker = true
 	}
 }
 
-func MoveUserMS(msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
+func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
 	for i, pathUnit := range path {
 		select {
 		case exitNow := <-exit:
@@ -43,6 +43,12 @@ func MoveUserMS(msg Message, user *player.Player, path []globalGame.PathUnit, ex
 			}
 		default:
 			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots)
+
+			// если клиент отключился то останавливаем его
+			if ws == nil || usersGlobalWs[ws] == nil {
+				*moveChecker = false
+				return
+			}
 
 			// говорим юзеру как расходуется его топливо
 			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
@@ -56,7 +62,6 @@ func MoveUserMS(msg Message, user *player.Player, path []globalGame.PathUnit, ex
 			}
 
 			// TODO проверка колизий игрок - игрок
-			// TODO если юзер отключается вещание не прекращается
 
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)

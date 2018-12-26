@@ -5,6 +5,9 @@ function MoveTo(jsonData) {
     CreateMiniMap();
 
     if (jsonData.other_user.squad_id === game.squad.id) {
+        let thoriumEfficiency = document.getElementById("speedBarEfficiency");
+        thoriumEfficiency.innerHTML = (jsonData.path_unit.Speed * 10).toFixed(0);
+
         game.add.tween(game.squad.sprite).to({
                 x: jsonData.path_unit.x,
                 y: jsonData.path_unit.y

@@ -65,5 +65,5 @@ function ThoriumBar(thoriumSlots) {
     }
 
     thoriumEfficiency.innerHTML = (thoriumEfficiencyCalc).toFixed(0) + "%";
-    speedEfficiency.innerHTML = efficiencyCalc.toFixed(0) + "%";
+    //speedEfficiency.innerHTML = efficiencyCalc.toFixed(0) + "%";
 }
