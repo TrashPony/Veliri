@@ -16,20 +16,27 @@ func loadGame(ws *websocket.Conn, msg Message) {
 		x, y := globalGame.GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
 		user.GetSquad().GlobalX = x
 		user.GetSquad().GlobalY = y
+
+		user.GetSquad().ToX = float64(x)
+		user.GetSquad().ToY = float64(y)
+
 		user.GetSquad().CurrentSpeed = 0
 	}
 
+	user.GetSquad().Afterburner = false
+
 	otherUsers := make([]*hostileMS, 0)
 
-	for ws, otherUser := range usersGlobalWs {
-		if otherUser.GetID() != user.GetID() {
+	for _, otherUser := range usersGlobalWs {
+		if user.GetID() != otherUser.GetID() {
 			otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
-			ws.WriteJSON(Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user)})
 		}
 	}
 
+	globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID()}
+
 	if find && user != nil && user.InBaseID == 0 {
-		ws.WriteJSON(Message{
+		globalPipe <- Message{
 			Event:      msg.Event,
 			Map:        mp,
 			User:       user,
@@ -37,8 +44,9 @@ func loadGame(ws *websocket.Conn, msg Message) {
 			Bases:      bases.Bases.GetBasesByMap(mp.Id),
 			OtherUsers: otherUsers,
 			Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
-		})
+			idUserSend: user.GetID(),
+		}
 	} else {
-		ws.WriteJSON(Message{Event: "Error", Error: "no allow"})
+		globalPipe <- Message{Event: "Error", Error: "no allow", idUserSend: user.GetID()}
 	}
 }

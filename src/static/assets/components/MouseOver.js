@@ -2,7 +2,7 @@ let stylePositionParams = {};
 
 function moveMouse(e) {
 
-    let w = 110; // Ширина слоя
+    let w = 150; // Ширина слоя
     let x = e.pageX; // Координата X курсора
     let y = e.pageY; // Координата Y курсора
 

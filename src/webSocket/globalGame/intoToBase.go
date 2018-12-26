@@ -24,7 +24,7 @@ func intoToBase(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker
 			user.GetSquad().GlobalX = 0
 			user.GetSquad().GlobalY = 0
 
-			ws.WriteJSON(Message{Event: "IntoToBase"})
+			globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID()}
 			DisconnectUser(user)
 		}
 	}

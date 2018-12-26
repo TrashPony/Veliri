@@ -17,8 +17,8 @@ function CreateMiniMap(map) {
         let startXInit = hexagonWidth / 2;
         let startYInit = hexagonHeight / 2;
 
-        let kX = game.hexagonWidth * game.camera.scale.x / hexagonWidth;
-        let kY = game.hexagonHeight * game.camera.scale.y / hexagonHeight;
+        let kX = game.hexagonWidth / hexagonWidth;
+        let kY = game.hexagonHeight / hexagonHeight;
 
         canvas.onmousedown = function (e) {
             fastMove(e, canvas, hexagonWidth, hexagonHeight)
@@ -50,6 +50,7 @@ function CreateMiniMap(map) {
             ctx.fillRect(mapPoints[i].x, mapPoints[i].y, hexagonWidth, hexagonHeight);
         }
 
+        // TODO смещение по зуму для обьектов на карте
         if (game.squad) {
             ctx.fillStyle = "#19ff00";
             ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight)
@@ -75,8 +76,11 @@ function CreateMiniMap(map) {
             }
         }
 
+
+        let kXCam = game.hexagonWidth * game.camera.scale.x / hexagonWidth;
+        let kYCam = game.hexagonHeight * game.camera.scale.y / hexagonHeight;
         ctx.strokeStyle = "#fffc1f";
-        ctx.strokeRect(game.camera.x / kX, game.camera.y / kY, game.camera.view.width / kX, game.camera.view.height / kY);
+        ctx.strokeRect(game.camera.x / kXCam, game.camera.y / kYCam, game.camera.view.width / kXCam, game.camera.view.height / kYCam);
     }
 }
 

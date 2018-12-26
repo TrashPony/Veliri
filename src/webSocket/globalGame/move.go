@@ -12,28 +12,37 @@ import (
 func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool) {
 	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 	user := usersGlobalWs[ws]
-	// TODO попробовать использовать контекст
+
 	if find && user.InBaseID == 0 {
 		if *moveChecker {
 			stopMove <- true // останавливаем прошлое движение
 		}
 
 		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
-		if err != nil && len(path) == 0 {
-			err = ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+
+		if len(path) > 1 {
+			user.GetSquad().ToX = float64(path[len(path)-1].X)
+			user.GetSquad().ToY = float64(path[len(path)-1].Y)
+		} else {
+			user.GetSquad().ToX = float64(user.GetSquad().GlobalX)
+			user.GetSquad().ToY = float64(user.GetSquad().GlobalY)
 		}
 
-		err = ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
+		if err != nil && len(path) == 0 {
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+		}
+
+		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID()}
 		if err != nil {
 			DisconnectUser(usersGlobalWs[ws])
 		}
 
-		go MoveUserMS(ws, msg, user, path, stopMove, moveChecker)
+		go MoveUserMS(ws, user, path, stopMove, moveChecker)
 		*moveChecker = true
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
+func MoveUserMS(ws *websocket.Conn, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
 	for i, pathUnit := range path {
 		select {
 		case exitNow := <-exit:
@@ -42,7 +51,11 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				return
 			}
 		default:
-			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots)
+			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner)
+
+			if user.GetSquad().Afterburner {
+				// TODO ломание корпуса
+			}
 
 			// если клиент отключился то останавливаем его
 			if ws == nil || usersGlobalWs[ws] == nil {
@@ -55,10 +68,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots}
 
 			// оповещаем мир как двигается отряд
-			globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), PathUnit: pathUnit}
+			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit}
 
 			if i+1 != len(path) { // бeз этого ифа канал будет ловить деад лок
 				time.Sleep(100 * time.Millisecond)
+				user.GetSquad().CurrentSpeed = pathUnit.Speed
+			} else {
+				user.GetSquad().CurrentSpeed = 0
 			}
 
 			// TODO проверка колизий игрок - игрок
@@ -66,7 +82,6 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)
 			user.GetSquad().GlobalY = int(pathUnit.Y)
-			user.GetSquad().CurrentSpeed = pathUnit.Speed
 
 			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R) {
 				user.GetSquad().Q = pathUnit.Q

@@ -2,7 +2,7 @@
     position: absolute;
     display: block;
     border-radius: 5px;
-    width: 300px;
+    width: 234px;
     height: 50px;
     border: 1px solid #25a0e1;
     z-index: 999;
@@ -49,6 +49,14 @@
     user-select: none;
     text-align: center;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#statusBar #Thorium .Thorium:hover {
+    box-shadow: inset 0 0 5px rgb(187, 255, 241) !important;
+}
+
+#statusBar #Thorium .Thorium:active {
+    box-shadow: inset 0 0 5px rgb(84, 184, 255) !important;
 }
 
 #statusBar #Thorium .Thorium.noActive {
@@ -106,6 +114,29 @@
     background: url(https://img.icons8.com/color/52/000000/gas-station.png) 3px center / 40% no-repeat, #4c4c4c;
 }
 
+#backAfterburner {
+    height: 40px;
+    width: 40px;
+    float: right;
+    background: #4c4c4c;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+#Afterburner {
+    height: 100%;
+    width: 100%;
+    background: url(https://img.icons8.com/ultraviolet/64/000000/biohazard.png) center center / 100% no-repeat;
+}
+
+#Afterburner:hover {
+    filter: drop-shadow(0px 0px 4px #dd0019) !important;
+}
+
+#Afterburner:active {
+    background: url(https://img.icons8.com/ultraviolet/64/000000/biohazard.png) center center / 90% no-repeat;
+}
+
 @keyframes alertPulse {
     0% {
         -moz-box-shadow: inset 0 0 5px 0 rgb(255, 209, 0);
@@ -133,5 +164,20 @@
     100% {
         -moz-box-shadow: inset 0 0 10px 0 rgba(204, 169, 44, 0);
         box-shadow: inset 0 0 0 10px rgba(204, 169, 44, 0);
+    }
+}
+
+@keyframes Afterburner {
+    0% {
+        -moz-box-shadow: 0 0 5px 0 rgb(255, 15, 3);
+        box-shadow: 0 0 5px 0 rgb(255, 12, 14);
+    }
+    70% {
+        -moz-box-shadow: inset 0 0 10px 10px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 10px 10px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 10px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 10px rgba(204, 169, 44, 0);
     }
 }

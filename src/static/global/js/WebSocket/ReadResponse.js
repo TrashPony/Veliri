@@ -51,6 +51,10 @@ function ReadResponse(jsonData) {
         if (game.bases) stopEvacuation(jsonData)
     }
 
+    if (jsonData.event === "AfterburnerToggle") {
+        Afterburner(jsonData.afterburner)
+    }
+
     if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто
         if (document.getElementById("openBox" + jsonData.box_id)) {
             OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)

@@ -30,25 +30,28 @@ func useBox(ws *websocket.Conn, msg Message) {
 	var err error
 	var mapBox *box.Box
 
+	user, _ := usersGlobalWs[ws]
+
 	if msg.Event == "getItemFromBox" {
-		err, mapBox = globalGame.GetItemFromBox(usersGlobalWs[ws], msg.BoxID, msg.Slot)
+		err, mapBox = globalGame.GetItemFromBox(user, msg.BoxID, msg.Slot)
 	} else {
-		err, mapBox = globalGame.PlaceItemToBox(usersGlobalWs[ws], msg.BoxID, msg.Slot)
+		err, mapBox = globalGame.PlaceItemToBox(user, msg.BoxID, msg.Slot)
 	}
 
 	if err != nil {
-		ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+		globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
 	} else {
 
-		ws.WriteJSON(Message{Event: "UpdateInventory"})
+		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
 
-		for ws, user := range usersGlobalWs {
+		for _, user := range usersGlobalWs {
 
 			boxX, boxY := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
-			println(dist)
+
 			if dist < 175 { // что бы содержимое ящика не видили те кто далеко
-				ws.WriteJSON(Message{Event: "UpdateBox", BoxID: mapBox.ID, Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize})
+				globalPipe <- Message{Event: "UpdateBox", idUserSend: user.GetID(), BoxID: mapBox.ID,
+					Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize}
 			}
 		}
 	}

@@ -50,7 +50,13 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 		return nil, err
 	}
 
-	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false, fakeThoriumSlots)
+	if user.GetSquad().Afterburner { // если форсаж то х2 скорости
+		maxSpeed = maxSpeed * 2
+		minSpeed = minSpeed * 2
+	}
+
+	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
+		fakeThoriumSlots, user.GetSquad().Afterburner)
 
 	return path, err
 }
@@ -91,7 +97,8 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 			}
 
 			_, path := MoveTo(float64(startX), float64(startY), 250, 15, 15,
-				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true, nil)
+				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
+				true, nil, false)
 
 			return path, evacuationBase.ID, transport, nil
 		} else {
@@ -107,12 +114,12 @@ func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit 
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true, nil)
+		float64(endX), float64(endY), 0, mp, true, nil, false)
 	return path
 }
 
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
-	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot) (error, []PathUnit) {
+	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
 
@@ -133,7 +140,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		if len(path)%10 == 0 || len(path) == 0 {
 			if thoriumSlots != nil { // высчитывает эффективность топлива которая влияет на скорость
 
-				efficiency := WorkOutThorium(thoriumSlots)
+				efficiency := WorkOutThorium(thoriumSlots, afterburner)
 				maxSpeed = (fullMax * efficiency) / 100 // высчитываем максимальную скорость по состоянию топлива
 
 				if efficiency == 0 {
@@ -143,12 +150,16 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
+		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
-		if dist > maxSpeed*25 {
-			if maxSpeed > speed {
-				if len(path)%2 == 0 {
-					speed += minSpeed / 10
+		if dist > maxSpeed*25 { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
+			if int(maxSpeed) * 10 != int(speed) * 10 {
+				if maxSpeed > speed {
+					if len(path)%2 == 0 {
+						speed += minSpeed / 10
+					}
+				} else {
+					speed -= minSpeed / 10
 				}
 			} else {
 				speed = maxSpeed
@@ -177,6 +188,9 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 			if diffRotate != 0 { // если разница есть то поворачиваем корпус
 				rotate += newRotate
+				if minSpeed < speed {
+					speed -= minSpeed / (10 * speed) // сбрасывает скорость на поворотах
+				}
 			} else {
 				break
 			}
@@ -188,7 +202,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 		possibleMove, q, r := CheckXYinMove(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
 
-		if (diffRotate == 0 || dist > minDist) && (possibleMove || ignoreObstacle) {
+		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
 			forecastY = forecastY + stopY
 
@@ -204,10 +218,14 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			Q: forecastQ, R: forecastR, Speed: speed})
 	}
 
+	if len(path) > 1 {
+		path[len(path) - 1].Speed = 0 // на последней точке машина останавливается
+	}
+
 	return nil, path
 }
 
-func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot) float64 {
+func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) float64 {
 	fullCount := 0
 
 	for _, slot := range thoriumSlots {
@@ -223,6 +241,11 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot) float64 {
 
 			// формула выроботки топлива, если работает только 1 ячейка из 3х то ее эффективность в 66% больше
 			thorium := 1 / float32(100/efficiency)
+
+			if afterburner { // если активирован форсаж то топливо тратиться х5
+				thorium = thorium * 15
+			}
+
 			slot.WorkedOut += thorium
 
 			if slot.WorkedOut >= 100 {

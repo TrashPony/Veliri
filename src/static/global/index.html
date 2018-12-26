@@ -3,6 +3,8 @@
 
 <head>
     <title>Veliri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="./css/miniMap.css" rel="stylesheet">
     <link href="./css/squadMenu.css" rel="stylesheet">
     <link href="./css/openBox.css" rel="stylesheet">
@@ -34,6 +36,7 @@
     <script src="js/Interface/OpenBox.js"></script>
     <script src="js/Interface/ControlButtons.js"></script>
     <script src="js/Interface/ThoriumBar.js"></script>
+    <script src="js/Interface/AfterburnerToggle.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -107,6 +110,9 @@
                 <div class="Thorium noActive"></div>
                 <div class="Thorium noActive"></div>
                 <div class="Thorium noActive"></div>
+            </div>
+            <div id="backAfterburner">
+                <div id="Afterburner" onclick="AfterburnerToggle()"></div>
             </div>
         </div>
     </div>

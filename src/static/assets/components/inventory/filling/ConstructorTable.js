@@ -120,7 +120,7 @@ function CreateThoriumSlots(unitIcon, ms) {
     let thoriumEfficiencyCalc = 0;
     if (fullCount > 0) {
         efficiencyCalc = (fullCount * 100) / countSlot;
-        thoriumEfficiencyCalc = (100 - efficiencyCalc) + 100;
+        thoriumEfficiencyCalc = (100 - efficiencyCalc);
     }
 
     if (efficiencyCalc <= 33) {

@@ -16,6 +16,9 @@ type Squad struct {
 	R            int                 `json:"r"`
 	GlobalX      int                 `json:"global_x"` /* вычасляема координата на пиксельной сетке */
 	GlobalY      int                 `json:"global_y"` /* вычасляема координата на пиксельной сетке */
+	ToX          float64             `json:"to_x"`     /* куда отряд двигается */
+	ToY          float64             `json:"to_y"`     /* куда отряд двигается */
 	MapID        int                 `json:"map_id"`
 	CurrentSpeed float64             `json:"current_speed"`
+	Afterburner  bool                `json:"afterburner"`
 }

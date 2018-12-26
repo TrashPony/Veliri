@@ -25,7 +25,7 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		if err != nil {
-			ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
 			return
 		}
 
