@@ -8,9 +8,9 @@ import (
 	"../player"
 	"errors"
 	"github.com/getlantern/deepcopy"
+	"github.com/gorilla/websocket"
 	"math"
 	"sync"
-	"github.com/gorilla/websocket"
 )
 
 const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле

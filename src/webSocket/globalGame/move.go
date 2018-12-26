@@ -37,12 +37,12 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			DisconnectUser(usersGlobalWs[ws])
 		}
 
-		go MoveUserMS(ws, user, path, stopMove, moveChecker)
+		go MoveUserMS(ws, msg, user, path, stopMove, moveChecker)
 		*moveChecker = true
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
+func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
 	for i, pathUnit := range path {
 		select {
 		case exitNow := <-exit:
@@ -57,10 +57,20 @@ func MoveUserMS(ws *websocket.Conn, user *player.Player, path []globalGame.PathU
 				// TODO ломание корпуса
 			}
 
-			if !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs) {
-				// на пути появился непроходимых игрок
-				*moveChecker = false
-				return
+			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
+				if !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs) {
+					select {
+					case exitNow := <-exit:
+						if exitNow {
+							*moveChecker = false
+							return
+						}
+					default:
+						time.Sleep(100 * time.Millisecond)
+					}
+				} else {
+					break
+				}
 			}
 
 			// если клиент отключился то останавливаем его

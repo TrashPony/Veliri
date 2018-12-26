@@ -16,6 +16,6 @@ func afterburnerToggle(ws *websocket.Conn, msg Message, stopMove chan bool, move
 		msg.ToY = user.GetSquad().ToY
 
 		move(ws, msg, stopMove, moveChecker) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		globalPipe <- Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner}
+		globalPipe <- Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner, idUserSend: user.GetID()}
 	}
 }
