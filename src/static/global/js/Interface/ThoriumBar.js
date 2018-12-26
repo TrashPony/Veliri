@@ -78,5 +78,10 @@ function ThoriumBar(thoriumSlots) {
         speedEfficiency.style.color = "#00FF00";
     }
 
+    if(aburner) {
+        // todo неправильно считает
+        thoriumEfficiencyCalc -= thoriumEfficiencyCalc * 15;
+    }
+
     thoriumEfficiency.innerHTML = (thoriumEfficiencyCalc).toFixed(0) + "%";
 }

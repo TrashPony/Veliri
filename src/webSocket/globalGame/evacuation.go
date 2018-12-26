@@ -39,12 +39,14 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
+
 			time.Sleep(100 * time.Millisecond)
 		}
 
 		globalPipe <- Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
 			TransportID: transport.ID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
+		user.GetSquad().Evacuation = true
 
 		path = globalGame.ReturnEvacuation(user, mp, baseID)
 
@@ -54,6 +56,7 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
+
 			time.Sleep(100 * time.Millisecond)
 		}
 
@@ -69,6 +72,7 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 
 		DisconnectUser(user)
 
+		user.GetSquad().Evacuation = false
 		*evacuation = false
 		transport.Job = false
 	}

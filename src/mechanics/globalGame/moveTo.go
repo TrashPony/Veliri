@@ -10,6 +10,7 @@ import (
 	"github.com/getlantern/deepcopy"
 	"math"
 	"sync"
+	"github.com/gorilla/websocket"
 )
 
 const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
@@ -27,7 +28,7 @@ type PathUnit struct {
 	Speed       float64
 }
 
-func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit, error) {
+func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map, users map[*websocket.Conn]*player.Player) ([]PathUnit, error) {
 	startX := float64(user.GetSquad().GlobalX)
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
@@ -56,7 +57,7 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 	}
 
 	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
-		fakeThoriumSlots, user.GetSquad().Afterburner)
+		fakeThoriumSlots, user.GetSquad().Afterburner, users, user)
 
 	return path, err
 }
@@ -98,7 +99,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 
 			_, path := MoveTo(float64(startX), float64(startY), 250, 15, 15,
 				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
-				true, nil, false)
+				true, nil, false, nil, nil)
 
 			return path, evacuationBase.ID, transport, nil
 		} else {
@@ -114,12 +115,13 @@ func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit 
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true, nil, false)
+		float64(endX), float64(endY), 0, mp, true, nil, false, nil, nil)
 	return path
 }
 
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
-	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) (error, []PathUnit) {
+	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool,
+	users map[*websocket.Conn]*player.Player, user *player.Player) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
 
@@ -153,7 +155,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
 
 		if dist > maxSpeed*25 { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
-			if int(maxSpeed) * 10 != int(speed) * 10 {
+			if int(maxSpeed)*10 != int(speed)*10 {
 				if maxSpeed > speed {
 					if len(path)%2 == 0 {
 						speed += minSpeed / 10
@@ -200,7 +202,11 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
 		stopY := float64(speed) * math.Sin(radRotate)
 
-		possibleMove, q, r := CheckXYinMove(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
+		possibleMove, q, r := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
+
+		if users != nil {
+			possibleMove = possibleMove && CheckCollisionsPlayers(user, int(forecastX+stopX), int(forecastY+stopY), rotate, mp.Id, users)
+		}
 
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
@@ -219,7 +225,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 	}
 
 	if len(path) > 1 {
-		path[len(path) - 1].Speed = 0 // на последней точке машина останавливается
+		path[len(path)-1].Speed = 0 // на последней точке машина останавливается
 	}
 
 	return nil, path
@@ -256,45 +262,4 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) 
 	}
 
 	return efficiency
-}
-
-func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {
-	bodyRadius := 55 // размеры подобраны методом тыка)
-	coordinateRadius := HexagonHeight / 2
-
-	minDist := 999
-
-	var q, r int
-
-	for _, qLine := range mp.OneLayerMap {
-		for _, mapCoordinate := range qLine {
-			xc, yc := GetXYCenterHex(mapCoordinate.Q, mapCoordinate.R)
-
-			//находим растояние координаты от места остановки
-			dist := int(GetBetweenDist(x, y, xc, yc))
-
-			// если координата находиться в теоритическом радиусе радиусе то проверяем на колизии
-			if dist <= HexagonHeight {
-
-				if minDist > dist {
-					minDist = dist
-					q = mapCoordinate.Q
-					r = mapCoordinate.R
-				}
-
-				for i := rotate - 35; i < rotate+35; i++ { // смотрим только предметы по курсу )
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
-					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
-
-					if ((bX-xc)*(bX-xc) + (bY-yc)*(bY-yc)) <= coordinateRadius*coordinateRadius {
-						if !mapCoordinate.Move {
-							return false, q, r
-						}
-					}
-				}
-			}
-		}
-	}
-	return true, q, r
 }

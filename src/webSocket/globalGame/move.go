@@ -18,7 +18,7 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			stopMove <- true // останавливаем прошлое движение
 		}
 
-		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
+		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp, usersGlobalWs)
 
 		if len(path) > 1 {
 			user.GetSquad().ToX = float64(path[len(path)-1].X)
@@ -57,6 +57,12 @@ func MoveUserMS(ws *websocket.Conn, user *player.Player, path []globalGame.PathU
 				// TODO ломание корпуса
 			}
 
+			if !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs) {
+				// на пути появился непроходимых игрок
+				*moveChecker = false
+				return
+			}
+
 			// если клиент отключился то останавливаем его
 			if ws == nil || usersGlobalWs[ws] == nil {
 				*moveChecker = false
@@ -76,8 +82,6 @@ func MoveUserMS(ws *websocket.Conn, user *player.Player, path []globalGame.PathU
 			} else {
 				user.GetSquad().CurrentSpeed = 0
 			}
-
-			// TODO проверка колизий игрок - игрок
 
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)

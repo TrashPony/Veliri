@@ -21,4 +21,5 @@ type Squad struct {
 	MapID        int                 `json:"map_id"`
 	CurrentSpeed float64             `json:"current_speed"`
 	Afterburner  bool                `json:"afterburner"`
+	Evacuation   bool                `json:"evacuation"`
 }

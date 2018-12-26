@@ -14,8 +14,6 @@ func throwItems(ws *websocket.Conn, msg Message) {
 		globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
 	} else {
 		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-		for ws := range usersGlobalWs {
-			ws.WriteJSON(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY})
-		}
+		globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY}
 	}
 }
