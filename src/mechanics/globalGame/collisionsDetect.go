@@ -32,13 +32,24 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					r = mapCoordinate.R
 				}
 
-				for i := rotate - 20; i < rotate+20; i++ { // смотрим только предметы по курсу )
+				rad := float64(rotate) * math.Pi / 180
+				bX := int(float64(bodyRadius*2)*math.Cos(rad)) + x // точки окружности корпуса
+				bY := int(float64(bodyRadius*2)*math.Sin(rad)) + y
+
+				dist := int(GetBetweenDist(bX, bY, xc, yc))
+				if dist < coordinateRadius {
+					if !mapCoordinate.Move {
+						return false, q, r
+					}
+				}
+
+				for i := rotate - 35; i < rotate+35; i++ { // смотрим только предметы по курсу )
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
 					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
-					if dist < coordinateRadius*2 {
+					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
 							return false, q, r
 						}
