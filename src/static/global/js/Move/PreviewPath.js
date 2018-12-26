@@ -7,8 +7,8 @@ function PreviewPath(jsonData) {
         if (label) label.destroy();
     }
 
-    for (let i = 0; i < jsonData.path.length; i++) {
-        if (i%3 === 0 || i + 1 === jsonData.path.length) {
+    for (let i = 0; jsonData.path && i < jsonData.path.length; i++) {
+        if (i % 3 === 0 || i + 1 === jsonData.path.length) {
             let label = game.floorObjectLayer.create(jsonData.path[i].x, jsonData.path[i].y, 'pathCell');
             label.anchor.setTo(0.5);
             label.scale.set(0.5);

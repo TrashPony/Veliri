@@ -130,6 +130,10 @@ func Reader(ws *websocket.Conn) {
 			setThorium(ws, msg)
 		}
 
+		if msg.Event == "RemoveThorium" {
+			removeThoriumThorium(ws, msg)
+		}
+
 		if msg.Event == "InventoryRepair" || msg.Event == "EquipsRepair" || msg.Event == "AllRepair" {
 			Repair(ws, msg)
 		}

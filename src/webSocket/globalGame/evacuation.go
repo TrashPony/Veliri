@@ -8,9 +8,13 @@ import (
 )
 
 func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool, evacuation *bool) {
-
-	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 	user := usersGlobalWs[ws]
+
+	if user == nil {
+		return
+	}
+
+	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find {
 		*evacuation = true

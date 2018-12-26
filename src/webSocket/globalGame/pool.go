@@ -4,6 +4,7 @@ import (
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/box"
+	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
 	"../../mechanics/gameObjects/squad"
@@ -22,31 +23,32 @@ var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 var globalPipe = make(chan Message)
 
 type Message struct {
-	idSender    int
-	idUserSend  int
-	Event       string                `json:"event"`
-	Map         *_map.Map             `json:"map"`
-	Error       string                `json:"error"`
-	Squad       *squad.Squad          `json:"squad"`
-	User        *player.Player        `json:"user"`
-	Bases       map[int]*base.Base    `json:"bases"`
-	X           int                   `json:"x"`
-	Y           int                   `json:"y"`
-	ToX         float64               `json:"to_x"`
-	ToY         float64               `json:"to_y"`
-	PathUnit    globalGame.PathUnit   `json:"path_unit"`
-	Path        []globalGame.PathUnit `json:"path"`
-	BaseID      int                   `json:"base_id"`
-	OtherUser   *hostileMS            `json:"other_user"`
-	OtherUsers  []*hostileMS          `json:"other_users"`
-	ThrowItems  []inventory.Slot      `json:"throw_items"`
-	Boxes       []*box.Box            `json:"boxes"`
-	Box         *box.Box              `json:"box"`
-	BoxID       int                   `json:"box_id"`
-	Slot        int                   `json:"slot"`
-	Size        float32               `json:"size"`
-	Inventory   *inventory.Inventory  `json:"inventory"`
-	TransportID int                   `json:"transport_id"`
+	idSender     int
+	idUserSend   int
+	Event        string                      `json:"event"`
+	Map          *_map.Map                   `json:"map"`
+	Error        string                      `json:"error"`
+	Squad        *squad.Squad                `json:"squad"`
+	User         *player.Player              `json:"user"`
+	Bases        map[int]*base.Base          `json:"bases"`
+	X            int                         `json:"x"`
+	Y            int                         `json:"y"`
+	ToX          float64                     `json:"to_x"`
+	ToY          float64                     `json:"to_y"`
+	PathUnit     globalGame.PathUnit         `json:"path_unit"`
+	Path         []globalGame.PathUnit       `json:"path"`
+	BaseID       int                         `json:"base_id"`
+	OtherUser    *hostileMS                  `json:"other_user"`
+	OtherUsers   []*hostileMS                `json:"other_users"`
+	ThrowItems   []inventory.Slot            `json:"throw_items"`
+	Boxes        []*box.Box                  `json:"boxes"`
+	Box          *box.Box                    `json:"box"`
+	BoxID        int                         `json:"box_id"`
+	Slot         int                         `json:"slot"`
+	Size         float32                     `json:"size"`
+	Inventory    *inventory.Inventory        `json:"inventory"`
+	TransportID  int                         `json:"transport_id"`
+	ThoriumSlots map[int]*detail.ThoriumSlot `json:"thorium_slots"`
 }
 
 type hostileMS struct {

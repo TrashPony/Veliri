@@ -18,19 +18,22 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			stopMove <- true // останавливаем прошлое движение
 		}
 
-		path := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
+		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
+		if err != nil && len(path) == 0 {
+			err = ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+		}
 
-		err := ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
+		err = ws.WriteJSON(Message{Event: "PreviewPath", Path: path})
 		if err != nil {
 			DisconnectUser(usersGlobalWs[ws])
 		}
 
-		go MoveUserMS(ws, msg, user, path, stopMove, moveChecker)
+		go MoveUserMS(msg, user, path, stopMove, moveChecker)
 		*moveChecker = true
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
+func MoveUserMS(msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
 	for i, pathUnit := range path {
 		select {
 		case exitNow := <-exit:
@@ -39,7 +42,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				return
 			}
 		default:
+			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots)
 
+			// говорим юзеру как расходуется его топливо
+			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
+				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots}
+
+			// оповещаем мир как двигается отряд
 			globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), PathUnit: pathUnit}
 
 			if i+1 != len(path) { // бeз этого ифа канал будет ловить деад лок
@@ -47,6 +56,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 
 			// TODO проверка колизий игрок - игрок
+			// TODO если юзер отключается вещание не прекращается
 
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)

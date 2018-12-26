@@ -15,6 +15,10 @@ function ReadResponse(jsonData) {
         MoveTo(jsonData);
     }
 
+    if (jsonData.event === "WorkOutThorium") {
+        ThoriumBar(jsonData.thorium_slots)
+    }
+
     if (jsonData.event === "DisconnectUser") {
         DisconnectUser(jsonData);
     }
@@ -27,7 +31,7 @@ function ReadResponse(jsonData) {
         OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
     }
 
-    if (jsonData.event === "startMoveEvacuation"){
+    if (jsonData.event === "startMoveEvacuation") {
         if (game.bases) startMoveEvacuation(jsonData)
     }
 

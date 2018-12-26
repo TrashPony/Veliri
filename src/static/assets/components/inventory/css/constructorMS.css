@@ -147,7 +147,7 @@
     bottom: 16px;
 }
 
-#MSIcon .thoriumSlots, #MSIcon #thorium #efficiency {
+#MSIcon .thoriumSlots, #MSIcon #thorium #speedEfficiency, #MSIcon #thorium #thoriumEfficiency {
     height: 30px;
     width: 30px;
     float: left;
@@ -169,12 +169,19 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-#MSIcon #thorium #efficiency {
+#MSIcon .thoriumSlots:hover {
+    box-shadow: inset 0 0 5px 2px rgb(53, 218, 255);
+}
+
+#MSIcon .thoriumSlots:active {
+    box-shadow: inset 0 0 5px 2px rgb(132, 255, 248);
+}
+
+#MSIcon #thorium #speedEfficiency, #MSIcon #thorium #thoriumEfficiency {
     height: 15px;
-    width: 30px;
+    width: 44px;
     position: absolute;
     top: -16px;
-    left: calc(50% - 17px);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     line-height: 18px;
@@ -182,6 +189,15 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    text-align: right;
+    padding-right: 4px;
+    background: url(https://img.icons8.com/color/52/000000/speedometer.png) 2px center / 37% no-repeat, #4c4c4c;
+    box-shadow: inset 0 0 5px black;
+}
+
+#MSIcon #thorium #thoriumEfficiency {
+    background: url(https://img.icons8.com/color/52/000000/gas-station.png) 4px center / contain no-repeat, #4c4c4c;
+    left: 49px
 }
 
 .UnitIconNoSelect {

@@ -6,6 +6,7 @@
     <link href="./css/miniMap.css" rel="stylesheet">
     <link href="./css/squadMenu.css" rel="stylesheet">
     <link href="./css/openBox.css" rel="stylesheet">
+    <link href="./css/statusBar.css" rel="stylesheet">
 
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
@@ -32,6 +33,7 @@
     <script src="js/Interface/HideMap.js"></script>
     <script src="js/Interface/OpenBox.js"></script>
     <script src="js/Interface/ControlButtons.js"></script>
+    <script src="js/Interface/ThoriumBar.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -98,6 +100,14 @@
             <div onclick="OpenMarket()"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
             <div onclick="Evacuation()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div> <!-- эвакуация, возможно надо перместить на минимапу -->
             <div><img src="https://img.icons8.com/office/40/000000/support.png"></div> <!-- настройки -->
+        </div>
+
+        <div id="statusBar">
+            <div id="Thorium">
+                <div class="Thorium noActive"></div>
+                <div class="Thorium noActive"></div>
+                <div class="Thorium noActive"></div>
+            </div>
         </div>
     </div>
 </div>

@@ -115,9 +115,10 @@ type BodyEquipSlot struct {
 }
 
 type ThoriumSlot struct {
-	Number   int `json:"number_slot"`
-	Count    int `json:"count"`
-	MaxCount int `json:"max_count"`
+	Number    int     `json:"number_slot"`
+	Count     int     `json:"count"`
+	MaxCount  int     `json:"max_count"`
+	WorkedOut float32 `json:"worked_out"` /* параметр показывает что топливо вырабатано на сколь-ко то процентов */
 }
 
 type BodyWeaponSlot struct {

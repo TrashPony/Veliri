@@ -3,9 +3,11 @@ package globalGame
 import (
 	"../factories/bases"
 	"../gameObjects/base"
+	"../gameObjects/detail"
 	"../gameObjects/map"
 	"../player"
 	"errors"
+	"github.com/getlantern/deepcopy"
 	"math"
 	"sync"
 )
@@ -25,7 +27,7 @@ type PathUnit struct {
 	Speed       float64
 }
 
-func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
+func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit, error) {
 	startX := float64(user.GetSquad().GlobalX)
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
@@ -39,7 +41,18 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) []PathUnit {
 		speed = user.GetSquad().CurrentSpeed
 	}
 
-	return MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false)
+	var fakeThoriumSlots map[int]*detail.ThoriumSlot
+
+	// копируем что бы не произошло вычетание топлива на расчетах
+	err := deepcopy.Copy(&fakeThoriumSlots, &user.GetSquad().MatherShip.Body.ThoriumSlots)
+	if err != nil {
+		println(err.Error())
+		return nil, err
+	}
+
+	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false, fakeThoriumSlots)
+
+	return path, err
 }
 
 func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base.Transport, error) {
@@ -77,9 +90,10 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 				startY = transport.Y
 			}
 
-			return MoveTo(float64(startX), float64(startY), 250, 15, 15,
-					float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true),
-				evacuationBase.ID, transport, nil
+			_, path := MoveTo(float64(startX), float64(startY), 250, 15, 15,
+				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp, true, nil)
+
+			return path, evacuationBase.ID, transport, nil
 		} else {
 			return nil, 0, nil, errors.New("no available transport")
 		}
@@ -92,13 +106,17 @@ func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit 
 	mapBase, _ := bases.Bases.Get(baseID)
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
-	return MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true)
+	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
+		float64(endX), float64(endY), 0, mp, true, nil)
+	return path
 }
 
-func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map, ignoreObstacle bool) []PathUnit {
+func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
+	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
+
+	fullMax := maxSpeed
 
 	diffRotate := 0 // разница между углом цели и носа корпуса
 	dist := 900.0
@@ -110,6 +128,19 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		dist = GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
 		if dist < 10 {
 			break
+		}
+
+		if len(path)%10 == 0 || len(path) == 0 {
+			if thoriumSlots != nil { // высчитывает эффективность топлива которая влияет на скорость
+
+				efficiency := WorkOutThorium(thoriumSlots)
+				maxSpeed = (fullMax * efficiency) / 100 // высчитываем максимальную скорость по состоянию топлива
+
+				if efficiency == 0 {
+					// кончилось топливо совсем, выходим с ошибкой
+					return errors.New("not thorium"), path
+				}
+			}
 		}
 
 		minDist := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
@@ -173,7 +204,35 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			Q: forecastQ, R: forecastR, Speed: speed})
 	}
 
-	return path
+	return nil, path
+}
+
+func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot) float64 {
+	fullCount := 0
+
+	for _, slot := range thoriumSlots {
+		if slot.Count > 0 {
+			fullCount++
+		}
+	}
+
+	efficiency := float64((fullCount * 100) / len(thoriumSlots))
+
+	for _, slot := range thoriumSlots {
+		if slot.Count > 0 && efficiency > 0 {
+
+			// формула выроботки топлива, если работает только 1 ячейка из 3х то ее эффективность в 66% больше
+			thorium := 1 / float32(100/efficiency)
+			slot.WorkedOut += thorium
+
+			if slot.WorkedOut >= 100 {
+				slot.Count--
+				slot.WorkedOut = 0
+			}
+		}
+	}
+
+	return efficiency
 }
 
 func CheckXYinMove(x, y, rotate int, mp *_map.Map) (bool, int, int) {

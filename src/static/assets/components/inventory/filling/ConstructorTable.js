@@ -65,9 +65,13 @@ function CreateThoriumSlots(unitIcon, ms) {
     let div = document.createElement("div");
     div.id = "thorium";
 
-    let efficiency = document.createElement("div");
-    efficiency.id = "efficiency";
-    div.appendChild(efficiency);
+    let speedEfficiency = document.createElement("div");
+    speedEfficiency.id = "speedEfficiency";
+    div.appendChild(speedEfficiency);
+
+    let thoriumEfficiency = document.createElement("div");
+    thoriumEfficiency.id = "thoriumEfficiency";
+    div.appendChild(thoriumEfficiency);
 
     let countSlot = 0;
     let fullCount = 0;
@@ -79,15 +83,15 @@ function CreateThoriumSlots(unitIcon, ms) {
         let thoriumSlots = document.createElement("div");
         thoriumSlots.className = "thoriumSlots";
 
-        if (ms.body.thorium_slots[i].count > 0) {
-            fullCount++;
-            thoriumSlots.style.backgroundImage = "url(/assets/resource/enriched_thorium.png)";
-        }
-
         thoriumSlots.innerHTML = ms.body.thorium_slots[i].count + "/" + ms.body.thorium_slots[i].max_count;
         thoriumSlots.count = ms.body.thorium_slots[i].count;
         thoriumSlots.maxCount = ms.body.thorium_slots[i].max_count;
         thoriumSlots.numberSlot = i;
+
+        if (ms.body.thorium_slots[i].count > 0) {
+            fullCount++;
+            thoriumSlots.style.backgroundImage = "url(/assets/resource/enriched_thorium.png)";
+        }
 
         thoriumSlots.onmouseover = function () {
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
@@ -101,27 +105,34 @@ function CreateThoriumSlots(unitIcon, ms) {
 
         thoriumSlots.onclick = function () {
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
+            if (ms.body.thorium_slots[i].count > 0) {
+                inventorySocket.send(JSON.stringify({
+                    event: "RemoveThorium",
+                    thorium_slot: Number(i)
+                }));
+            }
         };
 
         div.appendChild(thoriumSlots);
     }
 
     let efficiencyCalc = 0;
-
+    let thoriumEfficiencyCalc = 0;
     if (fullCount > 0) {
-        efficiencyCalc = countSlot / fullCount
+        efficiencyCalc = (fullCount * 100) / countSlot;
+        thoriumEfficiencyCalc = (100 - efficiencyCalc) + 100;
     }
 
-    if (efficiencyCalc < 33) {
-        efficiency.style.color = "#FF0000";
-    } else if (efficiencyCalc < 66) {
-        efficiency.style.color = "#FFF000";
-    } else if (efficiencyCalc < 66) {
-        efficiency.style.color = "#00FF00";
+    if (efficiencyCalc <= 33) {
+        speedEfficiency.style.color = "#FF0000";
+    } else if (efficiencyCalc <= 66) {
+        speedEfficiency.style.color = "#FFF000";
+    } else if (efficiencyCalc === 100) {
+        speedEfficiency.style.color = "#00FF00";
     }
 
-    efficiency.innerHTML = efficiencyCalc + "%";
+    thoriumEfficiency.innerHTML = (thoriumEfficiencyCalc).toFixed(0) + "%";
+    speedEfficiency.innerHTML = efficiencyCalc.toFixed(0) + "%";
 
     div.style.left = "calc(50% - " + (countSlot * 34) / 2 + "px)";
 
