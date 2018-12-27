@@ -1,12 +1,13 @@
 package lobby
 
 import (
+	"../../webSocket/globalGame"
+	"../db/base"
+	"../db/squad/update"
+	"../factories/bases"
 	"../player"
 	"errors"
-	"../factories/bases"
-	"../db/squad/update"
-	"../db/base"
-	"../../webSocket/globalGame"
+	"time"
 )
 
 func OutBase(user *player.Player) error {
@@ -16,13 +17,15 @@ func OutBase(user *player.Player) error {
 
 	if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.HP > 0 {
 
-
 		gameBase, find := bases.Bases.Get(user.InBaseID)
 		if !find {
 			return errors.New("no base")
 		}
 
-		globalGame.RespCheck(gameBase) // запускаем механизм проверки и эвакуации игрока с респауна))))
+		for globalGame.RespCheck(gameBase) {
+			// запускаем механизм проверки и эвакуации игрока с респауна))))
+			time.Sleep(time.Millisecond * 100)
+		}
 
 		user.GetSquad().Q = gameBase.RespQ
 		user.GetSquad().R = gameBase.RespR

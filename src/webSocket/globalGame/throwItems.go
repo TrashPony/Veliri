@@ -6,14 +6,16 @@ import (
 )
 
 func throwItems(ws *websocket.Conn, msg Message) {
-	user := usersGlobalWs[ws]
+	user := Clients.GetByWs(ws)
 
-	err, newBox := globalGame.ThrowItems(user, msg.ThrowItems)
+	if user != nil {
+		err, newBox := globalGame.ThrowItems(user, msg.ThrowItems)
 
-	if err != nil {
-		globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
-	} else {
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-		globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY}
+		if err != nil {
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+		} else {
+			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY}
+		}
 	}
 }

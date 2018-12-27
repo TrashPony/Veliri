@@ -8,7 +8,7 @@ import (
 )
 
 func evacuationSquad(ws *websocket.Conn) {
-	user := usersGlobalWs[ws]
+	user := Clients.GetByWs(ws)
 
 	if user == nil {
 		return
@@ -75,6 +75,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		DisconnectUser(user)
 
+		user.GetSquad().ForceEvacuation = false
 		user.GetSquad().Evacuation = false
 		user.GetSquad().InSky = false
 		transport.Job = false

@@ -8,9 +8,9 @@ async function Zoom() {
 
     while(this.event !== ''){
         if (this.event === 'zoomUp') {
-            SizeGameMap(+0.001)
+            SizeGameMap(+0.005)
         } else if (this.event === 'zoomDown') {
-            SizeGameMap(-0.001)
+            SizeGameMap(-0.005)
         }
         await sleep(10);
     }

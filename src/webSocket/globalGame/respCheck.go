@@ -3,35 +3,50 @@ package globalGame
 import (
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/globalGame"
+	"../../mechanics/player"
+	"github.com/gorilla/websocket"
 	"time"
 )
 
-func RespCheck(respBase *base.Base) { // заставляет игроков эвакуироватся с точки респауна базы
+func RespCheck(respBase *base.Base) bool { // заставляет игроков эвакуироватся с точки респауна базы
 	x, y := globalGame.GetXYCenterHex(respBase.RespQ, respBase.RespR)
 
+	lock := false
+	usersGlobalWs, mx := Clients.GetAll()
 	for ws, user := range usersGlobalWs {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-		if dist < 300 && !user.GetSquad().Evacuation {
-			globalPipe <- Message{Event: "setFreeResp", idUserSend: user.GetID()}
-			timeCount := 0
-			for {
+		if dist < 150 {
+			if !user.GetSquad().ForceEvacuation {
+				globalPipe <- Message{Event: "setFreeResp", idUserSend: user.GetID()}
+				go ForceEvacuation(ws, user, x, y)
+			}
+			lock = true
+			user.GetSquad().ForceEvacuation = true
+		}
+	}
+	mx.Unlock()
 
-				timeCount++
-				time.Sleep(100 * time.Millisecond)
+	return lock
+}
 
-				if ws == nil {
-					break
-				}
+func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y int) {
+	timeCount := 0
+	for {
+		timeCount++
+		time.Sleep(100 * time.Millisecond)
 
-				dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+		if ws == nil {
+			break
+		}
 
-				if dist > 300 {
-					break
-				} else {
-					if timeCount > 50 && !user.GetSquad().Evacuation{
-						go evacuationSquad(ws)
-					}
-				}
+		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+
+		if dist > 150 {
+			globalPipe <- Message{Event: "removeNoticeFreeResp", idUserSend: user.GetID()}
+			break
+		} else {
+			if timeCount > 100 && !user.GetSquad().Evacuation {
+				go evacuationSquad(ws)
 			}
 		}
 	}

@@ -56,7 +56,11 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "setFreeResp") {
-        Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 6, true);
+        Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 11, true, "setFreeResp");
+    }
+
+    if (jsonData.event === "removeNoticeFreeResp") {
+        if (document.getElementById("setFreeResp")) document.getElementById("setFreeResp").remove();
     }
 
     if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто

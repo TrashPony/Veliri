@@ -2,12 +2,12 @@ package globalGame
 
 import (
 	"../gameObjects/coordinate"
+	"../gameObjects/map"
 	"../player"
 	"github.com/gorilla/websocket"
-	"../gameObjects/map"
 )
 
-func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.Player, mp *_map.Map)  {
+func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.Player, mp *_map.Map) {
 
 	if user.GetSquad().GlobalX == 0 && user.GetSquad().GlobalY == 0 {
 		x, y := GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
@@ -33,11 +33,11 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 
 	findPlace := false
 	for _, gameUser := range users {
-		if gameUser.GetID() != user.GetID() {
+		if gameUser.GetID() != user.GetID() && !user.GetSquad().InSky {
 			dist := GetBetweenDist(gameUser.GetSquad().GlobalX, gameUser.GetSquad().GlobalY,
 				user.GetSquad().GlobalX, user.GetSquad().GlobalY)
 
-			if dist < 200 && !user.GetSquad().InSky {
+			if dist < 150 {
 				findPlace = true
 			}
 		}
@@ -55,8 +55,7 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 
 				for _, gameUser := range users {
 					dist := GetBetweenDist(gameUser.GetSquad().GlobalX, gameUser.GetSquad().GlobalY, x, y)
-					println(dist)
-					if dist < 200 && !user.GetSquad().InSky {
+					if dist < 150 && !user.GetSquad().InSky {
 						find = true
 					}
 				}

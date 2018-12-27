@@ -1,7 +1,7 @@
-function Alert(text, headText, okButton, time, alert) {
+function Alert(text, headText, okButton, time, alert, id) {
 
     let notificationWrapper = document.createElement("div");
-
+    notificationWrapper.id = id;
     if (alert){
         notificationWrapper.className = "notificationWrapper alert";
     } else {

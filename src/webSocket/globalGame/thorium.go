@@ -1,15 +1,15 @@
 package globalGame
 
 import (
-	"github.com/gorilla/websocket"
 	"../../mechanics/squadInventory"
+	"github.com/gorilla/websocket"
 )
 
 func updateThorium(ws *websocket.Conn, msg Message) {
-	user, ok := usersGlobalWs[ws]
-	if ok {
+	user := Clients.GetByWs(ws)
+	if user != nil {
 
-		squadInventory.SetThorium(user, msg.InventorySlot ,msg.ThoriumSlot)
+		squadInventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot)
 
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY
@@ -22,8 +22,8 @@ func updateThorium(ws *websocket.Conn, msg Message) {
 }
 
 func removeThorium(ws *websocket.Conn, msg Message) {
-	user, ok := usersGlobalWs[ws]
-	if ok {
+	user := Clients.GetByWs(ws)
+	if user != nil {
 
 		squadInventory.RemoveThorium(user, msg.ThoriumSlot)
 

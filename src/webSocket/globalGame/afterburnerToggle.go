@@ -3,8 +3,8 @@ package globalGame
 import "github.com/gorilla/websocket"
 
 func afterburnerToggle(ws *websocket.Conn, msg Message) {
-	user, ok := usersGlobalWs[ws]
-	if ok {
+	user := Clients.GetByWs(ws)
+	if user != nil {
 
 		if user.GetSquad().Afterburner {
 			user.GetSquad().Afterburner = false

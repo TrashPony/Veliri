@@ -14,12 +14,8 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
-	"sync"
 )
 
-var mutex = &sync.Mutex{}
-
-var usersGlobalWs = make(map[*websocket.Conn]*player.Player)
 var globalPipe = make(chan Message)
 
 type Message struct {
@@ -89,9 +85,9 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
-	mutex.Lock()
-
+	usersGlobalWs, mx := Clients.GetAll()
 	utils.CheckDoubleLogin(login, &usersGlobalWs)
+	mx.Unlock()
 
 	newPlayer, ok := players.Users.Get(id)
 
@@ -99,7 +95,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer = players.Users.Add(id, login)
 	}
 
-	usersGlobalWs[ws] = newPlayer // Регистрируем нового Клиента
+	Clients.addNewClient(ws, newPlayer) // Регистрируем нового Клиента
 
 	print("WS global Сессия: ") // просто смотрим новое подключение
 	print(ws)
@@ -107,15 +103,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
 
-	mutex.Unlock()
-
 	Reader(ws)
 }
 
 func Reader(ws *websocket.Conn) {
 
 	for {
-		if usersGlobalWs[ws] != nil && usersGlobalWs[ws].GetSquad().Evacuation {
+
+		if Clients.GetByWs(ws) != nil && Clients.GetByWs(ws).GetSquad().Evacuation {
 			continue
 		}
 
@@ -123,8 +118,12 @@ func Reader(ws *websocket.Conn) {
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
-			DisconnectUser(usersGlobalWs[ws])
+			DisconnectUser(Clients.GetByWs(ws))
+
+			usersGlobalWs, mx := Clients.GetAll()
 			utils.DelConn(ws, &usersGlobalWs, err)
+			mx.Unlock()
+
 			break
 		}
 
@@ -177,7 +176,9 @@ func Reader(ws *websocket.Conn) {
 func MoveSender() {
 	for {
 		resp := <-globalPipe
-		mutex.Lock()
+
+		usersGlobalWs, mx := Clients.GetAll()
+
 		for ws, client := range usersGlobalWs {
 
 			var err error
@@ -204,6 +205,7 @@ func MoveSender() {
 				delete(usersGlobalWs, ws)
 			}
 		}
-		mutex.Unlock()
+
+		mx.Unlock()
 	}
 }

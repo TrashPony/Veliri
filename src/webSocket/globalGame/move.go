@@ -10,8 +10,9 @@ import (
 )
 
 func move(ws *websocket.Conn, msg Message) {
-	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
-	user := usersGlobalWs[ws]
+	user := Clients.GetByWs(ws)
+
+	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find && user.InBaseID == 0 {
 		if user.GetSquad().MoveChecker {
@@ -34,7 +35,7 @@ func move(ws *websocket.Conn, msg Message) {
 
 		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID()}
 		if err != nil {
-			DisconnectUser(usersGlobalWs[ws])
+			DisconnectUser(user)
 		}
 
 		go MoveUserMS(ws, msg, user, path)
@@ -58,7 +59,12 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 
 			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
-				if !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs) {
+
+				usersGlobalWs, mx := Clients.GetAll()
+				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs)
+				mx.Unlock()
+
+				if obstacle {
 					select {
 					case exitNow := <-user.GetSquad().GetMove():
 						if exitNow {
@@ -74,7 +80,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 
 			// если клиент отключился то останавливаем его
-			if ws == nil || usersGlobalWs[ws] == nil {
+			if ws == nil || Clients.GetByWs(ws) == nil {
 				user.GetSquad().MoveChecker = false
 				return
 			}

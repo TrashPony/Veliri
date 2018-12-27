@@ -7,7 +7,7 @@ import (
 )
 
 func intoToBase(ws *websocket.Conn, msg Message) {
-	user := usersGlobalWs[ws]
+	user := Clients.GetByWs(ws)
 
 	intoBase, find := bases.Bases.Get(msg.BaseID)
 	if find {

@@ -9,10 +9,13 @@ import (
 )
 
 func loadGame(ws *websocket.Conn, msg Message) {
-	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
-	user := usersGlobalWs[ws]
+	user := Clients.GetByWs(ws)
 
+	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
+
+	usersGlobalWs, mx := Clients.GetAll()
 	globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
+	mx.Unlock()
 
 	user.GetSquad().Afterburner = false
 	user.GetSquad().MoveChecker = false
@@ -21,11 +24,13 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 	otherUsers := make([]*hostileMS, 0)
 
+	mx.Lock()
 	for _, otherUser := range usersGlobalWs {
 		if user.GetID() != otherUser.GetID() {
 			otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 		}
 	}
+	mx.Unlock()
 
 	globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID()}
 

@@ -134,6 +134,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "OutBase" {
 			err := lobby.OutBase(usersLobbyWs[ws])
 
+			// todo запускать метод в отдельной горутине
 			// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
 
 			if err != nil {
