@@ -1,11 +1,15 @@
 package globalGame
 
 import (
+	"../factories/boxes"
+	"../gameObjects/box"
 	"../gameObjects/map"
 	"../player"
 	"github.com/gorilla/websocket"
 	"math"
 )
+
+// TODO тут все крайне не правильно но работает
 
 const bodyRadius = 63 // размеры подобраны методом тыка)
 const coordinateRadius = HexagonHeight / 2
@@ -96,4 +100,28 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 		}
 	}
 	return true
+}
+
+func CheckCollisionsBoxes(x, y, rotate, mapID int) *box.Box {
+	boxs := boxes.Boxes.GetAllBoxByMapID(mapID)
+
+	for _, mapBox := range boxs {
+		xBox, yBox := GetXYCenterHex(mapBox.Q, mapBox.R)
+		dist := int(GetBetweenDist(x, y, xBox, yBox))
+
+		if dist < bodyRadius*5 && !mapBox.Underground {
+			for i := rotate - 40; i < rotate+45; i++ {
+
+				rad := float64(i) * math.Pi / 180
+				bX := int(float64(100)*math.Cos(rad)) + x // точки окружности корпуса
+				bY := int(float64(100)*math.Sin(rad)) + y
+
+				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
+				if dist < 10 {
+					return mapBox
+				}
+			}
+		}
+	}
+	return nil
 }

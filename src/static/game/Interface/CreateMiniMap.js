@@ -76,6 +76,12 @@ function CreateMiniMap(map) {
             }
         }
 
+        for (let i in game.boxes) {
+            ctx.fillStyle = "#aba9bc";
+            if (game.boxes[i].sprite) {
+                ctx.fillRect(game.boxes[i].sprite.x / kX, game.boxes[i].sprite.y / kY, hexagonWidth, hexagonHeight)
+            }
+        }
 
         let kXCam = game.hexagonWidth * game.camera.scale.x / hexagonWidth;
         let kYCam = game.hexagonHeight * game.camera.scale.y / hexagonHeight;

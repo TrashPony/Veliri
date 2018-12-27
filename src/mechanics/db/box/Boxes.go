@@ -54,7 +54,8 @@ func getTypeBox(gameBox *box.Box) {
 		" capacity_size,"+
 		" fold_size,"+
 		" protect,"+
-		" protect_lvl"+
+		" protect_lvl,"+
+		" underground"+
 		" "+
 		"FROM box_type "+
 		"WHERE id = $1", gameBox.TypeID)
@@ -64,7 +65,8 @@ func getTypeBox(gameBox *box.Box) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&gameBox.Type, &gameBox.CapacitySize, &gameBox.FoldSize, &gameBox.Protect, &gameBox.ProtectLvl)
+		err := rows.Scan(&gameBox.Type, &gameBox.CapacitySize, &gameBox.FoldSize, &gameBox.Protect,
+			&gameBox.ProtectLvl, &gameBox.Underground)
 		if err != nil {
 			log.Fatal("get scan type box " + err.Error())
 		}

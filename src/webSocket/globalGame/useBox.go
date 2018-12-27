@@ -11,7 +11,8 @@ func openBox(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
 
 	if user != nil {
-		mapBox := boxes.Boxes.Get(msg.BoxID)
+		mapBox, mx := boxes.Boxes.Get(msg.BoxID)
+		defer mx.Unlock()
 
 		if mapBox != nil {
 			x, y := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)

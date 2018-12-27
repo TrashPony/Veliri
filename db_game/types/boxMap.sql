@@ -15,7 +15,8 @@ CREATE TABLE box_type (
   capacity_size REAL,        /* вместимость в кубо-метрах */
   fold_size     REAL,        /* размер если ящик нести в инвентаре */
   protect       BOOLEAN,     /* тру-на ящик можно поставить пароль */
-  protect_lvl   int          /* 1-5 число описывающие сложность замка */
+  protect_lvl   int,         /* 1-5 число описывающие сложность замка */
+  underground   BOOLEAN      /* если ящик под землей то его нельзя задавить */
 );
 
 CREATE TABLE box_storage (

@@ -2,6 +2,7 @@ package globalGame
 
 import (
 	"../../mechanics/db/squad/update"
+	"../../mechanics/factories/boxes"
 	"../../mechanics/factories/maps"
 	"../../mechanics/globalGame"
 	"../../mechanics/player"
@@ -44,6 +45,7 @@ func move(ws *websocket.Conn, msg Message) {
 }
 
 func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit) {
+	// TODO убрать много селектов но я не знаю как инче %(
 	for i, pathUnit := range path {
 		select {
 		case exitNow := <-user.GetSquad().GetMove():
@@ -76,6 +78,27 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 					}
 				} else {
 					break
+				}
+			}
+
+			// если на пути встречается ящик то мы его давим и падает скорость
+			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID)
+			if mapBox != nil {
+				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID}
+				boxes.Boxes.DestroyBox(mapBox)
+
+				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
+				select {
+				case exitNow := <-user.GetSquad().GetMove():
+					if exitNow {
+						user.GetSquad().MoveChecker = false
+						move(ws, msg)
+						return
+					}
+				default:
+					user.GetSquad().MoveChecker = false
+					move(ws, msg)
+					return
 				}
 			}
 

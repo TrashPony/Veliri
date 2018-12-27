@@ -16,6 +16,7 @@ type Box struct {
 	ProtectLvl   int     `json:"protect_lvl"`
 	password     int
 	DestroyTime  time.Time            `json:"destroy_time"`
+	Underground  bool                 `json:"underground"`
 	Q            int                  `json:"q"`
 	R            int                  `json:"r"`
 	Rotate       int                  `json:"rotate"`

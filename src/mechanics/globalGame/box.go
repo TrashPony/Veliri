@@ -10,6 +10,7 @@ import (
 	"errors"
 	"math"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -63,24 +64,28 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, *box.Box) {
 	return errors.New("unknown error"), nil
 }
 
-func checkUseBox(user *player.Player, boxID int) (error, *box.Box) {
-	mapBox := boxes.Boxes.Get(boxID)
+func checkUseBox(user *player.Player, boxID int) (error, *box.Box, *sync.Mutex) {
+	mapBox, mx := boxes.Boxes.Get(boxID)
 	if mapBox != nil {
 		boxX, boxY := GetXYCenterHex(mapBox.Q, mapBox.R)
 
 		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
 		if dist < 150 {
-			return nil, mapBox
+			return nil, mapBox, mx
 		} else {
-			return errors.New("no min dist"), nil
+			mx.Unlock()
+			return errors.New("no min dist"), nil, nil
 		}
 	} else {
-		return errors.New("no find box"), nil
+		mx.Unlock()
+		return errors.New("no find box"), nil, nil
 	}
 }
 
 func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *box.Box) {
-	err, mapBox := checkUseBox(user, boxID)
+	err, mapBox, mx := checkUseBox(user, boxID)
+	defer mx.Unlock()
+
 	if err != nil {
 		return err, nil
 	}
@@ -112,7 +117,9 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *box.Box) {
 }
 
 func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *box.Box) {
-	err, mapBox := checkUseBox(user, boxID)
+	err, mapBox, mx := checkUseBox(user, boxID)
+	defer mx.Unlock()
+
 	if err != nil {
 		return err, nil
 	}

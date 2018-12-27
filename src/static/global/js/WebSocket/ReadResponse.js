@@ -55,6 +55,11 @@ function ReadResponse(jsonData) {
         Afterburner(jsonData.afterburner)
     }
 
+
+    if (jsonData.event === "DestroyBox") {
+        DestroyBox(jsonData.box_id)
+    }
+
     if (jsonData.event === "setFreeResp") {
         Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 11, true, "setFreeResp");
     }

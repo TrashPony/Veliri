@@ -1,4 +1,7 @@
 function CreateBoxes(boxes) {
+
+    game.boxes = boxes;
+
     for (let i = 0; i < boxes.length; i++) {
         CreateBox(boxes[i])
     }
@@ -20,6 +23,9 @@ function CreateBox(mapBox) {
         boxShadow.alpha = 0.6;
         boxShadow.angle = mapBox.rotate;
         box.shadow = boxShadow;
+
+        mapBox.sprite = box;
+        mapBox.shadow = boxShadow;
 
         box.inputEnabled = true;
         box.input.pixelPerfectOver = true;
