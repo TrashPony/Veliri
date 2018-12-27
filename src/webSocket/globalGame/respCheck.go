@@ -43,6 +43,7 @@ func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y int) {
 
 		if dist > 150 {
 			globalPipe <- Message{Event: "removeNoticeFreeResp", idUserSend: user.GetID()}
+			user.GetSquad().ForceEvacuation = false
 			break
 		} else {
 			if timeCount > 100 && !user.GetSquad().Evacuation {
