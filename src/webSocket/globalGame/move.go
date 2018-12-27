@@ -9,16 +9,16 @@ import (
 	"time"
 )
 
-func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool) {
+func move(ws *websocket.Conn, msg Message) {
 	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 	user := usersGlobalWs[ws]
 
 	if find && user.InBaseID == 0 {
-		if *moveChecker {
-			stopMove <- true // останавливаем прошлое движение
+		if user.GetSquad().MoveChecker {
+			user.GetSquad().GetMove() <- true // останавливаем прошлое движение
 		}
 
-		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp, usersGlobalWs)
+		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 
 		if len(path) > 1 {
 			user.GetSquad().ToX = float64(path[len(path)-1].X)
@@ -37,17 +37,17 @@ func move(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool
 			DisconnectUser(usersGlobalWs[ws])
 		}
 
-		go MoveUserMS(ws, msg, user, path, stopMove, moveChecker)
-		*moveChecker = true
+		go MoveUserMS(ws, msg, user, path)
+		user.GetSquad().MoveChecker = true
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit, exit chan bool, moveChecker *bool) {
+func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit) {
 	for i, pathUnit := range path {
 		select {
-		case exitNow := <-exit:
+		case exitNow := <-user.GetSquad().GetMove():
 			if exitNow {
-				*moveChecker = false
+				user.GetSquad().MoveChecker = false
 				return
 			}
 		default:
@@ -60,9 +60,9 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
 				if !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs) {
 					select {
-					case exitNow := <-exit:
+					case exitNow := <-user.GetSquad().GetMove():
 						if exitNow {
-							*moveChecker = false
+							user.GetSquad().MoveChecker = false
 							return
 						}
 					default:
@@ -75,7 +75,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 
 			// если клиент отключился то останавливаем его
 			if ws == nil || usersGlobalWs[ws] == nil {
-				*moveChecker = false
+				user.GetSquad().MoveChecker = false
 				return
 			}
 
@@ -105,6 +105,6 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 		}
 	}
-	*moveChecker = false
+	user.GetSquad().MoveChecker = false
 	return
 }

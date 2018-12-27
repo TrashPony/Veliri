@@ -133,6 +133,9 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "OutBase" {
 			err := lobby.OutBase(usersLobbyWs[ws])
+
+			// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
+
 			if err != nil {
 				ws.WriteJSON(Response{Event: "Error", Error: err.Error()})
 			} else {

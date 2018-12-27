@@ -114,13 +114,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 func Reader(ws *websocket.Conn) {
 
-	stopMove := make(chan bool)
-	moveChecker := false
-	evacuation := false
-
 	for {
-
-		if evacuation {
+		if usersGlobalWs[ws] != nil && usersGlobalWs[ws].GetSquad().Evacuation {
 			continue
 		}
 
@@ -138,11 +133,11 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MoveTo" {
-			move(ws, msg, stopMove, &moveChecker)
+			move(ws, msg)
 		}
 
 		if msg.Event == "IntoToBase" {
-			intoToBase(ws, msg, stopMove, &moveChecker)
+			intoToBase(ws, msg)
 		}
 
 		if msg.Event == "ThrowItems" {
@@ -150,7 +145,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "openBox" {
-			openBox(ws, msg, stopMove, &moveChecker)
+			openBox(ws, msg)
 		}
 
 		if msg.Event == "getItemFromBox" {
@@ -162,19 +157,19 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "evacuation" {
-			evacuationSquad(ws, msg, stopMove, &moveChecker, &evacuation)
+			evacuationSquad(ws)
 		}
 
 		if msg.Event == "updateThorium" {
-			updateThorium(ws, msg, stopMove, &moveChecker)
+			updateThorium(ws, msg)
 		}
 
 		if msg.Event == "removeThorium" {
-			removeThorium(ws, msg, stopMove, &moveChecker)
+			removeThorium(ws, msg)
 		}
 
 		if msg.Event == "AfterburnerToggle" {
-			afterburnerToggle(ws, msg, stopMove, &moveChecker)
+			afterburnerToggle(ws, msg)
 		}
 	}
 }

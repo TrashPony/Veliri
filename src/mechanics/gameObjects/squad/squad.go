@@ -22,4 +22,20 @@ type Squad struct {
 	CurrentSpeed float64             `json:"current_speed"`
 	Afterburner  bool                `json:"afterburner"`
 	Evacuation   bool                `json:"evacuation"`
+	InSky        bool                `json:"in_sky"`   /* отряд по той или иной причине летит Оо */
+	MoveChecker  bool                `json:"move_checker"`
+	stopMove     chan bool
+}
+
+func (s *Squad) CreateMove() {
+
+	if s.stopMove != nil {
+		close(s.stopMove)
+	}
+
+	s.stopMove = make(chan bool)
+}
+
+func (s *Squad) GetMove() chan bool {
+	return s.stopMove
 }

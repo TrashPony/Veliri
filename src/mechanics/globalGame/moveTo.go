@@ -1,16 +1,12 @@
 package globalGame
 
 import (
-	"../factories/bases"
-	"../gameObjects/base"
 	"../gameObjects/detail"
 	"../gameObjects/map"
 	"../player"
 	"errors"
 	"github.com/getlantern/deepcopy"
-	"github.com/gorilla/websocket"
 	"math"
-	"sync"
 )
 
 const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
@@ -28,7 +24,7 @@ type PathUnit struct {
 	Speed       float64
 }
 
-func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map, users map[*websocket.Conn]*player.Player) ([]PathUnit, error) {
+func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit, error) {
 	startX := float64(user.GetSquad().GlobalX)
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
@@ -57,71 +53,13 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map, users map[*w
 	}
 
 	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
-		fakeThoriumSlots, user.GetSquad().Afterburner, users, user)
+		fakeThoriumSlots, user.GetSquad().Afterburner)
 
 	return path, err
 }
 
-func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base.Transport, error) {
-	mapBases := bases.Bases.GetBasesByMap(mp.Id)
-	minDist := 0.0
-	evacuationBase := &base.Base{}
-
-	var mutex = &sync.Mutex{}
-	mutex.Lock()
-	defer mutex.Unlock()
-
-	for _, mapBase := range mapBases {
-
-		x, y := GetXYCenterHex(mapBase.Q, mapBase.R)
-		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-		transport := mapBase.GetFreeTransport()
-
-		if (dist < minDist || minDist == 0) && transport != nil {
-			minDist = dist
-			evacuationBase = mapBase
-		}
-	}
-
-	if evacuationBase != nil {
-		transport := evacuationBase.GetFreeTransport()
-		if transport != nil {
-			var startX, startY int
-
-			transport.Job = true
-
-			if transport.X == 0 && transport.Y == 0 {
-				startX, startY = GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
-			} else {
-				startX = transport.X
-				startY = transport.Y
-			}
-
-			_, path := MoveTo(float64(startX), float64(startY), 250, 15, 15,
-				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
-				true, nil, false, nil, nil)
-
-			return path, evacuationBase.ID, transport, nil
-		} else {
-			return nil, 0, nil, errors.New("no available transport")
-		}
-	} else {
-		return nil, 0, nil, errors.New("no available base")
-	}
-}
-
-func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit {
-	mapBase, _ := bases.Bases.Get(baseID)
-	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
-
-	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true, nil, false, nil, nil)
-	return path
-}
-
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
-	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool,
-	users map[*websocket.Conn]*player.Player, user *player.Player) (error, []PathUnit) {
+	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
 
@@ -152,7 +90,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed)) // TODO не правильно
+		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed))
 
 		if dist > maxSpeed*25 { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
 			if int(maxSpeed)*10 != int(speed)*10 {
@@ -176,7 +114,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		for i := 0; i < int(speed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
+		for i := 0; i < int(minSpeed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 			needRad := math.Atan2(ToY-forecastY, ToX-forecastX)
 			needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу
 
@@ -204,10 +142,6 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 		possibleMove, q, r := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
 
-		if users != nil {
-			possibleMove = possibleMove && CheckCollisionsPlayers(user, int(forecastX+stopX), int(forecastY+stopY), rotate, mp.Id, users)
-		}
-
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
 			forecastY = forecastY + stopY
@@ -229,37 +163,4 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 	}
 
 	return nil, path
-}
-
-func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) float64 {
-	fullCount := 0
-
-	for _, slot := range thoriumSlots {
-		if slot.Count > 0 {
-			fullCount++
-		}
-	}
-
-	efficiency := float64((fullCount * 100) / len(thoriumSlots))
-
-	for _, slot := range thoriumSlots {
-		if slot.Count > 0 && efficiency > 0 {
-
-			// формула выроботки топлива, если работает только 1 ячейка из 3х то ее эффективность в 66% больше
-			thorium := 1 / float32(100/efficiency)
-
-			if afterburner { // если активирован форсаж то топливо тратиться х5
-				thorium = thorium * 15
-			}
-
-			slot.WorkedOut += thorium
-
-			if slot.WorkedOut >= 100 {
-				slot.Count--
-				slot.WorkedOut = 0
-			}
-		}
-	}
-
-	return efficiency
 }

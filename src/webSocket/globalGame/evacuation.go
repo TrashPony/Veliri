@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool, evacuation *bool) {
+func evacuationSquad(ws *websocket.Conn) {
 	user := usersGlobalWs[ws]
 
 	if user == nil {
@@ -17,10 +17,11 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find {
-		*evacuation = true
 
-		if *moveChecker {
-			stopMove <- true // останавливаем движение
+		user.GetSquad().Evacuation = true
+
+		if user.GetSquad().MoveChecker {
+			user.GetSquad().GetMove() <- true // останавливаем движение
 		}
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
@@ -46,8 +47,8 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 		globalPipe <- Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
 			TransportID: transport.ID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
-		user.GetSquad().Evacuation = true
 
+		user.GetSquad().InSky = true
 		path = globalGame.ReturnEvacuation(user, mp, baseID)
 
 		for _, pathUnit := range path {
@@ -56,6 +57,8 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
+			user.GetSquad().GlobalX = pathUnit.X
+			user.GetSquad().GlobalY = pathUnit.Y
 
 			time.Sleep(100 * time.Millisecond)
 		}
@@ -73,7 +76,7 @@ func evacuationSquad(ws *websocket.Conn, msg Message, stopMove chan bool, moveCh
 		DisconnectUser(user)
 
 		user.GetSquad().Evacuation = false
-		*evacuation = false
+		user.GetSquad().InSky = false
 		transport.Job = false
 	}
 }

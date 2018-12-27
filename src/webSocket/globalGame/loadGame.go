@@ -12,18 +12,12 @@ func loadGame(ws *websocket.Conn, msg Message) {
 	mp, find := maps.Maps.GetByID(usersGlobalWs[ws].GetSquad().MapID)
 	user := usersGlobalWs[ws]
 
-	if user.GetSquad().GlobalX == 0 && user.GetSquad().GlobalY == 0 {
-		x, y := globalGame.GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
-		user.GetSquad().GlobalX = x
-		user.GetSquad().GlobalY = y
-
-		user.GetSquad().ToX = float64(x)
-		user.GetSquad().ToY = float64(y)
-
-		user.GetSquad().CurrentSpeed = 0
-	}
+	globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
 
 	user.GetSquad().Afterburner = false
+	user.GetSquad().MoveChecker = false
+
+	user.GetSquad().CreateMove()
 
 	otherUsers := make([]*hostileMS, 0)
 

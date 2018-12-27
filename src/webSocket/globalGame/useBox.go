@@ -7,7 +7,7 @@ import (
 	"../../mechanics/gameObjects/box"
 )
 
-func openBox(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool) {
+func openBox(ws *websocket.Conn, msg Message) {
 	user := usersGlobalWs[ws]
 
 	mapBox := boxes.Boxes.Get(msg.BoxID)
@@ -18,8 +18,8 @@ func openBox(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *b
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 		if dist < 150 {
-			if *moveChecker {
-				stopMove <- true // останавливаем движение
+			if user.GetSquad().MoveChecker {
+				user.GetSquad().GetMove() <- true // останавливаем движение
 			}
 			ws.WriteJSON(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize})
 		}

@@ -2,7 +2,7 @@ package globalGame
 
 import "github.com/gorilla/websocket"
 
-func afterburnerToggle(ws *websocket.Conn, msg Message, stopMove chan bool, moveChecker *bool) {
+func afterburnerToggle(ws *websocket.Conn, msg Message) {
 	user, ok := usersGlobalWs[ws]
 	if ok {
 
@@ -15,7 +15,7 @@ func afterburnerToggle(ws *websocket.Conn, msg Message, stopMove chan bool, move
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY
 
-		move(ws, msg, stopMove, moveChecker) // пересчитываем путь т.к. эффективность двиготеля изменилась
+		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
 		globalPipe <- Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner, idUserSend: user.GetID()}
 	}
 }

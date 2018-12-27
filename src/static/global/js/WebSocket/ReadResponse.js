@@ -55,6 +55,10 @@ function ReadResponse(jsonData) {
         Afterburner(jsonData.afterburner)
     }
 
+    if (jsonData.event === "setFreeResp") {
+        Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 6, true);
+    }
+
     if (jsonData.event === "UpdateBox") { // что бы не откывался у тех у кого окно не открыто
         if (document.getElementById("openBox" + jsonData.box_id)) {
             OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
