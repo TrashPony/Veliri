@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="./css/miniMap.css" rel="stylesheet">
-    <link href="./css/squadMenu.css" rel="stylesheet">
+    <link href="./css/bottomBar.css" rel="stylesheet">
     <link href="./css/openBox.css" rel="stylesheet">
     <link href="./css/statusBar.css" rel="stylesheet">
     <link href="./css/notification.css" rel="stylesheet">
     <link href="./css/squadBar.css" rel="stylesheet">
+    <link href="./css/damageBar.css" rel="stylesheet">
 
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
@@ -41,6 +42,8 @@
     <script src="js/Interface/ThoriumBar.js"></script>
     <script src="js/Interface/AfterburnerToggle.js"></script>
     <script src="js/Interface/AlertWindow.js"></script>
+    <script src="js/Interface/SquadBlock.js"></script>
+    <script src="js/Interface/FillUserMeta.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -121,43 +124,51 @@
         </div>
 
         <div id="SquadBar">
-            <div id="MS">
-                <div class=".body"></div>
-                <div class=".weapon"></div>
-                <div class=".ammo"></div>
+            <div id="HeadGlobal">
+                <div id="MS">
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
+                </div>
+                <div id="Credits"> Кредиты: </div>
+                <div id="Experience"> Опыт: </div>
             </div>
             <div id="Units">
-                <div id="unitSlot1">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot1"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
-                <div id="unitSlot2">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot2"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
-                <div id="unitSlot3">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot3"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
-                <div id="unitSlot4">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot4"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
-                <div id="unitSlot5">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot5"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
-                <div id="unitSlot6">
-                    <div class=".body"></div>
-                    <div class=".weapon"></div>
-                    <div class=".ammo"></div>
+                <div id="unitSlot6"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
                 </div>
             </div>
+        </div>
+        <div id="damageMS">
+        </div>
+        <div id="damageUnit">
         </div>
     </div>
 </div>

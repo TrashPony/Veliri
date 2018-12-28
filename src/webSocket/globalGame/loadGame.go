@@ -43,6 +43,8 @@ func loadGame(ws *websocket.Conn, msg Message) {
 			OtherUsers: otherUsers,
 			Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
 			idUserSend: user.GetID(),
+			Credits:    user.GetCredits(),
+			Experience: user.GetExperiencePoint(),
 		}
 	} else {
 		globalPipe <- Message{Event: "Error", Error: "no allow", idUserSend: user.GetID()}

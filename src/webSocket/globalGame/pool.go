@@ -48,6 +48,8 @@ type Message struct {
 	ThoriumSlots  map[int]*detail.ThoriumSlot `json:"thorium_slots"`
 	ThoriumSlot   int                         `json:"thorium_slot"`
 	Afterburner   bool                        `json:"afterburner"`
+	Credits       int                         `json:"credits"`
+	Experience    int                         `json:"experience"`
 }
 
 type hostileMS struct {

@@ -16,5 +16,7 @@ function LoadGame() {
     CreateBase(Data.bases);
     CreateBoxes(Data.boxes);
     CreateMiniMap(Data.map);
-    ThoriumBar(Data.squad.mather_ship.body.thorium_slots)
+    ThoriumBar(Data.squad.mather_ship.body.thorium_slots);
+    FillSquadBlock(Data.squad);
+    FillUserMeta(Data.credits, Data.experience);
 }
