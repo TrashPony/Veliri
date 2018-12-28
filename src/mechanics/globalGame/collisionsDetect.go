@@ -3,6 +3,7 @@ package globalGame
 import (
 	"../factories/boxes"
 	"../gameObjects/box"
+	"../gameObjects/coordinate"
 	"../gameObjects/map"
 	"../player"
 	"github.com/gorilla/websocket"
@@ -16,12 +17,17 @@ const coordinateRadius = HexagonHeight / 2
 
 func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int) {
 
+	startCoordinate := GetQRfromXY(x, y, mp)
+	checkCoordinate := coordinate.GetCoordinatesRadius(startCoordinate, 2)
+
 	minDist := 999
 
 	var q, r int
 
-	for _, qLine := range mp.OneLayerMap {
-		for _, mapCoordinate := range qLine {
+	for _, faceCoordinate := range checkCoordinate {
+
+		mapCoordinate, find := mp.GetCoordinate(faceCoordinate.Q, faceCoordinate.R)
+		if find {
 			xc, yc := GetXYCenterHex(mapCoordinate.Q, mapCoordinate.R)
 
 			//находим растояние координаты от места остановки
@@ -36,9 +42,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					r = mapCoordinate.R
 				}
 
-				// корпус состоиз из 3х оружностей, 1 спериди, 2 жопке, 3 бока
-
-				for i := rotate - 15; i < rotate+15; i++ {
+				for i := rotate - 20; i < rotate+20; i++ { // смотрим колизии на самой морде
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(90)*math.Cos(rad)) + x
 					bY := int(float64(90)*math.Sin(rad)) + y
@@ -51,20 +55,20 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					}
 				}
 
-				//for i := rotate - 190; i < rotate-170; i++ {
-				//	rad := float64(i) * math.Pi / 180
-				//	bX := int(float64(90)*math.Cos(rad)) + x
-				//	bY := int(float64(90)*math.Sin(rad)) + y
-				//
-				//	dist := int(GetBetweenDist(bX, bY, xc, yc))
-				//	if dist < coordinateRadius {
-				//		if !mapCoordinate.Move {
-				//			return false, q, r
-				//		}
-				//	}
-				//}
+				for i := rotate - 40; i < rotate+40; i++ { // смотри колизии ближе к бокам
+					rad := float64(i) * math.Pi / 180
+					bX := int(float64(60)*math.Cos(rad)) + x
+					bY := int(float64(60)*math.Sin(rad)) + y
 
-				for i := rotate - 360; i < rotate+360; i++ {
+					dist := int(GetBetweenDist(bX, bY, xc, yc))
+					if dist < coordinateRadius {
+						if !mapCoordinate.Move {
+							return false, q, r
+						}
+					}
+				}
+
+				for i := 0; i < 360; i++ { // смотри колизии везде по радиусу боков
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(40)*math.Cos(rad)) + x
 					bY := int(float64(40)*math.Sin(rad)) + y
@@ -85,31 +89,40 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) bool {
 	for _, user := range users {
 		if user != nil && user.GetSquad().MapID == mapID && moveUser.GetID() != user.GetID() && !user.GetSquad().Evacuation {
+
 			dist := int(GetBetweenDist(x, y, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
 
 			if dist < bodyRadius*5 {
-				for i := rotate - 5; i < rotate+5; i++ { // смотрим только предметы по курсу )
 
+				for i := rotate - 20; i < rotate+20; i++ { // смотрим колизии на самой морде
 					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
-					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
+					bX := int(float64(90)*math.Cos(rad)) + x
+					bY := int(float64(90)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
-
-					if dist < bodyRadius*2 {
+					if dist < 10 {
 						return false
 					}
 				}
 
-				for i := rotate - 25; i < rotate+25; i++ { // смотрим бока по меньшему радиусу
-
+				for i := rotate - 40; i < rotate+40; i++ { // смотри колизии ближе к бокам
 					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyRadius/2)*math.Cos(rad)) + x
-					bY := int(float64(bodyRadius/2)*math.Sin(rad)) + y
+					bX := int(float64(60)*math.Cos(rad)) + x
+					bY := int(float64(60)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
+					if dist < 100 {
+						return false
+					}
+				}
 
-					if dist < bodyRadius*2 {
+				for i := 0; i < 360; i++ { // смотри колизии везде по радиусу боков
+					rad := float64(i) * math.Pi / 180
+					bX := int(float64(40)*math.Cos(rad)) + x
+					bY := int(float64(40)*math.Sin(rad)) + y
+
+					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
+					if dist < 100 {
 						return false
 					}
 				}
@@ -127,11 +140,33 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int) *box.Box {
 		dist := int(GetBetweenDist(x, y, xBox, yBox))
 
 		if dist < bodyRadius*5 && !mapBox.Underground {
-			for i := rotate - 40; i < rotate+45; i++ {
 
+			for i := rotate - 20; i < rotate+20; i++ { // смотрим колизии на самой морде
 				rad := float64(i) * math.Pi / 180
-				bX := int(float64(100)*math.Cos(rad)) + x // точки окружности корпуса
-				bY := int(float64(100)*math.Sin(rad)) + y
+				bX := int(float64(90)*math.Cos(rad)) + x
+				bY := int(float64(90)*math.Sin(rad)) + y
+
+				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
+				if dist < 10 {
+					return mapBox
+				}
+			}
+
+			for i := rotate - 40; i < rotate+40; i++ { // смотри колизии ближе к бокам
+				rad := float64(i) * math.Pi / 180
+				bX := int(float64(60)*math.Cos(rad)) + x
+				bY := int(float64(60)*math.Sin(rad)) + y
+
+				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
+				if dist < 10 {
+					return mapBox
+				}
+			}
+
+			for i := 0; i < 360; i++ { // смотри колизии везде по радиусу боков
+				rad := float64(i) * math.Pi / 180
+				bX := int(float64(40)*math.Cos(rad)) + x
+				bY := int(float64(40)*math.Sin(rad)) + y
 
 				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
 				if dist < 10 {

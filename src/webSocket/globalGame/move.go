@@ -63,8 +63,9 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
 
 				usersGlobalWs, mx := Clients.GetAll()
-				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs)
 				mx.Unlock()
+
+				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs)
 
 				if obstacle {
 					select {
