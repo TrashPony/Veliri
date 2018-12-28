@@ -98,7 +98,7 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *box.Box) {
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
 			update.Squad(user.GetSquad(), true)
-			boxes.Boxes.UpdateBox(mapBox)
+			boxes.Boxes.UpdateBox(mapBox) // в дефер что бы он отработал после закрытия мьютекса
 			return nil, mapBox
 		} else {
 			return errors.New("unknown error"), nil

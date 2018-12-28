@@ -19,7 +19,6 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 	user.GetSquad().Afterburner = false
 	user.GetSquad().MoveChecker = false
-
 	user.GetSquad().CreateMove()
 
 	otherUsers := make([]*hostileMS, 0)

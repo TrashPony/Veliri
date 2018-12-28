@@ -12,18 +12,19 @@ func openBox(ws *websocket.Conn, msg Message) {
 
 	if user != nil {
 		mapBox, mx := boxes.Boxes.Get(msg.BoxID)
-		defer mx.Unlock()
+		mx.Unlock()
 
 		if mapBox != nil {
-			x, y := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
 
+			x, y := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 			if dist < 150 {
 				if user.GetSquad().MoveChecker {
 					user.GetSquad().GetMove() <- true // останавливаем движение
 				}
-				ws.WriteJSON(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize})
+				globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
+					Size: mapBox.CapacitySize, idUserSend: user.GetID()}
 			}
 		}
 	}
@@ -49,6 +50,7 @@ func useBox(ws *websocket.Conn, msg Message) {
 			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
 
 			usersGlobalWs, mx := Clients.GetAll()
+			mx.Unlock()
 
 			for _, user := range usersGlobalWs {
 				boxX, boxY := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
@@ -59,7 +61,6 @@ func useBox(ws *websocket.Conn, msg Message) {
 						Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize}
 				}
 			}
-			mx.Unlock()
 		}
 	}
 }

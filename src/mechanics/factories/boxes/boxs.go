@@ -62,8 +62,6 @@ func (b *store) DestroyBox(destroyBox *box.Box) {
 }
 
 func (b *store) UpdateBox(updateBox *box.Box) {
-	b.mx.Lock()
-	defer b.mx.Unlock()
 	dbBox.Inventory(updateBox)
 }
 

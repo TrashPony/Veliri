@@ -30,6 +30,10 @@ func evacuationSquad(ws *websocket.Conn) {
 			return
 		}
 
+		if len(path) == 0 {
+			return
+		}
+
 		globalPipe <- Message{Event: "startMoveEvacuation", OtherUser: GetShortUserInfo(user),
 			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)

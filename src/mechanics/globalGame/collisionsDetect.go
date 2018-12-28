@@ -36,21 +36,38 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					r = mapCoordinate.R
 				}
 
-				rad := float64(rotate) * math.Pi / 180
-				bX := int(float64(bodyRadius*2)*math.Cos(rad)) + x // точки окружности корпуса
-				bY := int(float64(bodyRadius*2)*math.Sin(rad)) + y
+				// корпус состоиз из 3х оружностей, 1 спериди, 2 жопке, 3 бока
 
-				dist := int(GetBetweenDist(bX, bY, xc, yc))
-				if dist < coordinateRadius {
-					if !mapCoordinate.Move {
-						return false, q, r
+				for i := rotate - 15; i < rotate+15; i++ {
+					rad := float64(i) * math.Pi / 180
+					bX := int(float64(90)*math.Cos(rad)) + x
+					bY := int(float64(90)*math.Sin(rad)) + y
+
+					dist := int(GetBetweenDist(bX, bY, xc, yc))
+					if dist < coordinateRadius {
+						if !mapCoordinate.Move {
+							return false, q, r
+						}
 					}
 				}
 
-				for i := rotate - 35; i < rotate+35; i++ { // смотрим только предметы по курсу )
+				//for i := rotate - 190; i < rotate-170; i++ {
+				//	rad := float64(i) * math.Pi / 180
+				//	bX := int(float64(90)*math.Cos(rad)) + x
+				//	bY := int(float64(90)*math.Sin(rad)) + y
+				//
+				//	dist := int(GetBetweenDist(bX, bY, xc, yc))
+				//	if dist < coordinateRadius {
+				//		if !mapCoordinate.Move {
+				//			return false, q, r
+				//		}
+				//	}
+				//}
+
+				for i := rotate - 360; i < rotate+360; i++ {
 					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyRadius)*math.Cos(rad)) + x // точки окружности корпуса
-					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
+					bX := int(float64(40)*math.Cos(rad)) + x
+					bY := int(float64(40)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {

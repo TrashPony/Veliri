@@ -49,7 +49,6 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 
 	if user.GetSquad().Afterburner { // если форсаж то х2 скорости
 		maxSpeed = maxSpeed * 2
-		minSpeed = minSpeed * 2
 	}
 
 	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
@@ -77,16 +76,12 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			break
 		}
 
-		if len(path)%10 == 0 || len(path) == 0 {
-			if thoriumSlots != nil { // высчитывает эффективность топлива которая влияет на скорость
-
-				efficiency := WorkOutThorium(thoriumSlots, afterburner)
-				maxSpeed = (fullMax * efficiency) / 100 // высчитываем максимальную скорость по состоянию топлива
-
-				if efficiency == 0 {
-					// кончилось топливо совсем, выходим с ошибкой
-					return errors.New("not thorium"), path
-				}
+		if thoriumSlots != nil {
+			efficiency := WorkOutThorium(thoriumSlots, afterburner) // отрабатываем прредпологалаемое топливо
+			maxSpeed = (fullMax * efficiency) / 100                 // высчитываем максимальную скорость по состоянию топлива
+			if efficiency == 0 {
+				// кончилось топливо, выходим с ошибкой
+				return errors.New("not thorium"), path
 			}
 		}
 
@@ -114,6 +109,10 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
+		radRotate := float64(rotate) * math.Pi / 180
+		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(speed) * math.Sin(radRotate)
+
 		for i := 0; i < int(minSpeed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 			needRad := math.Atan2(ToY-forecastY, ToX-forecastX)
 			needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу
@@ -135,10 +134,6 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 				break
 			}
 		}
-
-		radRotate := float64(rotate) * math.Pi / 180
-		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
-		stopY := float64(speed) * math.Sin(radRotate)
 
 		possibleMove, q, r := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
 

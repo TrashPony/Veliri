@@ -1,6 +1,6 @@
 function CreateBoxes(boxes) {
 
-    game.boxes = boxes;
+    game.boxes = [];
 
     for (let i = 0; i < boxes.length; i++) {
         CreateBox(boxes[i])
@@ -8,6 +8,9 @@ function CreateBoxes(boxes) {
 }
 
 function CreateBox(mapBox) {
+
+    game.boxes.push(mapBox);
+
     if (game.map.OneLayerMap.hasOwnProperty(mapBox.q) && game.map.OneLayerMap.hasOwnProperty(mapBox.r)) {
 
         let xy = GetXYCenterHex(mapBox.q, mapBox.r);
