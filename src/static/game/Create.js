@@ -69,7 +69,9 @@ function create(game) {
     game.icon = game.add.group();
 
     CreateMap().then(function () {
-        LoadFunc();
+        if (LoadFunc) {
+            LoadFunc();
+        }
 
         if (game.typeService === "battle") {
             CreateMyGameUnits();

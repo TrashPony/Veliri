@@ -46,27 +46,34 @@ function selectMap() {
 
 function createGame(jsonMessage) {
     if (game) {
-        UpdateMap(JSON.parse(jsonMessage).map, game);
+        UpdateMap(JSON.parse(jsonMessage).map, game, JSON.parse(jsonMessage).bases);
     } else {
         game = CreateGame(JSON.parse(jsonMessage).map);
+        game.typeService = "mapEditor";
+        game.bases = JSON.parse(jsonMessage).bases;
 
         setTimeout(function () {
-            CreateLabelBase(JSON.parse(jsonMessage).bases)
-        }, 1500);
+            if (JSON.parse(jsonMessage).bases) {
+                CreateLabelBase(JSON.parse(jsonMessage).bases);
+                CreateMiniMap();
+            }
+        }, 2000);
     }
 }
 
 function CreateLabelBase(bases) {
     for (let i in bases){
         if (bases.hasOwnProperty(i) && game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
-            let coordinateBase = game.map.OneLayerMap[bases[i].q][bases[i].r].sprite;
-            let base = game.icon.create(coordinateBase.x, coordinateBase.y, 'baseIcon');
+
+            let xy = GetXYCenterHex(bases[i].q, bases[i].r);
+
+            let base = game.icon.create(xy.x, xy.y, 'baseIcon');
             base.anchor.setTo(0.5);
             base.scale.setTo(0.1);
 
             if (game.map.OneLayerMap.hasOwnProperty(bases[i].resp_q) && game.map.OneLayerMap.hasOwnProperty(bases[i].resp_r)) {
-                let coordinateResp = game.map.OneLayerMap[bases[i].resp_q][bases[i].resp_r].sprite;
-                let baseResp = game.icon.create(coordinateResp.x, coordinateResp.y, 'baseResp');
+                let xy = GetXYCenterHex(bases[i].resp_q, bases[i].resp_r);
+                let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
                 baseResp.anchor.setTo(0.5);
                 baseResp.scale.setTo(0.05);
             }

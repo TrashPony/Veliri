@@ -3,7 +3,7 @@ function GrabCamera() {
 
         if (game && game.typeService === "battle") {
             RemoveSelect();
-        } else if (game && game.typeService === "global") {
+        } else if (game && game.typeService === "global" || game.typeService === "mapEditor") {
             CreateMiniMap(game.map)
         }
 

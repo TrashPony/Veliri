@@ -121,6 +121,26 @@ input:hover {
     color: #00fffd;
 }
 
+.topButton {
+    margin-top: 2px;
+    color: #f9ff00;
+    float: right;
+    border-radius: 2px;
+    height: 15px;
+    width: 30px;
+    background-size: 5px 2px;
+    background-image:linear-gradient(1deg, rgba(23, 114, 166, 0.9), rgba(19, 76, 105, 0.9) 6px);
+    margin-right: 10px;
+    line-height: 13px;
+    font-size: 23px;
+    user-select: none;
+    box-shadow: inset 0 0 5px black;
+}
+
+.topButton:hover {
+    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+}
+
 /* CUSTOM SCROLLBAR */
 body ::-webkit-scrollbar,
 body ::-webkit-scrollbar:horizontal {

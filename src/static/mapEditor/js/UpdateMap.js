@@ -1,4 +1,4 @@
-function UpdateMap(newMap, game) {
+function UpdateMap(newMap, game, bases) {
     removeSubMenus();
     game.floorLayer.forEach(function (c) { c.kill(); });
     game.floorObjectLayer.forEach(function (c) { c.kill(); });
@@ -7,9 +7,14 @@ function UpdateMap(newMap, game) {
     game.SelectLayer.forEach(function (c) { c.kill(); });
 
     game.map = newMap;
+    game.bases = bases;
+
     game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize/2); //размеры карты
 
-    CreateLabelBase(JSON.parse(jsonMessage).bases);
+    if (bases){
+        CreateLabelBase(bases);
+    }
+    CreateMiniMap();
     CreateMap();
 }
 

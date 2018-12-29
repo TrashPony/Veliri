@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Map Editor</title>
-
+    <link href="../assets/components/miniMap/miniMap.css" rel="stylesheet">
     <link href="../assets/css/all.css" rel="stylesheet">
+
     <link href="./css/head.css" rel="stylesheet">
     <link href="./css/coordinates.css" rel="stylesheet">
     <link href="./css/coordinateBlock.css" rel="stylesheet">
@@ -39,7 +40,6 @@
     <script src="../game/CreateMap/MarkZoneEffect.js"></script>
 
     <script src="../game/Interface/GrabCamera.js"></script>
-    <script src="../game/Interface/MouseOver.js"></script>
     <script src="../game/Interface/RotateMap.js"></script>
     <script src="../game/Interface/SizeMap.js"></script>
     <script src="../game/Interface/TipOff.js"></script>
@@ -47,12 +47,26 @@
     <script src="../game/Interface/TipEffect.js"></script>
     <script src="../game/Interface/ParseEquipEffect.js"></script>
 
+    <script src="../assets/components/miniMap/CreateMiniMap.js"></script>
+    <script src="../assets/components/MouseOver.js"></script>
+    <script src="../assets/components/MoveWindow.js"></script>
+
     <script src="../game/utils/hexRadius.js"></script>
     <script src="../game/utils/dynamicMap.js"></script>
+    <script src="../game/utils/getXYCenterHex.js"></script>
+
     <script src="../assets/lib/phaser.js"></script>
 </head>
 <body oncontextmenu="return false;" onload="OpenMapEditorSocket()" onmousemove="moveMouse(event)">
 <div id="container">
+    <div id="miniMap">
+        <div class="topButton" onclick="HideMap()"> _ </div>
+        <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿ </div>
+        <canvas id="canvasMap"></canvas>
+        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')" onmouseup="mouseZoomPress('')"> + </div>
+        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')" onmouseup="mouseZoomPress('')"> - </div>
+        <div class="zoomButton" onmousedown="FocusMS()"> &#9055; </div>
+    </div>
     <div id="head">
         <select title="mapSelector" id="mapSelector" onchange="selectMap();">
             <option value="" disabled selected>Выберите карту</option>

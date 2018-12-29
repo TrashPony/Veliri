@@ -83,6 +83,12 @@ function CreateMiniMap(map) {
             }
         }
 
+        for (let i in game.bases) {
+            ctx.fillStyle = "#0babff";
+            let xy = GetXYCenterHex(game.bases[i].q, game.bases[i].r);
+            ctx.fillRect(xy.x / kX, xy.y / kY, hexagonWidth, hexagonHeight)
+        }
+
         let kXCam = game.hexagonWidth * game.camera.scale.x / hexagonWidth;
         let kYCam = game.hexagonHeight * game.camera.scale.y / hexagonHeight;
         ctx.strokeStyle = "#fffc1f";

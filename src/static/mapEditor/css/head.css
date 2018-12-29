@@ -3,6 +3,11 @@
     margin: 0 auto;
 }
 
+#miniMap {
+    bottom: 15px;
+    top: unset;
+}
+
 #head {
     height: 280px;
     width: 150px;
