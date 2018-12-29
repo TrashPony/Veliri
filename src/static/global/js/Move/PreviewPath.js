@@ -7,6 +7,10 @@ function PreviewPath(jsonData) {
         if (label) label.destroy();
     }
 
+    game.squad.moveTo = jsonData.path[jsonData.path.length - 1]; // это нужно для отрисовки пути на мине карте
+
+    CreateMiniMap();
+
     for (let i = 0; jsonData.path && i < jsonData.path.length; i++) {
         if (i % 3 === 0 || i + 1 === jsonData.path.length) {
             let label = game.floorObjectLayer.create(jsonData.path[i].x, jsonData.path[i].y, 'pathCell');

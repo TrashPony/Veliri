@@ -50,10 +50,17 @@ function CreateMiniMap(map) {
             ctx.fillRect(mapPoints[i].x, mapPoints[i].y, hexagonWidth, hexagonHeight);
         }
 
-        // TODO смещение по зуму для обьектов на карте
         if (game.squad) {
             ctx.fillStyle = "#19ff00";
-            ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight)
+            ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
+
+            if (game.squad.moveTo) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#00fcff";
+                ctx.moveTo(game.squad.sprite.x / kX + hexagonWidth / 2, game.squad.sprite.y / kY + hexagonHeight / 2);
+                ctx.lineTo(game.squad.moveTo.x / kX, game.squad.moveTo.y / kY);
+                ctx.stroke();
+            }
         }
 
         if (game.otherUsers) {
@@ -65,7 +72,7 @@ function CreateMiniMap(map) {
                 }
             }
         }
-        //game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite
+
         for (let i in game.bases) {
             ctx.fillStyle = "#1efcff";
             for (let j in game.bases[i].transports) {
@@ -91,8 +98,8 @@ function CreateMiniMap(map) {
             ctx.beginPath();
             ctx.strokeStyle = "rgba(0, 243, 255, 0.5)";
             ctx.fillStyle = "rgba(0, 243, 255, 0.1)";
-            ctx.ellipse(xy.x / kX + hexagonWidth/2, xy.y / kY + hexagonHeight/2,
-                game.bases[i].gravity_radius/ kX, game.bases[i].gravity_radius/ kY,
+            ctx.ellipse(xy.x / kX + hexagonWidth / 2, xy.y / kY + hexagonHeight / 2,
+                game.bases[i].gravity_radius / kX, game.bases[i].gravity_radius / kY,
                 0, 0, 2 * Math.PI, true);
             ctx.fill();
             ctx.stroke();

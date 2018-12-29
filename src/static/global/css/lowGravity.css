@@ -14,7 +14,7 @@
     pointer-events: none;
     color: #bdbd00;
     font-size: 50px;
-    animation: LowGravity 1s infinite;
+    animation: LowGravity 2s infinite;
     text-shadow: 2px 2px 0 #13110e, 2px -2px 0 #000000, -2px 2px 0 #000000, -2px -2px 0 #000000, 2px 0px 0 #c5c3bf, 0px 2px 0 #c5c3bf, -2px 0px 0 #c5c3bf, 0px -2px 0 #c5c3bf, 2px 2px 2px rgba(164,4,4,0);
 }
 

@@ -28,6 +28,7 @@ type Coordinate struct {
 	Level               int              `json:"level"`
 	Scale               int              `json:"scale"`
 	Shadow              bool             `json:"shadow"`
+	UnitOverlap         bool             `json:"unit_overlap"`
 	ObjRotate           int              `json:"obj_rotate"`
 	AnimationSpeed      int              `json:"animation_speed"`
 	XOffset             int              `json:"x_offset"`

@@ -36,9 +36,10 @@ function create(game) {
 
     game.floorLayer = game.add.group();
     game.floorObjectSelectLineLayer = game.add.group();
-    game.floorObjectLayer = game.add.group();
 
+    game.floorObjectLayer = game.add.group(); // уровень обьектов которые под юнитом
     game.unitLayer = game.add.group();
+    game.floorOverObjectLayer = game.add.group(); // уровень обьектов которые над юнитом
 
     game.SelectLayer = game.add.group();
     game.SelectLayer.alpha = 0.4;

@@ -4,14 +4,18 @@ function CreateAnimate(coordinate) {
     if (coordinate.impact) {
         return
     }
-
-    animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
-        coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset);
+    if (coordinate.unit_overlap) {
+        animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
+            coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
+    } else {
+        animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
+            coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
+    }
 
     coordinate.objectSprite = animate;
 }
 
-function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset) {
+function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset, group) {
 
     let object = game.floorObjectLayer.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5, 0.5);

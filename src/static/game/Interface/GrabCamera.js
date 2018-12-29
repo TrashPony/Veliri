@@ -1,6 +1,8 @@
 function GrabCamera() {
     if (game.input.activePointer.rightButton.isDown) { // ловит нажатие правой кнопки маши в игре
 
+        game.camera.target = null;
+
         if (game && game.typeService === "battle") {
             RemoveSelect();
         } else if (game && game.typeService === "global" || game.typeService === "mapEditor") {

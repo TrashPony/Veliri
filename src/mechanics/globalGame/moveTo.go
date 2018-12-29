@@ -78,7 +78,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 		if thoriumSlots != nil {
 			efficiency := WorkOutThorium(thoriumSlots, afterburner, gravity) // отрабатываем прредпологалаемое топливо
-			maxSpeed = (fullMax * efficiency) / 100                 // высчитываем максимальную скорость по состоянию топлива
+			maxSpeed = (fullMax * efficiency) / 100                          // высчитываем максимальную скорость по состоянию топлива
 			if efficiency == 0 {
 				// кончилось топливо, выходим с ошибкой
 				return errors.New("not thorium"), path
@@ -135,7 +135,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		possibleMove, q, r := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
+		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
 
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
@@ -146,6 +146,16 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		} else {
 			if diffRotate == 0 {
 				break
+			}
+
+			if !possibleMove {
+				if front { // если препятвие спереди то идем назад
+					forecastX = forecastX - stopX
+					forecastY = forecastY - stopY
+				} else { // иначе вперед
+					forecastX = forecastX + stopX
+					forecastY = forecastY + stopY
+				}
 			}
 		}
 

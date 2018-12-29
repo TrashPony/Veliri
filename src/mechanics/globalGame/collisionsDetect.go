@@ -15,7 +15,7 @@ import (
 const bodyRadius = 63 // размеры подобраны методом тыка)
 const coordinateRadius = HexagonHeight / 2
 
-func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int) {
+func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int, bool) {
 
 	startCoordinate := GetQRfromXY(x, y, mp)
 	checkCoordinate := coordinate.GetCoordinatesRadius(startCoordinate, 2)
@@ -50,7 +50,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r
+							return false, q, r, true
 						}
 					}
 				}
@@ -63,7 +63,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r
+							return false, q, r, true
 						}
 					}
 				}
@@ -76,14 +76,41 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int)
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r
+							return false, q, r, false
 						}
 					}
 				}
+
+				for i := rotate - 220; i < rotate-140; i++ { // смотри колизии ближе к бокам от зада
+					rad := float64(i) * math.Pi / 180
+					bX := int(float64(60)*math.Cos(rad)) + x
+					bY := int(float64(60)*math.Sin(rad)) + y
+
+					dist := int(GetBetweenDist(bX, bY, xc, yc))
+					if dist < coordinateRadius {
+						if !mapCoordinate.Move {
+							return false, q, r, false
+						}
+					}
+				}
+
+				for i := rotate + 200; i < rotate+160; i++ { // смотрим колизии на жопке
+					rad := float64(i) * math.Pi / 180
+					bX := int(float64(100)*math.Cos(rad)) + x
+					bY := int(float64(100)*math.Sin(rad)) + y
+
+					dist := int(GetBetweenDist(bX, bY, xc, yc))
+					if dist < coordinateRadius {
+						if !mapCoordinate.Move {
+							return false, q, r, false
+						}
+					}
+				}
+
 			}
 		}
 	}
-	return true, q, r
+	return true, q, r, true
 }
 
 func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) bool {

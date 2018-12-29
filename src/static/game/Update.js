@@ -34,4 +34,6 @@ function update() {
 
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
     game.floorObjectLayer.sort('y', Phaser.Group.SORT_DESCENDING);
+    game.unitLayer.sort('y', Phaser.Group.SORT_DESCENDING);
+    game.floorOverObjectLayer.sort('y', Phaser.Group.SORT_DESCENDING);
 }

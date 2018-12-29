@@ -21,7 +21,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
-	if find {
+	if find && !user.GetSquad().Evacuation && user.InBaseID == 0 {
 
 		user.GetSquad().Evacuation = true
 

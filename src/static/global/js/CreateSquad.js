@@ -18,16 +18,15 @@ function CreateSquad(squad, x, y, bodyName, weaponName, rotate, focus) {
     bodyShadow.tint = 0x000000;
     bodyShadow.alpha = 0.4;
     game.physics.arcade.enable(bodyShadow);
-    unit.addChild(bodyShadow);
 
     let body = game.make.sprite(0, 0, bodyName);
-    unit.addChild(body);
     game.physics.arcade.enable(body);
     body.scale.setTo(0.5, 0.5);
     body.inputEnabled = true;             // включаем ивенты на спрайт
     body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
+
 
 
     let weapon;
@@ -41,17 +40,21 @@ function CreateSquad(squad, x, y, bodyName, weaponName, rotate, focus) {
         weaponShadow.scale.setTo(0.5, 0.5);
         weaponShadow.tint = 0x000000;
         weaponShadow.alpha = 0.4;
-        unit.addChild(weaponShadow);
-        unit.addChild(weapon);
     }
 
     squad.sprite = unit;
     squad.sprite.unitBody = body;
     squad.sprite.bodyShadow = bodyShadow;
 
+    unit.addChild(bodyShadow);
+    unit.addChild(body);
+
     if (weapon) {
         squad.sprite.weapon = weapon;
         squad.sprite.weaponShadow = weaponShadow;
+
+        unit.addChild(weaponShadow);
+        unit.addChild(weapon);
     }
 
     SetAngle(squad, rotate);
