@@ -54,8 +54,26 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				return
 			}
 		default:
-			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner)
 
+			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
+			if user.GetSquad().HighGravity != newGravity {
+				user.GetSquad().HighGravity = newGravity
+				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad()}
+				select {
+				case exitNow := <-user.GetSquad().GetMove():
+					if exitNow {
+						user.GetSquad().MoveChecker = false
+						move(ws, msg)
+						return
+					}
+				default:
+					user.GetSquad().MoveChecker = false
+					move(ws, msg)
+					return
+				}
+			}
+
+			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
 			if user.GetSquad().Afterburner {
 				// TODO ломание корпуса
 			}
@@ -87,7 +105,6 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			if mapBox != nil {
 				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID}
 				boxes.Boxes.DestroyBox(mapBox)
-
 				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
 				select {
 				case exitNow := <-user.GetSquad().GetMove():

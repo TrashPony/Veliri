@@ -14,6 +14,11 @@ func evacuationSquad(ws *websocket.Conn) {
 		return
 	}
 
+	if user.GetSquad().HighGravity {
+		globalPipe <- Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID()}
+		return
+	}
+
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find {

@@ -86,7 +86,16 @@ function CreateMiniMap(map) {
         for (let i in game.bases) {
             ctx.fillStyle = "#0babff";
             let xy = GetXYCenterHex(game.bases[i].q, game.bases[i].r);
-            ctx.fillRect(xy.x / kX, xy.y / kY, hexagonWidth, hexagonHeight)
+            ctx.fillRect(xy.x / kX, xy.y / kY, hexagonWidth, hexagonHeight);
+
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(0, 243, 255, 0.5)";
+            ctx.fillStyle = "rgba(0, 243, 255, 0.1)";
+            ctx.ellipse(xy.x / kX + hexagonWidth/2, xy.y / kY + hexagonHeight/2,
+                game.bases[i].gravity_radius/ kX, game.bases[i].gravity_radius/ kY,
+                0, 0, 2 * Math.PI, true);
+            ctx.fill();
+            ctx.stroke();
         }
 
         let kXCam = game.hexagonWidth * game.camera.scale.x / hexagonWidth;

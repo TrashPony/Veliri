@@ -52,13 +52,13 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 	}
 
 	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
-		fakeThoriumSlots, user.GetSquad().Afterburner)
+		fakeThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
 
 	return path, err
 }
 
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
-	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner bool) (error, []PathUnit) {
+	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
 
@@ -77,7 +77,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		}
 
 		if thoriumSlots != nil {
-			efficiency := WorkOutThorium(thoriumSlots, afterburner) // отрабатываем прредпологалаемое топливо
+			efficiency := WorkOutThorium(thoriumSlots, afterburner, gravity) // отрабатываем прредпологалаемое топливо
 			maxSpeed = (fullMax * efficiency) / 100                 // высчитываем максимальную скорость по состоянию топлива
 			if efficiency == 0 {
 				// кончилось топливо, выходим с ошибкой

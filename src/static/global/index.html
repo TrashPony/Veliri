@@ -5,6 +5,9 @@
     <title>Veliri</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href="../assets/components/chat/chat.css" rel="stylesheet">
+    <link href="../assets/css/all.css" rel="stylesheet">
+
     <link href="../assets/components/miniMap/miniMap.css" rel="stylesheet">
     <link href="./css/bottomBar.css" rel="stylesheet">
     <link href="./css/openBox.css" rel="stylesheet">
@@ -12,9 +15,7 @@
     <link href="./css/notification.css" rel="stylesheet">
     <link href="./css/squadBar.css" rel="stylesheet">
     <link href="./css/damageBar.css" rel="stylesheet">
-
-    <link href="../assets/css/all.css" rel="stylesheet">
-    <link href="../assets/components/chat/chat.css" rel="stylesheet">
+    <link href="./css/lowGravity.css" rel="stylesheet">
 
     <script src="js/WebSocket/OpenSockets.js"></script>
     <script src="js/WebSocket/ReadResponse.js"></script>
@@ -92,6 +93,9 @@
             <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')" onmouseup="mouseZoomPress('')"> - </div>
             <div class="zoomButton" onmousedown="FocusMS()"> &#9055; </div>
         </div>
+
+        <div id="lowGravity"> LOW GRAVITY </div>
+
         <div id="chat">
             <div class="tabs"></div>
             <div class="topButton" onclick="HideChat()"> _ </div>

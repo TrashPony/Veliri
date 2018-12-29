@@ -20,6 +20,7 @@ type Squad struct {
 	ToY             float64             `json:"to_y"`     /* куда отряд двигается */
 	MapID           int                 `json:"map_id"`
 	CurrentSpeed    float64             `json:"current_speed"`
+	HighGravity     bool                `json:"high_gravity"`
 	Afterburner     bool                `json:"afterburner"`
 	Evacuation      bool                `json:"evacuation"`
 	InSky           bool                `json:"in_sky"` /* отряд по той или иной причине летит Оо */

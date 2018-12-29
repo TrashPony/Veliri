@@ -10,6 +10,7 @@ import (
 )
 
 func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base.Transport, error) {
+
 	mapBases := bases.Bases.GetBasesByMap(mp.Id)
 	minDist := 0.0
 	evacuationBase := &base.Base{}
@@ -24,7 +25,8 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		transport := mapBase.GetFreeTransport()
 
-		if (dist < minDist || minDist == 0) && transport != nil {
+		if ((dist < minDist && int(dist) < mapBase.GravityRadius) ||
+			(minDist == 0 && int(dist) < mapBase.GravityRadius)) && transport != nil {
 			minDist = dist
 			evacuationBase = mapBase
 		}
@@ -46,7 +48,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 
 			_, path := MoveTo(float64(startX), float64(startY), 250, 15, 15,
 				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
-				true, nil, false)
+				true, nil, false, false)
 
 			return path, evacuationBase.ID, transport, nil
 		} else {
@@ -62,6 +64,6 @@ func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit 
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true, nil, false)
+		float64(endX), float64(endY), 0, mp, true, nil, false, false)
 	return path
 }

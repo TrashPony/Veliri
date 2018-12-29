@@ -19,7 +19,8 @@ func Bases() map[int]*base.Base {
 		" resp_q," +
 		" resp_r," +
 		" transport_count," +
-		" defender_count" +
+		" defender_count," +
+		" gravity_radius" +
 		" " +
 		" FROM bases")
 	if err != nil {
@@ -33,7 +34,7 @@ func Bases() map[int]*base.Base {
 		var defenders int
 
 		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &gameBase.RespQ,
-			&gameBase.RespR, &transports, &defenders)
+			&gameBase.RespR, &transports, &defenders, &gameBase.GravityRadius)
 		if err != nil {
 			log.Fatal("get scan all base " + err.Error())
 		}

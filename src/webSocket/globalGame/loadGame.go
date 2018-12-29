@@ -23,6 +23,8 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 	otherUsers := make([]*hostileMS, 0)
 
+	user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
+
 	mx.Lock()
 	for _, otherUser := range usersGlobalWs {
 		if user.GetID() != otherUser.GetID() {

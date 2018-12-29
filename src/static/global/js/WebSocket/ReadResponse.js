@@ -55,6 +55,9 @@ function ReadResponse(jsonData) {
         Afterburner(jsonData.afterburner)
     }
 
+    if (jsonData.event === "ChangeGravity") {
+        ChangeGravity(jsonData.squad)
+    }
 
     if (jsonData.event === "DestroyBox") {
         DestroyBox(jsonData.box_id)

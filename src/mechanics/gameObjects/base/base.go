@@ -1,15 +1,16 @@
 package base
 
 type Base struct {
-	ID         int                `json:"id"`
-	Name       string             `json:"name"`
-	Q          int                `json:"q"`
-	R          int                `json:"r"`
-	MapID      int                `json:"map_id"`
-	RespQ      int                `json:"resp_q"`
-	RespR      int                `json:"resp_r"`
-	Transports map[int]*Transport `json:"transports"`
-	Defenders  map[int]*Transport `json:"defenders"`
+	ID            int                `json:"id"`
+	Name          string             `json:"name"`
+	Q             int                `json:"q"`
+	R             int                `json:"r"`
+	MapID         int                `json:"map_id"`
+	RespQ         int                `json:"resp_q"`
+	RespR         int                `json:"resp_r"`
+	Transports    map[int]*Transport `json:"transports"`
+	Defenders     map[int]*Transport `json:"defenders"`
+	GravityRadius int                `json:"gravity_radius"`
 }
 
 type Transport struct {

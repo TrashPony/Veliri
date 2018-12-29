@@ -9,7 +9,8 @@ CREATE TABLE bases (
   resp_q          int, /* resp q,r это точка выхода из базы, когда игрок нажимает выйти из базы он попадает сюда */
   resp_r          int,
   transport_count int, /* количество эвакуатор у базы */
-  defender_count  int  /* количество защитников */
+  defender_count  int, /* количество защитников */
+  gravity_radius  int  /* радиус стабильной гравитации вокруг баз */
 );
 
 CREATE TABLE base_users ( /* игроки которые сейчас сидят на конкретной базу */
