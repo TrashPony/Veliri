@@ -41,7 +41,6 @@ function CreateBox(mapBox) {
             boxLine.scale.set(0.22);
             boxLine.tint = 0x00FF00;
             boxLine.angle = mapBox.rotate;
-            box.shadow = boxShadow;
         });
 
         box.events.onInputOut.add(function () {

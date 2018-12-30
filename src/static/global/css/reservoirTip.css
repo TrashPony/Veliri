@@ -1,0 +1,11 @@
+#reservoirTip {
+    height: 50px;
+    width: 100px;
+    border: 1px solid #25a0e1;
+    border-radius: 10px;
+    vertical-align: top;
+    padding-top: 5px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px);
+    background-size: 10px 2px;
+    position: absolute;
+}

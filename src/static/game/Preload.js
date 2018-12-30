@@ -4,17 +4,17 @@ function preload() {
     game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurX.js');
     game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurY.js');
     // Select
-        // line
+    // line
     game.load.spritesheet('linePlace', 'http://' + window.location.host + '/assets/select/place.png', 80, 100, 6);
     game.load.spritesheet('lineMove', 'http://' + window.location.host + '/assets/select/move.png', 80, 100, 6);
     game.load.spritesheet('lineTarget', 'http://' + window.location.host + '/assets/select/target.png', 80, 100, 6);
-        // unit
+    // unit
     game.load.spritesheet('MySelectUnit', 'http://' + window.location.host + '/assets/select/mySelectUnit.png', 100, 100, 3);
     game.load.spritesheet('HostileSelectUnit', 'http://' + window.location.host + '/assets/select/hostileUnitSelect.png', 100, 100, 3);
-        // zone
+    // zone
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
     game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 80, 100, 3);
-        // path
+    // path
     game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
 
     //Equip_Animate
@@ -26,22 +26,22 @@ function preload() {
     game.load.image('Mother', 'http://' + window.location.host + '/assets/units/body/Mother.png');
 
     // Units
-        //body
+    //body
     game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');
     game.load.image('medium_tank', 'http://' + window.location.host + '/assets/units/body/medium_tank.png');
     game.load.image('light_tank', 'http://' + window.location.host + '/assets/units/body/light_tank.png');
-        //weapon
+    //weapon
     game.load.image('big_missile', 'http://' + window.location.host + '/assets/units/weapon/big_missile.png');
     game.load.image('artillery', 'http://' + window.location.host + '/assets/units/weapon/artillery.png');
     game.load.image('big_laser', 'http://' + window.location.host + '/assets/units/weapon/big_laser.png');
     game.load.image('small_laser', 'http://' + window.location.host + '/assets/units/weapon/small_laser.png');
     game.load.image('small_missile', 'http://' + window.location.host + '/assets/units/weapon/small_missile.png');
     game.load.image('tank_gun', 'http://' + window.location.host + '/assets/units/weapon/tank_gun.png');
-        // bullets
+    // bullets
     game.load.spritesheet('missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/rocket.png', 128, 128, 40);
     game.load.image('ballistics_small_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_small_bullet.png');
     game.load.image('ballistics_artillery_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_artillery_bullet.png');
-        // fire effects
+    // fire effects
     game.load.image('smoke_puff', 'http://' + window.location.host + '/assets/fire_effects/smoke_puff.png');
     game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
@@ -102,6 +102,14 @@ function preload() {
 
     // Buttons
     game.load.image('buttonRotate', 'http://' + window.location.host + '/assets/buttons/rotate.png');
+
+    // Reservoir
+    game.load.image('copper_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/copper_ore.png');
+    game.load.image('oil', 'http://' + window.location.host + '/assets/resource/map_sprites/oil.png');
+    game.load.image('silicon_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/silicon_ore.png');
+    game.load.image('iron_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/iron_ore.png');
+    game.load.image('thorium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore.png');
+    game.load.image('titanium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore.png');
 
     autoPreload();
 }

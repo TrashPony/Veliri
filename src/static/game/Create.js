@@ -74,6 +74,10 @@ function create(game) {
             LoadFunc();
         }
 
+        if (game.map.reservoir){
+            CreateReservoir()
+        }
+
         if (game.typeService === "battle") {
             CreateMyGameUnits();
             CreateHostileGameUnits();

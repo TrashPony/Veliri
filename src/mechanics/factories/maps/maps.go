@@ -24,6 +24,11 @@ func NewMapStore() *MapStore {
 				}
 			}
 		}
+
+		if mp.Global { // если карта глобальная генерим на ней ресурсы
+			resourceGenerator(&mp)
+		}
+
 		mp.Respawns = respawns
 		m.maps[id] = mp
 	}
@@ -49,7 +54,7 @@ func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	for _, q := range newMap.OneLayerMap { // считает количество респаунов на карте
 		for _, mapCoordinate := range q {
 			if mapCoordinate.Type == "respawn" {
-				mapCoordinate.ID = len(respawns)+1
+				mapCoordinate.ID = len(respawns) + 1
 				respawns[len(respawns)+1] = mapCoordinate
 			}
 		}
