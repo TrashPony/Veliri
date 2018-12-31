@@ -3,6 +3,7 @@ package gameTypes
 import (
 	"../../db/get"
 	"../../gameObjects/resource"
+	"math/rand"
 )
 
 type resourceStore struct {
@@ -47,7 +48,7 @@ func (r *resourceStore) GetMapReservoirByID(id int) (*resource.Map, bool) {
 	baseRes, _ := r.GetBaseByID(newReservoir.ResourceID)
 	newReservoir.Resource = baseRes
 
-	newReservoir.Count = 10 //rand.Intn(newReservoir.MaxCount-newReservoir.MinCount) + newReservoir.MinCount
+	newReservoir.Count = rand.Intn(newReservoir.MaxCount-newReservoir.MinCount) + newReservoir.MinCount
 
 	return &newReservoir, ok
 }
