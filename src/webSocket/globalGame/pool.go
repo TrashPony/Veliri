@@ -29,6 +29,8 @@ type Message struct {
 	Bases         map[int]*base.Base          `json:"bases"`
 	X             int                         `json:"x"`
 	Y             int                         `json:"y"`
+	Q             int                         `json:"q"`
+	R             int                         `json:"r"`
 	ToX           float64                     `json:"to_x"`
 	ToY           float64                     `json:"to_y"`
 	PathUnit      globalGame.PathUnit         `json:"path_unit"`
@@ -40,6 +42,7 @@ type Message struct {
 	Boxes         []*box.Box                  `json:"boxes"`
 	Box           *box.Box                    `json:"box"`
 	BoxID         int                         `json:"box_id"`
+	TypeSlot      int                         `json:"type_slot"`
 	Slot          int                         `json:"slot"`
 	Size          float32                     `json:"size"`
 	Inventory     *inventory.Inventory        `json:"inventory"`
@@ -50,6 +53,8 @@ type Message struct {
 	Afterburner   bool                        `json:"afterburner"`
 	Credits       int                         `json:"credits"`
 	Experience    int                         `json:"experience"`
+	Seconds       int                         `json:"seconds"`
+	Count         int                         `json:"count"`
 }
 
 type hostileMS struct {
@@ -171,6 +176,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "AfterburnerToggle" {
 			afterburnerToggle(ws, msg)
+		}
+
+		if msg.Event == "startMining" {
+			startMining(ws, msg)
 		}
 	}
 }

@@ -68,18 +68,18 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					}
 				}
 
-				for i := 0; i < 360; i++ { // смотри колизии везде по радиусу боков
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(40)*math.Cos(rad)) + x
-					bY := int(float64(40)*math.Sin(rad)) + y
-
-					dist := int(GetBetweenDist(bX, bY, xc, yc))
-					if dist < coordinateRadius {
-						if !mapCoordinate.Move {
-							return false, q, r, false
-						}
-					}
-				}
+				//for i := 0; i < 360; i++ { // смотри колизии везде по радиусу боков
+				//	rad := float64(i) * math.Pi / 180
+				//	bX := int(float64(40)*math.Cos(rad)) + x
+				//	bY := int(float64(40)*math.Sin(rad)) + y
+				//
+				//	dist := int(GetBetweenDist(bX, bY, xc, yc))
+				//	if dist < coordinateRadius {
+				//		if !mapCoordinate.Move {
+				//			return false, q, r, false
+				//		}
+				//	}
+				//}
 
 				for i := rotate - 220; i < rotate-140; i++ { // смотри колизии ближе к бокам от зада
 					rad := float64(i) * math.Pi / 180

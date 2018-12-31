@@ -42,6 +42,26 @@ type Body struct {
 	Weapons map[int]*BodyWeaponSlot `json:"weapons"`
 }
 
+func (body *Body) GetEquip(typeSlot, numberSlot int) *BodyEquipSlot {
+	if typeSlot == 1 {
+		return body.EquippingI[numberSlot]
+	}
+	if typeSlot == 2 {
+		return body.EquippingII[numberSlot]
+	}
+	if typeSlot == 3 {
+		return body.EquippingIII[numberSlot]
+	}
+	if typeSlot == 4 {
+		return body.EquippingIV[numberSlot]
+	}
+	if typeSlot == 5 {
+		return body.EquippingV[numberSlot]
+	}
+
+	return nil
+}
+
 func (body *Body) GetUsePower() int {
 	var allPower int
 

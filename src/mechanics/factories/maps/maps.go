@@ -4,6 +4,7 @@ import (
 	"../../db/get"
 	"../../gameObjects/coordinate"
 	"../../gameObjects/map"
+	"../../gameObjects/resource"
 )
 
 type MapStore struct {
@@ -61,4 +62,27 @@ func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	}
 
 	return respawns
+}
+
+func (m *MapStore) GetReservoirByQR(q, r, mapID int) *resource.Map {
+	mp, findMap := m.maps[mapID]
+	if findMap {
+		q, findQ := mp.Reservoir[q]
+		if findQ {
+			reservoir := q[r]
+			return reservoir
+		}
+	}
+	return nil
+}
+
+func (m *MapStore) RemoveReservoirByQR(q, r, mapID int) {
+	mp, findMap := m.maps[mapID]
+	if findMap {
+		qLine, findQ := mp.Reservoir[q]
+		if findQ {
+			delete(qLine, r)
+			mp.OneLayerMap[q][r].Move = true
+		}
+	}
 }

@@ -1,11 +1,56 @@
-#reservoirTip {
-    height: 50px;
-    width: 100px;
+.reservoirTip {
+    min-height: 50px;
+    min-width: 130px;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     vertical-align: top;
     padding-top: 5px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px);
     background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     position: absolute;
+}
+
+.reservoirTip > div {
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    margin: 5px;
+    border-radius: 10px;
+    height: 25px;
+    padding: 5px;
+}
+
+.reservoirTip h3 {
+    display: block;
+    width: 100%;
+    height: 17px;
+    margin: -5px 0 4px -1px;
+    background: linear-gradient(0deg, red, yellow);
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    line-height: 15px;
+}
+
+.reservoirTip .iconOreTip {
+    height: 25px;
+    width: 25px;
+    float: left;
+    border-radius: 10px;
+}
+
+.reservoirTip .nameOre {
+    height: 25px;
+    line-height: 25px;
+    float: left;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.reservoirTip .countOre {
+    margin-left: 3px;
+    height: 25px;
+    line-height: 25px;
+    float: left;
+    color: #eeff03;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }

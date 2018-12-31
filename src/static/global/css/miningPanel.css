@@ -1,0 +1,56 @@
+#MiningPanel {
+    position: absolute;
+    display: block;
+    border-radius: 5px;
+    min-width: 40px;
+    height: 40px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    top: 260px;
+    right: 15px;
+    visibility: hidden;
+}
+
+#MiningPanel > div {
+    float: right;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #959595;
+    margin: 5px 0 5px 5px;
+    border-radius: 5px;
+    position: relative;
+}
+
+#MiningPanel > div div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 30px;
+    width: 30px;
+    background: rgba(171, 169, 188, 0.58);
+    visibility: hidden;
+}
+
+#MiningPanel > div:first-child {
+    margin: 5px 5px 5px 5px;
+}
+
+#MiningPanel > div:hover {
+    box-shadow: 0 0 5px 1px white;
+}
+
+#MiningPanel > div:active {
+    transform: scale(0.9);
+}
+
+@keyframes reload {
+    0% {
+        height: 100%;
+        visibility: visible;
+    }
+    100% {
+        height: 0;
+    }
+}

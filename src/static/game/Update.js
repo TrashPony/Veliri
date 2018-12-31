@@ -30,6 +30,8 @@ function update() {
                 }));
             }
         }
+
+        AnimateMiningLaser();
     }
 
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */

@@ -63,6 +63,22 @@ function ReadResponse(jsonData) {
         DestroyBox(jsonData.box_id)
     }
 
+    if (jsonData.event === "startMining") {
+        StartMining(jsonData);
+    }
+
+    if (jsonData.event === "destroyReservoir") {
+        DestroyReservoir(jsonData);
+    }
+
+    if (jsonData.event === "updateReservoir") {
+        UpdateReservoir(jsonData)
+    }
+
+    if (jsonData.event === "stopMining") {
+        StopMining(jsonData)
+    }
+
     if (jsonData.event === "setFreeResp") {
         Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 11, true, "setFreeResp");
     }

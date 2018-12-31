@@ -1,6 +1,4 @@
 function CreateReservoir() {
-    console.log(game.map.reservoir)
-
     for (let q in game.map.reservoir) {
         for (let r in game.map.reservoir[q]) {
 
@@ -14,7 +12,6 @@ function CreateReservoir() {
                 game.map.reservoir[q][r].sprite = gameObjectCreate(xy.x, xy.y, reservoir.name, 50, true, reservoir.rotate,
                     0, 0, game.floorOverObjectLayer);
             }
-
 
             game.map.reservoir[q][r].sprite.inputEnabled = true;
             game.map.reservoir[q][r].sprite.input.pixelPerfectOver = true;
@@ -31,20 +28,38 @@ function CreateReservoir() {
                 reservoirLine.angle = reservoir.rotate;
 
                 tip = document.createElement("div");
-                tip.id = "reservoirTip";
+                tip.id = "reservoirTip" + q + "" + r;
+                tip.className = "reservoirTip";
                 tip.style.left = stylePositionParams.left + "px";
                 tip.style.top = stylePositionParams.top + "px";
-                document.body.appendChild(tip)
+                tip.innerHTML = "<h3>" + reservoir.name + "</h3>";
+                document.body.appendChild(tip);
 
-                // TODO заполнение типа
+                let wrapper = document.createElement("div");
+                tip.appendChild(wrapper);
+
+                let icon = document.createElement("div");
+                icon.className = "iconOreTip";
+                icon.style.background = "url(/assets/resource/" + reservoir.name + ".png)" +
+                    " center center / contain no-repeat";
+                wrapper.appendChild(icon);
+
+                let nameOre = document.createElement("div");
+                nameOre.className = "nameOre";
+                nameOre.innerHTML = reservoir.name;
+                wrapper.appendChild(nameOre);
+
+                let count = document.createElement("div");
+                count.className = "countOre";
+                count.id = "countOre" + q + "" + r;
+                count.innerHTML = game.map.reservoir[q][r].count;
+                wrapper.appendChild(count);
             });
 
             game.map.reservoir[q][r].sprite.events.onInputOut.add(function () {
                 tip.remove();
                 reservoirLine.destroy()
             });
-
-            // TODO ивент при тыке
         }
     }
 }
