@@ -66,3 +66,31 @@
     padding: 0;
     margin: 0;
 }
+
+#Notifications {
+    position: absolute;
+    min-height: 0;
+    min-width: 150px;
+    top: 15px;
+    left: 240px;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    border-radius: 20px;
+    padding: 5px 5px 0 5px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#Notifications > div {
+    min-height: 0;
+    min-width: 140px;
+    width: 100%;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 20px;
+    padding: 5px 0;
+    margin-bottom: 5px;
+    transition: 1s;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}

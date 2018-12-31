@@ -4,7 +4,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "Error") {
-        alert(jsonData.error);
+        Notification(jsonData.error);
     }
 
     if (jsonData.event === "PreviewPath") {

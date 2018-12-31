@@ -29,4 +29,12 @@ function AnimateMiningLaser() {
             }
         }
     }
+
+    if (game.squad.selectMiningLine) {
+        game.squad.selectMiningLine.graphics.clear();
+        game.squad.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
+        game.squad.selectMiningLine.graphics.drawCircle(game.squad.sprite.x, game.squad.sprite.y, game.squad.selectMiningLine.radius);
+        game.squad.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
+        game.squad.selectMiningLine.graphics.drawCircle(game.squad.sprite.x, game.squad.sprite.y, game.squad.selectMiningLine.radius);
+    }
 }

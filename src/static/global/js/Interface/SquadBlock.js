@@ -147,6 +147,7 @@ function fillMiningBlock(unit) {
                 game.map.reservoir[q][r].reservoirLine.destroy()
             }
         }
+        game.squad.selectMiningLine.graphics.destroy();
         game.input.onDown.add(initMove, game);
     }
 
@@ -161,6 +162,10 @@ function fillMiningBlock(unit) {
                         " center center / contain no-repeat, rgba(76, 76, 76, 0.66)";
 
                     equipBlock.onclick = function () {
+
+                        let graphics = game.add.graphics(0, 0);
+                        game.squad.selectMiningLine = {graphics: graphics, radius: equips[i].equip.radius * 200};
+
                         for (let q in game.map.reservoir) {
                             for (let r in game.map.reservoir[q]) {
                                 let reservoir = game.map.reservoir[q][r];

@@ -50,3 +50,22 @@ function Alert(text, headText, okButton, time, alert, id) {
     notificationWrapper.appendChild(notificationBlock);
     document.body.appendChild(notificationWrapper);
 }
+
+function Notification(text) {
+    let wrapper = document.getElementById("Notifications");
+    wrapper.style.opacity = "1";
+    let notification = document.createElement("div");
+    notification.innerHTML = text;
+
+
+    wrapper.appendChild(notification);
+    setTimeout(function () {
+        notification.style.opacity = "0";
+        setTimeout(function () {
+            notification.remove();
+            if (wrapper.childNodes.length === 0) {
+                wrapper.style.opacity = "0";
+            }
+        }, 1000)
+    }, 3000)
+}
