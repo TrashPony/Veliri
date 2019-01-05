@@ -20,10 +20,6 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 	startCoordinate := GetQRfromXY(x, y, mp)
 	checkCoordinate := coordinate.GetCoordinatesRadius(startCoordinate, 2)
 
-	minDist := 999
-
-	var q, r int
-
 	for _, faceCoordinate := range checkCoordinate {
 
 		mapCoordinate, find := mp.GetCoordinate(faceCoordinate.Q, faceCoordinate.R)
@@ -36,12 +32,6 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 			// если координата находиться в теоритическом радиусе радиусе то проверяем на колизии
 			if dist < coordinateRadius*3 {
 
-				if minDist > dist {
-					minDist = dist
-					q = mapCoordinate.Q
-					r = mapCoordinate.R
-				}
-
 				for i := rotate - 20; i < rotate+20; i++ { // смотрим колизии на самой морде
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(90)*math.Cos(rad)) + x
@@ -50,7 +40,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r, true
+							return false, startCoordinate.Q, startCoordinate.R, true
 						}
 					}
 				}
@@ -63,7 +53,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r, true
+							return false, startCoordinate.Q, startCoordinate.R, true
 						}
 					}
 				}
@@ -89,7 +79,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r, false
+							return false, startCoordinate.Q, startCoordinate.R, false
 						}
 					}
 				}
@@ -102,7 +92,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
 						if !mapCoordinate.Move {
-							return false, q, r, false
+							return false, startCoordinate.Q, startCoordinate.R, false
 						}
 					}
 				}
@@ -110,7 +100,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 			}
 		}
 	}
-	return true, q, r, true
+	return true, startCoordinate.Q, startCoordinate.R, true
 }
 
 func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) bool {

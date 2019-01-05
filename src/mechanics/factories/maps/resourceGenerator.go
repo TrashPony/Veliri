@@ -5,7 +5,6 @@ import (
 	"../../gameObjects/resource"
 	"../gameTypes"
 	"math/rand"
-	"time"
 )
 
 func resourceGenerator(mp *_map.Map) {
@@ -22,7 +21,6 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 	i := 0
 
 	for i < count {
-		rand.Seed(time.Now().UnixNano())
 
 		q := rand.Intn(mp.QSize)
 		r := rand.Intn(mp.RSize)

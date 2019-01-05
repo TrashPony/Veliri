@@ -19,4 +19,5 @@ function LoadGame() {
     ThoriumBar(Data.squad.mather_ship.body.thorium_slots);
     FillSquadBlock(Data.squad);
     FillUserMeta(Data.credits, Data.experience, Data.squad);
+    Anomaly(Data.squad);
 }

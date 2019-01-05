@@ -18,6 +18,7 @@
     <link href="./css/lowGravity.css" rel="stylesheet">
     <link href="./css/reservoirTip.css" rel="stylesheet">
     <link href="./css/miningPanel.css" rel="stylesheet">
+    <link href="./css/anomalyScanner.css" rel="stylesheet">
 
     <script src="js/WebSocket/OpenSockets.js"></script>
     <script src="js/WebSocket/ReadResponse.js"></script>
@@ -35,6 +36,7 @@
     <script src="js/LoadGame/Users.js"></script>
     <script src="js/LoadGame/Bases.js"></script>
     <script src="js/LoadGame/Boxes.js"></script>
+    <script src="js/LoadGame/Anomaly.js"></script>
 
     <script src="js/Move/MoveTo.js"></script>
     <script src="js/Move/PreviewPath.js"></script>
@@ -52,6 +54,7 @@
     <script src="js/Interface/AlertWindow.js"></script>
     <script src="js/Interface/SquadBlock.js"></script>
     <script src="js/Interface/FillUserMeta.js"></script>
+    <script src="js/Interface/VisibleAnomalies.js"></script>
 
     <script src="../game/CreateMap/CreateMap.js"></script>
     <script src="../game/CreateMap/Animate.js"></script>
@@ -105,6 +108,12 @@
         <div id="Notifications"></div>
 
         <div id="lowGravity"> LOW GRAVITY </div>
+
+        <div id="anomalyScanner">
+            <div id="anomalyDisplay">
+                <div class="anomalyPing"></div>
+            </div>
+        </div>
 
         <div id="chat">
             <div class="tabs"></div>

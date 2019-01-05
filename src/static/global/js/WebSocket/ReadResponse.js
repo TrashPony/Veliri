@@ -103,6 +103,14 @@ function ReadResponse(jsonData) {
         }
     }
 
+    if (jsonData.event === "AnomalySignal") {
+        VisibleAnomalies(jsonData.anomalies)
+    }
+
+    if (jsonData.event === "SelectDigger") {
+        console.log(jsonData.coordinates);
+    }
+
     if (jsonData.event === "IntoToBase") {
         location.href = "http://" + window.location.host + "/lobby";
     }

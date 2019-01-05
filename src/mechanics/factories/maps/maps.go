@@ -8,13 +8,14 @@ import (
 )
 
 type MapStore struct {
-	maps map[int]_map.Map
+	maps    map[int]_map.Map
+	anomaly map[int][]*Anomaly
 }
 
 var Maps = NewMapStore()
 
 func NewMapStore() *MapStore {
-	m := &MapStore{maps: get.Maps()}
+	m := &MapStore{maps: get.Maps(), anomaly: make(map[int][]*Anomaly)}
 
 	for id, mp := range m.maps {
 		respawns := 0
@@ -27,6 +28,7 @@ func NewMapStore() *MapStore {
 		}
 
 		if mp.Global { // если карта глобальная генерим на ней ресурсы
+			anomalyGenerator(&mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
 			resourceGenerator(&mp)
 		}
 

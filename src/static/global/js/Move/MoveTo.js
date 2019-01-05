@@ -8,6 +8,9 @@ function MoveTo(jsonData) {
         let thoriumEfficiency = document.getElementById("speedBarEfficiency");
         thoriumEfficiency.innerHTML = (jsonData.path_unit.Speed * 10).toFixed(0);
 
+        game.squad.q = jsonData.path_unit.q;
+        game.squad.r = jsonData.path_unit.r;
+
         game.add.tween(game.squad.sprite).to({
                 x: jsonData.path_unit.x,
                 y: jsonData.path_unit.y

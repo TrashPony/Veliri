@@ -75,3 +75,60 @@ function StartMining(jsonData) {
         }
     }
 }
+
+function InitMiningOre(equip, numberSlot, type) {
+
+    function unselectMiningOre() {
+        for (let q in game.map.reservoir) {
+            for (let r in game.map.reservoir[q]) {
+                game.map.reservoir[q][r].sprite.events.onInputDown.removeAll();
+                game.map.reservoir[q][r].reservoirLine.destroy()
+            }
+        }
+        game.squad.selectMiningLine.graphics.destroy();
+        game.input.onDown.add(initMove, game);
+    }
+
+    let graphics = game.add.graphics(0, 0);
+    game.squad.selectMiningLine = {graphics: graphics, radius: equip.radius * 200};
+    game.floorObjectLayer.add(graphics);
+
+    for (let q in game.map.reservoir) {
+        for (let r in game.map.reservoir[q]) {
+            let reservoir = game.map.reservoir[q][r];
+            let reservoirLine = game.floorObjectSelectLineLayer.create(reservoir.sprite.x, reservoir.sprite.y, reservoir.name);
+            reservoirLine.anchor.setTo(0.5);
+            reservoirLine.scale.set(0.55);
+            reservoirLine.tint = 0x0FFF00;
+            reservoirLine.angle = reservoir.rotate;
+
+            reservoir.sprite.input.priorityID = 1;
+            reservoir.reservoirLine = reservoirLine;
+
+            game.input.onDown.remove(initMove, game);
+            game.input.onDown.add(function () {
+                if (game.input.activePointer.rightButton.isDown) {
+                    unselectMiningOre()
+                }
+            });
+            reservoir.sprite.events.onInputDown.add(function () {
+                global.send(JSON.stringify({
+                    event: "startMining",
+                    slot: Number(numberSlot),
+                    q: reservoir.q,
+                    r: reservoir.r,
+                    type_slot: type
+                }));
+                unselectMiningOre()
+            });
+        }
+    }
+}
+
+function InitDigger(equip, numberSlot, type) {
+    global.send(JSON.stringify({
+        event: "SelectDigger",
+        slot: Number(numberSlot),
+        type_slot: type
+    }));
+}

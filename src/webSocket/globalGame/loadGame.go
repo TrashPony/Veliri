@@ -12,30 +12,25 @@ func loadGame(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
 
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
-
-	usersGlobalWs, mx := Clients.GetAll()
-	globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
-	mx.Unlock()
-
-	user.GetSquad().Afterburner = false
-	user.GetSquad().MoveChecker = false
-	user.GetSquad().CreateMove()
-
-	otherUsers := make([]*hostileMS, 0)
-
-	user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
-
-	mx.Lock()
-	for _, otherUser := range usersGlobalWs {
-		if user.GetID() != otherUser.GetID() {
-			otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
-		}
-	}
-	mx.Unlock()
-
-	globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID()}
-
 	if find && user != nil && user.InBaseID == 0 {
+
+		otherUsers := make([]*hostileMS, 0)
+
+		usersGlobalWs, mx := Clients.GetAll()
+		globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
+		for _, otherUser := range usersGlobalWs {
+			if user.GetID() != otherUser.GetID() {
+				otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
+			}
+		}
+		mx.Unlock()
+
+		user.GetSquad().Afterburner = false
+		user.GetSquad().MoveChecker = false
+		user.GetSquad().CreateMove()
+		user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
+
+		globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID()}
 		globalPipe <- Message{
 			Event:      msg.Event,
 			Map:        mp,
@@ -47,6 +42,13 @@ func loadGame(ws *websocket.Conn, msg Message) {
 			idUserSend: user.GetID(),
 			Credits:    user.GetCredits(),
 			Experience: user.GetExperiencePoint(),
+		}
+
+		// находим аномалии
+		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
+		anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
+		if err == nil {
+			globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies}
 		}
 	} else {
 		globalPipe <- Message{Event: "Error", Error: "no allow", idUserSend: user.GetID()}

@@ -51,9 +51,6 @@ function CreateMiniMap(map) {
         }
 
         if (game.squad) {
-            ctx.fillStyle = "#19ff00";
-            ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
-
             if (game.squad.moveTo) {
                 ctx.beginPath();
                 ctx.strokeStyle = "#00fcff";
@@ -61,6 +58,8 @@ function CreateMiniMap(map) {
                 ctx.lineTo(game.squad.moveTo.x / kX, game.squad.moveTo.y / kY);
                 ctx.stroke();
             }
+            ctx.fillStyle = "#19ff00";
+            ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
         }
 
         if (game.otherUsers) {

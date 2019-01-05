@@ -42,6 +42,45 @@ type Body struct {
 	Weapons map[int]*BodyWeaponSlot `json:"weapons"`
 }
 
+func (body *Body) FindApplicableEquip(applicable string) *BodyEquipSlot {
+
+	var findEquip = func(equip map[int]*BodyEquipSlot) *BodyEquipSlot {
+		for _, slot := range equip {
+			if slot.Equip != nil && slot.Equip.Applicable == applicable {
+				return slot
+			}
+		}
+		return nil
+	}
+
+	bodyEquip := findEquip(body.EquippingI)
+	if bodyEquip != nil {
+		return bodyEquip
+	}
+
+	bodyEquip = findEquip(body.EquippingII)
+	if bodyEquip != nil {
+		return bodyEquip
+	}
+
+	bodyEquip = findEquip(body.EquippingIII)
+	if bodyEquip != nil {
+		return bodyEquip
+	}
+
+	bodyEquip = findEquip(body.EquippingIV)
+	if bodyEquip != nil {
+		return bodyEquip
+	}
+
+	bodyEquip = findEquip(body.EquippingV)
+	if bodyEquip != nil {
+		return bodyEquip
+	}
+
+	return nil
+}
+
 func (body *Body) GetEquip(typeSlot, numberSlot int) *BodyEquipSlot {
 	if typeSlot == 1 {
 		return body.EquippingI[numberSlot]

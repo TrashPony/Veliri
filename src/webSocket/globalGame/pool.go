@@ -4,6 +4,7 @@ import (
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/box"
+	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
@@ -55,6 +56,9 @@ type Message struct {
 	Experience    int                         `json:"experience"`
 	Seconds       int                         `json:"seconds"`
 	Count         int                         `json:"count"`
+	Coordinates   []*coordinate.Coordinate    `json:"coordinates"`
+	Radius        int                         `json:"radius"`
+	Anomalies     []globalGame.VisibleAnomaly `json:"anomalies"`
 }
 
 type hostileMS struct {
@@ -180,6 +184,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "startMining" {
 			startMining(ws, msg)
+		}
+
+		if msg.Event == "SelectDigger" {
+			selectDigger(ws, msg)
 		}
 	}
 }

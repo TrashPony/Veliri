@@ -100,6 +100,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				}
 			}
 
+			// находим аномалии
+			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
+			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
+			if err == nil {
+				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies}
+			}
+
 			// если на пути встречается ящик то мы его давим и падает скорость
 			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID)
 			if mapBox != nil {

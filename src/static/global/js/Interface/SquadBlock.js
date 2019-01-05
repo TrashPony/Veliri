@@ -140,63 +140,28 @@ function createHealBat(hp, maxHP) {
 function fillMiningBlock(unit) {
     let mining = document.getElementById("MiningPanel");
 
-    function disableMining() {
-        for (let q in game.map.reservoir) {
-            for (let r in game.map.reservoir[q]) {
-                game.map.reservoir[q][r].sprite.events.onInputDown.removeAll();
-                game.map.reservoir[q][r].reservoirLine.destroy()
-            }
-        }
-        game.squad.selectMiningLine.graphics.destroy();
-        game.input.onDown.add(initMove, game);
-    }
-
     function checkEquip(equips, type) {
         for (let i in equips) {
             if (equips.hasOwnProperty(i)) {
-                if (equips[i].equip && equips[i].hp > 0 && equips[i].equip.applicable === "mining") {
+                if (equips[i].equip && equips[i].hp > 0 && (equips[i].equip.applicable === "ore" ||
+                    equips[i].equip.applicable === "geo_scan" || equips[i].equip.applicable === "digger")) {
                     mining.style.visibility = "visible";
 
                     let equipBlock = document.createElement("div");
                     equipBlock.style.background = "url(/assets/units/equip/" + equips[i].equip.name + ".png)" +
                         " center center / contain no-repeat, rgba(76, 76, 76, 0.66)";
 
-                    equipBlock.onclick = function () {
+                    if (equips[i].equip.applicable === "ore") {
+                        equipBlock.onclick = function () {
+                            InitMiningOre(equips[i].equip, i, type);
+                        };
+                    }
 
-                        let graphics = game.add.graphics(0, 0);
-                        game.squad.selectMiningLine = {graphics: graphics, radius: equips[i].equip.radius * 200};
-
-                        for (let q in game.map.reservoir) {
-                            for (let r in game.map.reservoir[q]) {
-                                let reservoir = game.map.reservoir[q][r];
-                                let reservoirLine = game.floorObjectSelectLineLayer.create(reservoir.sprite.x, reservoir.sprite.y, reservoir.name);
-                                reservoirLine.anchor.setTo(0.5);
-                                reservoirLine.scale.set(0.55);
-                                reservoirLine.tint = 0x0FFF00;
-                                reservoirLine.angle = reservoir.rotate;
-
-                                reservoir.sprite.input.priorityID = 1;
-                                reservoir.reservoirLine = reservoirLine;
-
-                                game.input.onDown.remove(initMove, game);
-                                game.input.onDown.add(function () {
-                                    if (game.input.activePointer.rightButton.isDown) {
-                                        disableMining()
-                                    }
-                                });
-                                reservoir.sprite.events.onInputDown.add(function () {
-                                    global.send(JSON.stringify({
-                                        event: "startMining",
-                                        slot: Number(i),
-                                        q: reservoir.q,
-                                        r: reservoir.r,
-                                        type_slot: type
-                                    }));
-                                    disableMining()
-                                });
-                            }
-                        }
-                    };
+                    if (equips[i].equip.applicable === "digger") {
+                        equipBlock.onclick = function () {
+                            InitDigger(equips[i].equip, i, type);
+                        };
+                    }
 
                     let progressBar = document.createElement("div");
                     progressBar.id = "miningEquip" + equips[i].type_slot + i;

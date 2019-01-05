@@ -115,14 +115,14 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 		for i := 0; i < int(minSpeed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 			needRad := math.Atan2(ToY-forecastY, ToX-forecastX)
+			//  math.Atan2 куда у - текущие у, куда х - текущие х, получаем угол
 			needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу
 
 			newRotate := RotateUnit(&rotate, &needRotate)
 
-			if rotate >= needRotate {
-				diffRotate = rotate - needRotate
-			} else {
-				diffRotate = needRotate - rotate
+			diffRotate = rotate - needRotate
+			if diffRotate < 0 {
+				diffRotate = 360 - diffRotate
 			}
 
 			if diffRotate != 0 { // если разница есть то поворачиваем корпус
