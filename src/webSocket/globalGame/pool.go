@@ -3,7 +3,7 @@ package globalGame
 import (
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
-	"../../mechanics/gameObjects/box"
+	"../../mechanics/gameObjects/boxInMap"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/inventory"
@@ -40,8 +40,8 @@ type Message struct {
 	OtherUser     *hostileMS                  `json:"other_user"`
 	OtherUsers    []*hostileMS                `json:"other_users"`
 	ThrowItems    []inventory.Slot            `json:"throw_items"`
-	Boxes         []*box.Box                  `json:"boxes"`
-	Box           *box.Box                    `json:"box"`
+	Boxes         []*boxInMap.Box             `json:"boxes"`
+	Box           *boxInMap.Box               `json:"box"`
 	BoxID         int                         `json:"box_id"`
 	TypeSlot      int                         `json:"type_slot"`
 	Slot          int                         `json:"slot"`
@@ -59,6 +59,7 @@ type Message struct {
 	Coordinates   []*coordinate.Coordinate    `json:"coordinates"`
 	Radius        int                         `json:"radius"`
 	Anomalies     []globalGame.VisibleAnomaly `json:"anomalies"`
+	BoxPassword   int                         `json:"box_password"`
 }
 
 type hostileMS struct {
@@ -156,6 +157,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "openBox" {
 			openBox(ws, msg)
+		}
+
+		if msg.Event == "placeNewBox" {
+			placeNewBox(ws, msg)
 		}
 
 		if msg.Event == "getItemFromBox" {

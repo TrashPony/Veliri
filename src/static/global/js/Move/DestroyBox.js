@@ -8,7 +8,9 @@ function DestroyBox(id) {
             explosion.animations.play('explosion_2', 10, false, true);
 
             game.boxes[i].sprite.destroy();
-            game.boxes[i].shadow.destroy();
+            if (game.boxes[i].shadow){
+                game.boxes[i].shadow.destroy();
+            }
             game.boxes[i].sprite = null;
             CreateMiniMap()
         }

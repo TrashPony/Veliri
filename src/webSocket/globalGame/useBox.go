@@ -2,10 +2,23 @@ package globalGame
 
 import (
 	"../../mechanics/factories/boxes"
-	"../../mechanics/gameObjects/box"
+	"../../mechanics/gameObjects/boxInMap"
 	"../../mechanics/globalGame"
 	"github.com/gorilla/websocket"
 )
+
+func placeNewBox(ws *websocket.Conn, msg Message) {
+	user := Clients.GetByWs(ws)
+	if user != nil {
+		err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
+		if err != nil {
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+		} else {
+			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY}
+		}
+	}
+}
 
 func openBox(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
@@ -23,8 +36,18 @@ func openBox(ws *websocket.Conn, msg Message) {
 				if user.GetSquad().MoveChecker {
 					user.GetSquad().GetMove() <- true // останавливаем движение
 				}
-				globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-					Size: mapBox.CapacitySize, idUserSend: user.GetID()}
+
+				if mapBox.Protect {
+					if mapBox.GetPassword() == msg.BoxPassword {
+						globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
+							Size: mapBox.CapacitySize, idUserSend: user.GetID()}
+					} else {
+						globalPipe <- Message{Event: "Error", Error: "wrong password", idUserSend: user.GetID()}
+					}
+				} else {
+					globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
+						Size: mapBox.CapacitySize, idUserSend: user.GetID()}
+				}
 			}
 		}
 	}
@@ -32,7 +55,7 @@ func openBox(ws *websocket.Conn, msg Message) {
 
 func useBox(ws *websocket.Conn, msg Message) {
 	var err error
-	var mapBox *box.Box
+	var mapBox *boxInMap.Box
 
 	user := Clients.GetByWs(ws)
 

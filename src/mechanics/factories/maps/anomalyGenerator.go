@@ -1,7 +1,7 @@
 package maps
 
 import (
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	"../../gameObjects/map"
 	"../../gameObjects/resource"
 	"math/rand"
@@ -15,7 +15,7 @@ type Anomaly struct {
 	Type  int
 
 	/* награда */
-	box      *box.Box
+	box      *boxInMap.Box
 	resource *resource.Map
 	text     string
 }

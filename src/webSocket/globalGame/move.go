@@ -151,7 +151,8 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			user.GetSquad().GlobalX = int(pathUnit.X)
 			user.GetSquad().GlobalY = int(pathUnit.Y)
 
-			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R) {
+			if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R)) ||
+				i+1 == len(path) {
 				user.GetSquad().Q = pathUnit.Q
 				user.GetSquad().R = pathUnit.R
 

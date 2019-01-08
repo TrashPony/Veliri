@@ -1,7 +1,7 @@
 function CreateHealBar(cell, type, append) {
     let cellData = JSON.parse(cell.slotData);
 
-    if (cellData.type !== "ammo" && cellData.type !== "resource" && cellData.type !== "recycle") {
+    if (cellData.type !== "ammo" && cellData.type !== "resource" && cellData.type !== "recycle" && cellData.type !== "boxes") {
         let backHealBar = document.createElement("div");
 
         let percentHP = 0;

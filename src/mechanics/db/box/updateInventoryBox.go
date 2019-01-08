@@ -2,11 +2,11 @@ package box
 
 import (
 	"../../../dbConnect"
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	"log"
 )
 
-func Inventory(updateBox *box.Box) {
+func Inventory(updateBox *boxInMap.Box) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 

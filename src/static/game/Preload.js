@@ -67,8 +67,13 @@ function preload() {
     game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/objects/fallen_01.png');
     game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
-    game.load.image('box', 'http://' + window.location.host + '/assets/map/box/simpleBox.png');
     game.load.image('evacuation', 'http://' + window.location.host + '/assets/map/objects/evacuation.png');
+
+    // Boxes
+    game.load.image('box', 'http://' + window.location.host + '/assets/map/boxes/box.png');
+    game.load.image('secure_underground_box', 'http://' + window.location.host + '/assets/map/boxes/secure_underground_box.png');
+    game.load.image('underground_box', 'http://' + window.location.host + '/assets/map/boxes/underground_box.png');
+
     // fog
     game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
 

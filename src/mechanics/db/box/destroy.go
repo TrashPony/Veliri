@@ -2,11 +2,11 @@ package box
 
 import (
 	"../../../dbConnect"
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	"log"
 )
 
-func Destroy(gameBox *box.Box) {
+func Destroy(gameBox *boxInMap.Box) {
 	// удаляем весь инвентарь
 	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM box_storage WHERE id_box=$1", gameBox.ID)
 	if err != nil {

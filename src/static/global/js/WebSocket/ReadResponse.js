@@ -5,6 +5,9 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "Error") {
         Notification(jsonData.error);
+        if (jsonData.error === "wrong password" && game.squad.toBox) {
+            game.squad.toBox.to = false
+        }
     }
 
     if (jsonData.event === "PreviewPath") {

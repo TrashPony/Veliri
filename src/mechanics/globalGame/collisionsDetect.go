@@ -2,7 +2,7 @@ package globalGame
 
 import (
 	"../factories/boxes"
-	"../gameObjects/box"
+	"../gameObjects/boxInMap"
 	"../gameObjects/coordinate"
 	"../gameObjects/map"
 	"../player"
@@ -149,7 +149,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 	return true
 }
 
-func CheckCollisionsBoxes(x, y, rotate, mapID int) *box.Box {
+func CheckCollisionsBoxes(x, y, rotate, mapID int) *boxInMap.Box {
 	boxs := boxes.Boxes.GetAllBoxByMapID(mapID)
 
 	for _, mapBox := range boxs {

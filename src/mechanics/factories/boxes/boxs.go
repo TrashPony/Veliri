@@ -2,13 +2,13 @@ package boxes
 
 import (
 	dbBox "../../db/box"
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	"sync"
 )
 
 type store struct {
 	mx    sync.Mutex
-	boxes map[int]*box.Box
+	boxes map[int]*boxInMap.Box
 }
 
 var Boxes = NewBoxStore()
@@ -19,11 +19,11 @@ func NewBoxStore() *store {
 	}
 }
 
-func (b *store) GetAllBoxByMapID(mapID int) []*box.Box {
+func (b *store) GetAllBoxByMapID(mapID int) []*boxInMap.Box {
 	b.mx.Lock()
 	defer b.mx.Unlock()
 
-	mapBoxes := make([]*box.Box, 0)
+	mapBoxes := make([]*boxInMap.Box, 0)
 
 	for _, mapBox := range b.boxes {
 		if mapBox.MapID == mapID {
@@ -34,7 +34,7 @@ func (b *store) GetAllBoxByMapID(mapID int) []*box.Box {
 	return mapBoxes
 }
 
-func (b *store) Get(id int) (*box.Box, *sync.Mutex) {
+func (b *store) Get(id int) (*boxInMap.Box, *sync.Mutex) {
 	b.mx.Lock()
 	for _, mapBox := range b.boxes {
 		if mapBox.ID == id {
@@ -44,28 +44,28 @@ func (b *store) Get(id int) (*box.Box, *sync.Mutex) {
 	return nil, &b.mx
 }
 
-func (b *store) GetByQR(q, r, mapID int) (*box.Box, *sync.Mutex) {
+func (b *store) GetByQR(q, r, mapID int) (*boxInMap.Box, *sync.Mutex) {
 	b.mx.Lock()
 	for _, mapBox := range b.boxes {
-		if mapBox.ID == mapID && mapBox.Q == q && mapBox.R == r {
+		if mapBox.MapID == mapID && mapBox.Q == q && mapBox.R == r {
 			return mapBox, &b.mx
 		}
 	}
 	return nil, &b.mx
 }
 
-func (b *store) DestroyBox(destroyBox *box.Box) {
+func (b *store) DestroyBox(destroyBox *boxInMap.Box) {
 	b.mx.Lock()
 	defer b.mx.Unlock()
 	dbBox.Destroy(destroyBox)
 	delete(b.boxes, destroyBox.ID)
 }
 
-func (b *store) UpdateBox(updateBox *box.Box) {
+func (b *store) UpdateBox(updateBox *boxInMap.Box) {
 	dbBox.Inventory(updateBox)
 }
 
-func (b *store) InsertNewBox(newBox *box.Box) *box.Box {
+func (b *store) InsertNewBox(newBox *boxInMap.Box) *boxInMap.Box {
 	b.mx.Lock()
 	defer b.mx.Unlock()
 	dbBox.Insert(newBox)

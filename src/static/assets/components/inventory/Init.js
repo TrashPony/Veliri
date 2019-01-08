@@ -66,6 +66,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeCSS("../assets/components/inventory/css/weaponType.css");
             includeCSS("../assets/components/inventory/css/storage.css");
             includeCSS("../assets/components/inventory/css/marketDialog.css");
+            includeCSS("../assets/components/inventory/css/passBlock.css");
         }
         return resolve();
     });

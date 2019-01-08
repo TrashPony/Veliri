@@ -11,6 +11,7 @@ CREATE TABLE box_in_map (/* таблица описывает все ящики 
 
 CREATE TABLE box_type (
   id            SERIAL PRIMARY KEY,
+  name          varchar(64),
   type          varchar(64), /* описывает какую текстуру загружать */
   capacity_size REAL,        /* вместимость в кубо-метрах */
   fold_size     REAL,        /* размер если ящик нести в инвентаре */

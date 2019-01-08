@@ -2,11 +2,11 @@ package box
 
 import (
 	"../../../dbConnect"
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	"log"
 )
 
-func Insert(newBox *box.Box) *box.Box {
+func Insert(newBox *boxInMap.Box) *boxInMap.Box {
 	id := 0
 	err := dbConnect.GetDBConnect().QueryRow("INSERT INTO "+
 		"box_in_map "+

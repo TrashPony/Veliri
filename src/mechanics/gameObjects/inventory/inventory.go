@@ -181,7 +181,7 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 			inventorySlot.MaxHP = 1 // у ресов нет хп
 
 			inv.Slots[slot] = &inventorySlot
- 		}
+		}
 
 		if inventorySlot.Type == "recycle" {
 			resource, _ := gameTypes.Resource.GetRecycledByID(inventorySlot.ItemID)
@@ -189,6 +189,16 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 			inventorySlot.Item = resource
 			inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
 			inventorySlot.MaxHP = 1 // у ресов нет хп
+
+			inv.Slots[slot] = &inventorySlot
+		}
+
+		if inventorySlot.Type == "boxes" {
+			resource, _ := gameTypes.Boxes.GetByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = resource
+			inventorySlot.Size = resource.FoldSize * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у ящиков тож нет хп
 
 			inv.Slots[slot] = &inventorySlot
 		}

@@ -2,13 +2,13 @@ package box
 
 import (
 	"../../../dbConnect"
-	"../../gameObjects/box"
+	"../../gameObjects/boxInMap"
 	inv "../../gameObjects/inventory"
 	"log"
 )
 
-func Boxes() map[int]*box.Box {
-	boxes := make(map[int]*box.Box)
+func Boxes() map[int]*boxInMap.Box {
+	boxes := make(map[int]*boxInMap.Box)
 
 	rows, err := dbConnect.GetDBConnect().Query("" +
 		"SELECT " +
@@ -28,7 +28,7 @@ func Boxes() map[int]*box.Box {
 	defer rows.Close()
 
 	for rows.Next() {
-		var gameBox box.Box
+		var gameBox boxInMap.Box
 		var password int
 
 		err := rows.Scan(&gameBox.ID, &password, &gameBox.DestroyTime, &gameBox.MapID, &gameBox.TypeID,
@@ -47,7 +47,7 @@ func Boxes() map[int]*box.Box {
 	return boxes
 }
 
-func getTypeBox(gameBox *box.Box) {
+func getTypeBox(gameBox *boxInMap.Box) {
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+
 		" type,"+
@@ -73,7 +73,7 @@ func getTypeBox(gameBox *box.Box) {
 	}
 }
 
-func getBoxStorage(gameBox *box.Box) {
+func getBoxStorage(gameBox *boxInMap.Box) {
 	gameBox.GetStorage().Slots = make(map[int]*inv.Slot)
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
