@@ -57,7 +57,6 @@ function Notification(text) {
     let notification = document.createElement("div");
     notification.innerHTML = text;
 
-
     wrapper.appendChild(notification);
     setTimeout(function () {
         notification.style.opacity = "0";

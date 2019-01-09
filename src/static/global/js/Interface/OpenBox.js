@@ -1,7 +1,24 @@
-function OpenBox(inventory, boxID, capacitySize) {
+function OpenBox(inventory, boxID, capacitySize, error) {
 
     if (game.squad.toBox) {
         game.squad.toBox.to = false
+    }
+
+    if (error) {
+        if (document.getElementById("boxPass")) {
+            document.getElementById("boxPass").remove();
+        }
+        
+        let func = function () {
+            global.send(JSON.stringify({
+                event: "openBox",
+                box_id: boxID,
+                box_password: Number(document.getElementById("passPlaceBox").value),
+            }));
+        };
+        PassBlock(func, "boxPass");
+
+        return;
     }
 
     if (document.getElementById("openBox" + boxID)) {

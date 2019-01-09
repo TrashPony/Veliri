@@ -28,11 +28,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "openBox") {
-        if (jsonData.error) {
-            //BoxPassword(jsonData)
-        } else {
-            OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
-        }
+        OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size, jsonData.error)
     }
 
     if (jsonData.event === "startMoveEvacuation") {

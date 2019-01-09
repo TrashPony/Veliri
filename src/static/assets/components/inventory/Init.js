@@ -1,4 +1,5 @@
 let initInventory = false;
+
 function InitInventoryMenu(closeFunc, option) {
     /* осталь надежду вся сюда входящий, это дерьмо уже не отрефачить */
     let promise = new Promise((resolve) => {
@@ -6,6 +7,9 @@ function InitInventoryMenu(closeFunc, option) {
             if (typeof webSocketInit === 'undefined' || webSocketInit === null) {
                 includeJS("../assets/components/servicesWebSockets.js");
             }
+            includeJS("../assets/components/uiComponents/passwordProtectBox/PassBlock.js");
+            includeJS("../assets/components/uiComponents/Button.js");
+
             includeJS("../assets/components/inventory/create/Create.js");
             includeJS("../assets/components/inventory/create/Constructor.js");
             includeJS("../assets/components/inventory/create/Inventory.js");
@@ -67,7 +71,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeCSS("../assets/components/inventory/css/weaponType.css");
             includeCSS("../assets/components/inventory/css/storage.css");
             includeCSS("../assets/components/inventory/css/marketDialog.css");
-            includeCSS("../assets/components/inventory/css/passBlock.css");
+            includeCSS("../assets/components/uiComponents/passwordProtectBox/passBlock.css");
         }
         return resolve();
     });

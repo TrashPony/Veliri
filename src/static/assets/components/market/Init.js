@@ -24,6 +24,7 @@ function InitMarketMenu(noMask) {
             includeJS("../assets/components/market/Assortment/fillAmmo.js");
             includeJS("../assets/components/market/Assortment/fillRes.js");
             includeJS("../assets/components/market/Assortment/CreateFilter.js");
+            includeJS("../assets/components/uiComponents/Button.js");
 
             includeCSS("../assets/components/market/css/main.css");
             includeCSS("../assets/components/market/css/leftBar.css");
