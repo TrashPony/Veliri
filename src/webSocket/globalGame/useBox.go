@@ -38,11 +38,15 @@ func openBox(ws *websocket.Conn, msg Message) {
 				}
 
 				if mapBox.Protect {
-					if mapBox.GetPassword() == msg.BoxPassword {
+					if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
 						globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
 							Size: mapBox.CapacitySize, idUserSend: user.GetID()}
 					} else {
-						globalPipe <- Message{Event: "Error", Error: "wrong password", idUserSend: user.GetID()}
+						if msg.BoxPassword == 0 {
+							globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password", idUserSend: user.GetID()}
+						} else {
+							globalPipe <- Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password", idUserSend: user.GetID()}
+						}
 					}
 				} else {
 					globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),

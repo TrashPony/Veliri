@@ -31,20 +31,22 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
             document.body.appendChild(tipDetail);
         };
 
-        let throwButton = createInput("Выбросить", tip);
-        throwButton.onclick = function () {
-            let throwItems = [];
-            throwItems[numberSlot] = slot;
-            if (global) {
-                global.send(JSON.stringify({
-                    event: "ThrowItems",
-                    throw_items: throwItems
-                }))
-            }
-            tip.remove();
-        };
+        if (typeof(global) !== 'undefined') {
+            let throwButton = createInput("Выбросить", tip);
+            throwButton.onclick = function () {
+                let throwItems = [];
+                throwItems[numberSlot] = slot;
+                if (global) {
+                    global.send(JSON.stringify({
+                        event: "ThrowItems",
+                        throw_items: throwItems
+                    }))
+                }
+                tip.remove();
+            };
+        }
 
-        if (slot.type === "boxes") {
+        if (typeof(global) !== 'undefined' && slot.type === "boxes") {
             let placeButton = createInput("Установить", tip);
             placeButton.onclick = function () {
                 if (global) {
@@ -101,39 +103,6 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
     }
 
     document.body.appendChild(tip);
-}
-
-function CreatePlaceBoxDialog(x, y, numberSlot, slot) {
-    if (slot.item.protect) {
-        // защищеный ящик просит пароль
-        let passBlock = document.createElement("div");
-        passBlock.id = "passBlock";
-        passBlock.style.top = x + "px";
-        passBlock.style.left = y + "px";
-
-        passBlock.innerHTML = "<h2>Введите пароль</h2>" +
-            "<div><span>Пароль</span><input id='passPlaceBox' type='number' min='0' value='0000' max='9999'></div><br>";
-        let closeButton = createInput("Отменить", passBlock);
-        closeButton.onclick = function () {
-            passBlock.remove();
-        };
-
-        let placeButton = createInput("Установить", passBlock);
-        placeButton.onclick = function () {
-            global.send(JSON.stringify({
-                event: "placeNewBox",
-                slot: numberSlot,
-                box_password: Number(document.getElementById("passPlaceBox").value),
-            }));
-            passBlock.remove();
-        };
-        document.body.appendChild(passBlock)
-    } else {
-        global.send(JSON.stringify({
-            event: "placeNewBox",
-            slot: numberSlot,
-        }));
-    }
 }
 
 function CreateSellDialog(x, y, numberSlot, slot) {

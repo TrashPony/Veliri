@@ -1,4 +1,4 @@
-#passBlock {
+.passBlock {
     position: absolute;
     display: inline-block;
     background-size: 10px 2px;
@@ -6,14 +6,16 @@
     border: 1px solid #25a0e1;
     border-radius: 10px;
     min-height: 20px;
-    min-width: 80px;
+    width: 120px;
     padding: 5px;
     z-index: 950;
+    top: 30%;
+    left: calc(50% - 60px);
 }
 
-#passBlock h2{
+.passBlock h2 {
     display: block;
-    width: 185px;
+    width: 120px;
     height: 17px;
     margin: 0 auto 5px;
     background: linear-gradient(0deg, red, yellow);
@@ -24,16 +26,61 @@
     font-weight: 100;
 }
 
-#passBlock span {
+.passBlock .numberBlock {
+    width: 30px;
+    height: 30px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 10px;
+    float: left;
+    margin: 1px 5px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 30px;
+    user-select: none;
+    transition: 100ms;
+}
+
+.passBlock .numberBlock:hover {
+    box-shadow: inset 0 0 5px #a8a800;
+}
+
+.passBlock .numberBlock:active {
+    box-shadow: inset 0 0 5px #a7a4a8;
+    transform: scale(0.9);
+}
+
+.passBlock span {
     display: inline-block;
     width: 80px;
     text-align: left;
 }
 
-#passBlock input[type=number] {
-    width: 100px;
+.passBlock input[type=number] {
+    width: 45px;
+    font-size: 20px;
+    margin-bottom: 5px;
 }
 
-#passBlock input[type=button]:last-child {
+.passBlock input[type=button]:first-child {
+    float: left;
+    clear: both;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.passBlock input[type=button] {
+    width: 55px;
+    font-size: 9px;
+}
+
+.passBlock input[type=button]:last-child {
     margin-left: 10px;
 }

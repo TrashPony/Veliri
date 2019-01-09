@@ -36,6 +36,7 @@ function InitInventoryMenu(closeFunc, option) {
 
             includeJS("../assets/components/inventory/tip/ClickTip.js");
             includeJS("../assets/components/inventory/tip/SelectItem.js");
+            includeJS("../assets/components/inventory/tip/CreatePlaceBoxDialog.js");
 
             includeJS("../assets/components/inventory/set/SetAmmo.js");
             includeJS("../assets/components/inventory/set/SetBody.js");

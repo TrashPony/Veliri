@@ -5,9 +5,6 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "Error") {
         Notification(jsonData.error);
-        if (jsonData.error === "wrong password" && game.squad.toBox) {
-            game.squad.toBox.to = false
-        }
     }
 
     if (jsonData.event === "PreviewPath") {
@@ -31,7 +28,11 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "openBox") {
-        OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
+        if (jsonData.error) {
+            //BoxPassword(jsonData)
+        } else {
+            OpenBox(jsonData.inventory, jsonData.box_id, jsonData.size)
+        }
     }
 
     if (jsonData.event === "startMoveEvacuation") {
