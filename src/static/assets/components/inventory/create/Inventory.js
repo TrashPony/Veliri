@@ -28,6 +28,10 @@ function CreateInventory() {
 
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
+    $(inventoryStorage).selectable({
+        filter: '.InventoryCell.active'
+    });
+
     CreateCells(6, 40, "InventoryCell", "inventory ", inventoryStorage);
     inventory.appendChild(inventoryStorage);
 

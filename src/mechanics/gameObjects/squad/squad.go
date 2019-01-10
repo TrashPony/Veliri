@@ -3,6 +3,7 @@ package squad
 import (
 	"../../gameObjects/inventory"
 	"../../gameObjects/unit"
+	"sync"
 )
 
 type Squad struct {
@@ -27,6 +28,15 @@ type Squad struct {
 	MoveChecker     bool                `json:"move_checker"`
 	ForceEvacuation bool                `json:"force_evacuation"`
 	stopMove        chan bool
+	updateDB        sync.Mutex
+}
+
+func (s *Squad) UpdateLock() {
+	s.updateDB.Lock()
+}
+
+func (s *Squad) UpdateUnlock() {
+	s.updateDB.Unlock()
 }
 
 func (s *Squad) CreateMove() {

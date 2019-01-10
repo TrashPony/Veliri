@@ -66,37 +66,74 @@ func useBox(ws *websocket.Conn, msg Message) {
 	if user != nil {
 		if msg.Event == "getItemFromBox" {
 			err, mapBox = globalGame.GetItemFromBox(user, msg.BoxID, msg.Slot)
-		} else {
+			updateBoxInfo(mapBox)
+		}
+
+		if msg.Event == "placeItemToBox" {
 			err, mapBox = globalGame.PlaceItemToBox(user, msg.BoxID, msg.Slot)
+			updateBoxInfo(mapBox)
+		}
+
+		if msg.Event == "getItemsFromBox" {
+			for _, i := range msg.Slots {
+				err, mapBox = globalGame.GetItemFromBox(user, msg.BoxID, i)
+				updateBoxInfo(mapBox)
+			}
+		}
+
+		if msg.Event == "placeItemsToBox" {
+			for _, i := range msg.Slots {
+				err, mapBox = globalGame.PlaceItemToBox(user, msg.BoxID, i)
+				updateBoxInfo(mapBox)
+			}
 		}
 
 		if err != nil {
 			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
-		} else {
-			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-
-			updateBoxInfo(mapBox)
 		}
+		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
 	}
 }
 
 func boxToBox(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
 
-	err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
-	if err != nil {
-		globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
-	} else {
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-
-		updateBoxInfo(getBox)
-		updateBoxInfo(toBox)
+	if msg.BoxID == msg.ToBoxID {
+		return
 	}
+
+	if msg.Event == "boxToBoxItem" {
+		err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
+		if err != nil {
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+		} else {
+			updateBoxInfo(getBox)
+			updateBoxInfo(toBox)
+		}
+	}
+
+	if msg.Event == "boxToBoxItems" {
+		for _, i := range msg.Slots {
+			err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
+			if err != nil {
+				globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			} else {
+				updateBoxInfo(getBox)
+				updateBoxInfo(toBox)
+			}
+		}
+	}
+
+	globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
 }
 
-func updateBoxInfo(box *boxInMap.Box)  {
+func updateBoxInfo(box *boxInMap.Box) {
 	usersGlobalWs, mx := Clients.GetAll()
 	mx.Unlock()
+
+	if box == nil {
+		return
+	}
 
 	for _, user := range usersGlobalWs {
 		boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)

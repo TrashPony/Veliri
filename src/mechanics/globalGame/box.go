@@ -174,8 +174,8 @@ func BoxToBox(user *player.Player, boxID, boxSlot, toBoxID int) (error, *boxInMa
 		placeOk := toBox.GetStorage().AddItemFromSlot(slot)
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
-			boxes.Boxes.UpdateBox(getBox)
-			boxes.Boxes.UpdateBox(toBox)
+			go boxes.Boxes.UpdateBox(getBox)
+			go boxes.Boxes.UpdateBox(toBox)
 			return nil, getBox, toBox
 		}
 	} else {
@@ -200,17 +200,15 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.B
 	slot, ok := mapBox.GetStorage().Slots[boxSlot]
 
 	if ok && slot.Item != nil && user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+slot.Size {
-
 		placeOk := user.GetSquad().Inventory.AddItemFromSlot(slot)
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
-			update.Squad(user.GetSquad(), true)
-			boxes.Boxes.UpdateBox(mapBox) // в дефер что бы он отработал после закрытия мьютекса
+			go update.Squad(user.GetSquad(), true)
+			go boxes.Boxes.UpdateBox(mapBox)
 			return nil, mapBox
 		} else {
 			return errors.New("unknown error"), nil
 		}
-
 	} else {
 		if !ok || slot.Item == nil {
 			return errors.New("no find box slot"), nil
@@ -237,8 +235,8 @@ func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *boxI
 
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
-			update.Squad(user.GetSquad(), true)
-			boxes.Boxes.UpdateBox(mapBox)
+			go update.Squad(user.GetSquad(), true)
+			go boxes.Boxes.UpdateBox(mapBox)
 			return nil, mapBox
 		} else {
 			return errors.New("unknown error"), nil

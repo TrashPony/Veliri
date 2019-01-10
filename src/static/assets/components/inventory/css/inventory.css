@@ -40,9 +40,21 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
 }
 
+.InventoryCell.ui-selecting{
+    box-shadow: 0 0 5px 2px rgb(255, 149, 32);
+}
+
+.InventoryCell.ui-selected{
+    box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+}
+
+.ui-selectable-helper {
+    border:1px dotted #ffffff;
+    z-index: 999;
+}
+
 .InventoryCell:hover {
     box-shadow: 0 0 5px 2px rgb(255, 149, 32);
-    color: #00fffd;
     cursor: pointer;
 }
 

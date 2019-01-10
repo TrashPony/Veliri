@@ -1,25 +1,21 @@
 function UpdateStorage(inventory) {
+
+    $('#storage').droppable({
+        drop: function (event, ui) {
+            let draggable = ui.draggable;
+            if (draggable.data("slotData").parent === "squadInventory") {
+                // todo
+                console.log("dfdfd")
+            } else if (draggable.data("slotData").parent === "storage"){
+            }
+        }
+    });
+
     for (let i = 1; i <= 40; i++) {
         let cell = document.getElementById("storage " + i + 6);
-
         if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
-
-            cell.slotData = JSON.stringify(inventory.slots[i]);
-            cell.number = i;
-            cell.inventoryType = 'storage';
-
-            if (JSON.parse(cell.slotData).type === "resource" || JSON.parse(cell.slotData).type === "recycle") {
-                cell.style.backgroundImage = "url(/assets/resource/" + JSON.parse(cell.slotData).item.name + ".png)";
-            } else {
-                cell.style.backgroundImage = "url(/assets/units/" + JSON.parse(cell.slotData).type + "/" + JSON.parse(cell.slotData).item.name + ".png)";
-            }
-
-            cell.innerHTML = "<span class='QuantityItems'>" + JSON.parse(cell.slotData).quantity + "</span>";
-
-            CreateHealBar(cell, "inventory", true);
-
+            CreateInventoryCell(cell, inventory.slots[i], i, "storage");
             cell.onclick = SelectInventoryItem;
-
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;
         } else {

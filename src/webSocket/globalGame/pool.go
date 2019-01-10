@@ -46,6 +46,7 @@ type Message struct {
 	ToBoxID       int                         `json:"to_box_id"`
 	TypeSlot      int                         `json:"type_slot"`
 	Slot          int                         `json:"slot"`
+	Slots         []int                       `json:"slots"`
 	Size          float32                     `json:"size"`
 	Inventory     *inventory.Inventory        `json:"inventory"`
 	InventorySlot int                         `json:"inventory_slot"`
@@ -164,15 +165,15 @@ func Reader(ws *websocket.Conn) {
 			placeNewBox(ws, msg)
 		}
 
-		if msg.Event == "getItemFromBox" {
+		if msg.Event == "getItemsFromBox" || msg.Event == "getItemFromBox" {
 			useBox(ws, msg)
 		}
 
-		if msg.Event == "placeItemToBox" {
+		if msg.Event == "placeItemToBox" || msg.Event == "placeItemsToBox" {
 			useBox(ws, msg)
 		}
 
-		if msg.Event == "boxToBoxItem" {
+		if msg.Event == "boxToBoxItem" || msg.Event == "boxToBoxItems" {
 			boxToBox(ws, msg)
 		}
 

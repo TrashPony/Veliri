@@ -7,11 +7,13 @@ function CreateStorage(){
     spanInventory.style.margin = "-3px 0px 3px 45px";
     storage.appendChild(spanInventory);
 
-
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
     inventoryStorage.style.height = "58px";
     inventoryStorage.style.margin = "0";
+    $(inventoryStorage).selectable({
+        filter: '.InventoryCell.active'
+    });
     CreateCells(6, 40, "InventoryCell", "storage ", inventoryStorage);
     storage.appendChild(inventoryStorage);
 

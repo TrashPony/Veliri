@@ -3,11 +3,14 @@ package update
 import (
 	"../../../../dbConnect"
 	"../../../gameObjects/squad"
-	"log"
 	"database/sql"
+	"log"
 )
 
 func Squad(squad *squad.Squad, full bool) {
+
+	squad.UpdateLock()
+
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
@@ -31,6 +34,8 @@ func Squad(squad *squad.Squad, full bool) {
 	SquadThorium(squad, tx)
 
 	tx.Commit()
+
+	squad.UpdateUnlock()
 }
 
 func SquadThorium(squad *squad.Squad, tx *sql.Tx) {

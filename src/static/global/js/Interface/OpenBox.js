@@ -35,19 +35,40 @@ function OpenBox(inventory, boxID, capacitySize, error) {
         drop: function (event, ui) {
             let draggable = ui.draggable;
             if (draggable.data("slotData").parent === "squadInventory") {
-                global.send(JSON.stringify({
-                    event: "placeItemToBox",
-                    box_id: Number(boxID),
-                    slot: Number(draggable.data("slotData").number)
-                }))
-            } else if(draggable.data("slotData").parent.split(':')[0] === "box") {
+                if (draggable.data("selectedItems") !== undefined) {
+                    global.send(JSON.stringify({
+                        event: "placeItemsToBox",
+                        box_id: Number(boxID),
+                        slots: draggable.data("selectedItems").slotsNumbers
+                    }));
+                    $(draggable).removeData("selectedItems");
+                } else {
+                    global.send(JSON.stringify({
+                        event: "placeItemToBox",
+                        box_id: Number(boxID),
+                        slot: Number(draggable.data("slotData").number)
+                    }))
+                }
+            } else if (draggable.data("slotData").parent.split(':')[0] === "box") {
+
                 let toBoxID = draggable.data("slotData").parent.split(':')[1];
-                global.send(JSON.stringify({
-                    event: "boxToBoxItem",
-                    to_box_id: Number(boxID),
-                    slot: Number(draggable.data("slotData").number),
-                    box_id: Number(toBoxID),
-                }));
+
+                if (draggable.data("selectedItems") !== undefined) {
+                    global.send(JSON.stringify({
+                        event: "boxToBoxItems",
+                        to_box_id: Number(boxID),
+                        slots: draggable.data("selectedItems").slotsNumbers,
+                        box_id: Number(toBoxID),
+                    }));
+                    $(draggable).removeData("selectedItems");
+                } else {
+                    global.send(JSON.stringify({
+                        event: "boxToBoxItem",
+                        to_box_id: Number(boxID),
+                        slot: Number(draggable.data("slotData").number),
+                        box_id: Number(toBoxID),
+                    }));
+                }
             }
         }
     });
@@ -74,6 +95,8 @@ function OpenBox(inventory, boxID, capacitySize, error) {
 
     let storageCell = document.createElement("div");
     storageCell.className = "storageCell";
+    $(storageCell).selectable();
+
     fillInventory(storageCell, inventory, boxID);
 
     openBox.appendChild(storageCell);
@@ -82,38 +105,18 @@ function OpenBox(inventory, boxID, capacitySize, error) {
 
 function fillInventory(parent, inventory, boxID) {
     for (let i in inventory.slots) {
-        if (inventory.slots.hasOwnProperty(i)) {
+        if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item) {
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, inventory.slots[i], i, "box:" + boxID, onclick);
 
-            let slot = document.createElement("div");
-            slot.className = "InventoryCell";
-            slot.slotData = JSON.stringify(inventory.slots[i]);
-            slot.number = i;
-
-            if (JSON.parse(slot.slotData).type === "resource" || JSON.parse(slot.slotData).type === "recycle") {
-                slot.style.backgroundImage = "url(/assets/resource/" + JSON.parse(slot.slotData).item.name + ".png)";
-            } else if (JSON.parse(slot.slotData).type === "boxes") {
-                slot.style.backgroundImage = "url(/assets/" + JSON.parse(slot.slotData).type + "/" + JSON.parse(slot.slotData).item.name + ".png)";
-            } else {
-                slot.style.backgroundImage = "url(/assets/units/" + JSON.parse(slot.slotData).type + "/" + JSON.parse(slot.slotData).item.name + ".png)";
-            }
-
-            slot.innerHTML = "<span class='QuantityItems'>" + inventory.slots[i].quantity + "</span>";
-
-            slot.onclick = function () {
+            cell.onclick = function () {
                 global.send(JSON.stringify({
                     event: "getItemFromBox",
                     box_id: Number(boxID),
                     slot: Number(i)
                 }))
             };
-
-            $(slot).data("slotData", {parent: "box:" + boxID, data: inventory.slots[i], number: i});
-            $(slot).draggable({
-                revert: "invalid",
-                zIndex: 100,
-                helper: 'clone'
-            });
-            parent.appendChild(slot);
+            parent.appendChild(cell);
         }
     }
 }
@@ -122,7 +125,7 @@ function sizeBox(sizeInfo, capacitySize, inventory) {
     let size = 0;
 
     for (let i in inventory.slots) {
-        if (inventory.slots.hasOwnProperty(i)) {
+        if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item) {
             size += inventory.slots[i].size
         }
     }

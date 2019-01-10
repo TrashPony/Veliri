@@ -8,6 +8,7 @@ function InitInventoryMenu(closeFunc, option) {
                 includeJS("../assets/components/servicesWebSockets.js");
             }
             includeJS("../assets/components/uiComponents/Button.js");
+            includeJS("../assets/components/uiComponents/CreateInventoryCell.js");
 
             includeJS("../assets/components/inventory/create/Create.js");
             includeJS("../assets/components/inventory/create/Constructor.js");
