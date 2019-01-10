@@ -154,13 +154,48 @@ func checkUseBox(user *player.Player, boxID int) (error, *boxInMap.Box, *sync.Mu
 	}
 }
 
-func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.Box) {
-	err, mapBox, mx := checkUseBox(user, boxID)
+func BoxToBox(user *player.Player, boxID, boxSlot, toBoxID int) (error, *boxInMap.Box, *boxInMap.Box) {
+	err, getBox, mx := checkUseBox(user, boxID)
+	if err != nil {
+		return err, nil, nil
+	}
+	mx.Unlock() // закрываем сразу т.к. второй ящик всеравно заблокирует работу с ящиками
+
+	err, toBox, mx := checkUseBox(user, toBoxID)
+	if err != nil {
+		return err, nil, nil
+	}
 	defer mx.Unlock()
 
+	slot, ok := getBox.GetStorage().Slots[boxSlot]
+
+	if ok && slot.Item != nil && toBox.CapacitySize >= toBox.GetStorage().GetSize()+slot.Size {
+
+		placeOk := toBox.GetStorage().AddItemFromSlot(slot)
+		if placeOk {
+			slot.RemoveItemBySlot(slot.Quantity)
+			boxes.Boxes.UpdateBox(getBox)
+			boxes.Boxes.UpdateBox(toBox)
+			return nil, getBox, toBox
+		}
+	} else {
+		if !ok || slot.Item == nil {
+			return errors.New("no find box slot"), nil, nil
+		}
+		if toBox.CapacitySize < toBox.GetStorage().GetSize()+slot.Size {
+			return errors.New("weight exceeded"), nil, nil
+		}
+	}
+
+	return errors.New("unknown error"), nil, nil
+}
+
+func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.Box) {
+	err, mapBox, mx := checkUseBox(user, boxID)
 	if err != nil {
 		return err, nil
 	}
+	defer mx.Unlock()
 
 	slot, ok := mapBox.GetStorage().Slots[boxSlot]
 
@@ -190,11 +225,10 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.B
 
 func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *boxInMap.Box) {
 	err, mapBox, mx := checkUseBox(user, boxID)
-	defer mx.Unlock()
-
 	if err != nil {
 		return err, nil
 	}
+	defer mx.Unlock()
 
 	slot, ok := user.GetSquad().Inventory.Slots[inventorySlot]
 	if ok && slot.Item != nil && mapBox.CapacitySize >= mapBox.GetStorage().GetSize()+slot.Size {
@@ -218,6 +252,5 @@ func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *boxI
 			return errors.New("weight exceeded"), nil
 		}
 	}
-
 	return errors.New("unknown error"), nil
 }

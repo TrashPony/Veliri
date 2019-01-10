@@ -43,6 +43,7 @@ type Message struct {
 	Boxes         []*boxInMap.Box             `json:"boxes"`
 	Box           *boxInMap.Box               `json:"box"`
 	BoxID         int                         `json:"box_id"`
+	ToBoxID       int                         `json:"to_box_id"`
 	TypeSlot      int                         `json:"type_slot"`
 	Slot          int                         `json:"slot"`
 	Size          float32                     `json:"size"`
@@ -169,6 +170,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "placeItemToBox" {
 			useBox(ws, msg)
+		}
+
+		if msg.Event == "boxToBoxItem" {
+			boxToBox(ws, msg)
 		}
 
 		if msg.Event == "evacuation" {

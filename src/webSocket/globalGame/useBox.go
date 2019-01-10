@@ -73,21 +73,38 @@ func useBox(ws *websocket.Conn, msg Message) {
 		if err != nil {
 			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
 		} else {
-
 			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
 
-			usersGlobalWs, mx := Clients.GetAll()
-			mx.Unlock()
+			updateBoxInfo(mapBox)
+		}
+	}
+}
 
-			for _, user := range usersGlobalWs {
-				boxX, boxY := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
-				dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
+func boxToBox(ws *websocket.Conn, msg Message) {
+	user := Clients.GetByWs(ws)
 
-				if dist < 175 { // что бы содержимое ящика не видили те кто далеко
-					globalPipe <- Message{Event: "UpdateBox", idUserSend: user.GetID(), BoxID: mapBox.ID,
-						Inventory: mapBox.GetStorage(), Size: mapBox.CapacitySize}
-				}
-			}
+	err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
+	if err != nil {
+		globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+	} else {
+		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
+
+		updateBoxInfo(getBox)
+		updateBoxInfo(toBox)
+	}
+}
+
+func updateBoxInfo(box *boxInMap.Box)  {
+	usersGlobalWs, mx := Clients.GetAll()
+	mx.Unlock()
+
+	for _, user := range usersGlobalWs {
+		boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)
+		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
+
+		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
+			globalPipe <- Message{Event: "UpdateBox", idUserSend: user.GetID(), BoxID: box.ID,
+				Inventory: box.GetStorage(), Size: box.CapacitySize}
 		}
 	}
 }

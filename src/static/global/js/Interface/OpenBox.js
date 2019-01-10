@@ -40,6 +40,14 @@ function OpenBox(inventory, boxID, capacitySize, error) {
                     box_id: Number(boxID),
                     slot: Number(draggable.data("slotData").number)
                 }))
+            } else if(draggable.data("slotData").parent.split(':')[0] === "box") {
+                let toBoxID = draggable.data("slotData").parent.split(':')[1];
+                global.send(JSON.stringify({
+                    event: "boxToBoxItem",
+                    to_box_id: Number(boxID),
+                    slot: Number(draggable.data("slotData").number),
+                    box_id: Number(toBoxID),
+                }));
             }
         }
     });
