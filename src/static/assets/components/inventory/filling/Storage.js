@@ -19,11 +19,14 @@ function UpdateStorage(inventory) {
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;
         } else {
-
             cell.slotData = null;
-
             cell.style.backgroundImage = null;
             cell.innerHTML = "";
+            cell.className = "InventoryCell";
+
+            $(cell).draggable({
+                disabled: true
+            });
 
             cell.onclick = function () {
                 DestroyInventoryClickEvent();
