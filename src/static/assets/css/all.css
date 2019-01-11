@@ -2,6 +2,7 @@ body {
     background-color: #696969;
     text-align: center;
     margin: 0;
+    user-select: none;
 }
 
 input {

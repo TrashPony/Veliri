@@ -6,7 +6,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     if (slotData.type === "resource" || slotData.type === "recycle") {
         cell.style.backgroundImage = "url(/assets/resource/" + slotData.item.name + ".png)";
     } else if (slotData.type === "boxes") {
-        cell.style.backgroundImage = "url(/assets/" + slotData.type + "/" +slotData.item.name + ".png)";
+        cell.style.backgroundImage = "url(/assets/" + slotData.type + "/" + slotData.item.name + ".png)";
     } else {
         cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)";
     }
@@ -20,8 +20,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         disabled: false,
         start: function () {
             let selectItems = $('.InventoryCell.ui-selected');
-            if (selectItems.length > 0) {
-                let helper = $('.InventoryCell.ui-draggable.ui-draggable-handle.ui-draggable-dragging');
+            if (selectItems.length > 1) {
                 // если выделено много элементов то отправляем их все
                 let slotsNumbers = [];
                 slotsNumbers.push(Number($(cell).data("slotData").number));
@@ -32,12 +31,16 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
                 });
 
                 $(cell).data("selectedItems", {parent: parent, slotsNumbers: slotsNumbers});
-
-                // helper это иконка которая улетает с мышкой
-                helper.empty();
-                helper.css('background-image', 'url(/assets/components/inventory/img/dragDetail.png');
             } else {
                 $(cell).removeData("selectedItems");
+            }
+        },
+        drag: function (event, ui) {
+            // .ui-draggable-dragging это иконка которая улетает с мышкой
+            if ($('.InventoryCell.ui-selected').length > 1) {
+                $('.ui-draggable-dragging')
+                    .empty()
+                    .css('background-image', 'url(/assets/components/inventory/img/dragDetail.png');
             }
         },
         revert: "invalid",
