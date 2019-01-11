@@ -2,10 +2,16 @@ function UpdateStorage(inventory) {
 
     $('#storage').droppable({
         drop: function (event, ui) {
+
+            $('.ui-selected').removeClass('ui-selected');
+
             let draggable = ui.draggable;
             if (draggable.data("slotData").parent === "squadInventory") {
                 if (draggable.data("selectedItems") !== undefined) {
-
+                    inventorySocket.send(JSON.stringify({
+                        event: "itemsToStorage",
+                        inventory_slots: draggable.data("selectedItems").slotsNumbers,
+                    }));
                 } else {
                     inventorySocket.send(JSON.stringify({
                         event: "itemToStorage",

@@ -9,12 +9,25 @@ import (
 func itemToStorage(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := squadInventory.ItemToStorage(user, msg.InventorySlot)
+	if msg.Event == "itemToStorage" {
+		err := squadInventory.ItemToStorage(user, msg.InventorySlot)
+		if err != nil {
+			ws.WriteJSON(Response{Event: "Error", Error: err.Error()})
+		} else {
+			storage.Updater(user.GetID())
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		}
+	}
 
-	if err != nil {
-		// TODO
-	} else {
-		storage.Updater(user.GetID())
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+	if msg.Event == "itemsToStorage" {
+		for _, i := range msg.InventorySlots {
+			err := squadInventory.ItemToStorage(user, i)
+			if err != nil {
+				ws.WriteJSON(Response{Event: "Error", Error: err.Error()})
+			} else {
+				storage.Updater(user.GetID())
+				ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+			}
+		}
 	}
 }

@@ -33,6 +33,9 @@ function OpenBox(inventory, boxID, capacitySize, error) {
 
     $(openBox).droppable({
         drop: function (event, ui) {
+
+            $('.ui-selected').removeClass('ui-selected');
+
             let draggable = ui.draggable;
             if (draggable.data("slotData").parent === "squadInventory") {
                 if (draggable.data("selectedItems") !== undefined) {

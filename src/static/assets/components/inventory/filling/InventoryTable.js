@@ -2,6 +2,9 @@ function InventoryTable(inventoryItems) {
 
     $('#Inventory').droppable({
         drop: function (event, ui) {
+
+            $('.ui-selected').removeClass('ui-selected');
+
             let draggable = ui.draggable;
             if (draggable.data("slotData").parent === "squadInventory") {
             } else if (draggable.data("slotData").parent.split(':')[0] === "box") {
@@ -24,6 +27,10 @@ function InventoryTable(inventoryItems) {
                 }
             } else if (draggable.data("slotData").parent === "storage"){
                 if (draggable.data("selectedItems") !== undefined) {
+                    inventorySocket.send(JSON.stringify({
+                        event: "itemsToInventory",
+                        storage_slots: draggable.data("selectedItems").slotsNumbers
+                    }));
                 } else {
                     inventorySocket.send(JSON.stringify({
                         event: "itemToInventory",
@@ -51,6 +58,7 @@ function InventoryTable(inventoryItems) {
             cell.innerHTML = "";
             cell.className = "InventoryCell";
 
+            $(cell).removeData("slotData");
             $(cell).draggable({
                 disabled: true
             });
