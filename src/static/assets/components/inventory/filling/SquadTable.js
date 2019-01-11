@@ -6,6 +6,7 @@ function SquadTable(squad) {
         if (squad.mather_ship != null && squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
 
             let unitSlot = squad.mather_ship.units[slot];
+            //let standardSize = squad.mather_ship.body.equippingIV[slot].standard_size;
 
             if (cell.className !== "inventoryUnit select") {
                 cell.className = "inventoryUnit active";
@@ -26,6 +27,21 @@ function SquadTable(squad) {
                 cell.style.backgroundImage = null;
                 cell.innerHTML = "<span> Ангар </span>"
             }
+
+            let standardSizeBlock = document.createElement("div");
+            standardSizeBlock.className = "standardSizeBlock";
+
+            if (squad.mather_ship.body.equippingIV[slot].standard_size === 1) {
+                standardSizeBlock.innerHTML = "S";
+                standardSizeBlock.style.color = "#3bff19";
+            } else if (squad.mather_ship.body.equippingIV[slot].standard_size === 2) {
+                standardSizeBlock.innerHTML = "M";
+                standardSizeBlock.style.color = "#ffe418";
+            } else if (squad.mather_ship.body.equippingIV[slot].standard_size === 3) {
+                standardSizeBlock.innerHTML = "L";
+            }
+
+            cell.appendChild(standardSizeBlock);
 
             cell.slotData = JSON.stringify(unitSlot);
             cell.onclick = OpenUnitEditor

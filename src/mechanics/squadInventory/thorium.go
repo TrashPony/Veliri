@@ -24,7 +24,7 @@ func SetThorium(user *player.Player, nubInventorySlot, numThoriumSlot int) error
 			inventorySlot.RemoveItemBySlot(inventorySlot.Quantity)
 		}
 
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 	} else {
 		return errors.New("no find slot")
 	}
@@ -44,7 +44,7 @@ func RemoveThorium(user *player.Player, numThoriumSlot int) error {
 			item.Size/float32(thoriumSlot.Count), 1)
 
 		thoriumSlot.Count = 0
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 	} else {
 		return errors.New("no thorium")
 	}

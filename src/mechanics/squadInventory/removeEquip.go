@@ -18,7 +18,7 @@ func RemoveMSEquip(user *player.Player, numEquipSlot int, typeSlot int) {
 
 		user.GetSquad().MatherShip.CalculateParams()
 
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 	}
 }
 
@@ -37,7 +37,7 @@ func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot
 
 			unitSlot.Unit.CalculateParams()
 
-			update.Squad(user.GetSquad(), true)
+			go update.Squad(user.GetSquad(), true)
 		}
 	}
 }

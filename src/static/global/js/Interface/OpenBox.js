@@ -95,7 +95,10 @@ function OpenBox(inventory, boxID, capacitySize, error) {
 
     let storageCell = document.createElement("div");
     storageCell.className = "storageCell";
-    $(storageCell).selectable();
+    $(storageCell).selectable({
+        filter: '.InventoryCell.active',
+        start: function() {$('.ui-selected').removeClass('ui-selected')}
+    });
 
     fillInventory(storageCell, inventory, boxID);
 

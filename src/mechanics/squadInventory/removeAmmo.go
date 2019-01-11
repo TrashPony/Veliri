@@ -12,7 +12,7 @@ func RemoveMSAmmo(user *player.Player, numEquipSlot int) {
 		user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
 		slotAmmo.Ammo = nil
 
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 	}
 }
 
@@ -27,7 +27,7 @@ func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int) {
 			user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
 			slotAmmo.Ammo = nil
 
-			update.Squad(user.GetSquad(), true)
+			go update.Squad(user.GetSquad(), true)
 		}
 	}
 }

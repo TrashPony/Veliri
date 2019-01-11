@@ -40,7 +40,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 
 		user.GetSquad().MatherShip.CalculateParams()
 
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 	}
 }
 
@@ -80,7 +80,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 
 			unitSlot.Unit.CalculateParams()
 
-			update.Squad(user.GetSquad(), true)
+			go update.Squad(user.GetSquad(), true)
 		} else {
 			return // todo ошибка , несовместимый стандарт
 		}

@@ -23,8 +23,13 @@ function InventoryTable(inventoryItems) {
                     }))
                 }
             } else if (draggable.data("slotData").parent === "storage"){
-                // todo
-                console.log("dfdfd")
+                if (draggable.data("selectedItems") !== undefined) {
+                } else {
+                    inventorySocket.send(JSON.stringify({
+                        event: "itemToInventory",
+                        storage_slot: Number(draggable.data("slotData").number)
+                    }));
+                }
             }
         }
     });

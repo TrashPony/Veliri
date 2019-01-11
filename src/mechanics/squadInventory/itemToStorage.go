@@ -22,7 +22,7 @@ func ItemToStorage(user *player.Player, inventorySlot int) error {
 			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(slot.Quantity)
 		}
 
-		update.Squad(user.GetSquad(), true)
+		go update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
 		return errors.New("user not in base")

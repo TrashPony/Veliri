@@ -9,12 +9,14 @@ function CreateStorage(){
 
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
+    inventoryStorage.id = "inventoryStorage";
     inventoryStorage.style.height = "58px";
     inventoryStorage.style.margin = "0";
+
     $(inventoryStorage).selectable({
-        filter: '.InventoryCell.active'
+        filter: '.InventoryCell.active',
+        start: function() {$('.ui-selected').removeClass('ui-selected')}
     });
-    CreateCells(6, 40, "InventoryCell", "storage ", inventoryStorage);
     storage.appendChild(inventoryStorage);
 
     let sortPanel = document.createElement("div");

@@ -61,10 +61,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     };
 
     cell.onmouseout = function () {
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            cell.className = "InventoryCell";
-        }
+        InventoryCellsReset();
 
         this.style.cursor = "auto";
         this.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
@@ -152,10 +149,7 @@ function UpdateWeapon(cell, classPrefix) {
     };
 
     cell.onmouseout = function () {
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            cell.className = "InventoryCell";
-        }
+        InventoryCellsReset();
 
         this.style.cursor = "auto";
         this.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
@@ -241,10 +235,8 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
     ammoCell.onmouseout = function (event) {
         this.style.boxShadow = "0 0 5px 3px rgb(200, 200, 0)";
         this.style.cursor = "auto";
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            cell.className = "InventoryCell";
-        }
+        InventoryCellsReset();
+
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };
 

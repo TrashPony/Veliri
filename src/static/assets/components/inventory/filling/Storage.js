@@ -4,34 +4,31 @@ function UpdateStorage(inventory) {
         drop: function (event, ui) {
             let draggable = ui.draggable;
             if (draggable.data("slotData").parent === "squadInventory") {
-                // todo
-                console.log("dfdfd")
-            } else if (draggable.data("slotData").parent === "storage"){
+                if (draggable.data("selectedItems") !== undefined) {
+
+                } else {
+                    inventorySocket.send(JSON.stringify({
+                        event: "itemToStorage",
+                        inventory_slot: Number(draggable.data("slotData").number)
+                    }));
+                }
+            } else if (draggable.data("slotData").parent === "storage") {
             }
         }
     });
 
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("storage " + i + 6);
+    let inventoryStorage = $('#inventoryStorage');
+    inventoryStorage.empty();
+    for (let i in inventory.slots) {
         if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
+            let cell = document.createElement("div");
+            cell.className = "InventoryCell active";
             CreateInventoryCell(cell, inventory.slots[i], i, "storage");
             cell.onclick = SelectInventoryItem;
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;
-        } else {
-            cell.slotData = null;
-            cell.style.backgroundImage = null;
-            cell.innerHTML = "";
-            cell.className = "InventoryCell";
-
-            $(cell).draggable({
-                disabled: true
-            });
-
-            cell.onclick = function () {
-                DestroyInventoryClickEvent();
-                DestroyInventoryTip();
-            };
+            cell.inventoryType = 'storage';
+            inventoryStorage.append(cell);
         }
     }
 }

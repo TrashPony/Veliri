@@ -44,12 +44,7 @@ function UpdateShipIcon(ms) {
 
     unitIcon.onmouseout = function () {
         OffTip();
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            if (cell) {
-                cell.className = "InventoryCell";
-            }
-        }
+        InventoryCellsReset();
     };
 
     let slotData = {};

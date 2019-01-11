@@ -19,24 +19,23 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     $(cell).draggable({
         disabled: false,
         start: function () {
-
             let selectItems = $('.InventoryCell.ui-selected');
             if (selectItems.length > 0) {
-                // если выделено много элементов то отправляем их все
-                // helper это иконка которая улетает с мышкой
                 let helper = $('.InventoryCell.ui-draggable.ui-draggable-handle.ui-draggable-dragging');
-                helper.empty();
-                helper.css('background-image', 'url(/assets/components/inventory/img/dragDetail.png');
-
+                // если выделено много элементов то отправляем их все
                 let slotsNumbers = [];
-                slotsNumbers.push($(cell).data("slotData").number);
+                slotsNumbers.push(Number($(cell).data("slotData").number));
                 selectItems.each(function (index) {
                     if ($(this).data("slotData") !== undefined && $(this).data("slotData").number !== $(cell).data("slotData").number) {
-                        slotsNumbers.push($(this).data("slotData").number);
+                        slotsNumbers.push(Number($(this).data("slotData").number));
                     }
                 });
 
                 $(cell).data("selectedItems", {parent: parent, slotsNumbers: slotsNumbers});
+
+                // helper это иконка которая улетает с мышкой
+                helper.empty();
+                helper.css('background-image', 'url(/assets/components/inventory/img/dragDetail.png');
             } else {
                 $(cell).removeData("selectedItems");
             }
@@ -45,4 +44,55 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         zIndex: 999,
         helper: 'clone'
     });
+}
+
+function CreateHealBar(cell, type, append) {
+    let cellData = JSON.parse(cell.slotData);
+
+    if (cellData.type !== "ammo" && cellData.type !== "resource" && cellData.type !== "recycle" && cellData.type !== "boxes") {
+        let backHealBar = document.createElement("div");
+
+        let percentHP = 0;
+
+        if (type === "inventory") {
+            backHealBar.className = "backInventoryHealBar";
+            percentHP = 100 / (cellData.item.max_hp / cellData.hp);
+        } else if (type === "equip") {
+            backHealBar.className = "backEquipHealBar";
+            percentHP = 100 / (cellData.equip.max_hp / cellData.hp);
+        } else if (type === "weapon") {
+            backHealBar.className = "backWeaponHealBar";
+            percentHP = 100 / (cellData.weapon.max_hp / cellData.hp);
+        } else if (type === "body") {
+            backHealBar.className = "backBodyHealBar";
+            percentHP = 100 / (cellData.body.max_hp / cellData.hp);
+        }
+
+        let healBar = document.createElement("div");
+        healBar.className = "healBar";
+
+        healBar.style.width = percentHP + "%";
+
+        if (percentHP === 100) {
+            backHealBar.style.opacity = "0"
+        } else if (percentHP < 90 && percentHP > 75) {
+            healBar.style.backgroundColor = "#fff326"
+        } else if (percentHP < 75 && percentHP > 50) {
+            healBar.style.backgroundColor = "#fac227"
+        } else if (percentHP < 50 && percentHP > 25) {
+            healBar.style.backgroundColor = "#fa7b31"
+        } else if (percentHP < 25 && cellData.hp > 1) {
+            healBar.style.backgroundColor = "#ff2615"
+        } else if (cellData.hp === 0) {
+            backHealBar.style.opacity = "0";
+            // todo показывать что предмет сломан например box-shadow insert red
+        }
+
+        if (append) {
+            backHealBar.appendChild(healBar);
+            cell.appendChild(backHealBar);
+        }
+
+        return percentHP;
+    }
 }

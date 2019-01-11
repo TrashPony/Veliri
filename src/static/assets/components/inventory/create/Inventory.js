@@ -29,7 +29,8 @@ function CreateInventory() {
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
     $(inventoryStorage).selectable({
-        filter: '.InventoryCell.active'
+        filter: '.InventoryCell.active',
+        start: function() {$('.ui-selected').removeClass('ui-selected')}
     });
 
     CreateCells(6, 40, "InventoryCell", "inventory ", inventoryStorage);
