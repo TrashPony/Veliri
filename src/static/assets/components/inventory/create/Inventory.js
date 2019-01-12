@@ -1,5 +1,14 @@
 function CreateInventory() {
     let inventory = document.getElementById("Inventory");
+    $(inventory).resizable({
+        alsoResize: "#inventoryStorageInventory",
+        alsoResizeReverse: "#storage, #inventoryStorage",
+        minHeight: 105,
+        maxHeight: 307,
+        maxWidth: 163,
+        minWidth: 163,
+        handles: "s",
+    });
 
     let spanInventory = document.createElement("span");
     spanInventory.className = "InventoryHead";
@@ -28,9 +37,12 @@ function CreateInventory() {
 
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
+    inventoryStorage.id = "inventoryStorageInventory";
     $(inventoryStorage).selectable({
         filter: '.InventoryCell.active',
-        start: function() {$('.ui-selected').removeClass('ui-selected')}
+        start: function () {
+            $('.ui-selected').removeClass('ui-selected')
+        }
     });
 
     CreateCells(6, 40, "InventoryCell", "inventory ", inventoryStorage);

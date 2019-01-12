@@ -13,6 +13,11 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) {
 	if body != nil && body.ItemID == idBody && body.Type == "body" {
 		newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
+		if !newBody.MotherShip {
+			// для мс подходят корпуса только для мс
+			return
+		}
+
 		if user.GetSquad().MatherShip == nil {
 			user.GetSquad().MatherShip = &unit.Unit{}
 		} else {
@@ -58,6 +63,11 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 
 	if body != nil && body.ItemID == idBody && body.Type == "body" {
 		newBody, _ := gameTypes.Bodies.GetByID(idBody)
+
+		if newBody.MotherShip {
+			// для юнита не подходят корпуса для мс
+			return
+		}
 
 		if newBody.StandardSize <= unitSlot.StandardSize {
 			unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]

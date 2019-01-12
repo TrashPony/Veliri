@@ -26,6 +26,7 @@ func itemToStorage(ws *websocket.Conn, msg Message) {
 				ws.WriteJSON(Response{Event: "Error", Error: err.Error()})
 			} else {
 				storage.Updater(user.GetID())
+				//concurrent map iteration and map write
 				ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
 			}
 		}

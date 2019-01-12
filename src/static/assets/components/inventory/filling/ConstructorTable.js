@@ -18,6 +18,25 @@ function UpdateShipIcon(ms) {
     unitIcon.style.backgroundImage = "url(/assets/units/body/" + ms.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(ms);
 
+
+    $(unitIcon).droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+
+            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
+                inventorySocket.send(JSON.stringify({
+                    event: "SetMotherShipBody",
+                    id_body: Number(slotData.data.item.id),
+                    inventory_slot: Number(slotData.number)
+                }));
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
+
     unitIcon.onclick = BodyMSMenu;
 
     unitIcon.onmousemove = function (e) {

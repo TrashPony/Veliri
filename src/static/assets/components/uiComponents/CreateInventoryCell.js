@@ -33,7 +33,11 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
                 $(cell).data("selectedItems", {parent: parent, slotsNumbers: slotsNumbers});
             } else {
                 $(cell).removeData("selectedItems");
+                MarkConstructorEquip(cell);
             }
+        },
+        stop: function () {
+            unMarkConstructorEquip();
         },
         drag: function (event, ui) {
             // .ui-draggable-dragging это иконка которая улетает с мышкой
@@ -45,8 +49,46 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         },
         revert: "invalid",
         zIndex: 999,
-        helper: 'clone'
+        helper: 'clone',
+        appendTo: "body",
     });
+}
+
+function unMarkConstructorEquip() {
+    if (document.getElementById("ConstructorMS")) {
+        DestroyInventoryClickEvent();
+        DestroyInventoryTip();
+    }
+}
+
+function MarkConstructorEquip(cell) {
+    if (document.getElementById("ConstructorMS")) {
+        let slotData = $(cell).data("slotData");
+        if (slotData.parent === "squadInventory" && slotData.data.item) {
+            if (slotData.data.type === "weapon") {
+                WeaponSlotMark("inventoryEquip", "inventoryEquipping", 5, null);
+                WeaponSlotMark("UnitEquip", "UnitEquip", 3, null);
+            } else if (slotData.data.type === "ammo") {
+                let ammoCells = document.getElementsByClassName("inventoryAmmoCell");
+                for (let i = 0; ammoCells && i < ammoCells.length; i++) {
+                    ammoCells[i].style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
+                    ammoCells[i].style.cursor = "pointer";
+                    ammoCells[i].onmouseout = null;
+                }
+            } else if (slotData.data.type === "equip") {
+                EquipSlotMark("inventoryEquip", "inventoryEquipping", slotData.data.item.type_slot, 5, null);
+                EquipSlotMark("UnitEquip", "UnitEquip", slotData.data.item.type_slot, 3, null);
+            } else if (slotData.data.type === "body") {
+                if (slotData.data.item.mother_ship) {
+                    document.getElementById("MSIcon").className = "UnitIconSelect";
+                } else {
+                    if (document.getElementById("UnitIcon")) {
+                        document.getElementById("UnitIcon").className = "UnitIconSelect";
+                    }
+                }
+            }
+        }
+    }
 }
 
 function CreateHealBar(cell, type, append) {

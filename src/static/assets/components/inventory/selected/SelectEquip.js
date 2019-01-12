@@ -20,7 +20,6 @@ function AmmoMSMenu(event) {
 
 function AmmoUnitMenu(event) {
     event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-    console.log("dfdf");
     let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
 
     if (JSON.parse(this.slotData).ammo !== null) {

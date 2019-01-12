@@ -7,19 +7,44 @@
     vertical-align: top;
     width: 163px;
     height: 307px;
-    margin-left: 10px;
-    padding-top: 5px;
+    margin: 0 10px 0;
     background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.14) 6px);
     background-size: 10px 2px;
     position: relative;
     user-select: none;
+    padding: 5px 3px 0 2px;
+    float: right;
+}
+
+.ui-resizable-s {
+    cursor: s-resize;
+    height: 3px;
+    width: 100%;
+    bottom: -6px;
+    left: 0;
+    background: linear-gradient(22deg, rgb(253, 232, 0), #fc8000);
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+    /* box-shadow: inset 0 0 5px black; */
+    border: 1px solid #4c4c4c;
+    background: #def4ff;
+    border-radius: 5px;
+}
+
+.ui-resizable-s:hover {
+    background: #00FDFF;
+    box-shadow: 0 0 3px #00FDFF;
+}
+
+.ui-resizable-s:active {
+    background: #00FDFF;
+    box-shadow: 0 0 3px #00FDFF;
 }
 
 .inventoryStorage {
     margin: 8px auto 0;
     overflow-y: scroll;
     height: 232px;
-    width: 160px;
+    width: 100% !important;
     border-radius: 5px;
     box-shadow: inset 0 0 5px black;
     border: 1px solid #4c4c4c;

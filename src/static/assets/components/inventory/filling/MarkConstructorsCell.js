@@ -39,6 +39,38 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     cell.className = classPrefix + " active";
     cell.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
 
+    $(cell).droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+
+            if (slotData.parent === "squadInventory" && slotData.data.type === "equip") {
+                if ($(cell).hasClass('inventoryEquipping')) {
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetMotherShipEquip",
+                        equip_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(cell.slotData).number_slot),
+                        equip_slot_type: Number(slotData.data.item.type_slot)
+                    }));
+                } else if ($(cell).hasClass('UnitEquip')) {
+                    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetUnitEquip",
+                        equip_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(cell.slotData).number_slot),
+                        equip_slot_type: Number(slotData.data.item.type_slot),
+                        unit_slot: Number(unitSlot),
+                    }));
+                }
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
+
     if (classPrefix === "inventoryEquipping") {
         cell.onclick = EquipMSMenu;
     } else {
@@ -95,6 +127,36 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
 function UpdateWeapon(cell, classPrefix) {
     cell.className = classPrefix + " active weapon";
     cell.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+
+    $(cell).droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+
+            if (slotData.parent === "squadInventory" && slotData.data.type === "weapon") {
+                if ($(cell).hasClass('inventoryEquipping')) {
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetMotherShipWeapon",
+                        weapon_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(cell.slotData).number_slot)
+                    }));
+                } else if ($(cell).hasClass('UnitEquip')) {
+                    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetUnitWeapon",
+                        weapon_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(cell.slotData).number_slot),
+                        unit_slot: Number(unitSlot)
+                    }));
+                }
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
 
     if (classPrefix === "inventoryEquipping") {
         cell.onclick = WeaponMSMenu;
@@ -204,6 +266,36 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
     let ammoCell = document.createElement("div");
     ammoCell.slotData = cell.slotData;
     ammoCell.className = "inventoryAmmoCell " + classPrefix;
+
+    $(ammoCell).droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+
+            if (slotData.parent === "squadInventory" && slotData.data.type === "ammo") {
+                if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('inventoryEquipping')) {
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetMotherShipAmmo",
+                        ammo_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
+                    }));
+                } else if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('UnitEquip')) {
+                    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetUnitAmmo",
+                        ammo_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
+                        unit_slot: Number(unitSlot)
+                    }));
+                }
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
 
     if (classPrefix === "inventoryEquipping") {
         ammoCell.onclick = AmmoMSMenu;

@@ -61,7 +61,7 @@ function SquadTable(squad) {
 
 function OpenUnitEditor() {
     let constructorUnit = document.getElementById("ConstructorUnit");
-    let slotData = JSON.parse(this.slotData);
+    let unitData = JSON.parse(this.slotData);
 
     let inventoryUnits = document.getElementsByClassName("inventoryUnit select");
     for (let slot in inventoryUnits) {
@@ -69,7 +69,7 @@ function OpenUnitEditor() {
     }
 
     if (constructorUnit) {
-        if (JSON.parse(constructorUnit.slotData).number_slot === slotData.number_slot) {
+        if (JSON.parse(constructorUnit.slotData).number_slot === unitData.number_slot) {
             constructorUnit.remove();
             return;
         } else {
@@ -89,8 +89,8 @@ function OpenUnitEditor() {
     CreateUnitEquipSlots(constructorUnit);
     document.body.appendChild(constructorUnit);
 
-    if (slotData.unit !== null && slotData.unit !== undefined) {
-        FillingSquadConstructor(slotData);
+    if (unitData.unit !== null && unitData.unit !== undefined) {
+        FillingSquadConstructor(unitData);
     } else {
         let powerPanel = document.getElementById("unitPowerPanel");
         powerPanel.innerHTML = "<span class='Value'>" + 0 + "/" + 0 + "</span>";
@@ -101,6 +101,24 @@ function OpenUnitEditor() {
         let unitIcon = document.getElementById("UnitIcon");
         unitIcon.innerHTML = "<span>Место для корпуса</span>";
     }
+
+    $('#UnitIcon').droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
+                inventorySocket.send(JSON.stringify({
+                    event: "SetUnitBody",
+                    id_body: Number(slotData.data.item.id),
+                    inventory_slot: Number(slotData.number),
+                    unit_slot: Number(unitData.number_slot)
+                }));
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
 }
 
 function CreateUnitEquipSlots(constructorUnit) {
@@ -147,21 +165,21 @@ function CreateUnitEquipSlots(constructorUnit) {
     constructorUnit.appendChild(equippingPanelI)
 }
 
-function FillingSquadConstructor(slotData) {
+function FillingSquadConstructor(unitData) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.innerHTML = "";
-    unitIcon.style.backgroundImage = "url(/assets/units/body/" + slotData.unit.body.name + ".png)";
-    unitIcon.slotData = JSON.stringify(slotData);
-    unitIcon.unitBody = slotData.unit.body;
+    unitIcon.style.backgroundImage = "url(/assets/units/body/" + unitData.unit.body.name + ".png)";
+    unitIcon.slotData = JSON.stringify(unitData);
+    unitIcon.unitBody = unitData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
 
-    UpdateWeaponIcon(unitIcon, "weaponUnitInnerIcon", slotData);
-    FillPowerPanel(slotData.unit.body, "unitPowerPanel");
-    FillCubePanel(slotData.unit.body, "unitCubePanel");
-    FillUnitWeaponTypePanel(slotData.unit.body, "weaponTypePanel");
+    UpdateWeaponIcon(unitIcon, "weaponUnitInnerIcon", unitData);
+    FillPowerPanel(unitData.unit.body, "unitPowerPanel");
+    FillCubePanel(unitData.unit.body, "unitCubePanel");
+    FillUnitWeaponTypePanel(unitData.unit.body, "weaponTypePanel");
 
-    UpdateCells(1, "UnitEquip", slotData.unit.body.equippingI, "UnitEquip");
-    UpdateCells(2, "UnitEquip", slotData.unit.body.equippingII, "UnitEquip");
-    UpdateCells(3, "UnitEquip", slotData.unit.body.equippingIII, "UnitEquip");
-    UpdateCells(3, "UnitEquip", slotData.unit.body.weapons, "UnitEquip");
+    UpdateCells(1, "UnitEquip", unitData.unit.body.equippingI, "UnitEquip");
+    UpdateCells(2, "UnitEquip", unitData.unit.body.equippingII, "UnitEquip");
+    UpdateCells(3, "UnitEquip", unitData.unit.body.equippingIII, "UnitEquip");
+    UpdateCells(3, "UnitEquip", unitData.unit.body.weapons, "UnitEquip");
 }

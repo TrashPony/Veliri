@@ -33,6 +33,24 @@ function CreateConstructorMenu() {
     let unitIcon = document.createElement("div");
     unitIcon.id = "MSIcon";
     unitIcon.className = "UnitIconNoSelect";
+    $(unitIcon).droppable({
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+            let slotData = draggable.data("slotData");
+
+            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
+                inventorySocket.send(JSON.stringify({
+                    event: "SetMotherShipBody",
+                    id_body: Number(slotData.data.item.id),
+                    inventory_slot: Number(slotData.number),
+                    unit_slot: Number(slotData.number_slot)
+                }));
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
+        }
+    });
     constructorMS.appendChild(unitIcon);
 
     /* 2 type slots */
