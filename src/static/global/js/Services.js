@@ -40,7 +40,6 @@ function OpenInventory() {
         document.getElementById("Inventory").appendChild(buttons.move);
 
     }, 500)
-
 }
 
 function OpenMarket() {

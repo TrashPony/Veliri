@@ -8,7 +8,8 @@ function AmmoMSMenu(event) {
 
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipAmmo",
-                equip_slot: Number(slot)
+                equip_slot: Number(slot),
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -29,7 +30,8 @@ function AmmoUnitMenu(event) {
             inventorySocket.send(JSON.stringify({
                 event: "RemoveUnitAmmo",
                 equip_slot: Number(slot),
-                unit_slot: unitSlot
+                unit_slot: unitSlot,
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -49,7 +51,8 @@ function WeaponMSMenu(event) {
 
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipWeapon",
-                equip_slot: Number(slot)
+                equip_slot: Number(slot),
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -72,7 +75,8 @@ function WeaponUnitMenu(event) {
             inventorySocket.send(JSON.stringify({
                 event: "RemoveUnitWeapon",
                 equip_slot: Number(slot),
-                unit_slot: unitSlot
+                unit_slot: unitSlot,
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -95,7 +99,8 @@ function EquipMSMenu(event) {
             inventorySocket.send(JSON.stringify({
                 event: "RemoveMotherShipEquip",
                 equip_slot: Number(slot),
-                equip_slot_type: Number(type)
+                equip_slot_type: Number(type),
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -120,7 +125,8 @@ function EquipUnitMenu(event) {
                 event: "RemoveUnitEquip",
                 equip_slot: Number(slot),
                 equip_slot_type: Number(type),
-                unit_slot: unitSlot
+                unit_slot: unitSlot,
+                destination: "storage",
             }));
 
             DestroyInventoryClickEvent();
@@ -136,7 +142,8 @@ function BodyMSMenu(event) {
     let removeFunction = function () {
 
         inventorySocket.send(JSON.stringify({
-            event: "RemoveMotherShipBody"
+            event: "RemoveMotherShipBody",
+            destination: "storage",
         }));
 
         DestroyInventoryClickEvent();
@@ -153,7 +160,8 @@ function BodyUnitMenu(event) {
     let removeFunction = function () {
         inventorySocket.send(JSON.stringify({
             event: "RemoveUnitBody",
-            unit_slot: Number(numberUnitSlot)
+            unit_slot: Number(numberUnitSlot),
+            destination: "storage",
         }));
 
         DestroyInventoryClickEvent();

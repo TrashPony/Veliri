@@ -3,8 +3,8 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
+	"../factories/storages"
 	"../gameObjects/detail"
-	"../gameObjects/inventory"
 	"../gameObjects/unit"
 	"../player"
 	"errors"
@@ -32,17 +32,17 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int, u
 					(weaponSlot.Weapon == nil && body.MaxPower-body.GetUsePower() >= newWeapon.Power) {
 
 					if newWeapon.StandardSize == 1 && body.StandardSizeSmall {
-						setWeapon(weaponSlot, user, newWeapon, slot, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
 						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 2 && body.StandardSizeMedium {
-						setWeapon(weaponSlot, user, newWeapon, slot, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
 						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 3 && body.StandardSizeBig {
-						setWeapon(weaponSlot, user, newWeapon, slot, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
 						unit.CalculateParams()
 						return nil
 					}
@@ -71,20 +71,20 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 	}
 }
 
-func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot *inventory.Slot, unit *unit.Unit) {
+func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot, hp int, unit *unit.Unit) {
 	if weaponSlot.Weapon != nil {
-		RemoveWeapon(user, weaponSlot.Number, unit)
+		RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 	}
 
 	if weaponSlot.Ammo != nil {
-		RemoveAmmo(user, weaponSlot.Number, unit)
+		RemoveAmmo(user, weaponSlot.Number, unit, "storage")
 	}
 
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 
-	weaponSlot.HP = inventorySlot.HP
+	weaponSlot.HP = hp
+	storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, 1)
 
-	inventorySlot.RemoveItemBySlot(1)
 	weaponSlot.Weapon = newWeapon
 	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне
 

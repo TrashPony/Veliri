@@ -3,9 +3,9 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
+	"../factories/storages"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
-	"../gameObjects/inventory"
 	"../gameObjects/unit"
 	"../player"
 	"errors"
@@ -36,7 +36,7 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 
 					if (unit.Body.GetUseCapacitySize()+newEquip.Size <= unit.Body.CapacitySize) || unit.Body.MotherShip {
 
-						setEquip(equipSlot, user, newEquip, slot, unit, typeEquipSlot)
+						setEquip(equipSlot, user, newEquip, inventorySlot, slot.HP, unit, typeEquipSlot)
 						unit.CalculateParams()
 
 						return nil
@@ -66,14 +66,14 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 	}
 }
 
-func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot *inventory.Slot, unit *unit.Unit, typeSlot int) {
+func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot, hp int, unit *unit.Unit, typeSlot int) {
 
 	if equipSlot.Equip != nil {
-		RemoveEquip(user, equipSlot.Number, typeSlot, unit)
+		RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage")
 	}
 
-	equipSlot.HP = inventorySlot.HP
-	inventorySlot.RemoveItemBySlot(1)
+	equipSlot.HP = hp
+	storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, 1)
 
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 

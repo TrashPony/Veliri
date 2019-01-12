@@ -12,11 +12,11 @@ func RemoveEquip(ws *websocket.Conn, msg Message) {
 	var err error
 
 	if msg.Event == "RemoveMotherShipEquip" {
-		err = squadInventory.RemoveEquip(user, msg.EquipSlot, msg.EquipSlotType, user.GetSquad().MatherShip)
+		err = squadInventory.RemoveEquip(user, msg.EquipSlot, msg.EquipSlotType, user.GetSquad().MatherShip, msg.Destination)
 	}
 
 	if msg.Event == "RemoveUnitEquip" {
-		err = squadInventory.RemoveUnitEquip(user, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot)
+		err = squadInventory.RemoveUnitEquip(user, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot, msg.Destination)
 	}
 
 	if err != nil {

@@ -18,6 +18,14 @@ function UpdateStorage(inventory) {
                         inventory_slot: Number(draggable.data("slotData").number)
                     }));
                 }
+            } else if (draggable.data("slotData").parent === "Constructor") {
+                inventorySocket.send(JSON.stringify({
+                    event: draggable.data("slotData").event,
+                    equip_slot: Number(draggable.data("slotData").equipSlot),
+                    equip_slot_type: Number(draggable.data("slotData").equipType),
+                    unit_slot: Number(draggable.data("slotData").unitSlot),
+                    destination: "storage",
+                }));
             } else if (draggable.data("slotData").parent === "storage") {
             }
         }

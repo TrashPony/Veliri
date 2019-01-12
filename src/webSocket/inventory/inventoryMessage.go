@@ -24,7 +24,8 @@ type Message struct {
 	UnitSlot    int `json:"unit_slot"`
 	ThoriumSlot int `json:"thorium_slot"`
 
-	Source string `json:"source"`
+	Source      string `json:"source"`
+	Destination string `json:"destination"`
 }
 
 type Response struct {

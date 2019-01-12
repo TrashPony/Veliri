@@ -66,10 +66,16 @@ func BodyRemove(user *player.Player, unit *unit.Unit) {
 
 	for _, weaponSlot := range unit.Body.Weapons {
 		if weaponSlot.Weapon != nil {
-			RemoveWeapon(user, weaponSlot.Number, unit)
+			RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 		}
 		if weaponSlot.Ammo != nil {
-			RemoveAmmo(user, weaponSlot.Number, unit)
+			RemoveAmmo(user, weaponSlot.Number, unit, "storage")
+		}
+	}
+
+	for _, thoriumSlot := range unit.Body.ThoriumSlots {
+		if thoriumSlot.Count != 0 {
+			RemoveThorium(user, thoriumSlot.Number)
 		}
 	}
 
@@ -80,7 +86,7 @@ func BodyRemove(user *player.Player, unit *unit.Unit) {
 func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			RemoveEquip(user, equipSlot.Number, typeSlot, unit)
+			RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage")
 		}
 	}
 }

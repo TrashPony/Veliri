@@ -25,7 +25,7 @@ function InventoryTable(inventoryItems) {
                         slot: Number(draggable.data("slotData").number)
                     }))
                 }
-            } else if (draggable.data("slotData").parent === "storage"){
+            } else if (draggable.data("slotData").parent === "storage") {
                 if (draggable.data("selectedItems") !== undefined) {
                     inventorySocket.send(JSON.stringify({
                         event: "itemsToInventory",
@@ -37,6 +37,14 @@ function InventoryTable(inventoryItems) {
                         storage_slot: Number(draggable.data("slotData").number)
                     }));
                 }
+            } else if (draggable.data("slotData").parent === "Constructor") {
+                inventorySocket.send(JSON.stringify({
+                    event: draggable.data("slotData").event,
+                    equip_slot: Number(draggable.data("slotData").equipSlot),
+                    equip_slot_type: Number(draggable.data("slotData").equipType),
+                    unit_slot: Number(draggable.data("slotData").unitSlot),
+                    destination: "squadInventory",
+                }));
             }
         }
     });
