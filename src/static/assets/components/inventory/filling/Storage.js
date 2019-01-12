@@ -33,7 +33,7 @@ function UpdateStorage(inventory) {
             cell.onclick = SelectInventoryItem;
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;
-            cell.inventoryType = 'storage';
+            cell.source = 'storage';
             inventoryStorage.append(cell);
         }
     }

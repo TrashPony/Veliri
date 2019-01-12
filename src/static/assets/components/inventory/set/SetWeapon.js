@@ -1,11 +1,12 @@
-function SetWeapon(weapon, slot) {
+function SetWeapon(weapon, slot, source) {
 
     let msFunc = function (slotData) {
         inventorySocket.send(JSON.stringify({
             event: "SetMotherShipWeapon",
             weapon_id: Number(weapon.id),
             inventory_slot: Number(slot),
-            equip_slot: Number(slotData.number_slot)
+            equip_slot: Number(slotData.number_slot),
+            source: source,
         }));
 
         DestroyInventoryClickEvent();
@@ -23,7 +24,8 @@ function SetWeapon(weapon, slot) {
                 weapon_id: Number(weapon.id),
                 inventory_slot: Number(slot),
                 equip_slot: Number(slotData.number_slot),
-                unit_slot: Number(unitSlot)
+                unit_slot: Number(unitSlot),
+                source: source,
             }));
 
             DestroyInventoryClickEvent();

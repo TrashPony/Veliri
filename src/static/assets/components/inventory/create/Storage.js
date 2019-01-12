@@ -10,7 +10,7 @@ function CreateStorage(){
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
     inventoryStorage.id = "inventoryStorage";
-    inventoryStorage.style.height = "58px";
+    inventoryStorage.style.height = "232px";
     inventoryStorage.style.margin = "0";
     $(inventoryStorage).mousedown(function (event) {
         // это костыль что бы работали полосы прокрутки, https://bugs.jqueryui.com/ticket/4441#no1

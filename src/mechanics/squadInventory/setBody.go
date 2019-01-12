@@ -8,11 +8,12 @@ import (
 	"errors"
 )
 
-func SetMSBody(user *player.Player, idBody, inventorySlot int) error {
+func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) error {
 	if user.InBaseID > 0 {
-		body := user.GetSquad().Inventory.Slots[inventorySlot]
 
-		if body != nil && body.ItemID == idBody && body.Type == "body" {
+		slot := getSlotBySource(user, inventorySlot, source)
+
+		if slot != nil && slot.ItemID == idBody && slot.Type == "body" {
 			newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 			if !newBody.MotherShip {
@@ -28,12 +29,12 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) error {
 				}
 			}
 
-			user.GetSquad().MatherShip.HP = body.HP                 // устанавливает колво хп как у тела
+			user.GetSquad().MatherShip.HP = slot.HP                 // устанавливает колво хп как у тела
 			user.GetSquad().MatherShip.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 			user.GetSquad().MatherShip.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
-
-			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
 			user.GetSquad().MatherShip.Body = newBody
+
+			slot.RemoveItemBySlot(1)
 
 			user.GetSquad().MatherShip.Units = make(map[int]*unit.Slot) // заполняем ячейки юнитов
 
@@ -56,10 +57,10 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int) error {
 	}
 }
 
-func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int) error {
+func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int, source string) error {
 	if user.InBaseID > 0 {
 
-		body := user.GetSquad().Inventory.Slots[inventorySlot]
+		slot := getSlotBySource(user, inventorySlot, source)
 
 		if user.GetSquad().MatherShip == nil || user.GetSquad().MatherShip.Body == nil {
 			return errors.New("no ms")
@@ -70,7 +71,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 			return errors.New("wrong slot ms")
 		}
 
-		if body != nil && body.ItemID == idBody && body.Type == "body" {
+		if slot != nil && slot.ItemID == idBody && slot.Type == "body" {
 			newBody, _ := gameTypes.Bodies.GetByID(idBody)
 
 			if newBody.MotherShip {
@@ -88,11 +89,11 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int)
 						unitSlot.Unit = &unit.Unit{}
 					}
 
-					unitSlot.Unit.HP = body.HP                 // устанавливает колво хп как у тела
+					unitSlot.Unit.HP = slot.HP                 // устанавливает колво хп как у тела
 					unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 					unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
-					user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
+					slot.RemoveItemBySlot(1)
 					unitSlot.Unit.Body = newBody
 
 					unitSlot.Unit.CalculateParams()

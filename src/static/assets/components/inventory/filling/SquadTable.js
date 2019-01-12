@@ -105,12 +105,13 @@ function OpenUnitEditor() {
             $('.ui-selected').removeClass('ui-selected');
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
-            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
+            if (slotData.data.type === "body") {
                 inventorySocket.send(JSON.stringify({
                     event: "SetUnitBody",
                     id_body: Number(slotData.data.item.id),
                     inventory_slot: Number(slotData.number),
-                    unit_slot: Number(unitData.number_slot)
+                    unit_slot: Number(unitData.number_slot),
+                    source: slotData.parent,
                 }));
                 DestroyInventoryClickEvent();
                 DestroyInventoryTip();

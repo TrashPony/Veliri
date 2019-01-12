@@ -50,6 +50,7 @@ function InventoryTable(inventoryItems) {
             cell.onclick = SelectInventoryItem;
             cell.onmousemove = InventoryOverTip;
             cell.onmouseout = OffTip;
+            cell.source = 'squadInventory';
 
         } else {
 

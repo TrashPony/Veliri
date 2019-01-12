@@ -1,4 +1,4 @@
-function SetAmmo(ammo, slot) {
+function SetAmmo(ammo, slot, source) {
 
     let ammoCells = document.getElementsByClassName("inventoryAmmoCell");
 
@@ -14,7 +14,8 @@ function SetAmmo(ammo, slot) {
                     event: "SetMotherShipAmmo",
                     ammo_id: Number(ammo.id),
                     inventory_slot: Number(slot),
-                    equip_slot: Number(JSON.parse(this.slotData).number_slot)
+                    equip_slot: Number(JSON.parse(this.slotData).number_slot),
+                    source: source,
                 }));
 
                 DestroyInventoryClickEvent();
@@ -29,7 +30,8 @@ function SetAmmo(ammo, slot) {
                     ammo_id: Number(ammo.id),
                     inventory_slot: Number(slot),
                     equip_slot: Number(JSON.parse(this.slotData).number_slot),
-                    unit_slot: Number(unitSlot)
+                    unit_slot: Number(unitSlot),
+                    source: source,
                 }));
 
                 DestroyInventoryClickEvent();

@@ -64,7 +64,7 @@ function unMarkConstructorEquip() {
 function MarkConstructorEquip(cell) {
     if (document.getElementById("ConstructorMS")) {
         let slotData = $(cell).data("slotData");
-        if (slotData.parent === "squadInventory" && slotData.data.item) {
+        if (slotData.data.item) {
             if (slotData.data.type === "weapon") {
                 WeaponSlotMark("inventoryEquip", "inventoryEquipping", 5, null);
                 WeaponSlotMark("UnitEquip", "UnitEquip", 3, null);
@@ -86,6 +86,8 @@ function MarkConstructorEquip(cell) {
                         document.getElementById("UnitIcon").className = "UnitIconSelect";
                     }
                 }
+            } else if (slotData.data.type === "recycle" && slotData.data.item.name === "enriched_thorium") {
+                SetThorium(null, slotData.number, slotData.parent)
             }
         }
     }

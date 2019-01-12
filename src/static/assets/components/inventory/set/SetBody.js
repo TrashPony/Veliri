@@ -1,4 +1,4 @@
-function SetBody(body, slot) {
+function SetBody(body, slot, source) {
     if (body.mother_ship) {
         let shipIcon = document.getElementById("MSIcon");
 
@@ -9,7 +9,8 @@ function SetBody(body, slot) {
                 inventorySocket.send(JSON.stringify({
                     event: "SetMotherShipBody",
                     id_body: Number(body.id),
-                    inventory_slot: Number(slot)
+                    inventory_slot: Number(slot),
+                    source: source,
                 }));
 
                 DestroyInventoryClickEvent();
@@ -28,7 +29,8 @@ function SetBody(body, slot) {
                     event: "SetUnitBody",
                     id_body: Number(body.id),
                     inventory_slot: Number(slot),
-                    unit_slot: Number(unitSlot)
+                    unit_slot: Number(unitSlot),
+                    source: source,
                 }));
 
                 DestroyInventoryClickEvent();

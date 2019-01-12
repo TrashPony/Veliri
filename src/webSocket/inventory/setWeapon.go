@@ -13,11 +13,11 @@ func SetWeapon(ws *websocket.Conn, msg Message) {
 	var err error
 
 	if msg.Event == "SetMotherShipWeapon" {
-		err = squadInventory.SetWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot, user.GetSquad().MatherShip)
+		err = squadInventory.SetWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot, user.GetSquad().MatherShip, msg.Source)
 	}
 
 	if msg.Event == "SetUnitWeapon" {
-		err = squadInventory.SetUnitWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
+		err = squadInventory.SetUnitWeapon(user, msg.WeaponID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot, msg.Source)
 	}
 
 	if err != nil {

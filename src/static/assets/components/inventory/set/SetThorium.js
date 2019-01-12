@@ -1,4 +1,4 @@
-function SetThorium(thorium, slot) {
+function SetThorium(thorium, slot, source) {
     let thoriumCells;
     if (game && game.typeService === "global") {
         thoriumCells = document.getElementsByClassName("Thorium");
@@ -28,12 +28,14 @@ function SetThorium(thorium, slot) {
                         event: "updateThorium",
                         inventory_slot: Number(slot),
                         thorium_slot: Number(thoriumCells[i].numberSlot),
+                        source: source,
                     }));
                 } else {
                     inventorySocket.send(JSON.stringify({
                         event: "SetThorium",
                         inventory_slot: Number(slot),
                         thorium_slot: Number(thoriumCells[i].numberSlot),
+                        source: source,
                     }));
                 }
 

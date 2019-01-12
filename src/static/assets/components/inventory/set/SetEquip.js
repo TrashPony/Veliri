@@ -1,4 +1,4 @@
-function SetEquip(equip, slot) {
+function SetEquip(equip, slot, source) {
 
     let msFunc = function (slotData) {
         inventorySocket.send(JSON.stringify({
@@ -6,7 +6,8 @@ function SetEquip(equip, slot) {
             equip_id: Number(equip.id),
             inventory_slot: Number(slot),
             equip_slot:  Number(slotData.number_slot),
-            equip_slot_type: Number(equip.type_slot)
+            equip_slot_type: Number(equip.type_slot),
+            source: source,
         }));
 
         DestroyInventoryClickEvent();
@@ -25,7 +26,8 @@ function SetEquip(equip, slot) {
                 inventory_slot: Number(slot),
                 equip_slot:  Number(slotData.number_slot),
                 equip_slot_type: Number(equip.type_slot),
-                unit_slot: Number(unitSlot)
+                unit_slot: Number(unitSlot),
+                source: source,
             }));
 
             DestroyInventoryClickEvent();

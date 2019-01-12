@@ -18,25 +18,6 @@ function UpdateShipIcon(ms) {
     unitIcon.style.backgroundImage = "url(/assets/units/body/" + ms.body.name + ".png)";
     unitIcon.slotData = JSON.stringify(ms);
 
-
-    $(unitIcon).droppable({
-        drop: function (event, ui) {
-            $('.ui-selected').removeClass('ui-selected');
-            let draggable = ui.draggable;
-            let slotData = draggable.data("slotData");
-
-            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
-                inventorySocket.send(JSON.stringify({
-                    event: "SetMotherShipBody",
-                    id_body: Number(slotData.data.item.id),
-                    inventory_slot: Number(slotData.number)
-                }));
-                DestroyInventoryClickEvent();
-                DestroyInventoryTip();
-            }
-        }
-    });
-
     unitIcon.onclick = BodyMSMenu;
 
     unitIcon.onmousemove = function (e) {
@@ -96,6 +77,26 @@ function CreateThoriumSlots(unitIcon, ms) {
 
         let thoriumSlots = document.createElement("div");
         thoriumSlots.className = "thoriumSlots";
+
+        $(thoriumSlots).droppable({
+            drop: function (event, ui) {
+                $('.ui-selected').removeClass('ui-selected');
+
+                let draggable = ui.draggable;
+                let slotData = draggable.data("slotData");
+
+                if (slotData.data.type === "recycle" && slotData.data.item.name === "enriched_thorium") {
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetThorium",
+                        inventory_slot: Number(slotData.number),
+                        thorium_slot: Number(i),
+                        source: slotData.parent,
+                    }));
+                    DestroyInventoryClickEvent();
+                    DestroyInventoryTip();
+                }
+            }
+        });
 
         thoriumSlots.innerHTML = ms.body.thorium_slots[i].count + "/" + ms.body.thorium_slots[i].max_count;
         thoriumSlots.count = ms.body.thorium_slots[i].count;

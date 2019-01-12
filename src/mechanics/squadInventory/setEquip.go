@@ -5,17 +5,22 @@ import (
 	"../factories/gameTypes"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
+	"../gameObjects/inventory"
 	"../gameObjects/unit"
 	"../player"
 	"errors"
 )
 
-func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int, unit *unit.Unit) error {
-	equipItem := user.GetSquad().Inventory.Slots[inventorySlot]
+func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int, unit *unit.Unit, source string) error {
+	slot := getSlotBySource(user, inventorySlot, source)
 
 	body := unit.Body
 
-	if equipItem != nil && equipItem.ItemID == idEquip && equipItem.Type == "equip" {
+	if slot != nil && slot.ItemID == idEquip && slot.Type == "equip" {
+
+		if slot.HP <= 0 {
+			return errors.New("equip broken")
+		}
 
 		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
 		equipping := SelectType(typeEquipSlot, body)
@@ -31,7 +36,7 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 
 					if (unit.Body.GetUseCapacitySize()+newEquip.Size <= unit.Body.CapacitySize) || unit.Body.MotherShip {
 
-						setEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP, unit, typeEquipSlot)
+						setEquip(equipSlot, user, newEquip, slot, unit, typeEquipSlot)
 						unit.CalculateParams()
 
 						return nil
@@ -52,23 +57,23 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 	}
 }
 
-func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) error {
+func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int, source string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return SetEquip(user, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, unitSlot.Unit)
+		return SetEquip(user, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, unitSlot.Unit, source)
 	} else {
 		return errors.New("no unit")
 	}
 }
 
-func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int, unit *unit.Unit, typeSlot int) {
+func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot *inventory.Slot, unit *unit.Unit, typeSlot int) {
 
 	if equipSlot.Equip != nil {
 		RemoveEquip(user, equipSlot.Number, typeSlot, unit)
 	}
 
-	equipSlot.HP = hp
-	user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(1)
+	equipSlot.HP = inventorySlot.HP
+	inventorySlot.RemoveItemBySlot(1)
 
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 

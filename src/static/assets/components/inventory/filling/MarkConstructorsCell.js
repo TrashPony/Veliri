@@ -45,14 +45,15 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
 
-            if (slotData.parent === "squadInventory" && slotData.data.type === "equip") {
+            if (slotData.data.type === "equip") {
                 if ($(cell).hasClass('inventoryEquipping')) {
                     inventorySocket.send(JSON.stringify({
                         event: "SetMotherShipEquip",
                         equip_id: Number(slotData.data.item.id),
                         inventory_slot: Number(slotData.number),
                         equip_slot: Number(JSON.parse(cell.slotData).number_slot),
-                        equip_slot_type: Number(slotData.data.item.type_slot)
+                        equip_slot_type: Number(slotData.data.item.type_slot),
+                        source: slotData.parent,
                     }));
                 } else if ($(cell).hasClass('UnitEquip')) {
                     let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
@@ -63,6 +64,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
                         equip_slot: Number(JSON.parse(cell.slotData).number_slot),
                         equip_slot_type: Number(slotData.data.item.type_slot),
                         unit_slot: Number(unitSlot),
+                        source: slotData.parent,
                     }));
                 }
                 DestroyInventoryClickEvent();
@@ -134,13 +136,14 @@ function UpdateWeapon(cell, classPrefix) {
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
 
-            if (slotData.parent === "squadInventory" && slotData.data.type === "weapon") {
+            if (slotData.data.type === "weapon") {
                 if ($(cell).hasClass('inventoryEquipping')) {
                     inventorySocket.send(JSON.stringify({
                         event: "SetMotherShipWeapon",
                         weapon_id: Number(slotData.data.item.id),
                         inventory_slot: Number(slotData.number),
-                        equip_slot: Number(JSON.parse(cell.slotData).number_slot)
+                        equip_slot: Number(JSON.parse(cell.slotData).number_slot),
+                        source: slotData.parent,
                     }));
                 } else if ($(cell).hasClass('UnitEquip')) {
                     let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
@@ -149,7 +152,8 @@ function UpdateWeapon(cell, classPrefix) {
                         weapon_id: Number(slotData.data.item.id),
                         inventory_slot: Number(slotData.number),
                         equip_slot: Number(JSON.parse(cell.slotData).number_slot),
-                        unit_slot: Number(unitSlot)
+                        unit_slot: Number(unitSlot),
+                        source: slotData.parent,
                     }));
                 }
                 DestroyInventoryClickEvent();
@@ -273,13 +277,14 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
 
-            if (slotData.parent === "squadInventory" && slotData.data.type === "ammo") {
+            if (slotData.data.type === "ammo") {
                 if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('inventoryEquipping')) {
                     inventorySocket.send(JSON.stringify({
                         event: "SetMotherShipAmmo",
                         ammo_id: Number(slotData.data.item.id),
                         inventory_slot: Number(slotData.number),
                         equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
+                        source: slotData.parent,
                     }));
                 } else if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('UnitEquip')) {
                     let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
@@ -288,7 +293,8 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
                         ammo_id: Number(slotData.data.item.id),
                         inventory_slot: Number(slotData.number),
                         equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
-                        unit_slot: Number(unitSlot)
+                        unit_slot: Number(unitSlot),
+                        source: slotData.parent,
                     }));
                 }
                 DestroyInventoryClickEvent();

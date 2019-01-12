@@ -7,29 +7,29 @@ import (
 	"errors"
 )
 
-func SetThorium(user *player.Player, nubInventorySlot, numThoriumSlot int) error {
+func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source string) error {
 
 	thoriumSlot, _ := user.GetSquad().MatherShip.Body.ThoriumSlots[numThoriumSlot]
-	inventorySlot, _ := user.GetSquad().Inventory.Slots[nubInventorySlot]
+
+	slot := getSlotBySource(user, inventorySlot, source)
 
 	// торий это ресурс с ид 1 и типом "recycle"
-	if thoriumSlot != nil && inventorySlot != nil && inventorySlot.ItemID == 1 && inventorySlot.Item != nil && inventorySlot.Type == "recycle" {
+	if thoriumSlot != nil && slot != nil && slot.ItemID == 1 && slot.Item != nil && slot.Type == "recycle" {
 		needThorium := thoriumSlot.MaxCount - thoriumSlot.Count
 
-		if needThorium <= inventorySlot.Quantity {
+		if needThorium <= slot.Quantity {
 			thoriumSlot.Count += needThorium
-			inventorySlot.RemoveItemBySlot(needThorium)
+			slot.RemoveItemBySlot(needThorium)
 		} else {
-			thoriumSlot.Count += inventorySlot.Quantity
-			inventorySlot.RemoveItemBySlot(inventorySlot.Quantity)
+			thoriumSlot.Count += slot.Quantity
+			slot.RemoveItemBySlot(slot.Quantity)
 		}
 
 		go update.Squad(user.GetSquad(), true)
+		return nil
 	} else {
 		return errors.New("no find slot")
 	}
-
-	return errors.New("unknown error")
 }
 
 func RemoveThorium(user *player.Player, numThoriumSlot int) error {
@@ -45,9 +45,8 @@ func RemoveThorium(user *player.Player, numThoriumSlot int) error {
 
 		thoriumSlot.Count = 0
 		go update.Squad(user.GetSquad(), true)
+		return nil
 	} else {
 		return errors.New("no thorium")
 	}
-
-	return errors.New("unknown error")
 }

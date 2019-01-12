@@ -15,7 +15,7 @@ type Message struct {
 	InventorySlot  int   `json:"inventory_slot"`
 	InventorySlots []int `json:"inventory_slots"`
 
-	StorageSlot int `json:"storage_slot"`
+	StorageSlot  int   `json:"storage_slot"`
 	StorageSlots []int `json:"storage_slots"`
 
 	EquipSlot     int `json:"equip_slot"`
@@ -23,6 +23,8 @@ type Message struct {
 
 	UnitSlot    int `json:"unit_slot"`
 	ThoriumSlot int `json:"thorium_slot"`
+
+	Source string `json:"source"`
 }
 
 type Response struct {

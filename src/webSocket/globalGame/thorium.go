@@ -9,7 +9,8 @@ func updateThorium(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
 	if user != nil {
 
-		squadInventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot)
+		// "squadInventory" потому что в глобальной игре нет больше инвентарей
+		squadInventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot, "squadInventory")
 
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY

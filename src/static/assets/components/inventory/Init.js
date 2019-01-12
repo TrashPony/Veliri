@@ -36,6 +36,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/filling/UpdateWeaponIcon.js");
             includeJS("../assets/components/inventory/filling/Storage.js");
             includeJS("../assets/components/inventory/filling/InventoryCellsReset.js");
+            includeJS("../assets/components/inventory/filling/Errors.js");
 
             includeJS("../assets/components/inventory/tip/ClickTip.js");
             includeJS("../assets/components/inventory/tip/SelectItem.js");

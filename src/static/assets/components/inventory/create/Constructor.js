@@ -39,12 +39,13 @@ function CreateConstructorMenu() {
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
 
-            if (slotData.parent === "squadInventory" && slotData.data.type === "body") {
+            if (slotData.data.type === "body") {
                 inventorySocket.send(JSON.stringify({
                     event: "SetMotherShipBody",
                     id_body: Number(slotData.data.item.id),
                     inventory_slot: Number(slotData.number),
-                    unit_slot: Number(slotData.number_slot)
+                    unit_slot: Number(slotData.number_slot),
+                    source: slotData.parent,
                 }));
                 DestroyInventoryClickEvent();
                 DestroyInventoryTip();

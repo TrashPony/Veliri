@@ -8,11 +8,12 @@ import (
 	"errors"
 )
 
-func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit *unit.Unit) error {
+func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit *unit.Unit, source string) error {
 	if user.InBaseID > 0 {
-		ammoItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
-		if ammoItem != nil && ammoItem.Item != nil && ammoItem.ItemID == idAmmo && ammoItem.Type == "ammo" {
+		slot := getSlotBySource(user, inventorySlot, source)
+
+		if slot != nil && slot.Item != nil && slot.ItemID == idAmmo && slot.Type == "ammo" {
 			newAmmo, _ := gameTypes.Ammo.GetByID(idAmmo)
 
 			ammoSlot, ok := unit.Body.Weapons[numEquipSlot]
@@ -35,7 +36,7 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 				}
 
 				ammoSlot.Ammo = newAmmo
-				ammoSlot.AmmoQuantity = user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(ammoSlot.Weapon.AmmoCapacity)
+				ammoSlot.AmmoQuantity = slot.RemoveItemBySlot(ammoSlot.Weapon.AmmoCapacity)
 
 				go update.Squad(user.GetSquad(), true)
 
@@ -52,10 +53,10 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 	}
 }
 
-func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numberUnitSlot int) error {
+func SetUnitAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot, numberUnitSlot int, source string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return SetAmmo(user, idAmmo, inventorySlot, numEquipSlot, unitSlot.Unit)
+		return SetAmmo(user, idAmmo, inventorySlot, numEquipSlot, unitSlot.Unit, source)
 	} else {
 		return errors.New("no unit")
 	}

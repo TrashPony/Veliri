@@ -12,11 +12,11 @@ func SetBody(ws *websocket.Conn, msg Message) {
 	var err error
 
 	if msg.Event == "SetMotherShipBody" {
-		err = squadInventory.SetMSBody(user, msg.BodyID, msg.InventorySlot)
+		err = squadInventory.SetMSBody(user, msg.BodyID, msg.InventorySlot, msg.Source)
 	}
 
 	if msg.Event == "SetUnitBody" {
-		err = squadInventory.SetUnitBody(user, msg.BodyID, msg.InventorySlot, msg.UnitSlot)
+		err = squadInventory.SetUnitBody(user, msg.BodyID, msg.InventorySlot, msg.UnitSlot, msg.Source)
 	}
 
 	if err != nil {
