@@ -5,87 +5,66 @@ import (
 	"../factories/gameTypes"
 	"../gameObjects/detail"
 	"../gameObjects/equip"
+	"../gameObjects/unit"
 	"../player"
 	"errors"
 )
 
-func SetMSEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int) error {
+func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int, unit *unit.Unit) error {
 	equipItem := user.GetSquad().Inventory.Slots[inventorySlot]
 
-	msBody := user.GetSquad().MatherShip.Body
+	body := unit.Body
 
 	if equipItem != nil && equipItem.ItemID == idEquip && equipItem.Type == "equip" {
 
 		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
+		equipping := SelectType(typeEquipSlot, body)
 
-		equipping := SelectType(typeEquipSlot, msBody)
 		if equipping != nil {
+
 			equipSlot, ok := equipping[numEquipSlot]
+
 			if ok && equipSlot.Type == typeEquipSlot {
-
 				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-				if (equipSlot.Equip != nil && msBody.MaxPower-msBody.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
-					(equipSlot.Equip == nil && msBody.MaxPower-msBody.GetUsePower() >= newEquip.Power) {
+				if (equipSlot.Equip != nil && body.MaxPower-body.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
+					(equipSlot.Equip == nil && body.MaxPower-body.GetUsePower() >= newEquip.Power) {
 
-					SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
+					if (unit.Body.GetUseCapacitySize()+newEquip.Size <= unit.Body.CapacitySize) || unit.Body.MotherShip {
 
-					user.GetSquad().MatherShip.CalculateParams()
+						setEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP, unit, typeEquipSlot)
+						unit.CalculateParams()
+
+						return nil
+					} else {
+						return errors.New("lacking size")
+					}
 				} else {
 					return errors.New("lacking power")
 				}
-			}
-		}
-	}
-	return nil
-}
-
-func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) error {
-	equipItem := user.GetSquad().Inventory.Slots[inventorySlot]
-
-	if equipItem != nil && equipItem.ItemID == idEquip && equipItem.Type == "equip" {
-
-		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
-
-		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
-		if ok && unitSlot.Unit != nil {
-			equipping := SelectType(typeEquipSlot, unitSlot.Unit.Body)
-			if equipping != nil {
-				equipSlot, ok := equipping[numEquipSlot]
-				if ok && equipSlot.Type == typeEquipSlot {
-
-					// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-					if (equipSlot.Equip != nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||
-						(equipSlot.Equip == nil && unitSlot.Unit.Body.MaxPower-unitSlot.Unit.Body.GetUsePower() >= newEquip.Power) {
-
-						if unitSlot.Unit.Body.GetUseCapacitySize()+newEquip.Size <= unitSlot.Unit.Body.CapacitySize {
-							SetEquip(equipSlot, user, newEquip, inventorySlot, equipItem.HP)
-							unitSlot.Unit.CalculateParams()
-							return nil
-						} else {
-							return errors.New("lacking size")
-						}
-					} else {
-						return errors.New("lacking power")
-					}
-				} else {
-					return errors.New("wrong type slot")
-				}
 			} else {
-				return errors.New("wrong equip slot")
+				return errors.New("wrong type slot")
 			}
 		} else {
-			return errors.New("wrong unit")
+			return errors.New("wrong equip slot")
 		}
 	} else {
 		return errors.New("wrong inventory slot")
 	}
 }
 
-func SetEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int) {
+func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, numberUnitSlot int) error {
+	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
+	if ok && unitSlot.Unit != nil {
+		return SetEquip(user, idEquip, inventorySlot, numEquipSlot, typeEquipSlot, unitSlot.Unit)
+	} else {
+		return errors.New("no unit")
+	}
+}
+
+func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot int, hp int, unit *unit.Unit, typeSlot int) {
 
 	if equipSlot.Equip != nil {
-		user.GetSquad().Inventory.AddItem(equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size, equipSlot.Equip.MaxHP)
-		equipSlot.Equip = nil
+		RemoveEquip(user, equipSlot.Number, typeSlot, unit)
 	}
 
 	equipSlot.HP = hp

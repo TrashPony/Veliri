@@ -38,10 +38,16 @@ function CreateInventory() {
     let inventoryStorage = document.createElement("div");
     inventoryStorage.className = "inventoryStorage";
     inventoryStorage.id = "inventoryStorageInventory";
+    $(inventoryStorage).mousedown(function (event) {
+        // это костыль что бы работали полосы прокрутки, https://bugs.jqueryui.com/ticket/4441#no1
+        if (event.offsetX >= event.target.clientWidth || event.offsetY >= event.target.clientHeight) {
+            event.stopImmediatePropagation();
+        }
+    });
     $(inventoryStorage).selectable({
         filter: '.InventoryCell.active',
         start: function () {
-            $('.ui-selected').removeClass('ui-selected')
+            $('.ui-selected').removeClass('ui-selected');
         }
     });
 

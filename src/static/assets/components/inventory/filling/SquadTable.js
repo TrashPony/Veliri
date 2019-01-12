@@ -3,11 +3,9 @@ function SquadTable(squad) {
 
         let cell = document.getElementById("squad " + slot + 4); // 4 это тип ячейки
 
-        if (squad.mather_ship != null && squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
+        if (squad.mather_ship != null && squad.mather_ship.body != null && squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
 
             let unitSlot = squad.mather_ship.units[slot];
-            //let standardSize = squad.mather_ship.body.equippingIV[slot].standard_size;
-
             if (cell.className !== "inventoryUnit select") {
                 cell.className = "inventoryUnit active";
             }

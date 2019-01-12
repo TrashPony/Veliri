@@ -2,42 +2,42 @@ package squadInventory
 
 import (
 	"../db/squad/update"
+	"../factories/storages"
+	"../gameObjects/unit"
 	"../player"
+	"errors"
 )
 
-func RemoveMSEquip(user *player.Player, numEquipSlot int, typeSlot int) {
+func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit.Unit) error {
+	if user.InBaseID > 0 {
 
-	equipping := SelectType(typeSlot, user.GetSquad().MatherShip.Body)
+		equipping := SelectType(typeSlot, unit.Body)
+		slot, ok := equipping[numEquipSlot]
 
-	slotEquip, ok := equipping[numEquipSlot]
-
-	if ok && slotEquip != nil && slotEquip.Equip != nil {
-
-		user.GetSquad().Inventory.AddItem(slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP, slotEquip.Equip.Size, slotEquip.Equip.MaxHP)
-		slotEquip.Equip = nil
-
-		user.GetSquad().MatherShip.CalculateParams()
-
-		go update.Squad(user.GetSquad(), true)
+		if ok && slot != nil && slot.Equip != nil {
+			okAddItem := storages.Storages.AddItem(user.GetID(), user.InBaseID, slot.Equip, "equip",
+				slot.Equip.ID, 1, slot.HP, slot.Equip.Size, slot.Equip.MaxHP)
+			if okAddItem {
+				slot.Equip = nil
+				user.GetSquad().MatherShip.CalculateParams()
+				go update.Squad(user.GetSquad(), true)
+				return nil
+			} else {
+				return errors.New("add item error")
+			}
+		} else {
+			return errors.New("no item")
+		}
+	} else {
+		return errors.New("not in base")
 	}
 }
 
-func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot int) {
+func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot int) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
-
 	if ok && unitSlot.Unit != nil {
-		equipping := SelectType(typeSlot, unitSlot.Unit.Body)
-
-		slotEquip, ok := equipping[numEquipSlot]
-
-		if ok && slotEquip != nil && slotEquip.Equip != nil {
-
-			user.GetSquad().Inventory.AddItem(slotEquip.Equip, "equip", slotEquip.Equip.ID, 1, slotEquip.HP, slotEquip.Equip.Size, slotEquip.Equip.MaxHP)
-			slotEquip.Equip = nil
-
-			unitSlot.Unit.CalculateParams()
-
-			go update.Squad(user.GetSquad(), true)
-		}
+		return RemoveEquip(user, numEquipSlot, typeSlot, unitSlot.Unit)
+	} else {
+		return errors.New("no unit")
 	}
 }

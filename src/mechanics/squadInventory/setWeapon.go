@@ -4,85 +4,43 @@ import (
 	"../db/squad/update"
 	"../factories/gameTypes"
 	"../gameObjects/detail"
+	"../gameObjects/unit"
 	"../player"
 	"errors"
 )
 
-func SetMSWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int) error {
-	weapon := user.GetSquad().Inventory.Slots[inventorySlot]
-	msBody := user.GetSquad().MatherShip.Body
+func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int, unit *unit.Unit) error {
+	if user.InBaseID > 0 {
+		weapon := user.GetSquad().Inventory.Slots[inventorySlot]
+		body := unit.Body
 
-	if weapon != nil && msBody != nil && weapon.ItemID == idWeapon && weapon.Type == "weapon"{
-		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
+		if weapon != nil && body != nil && weapon.ItemID == idWeapon && weapon.Type == "weapon" {
 
-		weaponSlot, ok := msBody.Weapons[numEquipSlot]
-		if ok {
-			// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-			if (weaponSlot.Weapon != nil && msBody.MaxPower-msBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
-				(weaponSlot.Weapon == nil && msBody.MaxPower-msBody.GetUsePower() >= newWeapon.Power) {
-				if newWeapon.StandardSize == 1 && msBody.StandardSizeSmall {
-					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-					user.GetSquad().MatherShip.CalculateParams()
-					return nil
-				}
-				if newWeapon.StandardSize == 2 && msBody.StandardSizeMedium {
-					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-					user.GetSquad().MatherShip.CalculateParams()
-					return nil
-				}
-				if newWeapon.StandardSize == 3 && msBody.StandardSizeBig {
-					SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-					user.GetSquad().MatherShip.CalculateParams()
-					return nil
-				}
-				return errors.New("wrong standard size")
-			} else {
-				return errors.New("lacking power")
-			}
-		} else {
-			return errors.New("wrong weapon slot")
-		}
-	} else {
-		return errors.New("wrong inventory slot")
-	}
-}
-
-func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, numberUnitSlot int) error {
-	weapon := user.GetSquad().Inventory.Slots[inventorySlot]
-
-	if weapon.Item != nil && weapon.ItemID == idWeapon && weapon.Type == "weapon"{
-		newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
-
-		unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
-		if ok && unitSlot.Unit != nil {
-
-			weaponSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body.Weapons[numEquipSlot]
-			unitBody := user.GetSquad().MatherShip.Units[numberUnitSlot].Unit.Body
+			newWeapon, _ := gameTypes.Weapons.GetByID(idWeapon)
+			weaponSlot, ok := body.Weapons[numEquipSlot]
 
 			if ok {
 				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
-				if (weaponSlot.Weapon != nil && unitBody.MaxPower-unitBody.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
-					(weaponSlot.Weapon == nil && unitBody.MaxPower-unitBody.GetUsePower() >= newWeapon.Power) {
-					if unitBody.GetUseCapacitySize()+newWeapon.Size <= unitBody.CapacitySize {
-						if newWeapon.StandardSize == 1 && unitBody.StandardSizeSmall {
-							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-							unitSlot.Unit.CalculateParams()
-							return nil
-						}
-						if newWeapon.StandardSize == 2 && unitBody.StandardSizeMedium {
-							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-							unitSlot.Unit.CalculateParams()
-							return nil
-						}
-						if newWeapon.StandardSize == 3 && unitBody.StandardSizeBig {
-							SetWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP)
-							unitSlot.Unit.CalculateParams()
-							return nil
-						}
-						return errors.New("wrong standard size")
-					} else {
-						return errors.New("lacking size")
+				if (weaponSlot.Weapon != nil && body.MaxPower-body.GetUsePower()+weaponSlot.Weapon.Power >= newWeapon.Power) ||
+					(weaponSlot.Weapon == nil && body.MaxPower-body.GetUsePower() >= newWeapon.Power) {
+
+					if newWeapon.StandardSize == 1 && body.StandardSizeSmall {
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP, unit)
+						unit.CalculateParams()
+						return nil
 					}
+					if newWeapon.StandardSize == 2 && body.StandardSizeMedium {
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP, unit)
+						unit.CalculateParams()
+						return nil
+					}
+					if newWeapon.StandardSize == 3 && body.StandardSizeBig {
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, weapon.HP, unit)
+						unit.CalculateParams()
+						return nil
+					}
+
+					return errors.New("wrong standard size")
 				} else {
 					return errors.New("lacking power")
 				}
@@ -90,24 +48,29 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 				return errors.New("wrong weapon slot")
 			}
 		} else {
-			return errors.New("wrong unit")
+			return errors.New("wrong inventory slot")
 		}
 	} else {
-		return errors.New("wrong inventory slot")
+		return errors.New("not in base")
 	}
 }
 
-func SetWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int) {
+func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, numberUnitSlot int) error {
+	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
+	if ok && unitSlot.Unit != nil {
+		return SetWeapon(user, idWeapon, inventorySlot, numEquipSlot, unitSlot.Unit)
+	} else {
+		return errors.New("no unit")
+	}
+}
+
+func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot int, hp int, unit *unit.Unit) {
 	if weaponSlot.Weapon != nil {
-		user.GetSquad().Inventory.AddItem(weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1,
-			weaponSlot.HP, weaponSlot.Weapon.Size, weaponSlot.Weapon.MaxHP)
-		weaponSlot.Weapon = nil
+		RemoveWeapon(user, weaponSlot.Number, unit)
 	}
 
 	if weaponSlot.Ammo != nil {
-		user.GetSquad().Inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity,
-			1, weaponSlot.Ammo.Size, 1)
-		weaponSlot.Ammo = nil
+		RemoveAmmo(user, weaponSlot.Number, unit)
 	}
 
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд

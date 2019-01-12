@@ -2,21 +2,27 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
+	"../storage"
 	"github.com/gorilla/websocket"
 )
 
-func RemoveMotherShipAmmo(ws *websocket.Conn, msg Message) {
+func RemoveAmmo(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	squadInventory.RemoveMSAmmo(user, msg.EquipSlot)
+	var err error
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-}
+	if msg.Event == "RemoveMotherShipAmmo" {
+		err = squadInventory.RemoveAmmo(user, msg.EquipSlot, user.GetSquad().MatherShip)
+	}
 
-func RemoveUnitAmmo(ws *websocket.Conn, msg Message) {
-	user := usersInventoryWs[ws]
+	if msg.Event == "RemoveUnitAmmo" {
+		err = squadInventory.RemoveUnitAmmo(user, msg.EquipSlot, msg.UnitSlot)
+	}
 
-	squadInventory.RemoveUnitAmmo(user, msg.EquipSlot, msg.UnitSlot)
-
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+	if err != nil {
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
+	} else {
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		storage.Updater(user.GetID())
+	}
 }

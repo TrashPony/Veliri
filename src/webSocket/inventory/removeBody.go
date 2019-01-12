@@ -2,21 +2,27 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
+	"../storage"
 	"github.com/gorilla/websocket"
 )
 
-func RemoveMotherShipBody(ws *websocket.Conn) {
+func RemoveBody(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	squadInventory.RemoveMSBody(user)
+	var err error
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-}
+	if msg.Event == "RemoveMotherShipBody" {
+		squadInventory.RemoveMSBody(user)
+	}
 
-func RemoveUnitBody(ws *websocket.Conn, msg Message) {
-	user := usersInventoryWs[ws]
+	if msg.Event == "RemoveUnitBody" {
+		squadInventory.RemoveUnitBody(user, msg.UnitSlot)
+	}
 
-	squadInventory.RemoveUnitBody(user, msg.UnitSlot)
-
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+	if err != nil {
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
+	} else {
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		storage.Updater(user.GetID())
+	}
 }

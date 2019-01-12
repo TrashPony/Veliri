@@ -2,32 +2,39 @@ package squadInventory
 
 import (
 	"../db/squad/update"
+	"../factories/storages"
+	"../gameObjects/unit"
 	"../player"
+	"errors"
 )
 
-func RemoveMSAmmo(user *player.Player, numEquipSlot int) {
-	slotAmmo, ok := user.GetSquad().MatherShip.Body.Weapons[numEquipSlot]
+func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit) error {
+	if user.InBaseID > 0 {
+		slot, ok := unit.Body.Weapons[numEquipSlot]
 
-	if ok && slotAmmo != nil && slotAmmo.Ammo != nil {
-		user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
-		slotAmmo.Ammo = nil
-
-		go update.Squad(user.GetSquad(), true)
+		if ok && slot != nil && slot.Ammo != nil {
+			okAddItem := storages.Storages.AddItem(user.GetID(), user.InBaseID, slot.Ammo, "ammo", slot.Ammo.ID,
+				slot.AmmoQuantity, 1, slot.Ammo.Size, 1)
+			if okAddItem {
+				slot.Ammo = nil
+				go update.Squad(user.GetSquad(), true)
+				return nil
+			} else {
+				return errors.New("add item error")
+			}
+		} else {
+			return errors.New("no item")
+		}
+	} else {
+		return errors.New("not in base")
 	}
 }
 
-func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int) {
+func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
-
 	if ok && unitSlot.Unit != nil {
-
-		slotAmmo, ok := unitSlot.Unit.Body.Weapons[numEquipSlot]
-
-		if ok && slotAmmo != nil && slotAmmo.Ammo != nil {
-			user.GetSquad().Inventory.AddItem(slotAmmo.Ammo, "ammo", slotAmmo.Ammo.ID, slotAmmo.AmmoQuantity, 1, slotAmmo.Ammo.Size, 1)
-			slotAmmo.Ammo = nil
-
-			go update.Squad(user.GetSquad(), true)
-		}
+		return RemoveAmmo(user, numEquipSlot, unitSlot.Unit)
+	} else {
+		return errors.New("no unit")
 	}
 }

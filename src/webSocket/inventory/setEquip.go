@@ -2,29 +2,27 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
+	"../storage"
 	"github.com/gorilla/websocket"
 )
 
-func SetMotherShipEquip(ws *websocket.Conn, msg Message) {
+func SetEquip(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := squadInventory.SetMSEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType)
+	var err error
 
-	if err != nil {
-		ws.WriteJSON(Response{Event: "ms error", Error: err.Error()})
+	if msg.Event == "SetMotherShipEquip" {
+		err = squadInventory.SetEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType, user.GetSquad().MatherShip)
 	}
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-}
-
-func SetUnitEquip(ws *websocket.Conn, msg Message) {
-	user := usersInventoryWs[ws]
-
-	err := squadInventory.SetUnitEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot)
-
-	if err != nil {
-		ws.WriteJSON(Response{Event: "unit error", Error: err.Error()})
+	if msg.Event == "SetUnitEquip" {
+		err = squadInventory.SetUnitEquip(user, msg.EquipID, msg.InventorySlot, msg.EquipSlot, msg.EquipSlotType, msg.UnitSlot)
 	}
 
-	ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+	if err != nil {
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
+	} else {
+		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		storage.Updater(user.GetID())
+	}
 }

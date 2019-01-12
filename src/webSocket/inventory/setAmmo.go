@@ -2,27 +2,27 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
+	"../storage"
 	"github.com/gorilla/websocket"
 )
 
-func SetMotherShipAmmo(ws *websocket.Conn, msg Message) {
+func SetAmmo(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := squadInventory.SetMSAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot)
-	if err != nil {
-		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
-	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+	var err error
+
+	if msg.Event == "SetMotherShipAmmo" {
+		err = squadInventory.SetAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot, user.GetSquad().MatherShip)
 	}
-}
 
-func SetUnitAmmo(ws *websocket.Conn, msg Message) {
-	user := usersInventoryWs[ws]
+	if msg.Event == "SetUnitAmmo" {
+		err = squadInventory.SetUnitAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
+	}
 
-	err := squadInventory.SetUnitAmmo(user, msg.AmmoID, msg.InventorySlot, msg.EquipSlot, msg.UnitSlot)
 	if err != nil {
-		ws.WriteJSON(Response{Event: "error", Error: err.Error()})
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
 	} else {
 		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		storage.Updater(user.GetID())
 	}
 }

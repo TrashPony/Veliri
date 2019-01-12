@@ -2,7 +2,7 @@ let size = 0;
 
 function FillingInventory(jsonData) {
     let event = JSON.parse(jsonData).event;
-
+    console.log(jsonData)
     if (event === "openInventory" || event === "UpdateSquad") {
         let squad = JSON.parse(jsonData).squad;
         InventoryTable(squad.inventory);
@@ -20,6 +20,7 @@ function FillingInventory(jsonData) {
             }
         } else {
             NoActiveCell();
+            SquadTable(squad);
         }
 
         // склад и магазин поднимаются только тогда когда игрок на базе

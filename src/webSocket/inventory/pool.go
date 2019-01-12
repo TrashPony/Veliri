@@ -54,68 +54,36 @@ func Reader(ws *websocket.Conn) {
 			Open(ws, msg)
 		}
 
-		if msg.Event == "SetMotherShipBody" {
-			SetMotherShipBody(ws, msg)
+		if msg.Event == "SetMotherShipBody" || msg.Event == "SetUnitBody" {
+			SetBody(ws, msg)
 		}
 
-		if msg.Event == "SetMotherShipWeapon" {
-			SetMotherShipWeapon(ws, msg)
+		if msg.Event == "SetMotherShipWeapon" || msg.Event == "SetUnitWeapon" {
+			SetWeapon(ws, msg)
 		}
 
-		if msg.Event == "SetMotherShipEquip" {
-			SetMotherShipEquip(ws, msg)
+		if msg.Event == "SetMotherShipEquip" || msg.Event == "SetUnitEquip" {
+			SetEquip(ws, msg)
 		}
 
-		if msg.Event == "SetMotherShipAmmo" {
-			SetMotherShipAmmo(ws, msg)
+		if msg.Event == "SetMotherShipAmmo" || msg.Event == "SetUnitAmmo" {
+			SetAmmo(ws, msg)
 		}
 
-		if msg.Event == "RemoveMotherShipBody" {
-			RemoveMotherShipBody(ws)
+		if msg.Event == "RemoveMotherShipBody" || msg.Event == "RemoveUnitBody" {
+			RemoveBody(ws, msg)
 		}
 
-		if msg.Event == "RemoveMotherShipAmmo" {
-			RemoveMotherShipAmmo(ws, msg)
+		if msg.Event == "RemoveMotherShipAmmo" || msg.Event == "RemoveUnitAmmo" {
+			RemoveAmmo(ws, msg)
 		}
 
-		if msg.Event == "RemoveMotherShipWeapon" {
-			RemoveMotherShipWeapon(ws, msg)
+		if msg.Event == "RemoveMotherShipWeapon" || msg.Event == "RemoveUnitWeapon" {
+			RemoveWeapon(ws, msg)
 		}
 
-		if msg.Event == "RemoveMotherShipEquip" {
-			RemoveMotherShipEquip(ws, msg)
-		}
-
-		if msg.Event == "SetUnitBody" {
-			SetUnitBody(ws, msg)
-		}
-
-		if msg.Event == "RemoveUnitBody" {
-			RemoveUnitBody(ws, msg)
-		}
-
-		if msg.Event == "SetUnitWeapon" {
-			SetUnitWeapon(ws, msg)
-		}
-
-		if msg.Event == "RemoveUnitWeapon" {
-			RemoveUnitWeapon(ws, msg)
-		}
-
-		if msg.Event == "SetUnitEquip" {
-			SetUnitEquip(ws, msg)
-		}
-
-		if msg.Event == "RemoveUnitEquip" {
-			RemoveUnitEquip(ws, msg)
-		}
-
-		if msg.Event == "SetUnitAmmo" {
-			SetUnitAmmo(ws, msg)
-		}
-
-		if msg.Event == "RemoveUnitAmmo" {
-			RemoveUnitAmmo(ws, msg)
+		if msg.Event == "RemoveMotherShipEquip" || msg.Event == "RemoveUnitEquip" {
+			RemoveEquip(ws, msg)
 		}
 
 		if msg.Event == "itemToStorage" || msg.Event == "itemsToStorage" { // из инвентаря в хранилище

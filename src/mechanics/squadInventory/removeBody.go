@@ -2,72 +2,85 @@ package squadInventory
 
 import (
 	"../../mechanics/db/squad/update"
+	"../factories/storages"
 	"../gameObjects/detail"
-	inv "../gameObjects/inventory"
+	"../gameObjects/unit"
 	"../player"
+	"errors"
 )
 
-func RemoveMSBody(user *player.Player) {
-	if user.GetSquad().MatherShip.Body != nil {
+func RemoveMSBody(user *player.Player) error {
+	if user.InBaseID > 0 {
+		if user.GetSquad().MatherShip.Body != nil {
 
-		BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Body, user.GetSquad().MatherShip.HP)
-		user.GetSquad().MatherShip.Body = nil
+			for i, unitSlot := range user.GetSquad().MatherShip.Units {
+				RemoveUnitBody(user, unitSlot.NumberSlot)
+				delete(user.GetSquad().MatherShip.Units, i)
+			}
 
-		for _, unitSlot := range user.GetSquad().MatherShip.Units {
-			RemoveUnitBody(user, unitSlot.NumberSlot)
-			delete(user.GetSquad().MatherShip.Units, unitSlot.NumberSlot)
+			BodyRemove(user, user.GetSquad().MatherShip)
+			user.GetSquad().MatherShip.Body = nil
 
 			user.GetSquad().MatherShip.HP = 0 // обнулям статы т.к. юез тела их не может быть
 			user.GetSquad().MatherShip.Power = 0
+
+			user.GetSquad().MatherShip.CalculateParams()
+			update.Squad(user.GetSquad(), true)
+			return nil
+		} else {
+			return errors.New("no item")
 		}
-
-		user.GetSquad().MatherShip.CalculateParams()
+	} else {
+		return errors.New("not in base")
 	}
-
-	go update.Squad(user.GetSquad(), true)
 }
 
-func RemoveUnitBody(user *player.Player, unitSlot int) {
-	if user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
-		if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
-			BodyRemove(user.GetSquad().Inventory, user.GetSquad().MatherShip.Units[unitSlot].Unit.Body, user.GetSquad().MatherShip.Units[unitSlot].Unit.HP)
-			user.GetSquad().MatherShip.Units[unitSlot].Unit = nil // если юниту убрали тело то юнит перестает существовать
-		}
-	}
+func RemoveUnitBody(user *player.Player, unitSlot int) error {
+	if user.InBaseID > 0 {
+		if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
+			if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
 
-	go update.Squad(user.GetSquad(), true)
+				BodyRemove(user, user.GetSquad().MatherShip.Units[unitSlot].Unit)
+				user.GetSquad().MatherShip.Units[unitSlot].Unit = nil // если юниту убрали тело то юнит перестает существовать
+
+				update.Squad(user.GetSquad(), true)
+				return nil
+			} else {
+				return errors.New("unit no body")
+			}
+		} else {
+			return errors.New("no unit")
+		}
+	} else {
+		return errors.New("not in base")
+	}
 }
 
-func BodyRemove(inventory inv.Inventory, Body *detail.Body, hp int) {
+func BodyRemove(user *player.Player, unit *unit.Unit) {
 
-	removeAllEquippingBody(inventory, Body.EquippingI)
-	removeAllEquippingBody(inventory, Body.EquippingII)
-	removeAllEquippingBody(inventory, Body.EquippingIII)
-	removeAllEquippingBody(inventory, Body.EquippingIV)
-	removeAllEquippingBody(inventory, Body.EquippingV)
+	removeAllEquippingBody(user, unit, 1, unit.Body.EquippingI)
+	removeAllEquippingBody(user, unit, 2, unit.Body.EquippingII)
+	removeAllEquippingBody(user, unit, 3, unit.Body.EquippingIII)
+	removeAllEquippingBody(user, unit, 4, unit.Body.EquippingIV)
+	removeAllEquippingBody(user, unit, 5, unit.Body.EquippingV)
 
-	for _, weaponSlot := range Body.Weapons {
-
+	for _, weaponSlot := range unit.Body.Weapons {
 		if weaponSlot.Weapon != nil {
-			inventory.AddItem(weaponSlot.Weapon, "weapon", weaponSlot.Weapon.ID, 1, weaponSlot.HP, weaponSlot.Weapon.Size, weaponSlot.Weapon.MaxHP)
+			RemoveWeapon(user, weaponSlot.Number, unit)
 		}
-
 		if weaponSlot.Ammo != nil {
-			inventory.AddItem(weaponSlot.Ammo, "ammo", weaponSlot.Ammo.ID, weaponSlot.AmmoQuantity, 1, weaponSlot.Ammo.Size, weaponSlot.Weapon.MaxHP)
+			RemoveAmmo(user, weaponSlot.Number, unit)
 		}
-
-		weaponSlot.Ammo = nil
-		weaponSlot.Weapon = nil
 	}
 
-	inventory.AddItem(Body, "body", Body.ID, 1, hp, Body.CapacitySize, Body.MaxHP) // кидает боди в инвентарь
+	storages.Storages.AddItem(user.GetID(), user.InBaseID, unit.Body, "body", unit.Body.ID, 1, unit.HP,
+		unit.Body.CapacitySize, unit.Body.MaxHP) // кидает боди в инвентарь
 }
 
-func removeAllEquippingBody(inventory inv.Inventory, equipping map[int]*detail.BodyEquipSlot) {
+func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			inventory.AddItem(equipSlot.Equip, "equip", equipSlot.Equip.ID, 1, equipSlot.HP, equipSlot.Equip.Size, equipSlot.Equip.MaxHP)
-			equipSlot.Equip = nil
+			RemoveEquip(user, equipSlot.Number, typeSlot, unit)
 		}
 	}
 }

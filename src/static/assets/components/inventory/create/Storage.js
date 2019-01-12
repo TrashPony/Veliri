@@ -12,7 +12,12 @@ function CreateStorage(){
     inventoryStorage.id = "inventoryStorage";
     inventoryStorage.style.height = "58px";
     inventoryStorage.style.margin = "0";
-
+    $(inventoryStorage).mousedown(function (event) {
+        // это костыль что бы работали полосы прокрутки, https://bugs.jqueryui.com/ticket/4441#no1
+        if (event.offsetX >= event.target.clientWidth || event.offsetY >= event.target.clientHeight) {
+            event.stopImmediatePropagation();
+        }
+    });
     $(inventoryStorage).selectable({
         filter: '.InventoryCell.active',
         start: function() {$('.ui-selected').removeClass('ui-selected')}

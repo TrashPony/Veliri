@@ -18,7 +18,8 @@ func ItemToInventory(user *player.Player, storageSlot int) error {
 			return errors.New("no find slot")
 		}
 
-		if user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+slot.Size {
+		// TODO если не одето тело но нельзя одеть тело)
+		if true { //user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+slot.Size
 			ok := user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
 			if ok {
 				storages.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, slot.Quantity)
