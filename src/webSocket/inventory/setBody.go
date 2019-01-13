@@ -2,7 +2,7 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
-	"../storage"
+	"errors"
 	"github.com/gorilla/websocket"
 )
 
@@ -12,17 +12,18 @@ func SetBody(ws *websocket.Conn, msg Message) {
 	var err error
 
 	if msg.Event == "SetMotherShipBody" {
+		// установить тело без отряда можно, и тогда создастся отряд
 		err = squadInventory.SetMSBody(user, msg.BodyID, msg.InventorySlot, msg.Source)
+	}
+
+	if user.GetSquad() == nil {
+		UpdateSquad(user, errors.New("no select squad"), ws, msg)
+		return
 	}
 
 	if msg.Event == "SetUnitBody" {
 		err = squadInventory.SetUnitBody(user, msg.BodyID, msg.InventorySlot, msg.UnitSlot, msg.Source)
 	}
 
-	if err != nil {
-		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
-	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-		storage.Updater(user.GetID())
-	}
+	UpdateSquad(user, err, ws, msg)
 }

@@ -93,7 +93,7 @@ func (client *Player) GetSquads() []*squad.Squad {
 
 func (client *Player) GetSquadsByID(ID int) *squad.Squad {
 	for _, userSquad := range client.squads {
-		if userSquad.ID == ID {
+		if userSquad != nil && userSquad.ID == ID {
 			return userSquad
 		}
 	}
@@ -101,12 +101,26 @@ func (client *Player) GetSquadsByID(ID int) *squad.Squad {
 	return nil
 }
 
+func (client *Player) RemoveSquadsByID(ID int) {
+	for i, userSquad := range client.squads {
+		if userSquad.ID == ID {
+			client.squads[i] = nil
+		}
+	}
+}
+
 func (client *Player) GetSquadsByBaseID(BaseID int) []*squad.Squad {
 	squads := make([]*squad.Squad, 0)
 
 	for _, userSquad := range client.squads {
-		if userSquad.BaseID == BaseID {
-			squads = append(squads, userSquad)
+		if client.GetSquad() != nil {
+			if userSquad != nil && userSquad.BaseID == BaseID && client.GetSquad().ID != userSquad.ID {
+				squads = append(squads, userSquad)
+			}
+		} else {
+			if userSquad != nil && userSquad.BaseID == BaseID {
+				squads = append(squads, userSquad)
+			}
 		}
 	}
 

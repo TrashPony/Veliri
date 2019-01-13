@@ -9,14 +9,6 @@ function ClickTip(event, removeFunction) {
     tip.style.left = event.clientX + "px";
     tip.id = "InventoryTipSelect";
 
-    let removeButton = document.createElement("input");
-    removeButton.type = "button";
-    removeButton.className = "lobbyButton inventoryTip";
-    removeButton.value = "Удалить";
-    removeButton.style.pointerEvents = "auto";
-
-    removeButton.onclick = removeFunction;
-
     let detailedButton = document.createElement("input");
     detailedButton.type = "button";
     detailedButton.className = "lobbyButton inventoryTip";
@@ -36,7 +28,17 @@ function ClickTip(event, removeFunction) {
     };
 
     tip.appendChild(detailedButton);
-    tip.appendChild(removeButton);
+
+    if (removeFunction) {
+        let removeButton = document.createElement("input");
+        removeButton.type = "button";
+        removeButton.className = "lobbyButton inventoryTip";
+        removeButton.value = "Удалить";
+        removeButton.style.pointerEvents = "auto";
+        removeButton.onclick = removeFunction;
+        tip.appendChild(removeButton);
+    }
+
     tip.appendChild(cancelButton);
     document.body.appendChild(tip);
 }

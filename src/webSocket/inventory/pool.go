@@ -3,6 +3,7 @@ package inventory
 import (
 	"../../mechanics/factories/players"
 	"../../mechanics/player"
+	"../storage"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"strconv"
@@ -52,6 +53,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "openInventory" {
 			Open(ws, msg)
+		}
+
+		if msg.Event == "RenameSquad" {
+			renameSquad(ws, msg)
 		}
 
 		if msg.Event == "changeSquad" {
@@ -110,4 +115,23 @@ func Reader(ws *websocket.Conn) {
 			Repair(ws, msg)
 		}
 	}
+}
+
+func UpdateSquad(user *player.Player, err error, ws *websocket.Conn, msg Message) {
+	mutex.Lock()
+
+	if err != nil {
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
+	} else {
+		if user.GetSquad() != nil {
+			err = ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
+				InventorySize: user.GetSquad().Inventory.GetSize(), InBase: user.InBaseID > 0})
+		} else {
+			err = ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
+				InventorySize: 0, InBase: user.InBaseID > 0})
+		}
+		storage.Updater(user.GetID())
+	}
+
+	mutex.Unlock()
 }

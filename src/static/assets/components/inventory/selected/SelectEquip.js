@@ -138,19 +138,7 @@ function EquipUnitMenu(event) {
 }
 
 function BodyMSMenu(event) {
-
-    let removeFunction = function () {
-
-        inventorySocket.send(JSON.stringify({
-            event: "RemoveMotherShipBody",
-            destination: "storage",
-        }));
-
-        DestroyInventoryClickEvent();
-        DestroyInventoryTip();
-    };
-
-    ClickTip(event, removeFunction);
+    ClickTip(event, null);
 }
 
 function BodyUnitMenu(event) {

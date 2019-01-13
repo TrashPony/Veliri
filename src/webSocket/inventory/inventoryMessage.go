@@ -28,6 +28,7 @@ type Message struct {
 
 	Source      string `json:"source"`
 	Destination string `json:"destination"`
+	Name        string `json:"name"`
 }
 
 type Response struct {

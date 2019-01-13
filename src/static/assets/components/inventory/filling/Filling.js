@@ -11,10 +11,16 @@ function FillingInventory(jsonData) {
 
     if (event === "openInventory" || event === "UpdateSquad") {
         let squad = JSON.parse(jsonData).squad;
+        fillSquadList(JSON.parse(jsonData).base_squads);
 
         if (squad) {
             InventoryTable(squad.inventory);
+
             document.getElementById("inventoryStorageInventory").style.opacity = "1";
+            $("#squadName span").last().text(squad.name).css('color', '#00FFFD');
+            $("#renameSquadButton").removeClass("noActive");
+            $("#deleteSquadButton").removeClass("noActive");
+
             if (squad.mather_ship != null && squad.mather_ship.body != null) {
 
                 size = squad.mather_ship.body.capacity_size;
@@ -36,6 +42,9 @@ function FillingInventory(jsonData) {
             $("#inventoryStorageInventory").css('opacity', '0.5');
             $("#inventoryStorageInventory > .InventoryCell").css('background-image', 'none').empty();
             $("#sizeInventoryInfo").empty();
+            $("#deleteSquadButton").addClass("noActive");
+            $("#renameSquadButton").addClass("noActive");
+            $("#squadName span").last().text(" отряд не выбран").css('color', '#00FFFD');
         }
 
         if (event === "openInventory") {
@@ -44,6 +53,24 @@ function FillingInventory(jsonData) {
                 CreateStorage();
                 ConnectMarket();
             }
+        }
+    }
+}
+
+function fillSquadList(squads) {
+    let squadList = $('#SquadsList');
+    squadList.empty();
+
+    for (let i in squads) {
+        if (squads.hasOwnProperty(i) && squads[i]) {
+            let squad = $('<div id = "squadListName" ' + squads[i].id + '><span class="squadListName">' + squads[i].name + '</span></div>');
+            squad.click(function () {
+                inventorySocket.send(JSON.stringify({
+                    event: "changeSquad",
+                    squad_id: squads[i].id,
+                }));
+            });
+            squadList.append(squad)
         }
     }
 }

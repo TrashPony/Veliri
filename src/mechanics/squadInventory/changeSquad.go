@@ -26,3 +26,11 @@ func ChangeSquad(user *player.Player, SquadID int) error {
 		return errors.New("no squad")
 	}
 }
+
+func RenameSquad(user *player.Player, newName string) error {
+	// TODO валидация данных
+	user.GetSquad().Name = newName
+	update.Squad(user.GetSquad(), true)
+
+	return nil
+}

@@ -2,30 +2,26 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
-	"../storage"
+	"errors"
 	"github.com/gorilla/websocket"
 )
 
 func setThorium(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
-
-	err := squadInventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot, msg.Source)
-	if err != nil {
-		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
-	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-		storage.Updater(user.GetID())
+	if user.GetSquad() == nil {
+		UpdateSquad(user, errors.New("no select squad"), ws, msg)
+		return
 	}
+	err := squadInventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot, msg.Source)
+	UpdateSquad(user, err, ws, msg)
 }
 
 func removeThoriumThorium(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
-
-	err := squadInventory.RemoveThorium(user, msg.ThoriumSlot, true)
-	if err != nil {
-		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
-	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-		storage.Updater(user.GetID())
+	if user.GetSquad() == nil {
+		UpdateSquad(user, errors.New("no select squad"), ws, msg)
+		return
 	}
+	err := squadInventory.RemoveThorium(user, msg.ThoriumSlot, true)
+	UpdateSquad(user, err, ws, msg)
 }

@@ -28,12 +28,21 @@ function CreateInventoryMenu(closeFunc, option) {
     inventoryBox.id = "inventoryBox";
 
     let userStatus = document.createElement("div");
-    userStatus.id = "userStatus";
+    userStatus.id = "SquadHead";
     inventoryBox.appendChild(userStatus);
 
     let motherShipParams = document.createElement("div");
     motherShipParams.id = "MotherShipParams";
     inventoryBox.appendChild(motherShipParams);
+
+    let headSquadList = document.createElement("span");
+    headSquadList.className = "InventoryHead";
+    headSquadList.innerText = "АНГАР";
+    motherShipParams.appendChild(headSquadList);
+
+    let squadsList = document.createElement("div");
+    squadsList.id = "SquadsList";
+    motherShipParams.appendChild(squadsList);
 
     let constructorBackGround = document.createElement("div");
     constructorBackGround.id = "ConstructorBackGround";
@@ -57,7 +66,7 @@ function CreateInventoryMenu(closeFunc, option) {
     CreateConstructorMenu();
     CreateInventory();
     CreateSquadMenu();
-    CreateUserStatus();
+    CreateSquadHead();
 
     let closeButton = document.createElement("div");
     closeButton.id = "inventoryCloseButton";

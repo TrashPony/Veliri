@@ -14,7 +14,7 @@ func RemoveMSBody(user *player.Player) error {
 	// при удаление мс происходит удаление отряда
 
 	if user.InBaseID > 0 {
-		if user.GetSquad().MatherShip.Body != nil {
+		if user.GetSquad() != nil && user.GetSquad().MatherShip.Body != nil {
 
 			for i, unitSlot := range user.GetSquad().MatherShip.Units {
 				RemoveUnitBody(user, unitSlot.NumberSlot, false)
@@ -28,8 +28,9 @@ func RemoveMSBody(user *player.Player) error {
 			}
 
 			remove.Squad(user.GetSquad())
+			user.RemoveSquadsByID(user.GetSquad().ID)
 			user.SetSquad(nil)
-			// TODO удаление отряда из squads игрока
+
 			return nil
 		} else {
 			return errors.New("no item")

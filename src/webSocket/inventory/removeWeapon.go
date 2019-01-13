@@ -2,12 +2,18 @@ package inventory
 
 import (
 	"../../mechanics/squadInventory"
-	"../storage"
+	"errors"
 	"github.com/gorilla/websocket"
 )
 
 func RemoveWeapon(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
+
+	if user.GetSquad() == nil {
+		UpdateSquad(user, errors.New("no select squad"), ws, msg)
+		return
+	}
+
 	var err error
 
 	if msg.Event == "RemoveMotherShipWeapon" {
@@ -18,10 +24,5 @@ func RemoveWeapon(ws *websocket.Conn, msg Message) {
 		err = squadInventory.RemoveUnitWeapon(user, msg.EquipSlot, msg.UnitSlot, msg.Destination)
 	}
 
-	if err != nil {
-		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
-	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
-		storage.Updater(user.GetID())
-	}
+	UpdateSquad(user, err, ws, msg)
 }
