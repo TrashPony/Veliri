@@ -1,7 +1,6 @@
 package squadInventory
 
 import (
-	"../db/squad"
 	"../db/squad/get"
 	"../player"
 	"log"
@@ -24,8 +23,9 @@ func GetInventory(client *player.Player) {
 			}
 		}
 	} else {
-		newSquad := squad.FirstSquad(client.GetID())
-		newSquad.Inventory = get.SquadInventory(newSquad.ID)
-		client.SetSquad(newSquad)
+		// TODO проверять есть ли на базе где игрок МС корпуса
+		//newSquad := squad.FirstSquad(client.GetID())
+		//newSquad.Inventory = get.SquadInventory(newSquad.ID)
+		//client.SetSquad(newSquad)
 	}
 }

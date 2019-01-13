@@ -1,6 +1,7 @@
 package squadInventory
 
 import (
+	"../../mechanics/db/squad/remove"
 	"../../mechanics/db/squad/update"
 	"../factories/storages"
 	"../gameObjects/detail"
@@ -10,22 +11,25 @@ import (
 )
 
 func RemoveMSBody(user *player.Player) error {
+	// при удаление мс происходит удаление отряда
+
 	if user.InBaseID > 0 {
 		if user.GetSquad().MatherShip.Body != nil {
 
 			for i, unitSlot := range user.GetSquad().MatherShip.Units {
-				RemoveUnitBody(user, unitSlot.NumberSlot)
+				RemoveUnitBody(user, unitSlot.NumberSlot, false)
 				delete(user.GetSquad().MatherShip.Units, i)
 			}
 
-			BodyRemove(user, user.GetSquad().MatherShip)
-			user.GetSquad().MatherShip.Body = nil
+			BodyRemove(user, user.GetSquad().MatherShip, false)
 
-			user.GetSquad().MatherShip.HP = 0 // обнулям статы т.к. юез тела их не может быть
-			user.GetSquad().MatherShip.Power = 0
+			for _, inventorySlot := range user.GetSquad().Inventory.Slots {
+				storages.Storages.AddSlot(user.GetID(), user.InBaseID, inventorySlot)
+			}
 
-			user.GetSquad().MatherShip.CalculateParams()
-			update.Squad(user.GetSquad(), true)
+			remove.Squad(user.GetSquad())
+			user.SetSquad(nil)
+			// TODO удаление отряда из squads игрока
 			return nil
 		} else {
 			return errors.New("no item")
@@ -35,15 +39,17 @@ func RemoveMSBody(user *player.Player) error {
 	}
 }
 
-func RemoveUnitBody(user *player.Player, unitSlot int) error {
+func RemoveUnitBody(user *player.Player, unitSlot int, updateDB bool) error {
 	if user.InBaseID > 0 {
 		if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
 			if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
 
-				BodyRemove(user, user.GetSquad().MatherShip.Units[unitSlot].Unit)
+				BodyRemove(user, user.GetSquad().MatherShip.Units[unitSlot].Unit, updateDB)
 				user.GetSquad().MatherShip.Units[unitSlot].Unit = nil // если юниту убрали тело то юнит перестает существовать
 
-				update.Squad(user.GetSquad(), true)
+				if updateDB {
+					update.Squad(user.GetSquad(), true)
+				}
 				return nil
 			} else {
 				return errors.New("unit no body")
@@ -56,26 +62,26 @@ func RemoveUnitBody(user *player.Player, unitSlot int) error {
 	}
 }
 
-func BodyRemove(user *player.Player, unit *unit.Unit) {
+func BodyRemove(user *player.Player, unit *unit.Unit, updateDB bool) {
 
-	removeAllEquippingBody(user, unit, 1, unit.Body.EquippingI)
-	removeAllEquippingBody(user, unit, 2, unit.Body.EquippingII)
-	removeAllEquippingBody(user, unit, 3, unit.Body.EquippingIII)
-	removeAllEquippingBody(user, unit, 4, unit.Body.EquippingIV)
-	removeAllEquippingBody(user, unit, 5, unit.Body.EquippingV)
+	removeAllEquippingBody(user, unit, 1, unit.Body.EquippingI, updateDB)
+	removeAllEquippingBody(user, unit, 2, unit.Body.EquippingII, updateDB)
+	removeAllEquippingBody(user, unit, 3, unit.Body.EquippingIII, updateDB)
+	removeAllEquippingBody(user, unit, 4, unit.Body.EquippingIV, updateDB)
+	removeAllEquippingBody(user, unit, 5, unit.Body.EquippingV, updateDB)
 
 	for _, weaponSlot := range unit.Body.Weapons {
 		if weaponSlot.Weapon != nil {
-			RemoveWeapon(user, weaponSlot.Number, unit, "storage")
+			RemoveWeapon(user, weaponSlot.Number, unit, "storage", updateDB)
 		}
 		if weaponSlot.Ammo != nil {
-			RemoveAmmo(user, weaponSlot.Number, unit, "storage")
+			RemoveAmmo(user, weaponSlot.Number, unit, "storage", updateDB)
 		}
 	}
 
 	for _, thoriumSlot := range unit.Body.ThoriumSlots {
 		if thoriumSlot.Count != 0 {
-			RemoveThorium(user, thoriumSlot.Number)
+			RemoveThorium(user, thoriumSlot.Number, updateDB)
 		}
 	}
 
@@ -83,10 +89,10 @@ func BodyRemove(user *player.Player, unit *unit.Unit) {
 		unit.Body.CapacitySize, unit.Body.MaxHP) // кидает боди в инвентарь
 }
 
-func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot) {
+func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot, updateDB bool) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage")
+			RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage", updateDB)
 		}
 	}
 }

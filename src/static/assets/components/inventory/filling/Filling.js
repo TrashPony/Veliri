@@ -11,22 +11,31 @@ function FillingInventory(jsonData) {
 
     if (event === "openInventory" || event === "UpdateSquad") {
         let squad = JSON.parse(jsonData).squad;
-        InventoryTable(squad.inventory);
 
-        if (squad.mather_ship != null && squad.mather_ship.body != null) {
+        if (squad) {
+            InventoryTable(squad.inventory);
+            document.getElementById("inventoryStorageInventory").style.opacity = "1";
+            if (squad.mather_ship != null && squad.mather_ship.body != null) {
 
-            size = squad.mather_ship.body.capacity_size;
-            inventoryMetaInfo(JSON.parse(jsonData));
+                size = squad.mather_ship.body.capacity_size;
+                inventoryMetaInfo(JSON.parse(jsonData));
 
-            if (document.getElementById("inventoryBox")) {
+                if (document.getElementById("inventoryBox")) {
+                    SquadTable(squad);
+                    ConstructorTable(squad.mather_ship);
+                    FillPowerPanel(squad.mather_ship.body, "powerPanel");
+                    FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
+                }
+            } else {
+                NoActiveCell();
                 SquadTable(squad);
-                ConstructorTable(squad.mather_ship);
-                FillPowerPanel(squad.mather_ship.body, "powerPanel");
-                FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
             }
         } else {
             NoActiveCell();
             SquadTable(squad);
+            $("#inventoryStorageInventory").css('opacity', '0.5');
+            $("#inventoryStorageInventory > .InventoryCell").css('background-image', 'none').empty();
+            $("#sizeInventoryInfo").empty();
         }
 
         if (event === "openInventory") {

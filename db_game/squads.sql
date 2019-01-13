@@ -8,7 +8,10 @@ CREATE TABLE squads (
   /* позиция отряда на глобальной карте */
   q       int,
   r       int,
-  id_map  INT REFERENCES maps (id)
+  id_map  INT REFERENCES maps (id),
+
+  /* если отряд неактивен то он храниться на конкретной базе */
+  id_base INT REFERENCES bases (id)
 );
 
 CREATE TABLE squad_thorium_slots (

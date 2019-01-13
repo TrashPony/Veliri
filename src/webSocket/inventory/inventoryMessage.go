@@ -7,6 +7,8 @@ import (
 type Message struct {
 	Event string `json:"event"`
 
+	SquadID int `json:"squad_id"`
+
 	BodyID   int `json:"id_body"`
 	WeaponID int `json:"weapon_id"`
 	EquipID  int `json:"equip_id"`
@@ -29,9 +31,10 @@ type Message struct {
 }
 
 type Response struct {
-	Event         string       `json:"event"`
-	Squad         *squad.Squad `json:"squad"`
-	InventorySize float32      `json:"inventory_size"`
-	InBase        bool         `json:"in_base"`
-	Error         string       `json:"error"`
+	Event         string         `json:"event"`
+	Squad         *squad.Squad   `json:"squad"`
+	BaseSquads    []*squad.Squad `json:"base_squads"`
+	InventorySize float32        `json:"inventory_size"`
+	InBase        bool           `json:"in_base"`
+	Error         string         `json:"error"`
 }

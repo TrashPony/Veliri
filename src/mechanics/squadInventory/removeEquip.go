@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit.Unit, dst string) error {
+func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit.Unit, dst string, updateDB bool) error {
 	if user.InBaseID > 0 {
 
 		equipping := SelectType(typeSlot, unit.Body)
@@ -26,7 +26,11 @@ func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit
 				if okAddItem {
 					slot.Equip = nil
 					user.GetSquad().MatherShip.CalculateParams()
-					go update.Squad(user.GetSquad(), true)
+
+					if updateDB {
+						go update.Squad(user.GetSquad(), true)
+					}
+
 					return nil
 				} else {
 					return errors.New("add item error")
@@ -45,7 +49,7 @@ func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit
 func RemoveUnitEquip(user *player.Player, numEquipSlot, typeSlot, numberUnitSlot int, dst string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return RemoveEquip(user, numEquipSlot, typeSlot, unitSlot.Unit, dst)
+		return RemoveEquip(user, numEquipSlot, typeSlot, unitSlot.Unit, dst, true)
 	} else {
 		return errors.New("no unit")
 	}

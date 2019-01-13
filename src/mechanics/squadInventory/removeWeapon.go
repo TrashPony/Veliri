@@ -8,13 +8,13 @@ import (
 	"errors"
 )
 
-func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string) error {
+func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string, updateDB bool) error {
 	if user.InBaseID > 0 {
 		slot, ok := unit.Body.Weapons[numEquipSlot]
 
 		if ok && slot != nil && slot.Weapon != nil {
 			if slot.Ammo != nil {
-				RemoveAmmo(user, numEquipSlot, unit, dst)
+				RemoveAmmo(user, numEquipSlot, unit, dst, updateDB)
 			}
 
 			if dst == "squadInventory" {
@@ -29,7 +29,11 @@ func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst st
 				if okAddItem {
 					slot.Weapon = nil
 					unit.CalculateParams()
-					go update.Squad(user.GetSquad(), true)
+
+					if updateDB {
+						go update.Squad(user.GetSquad(), true)
+					}
+
 					return nil
 				} else {
 					return errors.New("add item error")
@@ -48,7 +52,7 @@ func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst st
 func RemoveUnitWeapon(user *player.Player, numEquipSlot, numberUnitSlot int, dst string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return RemoveWeapon(user, numEquipSlot, unitSlot.Unit, dst)
+		return RemoveWeapon(user, numEquipSlot, unitSlot.Unit, dst, true)
 	} else {
 		return errors.New("no unit")
 	}

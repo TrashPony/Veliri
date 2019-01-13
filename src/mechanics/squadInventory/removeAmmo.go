@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string) error {
+func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string, updateDB bool) error {
 	if user.InBaseID == 0 {
 		// если мы на улице то можем скинуть аммо только в инвентарь
 		dst = "squadInventory"
@@ -28,7 +28,11 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 				slot.AmmoQuantity, 1, slot.Ammo.Size, 1)
 			if okAddItem {
 				slot.Ammo = nil
-				go update.Squad(user.GetSquad(), true)
+
+				if updateDB {
+					go update.Squad(user.GetSquad(), true)
+				}
+
 				return nil
 			} else {
 				return errors.New("add item error")
@@ -43,7 +47,7 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int, dst string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return RemoveAmmo(user, numEquipSlot, unitSlot.Unit, dst)
+		return RemoveAmmo(user, numEquipSlot, unitSlot.Unit, dst, true)
 	} else {
 		return errors.New("no unit")
 	}

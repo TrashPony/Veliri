@@ -6,18 +6,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func RemoveAmmo(ws *websocket.Conn, msg Message) {
+func changeSquad(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	var err error
-
-	if msg.Event == "RemoveMotherShipAmmo" {
-		err = squadInventory.RemoveAmmo(user, msg.EquipSlot, user.GetSquad().MatherShip, msg.Destination, true)
-	}
-
-	if msg.Event == "RemoveUnitAmmo" {
-		err = squadInventory.RemoveUnitAmmo(user, msg.EquipSlot, msg.UnitSlot, msg.Destination)
-	}
+	err := squadInventory.ChangeSquad(user, msg.SquadID)
 
 	if err != nil {
 		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})

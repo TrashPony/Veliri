@@ -68,7 +68,7 @@ func SetUnitEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typ
 func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *equip.Equip, inventorySlot, hp int, unit *unit.Unit, typeSlot int, source string) {
 
 	if equipSlot.Equip != nil {
-		RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage")
+		RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage", true)
 	}
 
 	equipSlot.HP = hp

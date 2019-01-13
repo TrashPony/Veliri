@@ -69,6 +69,34 @@ func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 	}
 }
 
+func (p *Pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
+	p.mx.Lock()
+	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
+
+	userStorages, userOk := p.storages[userId]
+	if userOk {
+		baseStorage, baseOk := userStorages[baseId]
+		if baseOk {
+
+			ok := baseStorage.AddItemFromSlot(slot)
+			if ok {
+				storage.Inventory(baseStorage, userId, baseId)
+			}
+
+			p.mx.Unlock()
+			return ok
+		} else {
+			p.storages[userId][baseId] = storage.UserStorage(userId, baseId)
+			p.mx.Unlock()
+			return p.AddSlot(userId, baseId, slot)
+		}
+	} else {
+		p.storages[userId] = make(map[int]*inv.Inventory)
+		p.mx.Unlock()
+		return p.AddSlot(userId, baseId, slot)
+	}
+}
+
 func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) (bool, int) {
 
 	p.mx.Lock()

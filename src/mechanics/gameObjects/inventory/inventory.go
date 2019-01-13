@@ -10,6 +10,7 @@ import (
 
 type Inventory struct {
 	Slots map[int]*Slot `json:"slots"`
+	size  int
 }
 
 type Slot struct {
@@ -21,6 +22,10 @@ type Slot struct {
 	HP         int         `json:"hp"`
 	MaxHP      int         `json:"max_hp"`
 	Size       float32     `json:"size"`
+}
+
+func (inv *Inventory) SetSlotsSize(size int) {
+	inv.size = size
 }
 
 func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
@@ -65,7 +70,7 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, qua
 		}
 	}
 
-	for i := 1; i <= 40; i++ { // ищем пустой слот
+	for i := 1; i <= inv.size; i++ { // ищем пустой слот
 		_, ok := inv.Slots[i]
 		if !ok {
 			newItem := Slot{Item: item, Type: itemType, ItemID: itemID, InsertToDB: true,

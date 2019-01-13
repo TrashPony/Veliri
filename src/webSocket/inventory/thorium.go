@@ -21,7 +21,7 @@ func setThorium(ws *websocket.Conn, msg Message) {
 func removeThoriumThorium(ws *websocket.Conn, msg Message) {
 	user := usersInventoryWs[ws]
 
-	err := squadInventory.RemoveThorium(user, msg.ThoriumSlot)
+	err := squadInventory.RemoveThorium(user, msg.ThoriumSlot, true)
 	if err != nil {
 		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
 	} else {

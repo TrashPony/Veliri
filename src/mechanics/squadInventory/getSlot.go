@@ -10,7 +10,9 @@ func getSlotBySource(user *player.Player, inventorySlot int, source string) *inv
 	var slot *inventory.Slot
 
 	if source == "squadInventory" {
-		slot = user.GetSquad().Inventory.Slots[inventorySlot]
+		if user.GetSquad() != nil {
+			slot = user.GetSquad().Inventory.Slots[inventorySlot]
+		}
 	}
 
 	if source == "storage" {
@@ -23,7 +25,9 @@ func getSlotBySource(user *player.Player, inventorySlot int, source string) *inv
 
 func RemoveSlotBySource(user *player.Player, inventorySlot int, source string, quantity int) int {
 	if source == "squadInventory" {
-		return user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(quantity)
+		if user.GetSquad() != nil {
+			return user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(quantity)
+		}
 	}
 
 	if source == "storage" {

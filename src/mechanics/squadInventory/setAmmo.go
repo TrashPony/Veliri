@@ -35,7 +35,7 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 			}
 
 			if ammoSlot.Ammo != nil {
-				RemoveAmmo(user, numEquipSlot, unit, "storage")
+				RemoveAmmo(user, numEquipSlot, unit, "storage", true)
 			}
 
 			ammoSlot.Ammo = newAmmo

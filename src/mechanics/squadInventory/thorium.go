@@ -15,11 +15,11 @@ func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source s
 
 	// торий это ресурс с ид 1 и типом "recycle"
 	if thoriumSlot != nil && slot != nil && slot.ItemID == 1 && slot.Item != nil && slot.Type == "recycle" {
+
 		needThorium := thoriumSlot.MaxCount - thoriumSlot.Count
 
 		if needThorium <= slot.Quantity {
 			thoriumSlot.Count += needThorium
-			slot.RemoveItemBySlot(needThorium)
 			RemoveSlotBySource(user, inventorySlot, source, needThorium)
 		} else {
 			thoriumSlot.Count += slot.Quantity
@@ -33,7 +33,7 @@ func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source s
 	}
 }
 
-func RemoveThorium(user *player.Player, numThoriumSlot int) error {
+func RemoveThorium(user *player.Player, numThoriumSlot int, updateDB bool) error {
 
 	thoriumSlot, _ := user.GetSquad().MatherShip.Body.ThoriumSlots[numThoriumSlot]
 
@@ -45,7 +45,11 @@ func RemoveThorium(user *player.Player, numThoriumSlot int) error {
 			item.Size/float32(thoriumSlot.Count), 1)
 
 		thoriumSlot.Count = 0
-		go update.Squad(user.GetSquad(), true)
+
+		if updateDB {
+			go update.Squad(user.GetSquad(), true)
+		}
+
 		return nil
 	} else {
 		return errors.New("no thorium")

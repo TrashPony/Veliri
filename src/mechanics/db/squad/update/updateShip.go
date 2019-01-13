@@ -10,21 +10,23 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 
 	ship := squad.MatherShip
 
+	var bodyID sql.NullInt64
+
+	if ship.Body == nil {
+		bodyID = sql.NullInt64{Int64: 0, Valid: false}
+	} else {
+		bodyID = sql.NullInt64{Int64: int64(ship.Body.ID), Valid: true}
+	}
+
 	if ship != nil && ship.ID != 0 {
 
-		var bodyID sql.NullInt64
-
 		if ship.Body == nil {
-			bodyID = sql.NullInt64{Int64: 0, Valid: false}
-
 			_, err := tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit=$2",
 				squad.ID, ship.ID)
 			if err != nil {
 				log.Fatal("delete all unit equip " + err.Error())
 			}
-
 		} else {
-			bodyID = sql.NullInt64{Int64: int64(ship.Body.ID), Valid: true}
 			UpdateBody(ship, squad.ID, tx)
 		}
 
@@ -79,7 +81,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
 				squad.ID,
-				ship.Body.ID,
+				bodyID,
 				ship.Q,
 				ship.R,
 				ship.Rotate,

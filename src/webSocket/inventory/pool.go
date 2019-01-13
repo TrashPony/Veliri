@@ -54,6 +54,10 @@ func Reader(ws *websocket.Conn) {
 			Open(ws, msg)
 		}
 
+		if msg.Event == "changeSquad" {
+			changeSquad(ws, msg)
+		}
+
 		if msg.Event == "SetMotherShipBody" || msg.Event == "SetUnitBody" {
 			SetBody(ws, msg)
 		}

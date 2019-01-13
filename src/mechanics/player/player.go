@@ -14,7 +14,7 @@ type Player struct {
 	experiencePoint int
 
 	squad  *squad.Squad   // отряд игрока
-	squads []*squad.Squad // пресеты отряда игрока, не реализовано
+	squads []*squad.Squad // не активные отряды которые ждут игрока на безах
 
 	unitStorage []*unit.Unit // юниты которы находяться не на поле игры в трюме мса
 
@@ -89,6 +89,28 @@ func (client *Player) SetSquad(squad *squad.Squad) {
 
 func (client *Player) GetSquads() []*squad.Squad {
 	return client.squads
+}
+
+func (client *Player) GetSquadsByID(ID int) *squad.Squad {
+	for _, userSquad := range client.squads {
+		if userSquad.ID == ID {
+			return userSquad
+		}
+	}
+
+	return nil
+}
+
+func (client *Player) GetSquadsByBaseID(BaseID int) []*squad.Squad {
+	squads := make([]*squad.Squad, 0)
+
+	for _, userSquad := range client.squads {
+		if userSquad.BaseID == BaseID {
+			squads = append(squads, userSquad)
+		}
+	}
+
+	return squads
 }
 
 func (client *Player) SetSquads(squads []*squad.Squad) {

@@ -75,6 +75,7 @@ func getTypeBox(gameBox *boxInMap.Box) {
 
 func getBoxStorage(gameBox *boxInMap.Box) {
 	gameBox.GetStorage().Slots = make(map[int]*inv.Slot)
+	gameBox.GetStorage().SetSlotsSize(999)
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+

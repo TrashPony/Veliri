@@ -1,7 +1,9 @@
 package squadInventory
 
 import (
+	new "../db/squad"
 	"../db/squad/update"
+	"../factories/bases"
 	"../factories/gameTypes"
 	"../gameObjects/unit"
 	"../player"
@@ -20,13 +22,21 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 				return errors.New("wrong type body")
 			}
 
+			_, newSquad := new.AddNewSquad(newBody.Name, user.GetID()) // делаем новый отряд
+
+			base, _ := bases.Bases.Get(user.InBaseID)
+			newSquad.MapID = base.MapID
+
+			if user.GetSquad() != nil {
+				user.GetSquad().Active = false         //  старый отряд делаем не активным
+				user.GetSquad().BaseID = user.InBaseID // ид базы где храниться отряд
+				update.Squad(user.GetSquad(), true)    // обновляем старый отряд в бд
+			}
+
+			GetInventory(user)
+
 			if user.GetSquad().MatherShip == nil {
 				user.GetSquad().MatherShip = &unit.Unit{}
-			} else {
-				if user.GetSquad().MatherShip.Body != nil {
-					BodyRemove(user, user.GetSquad().MatherShip)
-					user.GetSquad().MatherShip.Body = nil
-				}
 			}
 
 			user.GetSquad().MatherShip.HP = slot.HP                 // устанавливает колво хп как у тела
@@ -85,7 +95,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int,
 					if unitSlot.Unit == nil {
 						unitSlot.Unit = &unit.Unit{}
 					} else {
-						RemoveUnitBody(user, numberUnitSlot)
+						RemoveUnitBody(user, numberUnitSlot, true)
 						unitSlot.Unit = &unit.Unit{}
 					}
 

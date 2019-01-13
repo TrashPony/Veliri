@@ -16,13 +16,17 @@ func RemoveBody(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Event == "RemoveUnitBody" {
-		squadInventory.RemoveUnitBody(user, msg.UnitSlot)
+		squadInventory.RemoveUnitBody(user, msg.UnitSlot, true)
 	}
 
 	if err != nil {
 		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
 	} else {
-		ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		if user.GetSquad() != nil {
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: user.GetSquad().Inventory.GetSize()})
+		} else {
+			ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), InventorySize: 0})
+		}
 		storage.Updater(user.GetID())
 	}
 }

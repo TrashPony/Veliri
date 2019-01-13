@@ -15,7 +15,7 @@ import (
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, q, r, id_map FROM squads WHERE id_user=$1", userID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, q, r, id_map, id_base FROM squads WHERE id_user=$1", userID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +26,8 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 	for rows.Next() {
 		var userSquad squad.Squad
 
-		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.Q, &userSquad.R, &userSquad.MapID)
+		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.Q,
+			&userSquad.R, &userSquad.MapID, &userSquad.BaseID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -123,12 +124,12 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 }
 
 func SquadThorium(ship *unit.Unit, squadID int) {
-	rows, err := dbConnect.GetDBConnect().Query("" +
-		"SELECT " +
-		"slot, " +
-		"thorium " +
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"SELECT "+
+		"slot, "+
+		"thorium "+
 		""+
-		"FROM squad_thorium_slots " +
+		"FROM squad_thorium_slots "+
 		"WHERE id_squad = $1", squadID)
 	if err != nil {
 		log.Fatal("get thorium squad" + err.Error())
@@ -216,13 +217,13 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 
 func SquadInventory(squadID int) (inventory inv.Inventory) {
 
-	rows, err := dbConnect.GetDBConnect().Query("" +
-		"SELECT " +
-		"slot, " +
-		"item_type, " +
-		"item_id, " +
-		"quantity, " +
-		"hp " +
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"SELECT "+
+		"slot, "+
+		"item_type, "+
+		"item_id, "+
+		"quantity, "+
+		"hp "+
 		""+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)
@@ -232,6 +233,7 @@ func SquadInventory(squadID int) (inventory inv.Inventory) {
 	defer rows.Close()
 
 	inventory.Slots = make(map[int]*inv.Slot)
+	inventory.SetSlotsSize(40)
 	inventory.FillInventory(rows)
 
 	return
