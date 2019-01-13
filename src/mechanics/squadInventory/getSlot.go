@@ -20,3 +20,16 @@ func getSlotBySource(user *player.Player, inventorySlot int, source string) *inv
 
 	return slot
 }
+
+func RemoveSlotBySource(user *player.Player, inventorySlot int, source string, quantity int) int {
+	if source == "squadInventory" {
+		return user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(quantity)
+	}
+
+	if source == "storage" {
+		_, countRemove := storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, quantity)
+		return countRemove
+	}
+
+	return 0
+}

@@ -3,7 +3,6 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
-	"../factories/storages"
 	"../gameObjects/unit"
 	"../player"
 	"errors"
@@ -35,7 +34,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 			user.GetSquad().MatherShip.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 			user.GetSquad().MatherShip.Body = newBody
 
-			storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, 1)
+			RemoveSlotBySource(user, inventorySlot, source, 1)
 
 			user.GetSquad().MatherShip.Units = make(map[int]*unit.Slot) // заполняем ячейки юнитов
 
@@ -94,7 +93,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int,
 					unitSlot.Unit.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 					unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
-					storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, 1)
+					RemoveSlotBySource(user, inventorySlot, source, 1)
 					unitSlot.Unit.Body = newBody
 
 					unitSlot.Unit.CalculateParams()

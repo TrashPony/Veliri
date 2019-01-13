@@ -3,7 +3,6 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
-	"../factories/storages"
 	"../gameObjects/detail"
 	"../gameObjects/unit"
 	"../player"
@@ -32,17 +31,17 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int, u
 					(weaponSlot.Weapon == nil && body.MaxPower-body.GetUsePower() >= newWeapon.Power) {
 
 					if newWeapon.StandardSize == 1 && body.StandardSizeSmall {
-						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
 						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 2 && body.StandardSizeMedium {
-						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
 						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 3 && body.StandardSizeBig {
-						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit)
+						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
 						unit.CalculateParams()
 						return nil
 					}
@@ -71,7 +70,7 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 	}
 }
 
-func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot, hp int, unit *unit.Unit) {
+func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot, hp int, unit *unit.Unit, source string) {
 	if weaponSlot.Weapon != nil {
 		RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 	}
@@ -83,7 +82,7 @@ func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд
 
 	weaponSlot.HP = hp
-	storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, 1)
+	RemoveSlotBySource(user, inventorySlot, source, 1)
 
 	weaponSlot.Weapon = newWeapon
 	weaponSlot.InsertToDB = true // говорим что бы обновилась в бд инфа о вепоне

@@ -3,7 +3,6 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
-	"../factories/storages"
 	"../gameObjects/unit"
 	"../player"
 	"errors"
@@ -40,9 +39,7 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 			}
 
 			ammoSlot.Ammo = newAmmo
-
-			_, countRemove := storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, ammoSlot.Weapon.AmmoCapacity)
-			ammoSlot.AmmoQuantity = countRemove
+			ammoSlot.AmmoQuantity = RemoveSlotBySource(user, inventorySlot, source, ammoSlot.Weapon.AmmoCapacity)
 
 			go update.Squad(user.GetSquad(), true)
 

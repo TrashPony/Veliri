@@ -3,7 +3,6 @@ package squadInventory
 import (
 	"../db/squad/update"
 	"../factories/gameTypes"
-	"../factories/storages"
 	"../player"
 	"errors"
 )
@@ -21,9 +20,10 @@ func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source s
 		if needThorium <= slot.Quantity {
 			thoriumSlot.Count += needThorium
 			slot.RemoveItemBySlot(needThorium)
+			RemoveSlotBySource(user, inventorySlot, source, needThorium)
 		} else {
 			thoriumSlot.Count += slot.Quantity
-			storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, slot.Quantity)
+			RemoveSlotBySource(user, inventorySlot, source, slot.Quantity)
 		}
 
 		go update.Squad(user.GetSquad(), true)

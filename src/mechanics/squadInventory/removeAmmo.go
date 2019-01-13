@@ -37,7 +37,6 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 	} else {
 		return errors.New("no item")
 	}
-
 	return errors.New("unknown error")
 }
 
