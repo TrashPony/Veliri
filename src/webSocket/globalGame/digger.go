@@ -87,7 +87,16 @@ func useDigger(ws *websocket.Conn, msg Message) {
 				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
 				if ok && diggerCoordinate.Move {
 					// todo проверить что координата свободна
-					// todo провести раскопки
+					anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.Q, msg.R)
+					if anomaly != nil {
+						// TODO хранить аномалии как обьекты на бекенде
+						box, res, AnomalyText := anomaly.GetLoot()
+						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res, AnomalyText: AnomalyText}
+					} else {
+						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, AnomalyText: nil}
+					}
 				}
 			}
 		}

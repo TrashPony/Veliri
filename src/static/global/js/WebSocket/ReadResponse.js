@@ -111,6 +111,10 @@ function ReadResponse(jsonData) {
         SelectDigger(jsonData.coordinates, jsonData.slot, jsonData.type_slot);
     }
 
+    if (jsonData.event === "useDigger") {
+        UseDigger(jsonData);
+    }
+
     if (jsonData.event === "IntoToBase") {
         location.href = "http://" + window.location.host + "/lobby";
     }

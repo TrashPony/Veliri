@@ -1,13 +1,19 @@
 .notificationWrapper {
     position: absolute;
     min-height: 50px;
-    min-width: 300px;
+    width: 300px;
     top: 20px;
     left: calc(50% - 150px);
     background-size: 10px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     border-radius: 10px;
     padding: 5px;
+    color: rgba(255, 237, 0, 0.78);
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.notificationWrapper {
+
 }
 
 .notificationBlock {
@@ -67,6 +73,10 @@
     margin: 0;
 }
 
+.notificationBlock h3 {
+    color: #ff7800;
+}
+
 #Notifications {
     position: absolute;
     min-height: 0;
@@ -93,4 +103,21 @@
     transition: 1s;
     color: #ff7800;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.Ask {
+    height: 20px;
+    margin-top: 6px;
+    background: rgba(23, 114, 166, 0.9);
+    color: rgb(173, 177, 20);
+    transition: 0.2s;
+    font-size: 15px;
+    line-height: 20px;
+    box-shadow: inset 0 0 5px black;
+    border-radius: 5px;
+}
+
+.Ask:hover {
+    background: rgba(33, 176, 255, 0.6);
+    color: rgba(249, 255, 0, 1);
 }

@@ -116,5 +116,7 @@ function preload() {
     game.load.image('thorium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore.png');
     game.load.image('titanium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore.png');
 
+    game.load.image('infoAnomaly', 'http://' + window.location.host + '/assets/info.png');
+
     autoPreload();
 }

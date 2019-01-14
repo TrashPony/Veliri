@@ -1,6 +1,7 @@
 package globalGame
 
 import (
+	"../../mechanics/factories/maps"
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/boxInMap"
@@ -8,6 +9,7 @@ import (
 	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
+	"../../mechanics/gameObjects/resource"
 	"../../mechanics/gameObjects/squad"
 	"../../mechanics/globalGame"
 	"../../mechanics/player"
@@ -61,7 +63,9 @@ type Message struct {
 	Coordinates   []*coordinate.Coordinate    `json:"coordinates"`
 	Radius        int                         `json:"radius"`
 	Anomalies     []globalGame.VisibleAnomaly `json:"anomalies"`
+	AnomalyText   *maps.AnomalyText           `json:"anomaly_text"`
 	BoxPassword   int                         `json:"box_password"`
+	Reservoir     *resource.Map               `json:"reservoir"`
 }
 
 type hostileMS struct {

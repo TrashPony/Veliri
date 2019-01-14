@@ -1,12 +1,12 @@
 package maps
 
 import (
+	"../../factories/boxes"
+	"../../factories/gameTypes"
 	"../../gameObjects/boxInMap"
 	"../../gameObjects/map"
 	"../../gameObjects/resource"
 	"math/rand"
-	"../gameTypes"
-	"../boxes"
 )
 
 type Anomaly struct {
@@ -19,7 +19,21 @@ type Anomaly struct {
 	/* награда */
 	box      *boxInMap.Box
 	resource *resource.Map
-	text     string
+	text     *AnomalyText
+}
+
+type AnomalyText struct {
+	Pages []Page // все страницы диалога
+}
+
+type Page struct {
+	Text string // текст страницы
+	Asc  []Ask  // варианты отетов
+}
+
+type Ask struct {
+	Text   string // текст ответа
+	ToPage int    // страница на которую ведет ответ
 }
 
 func (a *Anomaly) GetQ() int {
@@ -34,7 +48,7 @@ func (a *Anomaly) GetPower() int {
 	return a.power
 }
 
-func (a *Anomaly) GetLoot() (*boxInMap.Box, *resource.Map, string) {
+func (a *Anomaly) GetLoot() (*boxInMap.Box, *resource.Map, *AnomalyText) {
 	return a.box, a.resource, a.text
 }
 
@@ -75,12 +89,24 @@ func anomalyGenerator(mp *_map.Map, m *MapStore) {
 
 			// текст
 			if typeAnomaly == 3 {
-				anomaly.text = "Вы находите старый ржавый не на что не похожий информационный пакет, вы попытаись " +
-					"подколючится к нему и считать информацию но сходу не удалось расшифровать ее, спустя не" +
+				/// todo невероятный говнокод но ради фана
+
+				pages := make([]Page, 0)
+
+				ask1 := make([]Ask, 0)
+				ask1 = append(ask1, Ask{Text: "Прочитать запись", ToPage: 2})
+				ask1 = append(ask1, Ask{Text: "О-о-о нет я сваливаю", ToPage: 0})
+				pages = append(pages, Page{Text: "Вы находите старый ржавый не на что не похожий информационный пакет, вы попытаись " +
+					"подколючится к нему и считать информацию но сходу не удалось расшифровать запись, спустя не" +
 					" продолжительное время для человека и целую вечность для машины вы смогли расшифровать информацию " +
-					"и удивились тому насколько глубока мысль тех кто оставил этот пакет здесь когда то очень давно.\n" +
-					"Информация в пакете гласила: \n" +
-					"\"Ты пидор\""
+					"и удивились тому насколько глубока мысль тех кто оставил этот пакет здесь когда то очень давно. <br><br> " +
+					"Информация в пакете гласила:", Asc: ask1})
+
+				ask2 := make([]Ask, 0)
+				ask2 = append(ask2, Ask{Text: "Понятно", ToPage: 0}) // если 0 то close
+				pages = append(pages, Page{Text: "\"Ты пидор\"", Asc: ask2})
+
+				anomaly.text = &AnomalyText{Pages: pages}
 			}
 
 			m.anomaly[mp.Id] = append(m.anomaly[mp.Id], anomaly)
@@ -91,4 +117,14 @@ func anomalyGenerator(mp *_map.Map, m *MapStore) {
 
 func (m *MapStore) GetAllMapAnomaly(mapID int) []*Anomaly {
 	return Maps.anomaly[mapID]
+}
+
+func (m *MapStore) GetMapAnomaly(mapID, q, r int) *Anomaly {
+	for _, anomaly := range Maps.anomaly[mapID] {
+		if anomaly.q == q && anomaly.r == r {
+			return anomaly
+		}
+	}
+
+	return nil
 }
