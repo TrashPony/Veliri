@@ -83,7 +83,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 		}
 
 		for _, resultCoordinate := range result {
-			if msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
+			if resultCoordinate != nil && msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
 				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
 				if ok && diggerCoordinate.Move {
 					// todo проверить что координата свободна

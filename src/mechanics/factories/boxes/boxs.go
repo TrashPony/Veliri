@@ -4,6 +4,10 @@ import (
 	dbBox "../../db/box"
 	"../../gameObjects/boxInMap"
 	"sync"
+	"../../gameObjects/box"
+	"math/rand"
+	"time"
+	"../../gameObjects/inventory"
 )
 
 type store struct {
@@ -71,4 +75,26 @@ func (b *store) InsertNewBox(newBox *boxInMap.Box) *boxInMap.Box {
 	dbBox.Insert(newBox)
 	b.boxes[newBox.ID] = newBox
 	return newBox
+}
+
+func (b *store) GetAnomalyRandomBox(typeAnomaly int, boxType *box.Box) *boxInMap.Box {
+
+	newBox := boxInMap.Box{Rotate: rand.Intn(360), TypeID: boxType.TypeID, DestroyTime: time.Now()}
+	newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
+
+	if boxType.Protect {
+		newBox.SetPassword(rand.Intn(9999))
+	}
+
+	// коробка с ресурсами 2+лвл в количестве 1-2 штук типов
+	if typeAnomaly == 0 {
+		// TODO
+	}
+
+	// коробка с чертежом
+	if typeAnomaly == 1 {
+		// TODO
+	}
+
+	return b.InsertNewBox(&newBox)
 }

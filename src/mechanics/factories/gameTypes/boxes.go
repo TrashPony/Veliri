@@ -3,6 +3,7 @@ package gameTypes
 import (
 	"../../db/get"
 	"../../gameObjects/box"
+	"math/rand"
 )
 
 type boxesStore struct {
@@ -23,4 +24,17 @@ func (b *boxesStore) GetByID(id int) (*box.Box, bool) {
 
 func (b *boxesStore) GetAllType() map[int]box.Box {
 	return b.boxes
+}
+
+func (b *boxesStore) GetRandomBox() *box.Box {
+	allType := make([]box.Box, 0)
+
+	for _, typeRes := range b.boxes {
+		allType = append(allType, typeRes)
+	}
+
+	randomIndex := rand.Intn(len(allType))
+	newBox, _ := b.GetByID(allType[randomIndex].TypeID)
+
+	return newBox
 }

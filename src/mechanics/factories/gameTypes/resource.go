@@ -13,7 +13,11 @@ type resourceStore struct {
 	mapReservoir map[int]resource.Map
 }
 
-var Resource = NewResourceStore()
+var Resource *resourceStore
+
+func init() {
+	Resource = NewResourceStore()
+}
 
 func NewResourceStore() *resourceStore {
 	return &resourceStore{
@@ -46,8 +50,8 @@ func (r *resourceStore) GetMapReservoirByID(id int) (*resource.Map, bool) {
 	newReservoir, ok := r.mapReservoir[id]
 
 	baseRes, _ := r.GetBaseByID(newReservoir.ResourceID)
-	newReservoir.Resource = baseRes
 
+	newReservoir.Resource = baseRes
 	newReservoir.Count = rand.Intn(newReservoir.MaxCount-newReservoir.MinCount) + newReservoir.MinCount
 
 	return &newReservoir, ok
@@ -55,4 +59,17 @@ func (r *resourceStore) GetMapReservoirByID(id int) (*resource.Map, bool) {
 
 func (r *resourceStore) GetAllTypeMapResource() map[int]resource.Map {
 	return r.mapReservoir
+}
+
+func (r *resourceStore) GetRandomMapResource() *resource.Map {
+	allTypeResource := make([]resource.Map, 0)
+
+	for _, typeRes := range r.mapReservoir {
+		allTypeResource = append(allTypeResource, typeRes)
+	}
+
+	randomIndex := rand.Intn(len(allTypeResource))
+	newResourceMap, _ := r.GetMapReservoirByID(allTypeResource[randomIndex].TypeID)
+
+	return newResourceMap
 }
