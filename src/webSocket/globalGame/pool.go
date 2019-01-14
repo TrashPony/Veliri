@@ -200,6 +200,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SelectDigger" {
 			selectDigger(ws, msg)
 		}
+
+		if msg.Event == "useDigger" {
+			useDigger(ws, msg)
+		}
 	}
 }
 

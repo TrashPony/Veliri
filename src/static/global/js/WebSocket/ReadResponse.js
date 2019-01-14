@@ -108,7 +108,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "SelectDigger") {
-        console.log(jsonData.coordinates);
+        SelectDigger(jsonData.coordinates, jsonData.slot, jsonData.type_slot);
     }
 
     if (jsonData.event === "IntoToBase") {
