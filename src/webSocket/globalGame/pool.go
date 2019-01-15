@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/maps"
 	"../../mechanics/factories/players"
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/boxInMap"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/dynamicMapObject"
 	"../../mechanics/gameObjects/detail"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
@@ -24,48 +24,48 @@ var globalPipe = make(chan Message)
 type Message struct {
 	idSender      int
 	idUserSend    int
-	Event         string                      `json:"event"`
-	Map           *_map.Map                   `json:"map"`
-	Error         string                      `json:"error"`
-	Squad         *squad.Squad                `json:"squad"`
-	User          *player.Player              `json:"user"`
-	Bases         map[int]*base.Base          `json:"bases"`
-	X             int                         `json:"x"`
-	Y             int                         `json:"y"`
-	Q             int                         `json:"q"`
-	R             int                         `json:"r"`
-	ToX           float64                     `json:"to_x"`
-	ToY           float64                     `json:"to_y"`
-	PathUnit      globalGame.PathUnit         `json:"path_unit"`
-	Path          []globalGame.PathUnit       `json:"path"`
-	BaseID        int                         `json:"base_id"`
-	OtherUser     *hostileMS                  `json:"other_user"`
-	OtherUsers    []*hostileMS                `json:"other_users"`
-	ThrowItems    []inventory.Slot            `json:"throw_items"`
-	Boxes         []*boxInMap.Box             `json:"boxes"`
-	Box           *boxInMap.Box               `json:"box"`
-	BoxID         int                         `json:"box_id"`
-	ToBoxID       int                         `json:"to_box_id"`
-	TypeSlot      int                         `json:"type_slot"`
-	Slot          int                         `json:"slot"`
-	Slots         []int                       `json:"slots"`
-	Size          float32                     `json:"size"`
-	Inventory     *inventory.Inventory        `json:"inventory"`
-	InventorySlot int                         `json:"inventory_slot"`
-	TransportID   int                         `json:"transport_id"`
-	ThoriumSlots  map[int]*detail.ThoriumSlot `json:"thorium_slots"`
-	ThoriumSlot   int                         `json:"thorium_slot"`
-	Afterburner   bool                        `json:"afterburner"`
-	Credits       int                         `json:"credits"`
-	Experience    int                         `json:"experience"`
-	Seconds       int                         `json:"seconds"`
-	Count         int                         `json:"count"`
-	Coordinates   []*coordinate.Coordinate    `json:"coordinates"`
-	Radius        int                         `json:"radius"`
-	Anomalies     []globalGame.VisibleAnomaly `json:"anomalies"`
-	AnomalyText   *maps.AnomalyText           `json:"anomaly_text"`
-	BoxPassword   int                         `json:"box_password"`
-	Reservoir     *resource.Map               `json:"reservoir"`
+	Event         string                          `json:"event"`
+	Map           *_map.Map                       `json:"map"`
+	Error         string                          `json:"error"`
+	Squad         *squad.Squad                    `json:"squad"`
+	User          *player.Player                  `json:"user"`
+	Bases         map[int]*base.Base              `json:"bases"`
+	X             int                             `json:"x"`
+	Y             int                             `json:"y"`
+	Q             int                             `json:"q"`
+	R             int                             `json:"r"`
+	ToX           float64                         `json:"to_x"`
+	ToY           float64                         `json:"to_y"`
+	PathUnit      globalGame.PathUnit             `json:"path_unit"`
+	Path          []globalGame.PathUnit           `json:"path"`
+	BaseID        int                             `json:"base_id"`
+	OtherUser     *hostileMS                      `json:"other_user"`
+	OtherUsers    []*hostileMS                    `json:"other_users"`
+	ThrowItems    []inventory.Slot                `json:"throw_items"`
+	Boxes         []*boxInMap.Box                 `json:"boxes"`
+	Box           *boxInMap.Box                   `json:"box"`
+	BoxID         int                             `json:"box_id"`
+	ToBoxID       int                             `json:"to_box_id"`
+	TypeSlot      int                             `json:"type_slot"`
+	Slot          int                             `json:"slot"`
+	Slots         []int                           `json:"slots"`
+	Size          float32                         `json:"size"`
+	Inventory     *inventory.Inventory            `json:"inventory"`
+	InventorySlot int                             `json:"inventory_slot"`
+	TransportID   int                             `json:"transport_id"`
+	ThoriumSlots  map[int]*detail.ThoriumSlot     `json:"thorium_slots"`
+	ThoriumSlot   int                             `json:"thorium_slot"`
+	Afterburner   bool                            `json:"afterburner"`
+	Credits       int                             `json:"credits"`
+	Experience    int                             `json:"experience"`
+	Seconds       int                             `json:"seconds"`
+	Count         int                             `json:"count"`
+	Coordinates   []*coordinate.Coordinate        `json:"coordinates"`
+	Radius        int                             `json:"radius"`
+	Anomalies     []globalGame.VisibleAnomaly     `json:"anomalies"`
+	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
+	BoxPassword   int                             `json:"box_password"`
+	Reservoir     *resource.Map                   `json:"reservoir"`
 }
 
 type hostileMS struct {

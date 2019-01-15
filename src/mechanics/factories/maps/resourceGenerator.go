@@ -39,12 +39,12 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 
 			mp.OneLayerMap[coordinate.Q][coordinate.R].Move = false // т.к. на координате ресурс то координата не проходима
 
-			addResourceInMap(mp, newRes)
+			AddResourceInMap(mp, newRes)
 		}
 	}
 }
 
-func addResourceInMap(mp *_map.Map, reservoir *resource.Map) {
+func AddResourceInMap(mp *_map.Map, reservoir *resource.Map) {
 	if mp.Reservoir[reservoir.Q] != nil {
 		mp.Reservoir[reservoir.Q][reservoir.R] = reservoir
 	} else {

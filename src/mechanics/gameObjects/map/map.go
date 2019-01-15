@@ -14,10 +14,10 @@ type Map struct {
 	DefaultLevel  int
 	Specification string
 	OneLayerMap   map[int]map[int]*coordinate.Coordinate
-	Reservoir     map[int]map[int]*resource.Map `json:"reservoir"`
+	Reservoir     map[int]map[int]*resource.Map   `json:"reservoir"`
 	Respawns      int
-	Global        bool `json:"global"`
-	InGame        bool `json:"in_game"`
+	Global        bool                            `json:"global"`
+	InGame        bool                            `json:"in_game"`
 }
 
 func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {

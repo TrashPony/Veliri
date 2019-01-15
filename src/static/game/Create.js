@@ -75,7 +75,7 @@ function create(game) {
         }
 
         if (game.map.reservoir){
-            CreateReservoir()
+            CreateReservoirs()
         }
 
         if (game.typeService === "battle") {

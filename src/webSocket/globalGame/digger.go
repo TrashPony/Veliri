@@ -2,9 +2,13 @@ package globalGame
 
 import (
 	"../../mechanics/factories/maps"
+	"../../mechanics/factories/boxes"
 	"../../mechanics/gameObjects/coordinate"
+	"../../mechanics/gameObjects/dynamicMapObject"
 	"../../mechanics/globalGame"
 	"github.com/gorilla/websocket"
+	"math/rand"
+	"time"
 )
 
 func selectDigger(ws *websocket.Conn, msg Message) {
@@ -86,16 +90,59 @@ func useDigger(ws *websocket.Conn, msg Message) {
 			if resultCoordinate != nil && msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
 				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
 				if ok && diggerCoordinate.Move {
-					// todo проверить что координата свободна
+					// todo проверить что координата свободна от игрока
 					anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.Q, msg.R)
 					if anomaly != nil {
-						// TODO хранить аномалии как обьекты на бекенде
+						maps.Maps.RemoveMapAnomaly(mp.Id, msg.Q, msg.R)
+
 						box, res, AnomalyText := anomaly.GetLoot()
+						mpCoordinate, _ := mp.GetCoordinate(msg.Q, msg.R)
+
+						if box != nil {
+
+							box.MapID = mp.Id
+							box.Q = anomaly.GetQ()
+							box.R = anomaly.GetR()
+							box.Rotate = rand.Intn(360)
+
+							boxes.Boxes.InsertNewBox(box)
+						}
+
+						if res != nil {
+							if mpCoordinate != nil {
+
+								res.Q = anomaly.GetQ()
+								res.R = anomaly.GetR()
+								res.Rotate = rand.Intn(360)
+								res.MapID = mp.Id
+								mpCoordinate.Move = false
+
+								maps.AddResourceInMap(mp, res)
+							}
+						}
+
+						var dynamicObject dynamicMapObject.DynamicObject
+
+						if AnomalyText != nil {
+							if mpCoordinate != nil {
+
+								dynamicObject = dynamicMapObject.DynamicObject{
+									TextureObject: "infoAnomaly",
+									Dialog:        AnomalyText,
+									Destroyed:     true,
+									DestroyTime:   time.Now(),
+									// TODO запуст горутины на уничтожение
+								}
+
+								mpCoordinate.DynamicObject = &dynamicObject
+							}
+						}
+
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res, AnomalyText: AnomalyText}
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res, DynamicObject: &dynamicObject}
 					} else {
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, AnomalyText: nil}
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: nil}
 					}
 				}
 			}

@@ -23,6 +23,11 @@ func GetVisibleAnomaly(user *player.Player, slot *detail.BodyEquipSlot) (visible
 	visibleAnomalies = make([]VisibleAnomaly, 0)
 
 	for _, anomaly := range anomalies {
+
+		if anomaly == nil {
+			continue
+		}
+
 		x, y := GetXYCenterHex(anomaly.GetQ(), anomaly.GetR())
 
 		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)

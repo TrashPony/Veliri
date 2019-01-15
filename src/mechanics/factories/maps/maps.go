@@ -3,19 +3,20 @@ package maps
 import (
 	"../../db/get"
 	"../../gameObjects/coordinate"
+	"../../gameObjects/anomaly"
 	"../../gameObjects/map"
 	"../../gameObjects/resource"
 )
 
 type MapStore struct {
-	maps    map[int]_map.Map
-	anomaly map[int][]*Anomaly
+	maps           map[int]_map.Map
+	anomaly        map[int][]*anomaly.Anomaly
 }
 
 var Maps = NewMapStore()
 
 func NewMapStore() *MapStore {
-	m := &MapStore{maps: get.Maps(), anomaly: make(map[int][]*Anomaly)}
+	m := &MapStore{maps: get.Maps(), anomaly: make(map[int][]*anomaly.Anomaly)}
 
 	for id, mp := range m.maps {
 		respawns := 0
