@@ -77,6 +77,11 @@
     color: #ff7800;
 }
 
+.notificationBlock p {
+    text-align: justify;
+    padding: 0 10px;
+}
+
 #Notifications {
     position: absolute;
     min-height: 0;

@@ -70,7 +70,6 @@ function StartMining(jsonData) {
                     }, 1000, Phaser.Easing.Linear.None, true, 0
                 ).loop(true);
                 tween.yoyo(true, 0);
-
             }
         }
     }

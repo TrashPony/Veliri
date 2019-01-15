@@ -47,6 +47,10 @@ function preload() {
     game.load.image('fire2', 'http://' + window.location.host + '/assets/fire_effects/fire2.png');
     game.load.image('fire3', 'http://' + window.location.host + '/assets/fire_effects/fire3.png');
 
+    // equips
+    game.load.image('digger', 'http://' + window.location.host + '/assets/units/equip/digger.png');
+
+
     // Map Terrains
     game.load.image('desert', 'http://' + window.location.host + '/assets/map/terrain/desert.png');
     game.load.image('desert_2', 'http://' + window.location.host + '/assets/map/terrain/desert_2.png');
@@ -56,6 +60,7 @@ function preload() {
     game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/objects/terrain_2.png');
     game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/objects/terrain_3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/objects/crater.png');
+    game.load.image('crater_2', 'http://' + window.location.host + '/assets/map/objects/crater_2.png');
     game.load.image('base', 'http://' + window.location.host + '/assets/map/objects/base.png');
 
     game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/objects/sand_stone_04.png');

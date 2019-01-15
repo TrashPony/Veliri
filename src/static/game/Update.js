@@ -32,6 +32,7 @@ function update() {
         }
 
         AnimateMiningLaser();
+        AnimateDigger();
     }
 
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */

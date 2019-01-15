@@ -5,8 +5,8 @@ import (
 	"../../mechanics/gameObjects/base"
 	"../../mechanics/gameObjects/boxInMap"
 	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/gameObjects/dynamicMapObject"
 	"../../mechanics/gameObjects/detail"
+	"../../mechanics/gameObjects/dynamicMapObject"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/gameObjects/map"
 	"../../mechanics/gameObjects/resource"
@@ -47,6 +47,7 @@ type Message struct {
 	BoxID         int                             `json:"box_id"`
 	ToBoxID       int                             `json:"to_box_id"`
 	TypeSlot      int                             `json:"type_slot"`
+	Name          string                          `json:"name"`
 	Slot          int                             `json:"slot"`
 	Slots         []int                           `json:"slots"`
 	Size          float32                         `json:"size"`

@@ -3,8 +3,8 @@ package maps
 import (
 	"../../factories/boxes"
 	"../../factories/gameTypes"
-	"../../gameObjects/dialog"
 	"../../gameObjects/anomaly"
+	"../../gameObjects/dialog"
 	"../../gameObjects/map"
 	"math/rand"
 )

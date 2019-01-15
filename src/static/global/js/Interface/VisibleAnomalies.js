@@ -1,9 +1,5 @@
 function VisibleAnomalies(anomalies) {
-    let oldAnomalies = document.getElementsByClassName('anomalyPing');
-    while (oldAnomalies.length > 0) {
-        oldAnomalies[0].parentNode.removeChild(oldAnomalies[0]);
-    }
-
+    RemoveOldAnomaly();
     // вычислять точки куда присрать новый сигнал и вставлять
     let display = document.getElementById("anomalyDisplay");
     display.offsetHeight;
@@ -53,5 +49,12 @@ function VisibleAnomalies(anomalies) {
         }
 
         display.appendChild(anomalyPing);
+    }
+}
+
+function RemoveOldAnomaly() {
+    let oldAnomalies = document.getElementsByClassName('anomalyPing');
+    while (oldAnomalies.length > 0) {
+        oldAnomalies[0].remove();
     }
 }

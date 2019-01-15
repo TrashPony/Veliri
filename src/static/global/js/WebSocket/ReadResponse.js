@@ -107,6 +107,10 @@ function ReadResponse(jsonData) {
         VisibleAnomalies(jsonData.anomalies)
     }
 
+    if (jsonData.event === "RemoveAnomalies") {
+        RemoveOldAnomaly();
+    }
+
     if (jsonData.event === "SelectDigger") {
         SelectDigger(jsonData.coordinates, jsonData.slot, jsonData.type_slot);
     }

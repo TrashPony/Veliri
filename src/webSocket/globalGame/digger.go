@@ -1,8 +1,8 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/maps"
 	"../../mechanics/factories/boxes"
+	"../../mechanics/factories/maps"
 	"../../mechanics/gameObjects/coordinate"
 	"../../mechanics/gameObjects/dynamicMapObject"
 	"../../mechanics/globalGame"
@@ -139,10 +139,25 @@ func useDigger(ws *websocket.Conn, msg Message) {
 						}
 
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res, DynamicObject: &dynamicObject}
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
+							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name}
+
+						usersGlobalWs, mx := Clients.GetAll()
+						mx.Unlock()
+
+						for _, otherUser := range usersGlobalWs {
+							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
+							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
+							if err == nil {
+								globalPipe <- Message{Event: "AnomalySignal", idUserSend: otherUser.GetID(), Anomalies: anomalies}
+							} else {
+								globalPipe <- Message{Event: "RemoveAnomalies", idUserSend: otherUser.GetID()}
+							}
+						}
 					} else {
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: nil}
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: nil,
+							Name: diggerSlot.Equip.Name}
 					}
 				}
 			}
