@@ -2,8 +2,8 @@ package dynamicMapObject
 
 import (
 	"../dialog"
+	"../effect"
 	"time"
-	"mechanics/gameObjects/effect"
 )
 
 type DynamicObject struct {

@@ -15,6 +15,7 @@ function CreateGame(map, loadFunc) {
 
 function create(game) {
 
+
     // размеры гексов карты по умолчанию
     game.hexagonWidth = 100;
     game.hexagonHeight = 111;
@@ -34,13 +35,27 @@ function create(game) {
     game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
+    game.bmdTerrain = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2);
+    game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
+
+    game.bmdShadow = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2);
+    let bmdShadow = game.add.image(0, 0, game.bmdShadow); //bitmapData для отрисовки теней
+    bmdShadow.alpha = 0.4;
+
     game.floorLayer = game.add.group();
     game.floorSelectLineLayer = game.add.group();
     game.floorObjectSelectLineLayer = game.add.group();
 
-    game.floorObjectLayer = game.add.group(); // уровень обьектов которые под юнитом
+    // уровень обьектов которые под юнитом
+    game.floorObjectLayer = game.add.group();
+
+    // UNITS
     game.unitLayer = game.add.group();
-    game.floorOverObjectLayer = game.add.group(); // уровень обьектов которые над юнитом
+
+    // уровень обьектов которые над юнитом и тени
+    game.floorOverObjectShadowLayer = game.add.group();
+    game.floorOverObjectShadowLayer.add(bmdShadow);
+    game.floorOverObjectLayer = game.add.group();
 
     game.SelectLayer = game.add.group();
     game.SelectLayer.alpha = 0.4;
@@ -75,7 +90,7 @@ function create(game) {
             LoadFunc();
         }
 
-        if (game.map.reservoir){
+        if (game.map.reservoir) {
             CreateReservoirs()
         }
 

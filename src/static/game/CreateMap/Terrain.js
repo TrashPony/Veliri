@@ -95,6 +95,9 @@ function CreateTerrain(coordinate, x, y, q, r) {
         let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
         coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
     }
+
+    game.bmdTerrain.draw(floorSprite, x, y);
+    floorSprite.destroy();
 }
 
 function createButtons(coordinate) {

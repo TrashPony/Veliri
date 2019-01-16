@@ -23,15 +23,16 @@ function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOf
     object.scale.set(scale / 100);
     object.angle = rotate;
 
+
     if (needShadow) {
         let shadow = group.create(x + game.shadowXOffset + xOffset, y - game.shadowYOffset + 20 + yOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
         shadow.scale.set(scale / 100);
         shadow.tint = 0x000000;
-        shadow.alpha = 0.6;
         shadow.angle = rotate;
 
-        object.shadow = shadow;
+        game.bmdShadow.draw(shadow, x + game.shadowXOffset + xOffset, y - game.shadowYOffset + 20 + yOffset);
+        shadow.destroy();
     }
 
     return object
