@@ -13,11 +13,7 @@ type resourceStore struct {
 	mapReservoir map[int]resource.Map
 }
 
-var Resource *resourceStore
-
-func init() {
-	Resource = NewResourceStore()
-}
+var Resource = NewResourceStore()
 
 func NewResourceStore() *resourceStore {
 	return &resourceStore{

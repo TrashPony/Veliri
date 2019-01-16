@@ -42,7 +42,6 @@
     <script src="js/LoadGame/Bases.js"></script>
     <script src="js/LoadGame/Boxes.js"></script>
     <script src="js/LoadGame/Anomaly.js"></script>
-    <script src="js/LoadGame/DynamicObject.js"></script>
 
     <script src="js/Move/MoveTo.js"></script>
     <script src="js/Move/PreviewPath.js"></script>
@@ -75,6 +74,8 @@
     <script src="../game/CreateMap/Terrain.js"></script>
     <script src="../game/CreateMap/MarkZoneEffect.js"></script>
     <script src="../game/CreateMap/Reservoir.js"></script>
+    <script src="../game/CreateMap/DynamicMap.js"></script>
+    <script src="../game/CreateMap/DynamicObjects.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -93,7 +94,6 @@
 
     <script src="../game/utils/hexRadius.js"></script>
     <script src="../game/utils/AttachSprite.js"></script>
-    <script src="../game/utils/dynamicMap.js"></script>
     <script src="../game/utils/rotateUnit.js"></script>
     <script src="../game/utils/getXYCenterHex.js"></script>
 
@@ -118,12 +118,16 @@
 <div id="container" style="height:100vh;">
     <div id="main" style="width: 100%; height: 100%;">
         <div id="miniMap">
-            <div class="topButton" onclick="HideMap()"> _ </div>
-            <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿ </div>
+            <div class="topButton" onclick="HideMap()"> _</div>
+            <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿</div>
             <canvas id="canvasMap"></canvas>
-            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')" onmouseup="mouseZoomPress('')"> + </div>
-            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')" onmouseup="mouseZoomPress('')"> - </div>
-            <div class="zoomButton" onmousedown="FocusMS()"> &#9055; </div>
+            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')"
+                 onmouseup="mouseZoomPress('')"> +
+            </div>
+            <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')"
+                 onmouseup="mouseZoomPress('')"> -
+            </div>
+            <div class="zoomButton" onmousedown="FocusMS()"> &#9055;</div>
         </div>
 
         <div id="Notifications"></div>
@@ -136,9 +140,10 @@
 
         <div id="chat">
             <div class="tabs"></div>
-            <div class="topButton" onclick="HideChat()"> _ </div>
-            <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿ </div>
-            <div id="chatBox"></div><div id="usersBox"></div>
+            <div class="topButton" onclick="HideChat()"> _</div>
+            <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
+            <div id="chatBox"></div>
+            <div id="usersBox"></div>
             <input type="text" placeholder="message" id="chatInput"
                    onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
             <script>ConnectChat()</script>
@@ -150,7 +155,8 @@
             <div><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div> <!-- карта мира -->
             <div><img src="https://img.icons8.com/office/50/000000/survey.png"></div> <!-- невыполненые задания -->
             <div onclick="OpenMarket()"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
-            <div onclick="Evacuation()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div> <!-- эвакуация, возможно надо перместить на минимапу -->
+            <div onclick="Evacuation()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
+            <!-- эвакуация, возможно надо перместить на минимапу -->
             <div><img src="https://img.icons8.com/office/40/000000/support.png"></div> <!-- настройки -->
         </div>
 
@@ -172,8 +178,8 @@
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
-                <div id="Credits"> Кредиты: </div>
-                <div id="Experience"> Опыт: </div>
+                <div id="Credits"> Кредиты:</div>
+                <div id="Experience"> Опыт:</div>
             </div>
             <div id="Units">
                 <div id="unitSlot1"><span>N/A</span>

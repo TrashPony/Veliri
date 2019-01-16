@@ -9,8 +9,6 @@ function CreateBoxes(boxes) {
 
 function CreateBox(mapBox) {
 
-    game.boxes.push(mapBox);
-
     if (game.map.OneLayerMap.hasOwnProperty(mapBox.q) && game.map.OneLayerMap.hasOwnProperty(mapBox.r)) {
 
         let xy = GetXYCenterHex(mapBox.q, mapBox.r);
@@ -18,6 +16,7 @@ function CreateBox(mapBox) {
         box.anchor.setTo(0.5);
         box.scale.set(0.2);
         box.angle = mapBox.rotate;
+        mapBox.sprite = box;
 
         if (!mapBox.underground) {
             let boxShadow = game.floorObjectLayer.create(xy.x + game.shadowXOffset, xy.y + game.shadowYOffset, mapBox.type);
@@ -27,8 +26,6 @@ function CreateBox(mapBox) {
             boxShadow.alpha = 0.6;
             boxShadow.angle = mapBox.rotate;
             box.shadow = boxShadow;
-
-            mapBox.sprite = box;
             mapBox.shadow = boxShadow;
         }
 
@@ -58,4 +55,6 @@ function CreateBox(mapBox) {
             }
         });
     }
+
+    game.boxes.push(mapBox);
 }

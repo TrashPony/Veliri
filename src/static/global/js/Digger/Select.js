@@ -2,7 +2,7 @@ function SelectDigger(coordinates, slot, typeSlot) {
     for (let i in coordinates) {
         if (coordinates.hasOwnProperty(i) && coordinates[i]) {
             let xy = GetXYCenterHex(coordinates[i].q, coordinates[i].r);
-            let select = game.floorObjectSelectLineLayer.create(xy.x, xy.y, 'selectEmpty');
+            let select = game.floorSelectLineLayer.create(xy.x, xy.y, 'selectEmpty');
             select.alpha = 0.5;
             select.anchor.setTo(0.5);
 

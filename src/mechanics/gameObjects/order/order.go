@@ -1,6 +1,8 @@
 package order
 
-import "time"
+import (
+	"time"
+)
 
 type Order struct {
 	Id        int

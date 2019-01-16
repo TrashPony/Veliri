@@ -32,8 +32,12 @@ function dynamicMap(group, points) {
                 CreateAnimate(coordinate);
             }
 
+            if (coordinate.dynamic_object) {
+                CreateDynamicObjects(coordinate.dynamic_object, point.q, point.r, true, coordinate);
+            }
+
             if (coordinate.effects != null && coordinate.effects.length > 0) {
-                MarkZoneEffect(coordinate)
+                MarkZoneEffect(coordinate);
             }
 
         } else if (dist > distCam && game.map.OneLayerMap[point.q][point.r].sprite) {
@@ -68,6 +72,25 @@ function dynamicMap(group, points) {
                 coordinate.fogSprite.destroy();
             }
 
+
+            if (coordinate.dynamicObjects && coordinate.dynamicObjects.length > 0) {
+                for (let i in coordinate.dynamicObjects) {
+                    if (!coordinate.dynamicObjects[i]) {
+                        continue
+                    }
+
+                    if (coordinate.dynamicObjects[i].object) {
+                        coordinate.dynamicObjects[i].object.destroy();
+                    }
+                    if (coordinate.dynamicObjects[i].background) {
+                        coordinate.dynamicObjects[i].background.destroy();
+                    }
+                    if (coordinate.dynamicObjects[i].shadow) {
+                        coordinate.dynamicObjects[i].shadow.destroy();
+                    }
+                    coordinate.dynamicObjects[i] = null
+                }
+            }
             coordinate.sprite.destroy();
             coordinate.sprite = null;
         }

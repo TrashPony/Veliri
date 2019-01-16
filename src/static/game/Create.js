@@ -35,6 +35,7 @@ function create(game) {
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.floorLayer = game.add.group();
+    game.floorSelectLineLayer = game.add.group();
     game.floorObjectSelectLineLayer = game.add.group();
 
     game.floorObjectLayer = game.add.group(); // уровень обьектов которые под юнитом

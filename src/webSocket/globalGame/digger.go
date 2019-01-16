@@ -90,13 +90,20 @@ func useDigger(ws *websocket.Conn, msg Message) {
 			if resultCoordinate != nil && msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
 				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
 				if ok && diggerCoordinate.Move {
+
+					mpCoordinate, _ := mp.GetCoordinate(msg.Q, msg.R)
+					var dynamicObject dynamicMapObject.DynamicObject
+					dynamicObject.TextureBackground = "crater_2"
+					dynamicObject.BackgroundScale = 75
+					dynamicObject.BackgroundRotate = rand.Intn(360)
+
 					// todo проверить что координата свободна от игрока
 					anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.Q, msg.R)
 					if anomaly != nil {
 						maps.Maps.RemoveMapAnomaly(mp.Id, msg.Q, msg.R)
 
 						box, res, AnomalyText := anomaly.GetLoot()
-						mpCoordinate, _ := mp.GetCoordinate(msg.Q, msg.R)
+						// TODO запуст горутины на уничтожение
 
 						if box != nil {
 
@@ -121,22 +128,22 @@ func useDigger(ws *websocket.Conn, msg Message) {
 							}
 						}
 
-						var dynamicObject dynamicMapObject.DynamicObject
-
 						if AnomalyText != nil {
 							if mpCoordinate != nil {
-
-								dynamicObject = dynamicMapObject.DynamicObject{
-									TextureObject: "infoAnomaly",
-									Dialog:        AnomalyText,
-									Destroyed:     true,
-									DestroyTime:   time.Now(),
-									// TODO запуст горутины на уничтожение
-								}
-
-								mpCoordinate.DynamicObject = &dynamicObject
+								dynamicObject.TextureObject = "infoAnomaly"
+								dynamicObject.Dialog = AnomalyText
+								dynamicObject.Destroyed = true
+								dynamicObject.DestroyTime = time.Now()
+								dynamicObject.ObjectScale = 20
+								dynamicObject.ObjectRotate = rand.Intn(360)
+								dynamicObject.Shadow = 50
+								dynamicObject.Move = true
+								dynamicObject.View = true
+								dynamicObject.Attack = true
 							}
 						}
+
+						mpCoordinate.DynamicObject = &dynamicObject
 
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
@@ -155,8 +162,9 @@ func useDigger(ws *websocket.Conn, msg Message) {
 							}
 						}
 					} else {
+						mpCoordinate.DynamicObject = &dynamicObject
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: nil,
+							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
 							Name: diggerSlot.Equip.Name}
 					}
 				}

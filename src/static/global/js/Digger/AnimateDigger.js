@@ -9,7 +9,7 @@ function AnimateDigger() {
             }
         }
     }
-    
+
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
         if (game.otherUsers[i].equipDrons && game.otherUsers[i].equipDrons.length > 0) {
             for (let j in game.otherUsers[i].equipDrons) {
@@ -123,8 +123,14 @@ function FlyDrone(droneSetting) {
                 createLineLaser(laser, droneSetting);
 
                 if (i === 50) {
-                    let object = gameObjectCreate(droneSetting.drone.x, droneSetting.drone.y, 'crater_2', 75,
-                        false, Math.random() * 360, 0, 0, game.floorLayer);
+                    let object = gameObjectCreate(
+                        droneSetting.drone.x,
+                        droneSetting.drone.y,
+                        droneSetting.spriteCrater,
+                        droneSetting.scaleCrater,
+                        false,
+                        droneSetting.angleCrater,
+                        0, 0, game.floorLayer);
                     object.alpha = 0;
                     game.add.tween(object).to({alpha: 1}, 50 * 20, Phaser.Easing.Linear.None, true, 0);
                 }

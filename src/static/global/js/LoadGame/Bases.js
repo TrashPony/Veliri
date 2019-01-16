@@ -1,7 +1,7 @@
 function CreateBase(bases) {
 
     game.bases = bases;
-    console.log(bases)
+
     for (let i in bases) {
         if (bases.hasOwnProperty(i)) {
             if (game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {

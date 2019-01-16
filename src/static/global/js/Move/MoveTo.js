@@ -5,7 +5,7 @@ function MoveTo(jsonData) {
     CreateMiniMap();
 
     if (jsonData.other_user.squad_id === game.squad.id) {
-        game.floorObjectSelectLineLayer.forEach(function (sprite) {
+        game.floorSelectLineLayer.forEach(function (sprite) {
             sprite.visible = false;
         });
 

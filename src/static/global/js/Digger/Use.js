@@ -1,6 +1,5 @@
 function UseDigger(jsonData) {
     console.log(jsonData)
-
     game.floorObjectSelectLineLayer.forEach(function (sprite) {
         sprite.visible = false;
     });
@@ -21,6 +20,9 @@ function UseDigger(jsonData) {
             id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot,
             toSquad: false,
             move: false,
+            spriteCrater: jsonData.dynamic_object.texture_background,
+            scaleCrater: jsonData.dynamic_object.background_scale,
+            angleCrater: jsonData.dynamic_object.background_rotate
         });
 
         let progressBar = document.getElementById("miningEquip" + jsonData.type_slot + jsonData.slot);
@@ -48,9 +50,9 @@ function UseDigger(jsonData) {
         }
     }
 
-    if (jsonData.dynamic_object && jsonData.dynamic_object.texture_object !== '') {
+    if (jsonData.dynamic_object && jsonData.dynamic_object.texture_object !== '' && jsonData.texture_background !== '') {
         setTimeout(function () {
-            CreateDynamicObject(jsonData)
+            CreateDynamicObjects(jsonData.dynamic_object, jsonData.q, jsonData.r, false)
         }, 5000);
     }
 
