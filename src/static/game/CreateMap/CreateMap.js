@@ -44,7 +44,20 @@ function CreateMap() {
                 startX += horizontalOffset;
             }
         }
+
+        CreateTexture();
         resolve()
     });
+}
+
+function CreateTexture() {
+    for (let i in game.mapPoints) {
+        if (game.mapPoints[i].q % 1 === 0 && game.mapPoints[i].r % 1 === 0) {
+            let bmd = game.make.bitmapData(1024, 1024);
+            bmd.alphaMask('desert_cracks', 'brush');
+            game.bmdTerrain.draw(bmd, game.mapPoints[i].x, game.mapPoints[i].y);
+            bmd.destroy();
+        }
+    }
 }
 
