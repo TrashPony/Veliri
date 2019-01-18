@@ -14,6 +14,7 @@
     <link href="./css/notification.css" rel="stylesheet">
     <link href="./css/changeType.css" rel="stylesheet">
     <link href="./css/rotate.css" rel="stylesheet">
+    <link href="./css/HeightCoordinates.css" rel="stylesheet">
 
     <script src="./js/webSocket.js"></script>
     <script src="./js/ReaderMapEditor.js"></script>
@@ -26,6 +27,8 @@
     <script src="./js/HideMeta.js"></script>
     <script src="./js/SubMenu.js"></script>
     <script src="./js/changeOptionSprite.js"></script>
+    <script src="./js/HeightCoordinate.js"></script>
+    <script src="./js/SelectedSprite.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -60,12 +63,16 @@
 <body oncontextmenu="return false;" onload="OpenMapEditorSocket()" onmousemove="moveMouse(event)">
 <div id="container">
     <div id="miniMap">
-        <div class="topButton" onclick="HideMap()"> _ </div>
-        <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿ </div>
+        <div class="topButton" onclick="HideMap()"> _</div>
+        <div class="topButton" onmousedown="moveWindow(event,'miniMap')"> ⇿</div>
         <canvas id="canvasMap"></canvas>
-        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')" onmouseup="mouseZoomPress('')"> + </div>
-        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')" onmouseup="mouseZoomPress('')"> - </div>
-        <div class="zoomButton" onmousedown="FocusMS()"> &#9055; </div>
+        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomUp')"
+             onmouseup="mouseZoomPress('')"> +
+        </div>
+        <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')"
+             onmouseup="mouseZoomPress('')"> -
+        </div>
+        <div class="zoomButton" onmousedown="FocusMS()"> &#9055;</div>
     </div>
     <div id="head">
         <select title="mapSelector" id="mapSelector" onchange="selectMap();">
@@ -107,7 +114,15 @@
             <input onclick="SizeGameMap(0.05)" type="submit" value="+" title="+">
             <input onclick="SizeGameMap(-0.05)" type="submit" value="-" title="-">
         </div>
+
         <div id="hideMeta" onclick="HideMeta()"> Скрыть мето данные</div>
+
+        <div id="HeightCoordinates">
+            <h4>Изменение высот карты</h4>
+            <div onclick="HeightCoordinate(true)">+</div>
+            <div onclick="HeightCoordinate(false)">-</div>
+            <div onclick="OptionSprite()"> Opt </div>
+        </div>
     </div>
 
     <div id="newCoordinate">

@@ -36,109 +36,50 @@ function CreateTerrain(coordinate, x, y, q, r) {
 
         if (!(coordinate.move && coordinate.view && coordinate.attack)) {
             if (coordinate.move) {
-                coordinate.coordinateText.move = game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', allow, game.redactorMetaText);
+                coordinate.coordinateText.move = game.add.text(x - 40, y - 25, 'm', allow, game.redactorMetaText);
             } else {
-                coordinate.coordinateText.move = game.add.text(floorSprite.x - 40, floorSprite.y - 25, 'm', noAllow, game.redactorMetaText);
+                coordinate.coordinateText.move = game.add.text(x - 40, y - 25, 'm', noAllow, game.redactorMetaText);
             }
 
             if (coordinate.view) {
-                coordinate.coordinateText.view = game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', allow, game.redactorMetaText);
+                coordinate.coordinateText.view = game.add.text(x - 25, y - 25, 'w', allow, game.redactorMetaText);
             } else {
-                coordinate.coordinateText.view = game.add.text(floorSprite.x - 25, floorSprite.y - 25, 'w', noAllow, game.redactorMetaText);
+                coordinate.coordinateText.view = game.add.text(x - 25, y - 25, 'w', noAllow, game.redactorMetaText);
             }
 
             if (coordinate.attack) {
-                coordinate.coordinateText.attack = game.add.text(floorSprite.x - 10, floorSprite.y - 25, 'a', allow, game.redactorMetaText);
+                coordinate.coordinateText.attack = game.add.text(x - 10, y - 25, 'a', allow, game.redactorMetaText);
             } else {
-                coordinate.coordinateText.attack = game.add.text(floorSprite.x - 10, floorSprite.y - 25, 'a', noAllow, game.redactorMetaText);
+                coordinate.coordinateText.attack = game.add.text(x - 10, y - 25, 'a', noAllow, game.redactorMetaText);
             }
-        }
-
-        if (!coordinate.impact) {
-            let buttons = createButtons(coordinate);
-
-            coordinate.buttons = buttons;
-
-            floorSprite.events.onInputOver.add(function () {
-                buttons.plus.visible = true;
-                buttons.minus.visible = true;
-                buttons.rotate.visible = true;
-            });
-
-            floorSprite.events.onInputOut.add(function () {
-                hideButtons();
-            });
         }
     }
 
     if (coordinate.level === 0) {
         let style = {font: "36px Arial", fill: "#bbfff1", align: "center"};
-        coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 1) {
         let style = {font: "36px Arial", fill: "#35daff", align: "center"};
-        coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 3) {
         let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
-        coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 4) {
         let style = {font: "36px Arial", fill: "#fff523", align: "center"};
-        coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     if (coordinate.level === 5) {
         let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
-        coordinate.coordinateText.height = game.add.text(floorSprite.x - 50, floorSprite.y - 15, coordinate.level, style, game.redactorMetaText);
+        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
     game.bmdTerrain.draw(floorSprite, x, y);
     floorSprite.destroy();
-}
-
-function createButtons(coordinate) {
-    let buttonPlus = game.redactorButton.create(coordinate.sprite.x - 30, coordinate.sprite.y - 30, 'buttonPlus');
-    buttonPlus.scale.set(0.15);
-    let buttonMinus = game.redactorButton.create(coordinate.sprite.x + 5, coordinate.sprite.y - 30, 'buttonMinus');
-    buttonMinus.scale.set(0.15);
-    let buttonRotate = game.redactorButton.create(coordinate.sprite.x - 20, coordinate.sprite.y + 20, 'buttonRotate');
-    buttonRotate.scale.set(0.25);
-
-    buttonPlus.inputEnabled = true;
-    buttonMinus.inputEnabled = true;
-    buttonRotate.inputEnabled = true;
-
-    buttonPlus.events.onInputOver.add(function () {
-        buttonPlus.visible = true;
-        buttonPlus.events.onInputDown.add(addHeightCoordinate, coordinate);
-    });
-
-    buttonMinus.events.onInputOver.add(function () {
-        buttonMinus.visible = true;
-        buttonMinus.events.onInputDown.add(subtractHeightCoordinate, coordinate);
-    });
-
-    buttonRotate.events.onInputOver.add(function () {
-        if (coordinate.objectSprite) {
-            buttonRotate.visible = true;
-            buttonRotate.events.onInputDown.add(ChangeOptionSprite, coordinate);
-        }
-    });
-
-    hideButtons();
-    return {plus: buttonPlus, minus: buttonMinus, rotate: buttonRotate}
-}
-
-function hideButtons() {
-    if (game.redactorButton) {
-        for (let i in game.redactorButton.children) {
-            if (game.redactorButton.children.hasOwnProperty(i)) {
-                game.redactorButton.children[i].visible = false;
-            }
-        }
-    }
 }

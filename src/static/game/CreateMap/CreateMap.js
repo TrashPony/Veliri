@@ -9,6 +9,8 @@ function CreateMap() {
 
         game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
 
+        game.bmdTerrain.clear();
+
         for (let r = 0; r < game.map.RSize; r++) {
 
             if (r % 2 !== 0) {
@@ -40,7 +42,7 @@ function CreateMap() {
                     MarkZoneEffect(coordinate);
                 }
 
-                game.mapPoints.push({x: startX, y: startY, q: q, r: r}); // x y - пиксельная координата положения, q r гексовая сеть
+                game.mapPoints.push({x: startX, y: startY, q: q, r: r, textureOverFlore: coordinate.texture_over_flore}); // x y - пиксельная координата положения, q r гексовая сеть
                 startX += horizontalOffset;
             }
         }
@@ -52,10 +54,10 @@ function CreateMap() {
 
 function CreateTexture() {
     for (let i in game.mapPoints) {
-        if (game.mapPoints[i].q % 1 === 0 && game.mapPoints[i].r % 1 === 0) {
+        if (game.mapPoints[i].textureOverFlore !== '') {
             let bmd = game.make.bitmapData(1024, 1024);
-            bmd.alphaMask('desert_cracks', 'brush');
-            game.bmdTerrain.draw(bmd, game.mapPoints[i].x, game.mapPoints[i].y);
+            bmd.alphaMask(game.mapPoints[i].textureOverFlore, 'brush');
+            game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 512, game.mapPoints[i].y - 512);
             bmd.destroy();
         }
     }

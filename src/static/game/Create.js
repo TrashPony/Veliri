@@ -52,9 +52,7 @@ function create(game) {
     // UNITS
     game.unitLayer = game.add.group();
 
-    // уровень обьектов которые над юнитом и тени
-    game.floorOverObjectShadowLayer = game.add.group();
-    game.floorOverObjectShadowLayer.add(bmdShadow);
+    // уровень обьектов которые над юнитом
     game.floorOverObjectLayer = game.add.group();
 
     game.SelectLayer = game.add.group();

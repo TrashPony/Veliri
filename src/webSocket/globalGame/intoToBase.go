@@ -15,7 +15,7 @@ func intoToBase(ws *websocket.Conn, msg Message) {
 
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 270 { // 250 пикселей, выбрано рандомно
-			if user.GetSquad().MoveChecker {
+			if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil{
 				user.GetSquad().GetMove() <- true // останавливаем движение
 			}
 

@@ -16,7 +16,7 @@ func move(ws *websocket.Conn, msg Message) {
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find && user.InBaseID == 0 {
-		if user.GetSquad().MoveChecker {
+		if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil{
 			user.GetSquad().GetMove() <- true // останавливаем прошлое движение
 		}
 

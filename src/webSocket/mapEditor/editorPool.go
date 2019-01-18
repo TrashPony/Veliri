@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/websocket"
 	"strconv"
 	"sync"
+	"../../mechanics/factories/maps"
 )
 
 var mutex = &sync.Mutex{}
@@ -112,105 +113,146 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "addHeightCoordinate" {
-			mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, 1)
+
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+
+			coordinateMap, ok := mapChange.GetCoordinate(msg.Q, msg.R)
+			if ok {
+				coordinateMap.Level++
+			}
+
+			go mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, 1)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "subtractHeightCoordinate" {
-			mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, -1)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+
+			coordinateMap, ok := mapChange.GetCoordinate(msg.Q, msg.R)
+			if ok {
+				coordinateMap.Level--
+			}
+
+			go mapEditor.ChangeHeightCoordinate(msg.ID, msg.Q, msg.R, -1)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeCoordinate" {
+			//TODO
 			mapEditor.PlaceCoordinate(msg.ID, msg.IDType, msg.Q, msg.R)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeTerrain" {
+			//TODO
 			mapEditor.PlaceTerrain(msg.ID, msg.IDType, msg.Q, msg.R)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeObjects" {
+			//TODO
 			mapEditor.PlaceObject(msg.ID, msg.IDType, msg.Q, msg.R)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "placeAnimate" {
+			//TODO
 			mapEditor.PlaceAnimate(msg.ID, msg.IDType, msg.Q, msg.R)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "loadNewTypeTerrain" {
+			//TODO
 			ws.WriteJSON(Response{Event: "loadNewTypeTerrain", Success: mapEditor.CreateNewTerrain(msg.TerrainName)})
 		}
 
 		if msg.Event == "loadNewTypeObject" {
+			//TODO
 			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch,
 				msg.Attack, msg.Radius, msg.Scale, msg.Shadow, msg.CountSprites, msg.XSize, msg.YSize)
 			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
 		}
 
 		if msg.Event == "deleteType" {
+			//TODO
 			mapEditor.DeleteType(msg.IDType)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "replaceCoordinateType" {
+			//TODO
 			mapEditor.ReplaceType(msg.OldIDType, msg.NewIDType)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "changeType" {
+			//TODO
 			mapEditor.ChangeType(msg.IDType, msg.Scale, msg.Shadow, msg.Move, msg.Watch, msg.Attack, msg.Radius)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "rotateObject" {
+			//TODO
 			mapEditor.Rotate(msg.ID, msg.Q, msg.R, msg.Rotate, msg.Speed, msg.XOffset, msg.YOffset)
 			selectMap(msg, ws)
 		}
 
 		// ---------------------------- //
 		if msg.Event == "addStartRow" {
+			//TODO
 			mapEditor.AddStartRow(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addEndRow" {
+			//TODO
 			mapEditor.AddEndRow(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeStartRow" {
+			//TODO
 			mapEditor.RemoveStartRow(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeEndRow" {
+			//TODO
 			mapEditor.RemoveEndRow(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		// ---------------------------- //
 		if msg.Event == "addStartColumn" {
+			//TODO
 			mapEditor.AddStartColumn(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addEndColumn" {
+			//TODO
 			mapEditor.AddEndColumn(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeStartColumn" {
+			//TODO
 			mapEditor.RemoveStartColumn(msg.ID)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeEndColumn" {
+			//TODO
 			mapEditor.RemoveEndColumn(msg.ID)
 			selectMap(msg, ws)
+		}
+
+		if msg.Event == "addOverTexture" {
+			//TODO
+		}
+
+		if msg.Event == "removeOverTexture" {
+			//TODO
 		}
 	}
 }

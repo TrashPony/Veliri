@@ -25,7 +25,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		user.GetSquad().Evacuation = true
 
-		if user.GetSquad().MoveChecker {
+		if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
 			user.GetSquad().GetMove() <- true // останавливаем движение
 		}
 

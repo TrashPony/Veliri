@@ -10,6 +10,7 @@ type Coordinate struct {
 	ID                  int                             `json:"id"`
 	Type                string                          `json:"type"`
 	TextureFlore        string                          `json:"texture_flore"`
+	TextureOverFlore    string                          `json:"texture_over_flore"`
 	TextureObject       string                          `json:"texture_object"`
 	AnimateSpriteSheets string                          `json:"animate_sprite_sheets"`
 	AnimateLoop         bool                            `json:"animate_loop"`

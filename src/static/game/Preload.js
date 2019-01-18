@@ -124,10 +124,10 @@ function preload() {
     game.load.image('infoAnomaly', 'http://' + window.location.host + '/assets/info.png');
 
     //Brush
-    game.load.image('brush', 'http://' + window.location.host + '/assets/brush2b.png');
-    game.load.image('terrain_texture', 'http://' + window.location.host + '/assets/terrain_texture.jpg');
-    game.load.image('Xeno1_0', 'http://' + window.location.host + '/assets/Xeno1_0.jpg');
-    game.load.image('desert_cracks', 'http://' + window.location.host + '/assets/desert_cracks.jpg');
+    game.load.image('brush', 'http://' + window.location.host + '/assets/terrainTextures/brush2b.png');
+    game.load.image('terrain_texture', 'http://' + window.location.host + '/assets/terrainTextures/terrain_texture.jpg');
+    game.load.image('Xeno1_0', 'http://' + window.location.host + '/assets/terrainTextures/Xeno1_0.jpg');
+    game.load.image('desert_cracks', 'http://' + window.location.host + '/assets/terrainTextures/desert_cracks.jpg');
 
 
     autoPreload();

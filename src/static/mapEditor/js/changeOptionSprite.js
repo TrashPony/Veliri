@@ -1,5 +1,12 @@
-function ChangeOptionSprite() {
-    let coordinate = this;
+function OptionSprite() {
+    let callBack = function (q, r) {
+        ChangeOptionSprite(q, r)
+    };
+    SelectedSprite(event, 0, callBack, true)
+}
+
+function ChangeOptionSprite(q, r) {
+    let coordinate = game.map.OneLayerMap[q][r];
 
     let block = document.getElementById("coordinates");
 
