@@ -42,11 +42,46 @@ func Maps() map[int]_map.Map {
 		}
 
 		CoordinatesMap(&mp)
-
 		allMap[mp.Id] = mp
 	}
 
 	return allMap
+}
+
+func GetMapByID(id int) *_map.Map {
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"Select "+
+		"id, "+
+		"name, "+
+		"q_size, "+
+		"r_size, "+
+		"id_type, "+
+		"level, "+
+		"specification, "+
+		"global, "+
+		"in_game "+
+		""+
+		"FROM maps WHERE id = $1", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var mp _map.Map
+
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
+			&mp.Global, &mp.InGame)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		CoordinatesMap(&mp)
+		return &mp
+	}
+
+	return nil
 }
 
 func CoordinatesMap(mp *_map.Map) {
@@ -54,7 +89,7 @@ func CoordinatesMap(mp *_map.Map) {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.q, mc.r, ct.type, ct.texture_flore, "+
 		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
-		"ct.impact_radius, mc.impact, ct.scale, ct.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, " +
+		"ct.impact_radius, mc.impact, ct.scale, ct.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
 		"ct.unit_overlap, mc.texture_over_flore "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))

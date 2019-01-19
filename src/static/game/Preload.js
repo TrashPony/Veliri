@@ -13,6 +13,8 @@ function preload() {
     game.load.spritesheet('HostileSelectUnit', 'http://' + window.location.host + '/assets/select/hostileUnitSelect.png', 100, 100, 3);
     // zone
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
+    game.load.spritesheet('mapEditor', 'http://' + window.location.host + '/assets/select/mapEditor.png', 80, 100, 6);
+
     game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 80, 100, 3);
     // path
     game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
@@ -124,11 +126,14 @@ function preload() {
     game.load.image('infoAnomaly', 'http://' + window.location.host + '/assets/info.png');
 
     //Brush
-    game.load.image('brush', 'http://' + window.location.host + '/assets/terrainTextures/brush2b.png');
-    game.load.image('terrain_texture', 'http://' + window.location.host + '/assets/terrainTextures/terrain_texture.jpg');
-    game.load.image('Xeno1_0', 'http://' + window.location.host + '/assets/terrainTextures/Xeno1_0.jpg');
-    game.load.image('desert_cracks', 'http://' + window.location.host + '/assets/terrainTextures/desert_cracks.jpg');
-
+    game.load.image('brush', 'http://' + window.location.host + '/assets/terrainTextures/brush.png');
+    game.load.image('desertTexture', 'http://' + window.location.host + '/assets/terrainTextures/desert.jpg');
+    game.load.image('desertDunes', 'http://' + window.location.host + '/assets/terrainTextures/desertDunes.jpg');
+    game.load.image('desertCracks', 'http://' + window.location.host + '/assets/terrainTextures/desertCracks.jpg');
+    game.load.image('xenos', 'http://' + window.location.host + '/assets/terrainTextures/xenos.jpg');
+    game.load.image('arctic', 'http://' + window.location.host + '/assets/terrainTextures/arctic.jpg');
+    game.load.image('tundra', 'http://' + window.location.host + '/assets/terrainTextures/tundra.jpg');
+    game.load.image('vulcanic', 'http://' + window.location.host + '/assets/terrainTextures/vulcanic.jpg');
 
     autoPreload();
 }

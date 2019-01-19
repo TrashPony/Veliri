@@ -1,6 +1,6 @@
 function update() {
 
-    DynamicShadowMap(game.floorLayer, game.mapPoints);
+    DynamicShadowMap();
 
     if (game && game.typeService === "battle") {
         UpdateRotateUnit(); // функция для повора юнитовский спрайтов

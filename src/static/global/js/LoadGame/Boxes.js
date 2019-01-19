@@ -23,7 +23,7 @@ function CreateBox(mapBox) {
             boxShadow.anchor.setTo(0.5);
             boxShadow.scale.set(0.2);
             boxShadow.tint = 0x000000;
-            boxShadow.alpha = 0.6;
+            boxShadow.alpha = 0.4;
             boxShadow.angle = mapBox.rotate;
             box.shadow = boxShadow;
             mapBox.shadow = boxShadow;

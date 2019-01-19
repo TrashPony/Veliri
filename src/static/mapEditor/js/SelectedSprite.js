@@ -1,4 +1,4 @@
-function SelectedSprite(event, radius, callBack, onlyObj) {
+function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture) {
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
@@ -21,20 +21,28 @@ function SelectedSprite(event, radius, callBack, onlyObj) {
                             continue
                         }
 
+                        if (onlyTexture && map[q][r].texture_over_flore === '') {
+                            continue
+                        }
+
                         let coordinateSprite = map[q][r].sprite;
-                        let selectedSprite = game.SelectLayer.create(coordinateSprite.x, coordinateSprite.y, 'selectEmpty');
+                        let selectedSprite = game.SelectLayer.create(coordinateSprite.x, coordinateSprite.y, 'mapEditor');
                         selectedSprite.anchor.setTo(0.5);
                         selectedSprite.inputEnabled = true;
+
+
+                        if (onlyTexture && map[q][r].texture_over_flore !== '') {
+                            let style = {font: "24px Arial", fill: "#ff0000", align: "center"};
+                            game.add.text(coordinateSprite.x - 50, coordinateSprite.y - 15, map[q][r].texture_over_flore, style, game.redactorButton);
+                        }
 
                         map[q][r].selectedSprite = selectedSprite;
 
                         selectedSprite.events.onInputDown.add(function () {
                             if (game.input.activePointer.leftButton.isDown) {
                                 callBack(q, r);
-                                destroyAllSelectedSprite(map);
-                            } else {
-                                destroyAllSelectedSprite(map);
                             }
+                            destroyAllSelectedSprite();
                         });
 
                         selectedSprite.events.onInputOver.add(function () {
@@ -61,18 +69,13 @@ function SelectedSprite(event, radius, callBack, onlyObj) {
     }
 }
 
-function destroyAllSelectedSprite(map) {
-    for (let q in map) {
-        if (map.hasOwnProperty(q)) {
-            for (let r in map[q]) {
-                if (map[q].hasOwnProperty(r)) {
-                    if (map[q][r].selectedSprite) {
-                        map[q][r].selectedSprite.destroy();
-                    }
-                }
-            }
-        }
-    }
+function destroyAllSelectedSprite() {
+    game.redactorButton.forEach(function (c) {
+        c.kill();
+    });
+    game.SelectLayer.forEach(function (c) {
+        c.kill();
+    });
 }
 
 function stopRadiusAnimate(center, radius) {

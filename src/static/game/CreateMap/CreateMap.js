@@ -42,7 +42,13 @@ function CreateMap() {
                     MarkZoneEffect(coordinate);
                 }
 
-                game.mapPoints.push({x: startX, y: startY, q: q, r: r, textureOverFlore: coordinate.texture_over_flore}); // x y - пиксельная координата положения, q r гексовая сеть
+                game.mapPoints.push({
+                    x: startX,
+                    y: startY,
+                    q: q,
+                    r: r,
+                    textureOverFlore: coordinate.texture_over_flore
+                }); // x y - пиксельная координата положения, q r гексовая сеть
                 startX += horizontalOffset;
             }
         }
@@ -62,4 +68,3 @@ function CreateTexture() {
         }
     }
 }
-

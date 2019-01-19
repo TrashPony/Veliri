@@ -3,10 +3,11 @@
 }
 
 #HeightCoordinates h4 {
+    width: 100%;
     background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
     color: aliceblue;
     text-shadow: 0 0 2px black;
-    margin: 10px 0 0 12px;
+    margin: 10px 0 0 7px;
     border-radius: 5px;
     float: left;
 }

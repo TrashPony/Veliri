@@ -39,7 +39,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
-						if !mapCoordinate.Move {
+						if !mapCoordinate.Move || checkLevelViewCoordinate(startCoordinate, mapCoordinate) {
 							return false, startCoordinate.Q, startCoordinate.R, true
 						}
 					}
@@ -52,7 +52,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
-						if !mapCoordinate.Move {
+						if !mapCoordinate.Move || checkLevelViewCoordinate(startCoordinate, mapCoordinate) {
 							return false, startCoordinate.Q, startCoordinate.R, true
 						}
 					}
@@ -77,7 +77,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 					bY := int(float64(60)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
-					if dist < coordinateRadius {
+					if dist < coordinateRadius || checkLevelViewCoordinate(startCoordinate, mapCoordinate) {
 						if !mapCoordinate.Move {
 							return false, startCoordinate.Q, startCoordinate.R, false
 						}
@@ -91,7 +91,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map) (bool, int, int,
 
 					dist := int(GetBetweenDist(bX, bY, xc, yc))
 					if dist < coordinateRadius {
-						if !mapCoordinate.Move {
+						if !mapCoordinate.Move || checkLevelViewCoordinate(startCoordinate, mapCoordinate) {
 							return false, startCoordinate.Q, startCoordinate.R, false
 						}
 					}
@@ -193,4 +193,22 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int) *boxInMap.Box {
 		}
 	}
 	return nil
+}
+
+func checkLevelViewCoordinate(one, past *coordinate.Coordinate) bool {
+	if one.Level > past.Level {
+		diffLevel := one.Level - past.Level
+		if diffLevel < 2 {
+			return false
+		} else {
+			return true
+		}
+	} else {
+		diffLevel := past.Level - one.Level
+		if diffLevel < 2 {
+			return false
+		} else {
+			return true
+		}
+	}
 }

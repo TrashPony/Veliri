@@ -2,6 +2,7 @@ function UpdateMap(newMap, game, bases) {
     removeSubMenus();
     game.floorLayer.forEach(function (c) { c.kill(); });
     game.floorObjectLayer.forEach(function (c) { c.kill(); });
+    game.floorOverObjectLayer.forEach(function (c) { c.kill(); });
     game.redactorButton.forEach(function (c) { c.kill(); });
     game.redactorMetaText.forEach(function (c) { c.kill(); });
     game.SelectLayer.forEach(function (c) { c.kill(); });

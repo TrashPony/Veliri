@@ -4,12 +4,12 @@ function CreateTerrain(coordinate, x, y, q, r) {
     floorSprite.anchor.setTo(0.5);
     floorSprite.scale.set(0.5);
 
-    floorSprite.inputEnabled = true; // включаем ивенты на спрайт
-    floorSprite.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
-    floorSprite.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
+    // floorSprite.inputEnabled = true; // включаем ивенты на спрайт
+    // floorSprite.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
+    // floorSprite.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    floorSprite.events.onInputOut.add(TipOff, floorSprite);
-    floorSprite.z = 0;
+    // floorSprite.events.onInputOut.add(TipOff, floorSprite);
+    // floorSprite.z = 0;
     coordinate.sprite = floorSprite;
 
     if (game && game.typeService === "battle") {
@@ -80,6 +80,6 @@ function CreateTerrain(coordinate, x, y, q, r) {
         coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
     }
 
-    game.bmdTerrain.draw(floorSprite, x, y);
+    //game.bmdTerrain.draw(floorSprite, x, y);
     floorSprite.destroy();
 }

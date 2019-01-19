@@ -75,10 +75,10 @@ function create(game) {
     game.weaponEffectsLayer = game.add.group();
 
     game.flyObjectsLayer = game.add.group();
+
     game.fogOfWar = game.add.group();
     game.fogOfWar.alpha = 0.5;
 
-    game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
 
     game.icon = game.add.group();

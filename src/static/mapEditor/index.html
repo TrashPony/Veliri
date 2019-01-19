@@ -14,7 +14,8 @@
     <link href="./css/notification.css" rel="stylesheet">
     <link href="./css/changeType.css" rel="stylesheet">
     <link href="./css/rotate.css" rel="stylesheet">
-    <link href="./css/HeightCoordinates.css" rel="stylesheet">
+    <link href="./css/textures.css" rel="stylesheet">
+    <link href="./css/heightCoordinates.css" rel="stylesheet">
 
     <script src="./js/webSocket.js"></script>
     <script src="./js/ReaderMapEditor.js"></script>
@@ -29,6 +30,7 @@
     <script src="./js/changeOptionSprite.js"></script>
     <script src="./js/HeightCoordinate.js"></script>
     <script src="./js/SelectedSprite.js"></script>
+    <script src="./js/Textures.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -51,6 +53,7 @@
     <script src="../game/Interface/ParseEquipEffect.js"></script>
 
     <script src="../assets/components/uiComponents/miniMap/CreateMiniMap.js"></script>
+    <script src="../assets/components/uiComponents/miniMap/MouseZoomPress.js"></script>
     <script src="../assets/components/MouseOver.js"></script>
     <script src="../assets/components/MoveWindow.js"></script>
 
@@ -59,6 +62,9 @@
     <script src="../game/utils/getXYCenterHex.js"></script>
 
     <script src="../assets/lib/phaser.js"></script>
+    <script src="../assets/lib/jquery-3.3.1.js"></script>
+    <script src="../assets/lib/jquery-ui.js"></script>
+    <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
 </head>
 <body oncontextmenu="return false;" onload="OpenMapEditorSocket()" onmousemove="moveMouse(event)">
 <div id="container">
@@ -109,19 +115,27 @@
             </tr>
         </table>
 
-        <div id="sizeMap">
-            <h4>Масштаб карты</h4>
-            <input onclick="SizeGameMap(0.05)" type="submit" value="+" title="+">
-            <input onclick="SizeGameMap(-0.05)" type="submit" value="-" title="-">
-        </div>
-
         <div id="hideMeta" onclick="HideMeta()"> Скрыть мето данные</div>
 
         <div id="HeightCoordinates">
-            <h4>Изменение высот карты</h4>
+            <h4>Изменение высот</h4>
             <div onclick="HeightCoordinate(true)">+</div>
             <div onclick="HeightCoordinate(false)">-</div>
-            <div onclick="OptionSprite()"> Opt </div>
+            <div onclick="OptionSprite()"> Opt</div>
+        </div>
+
+        <div id="texturesBlock">
+            <h4>Текстуры земли</h4>
+            <div id="textures">
+                <div onclick="RemoveTexture()" style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertTexture')" style='background: url("/assets/terrainTextures/icon/desert.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertDunes')" style='background: url("/assets/terrainTextures/icon/desertDunes.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertCracks')" style='background: url("/assets/terrainTextures/icon/desertCracks.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('xenos')" style='background: url("/assets/terrainTextures/icon/xenos.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('arctic')" style='background: url("/assets/terrainTextures/icon/arctic.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('tundra')" style='background: url("/assets/terrainTextures/icon/tundra.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('vulcanic')" style='background: url("/assets/terrainTextures/icon/vulcanic.jpg") center center / 115% no-repeat;'></div>
+            </div>
         </div>
     </div>
 

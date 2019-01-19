@@ -27,8 +27,6 @@ function CreateSquad(squad, x, y, bodyName, weaponName, rotate, focus) {
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-
-
     let weapon;
     let weaponShadow;
     if (weaponName && weaponName !== '') {
@@ -39,7 +37,7 @@ function CreateSquad(squad, x, y, bodyName, weaponName, rotate, focus) {
         weaponShadow.anchor.setTo(0.5, 0.61);
         weaponShadow.scale.setTo(0.5, 0.5);
         weaponShadow.tint = 0x000000;
-        weaponShadow.alpha = 0.4;
+        weaponShadow.alpha = 0.3;
     }
 
     squad.sprite = unit;

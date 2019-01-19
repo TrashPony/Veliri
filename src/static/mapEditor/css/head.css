@@ -4,18 +4,19 @@
 }
 
 #miniMap {
-    bottom: 15px;
+    left: 0;
+    bottom: 25px;
     top: unset;
 }
 
 #head {
-    height: 360px;
     width: 150px;
     background-size: 5px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
     border-radius: 10px;
     float: left;
     padding-right: 15px;
+    height: 470px;
 }
 
 #head table {
@@ -113,36 +114,12 @@
     width: 20px;
 }
 
-#sizeMap {
-    float: left;
-    width: 100%;
-    height: 20px;
-    margin-left: 8px;
-}
-
-#sizeMap input {
-    width: 20px;
-}
-
-#sizeMap input:active {
-    position: relative;
-    top: 2px;
-}
-
-#sizeMap h4 {
-    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
-    color: aliceblue;
-    text-shadow: 0 0 2px black;
-    margin: 5px auto;
-    border-radius: 5px;
-}
-
 #hideMeta {
     float: left;
     width: 100%;
     height: 20px;
     margin-left: 8px;
-    margin-top: 40px;
+    margin-top: 10px;
     border-radius: 10px;
     border: 1px solid #25a0e1;
     box-shadow: 0 1px 2px rgba(0,0,0,1);

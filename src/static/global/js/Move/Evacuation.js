@@ -22,7 +22,7 @@ function CreateEvacuation(x, y, baseId, transportId) {
     game.add.tween(evacuation.shadow).to({angle: 360}, 3000, Phaser.Easing.Linear.None, true, 0, 0, false).loop(true);
     game.add.tween(evacuation).to({angle: 360}, 3000, Phaser.Easing.Linear.None, true, 0, 0, false).loop(true);
 
-    game.add.tween(evacuation.shadow).to({alpha: 0.3}, 700, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(evacuation.shadow).to({alpha: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
     game.add.tween(evacuation).to({alpha: 1}, 700, Phaser.Easing.Linear.None, true, 0);
 
     return evacuation
@@ -71,6 +71,11 @@ function EvacuationUp(sprite, squad) {
     game.add.tween(sprite.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
 
     if (squad) {
+
+        game.unitLayer.remove(squad);
+        game.flyObjectsLayer.add(squad);
+        game.flyObjectsLayer.swap(sprite, squad);
+
         game.add.tween(squad.bodyShadow).to({
             x: game.shadowXOffset * 10,
             y: game.shadowYOffset * 10
@@ -182,6 +187,7 @@ function placeEvacuation(jsonData) {
     // https://codepen.io/BeFiveINFO/pen/bdJvad
 
     EvacuationDown(sprite);
+
     setTimeout(function () {
         if (game.squad.id === jsonData.other_user.squad_id) {
             EvacuationUp(sprite, game.squad.sprite);

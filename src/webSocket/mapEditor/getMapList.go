@@ -1,6 +1,7 @@
 package mapEditor
 
 import (
+	"../../mechanics/db/get"
 	"../../mechanics/factories/bases"
 	"../../mechanics/factories/maps"
 	"github.com/gorilla/websocket"
@@ -14,7 +15,7 @@ func getMapList(msg Message, ws *websocket.Conn) {
 }
 
 func selectMap(msg Message, ws *websocket.Conn) {
-	selectMap, _ := maps.Maps.GetByID(msg.ID)
+	selectMap := get.GetMapByID(msg.ID)
 
 	resp := Response{Event: "MapSelect", Map: *selectMap, Bases: bases.Bases.GetBasesByMap(selectMap.Id)}
 

@@ -41,7 +41,7 @@ function ChangeOptionSprite(q, r) {
         rotate.appendChild(outputSpeed);
     }
 
-    let rangeXOffset = createRange("rangeXOffset", -150, 150, 1, coordinate.x_offset);
+    let rangeXOffset = createRange("rangeXOffset", -100, 100, 1, coordinate.x_offset);
     rangeXOffset.oninput = function () {
         document.getElementById("XOutput").innerHTML = rangeXOffset.value;
         coordinate.objectSprite.x = coordinate.sprite.x + Number(rangeXOffset.value);
@@ -53,7 +53,7 @@ function ChangeOptionSprite(q, r) {
     let outputXOffset = document.createElement("div");
     outputXOffset.innerHTML = "<span> Смещение по Х: </span> <span id='XOutput'> " + coordinate.x_offset + " </span>";
 
-    let rangeYOffset = createRange("rangeYOffset", -150, 150, 1, coordinate.y_offset);
+    let rangeYOffset = createRange("rangeYOffset", -100, 100, 1, coordinate.y_offset);
     rangeYOffset.oninput = function () {
         document.getElementById("YOutput").innerHTML = rangeYOffset.value;
         coordinate.objectSprite.y = coordinate.sprite.y + Number(rangeYOffset.value);
