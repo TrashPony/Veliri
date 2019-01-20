@@ -44,7 +44,7 @@ func CreateCloud(mapID int) {
 	sizeMapX := (globalGame.HexagonWidth+5)*mp.QSize + 500
 	sizeMapY := 185 * mp.RSize / 2
 	speed := rand.Intn(40) + 20
-	alpha := 0.2 + rand.Float64()*(1-0.2)
+	alpha := 0.2 + rand.Float64()*(0.8-0.2)
 
 	var newCloud *cloud
 	if randomPos == 0 {

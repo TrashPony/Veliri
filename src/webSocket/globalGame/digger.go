@@ -52,14 +52,14 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 
 func useDigger(ws *websocket.Conn, msg Message) {
 	user := Clients.GetByWs(ws)
-	if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
-		user.GetSquad().GetMove() <- true // останавливаем движение
-	}
 
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
 
 	if user != nil && squadCoordinate != nil {
+
+		stopMove(ws, true)
+
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
 			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}

@@ -16,9 +16,8 @@ func move(ws *websocket.Conn, msg Message) {
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find && user.InBaseID == 0 {
-		if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
-			user.GetSquad().GetMove() <- true // останавливаем прошлое движение
-		}
+
+		stopMove(ws, false)
 
 		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 
@@ -41,6 +40,16 @@ func move(ws *websocket.Conn, msg Message) {
 
 		go MoveUserMS(ws, msg, user, path)
 		user.GetSquad().MoveChecker = true
+	}
+}
+
+func stopMove(ws *websocket.Conn, reserSpeed bool) {
+	user := Clients.GetByWs(ws)
+	if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
+		user.GetSquad().GetMove() <- true // останавливаем прошлое движение
+		if reserSpeed {
+			user.GetSquad().CurrentSpeed = 0
+		}
 	}
 }
 

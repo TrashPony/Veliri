@@ -12,6 +12,33 @@
     right: 15px;
 }
 
+#stopMove {
+    position: absolute;
+    display: block;
+    top: 51px;
+    left: 6px;
+    background: #4c4c4c;
+    height: 20px;
+    width: 37px;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid #959595;
+    box-shadow: inset 0 0 5px black;
+    border-top: 0;
+    color: #6b1919;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    text-align: center;
+    line-height: 20px;
+}
+
+#stopMove:hover {
+    color: red;
+    box-shadow: inset 0 0 5px #ff4208;
+}
+
+#stopMove:active {
+    background: red;
+}
+
 #statusBar #Thorium {
     width: 120px;
     height: 40px;

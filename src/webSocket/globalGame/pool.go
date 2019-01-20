@@ -156,6 +156,10 @@ func Reader(ws *websocket.Conn) {
 			move(ws, msg)
 		}
 
+		if msg.Event == "StopMove" {
+			stopMove(ws, true)
+		}
+
 		if msg.Event == "IntoToBase" {
 			intoToBase(ws, msg)
 		}

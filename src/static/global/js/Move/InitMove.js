@@ -15,3 +15,9 @@ function initMove(e) {
         }));
     }
 }
+
+function Stop() {
+    global.send(JSON.stringify({
+        event: "StopMove",
+    }));
+}
