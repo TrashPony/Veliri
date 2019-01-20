@@ -27,11 +27,11 @@ function CreateMap() {
                 CreateTerrain(coordinate, startX, startY, q, r);
 
                 if (coordinate.texture_object !== "") {
-                    CreateObjects(coordinate);
+                    CreateObjects(coordinate, startX, startY);
                 }
 
                 if (coordinate.animate_sprite_sheets !== "") {
-                    CreateAnimate(coordinate);
+                    CreateAnimate(coordinate, startX, startY);
                 }
 
                 if (coordinate.dynamic_object) {
@@ -39,7 +39,7 @@ function CreateMap() {
                 }
 
                 if (coordinate.effects != null && coordinate.effects.length > 0) {
-                    MarkZoneEffect(coordinate);
+                    MarkZoneEffect(coordinate, startX, startY);
                 }
 
                 game.mapPoints.push({

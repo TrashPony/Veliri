@@ -5,7 +5,7 @@ function CreateGame(map, loadFunc) {
     LoadFunc = loadFunc;
     Map = map;
 
-    return new Phaser.Game('100', '100', Phaser.CANVAS, 'main', {
+    return new Phaser.Game('100', '100', Phaser.WEBGL, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -32,15 +32,12 @@ function create(game) {
     game.time.slowMotion = 0;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
+
     game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
     game.bmdTerrain = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2);
     game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
-
-    game.bmdShadow = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2);
-    let bmdShadow = game.add.image(0, 0, game.bmdShadow); //bitmapData для отрисовки теней
-    bmdShadow.alpha = 0.4;
 
     game.floorLayer = game.add.group();
     game.floorSelectLineLayer = game.add.group();

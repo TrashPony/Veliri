@@ -1,15 +1,15 @@
-function CreateAnimate(coordinate) {
+function CreateAnimate(coordinate, x, y) {
     let animate;
 
     if (coordinate.impact) {
         return
     }
     if (coordinate.unit_overlap) {
-        animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
-            coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
+        animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
+            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
     } else {
-        animate = gameAnimateObjectCreate(coordinate.sprite.x, coordinate.sprite.y, coordinate.animate_sprite_sheets, coordinate.scale,
-            coordinate.shadow, coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
+        animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
+            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
     }
 
     coordinate.objectSprite = animate;

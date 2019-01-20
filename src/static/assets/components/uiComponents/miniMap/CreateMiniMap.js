@@ -7,8 +7,8 @@ function CreateMiniMap(map) {
         let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        let hexagonHeight = (canvas.offsetWidth / game.map.QSize) * 0.95;
-        let hexagonWidth = (canvas.offsetHeight / game.map.RSize) * 1.43;
+        let hexagonHeight = (canvas.offsetWidth / game.map.QSize) * 0.90;
+        let hexagonWidth = (canvas.offsetHeight / game.map.RSize) * 1.59;
 
         let verticalOffset = hexagonHeight * 3 / 4;
         let horizontalOffset = hexagonWidth;

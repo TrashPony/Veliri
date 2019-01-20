@@ -7,11 +7,13 @@ function CreateBase(bases) {
             if (game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
                 let coordinate = game.map.OneLayerMap[bases[i].q][bases[i].r];
 
-                for (let j = 0; j < game.mapPoints.length; j++) {
-                    if (game.mapPoints[j].q === bases[i].q && game.mapPoints[j].r === bases[i].r) {
-                        CreateTerrain(coordinate, game.mapPoints[j].x, game.mapPoints[j].y, game.mapPoints[j].q, game.mapPoints[j].r);
-                        CreateObjects(coordinate);
-                        break
+                if (!coordinate.objectSprite) {
+                    for (let j = 0; j < game.mapPoints.length; j++) {
+                        if (game.mapPoints[j].q === bases[i].q && game.mapPoints[j].r === bases[i].r) {
+                            CreateTerrain(coordinate, game.mapPoints[j].x, game.mapPoints[j].y, game.mapPoints[j].q, game.mapPoints[j].r);
+                            CreateObjects(coordinate, game.mapPoints[j].x, game.mapPoints[j].y);
+                            break
+                        }
                     }
                 }
 
@@ -25,8 +27,8 @@ function CreateBase(bases) {
                         game.squad.toBase = {
                             baseID: bases[i].id,
                             into: true,
-                            x: coordinate.sprite.x,
-                            y: coordinate.sprite.y
+                            x: coordinate.objectSprite.x,
+                            y: coordinate.objectSprite.y
                         }
                     }
                 });

@@ -13,9 +13,9 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture) {
                             continue
                         }
 
-                        if (!map[q][r].sprite) {
-                            continue
-                        }
+                        // if (!map[q][r].sprite) {
+                        //     continue
+                        // }
 
                         if (onlyObj && !map[q][r].objectSprite) {
                             continue
@@ -25,15 +25,16 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture) {
                             continue
                         }
 
-                        let coordinateSprite = map[q][r].sprite;
-                        let selectedSprite = game.SelectLayer.create(coordinateSprite.x, coordinateSprite.y, 'mapEditor');
+                        let xy = GetXYCenterHex(q, r);
+
+                        let selectedSprite = game.SelectLayer.create(xy.x, xy.y, 'mapEditor');
                         selectedSprite.anchor.setTo(0.5);
                         selectedSprite.inputEnabled = true;
 
 
                         if (onlyTexture && map[q][r].texture_over_flore !== '') {
                             let style = {font: "24px Arial", fill: "#ff0000", align: "center"};
-                            game.add.text(coordinateSprite.x - 50, coordinateSprite.y - 15, map[q][r].texture_over_flore, style, game.redactorButton);
+                            game.add.text(xy.x - 50, xy.y - 15, map[q][r].texture_over_flore, style, game.redactorButton);
                         }
 
                         map[q][r].selectedSprite = selectedSprite;

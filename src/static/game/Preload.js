@@ -1,6 +1,4 @@
 function preload() {
-    game.stage.disableVisibilityChange = true; // не дает оставиться выполнения скрипта если окно скрыто
-
     game.load.script('BlurX', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurX.js');
     game.load.script('BlurY', 'https://cdn.rawgit.com/photonstorm/phaser-ce/master/filters/BlurY.js');
     // Select
