@@ -12,10 +12,10 @@ func placeNewBox(ws *websocket.Conn, msg Message) {
 	if user != nil {
 		err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 		if err != nil {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		} else {
-			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-			globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY}
+			globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+			globalPipe <- Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY, idMap: user.GetSquad().MapID}
 		}
 	}
 }
@@ -33,24 +33,26 @@ func openBox(ws *websocket.Conn, msg Message) {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 			if dist < 150 {
-				if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil{
+				if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
 					user.GetSquad().GetMove() <- true // останавливаем движение
 				}
 
 				if mapBox.Protect {
 					if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
 						globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-							Size: mapBox.CapacitySize, idUserSend: user.GetID()}
+							Size: mapBox.CapacitySize, idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 					} else {
 						if msg.BoxPassword == 0 {
-							globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password", idUserSend: user.GetID()}
+							globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password",
+								idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 						} else {
-							globalPipe <- Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password", idUserSend: user.GetID()}
+							globalPipe <- Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password",
+								idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 						}
 					}
 				} else {
 					globalPipe <- Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-						Size: mapBox.CapacitySize, idUserSend: user.GetID()}
+						Size: mapBox.CapacitySize, idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 				}
 			}
 		}
@@ -89,9 +91,9 @@ func useBox(ws *websocket.Conn, msg Message) {
 		}
 
 		if err != nil {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		}
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
+		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 	}
 }
 
@@ -105,7 +107,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 	if msg.Event == "boxToBoxItem" {
 		err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
 		if err != nil {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		} else {
 			updateBoxInfo(getBox)
 			updateBoxInfo(toBox)
@@ -116,7 +118,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 		for _, i := range msg.Slots {
 			err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
 			if err != nil {
-				globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+				globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			} else {
 				updateBoxInfo(getBox)
 				updateBoxInfo(toBox)
@@ -124,7 +126,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 		}
 	}
 
-	globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
+	globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 }
 
 func updateBoxInfo(box *boxInMap.Box) {
@@ -141,7 +143,7 @@ func updateBoxInfo(box *boxInMap.Box) {
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
 			globalPipe <- Message{Event: "UpdateBox", idUserSend: user.GetID(), BoxID: box.ID,
-				Inventory: box.GetStorage(), Size: box.CapacitySize}
+				Inventory: box.GetStorage(), Size: box.CapacitySize, idMap: user.GetSquad().MapID}
 		}
 	}
 }

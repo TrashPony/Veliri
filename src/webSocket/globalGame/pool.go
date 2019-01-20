@@ -24,6 +24,7 @@ var globalPipe = make(chan Message)
 type Message struct {
 	idSender      int
 	idUserSend    int
+	idMap         int
 	Event         string                          `json:"event"`
 	Map           *_map.Map                       `json:"map"`
 	Error         string                          `json:"error"`
@@ -67,6 +68,7 @@ type Message struct {
 	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`
+	Cloud         *cloud                          `json:"cloud"`
 }
 
 type hostileMS struct {
@@ -223,17 +225,17 @@ func MoveSender() {
 			var err error
 
 			// получают все кроме отправителя
-			if client.GetID() != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 {
+			if client.GetID() != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 && client.GetSquad().MapID == resp.idMap {
 				err = ws.WriteJSON(resp)
 			}
 
 			// получает только отправитель
-			if client.GetID() == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 {
+			if client.GetID() == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 && client.GetSquad().MapID == resp.idMap {
 				err = ws.WriteJSON(resp)
 			}
 
 			// получают все
-			if resp.idSender == 0 && resp.idUserSend == 0 {
+			if resp.idSender == 0 && resp.idUserSend == 0 && client.GetSquad().MapID == resp.idMap {
 				err = ws.WriteJSON(resp)
 			}
 

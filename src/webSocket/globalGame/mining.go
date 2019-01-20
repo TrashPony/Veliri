@@ -16,18 +16,18 @@ func startMining(ws *websocket.Conn, msg Message) {
 	if user != nil {
 		reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, user.GetSquad().MapID)
 		if reservoir == nil {
-			globalPipe <- Message{Event: "Error", Error: "no reservoir", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "no reservoir", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
 		miningEquip := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if miningEquip == nil || miningEquip.Equip == nil && miningEquip.Equip.Applicable == reservoir.Type {
-			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
 		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			globalPipe <- Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
@@ -36,7 +36,7 @@ func startMining(ws *websocket.Conn, msg Message) {
 		if int(dist) < miningEquip.Equip.Radius*100 && !miningEquip.Equip.MiningChecker {
 
 			globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Equip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R}
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, idMap: user.GetSquad().MapID}
 
 			miningEquip.Equip.MiningChecker = true
 			miningEquip.Equip.CreateMining()
@@ -44,11 +44,11 @@ func startMining(ws *websocket.Conn, msg Message) {
 			go Mining(ws, user, miningEquip.Equip, reservoir, msg)
 		} else {
 			if int(dist) > miningEquip.Equip.Radius*100 {
-				globalPipe <- Message{Event: "Error", Error: "not enough distance", idUserSend: user.GetID()}
+				globalPipe <- Message{Event: "Error", Error: "not enough distance", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 				return
 			}
 			if miningEquip.Equip.MiningChecker {
-				globalPipe <- Message{Event: "Error", Error: "extractor work", idUserSend: user.GetID()}
+				globalPipe <- Message{Event: "Error", Error: "extractor work", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 				return
 			}
 		}
@@ -67,7 +67,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 				if exitNow {
 					// игрок сам отменить копание
 					globalPipe <- Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot}
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}
 					exit = true
 				}
 			default:
@@ -75,7 +75,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 				if ws == nil || Clients.GetByWs(ws) == nil {
 					// игрок вышел
 					globalPipe <- Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot}
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}
 					exit = true
 				}
 
@@ -85,7 +85,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 				if int(dist) > miningEquip.Radius*100 {
 					// игрок уехал слишком далеко
 					globalPipe <- Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot}
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}
 					exit = true
 				}
 
@@ -101,7 +101,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		// проверка на полный трюм
 		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			globalPipe <- Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			miningEquip.MiningChecker = false
 			return
 		}
@@ -129,21 +129,24 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		update.Squad(user.GetSquad(), true)
 
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID()}
-		globalPipe <- Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count}
+		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		globalPipe <- Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count,
+			idMap: user.GetSquad().MapID}
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
 			globalPipe <- Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot}
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}
 
 			maps.Maps.RemoveReservoirByQR(reservoir.Q, reservoir.R, reservoir.MapID)
-			globalPipe <- Message{Event: "destroyReservoir", OtherUser: GetShortUserInfo(user), Q: reservoir.Q, R: reservoir.R}
+			globalPipe <- Message{Event: "destroyReservoir", OtherUser: GetShortUserInfo(user), Q: reservoir.Q,
+				R: reservoir.R, idMap: user.GetSquad().MapID}
+
 			miningEquip.MiningChecker = false
 			return
 		} else {
 			globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R}
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, idMap: user.GetSquad().MapID}
 		}
 	}
 }

@@ -49,6 +49,7 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 				TypeID: typeBox.TypeID, DestroyTime: time.Now()}
 
 			newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
+			newBox.GetStorage().SetSlotsSize(999)
 
 			if typeBox.Protect {
 				newBox.SetPassword(password)
@@ -107,6 +108,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 				DestroyTime: time.Now()}
 
 			newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
+			newBox.GetStorage().SetSlotsSize(999)
 
 			createBox := false
 			for i, slot := range slots {

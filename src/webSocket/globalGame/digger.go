@@ -20,7 +20,7 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
@@ -45,7 +45,8 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 			}
 		}
 
-		globalPipe <- Message{Event: "SelectDigger", Coordinates: result, idUserSend: user.GetID(), TypeSlot: msg.TypeSlot, Slot: msg.Slot}
+		globalPipe <- Message{Event: "SelectDigger", Coordinates: result, idUserSend: user.GetID(),
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}
 	}
 }
 
@@ -61,7 +62,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 	if user != nil && squadCoordinate != nil {
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
@@ -147,7 +148,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
-							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name}
+							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID}
 
 						usersGlobalWs, mx := Clients.GetAll()
 						mx.Unlock()
@@ -156,16 +157,18 @@ func useDigger(ws *websocket.Conn, msg Message) {
 							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
 							if err == nil {
-								globalPipe <- Message{Event: "AnomalySignal", idUserSend: otherUser.GetID(), Anomalies: anomalies}
+								globalPipe <- Message{Event: "AnomalySignal", idUserSend: otherUser.GetID(),
+									Anomalies: anomalies, idMap: user.GetSquad().MapID}
 							} else {
-								globalPipe <- Message{Event: "RemoveAnomalies", idUserSend: otherUser.GetID()}
+								globalPipe <- Message{Event: "RemoveAnomalies", idUserSend: otherUser.GetID(),
+									idMap: user.GetSquad().MapID}
 							}
 						}
 					} else {
 						mpCoordinate.DynamicObject = &dynamicObject
 						globalPipe <- Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
-							Name: diggerSlot.Equip.Name}
+							Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID}
 					}
 				}
 			}

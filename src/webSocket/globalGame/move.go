@@ -16,7 +16,7 @@ func move(ws *websocket.Conn, msg Message) {
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
 	if find && user.InBaseID == 0 {
-		if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil{
+		if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
 			user.GetSquad().GetMove() <- true // останавливаем прошлое движение
 		}
 
@@ -31,10 +31,10 @@ func move(ws *websocket.Conn, msg Message) {
 		}
 
 		if err != nil && len(path) == 0 {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		}
 
-		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID()}
+		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		if err != nil {
 			DisconnectUser(user)
 		}
@@ -58,7 +58,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 			if user.GetSquad().HighGravity != newGravity {
 				user.GetSquad().HighGravity = newGravity
-				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad()}
+				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID}
 				select {
 				case exitNow := <-user.GetSquad().GetMove():
 					if exitNow {
@@ -104,13 +104,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 			if err == nil {
-				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies}
+				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID}
 			}
 
 			// если на пути встречается ящик то мы его давим и падает скорость
 			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID)
 			if mapBox != nil {
-				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID}
+				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
 				boxes.Boxes.DestroyBox(mapBox)
 				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
 				select {
@@ -135,10 +135,10 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 
 			// говорим юзеру как расходуется его топливо
 			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots}
+				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID}
 
 			// оповещаем мир как двигается отряд
-			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit}
+			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
 
 			if i+1 != len(path) { // бeз этого ифа канал будет ловить деад лок
 				time.Sleep(100 * time.Millisecond)

@@ -30,7 +30,7 @@ func loadGame(ws *websocket.Conn, msg Message) {
 		user.GetSquad().CreateMove()
 		user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 
-		globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID()}
+		globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID(), idMap: user.GetSquad().MapID}
 		globalPipe <- Message{
 			Event:      msg.Event,
 			Map:        mp,
@@ -42,15 +42,16 @@ func loadGame(ws *websocket.Conn, msg Message) {
 			idUserSend: user.GetID(),
 			Credits:    user.GetCredits(),
 			Experience: user.GetExperiencePoint(),
+			idMap:      user.GetSquad().MapID,
 		}
 
 		// находим аномалии
 		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 		anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 		if err == nil {
-			globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies}
+			globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID}
 		}
 	} else {
-		globalPipe <- Message{Event: "Error", Error: "no allow", idUserSend: user.GetID()}
+		globalPipe <- Message{Event: "Error", Error: "no allow", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 	}
 }

@@ -15,7 +15,7 @@ func evacuationSquad(ws *websocket.Conn) {
 	}
 
 	if user.GetSquad().HighGravity {
-		globalPipe <- Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID()}
+		globalPipe <- Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 		return
 	}
 
@@ -31,7 +31,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		if err != nil {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			return
 		}
 
@@ -40,12 +40,12 @@ func evacuationSquad(ws *websocket.Conn) {
 		}
 
 		globalPipe <- Message{Event: "startMoveEvacuation", OtherUser: GetShortUserInfo(user),
-			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID}
+			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, idMap: user.GetSquad().MapID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)
 
 		for _, pathUnit := range path {
 			globalPipe <- Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
-				TransportID: transport.ID}
+				TransportID: transport.ID, idMap: user.GetSquad().MapID}
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -54,7 +54,7 @@ func evacuationSquad(ws *websocket.Conn) {
 		}
 
 		globalPipe <- Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
-			TransportID: transport.ID}
+			TransportID: transport.ID, idMap: user.GetSquad().MapID}
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
 		user.GetSquad().InSky = true
@@ -62,7 +62,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		for _, pathUnit := range path {
 			globalPipe <- Message{Event: "ReturnEvacuation", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit,
-				BaseID: baseID, TransportID: transport.ID}
+				BaseID: baseID, TransportID: transport.ID, idMap: user.GetSquad().MapID}
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -73,14 +73,14 @@ func evacuationSquad(ws *websocket.Conn) {
 		}
 
 		globalPipe <- Message{Event: "stopEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
-			TransportID: transport.ID}
+			TransportID: transport.ID, idMap: user.GetSquad().MapID}
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 
 		user.InBaseID = baseID
 		user.GetSquad().GlobalX = 0
 		user.GetSquad().GlobalY = 0
 
-		globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID()}
+		globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 
 		DisconnectUser(user)
 

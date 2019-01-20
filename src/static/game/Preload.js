@@ -135,5 +135,20 @@ function preload() {
     game.load.image('tundra', 'http://' + window.location.host + '/assets/terrainTextures/tundra.jpg');
     game.load.image('vulcanic', 'http://' + window.location.host + '/assets/terrainTextures/vulcanic.jpg');
 
+    //Clouds
+    game.load.image('cloud0', 'http://' + window.location.host + '/assets/map/clouds/cloud13.png');
+    game.load.image('cloud1', 'http://' + window.location.host + '/assets/map/clouds/cloud1.png');
+    game.load.image('cloud2', 'http://' + window.location.host + '/assets/map/clouds/cloud2.png');
+    game.load.image('cloud3', 'http://' + window.location.host + '/assets/map/clouds/cloud3.png');
+    game.load.image('cloud4', 'http://' + window.location.host + '/assets/map/clouds/cloud4.png');
+    game.load.image('cloud5', 'http://' + window.location.host + '/assets/map/clouds/cloud5.png');
+    game.load.image('cloud6', 'http://' + window.location.host + '/assets/map/clouds/cloud6.png');
+    game.load.image('cloud7', 'http://' + window.location.host + '/assets/map/clouds/cloud7.png');
+    game.load.image('cloud8', 'http://' + window.location.host + '/assets/map/clouds/cloud8.png');
+    game.load.image('cloud9', 'http://' + window.location.host + '/assets/map/clouds/cloud9.png');
+    game.load.image('cloud10', 'http://' + window.location.host + '/assets/map/clouds/cloud10.png');
+    game.load.image('cloud11', 'http://' + window.location.host + '/assets/map/clouds/cloud11.png');
+    game.load.image('cloud12', 'http://' + window.location.host + '/assets/map/clouds/cloud12.png');
+
     autoPreload();
 }

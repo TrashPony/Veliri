@@ -122,4 +122,8 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "IntoToBase") {
         location.href = "http://" + window.location.host + "/lobby";
     }
+
+    if (jsonData.event === "MoveCloud") {
+        CreateCloud(jsonData)
+    }
 }

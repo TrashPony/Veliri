@@ -17,7 +17,7 @@ func RespCheck(respBase *base.Base) bool { // заставляет игроко�
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 150 {
 			if !user.GetSquad().ForceEvacuation {
-				globalPipe <- Message{Event: "setFreeResp", idUserSend: user.GetID()}
+				globalPipe <- Message{Event: "setFreeResp", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 				go ForceEvacuation(ws, user, x, y)
 			}
 			lock = true
@@ -42,7 +42,7 @@ func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y int) {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 		if dist > 150 {
-			globalPipe <- Message{Event: "removeNoticeFreeResp", idUserSend: user.GetID()}
+			globalPipe <- Message{Event: "removeNoticeFreeResp", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			user.GetSquad().ForceEvacuation = false
 			break
 		} else {
