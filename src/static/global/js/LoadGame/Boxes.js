@@ -14,14 +14,14 @@ function CreateBox(mapBox) {
         let xy = GetXYCenterHex(mapBox.q, mapBox.r);
         let box = game.floorObjectLayer.create(xy.x, xy.y, mapBox.type);
         box.anchor.setTo(0.5);
-        box.scale.set(0.2);
+        box.scale.set(0.1);
         box.angle = mapBox.rotate;
         mapBox.sprite = box;
 
         if (!mapBox.underground) {
             let boxShadow = game.floorObjectLayer.create(xy.x + game.shadowXOffset, xy.y + game.shadowYOffset, mapBox.type);
             boxShadow.anchor.setTo(0.5);
-            boxShadow.scale.set(0.2);
+            boxShadow.scale.set(0.1);
             boxShadow.tint = 0x000000;
             boxShadow.alpha = 0.4;
             boxShadow.angle = mapBox.rotate;
@@ -37,7 +37,7 @@ function CreateBox(mapBox) {
         box.events.onInputOver.add(function () {
             boxLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, mapBox.type);
             boxLine.anchor.setTo(0.5);
-            boxLine.scale.set(0.22);
+            boxLine.scale.set(0.11);
             boxLine.tint = 0x00FF00;
             boxLine.angle = mapBox.rotate;
         });

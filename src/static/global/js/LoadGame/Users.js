@@ -9,7 +9,7 @@ function CreateUser(squad) {
         }
     }
 
-    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate + 90, true);
+    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate + 90);
     game.squad = squad;
 }
 

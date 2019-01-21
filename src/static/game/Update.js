@@ -1,9 +1,9 @@
 function update() {
 
-    if (game && game.mapPoints) {
-        dynamicMap(game.floorLayer, game.mapPoints);
-        DynamicShadowMap();
-    }
+    // if (game && game.mapPoints) {
+    //     // todo идея хорошая реализация нет dynamicMap(game.floorLayer, game.mapPoints);
+    //     // todo идея хорошая реализация нет DynamicShadowMap();
+    // }
 
     if (game && game.typeService === "battle") {
         UpdateRotateUnit(); // функция для повора юнитовский спрайтов
@@ -14,7 +14,7 @@ function update() {
     if (game && game.typeService === "global") {
         if (game.squad && game.squad.toBase && game.squad.toBase.into) {
             let dist = game.physics.arcade.distanceToXY(game.squad.sprite, game.squad.toBase.x, game.squad.toBase.y);
-            if (dist < 300) {
+                if (dist < 150) {
                 global.send(JSON.stringify({
                     event: "IntoToBase",
                     base_id: game.squad.toBase.baseID
@@ -24,7 +24,7 @@ function update() {
 
         if (game.squad && game.squad.toBox && game.squad.toBox.to) {
             let dist = game.physics.arcade.distanceToXY(game.squad.sprite, game.squad.toBox.x, game.squad.toBox.y);
-            if (dist < 300) {
+            if (dist < 150) {
                 global.send(JSON.stringify({
                     event: "openBox",
                     box_id: game.squad.toBox.boxID

@@ -1,4 +1,17 @@
+let flagMiniMap = true;
+
 function CreateMiniMap(map) {
+
+    // отпмизация мини карты что бы не ресовалось чаще чем раз в 100 мс
+    if (!flagMiniMap) {
+        return
+    }
+    flagMiniMap = false;
+    setTimeout(function () {
+        flagMiniMap = true;
+    }, 100);
+
+
     let canvas = document.getElementById("canvasMap");
 
     if (!game.map) return;

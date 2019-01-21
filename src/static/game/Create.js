@@ -5,7 +5,7 @@ function CreateGame(map, loadFunc) {
     LoadFunc = loadFunc;
     Map = map;
 
-    return new Phaser.Game('100', '100', Phaser.WEBGL, 'main', {
+    return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -17,11 +17,11 @@ function create(game) {
 
 
     // размеры гексов карты по умолчанию
-    game.hexagonWidth = 100;
-    game.hexagonHeight = 111;
+    game.hexagonWidth = 50;
+    game.hexagonHeight = 55;
     // параметры смещения тени игры
-    game.shadowXOffset = 8;
-    game.shadowYOffset = 10;
+    game.shadowXOffset = 4;
+    game.shadowYOffset = 5;
     // игровая карта
     game.map = Map;
 
@@ -29,14 +29,14 @@ function create(game) {
 
     game.time.advancedTiming = true; // настройка fts
     game.time.desiredFps = 60;       // макс фпс 60
-    game.time.slowMotion = 0;        // плавный переход в мин фпс
+    game.time.slowMotion = 1;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
 
-    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2); //размеры карты
+    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 90 * game.map.RSize / 2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
-    game.bmdTerrain = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize / 2);
+    game.bmdTerrain = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 90 * game.map.RSize / 2);
     game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
 
     game.floorLayer = game.add.group();

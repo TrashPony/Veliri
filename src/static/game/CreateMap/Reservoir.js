@@ -37,7 +37,7 @@ function CreateReservoir(reservoir, q, r) {
     game.map.reservoir[q][r].sprite.events.onInputOver.add(function () {
         reservoirLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, reservoir.name);
         reservoirLine.anchor.setTo(0.5);
-        reservoirLine.scale.set(0.55);
+        reservoirLine.scale.set(0.55/2);
         reservoirLine.tint = 0x00FF00;
         reservoirLine.angle = reservoir.rotate;
 

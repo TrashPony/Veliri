@@ -9,8 +9,8 @@ import (
 	"math"
 )
 
-const HexagonHeight = 111 // Константы описывающие свойства гексов на игровом поле
-const HexagonWidth = 100
+const HexagonHeight = 55 // Константы описывающие свойства гексов на игровом поле
+const HexagonWidth = 50
 const VerticalOffset = HexagonHeight * 3 / 4
 const HorizontalOffset = HexagonWidth
 
@@ -29,7 +29,7 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
 
-	maxSpeed := float64(user.GetSquad().MatherShip.Speed * 3)
+	maxSpeed := float64(user.GetSquad().MatherShip.Speed*3)
 	minSpeed := float64(user.GetSquad().MatherShip.Speed)
 	speed := float64(user.GetSquad().MatherShip.Speed)
 

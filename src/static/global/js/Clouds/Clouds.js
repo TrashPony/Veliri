@@ -17,6 +17,7 @@ function CreateCloud(jsonData) {
         if (!find) {
 
             let cloud = game.cloudsLayer.create(jsonData.cloud.x, jsonData.cloud.y, jsonData.cloud.name);
+            cloud.scale.setTo(0.5);
             game.physics.enable(cloud, Phaser.Physics.ARCADE);
 
             cloud.alpha = jsonData.cloud.alpha;

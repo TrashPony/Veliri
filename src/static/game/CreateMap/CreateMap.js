@@ -61,9 +61,9 @@ function CreateMap() {
 function CreateTexture() {
     for (let i in game.mapPoints) {
         if (game.mapPoints[i].textureOverFlore !== '') {
-            let bmd = game.make.bitmapData(1024, 1024);
+            let bmd = game.make.bitmapData(512, 512);
             bmd.alphaMask(game.mapPoints[i].textureOverFlore, 'brush');
-            game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 512, game.mapPoints[i].y - 512);
+            game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 256, game.mapPoints[i].y - 256);
             bmd.destroy();
         }
     }

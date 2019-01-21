@@ -19,7 +19,7 @@ function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed
 
     let object = game.floorObjectLayer.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5, 0.5);
-    object.scale.set(scale / 100);
+    object.scale.set((scale / 100) / 2);
     object.angle = rotate;
 
     object.animations.add('objAnimate');
@@ -28,7 +28,7 @@ function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed
     if (needShadow) {
         let shadow = game.floorObjectLayer.create(x + game.shadowXOffset + xOffset, y - game.shadowYOffset + 20 + yOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
-        shadow.scale.set(scale / 100);
+        shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;
         shadow.alpha = 0.6;
         shadow.angle = rotate;

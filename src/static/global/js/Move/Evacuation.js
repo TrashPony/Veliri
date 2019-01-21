@@ -7,13 +7,13 @@ function Evacuation() {
 function CreateEvacuation(x, y, baseId, transportId) {
     let shadow = game.flyObjectsLayer.create(x + game.shadowXOffset, y + game.shadowYOffset, 'evacuation');
     shadow.anchor.setTo(0.5);
-    shadow.scale.set(0.2);
+    shadow.scale.set(0.1);
     shadow.alpha = 0;
     shadow.tint = 0x000000;
 
     let evacuation = game.flyObjectsLayer.create(x, y, 'evacuation');
     evacuation.anchor.setTo(0.5);
-    evacuation.scale.set(0.2);
+    evacuation.scale.set(0.1);
     evacuation.alpha = 0;
     evacuation.shadow = shadow;
 
@@ -67,8 +67,8 @@ function EvacuationUp(sprite, squad) {
         x: sprite.x + game.shadowXOffset * 10,
         y: sprite.y + game.shadowYOffset * 10
     }, 1000, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(sprite.shadow.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(sprite.scale).to({x: 0.3, y: 0.3}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.shadow.scale).to({x: 0.15, y: 0.15}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.scale).to({x: 0.15, y: 0.15}, 1000, Phaser.Easing.Linear.None, true, 0);
 
     if (squad) {
 
@@ -91,8 +91,8 @@ function EvacuationDown(sprite, squad, destroy) {
         x: sprite.x + game.shadowXOffset,
         y: sprite.y + game.shadowYOffset
     }, 1000, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(sprite.shadow.scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(sprite.scale).to({x: 0.2, y: 0.2}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.shadow.scale).to({x: 0.1, y: 0.1}, 1000, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(sprite.scale).to({x: 0.1, y: 0.1}, 1000, Phaser.Easing.Linear.None, true, 0);
 
     if (squad) {
         game.add.tween(squad.bodyShadow).to({

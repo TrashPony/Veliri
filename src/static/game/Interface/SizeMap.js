@@ -7,9 +7,9 @@ function SizeGameMap(size) {
         game.camera.scale.x += size;
         game.camera.scale.y += size;
 
-        if (game.camera.scale.x < 0.7) {
-            game.camera.scale.x = 0.7;
-            game.camera.scale.y = 0.7;
+        if (game.camera.scale.x < 1) {
+            game.camera.scale.x = 1;
+            game.camera.scale.y = 1;
         } else if(game.camera.scale.x > 2) {
             game.camera.scale.x = 2;
             game.camera.scale.y = 2;
