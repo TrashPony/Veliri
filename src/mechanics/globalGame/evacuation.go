@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"errors"
-	"../player"
-	"../gameObjects/map"
 	"../factories/bases"
 	"../gameObjects/base"
+	"../gameObjects/map"
+	"../player"
+	"errors"
 	"sync"
 )
 
@@ -46,7 +46,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 				startY = transport.Y
 			}
 
-			_, path := MoveTo(float64(startX), float64(startY), 125, 15, 15,
+			_, path := MoveTo(float64(startX), float64(startY), 15, 15, 15,
 				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
 				true, nil, false, false)
 

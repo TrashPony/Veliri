@@ -1,0 +1,64 @@
+#handlerBlock{
+
+}
+
+#handlerBlock h4 {
+    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
+    color: aliceblue;
+    text-shadow: 0 0 2px black;
+    margin: 10px 0 0 8px;
+    border-radius: 5px;
+    float: left;
+    width: 100%;
+}
+
+#handlerBlock div {
+    border-radius: 5px;
+    width: 39px;
+    height: 39px;
+    display: inline-block;
+    border: 1px solid #959595;
+    background-color: #4c4c4c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    vertical-align: top;
+    margin: 1px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    transition: 0.2s;
+    margin-top: 10px;
+}
+
+#handlerBlock div:active {
+    transform: scale(0.95);
+}
+
+#handlerBlockOption {
+    position: absolute;
+    top: 0;
+    left: -275px;
+    background: linear-gradient(22deg, rgb(221, 112, 52), #ffa50f);
+    height: 175px;
+    border-radius: 10px;
+    text-shadow: 0 0 2px black;
+    padding-top: 10px;
+    text-align: left;
+    width: 270px;
+}
+
+#handlerBlockOption select {
+    width: 250px;
+    margin: 10px;
+    display: block;
+}
+
+#handlerBlockOption div {
+    padding: 0 10px;
+}
+
+#handlerBlockOption div span {
+    margin-right: 10px;
+}
+
+#handlerBlockOption input[type='submit'] {
+    margin: 10px;
+}

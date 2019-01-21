@@ -1,8 +1,8 @@
 function initMove(e) {
     if (game.input.activePointer.leftButton.isDown) {
-        if (game.squad.toBase) {
-            game.squad.toBase.into = false
-        }
+        // if (game.squad.toBase) {
+        //     game.squad.toBase.into = false
+        // }
 
         if (game.squad.toBox) {
             game.squad.toBox.to = false

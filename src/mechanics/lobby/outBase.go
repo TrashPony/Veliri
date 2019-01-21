@@ -22,7 +22,7 @@ func OutBase(user *player.Player) error {
 			return errors.New("no base")
 		}
 
-		for globalGame.RespCheck(gameBase) {
+		for globalGame.CheckTransportCoordinate(gameBase.RespQ, gameBase.RespR, 10) {
 			// запускаем механизм проверки и эвакуации игрока с респауна))))
 			time.Sleep(time.Millisecond * 100)
 		}

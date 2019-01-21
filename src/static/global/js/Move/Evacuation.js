@@ -49,7 +49,11 @@ function startMoveEvacuation(jsonData) {
     setTimeout(function () {
         CreateMiniMap(game.map);
 
-        let evacuation = CreateEvacuation(x, y, jsonData.base_id, jsonData.transport_id);
+        let evacuation = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
+        if (!evacuation) {
+            console.log(jsonData);
+            evacuation = CreateEvacuation(x, y, jsonData.base_id, jsonData.transport_id);
+        }
 
         if (game.squad.id === jsonData.other_user.squad_id) {
             game.camera.follow(evacuation);
@@ -58,7 +62,6 @@ function startMoveEvacuation(jsonData) {
         setTimeout(function () {
             EvacuationUp(evacuation)
         }, 700);
-
     }, 500);
 }
 
@@ -71,7 +74,6 @@ function EvacuationUp(sprite, squad) {
     game.add.tween(sprite.scale).to({x: 0.15, y: 0.15}, 1000, Phaser.Easing.Linear.None, true, 0);
 
     if (squad) {
-
         game.unitLayer.remove(squad);
         game.flyObjectsLayer.add(squad);
         game.flyObjectsLayer.swap(sprite, squad);
@@ -104,8 +106,7 @@ function EvacuationDown(sprite, squad, destroy) {
 
     if (destroy) {
         tween.onComplete.add(function () {
-            sprite.destroy();
-            sprite.shadow.destroy();
+            EvacuationUp(sprite)
         })
     }
 }
@@ -132,8 +133,8 @@ function evacuationMove(jsonData, squadMove) {
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
         sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id);
-        sprite.scale.set(0.3);
-        sprite.shadow.scale.set(0.3);
+        sprite.scale.set(0.15);
+        sprite.shadow.scale.set(0.15);
     }
 
     game.add.tween(sprite).to({

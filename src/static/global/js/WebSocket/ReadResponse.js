@@ -35,6 +35,10 @@ function ReadResponse(jsonData) {
         if (game.bases) startMoveEvacuation(jsonData)
     }
 
+    if (jsonData.event === "FreeMoveEvacuation") {
+        FreeMoveEvacuation(jsonData)
+    }
+
     if (jsonData.event === "MoveEvacuation") {
         if (game.bases) evacuationMove(jsonData, null)
     }
@@ -79,11 +83,11 @@ function ReadResponse(jsonData) {
         StopMining(jsonData)
     }
 
-    if (jsonData.event === "setFreeResp") {
+    if (jsonData.event === "setFreeCoordinate") {
         Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 11, true, "setFreeResp");
     }
 
-    if (jsonData.event === "removeNoticeFreeResp") {
+    if (jsonData.event === "removeNoticeFreeCoordinate") {
         if (document.getElementById("setFreeResp")) document.getElementById("setFreeResp").remove();
     }
 

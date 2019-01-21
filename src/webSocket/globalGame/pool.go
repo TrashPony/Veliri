@@ -160,9 +160,9 @@ func Reader(ws *websocket.Conn) {
 			stopMove(ws, true)
 		}
 
-		if msg.Event == "IntoToBase" {
-			intoToBase(ws, msg)
-		}
+		//if msg.Event == "IntoToBase" {
+		//	intoToBase(ws, msg)
+		//}
 
 		if msg.Event == "ThrowItems" {
 			throwItems(ws, msg)

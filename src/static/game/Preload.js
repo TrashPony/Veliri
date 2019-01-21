@@ -148,5 +148,10 @@ function preload() {
     game.load.image('cloud11', 'http://' + window.location.host + '/assets/map/clouds/cloud11.png');
     game.load.image('cloud12', 'http://' + window.location.host + '/assets/map/clouds/cloud12.png');
 
+    // Icons
+    game.load.image('transportIcon', 'http://' + window.location.host + '/assets/icons/transport.png');
+    game.load.image('baseInIcon', 'http://' + window.location.host + '/assets/icons/baseIcon.png');
+    game.load.image('sectorOutIcon', 'http://' + window.location.host + '/assets/icons/sectorOutIcon.png');
+
     autoPreload();
 }

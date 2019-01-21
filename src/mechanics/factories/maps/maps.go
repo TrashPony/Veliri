@@ -2,15 +2,15 @@ package maps
 
 import (
 	"../../db/get"
-	"../../gameObjects/coordinate"
 	"../../gameObjects/anomaly"
+	"../../gameObjects/coordinate"
 	"../../gameObjects/map"
 	"../../gameObjects/resource"
 )
 
 type MapStore struct {
-	maps           map[int]_map.Map
-	anomaly        map[int][]*anomaly.Anomaly
+	maps    map[int]_map.Map
+	anomaly map[int][]*anomaly.Anomaly
 }
 
 var Maps = NewMapStore()
@@ -24,6 +24,11 @@ func NewMapStore() *MapStore {
 			for _, mapCoordinate := range q {
 				if mapCoordinate.Type == "respawn" {
 					respawns++
+				}
+
+				mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
+				if mapCoordinate.Handler != "" || mapCoordinate.Transport {
+					mp.HandlersCoordinates = append(mp.HandlersCoordinates, mapCoordinate)
 				}
 			}
 		}

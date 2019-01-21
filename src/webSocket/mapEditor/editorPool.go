@@ -49,6 +49,12 @@ type Message struct {
 	Q     int    `json:"q"`
 	R     int    `json:"r"`
 
+	ToQ         int    `json:"to_q"`
+	ToR         int    `json:"to_r"`
+	ToBaseID    int    `json:"to_base_id"`
+	ToMapID     int    `json:"to_map_id"`
+	TypeHandler string `json:"type_handler"`
+
 	IDType int `json:"id_type"`
 
 	NewIDType int `json:"new_id_type"`
@@ -219,6 +225,26 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "removeOverTexture" {
 			mapEditor.RemoveTextures(msg.ID, msg.Q, msg.R)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "addTransport" {
+			mapEditor.PlaceTransport(msg.ID, msg.Q, msg.R)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "removeTransport" {
+			mapEditor.RemoveTransport(msg.ID, msg.Q, msg.R)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "addHandler" {
+			mapEditor.PlaceHandler(msg.ID, msg.Q, msg.R, msg.ToQ, msg.ToR, msg.ToBaseID, msg.ToMapID, msg.TypeHandler)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "removeHandler" {
+			mapEditor.RemoveHandler(msg.ID, msg.Q, msg.R)
 			selectMap(msg, ws)
 		}
 	}

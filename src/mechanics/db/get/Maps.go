@@ -48,7 +48,7 @@ func Maps() map[int]_map.Map {
 	return allMap
 }
 
-func GetMapByID(id int) *_map.Map {
+func MapByID(id int) *_map.Map {
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"Select "+
 		"id, "+
@@ -90,7 +90,7 @@ func CoordinatesMap(mp *_map.Map) {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.q, mc.r, ct.type, ct.texture_flore, "+
 		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
 		"ct.impact_radius, mc.impact, ct.scale, ct.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
-		"ct.unit_overlap, mc.texture_over_flore "+
+		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_q, mc.to_r, mc.to_base_id, mc.to_map_id "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -108,7 +108,9 @@ func CoordinatesMap(mp *_map.Map) {
 			&gameCoordinate.Attack, &gameCoordinate.Level, &gameCoordinate.AnimateSpriteSheets,
 			&gameCoordinate.AnimateLoop, &gameCoordinate.ImpactRadius, &impact, &gameCoordinate.Scale,
 			&gameCoordinate.Shadow, &gameCoordinate.ObjRotate, &gameCoordinate.AnimationSpeed, &gameCoordinate.XOffset,
-			&gameCoordinate.YOffset, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore)
+			&gameCoordinate.YOffset, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
+			&gameCoordinate.Transport, &gameCoordinate.Handler, &gameCoordinate.ToQ, &gameCoordinate.ToR,
+			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -32,7 +32,6 @@ function create(game) {
     game.time.slowMotion = 1;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-
     game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 90 * game.map.RSize / 2); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 

@@ -1,15 +1,14 @@
 package globalGame
 
 import (
-	"../../mechanics/gameObjects/base"
 	"../../mechanics/globalGame"
 	"../../mechanics/player"
 	"github.com/gorilla/websocket"
 	"time"
 )
 
-func RespCheck(respBase *base.Base) bool { // заставляет игроков эвакуироватся с точки респауна базы
-	x, y := globalGame.GetXYCenterHex(respBase.RespQ, respBase.RespR)
+func CheckTransportCoordinate(q, r, seconds int) bool { // заставляет игроков эвакуироватся с точки респауна базы
+	x, y := globalGame.GetXYCenterHex(q, r)
 
 	lock := false
 	usersGlobalWs, mx := Clients.GetAll()
@@ -17,8 +16,9 @@ func RespCheck(respBase *base.Base) bool { // заставляет игроко�
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 150 {
 			if !user.GetSquad().ForceEvacuation {
-				globalPipe <- Message{Event: "setFreeResp", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
-				go ForceEvacuation(ws, user, x, y)
+				globalPipe <- Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds}
+
+				go ForceEvacuation(ws, user, x, y, seconds)
 			}
 			lock = true
 			user.GetSquad().ForceEvacuation = true
@@ -29,7 +29,7 @@ func RespCheck(respBase *base.Base) bool { // заставляет игроко�
 	return lock
 }
 
-func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y int) {
+func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y, seconds int) {
 	timeCount := 0
 	for {
 		timeCount++
@@ -41,12 +41,12 @@ func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y int) {
 
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
-		if dist > 150 {
-			globalPipe <- Message{Event: "removeNoticeFreeResp", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		if dist > 75 {
+			globalPipe <- Message{Event: "removeNoticeFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
 			user.GetSquad().ForceEvacuation = false
 			break
 		} else {
-			if timeCount > 100 && !user.GetSquad().Evacuation {
+			if timeCount > seconds*10 && !user.GetSquad().Evacuation {
 				go evacuationSquad(ws)
 			}
 		}

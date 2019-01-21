@@ -1,9 +1,9 @@
 package coordinate
 
 import (
+	"../dynamicMapObject"
 	"../effect"
 	"strconv"
-	"../dynamicMapObject"
 )
 
 type Coordinate struct {
@@ -38,6 +38,18 @@ type Coordinate struct {
 	DynamicObject       *dynamicMapObject.DynamicObject `json:"dynamic_object"`
 	H, G, F             int
 	Parent              *Coordinate
+
+	/* если тру то с течением времени или по эвенту игрока эвакуируют с этой клетки без его желания */
+	Transport bool `json:"transport"`
+	/* если строка не пуста значит эта клетка прослушивается, например вход в базу (base) или переход в другой сектор (sector),
+	   и когда игрок на ней происходит событие */
+	Handler string `json:"handler"`
+
+	/* соотвественно место куда попадает игрок после ивента */
+	ToQ      int `json:"to_q"`
+	ToR      int `json:"to_r"`
+	ToBaseID int `json:"to_base_id"`
+	ToMapID  int `json:"to_map_id"`
 }
 
 func (coor *Coordinate) GetZ() int {

@@ -15,7 +15,7 @@ func getMapList(msg Message, ws *websocket.Conn) {
 }
 
 func selectMap(msg Message, ws *websocket.Conn) {
-	selectMap := get.GetMapByID(msg.ID)
+	selectMap := get.MapByID(msg.ID)
 
 	resp := Response{Event: "MapSelect", Map: *selectMap, Bases: bases.Bases.GetBasesByMap(selectMap.Id)}
 

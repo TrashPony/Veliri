@@ -1,4 +1,4 @@
-function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture) {
+function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport) {
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
@@ -25,9 +25,14 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture) {
                             continue
                         }
 
+                        if (transport && !map[q][r].transport) {
+                            continue
+                        }
+
                         let xy = GetXYCenterHex(q, r);
 
                         let selectedSprite = game.SelectLayer.create(xy.x, xy.y, 'mapEditor');
+                        selectedSprite.scale.setTo(0.5);
                         selectedSprite.anchor.setTo(0.5);
                         selectedSprite.inputEnabled = true;
 

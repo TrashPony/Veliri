@@ -32,7 +32,7 @@ function HideMap() {
 
         setTimeout(function () {
             mapBox.style.transition = "0s";
-            CreateMiniMap(game.map)
+            CreateMiniMap()
         }, 1000);
         hide = false;
     }
