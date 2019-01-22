@@ -142,6 +142,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				return
 			}
 
+			coor := globalGame.HandlerDetect(user)
+			if coor != nil {
+				user.GetSquad().MoveChecker = false
+				HandlerParse(user, coor)
+				return
+			}
+
 			// говорим юзеру как расходуется его топливо
 			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
 				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID}

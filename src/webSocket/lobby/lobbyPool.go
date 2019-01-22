@@ -32,6 +32,9 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	if newPlayer.InBaseID == 0 { // если игрок находиться не на базе то говорим ему что он загружал глобальную игру
 		ws.WriteJSON(Response{Event: "OutBase"})
 		return
+	} else { // иначе убираем у него скорость)
+		newPlayer.GetSquad().GlobalX = 0
+		newPlayer.GetSquad().GlobalY = 0
 	}
 
 	usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента

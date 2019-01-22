@@ -20,13 +20,14 @@ func NewMapStore() *MapStore {
 
 	for id, mp := range m.maps {
 		respawns := 0
+		mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
+
 		for _, q := range mp.OneLayerMap { // считает количество респаунов на карте
 			for _, mapCoordinate := range q {
 				if mapCoordinate.Type == "respawn" {
 					respawns++
 				}
 
-				mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
 				if mapCoordinate.Handler != "" || mapCoordinate.Transport {
 					mp.HandlersCoordinates = append(mp.HandlersCoordinates, mapCoordinate)
 				}

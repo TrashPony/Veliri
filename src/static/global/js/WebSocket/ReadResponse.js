@@ -127,6 +127,10 @@ function ReadResponse(jsonData) {
         location.href = "http://" + window.location.host + "/lobby";
     }
 
+    if (jsonData.event === "changeSector") {
+        location.href = "http://" + window.location.host + "/global";
+    }
+
     if (jsonData.event === "MoveCloud") {
         CreateCloud(jsonData)
     }

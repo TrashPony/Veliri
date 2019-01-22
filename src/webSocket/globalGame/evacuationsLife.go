@@ -64,6 +64,8 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp _map.M
 			time.Sleep(400 * time.Millisecond)
 		}
 
+		TransportMonitor(transport, transportBase, mp)
+
 		globalPipe <- Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
 			BaseID: transportBase.ID, TransportID: transport.ID, idMap: mp.Id}
 
@@ -73,4 +75,19 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp _map.M
 
 	// как полетали создаем еще 1 рандомный путь для путеществия)
 	LaunchTransport(transport, transportBase, mp)
+}
+
+func TransportMonitor(transport *base.Transport, transportBase *base.Base, mp _map.Map) {
+	for _, coordinate := range mp.HandlersCoordinates {
+
+		xHandle, yHandle := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
+		xBase, yBase := globalGame.GetXYCenterHex(transportBase.Q, transportBase.R)
+
+		dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
+		if dist < transportBase.GravityRadius {
+			if coordinate.Transport {
+				CheckTransportCoordinate(coordinate.Q, coordinate.R, 10)
+			}
+		}
+	}
 }

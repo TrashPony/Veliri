@@ -4,6 +4,7 @@ function SelectDigger(coordinates, slot, typeSlot) {
             let xy = GetXYCenterHex(coordinates[i].q, coordinates[i].r);
             let select = game.floorSelectLineLayer.create(xy.x, xy.y, 'selectEmpty');
             select.alpha = 0.5;
+            select.scale.setTo(0.5);
             select.anchor.setTo(0.5);
 
             select.inputEnabled = true;

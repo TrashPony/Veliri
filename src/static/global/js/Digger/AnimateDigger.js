@@ -31,7 +31,7 @@ function BackDrone(droneSetting, squad) {
         droneSetting.drone.destroy();
         droneSetting.drone.shadow.destroy();
     }
-    if (dist > 100) {
+    if (dist > 50) {
         game.physics.arcade.moveToXY(
             droneSetting.drone,
             squad.sprite.x,
@@ -45,8 +45,8 @@ function BackDrone(droneSetting, squad) {
     } else {
         game.add.tween(droneSetting.drone.shadow).to({alpha: 0}, 300, Phaser.Easing.Linear.None, true, 0);
         game.add.tween(droneSetting.drone).to({alpha: 0}, 700, Phaser.Easing.Linear.None, true, 0);
-        game.add.tween(droneSetting.drone.shadow.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
-        game.add.tween(droneSetting.drone.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(droneSetting.drone.shadow.scale).to({x: 0.05, y: 0.05}, 700, Phaser.Easing.Linear.None, true, 0);
+        game.add.tween(droneSetting.drone.scale).to({x: 0.05, y: 0.05}, 700, Phaser.Easing.Linear.None, true, 0);
         game.add.tween(droneSetting.drone.shadow).to({
             x: squad.sprite.x,
             y: squad.sprite.y
@@ -84,11 +84,11 @@ function FlyDrone(droneSetting) {
 
             let dust = game.add.emitter(droneSetting.drone.x, droneSetting.drone.y, 100);
             dust.makeParticles('smoke_puff');
-            dust.minParticleScale = 0.5;
-            dust.maxParticleScale = 1;
+            dust.minParticleScale = 0.25;
+            dust.maxParticleScale = 0.5;
             dust.setAlpha(0.2, 0.6);
-            dust.setXSpeed(-100, 100);
-            dust.setYSpeed(-100, 100);
+            dust.setXSpeed(-50, 50);
+            dust.setYSpeed(-50, 50);
             dust.gravity = -20;
             dust.setAlpha(0, 0.5, 700, null, true);
             dust.start(false, 500, 100);
@@ -101,17 +101,17 @@ function FlyDrone(droneSetting) {
                 let x, y;
                 let direction = Math.round(Math.random() * 4);
                 if (direction <= 1) {
-                    x = droneSetting.drone.x - Math.random() * 30;
-                    y = droneSetting.drone.y - Math.random() * 30;
+                    x = droneSetting.drone.x - Math.random() * 15;
+                    y = droneSetting.drone.y - Math.random() * 15;
                 } else if (direction === 2) {
-                    x = droneSetting.drone.x - Math.random() * 30;
-                    y = droneSetting.drone.y + Math.random() * 30;
+                    x = droneSetting.drone.x - Math.random() * 15;
+                    y = droneSetting.drone.y + Math.random() * 15;
                 } else if (direction === 3) {
-                    x = droneSetting.drone.x + Math.random() * 30;
-                    y = droneSetting.drone.y + Math.random() * 30;
+                    x = droneSetting.drone.x + Math.random() * 15;
+                    y = droneSetting.drone.y + Math.random() * 15;
                 } else if (direction === 4) {
-                    x = droneSetting.drone.x + Math.random() * 30;
-                    y = droneSetting.drone.y - Math.random() * 30;
+                    x = droneSetting.drone.x + Math.random() * 15;
+                    y = droneSetting.drone.y - Math.random() * 15;
                 }
 
                 let tween = game.add.tween(droneSetting.xy).to({
@@ -151,22 +151,22 @@ function FlyDrone(droneSetting) {
 
 function createLineLaser(laser, droneSetting) {
     laser.out.clear();
-    laser.out.lineStyle(6, 0x10EDFF, 1);
+    laser.out.lineStyle(3, 0x10EDFF, 1);
     laser.out.moveTo(droneSetting.drone.x, droneSetting.drone.y);
     laser.out.lineTo(droneSetting.xy.x, droneSetting.xy.y);
 
     laser.in.clear();
-    laser.in.lineStyle(2, 0xFFFFFF, 1);
+    laser.in.lineStyle(1, 0xFFFFFF, 1);
     laser.in.moveTo(droneSetting.drone.x, droneSetting.drone.y);
     laser.in.lineTo(droneSetting.xy.x, droneSetting.xy.y);
 }
 
 function createLaser() {
     let laserOut = game.add.graphics(0, 0);
-    laserOut.lineStyle(6, 0xFFEDFF, 1);
+    laserOut.lineStyle(3, 0xFFEDFF, 1);
 
     let laserIn = game.add.graphics(0, 0);
-    laserIn.lineStyle(2, 0xFFFFFF, 1);
+    laserIn.lineStyle(1, 0xFFFFFF, 1);
 
     let blurX = game.add.filter('BlurX');
     let blurY = game.add.filter('BlurY');

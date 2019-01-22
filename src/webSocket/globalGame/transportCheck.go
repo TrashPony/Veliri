@@ -14,7 +14,7 @@ func CheckTransportCoordinate(q, r, seconds int) bool { // заставляет 
 	usersGlobalWs, mx := Clients.GetAll()
 	for ws, user := range usersGlobalWs {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-		if dist < 150 {
+		if dist < 75 {
 			if !user.GetSquad().ForceEvacuation {
 				globalPipe <- Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds}
 

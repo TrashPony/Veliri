@@ -20,17 +20,6 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 		user.GetSquad().CurrentSpeed = 0
 	}
 
-	if user.GetSquad().GlobalX == 0 && user.GetSquad().GlobalY == 0 {
-		x, y := GetXYCenterHex(user.GetSquad().Q, user.GetSquad().R)
-		user.GetSquad().GlobalX = x
-		user.GetSquad().GlobalY = y
-
-		user.GetSquad().ToX = float64(x)
-		user.GetSquad().ToY = float64(y)
-
-		user.GetSquad().CurrentSpeed = 0
-	}
-
 	findPlace := false
 	for _, gameUser := range users {
 		if gameUser.GetID() != user.GetID() && !user.GetSquad().InSky {

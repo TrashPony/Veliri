@@ -71,14 +71,14 @@ function UseDigger(jsonData) {
 
 function LaunchDrone(name, squad) {
     let shadowDrone = game.flyObjectsLayer.create(squad.sprite.x + game.shadowXOffset, squad.sprite.y + game.shadowYOffset, name);
-    shadowDrone.scale.set(0.10);
+    shadowDrone.scale.set(0.05);
     shadowDrone.anchor.setTo(0.5);
     shadowDrone.alpha = 0;
     shadowDrone.tint = 0x000000;
     game.physics.enable(shadowDrone, Phaser.Physics.ARCADE);
 
     let equipDrone = game.flyObjectsLayer.create(squad.sprite.x, squad.sprite.y, name);
-    equipDrone.scale.set(0.10);
+    equipDrone.scale.set(0.05);
     equipDrone.anchor.setTo(0.5);
     equipDrone.alpha = 0;
     game.physics.enable(equipDrone, Phaser.Physics.ARCADE);
@@ -92,8 +92,8 @@ function LaunchDrone(name, squad) {
     game.add.tween(equipDrone.shadow).to({alpha: 0.3}, 700, Phaser.Easing.Linear.None, true, 0);
     game.add.tween(equipDrone).to({alpha: 1}, 700, Phaser.Easing.Linear.None, true, 0);
 
-    game.add.tween(equipDrone.shadow.scale).to({x: 0.2, y: 0.2}, 700, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(equipDrone.scale).to({x: 0.2, y: 0.2}, 700, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(equipDrone.shadow.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(equipDrone.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
 
     game.add.tween(equipDrone.shadow).to({
         x: squad.sprite.x + game.shadowXOffset * 5,

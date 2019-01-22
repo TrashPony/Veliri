@@ -3,21 +3,19 @@ package globalGame
 import (
 	"../factories/maps"
 	"../player"
+	"../gameObjects/coordinate"
 )
 
-func HandlerDetect(moveUser *player.Player, mapID int) {
-	mp, _ := maps.Maps.GetByID(mapID)
+func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {
+	mp, _ := maps.Maps.GetByID(moveUser.GetSquad().MapID)
 
-	for _, coordinate := range mp.HandlersCoordinates {
-		xHandle, yHandle := GetXYCenterHex(coordinate.Q, coordinate.R)
+	for _, coor := range mp.HandlersCoordinates {
+		xHandle, yHandle := GetXYCenterHex(coor.Q, coor.R)
 		dist := int(GetBetweenDist(moveUser.GetSquad().GlobalX, moveUser.GetSquad().GlobalY, xHandle, yHandle))
-		if dist < 60 {
-			if coordinate.Handler == "base" {
-
-			}
-			if coordinate.Handler == "sector" {
-
-			}
+		if dist < 60 && coor.Handler != ""{
+			return coor
 		}
 	}
+
+	return nil
 }
