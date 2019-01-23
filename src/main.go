@@ -43,6 +43,7 @@ func main() {
 
 	globalGame.SkyGenerator()    // запускает генерацию облаков на картах
 	globalGame.EvacuationsLife() // простенький аи для эвакуаторов на базах
+	globalGame.HandlersLife()    // мониторинг входов выходов секторов
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

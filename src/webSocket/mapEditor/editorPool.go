@@ -87,7 +87,7 @@ type Message struct {
 type Response struct {
 	Event           string                   `json:"event"`
 	Map             gameMap.Map              `json:"map"`
-	Maps            map[int]gameMap.Map      `json:"maps"`
+	Maps            map[int]*gameMap.Map      `json:"maps"`
 	TypeCoordinates []*coordinate.Coordinate `json:"type_coordinates"`
 	Success         bool                     `json:"success"`
 	Bases           map[int]*base.Base       `json:"bases"`

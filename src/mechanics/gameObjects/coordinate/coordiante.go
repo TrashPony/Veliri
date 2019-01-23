@@ -45,6 +45,9 @@ type Coordinate struct {
 	   и когда игрок на ней происходит событие */
 	Handler string `json:"handler"`
 
+	/* говорит работает хендлер или нет, например занята ячейка перехода и тп не работает*/
+	HandlerOpen bool `json:"handler_open"`
+
 	/* соотвественно место куда попадает игрок после ивента */
 	ToQ      int `json:"to_q"`
 	ToR      int `json:"to_r"`

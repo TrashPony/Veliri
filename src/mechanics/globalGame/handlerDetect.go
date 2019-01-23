@@ -16,6 +16,5 @@ func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {
 			return coor
 		}
 	}
-
 	return nil
 }

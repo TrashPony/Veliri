@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func Maps() map[int]_map.Map {
+func Maps() map[int]*_map.Map {
 	rows, err := dbConnect.GetDBConnect().Query("" +
 		"Select " +
 		"id, " +
@@ -29,11 +29,11 @@ func Maps() map[int]_map.Map {
 	}
 	defer rows.Close()
 
-	allMap := make(map[int]_map.Map)
+	allMap := make(map[int]*_map.Map)
 
 	for rows.Next() {
 
-		var mp _map.Map
+		 mp := &_map.Map{}
 
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
 			&mp.Global, &mp.InGame)
@@ -41,7 +41,7 @@ func Maps() map[int]_map.Map {
 			log.Fatal(err)
 		}
 
-		CoordinatesMap(&mp)
+		CoordinatesMap(mp)
 		allMap[mp.Id] = mp
 	}
 

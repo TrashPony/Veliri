@@ -59,7 +59,7 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "MapView" {
 			var allMaps = maps.Maps.GetAllMap()
 			for _, Map := range allMaps {
-				var resp = Response{Event: msg.Event, Map: &Map}
+				var resp = Response{Event: msg.Event, Map: Map}
 				ws.WriteJSON(resp)
 			}
 		}

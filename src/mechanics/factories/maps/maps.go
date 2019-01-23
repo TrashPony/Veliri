@@ -9,7 +9,7 @@ import (
 )
 
 type MapStore struct {
-	maps    map[int]_map.Map
+	maps    map[int]*_map.Map
 	anomaly map[int][]*anomaly.Anomaly
 }
 
@@ -35,8 +35,8 @@ func NewMapStore() *MapStore {
 		}
 
 		if mp.Global { // если карта глобальная генерим на ней ресурсы
-			anomalyGenerator(&mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
-			resourceGenerator(&mp)
+			anomalyGenerator(mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
+			resourceGenerator(mp)
 		}
 
 		mp.Respawns = respawns
@@ -47,18 +47,16 @@ func NewMapStore() *MapStore {
 }
 
 func (m *MapStore) GetByID(id int) (*_map.Map, bool) {
-	var newMap _map.Map
 	newMap, ok := m.maps[id]
-	return &newMap, ok
+	return newMap, ok
 }
 
-func (m *MapStore) GetAllMap() map[int]_map.Map {
+func (m *MapStore) GetAllMap() map[int]*_map.Map {
 	return m.maps
 }
 
 func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
-	var newMap _map.Map
-	newMap, _ = m.maps[id]
+	newMap, _ := m.maps[id]
 	var respawns = make(map[int]*coordinate.Coordinate)
 
 	for _, q := range newMap.OneLayerMap { // считает количество респаунов на карте
