@@ -74,7 +74,7 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 	}
 
 	// как полетали создаем еще 1 рандомный путь для путеществия)
-	LaunchTransport(transport, transportBase, mp)
+	go LaunchTransport(transport, transportBase, mp)
 }
 
 func TransportMonitor(transport *base.Transport, transportBase *base.Base, mp *_map.Map) {

@@ -19,7 +19,7 @@ func loadGame(ws *websocket.Conn, msg Message) {
 		usersGlobalWs, mx := Clients.GetAll()
 		globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
 		for _, otherUser := range usersGlobalWs {
-			if user.GetID() != otherUser.GetID() {
+			if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID {
 				otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 			}
 		}

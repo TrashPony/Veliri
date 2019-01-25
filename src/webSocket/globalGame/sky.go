@@ -90,7 +90,7 @@ func MoveCloud(cloud *cloud) {
 		globalPipe <- Message{Event: "MoveCloud", Cloud: cloud, idMap: cloud.idMap}
 
 		if cloud.X > cloud.sizeMapX+500 || cloud.Y > cloud.sizeMapY+500 || -500 > cloud.X || -500 > cloud.Y {
-			CreateCloud(cloud.idMap)
+			go CreateCloud(cloud.idMap)
 			break
 		}
 	}

@@ -117,7 +117,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 					bY := int(float64(bodyRadius+15)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
-					if dist < 10 {
+					if dist < 5 {
 						return false
 					}
 				}
@@ -128,7 +128,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 					bY := int(float64(bodyRadius)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
-					if dist < 100 {
+					if dist < 50 {
 						return false
 					}
 				}
@@ -139,7 +139,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 					bY := int(float64(bodyRadius-10)*math.Sin(rad)) + y
 
 					dist := int(GetBetweenDist(bX, bY, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
-					if dist < 100 {
+					if dist < 50 {
 						return false
 					}
 				}
@@ -164,7 +164,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int) *boxInMap.Box {
 				bY := int(float64(bodyRadius+15)*math.Sin(rad)) + y
 
 				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
-				if dist < 10 {
+				if dist < 5 {
 					return mapBox
 				}
 			}
@@ -175,7 +175,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int) *boxInMap.Box {
 				bY := int(float64(bodyRadius)*math.Sin(rad)) + y
 
 				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
-				if dist < 10 {
+				if dist < 5 {
 					return mapBox
 				}
 			}
@@ -186,7 +186,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int) *boxInMap.Box {
 				bY := int(float64(bodyRadius-10)*math.Sin(rad)) + y
 
 				dist := int(GetBetweenDist(bX, bY, xBox, yBox))
-				if dist < 10 {
+				if dist < 5 {
 					return mapBox
 				}
 			}
