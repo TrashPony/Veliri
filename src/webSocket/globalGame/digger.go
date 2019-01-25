@@ -150,10 +150,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
 							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID}
 
-						usersGlobalWs, mx := Clients.GetAll()
-						mx.Unlock()
-
-						for _, otherUser := range usersGlobalWs {
+						for _, otherUser := range Clients.GetAll() {
 							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
 							if err == nil {

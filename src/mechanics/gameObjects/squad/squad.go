@@ -28,6 +28,7 @@ type Squad struct {
 	InSky           bool                `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 	MoveChecker     bool                `json:"move_checker"`
 	ForceEvacuation bool                `json:"force_evacuation"`
+	SoftTransition  bool                `json:"soft_transition"`
 	stopMove        chan bool
 	updateDB        sync.Mutex
 }

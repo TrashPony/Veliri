@@ -16,14 +16,12 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 		otherUsers := make([]*hostileMS, 0)
 
-		usersGlobalWs, mx := Clients.GetAll()
-		globalGame.GetPlaceCoordinate(user, usersGlobalWs, mp)
-		for _, otherUser := range usersGlobalWs {
+		globalGame.GetPlaceCoordinate(user,  Clients.GetAll(), mp)
+		for _, otherUser := range  Clients.GetAll() {
 			if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID {
 				otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 			}
 		}
-		mx.Unlock()
 
 		user.GetSquad().Afterburner = false
 		user.GetSquad().MoveChecker = false

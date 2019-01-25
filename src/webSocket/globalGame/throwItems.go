@@ -19,10 +19,7 @@ func throwItems(ws *websocket.Conn, msg Message) {
 				globalPipe <- Message{Event: "NewBox", Box: box, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY, idMap: user.GetSquad().MapID}
 			} else {
 				// если мы не создали новый ящик то обновляем старый у всех кто ближе мин растояния
-				usersGlobalWs, mx := Clients.GetAll()
-				mx.Unlock()
-
-				for _, user := range usersGlobalWs {
+				for _, user := range Clients.GetAll() {
 					boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)
 					dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
 

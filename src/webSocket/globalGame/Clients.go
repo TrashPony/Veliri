@@ -31,7 +31,8 @@ func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
 	return c.users[ws]
 }
 
-func (c *wsUsers) GetAll() (map[*websocket.Conn]*player.Player, *sync.Mutex) {
+func (c *wsUsers) GetAll() (map[*websocket.Conn]*player.Player) {
 	c.mx.Lock()
-	return c.users, &c.mx
+	defer c.mx.Unlock()
+	return c.users
 }

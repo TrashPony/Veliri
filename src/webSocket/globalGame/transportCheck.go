@@ -11,8 +11,7 @@ func CheckTransportCoordinate(q, r, seconds int) bool { // заставляет 
 	x, y := globalGame.GetXYCenterHex(q, r)
 
 	lock := false
-	usersGlobalWs, mx := Clients.GetAll()
-	for ws, user := range usersGlobalWs {
+	for ws, user := range Clients.GetAll() {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 75 {
 			if !user.GetSquad().ForceEvacuation {
@@ -24,7 +23,6 @@ func CheckTransportCoordinate(q, r, seconds int) bool { // заставляет 
 			user.GetSquad().ForceEvacuation = true
 		}
 	}
-	mx.Unlock()
 
 	return lock
 }

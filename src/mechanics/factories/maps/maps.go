@@ -29,6 +29,7 @@ func NewMapStore() *MapStore {
 				}
 
 				if mapCoordinate.Handler != "" || mapCoordinate.Transport {
+					mapCoordinate.HandlerOpen = true
 					mp.HandlersCoordinates = append(mp.HandlersCoordinates, mapCoordinate)
 				}
 			}

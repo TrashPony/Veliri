@@ -106,9 +106,8 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
-	usersGlobalWs, mx := Clients.GetAll()
+	usersGlobalWs := Clients.GetAll()
 	utils.CheckDoubleLogin(login, &usersGlobalWs)
-	mx.Unlock()
 
 	newPlayer, ok := players.Users.Get(id)
 
@@ -141,9 +140,8 @@ func Reader(ws *websocket.Conn) {
 			println(err.Error())
 			DisconnectUser(Clients.GetByWs(ws))
 
-			usersGlobalWs, mx := Clients.GetAll()
+			usersGlobalWs := Clients.GetAll()
 			utils.DelConn(ws, &usersGlobalWs, err)
-			mx.Unlock()
 
 			break
 		}
@@ -222,8 +220,9 @@ func MoveSender() {
 	for {
 		resp := <-globalPipe
 
-		usersGlobalWs, mx := Clients.GetAll()
+		usersGlobalWs := Clients.GetAll()
 
+		Clients.mx.Lock()
 		for ws, client := range usersGlobalWs {
 
 			var err error
@@ -250,7 +249,6 @@ func MoveSender() {
 				delete(usersGlobalWs, ws)
 			}
 		}
-
-		mx.Unlock()
+		Clients.mx.Unlock()
 	}
 }

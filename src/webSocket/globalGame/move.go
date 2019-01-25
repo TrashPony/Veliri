@@ -89,10 +89,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 
 			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
 
-				usersGlobalWs, mx := Clients.GetAll()
-				mx.Unlock()
-
-				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, usersGlobalWs)
+				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, Clients.GetAll())
 
 				if obstacle {
 					select {
@@ -143,7 +140,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 
 			coor := globalGame.HandlerDetect(user)
-			if coor != nil {
+			if coor != nil && coor.HandlerOpen {
 				user.GetSquad().MoveChecker = false
 				HandlerParse(user, coor)
 				return

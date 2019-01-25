@@ -128,14 +128,12 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 }
 
 func updateBoxInfo(box *boxInMap.Box) {
-	usersGlobalWs, mx := Clients.GetAll()
-	mx.Unlock()
 
 	if box == nil {
 		return
 	}
 
-	for _, user := range usersGlobalWs {
+	for _, user := range Clients.GetAll() {
 		boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
 
