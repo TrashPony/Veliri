@@ -13,7 +13,6 @@ import (
 func OutBase(user *player.Player) error {
 
 	// todo проверить топливо
-	// todo проверить что бы респаун был свободен
 
 	if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.HP > 0 {
 
@@ -22,7 +21,7 @@ func OutBase(user *player.Player) error {
 			return errors.New("no base")
 		}
 
-		for globalGame.CheckTransportCoordinate(gameBase.RespQ, gameBase.RespR, 10) {
+		for globalGame.CheckTransportCoordinate(gameBase.RespQ, gameBase.RespR, 10, 75, gameBase.MapID) {
 			// запускаем механизм проверки и эвакуации игрока с респауна))))
 			time.Sleep(time.Millisecond * 100)
 		}

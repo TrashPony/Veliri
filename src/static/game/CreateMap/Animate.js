@@ -6,36 +6,41 @@ function CreateAnimate(coordinate, x, y) {
     }
     if (coordinate.unit_overlap) {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
+            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset,
+            game.floorOverObjectLayer, coordinate.animate_loop);
     } else {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
+            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset,
+            game.floorObjectLayer, coordinate.animate_loop);
     }
 
     coordinate.objectSprite = animate;
 }
 
-function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset, group) {
+function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset, group, needAnimate) {
 
-    let object = game.floorObjectLayer.create(x + xOffset, y + yOffset, texture);
+    let object = group.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5, 0.5);
     object.scale.set((scale / 100) / 2);
     object.angle = rotate;
 
-    object.animations.add('objAnimate');
-    object.animations.play('objAnimate', speed, true);
+    if (needAnimate) {
+        object.animations.add('objAnimate');
+        object.animations.play('objAnimate', speed, true);
+    }
 
     if (needShadow) {
-        let shadow = game.floorObjectLayer.create(x + game.shadowXOffset + xOffset, y - game.shadowYOffset + 20 + yOffset, texture);
+        let shadow = group.create(x + game.shadowXOffset + xOffset, y + game.shadowYOffset + yOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
         shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;
-        shadow.alpha = 0.6;
+        shadow.alpha = 0.4;
         shadow.angle = rotate;
 
-        shadow.animations.add('objAnimate');
-        shadow.animations.play('objAnimate', speed, true);
-
+        if (needAnimate) {
+            shadow.animations.add('objAnimate');
+            shadow.animations.play('objAnimate', speed, true);
+        }
         object.shadow = shadow;
     }
 

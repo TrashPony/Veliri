@@ -13,6 +13,8 @@ function ChangeOptionSprite(q, r) {
     let rotate = document.createElement("div");
     rotate.id = "rotateBlock";
 
+    let xy = GetXYCenterHex(q, r);
+
     let rotateRange = createRange("rotateRange", 0, 360, 1, coordinate.objectSprite.angle);
     rotateRange.oninput = function () {
         document.getElementById("rotateOutput").innerHTML = rotateRange.value;
@@ -44,9 +46,9 @@ function ChangeOptionSprite(q, r) {
     let rangeXOffset = createRange("rangeXOffset", -100, 100, 1, coordinate.x_offset);
     rangeXOffset.oninput = function () {
         document.getElementById("XOutput").innerHTML = rangeXOffset.value;
-        coordinate.objectSprite.x = coordinate.sprite.x + Number(rangeXOffset.value);
+        coordinate.objectSprite.x = xy.x + Number(rangeXOffset.value);
         if (coordinate.objectSprite.shadow) {
-            coordinate.objectSprite.shadow.x = coordinate.sprite.x + game.shadowXOffset + Number(rangeXOffset.value);
+            coordinate.objectSprite.shadow.x = xy.x + game.shadowXOffset + Number(rangeXOffset.value);
         }
     };
 
@@ -56,9 +58,9 @@ function ChangeOptionSprite(q, r) {
     let rangeYOffset = createRange("rangeYOffset", -100, 100, 1, coordinate.y_offset);
     rangeYOffset.oninput = function () {
         document.getElementById("YOutput").innerHTML = rangeYOffset.value;
-        coordinate.objectSprite.y = coordinate.sprite.y + Number(rangeYOffset.value);
+        coordinate.objectSprite.y = xy.y + Number(rangeYOffset.value);
         if (coordinate.objectSprite.shadow) {
-            coordinate.objectSprite.shadow.y = coordinate.sprite.y + game.shadowYOffset + Number(rangeYOffset.value);
+            coordinate.objectSprite.shadow.y = xy.y + game.shadowYOffset + Number(rangeYOffset.value);
         }
     };
 

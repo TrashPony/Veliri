@@ -5,5 +5,8 @@ function autoPreload() { // файл который заполняет авто�
     game.load.image('Mother', 'http://' + window.location.host + '/assets/map/objects/Mother.png');
     game.load.image('beach2_tl', 'http://' + window.location.host + '/assets/map/objects/beach2_tl.png');
     game.load.image('beach2_tm_01', 'http://' + window.location.host + '/assets/map/objects/beach2_tm_01.png');
-    game.load.image('tunel', 'http://' + window.location.host + '/assets/map/objects/tunel.png');
+    game.load.spritesheet('tunel', 'http://' + window.location.host + '/assets/map/animate/tunel.png', 512, 512, 2);
+    game.load.spritesheet('baseCore', 'http://' + window.location.host + '/assets/map/animate/baseCore.png', 256, 256, 50);
+    game.load.spritesheet('recycler', 'http://' + window.location.host + '/assets/map/animate/recycler.png', 256, 256, 50);
+game.load.image('destroySpaceShip', 'http://' + window.location.host + '/assets/map/objects/destroySpaceShip.png'); 
 }

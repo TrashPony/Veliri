@@ -86,7 +86,7 @@ func TransportMonitor(transport *base.Transport, transportBase *base.Base, mp *_
 		dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
 		if dist < transportBase.GravityRadius {
 			if coordinate.Transport {
-				CheckTransportCoordinate(coordinate.Q, coordinate.R, 10)
+				CheckTransportCoordinate(coordinate.Q, coordinate.R, 10, 60, mp.Id)
 			}
 		}
 	}

@@ -8,7 +8,6 @@ function FreeMoveEvacuation(jsonData) {
 
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
-        console.log(jsonData);
         sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id);
         EvacuationUp(sprite)
     }

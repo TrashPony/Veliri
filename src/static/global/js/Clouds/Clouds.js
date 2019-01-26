@@ -22,10 +22,15 @@ function CreateCloud(jsonData) {
 
             cloud.alpha = jsonData.cloud.alpha;
             cloud.angle = jsonData.cloud.angle;
-            cloud.checkWorldBounds = true;
-            cloud.events.onOutOfBounds.add(function () {
-                cloud.destroy()
-            });
+
+            setTimeout(function () {
+                // что бы механизм удаление включатся когда облако уже в мире, иначе будут лаги на границе
+                cloud.checkWorldBounds = true;
+                cloud.events.onOutOfBounds.add(function () {
+                    cloud.destroy()
+                });
+            }, 120000);
+
 
             cloud.uuid = jsonData.cloud.uuid;
 

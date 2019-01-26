@@ -2,12 +2,12 @@ function AnimateMiningLaser() {
 
     function animateLaser(squad, miningLaser) {
         miningLaser.out.clear();
-        miningLaser.out.lineStyle(6, 0x10EDFF, 1);
+        miningLaser.out.lineStyle(3, 0x10EDFF, 1);
         miningLaser.out.moveTo(squad.sprite.x, squad.sprite.y);
         miningLaser.out.lineTo(miningLaser.xy.x, miningLaser.xy.y);
 
         miningLaser.in.clear();
-        miningLaser.in.lineStyle(2, 0xFFFFFF, 1);
+        miningLaser.in.lineStyle(1, 0xFFFFFF, 1);
         miningLaser.in.moveTo(squad.sprite.x, squad.sprite.y);
         miningLaser.in.lineTo(miningLaser.xy.x, miningLaser.xy.y);
     }

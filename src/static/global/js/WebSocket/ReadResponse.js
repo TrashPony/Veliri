@@ -91,6 +91,12 @@ function ReadResponse(jsonData) {
         Alert("Перемещениече через: ", "Внимание!", false, 5, false, "softTransition");
     }
 
+    if (jsonData.event === "removeSoftTransition") {
+        if (document.getElementById("softTransition")) {
+            document.getElementById("softTransition").remove();
+        }
+    }
+
     if (jsonData.event === "removeNoticeFreeCoordinate") {
         if (document.getElementById("setFreeResp")) document.getElementById("setFreeResp").remove();
     }
@@ -137,5 +143,13 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "MoveCloud") {
         CreateCloud(jsonData)
+    }
+
+    if (jsonData.event === "handlerClose") {
+        CloseTunnel(jsonData)
+    }
+
+    if (jsonData.event === "handlerOpen") {
+        OpenTunnel(jsonData)
     }
 }

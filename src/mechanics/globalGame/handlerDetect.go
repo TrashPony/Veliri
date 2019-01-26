@@ -2,8 +2,8 @@ package globalGame
 
 import (
 	"../factories/maps"
-	"../player"
 	"../gameObjects/coordinate"
+	"../player"
 )
 
 func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {
@@ -12,7 +12,7 @@ func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {
 	for _, coor := range mp.HandlersCoordinates {
 		xHandle, yHandle := GetXYCenterHex(coor.Q, coor.R)
 		dist := int(GetBetweenDist(moveUser.GetSquad().GlobalX, moveUser.GetSquad().GlobalY, xHandle, yHandle))
-		if dist < 60 && coor.Handler != ""{
+		if dist < 20 && coor.Handler != "" {
 			return coor
 		}
 	}

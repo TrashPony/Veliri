@@ -8,7 +8,7 @@ function CreateDynamicObjects(dynamicObject, q, r, needBackGround, coordinate) {
     let xy = GetXYCenterHex(q, r);
     if (needBackGround && dynamicObject.texture_background !== '') {
         let background = game.floorLayer.create(xy.x, xy.y, dynamicObject.texture_background);
-        background.scale.set((dynamicObject.object_scale / 100)/2);
+        background.scale.set((dynamicObject.background_scale / 100)/2);
         background.angle = dynamicObject.background_rotate;
         background.anchor.setTo(0.5);
         dynamicObjectSprite.background = background;

@@ -23,8 +23,8 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 
 	// берем координату позади отряда смотрим что бы она была пустая
 	radRotate := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
-	stopX := float64(130) * math.Cos(radRotate) // идем по вектору движения корпуса
-	stopY := float64(130) * math.Sin(radRotate)
+	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
+	stopY := float64(65) * math.Sin(radRotate)
 
 	forecastX := float64(user.GetSquad().GlobalX) - stopX // - т.к. нам нужна точка позади
 	forecastY := float64(user.GetSquad().GlobalY) - stopY
@@ -75,8 +75,8 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 
 	// берем координату позади отряда смотрим что бы она была пустая
 	radRotate := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
-	stopX := float64(130) * math.Cos(radRotate) // идем по вектору движения корпуса
-	stopY := float64(130) * math.Sin(radRotate)
+	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
+	stopY := float64(65) * math.Sin(radRotate)
 
 	forecastX := float64(user.GetSquad().GlobalX) - stopX // - т.к. нам нужна точка позади
 	forecastY := float64(user.GetSquad().GlobalY) - stopY

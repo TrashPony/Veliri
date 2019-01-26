@@ -47,8 +47,8 @@ function StartMining(jsonData) {
             id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot
         });
         let tween = game.add.tween(xy).to({
-                x: xy.x - 15 + 30,
-                y: xy.y - 15 + 30
+                x: xy.x - 8 + 15,
+                y: xy.y - 8 + 15
             }, 1000, Phaser.Easing.Linear.None, true, 0
         ).loop(true);
         tween.yoyo(true, 0);
@@ -97,7 +97,7 @@ function InitMiningOre(equip, numberSlot, type) {
             let reservoir = game.map.reservoir[q][r];
             let reservoirLine = game.floorObjectSelectLineLayer.create(reservoir.sprite.x, reservoir.sprite.y, reservoir.name);
             reservoirLine.anchor.setTo(0.5);
-            reservoirLine.scale.set(0.55);
+            reservoirLine.scale.set(0.27);
             reservoirLine.tint = 0x0FFF00;
             reservoirLine.angle = reservoir.rotate;
 

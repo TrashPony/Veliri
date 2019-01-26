@@ -32,10 +32,10 @@ function create(game) {
     game.time.slowMotion = 1;        // плавный переход в мин фпс
 
     game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-    game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 90 * game.map.RSize / 2); //размеры карты
+    game.world.setBounds(0, 0, game.hexagonWidth * game.map.QSize + 30, game.hexagonWidth * game.map.RSize - 500); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
-    game.bmdTerrain = game.make.bitmapData((game.hexagonWidth + 5) * game.map.QSize, 90 * game.map.RSize / 2);
+    game.bmdTerrain = game.make.bitmapData(game.hexagonWidth * game.map.QSize + 30, game.hexagonWidth * game.map.RSize - 500);
     game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
 
     game.floorLayer = game.add.group();
