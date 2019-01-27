@@ -14,3 +14,20 @@
     padding: 5px 3px 0 2px;
     margin: 5px 10px 5px;
 }
+
+.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
+    z-index: 90;
+    border-bottom: 2px solid #def4ff;
+    border-right: 2px solid #def4ff;
+    border-bottom-right-radius: 12px;
+    width: 30px;
+    height: 30px;
+    bottom: -3px;
+    right: -3px;
+    background-image: none;
+    filter: drop-shadow(0px 0px 2px #000000);
+}
+
+.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se:hover {
+    filter: drop-shadow(0px 0px 2px #00FDFF);
+}

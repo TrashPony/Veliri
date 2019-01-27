@@ -14,42 +14,46 @@ function FillingInventory(jsonData) {
         fillSquadList(JSON.parse(jsonData).base_squads);
 
         if (squad) {
-            InventoryTable(squad.inventory);
+            if (document.getElementById("Inventory")) {
+                InventoryTable(squad.inventory);
 
-            document.getElementById("inventoryStorageInventory").style.opacity = "1";
-            $("#squadName span").last().text(squad.name).css('color', '#00FFFD');
-            $("#renameSquadButton").removeClass("noActive");
-            $("#deleteSquadButton").removeClass("noActive");
+                document.getElementById("inventoryStorageInventory").style.opacity = "1";
+                $("#squadName span").last().text(squad.name).css('color', '#00FFFD');
+                $("#renameSquadButton").removeClass("noActive");
+                $("#deleteSquadButton").removeClass("noActive");
 
-            if (squad.mather_ship != null && squad.mather_ship.body != null) {
+                if (squad.mather_ship != null && squad.mather_ship.body != null) {
 
-                size = squad.mather_ship.body.capacity_size;
-                inventoryMetaInfo(JSON.parse(jsonData));
+                    size = squad.mather_ship.body.capacity_size;
+                    inventoryMetaInfo(JSON.parse(jsonData));
 
-                if (document.getElementById("inventoryBox")) {
+                    if (document.getElementById("inventoryBox")) {
+                        SquadTable(squad);
+                        ConstructorTable(squad.mather_ship);
+                        FillPowerPanel(squad.mather_ship.body, "powerPanel");
+                        FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
+                    }
+                } else {
+                    NoActiveCell();
                     SquadTable(squad);
-                    ConstructorTable(squad.mather_ship);
-                    FillPowerPanel(squad.mather_ship.body, "powerPanel");
-                    FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
                 }
-            } else {
-                NoActiveCell();
-                SquadTable(squad);
             }
         } else {
-            NoActiveCell();
-            SquadTable(squad);
-            $("#inventoryStorageInventory").css('opacity', '0.5');
-            $("#inventoryStorageInventory > .InventoryCell").css('background-image', 'none').empty();
-            $("#sizeInventoryInfo").empty();
-            $("#deleteSquadButton").addClass("noActive");
-            $("#renameSquadButton").addClass("noActive");
-            $("#squadName span").last().text(" отряд не выбран").css('color', '#00FFFD');
+            if (document.getElementById("Inventory")) {
+                NoActiveCell();
+                SquadTable(squad);
+                $("#inventoryStorageInventory").css('opacity', '0.5');
+                $("#inventoryStorageInventory > .InventoryCell").css('background-image', 'none').empty();
+                $("#sizeInventoryInfo").empty();
+                $("#deleteSquadButton").addClass("noActive");
+                $("#renameSquadButton").addClass("noActive");
+                $("#squadName span").last().text(" отряд не выбран").css('color', '#00FFFD');
+            }
         }
 
         if (event === "openInventory") {
             // склад и магазин поднимаются только тогда когда игрок на базе
-            if (JSON.parse(jsonData).in_base) {
+            if (JSON.parse(jsonData).in_base && !document.getElementById("inventoryStorage")) {
                 CreateStorage();
                 ConnectMarket();
             }

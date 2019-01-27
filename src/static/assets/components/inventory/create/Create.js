@@ -17,6 +17,19 @@ function CreateInventoryMenu(closeFunc, option) {
         document.body.appendChild(inventory);
         CreateInventory();
         return
+    } else {
+        if (document.getElementById("Inventory")){
+            document.getElementById("Inventory").remove();
+        }
+    }
+
+    if (option === 'storage') {
+        OnlyStorage();
+        return
+    } else {
+        if (document.getElementById("storage")){
+            document.getElementById("storage").remove();
+        }
     }
 
     let mask = document.createElement("div");
