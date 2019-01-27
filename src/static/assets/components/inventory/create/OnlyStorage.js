@@ -25,6 +25,10 @@ function OnlyStorage() {
         moveWindow(event, 'storage')
     });
 
+    $(buttons.close).mousedown(function () {
+        storage.remove();
+    });
+
     storage.appendChild(buttons.move);
     storage.appendChild(buttons.hide);
     storage.appendChild(buttons.close);

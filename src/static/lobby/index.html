@@ -14,12 +14,15 @@
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
     <link href="css/lobby.css" rel="stylesheet">
     <link href="css/squad.css" rel="stylesheet">
+    <link href="css/processor.css" rel="stylesheet">
 
     <script src="js/WebSocket.js"></script>
     <script src="js/Lobby.js"></script>
     <script src="js/OutBase.js"></script>
     <script src="js/SendMessage.js"></script>
     <script src="js/ReaderLobby.js"></script>
+
+    <script src="js/Recycler/InitProcessor.js"></script>
 
     <script src="js/View/View.js"></script>
     <script src="js/View/Map.js"></script>
@@ -56,15 +59,30 @@
     <div class="info" align="left">
         <table class="table" id="" width="200" style="text-align: center">
             <tr align="center" class="h">
-                <th> Сервисы </th>
+                <th> Сервисы</th>
             </tr>
-            <tr><td><input type="button" class="button" value="Market" onclick="InitMarketMenu()"></td></tr>
-            <tr><td><input type="button" class="button" value="Inventory" onclick="InitInventoryMenu()"></td></tr>
-            <tr><td><input type="button" class="button" value="Storage" onclick="InitInventoryMenu(null, 'storage')"></td></tr>
-            <tr><td><input type="button" class="button" value="Craft"></td></tr>
-            <tr><td><input type="button" class="button" value="Quest"></td></tr>
-            <tr><td><input type="button" class="button" value="Recycler"></td></tr>
-            <tr><td><input type="button" class="button" value="Выход из базы" onclick="OutBase()"></td></tr>
+            <tr>
+                <td><input type="button" class="button" value="Market" onclick="InitMarketMenu()"></td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Inventory" onclick="InitInventoryMenu()"></td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Storage" onclick="InitInventoryMenu(null, 'storage')">
+                </td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Recycler" onclick="InitProcessor()"></td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Craft"></td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Quest"></td>
+            </tr>
+            <tr>
+                <td><input type="button" class="button" value="Выход из базы" onclick="OutBase()"></td>
+            </tr>
         </table>
     </div>
 
@@ -114,9 +132,10 @@
 
 <div id="chat">
     <div class="tabs"></div>
-    <div class="topButton" onclick="HideChat()"> _ </div>
-    <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿ </div>
-    <div id="chatBox"></div><div id="usersBox"></div>
+    <div class="topButton" onclick="HideChat()"> _</div>
+    <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
+    <div id="chatBox"></div>
+    <div id="usersBox"></div>
     <input type="text" placeholder="message" id="chatInput"
            onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
     <script>ConnectChat()</script>
