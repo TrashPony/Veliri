@@ -14,10 +14,8 @@ function CreateMarketMenu(noMask) {
         document.body.appendChild(mask);
     }
 
-    let marketBox = document.createElement("div");
-    marketBox.id = "marketBox";
-    document.body.appendChild(marketBox);
 
+    let marketBox = createMarketBox();
     let leftBar = document.createElement("div");
     leftBar.id = "leftBar";
     marketBox.appendChild(leftBar);
@@ -42,6 +40,45 @@ function CreateMarketMenu(noMask) {
     createListItemUI(listItem);
     ordersBlockUI(ordersBlock);
     footUI(foot);
+}
+
+function createMarketBox() {
+    let marketBox = document.createElement("div");
+    marketBox.id = "marketBox";
+    document.body.appendChild(marketBox);
+    let buttons = CreateControlButtons("5px", "35px", "0px", "-3px");
+    buttons.move.onmousedown = function (event) {
+        moveWindow(event, 'marketBox');
+    };
+    buttons.close.onmousedown = function (event) {
+        marketBox.remove();
+    };
+    marketBox.appendChild(buttons.move);
+    marketBox.appendChild(buttons.close);
+
+    $(marketBox).resizable({
+        minHeight: 280,
+        minWidth: 608,
+        maxWidth: 1000,
+        handles: "se",
+        resize: function (event, ui) {
+            $(this).find('#listItem').css("height", $(this).height() - 157);
+            $(this).find('#ordersBlock').css("height", $(this).height() - 10);
+
+            $(this).find('#sellOrdersBlock').css("height", $(this).height() / 2 - 88);
+            $(this).find('#BuyOrdersBlock').css("height", $(this).height() / 2 - 88);
+            $(this).find('#MyOrdersBlock').css("height", $(this).height() - 85);
+
+
+            $(this).find('#ordersBlock').css("width", $(this).width() - 220);
+
+            $(this).find('#sellOrdersBlock').css("width", $(this).width() - 230);
+            $(this).find('#BuyOrdersBlock').css("width", $(this).width() - 230);
+            $(this).find('#MyOrdersBlock').css("width", $(this).width() - 230);
+        }
+    });
+
+    return marketBox
 }
 
 function headUI(headMarket) {
@@ -105,7 +142,7 @@ function ordersBlockUI(ordersBlock) {
 
     let myMarket = document.createElement("div");
     myMarket.innerHTML = "Мои запросы/предложения";
-    myMarket.onclick = function(){
+    myMarket.onclick = function () {
         MyOrdersTab(myMarket, allMarket)
     };
 

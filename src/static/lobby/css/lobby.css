@@ -1,261 +1,38 @@
-body{
+body {
     text-align: center;
     background-image: url("../../assets/bases/baseBackgrounde.jpg");
     background-color: #4c4c4c;
 }
 
-td {
-    border: 1px solid #25a0e1;
-}
-
-tr td:first-child{
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-tr td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-#main {
-    display:inline-block;
-    text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
+#ServiceTable {
+    top: 15px;
+    left: 15px;
+    text-align: center;
+    float: left;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    border-radius: 5px;
     position: relative;
+    padding: 2px;
 }
 
-#choiceSquad {
-    position: absolute;
-    bottom: 50px;
+#ServiceTable div {
+    height: 30px;
+    width: 30px;
+    filter: drop-shadow(0 0 2px black);
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    margin: 2px 5px 2px 5px;
+    float: left;
+    transition: 0.2s;
+    background-size: contain;
 }
 
-#choiceSquadTable {
-    width: 400px;
+#ServiceTable div:hover {
+    background-color: #b4eaff;
 }
 
-#matherShipTD {
-    text-align: center;
-    height: 70px;
-    width: 70px;
-    position: relative;
-}
-
-#unitsTD {
-    height: 70px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-#lobby {
-    padding: 5px;
-    display:inline-block;
-    width: 400px;
-    height: 425px;
-    border: 1px solid #25a0e1;
-    position: relative;
-}
-
-#logout {
-    text-align: center;
-    padding: 5px;
-    display:inline-block;
-    vertical-align:top;
-    width: 190px;
-    border: 1px solid #25a0e1;
-}
-
-.info {
-    padding: 5px;
-    display:inline-block;
-    vertical-align:top;
-    width: 200px;
-    height: 425px;
-    border: 1px solid #25a0e1;
-}
-
-#infoImage {
-    padding: 5px;
-    display:inline-block;
-    vertical-align:top;
-    border: 1px solid #53b7c4;
-    width: 190px;
-    height: 190px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.Select {
-    text-align: center;
-}
-
-.Select:hover>td {
-    border: 1px solid #1b8cff;
-    background-color: #25a0e1;
-}
-
-#chatBlock {
-    position:absolute;
-}
-
-.lobbyButton {
-    position: absolute;
-    bottom: 15px;
-    outline: none;
-    border: 1px solid #25a0e1;
-    background-color: rgba(26, 169, 218, 0.5);
-    border-radius: 10px;
-    padding: 2px 10px 2px;
-    text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
-    z-index: 11;
-}
-
-.lobbyButton:active {
-    position: absolute;
-    bottom: 12px;
-}
-
-.boxUnit {
-    text-align: center;
-    vertical-align: middle;
-    display: inline-block;
-    height: 35px;
-    line-height: 35px;
-    width: 35px;
-    border: 1px solid #25a0e1;
-    background-color:rgba(0,0,0,.4);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.boxUnit.Error{
-    border: 1px solid #e11e14;
-    background-color:rgba(0,0,0,.4);
-    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
-    color: #e11e14;
-}
-
-.boxUnit:hover {
-    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
-    color: #00fffd;
-    cursor:pointer;
-}
-
-.boxUnit.Error:hover {
-    cursor:pointer;
-}
-
-#equippingPanel {
-    display: inline-block;
-    width: 210px;
-    text-align: center;
-}
-
-.boxEquip {
-    text-align: center;
-    vertical-align: middle;
-    display: inline-block;
-    height: 25px;
-    line-height: 25px;
-    width: 25px;
-    margin-right: 10px;
-    border: 1px solid #25a0e1;
-    background-color:rgba(0,0,0,.4);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.boxEquip.Error{
-    border: 1px solid #e11e14;
-    background-color:rgba(0,0,0,.4);
-    box-shadow: 0 0 30px 4px rgb(255, 64, 20);
-    color: #e11e14;
-}
-
-.boxEquip:hover {
-    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
-    color: #00fffd;
-    cursor:pointer;
-}
-
-.boxEquip.Error:hover {
-    cursor:pointer;
-}
-
-.tip {
-    position: absolute;
-    display: none;
-    font-family: sans-serif;
-    font-size: 9pt;
-    border-radius: 10px;
-    z-index: 999;
-    background-color: rgba(33, 176, 255, 0.6);
-}
-
-#DellEquip {
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
-    background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    position: absolute;
-    top: 175px;
-    left: 130px;
-    z-index: 900;
-    height: 50px;
-    width : 190px;
-}
-
-#DellUnit {
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
-    position: absolute;
-    top: 175px;
-    left: 130px;
-    z-index: 900;
-    height: 50px;
-    width : 170px;
-    background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-}
-
-#ButtonDelSquad {
-    right: 15px;
-    position: absolute;
-    bottom: 15px;
-    outline: none;
-    border-radius: 10px;
-    padding: 2px 10px 2px;
-    z-index: 11;
-    color: #00fffd;
-    border: 1px solid #e11e14;
-    background-color:#e11e14;
-    box-shadow: 0 0 10px 1px rgb(255, 64, 20);
-}
-
-#ButtonDelSquad:hover {
-    box-shadow: 0 0 30px 4px rgb(0, 195, 255);
-    color: #00fffd;
-    cursor:pointer;
-}
-
-#ButtonDelSquad:active {
-    position: absolute;
-    bottom: 12px;
-}
-
-#DellSquad {
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 30px 0 rgb(0, 164, 255);
-    position: absolute;
-    top: 175px;
-    left: 130px;
-    z-index: 900;
-    height: 50px;
-    width : 170px;
-    background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+#ServiceTable div:active {
+    transform: scale(0.95);
 }

@@ -51,15 +51,15 @@ function OpenMarket() {
     InitMarketMenu(true);
 
     setTimeout(function () {
-        document.getElementById("marketBox").style.marginLeft = "0";
-        document.getElementById("marketBox").style.left = "unset";
-        document.getElementById("marketBox").style.right = "15px";
-        document.getElementById("marketBox").style.backgroundImage = "linear-gradient(1deg,rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px)"
-
-        let buttons = CreateControlButtons("3px", "35px", "-3px", "-3px");
-        buttons.move.onmousedown = function (event) {
-            moveWindow(event, 'marketBox');
-        };
-        document.getElementById("marketBox").appendChild(buttons.move);
+        // document.getElementById("marketBox").style.marginLeft = "0";
+        // document.getElementById("marketBox").style.left = "unset";
+        // document.getElementById("marketBox").style.right = "15px";
+        // document.getElementById("marketBox").style.backgroundImage = "linear-gradient(1deg,rgba(33, 176, 255, 0.9), rgba(37, 160, 225, 0.9) 6px)"
+        //
+        // let buttons = CreateControlButtons("3px", "35px", "-3px", "-3px");
+        // buttons.move.onmousedown = function (event) {
+        //     moveWindow(event, 'marketBox');
+        // };
+        // document.getElementById("marketBox").appendChild(buttons.move);
     }, 500)
 }

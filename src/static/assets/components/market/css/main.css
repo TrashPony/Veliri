@@ -3,13 +3,13 @@
     width: 1000px;
     position: absolute;
     top: 15px;
-    z-index: 900;
-    left: 50%;           /* выравниваем по центру */
-    margin-left: -500px; /* выравниваем по центру */
+    z-index: 100;
+    left: 50%;
+    margin-left: -500px;
     border: 1px solid #25a0e1;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     background-size: 10px 2px;
 }
 
