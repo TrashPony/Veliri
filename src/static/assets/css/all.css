@@ -11,9 +11,9 @@ input {
     padding-right: 5px;
     border-radius: 10px;
     border: 1px solid #25a0e1;
-    box-shadow: 0 1px 2px rgba(0,0,0,1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 1);
     background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
 select {
@@ -22,30 +22,52 @@ select {
     padding-right: 5px;
     border-radius: 10px;
     border: 1px solid #25a0e1;
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
 input:hover {
     background-color: rgba(0, 120, 211, 0.9);
 }
 
+.ui-selectable-helper {
+    border: 1px dotted #ffffff;
+    z-index: 999;
+}
+
+.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
+    z-index: 90;
+    border-bottom: 2px solid #def4ff;
+    border-right: 2px solid #def4ff;
+    border-bottom-right-radius: 12px;
+    width: 30px;
+    height: 30px;
+    bottom: -3px;
+    right: -3px;
+    background-image: none;
+    filter: drop-shadow(0px 0px 2px #000000);
+}
+
+.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se:hover {
+    filter: drop-shadow(0px 0px 2px #00FDFF);
+}
+
 #mask {
-    background-color:rgba(0, 0, 0, 0.7);
-    height:100%;
-    position:fixed;
-    width:100%;
-    top:0;
-    left:0;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
     z-index: 899;
     display: none;
 }
 
 .h {
-    font-weight:bold;
+    font-weight: bold;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef
+    color: #a5d5ef
 }
 
 .button {
@@ -80,25 +102,25 @@ input:hover {
     top: 0;
 }
 
-.animateTable{
+.animateTable {
     z-index: 10;
-    position:relative;
+    position: relative;
     box-shadow: 0 0 30px 0 rgb(0, 164, 255);
     border: 1px solid #25a0e1;
     border-radius: 10px;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
+    color: #a5d5ef;
     background-size: 10px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
 .table {
-    position:relative;
+    position: relative;
     border: 1px solid #25a0e1;
     border-radius: 10px;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    color: #a5d5ef;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
     background-size: 10px 2px;
 }
 
@@ -109,13 +131,14 @@ input:hover {
 .Success {
     color: rgb(27, 255, 4);
 }
+
 .Value {
     color: #00fffd
 }
 
 .moveWindow {
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef;
+    color: #a5d5ef;
 }
 
 .moveWindow:hover {
@@ -130,7 +153,7 @@ input:hover {
     height: 15px;
     width: 30px;
     background-size: 5px 2px;
-    background-image:linear-gradient(1deg, rgba(23, 114, 166, 0.9), rgba(19, 76, 105, 0.9) 6px);
+    background-image: linear-gradient(1deg, rgba(23, 114, 166, 0.9), rgba(19, 76, 105, 0.9) 6px);
     margin-right: 10px;
     line-height: 13px;
     font-size: 23px;
@@ -139,7 +162,7 @@ input:hover {
 }
 
 .topButton:hover {
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
 }
 
 /* CUSTOM SCROLLBAR */
@@ -165,7 +188,7 @@ body ::-webkit-scrollbar-thumb:window-inactive,
 body ::-webkit-scrollbar-thumb:disabled {
     box-shadow: inset 0 0 5px black;
     background-size: 5px 2px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
 /*--------*/

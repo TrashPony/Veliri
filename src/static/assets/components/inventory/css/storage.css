@@ -1,33 +1,15 @@
 #storage {
     border: 1px solid #25a0e1;
-    border-radius: 10px;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     display: inline-block;
     vertical-align: top;
     width: 163px;
     height: 276px;
-    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     background-size: 10px 2px;
     position: relative;
     float: right;
     padding: 5px 3px 0 2px;
     margin: 5px 10px 5px;
-}
-
-.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
-    z-index: 90;
-    border-bottom: 2px solid #def4ff;
-    border-right: 2px solid #def4ff;
-    border-bottom-right-radius: 12px;
-    width: 30px;
-    height: 30px;
-    bottom: -3px;
-    right: -3px;
-    background-image: none;
-    filter: drop-shadow(0px 0px 2px #000000);
-}
-
-.ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se:hover {
-    filter: drop-shadow(0px 0px 2px #00FDFF);
 }

@@ -1,11 +1,19 @@
 function CreateInventoryMenu(closeFunc, option) {
 
+    if (document.getElementById("storage")) {
+        document.getElementById("storage").remove();
+    }
+
     if (document.getElementById("mask")) {
         document.getElementById("mask").remove();
     }
 
     if (document.getElementById("inventoryBox")) {
         document.getElementById("inventoryBox").remove();
+    }
+
+    if (document.getElementById("Inventory")) {
+        document.getElementById("Inventory").remove();
     }
 
     if (option === 'inventory') {
@@ -17,19 +25,11 @@ function CreateInventoryMenu(closeFunc, option) {
         document.body.appendChild(inventory);
         CreateInventory();
         return
-    } else {
-        if (document.getElementById("Inventory")){
-            document.getElementById("Inventory").remove();
-        }
     }
 
     if (option === 'storage') {
         OnlyStorage();
         return
-    } else {
-        if (document.getElementById("storage")){
-            document.getElementById("storage").remove();
-        }
     }
 
     let mask = document.createElement("div");

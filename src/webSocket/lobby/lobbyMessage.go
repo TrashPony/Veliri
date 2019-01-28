@@ -17,6 +17,9 @@ type Message struct {
 	Message   string `json:"message"`
 	GameID    int    `json:"game_id"`
 
+	StorageSlot  int   `json:"storage_slot"`
+	StorageSlots []int `json:"storage_slots"`
+
 	MapID int `json:"map_id"`
 }
 
