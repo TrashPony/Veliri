@@ -7,20 +7,18 @@ function ConnectLobby() {
     let date = new Date(0);
     document.cookie = "idGame=; path=/; expires=" + date.toUTCString();
 
-    lobby.onopen = function(msg) {
-        InitLobby();
-        sendGameSelection();
-        sendDontEndGamesList();
+    lobby.onopen = function (msg) {
     };
-    lobby.onmessage = function(msg) {
+
+    lobby.onmessage = function (msg) {
         ReaderLobby(msg.data);
     };
-    lobby.onerror = function(msg) {
+    lobby.onerror = function (msg) {
         console.log("Error lobby occured sending..." + msg.data);
     };
-    lobby.onclose = function(msg) {
+    lobby.onclose = function (msg) {
         console.log("Disconnected lobby - status " + this.readyState);
-        if(!toField && msg.code !== 1001) {
+        if (msg.code !== 1001) {
             location.href = "../../login";
         }
     };

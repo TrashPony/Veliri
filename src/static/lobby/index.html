@@ -17,27 +17,8 @@
     <link href="css/processor.css" rel="stylesheet">
 
     <script src="js/WebSocket.js"></script>
-    <script src="js/Lobby.js"></script>
     <script src="js/OutBase.js"></script>
-    <script src="js/SendMessage.js"></script>
     <script src="js/ReaderLobby.js"></script>
-
-    <script src="js/Recycler/InitProcessor.js"></script>
-
-    <script src="js/View/View.js"></script>
-    <script src="js/View/Map.js"></script>
-    <script src="js/View/GameLobby.js"></script>
-    <script src="js/View/DontEndGame.js"></script>
-
-    <script src="js/LobbyGame/InitLobbyGame.js"></script>
-    <script src="js/LobbyGame/CreateUserLine.js"></script>
-    <script src="js/LobbyGame/CreateLobbyMenu.js"></script>
-    <script src="js/LobbyGame/StartGame.js"></script>
-    <script src="js/LobbyGame/Ready.js"></script>
-    <script src="js/LobbyGame/Respawn.js"></script>
-    <script src="js/LobbyGame/NewUser.js"></script>
-
-    <script src="js/SquadMenu/CreateSquadBlock.js"></script>
 
     <script src="../assets/components/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
@@ -87,39 +68,6 @@
                 <td><input type="button" class="button" value="Выход из базы" onclick="OutBase()"></td>
             </tr>
         </table>
-    </div>
-
-    <div id="lobby" align="left">
-        <div class="NotGameLobby">
-            <div class="h">Новые игры:</div>
-            <table id="Menu" class="table" width="390">
-                <tr align="center" class="h">
-                    <th> Имя игры</th>
-                    <th> Карта</th>
-                    <th> Создал</th>
-                    <th> Размер</th>
-                    <th> Игроков</th>
-                </tr>
-            </table>
-            <p>
-                Имя игры: <input name="NameGame" type="text" placeholder="Имя игры">
-                <input type="button" value="Создать Игру" class="button" onclick="MapSelection()">
-            <p>
-            </p>
-
-            <div class="h" id="NotEndGame"> Недоиграные игры:</div>
-            <table id="SubMenu" class="table" width="390">
-                <tr align="center" class="h">
-                    <th> Имя игры</th>
-                    <th> ID игры</th>
-                    <th> Шаг</th>
-                    <th> Фаза</th>
-                    <th> Мой ход</th>
-                </tr>
-            </table>
-            <p>
-            <div class="h" id="cancel"></div>
-        </div>
     </div>
 
     <div class="info" align="left">
