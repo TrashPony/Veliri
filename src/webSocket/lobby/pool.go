@@ -8,6 +8,7 @@ import (
 	"log"
 	"strconv"
 	"sync"
+	"../../mechanics/lobby"
 )
 
 var mutex = &sync.Mutex{}
@@ -47,12 +48,27 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
-		// TODO
 
+		if msg.Event == "Logout" {
+			ws.Close()
+		}
+
+		if msg.Event == "OutBase" {
+			err := lobby.OutBase(usersLobbyWs[ws])
+
+			// todo запускать метод в отдельной горутине
+			// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
+
+			if err != nil {
+				ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
+			} else {
+				ws.WriteJSON(Message{Event: msg.Event})
+			}
+		}
 	}
 }
 
