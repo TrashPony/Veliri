@@ -32,4 +32,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "Error") {
         alert(JSON.parse(jsonMessage).error)
     }
+
+    if (event === "updateRecycler") {
+        FillRecycler(JSON.parse(jsonMessage));
+    }
 }

@@ -36,15 +36,16 @@
 }
 
 #processorRoot .itemsPools {
-    padding: 10px;
     overflow-y: auto;
     border-radius: 5px;
-    width: 366px;
-    height: 220px;
+    width: 386px;
+    height: 240px;
     float: left;
     box-shadow: inset 0 0 5px black;
     background: #8cb3c7;
     margin: 20px 7px 0 7px;
+    text-align: left;
+    overflow-x: hidden;
 }
 
 #processorRoot .itemsPools .pollHead {
@@ -56,7 +57,7 @@
     background-size: 10px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     line-height: 19px;
-    margin: -9px 0 0 -9px;
+    margin: 1px 0 0 1px;
     width: 382px;
     box-shadow: 0 0 5px black;
     color: #ff7800;
@@ -75,8 +76,8 @@
 }
 
 #processorRoot .itemsPools .pollHead .util {
-    height: 19px;
-    width: 19px;
+    height: 18px;
+    width: 18px;
     background: url(../../assets/components/inventory/img/util.png) center center / cover no-repeat;
     float: right;
     margin-right: 5px;

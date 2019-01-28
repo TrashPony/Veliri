@@ -47,10 +47,10 @@
     height: 212px;
     width: 770px;
     margin: 0 5px 5px 5px;
-    background: rgba(183, 195, 201, 0.29);
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
 }
 
 #MyOrdersBlock {

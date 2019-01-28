@@ -1,6 +1,7 @@
 package globalGame
 
 import (
+	"../../mechanics/db/squad/update"
 	"../../mechanics/factories/maps"
 	"../../mechanics/globalGame"
 	"github.com/gorilla/websocket"
@@ -86,5 +87,7 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.GetSquad().Evacuation = false
 		user.GetSquad().InSky = false
 		transport.Job = false
+
+		go update.Squad(user.GetSquad(), true)
 	}
 }

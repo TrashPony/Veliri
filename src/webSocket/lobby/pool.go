@@ -2,13 +2,13 @@ package lobby
 
 import (
 	"../../mechanics/factories/players"
+	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/player"
 	"../utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
 	"sync"
-	"../../mechanics/lobby"
 )
 
 var mutex = &sync.Mutex{}
@@ -44,11 +44,13 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 func Reader(ws *websocket.Conn) {
+	var recycleItems map[int]*inventory.Slot
+
 	for {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -58,16 +60,19 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "OutBase" {
-			err := lobby.OutBase(usersLobbyWs[ws])
+			outBase(ws, msg)
+		}
 
-			// todo запускать метод в отдельной горутине
-			// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
+		if msg.Event == "PlaceItemsToProcessor" || msg.Event == "PlaceItemToProcessor" {
+			placeItemToProcessor(ws, msg, &recycleItems)
+		}
 
-			if err != nil {
-				ws.WriteJSON(Message{Event: "Error", Error: err.Error()})
-			} else {
-				ws.WriteJSON(Message{Event: msg.Event})
-			}
+		if msg.Event == "RemoveItemFromProcessor" {
+			removeItemToProcessor(ws, msg, &recycleItems)
+		}
+
+		if msg.Event == "ClearProcessor" {
+			recycleItems = nil
 		}
 	}
 }

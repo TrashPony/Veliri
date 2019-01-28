@@ -11,12 +11,12 @@ function InitProcessor() {
     processor.id = "processorRoot";
 
     $(processor).resizable({
-        minHeight: 115,
+        minHeight: 109,
         minWidth: 461,
         handles: "se",
         resize: function (event, ui) {
-            $(this).find('.itemsPools').css("width", $(this).width() / 2 - 34);
-            $(this).find('.itemsPools').css("height", $(this).height() - 80);
+            $(this).find('.itemsPools').css("width", $(this).width() / 2 - 14);
+            $(this).find('.itemsPools').css("height", $(this).height() - 60);
             $(this).find('.pollHead').css("width", $(this).width() / 2 - 18);
         }
     });
@@ -37,6 +37,7 @@ function InitProcessor() {
 
     let items = document.createElement("div");
     items.className = "itemsPools";
+    items.id = "itemsPool";
     items.innerHTML = "" +
         "<div class='pollHead'>" +
         "<h3>Input materials</h3>" +
@@ -62,7 +63,7 @@ function InitProcessor() {
         drop: function (event, ui) {
             $('.ui-selected').removeClass('ui-selected');
             let draggable = ui.draggable;
-            if (draggable.data("slotData").parent === "storage") {
+            if (draggable.data("slotData") && draggable.data("slotData").parent === "storage") {
                 if (draggable.data("selectedItems") !== undefined) {
                     lobby.send(JSON.stringify({
                         event: "PlaceItemsToProcessor",

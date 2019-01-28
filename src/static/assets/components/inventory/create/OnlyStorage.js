@@ -12,7 +12,7 @@ function OnlyStorage() {
 
     $(storage).resizable({
         alsoResize: "#inventoryStorage",
-        minHeight: 105,
+        minHeight: 101,
         minWidth: 187,
         handles: "se",
     });
