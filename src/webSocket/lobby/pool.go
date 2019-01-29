@@ -2,7 +2,7 @@ package lobby
 
 import (
 	"../../mechanics/factories/players"
-	"../../mechanics/gameObjects/inventory"
+	"../../mechanics/lobby"
 	"../../mechanics/player"
 	"../utils"
 	"github.com/gorilla/websocket"
@@ -44,13 +44,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 func Reader(ws *websocket.Conn) {
-	var recycleItems map[int]*inventory.Slot
+
+	var recycleItems map[int]*lobby.RecycleItem
 
 	for {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}

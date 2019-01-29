@@ -11,15 +11,7 @@ func DetailType() map[int]resource.CraftDetail {
 		"SELECT " +
 		"id, " +
 		"name, " +
-		"size, " +
-		"enriched_thorium, " +
-		"iron, " +
-		"copper, " +
-		"titanium, " +
-		"silicon, " +
-		"plastic, " +
-		"steel, " +
-		"wire " +
+		"size " +
 		"" +
 		" FROM craft_detail")
 	if err != nil {
@@ -32,9 +24,7 @@ func DetailType() map[int]resource.CraftDetail {
 	for rows.Next() {
 		var detailType resource.CraftDetail
 
-		err := rows.Scan(&detailType.TypeID, &detailType.Name, &detailType.Size, &detailType.EnrichedThorium,
-			&detailType.Iron, &detailType.Copper, &detailType.Titanium, &detailType.Silicon, &detailType.Plastic,
-			&detailType.Steel, &detailType.Wire)
+		err := rows.Scan(&detailType.TypeID, &detailType.Name, &detailType.Size)
 		if err != nil {
 			log.Fatal("get all resource type  " + err.Error())
 		}

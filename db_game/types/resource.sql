@@ -23,21 +23,7 @@ CREATE TABLE recycled_resource_type (
 CREATE TABLE craft_detail (
   id               SERIAL PRIMARY KEY,
   name             varchar(64),
-  size             real not null default 0, /* сколько весит 1 экземляр ресурса */
-
-  /* количественное описание требуемых ресурсов для создания 1 штуки */
-
-  /* примитивы */
-  enriched_thorium int  not null default 0,
-  iron             int  not null default 0,
-  copper           int  not null default 0,
-  titanium         int  not null default 0,
-  silicon          int  not null default 0,
-  plastic          int  not null default 0,
-
-  /* детали тоесть фактически сылки на самих себя */
-  steel            int  not null default 0,
-  wire             int  not null default 0
+  size             real not null default 0 /* сколько весит 1 экземляр ресурса */
 );
 
 /* РЕСУРСЫ НА КАРТЕ */

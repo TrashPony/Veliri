@@ -2,25 +2,24 @@ package lobby
 
 import (
 	"../../mechanics/factories/storages"
-	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/lobby"
 	"github.com/gorilla/websocket"
 )
 
-func placeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int]*inventory.Slot) {
+func placeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
 	user := usersLobbyWs[ws]
 
 	baseStorage, find := storages.Storages.Get(user.GetID(), user.InBaseID)
 
 	if user != nil && find {
 		if *recycleItems == nil {
-			*recycleItems = make(map[int]*inventory.Slot)
+			*recycleItems = make(map[int]*lobby.RecycleItem)
 		}
 
 		if msg.Event == "PlaceItemToProcessor" {
 			storageSlot, ok := baseStorage.Slots[msg.StorageSlot]
 			if ok {
-				(*recycleItems)[msg.StorageSlot] = storageSlot
+				(*recycleItems)[msg.StorageSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false}
 			}
 		}
 
@@ -28,7 +27,7 @@ func placeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int
 			for _, itemSlot := range msg.StorageSlots {
 				storageSlot, ok := baseStorage.Slots[itemSlot]
 				if ok {
-					(*recycleItems)[itemSlot] = storageSlot
+					(*recycleItems)[itemSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false}
 				}
 			}
 		}
@@ -38,7 +37,7 @@ func placeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int
 	}
 }
 
-func removeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int]*inventory.Slot) {
+func removeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
 	user := usersLobbyWs[ws]
 	if user != nil {
 

@@ -5,8 +5,9 @@ function FillRecycler(jsonData) {
 
     $("#itemsPool .InventoryCell").remove();
     for (let i in jsonData.recycle_slots) {
+
         let cell = document.createElement("div");
-        CreateInventoryCell(cell, jsonData.recycle_slots[i], i, "recycler", onclick);
+        CreateInventoryCell(cell, jsonData.recycle_slots[i].slot, i, "recycler", onclick);
 
         // TODO заполнение по разделам
 

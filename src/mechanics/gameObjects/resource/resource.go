@@ -43,17 +43,4 @@ type CraftDetail struct {
 	TypeID int     `json:"id"`
 	Name   string  `json:"name"`
 	Size   float32 `json:"size"`
-
-	/* количественное описание требуемых ресурсов для создания 1 штуки */
-	/* примитивы */
-	EnrichedThorium int `json:"enriched_thorium"`
-	Iron            int `json:"iron"`
-	Copper          int `json:"copper"`
-	Titanium        int `json:"titanium"`
-	Silicon         int `json:"silicon"`
-	Plastic         int `json:"plastic"`
-
-	/* детали тоесть фактически сылки на самих себя */
-	Steel int `json:"steel"`
-	Wire  int `json:"wire"`
 }

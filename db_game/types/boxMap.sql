@@ -24,7 +24,9 @@ CREATE TABLE box_storage (
   id        SERIAL PRIMARY KEY,
   id_box    INT REFERENCES box_in_map (id),
   slot      INT,          /* какой слот занимает итем */
-  item_type VARCHAR(64),  /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body) */
+  /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
+  переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints) */
+  item_type VARCHAR(64),
   item_id   INT,          /* ид итема определяет конкретный итем тип + ид*/
   quantity  INT,          /* количество предметов в слоте */
   hp        INT           /* сколько осталось хп у эквипа, до поломки*/
