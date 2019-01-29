@@ -3,6 +3,7 @@ package lobby
 import (
 	"../../mechanics/factories/storages"
 	"../../mechanics/lobby"
+	"../storage"
 	"github.com/gorilla/websocket"
 )
 
@@ -45,7 +46,30 @@ func removeItemToProcessor(ws *websocket.Conn, msg Message, recycleItems *map[in
 			delete(*recycleItems, msg.RecyclerSlot)
 		}
 
+		if msg.Event == "RemoveItemsFromProcessor" {
+			for _, itemSlot := range msg.StorageSlots {
+				delete(*recycleItems, itemSlot)
+			}
+		}
+
 		lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
 			PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
+	}
+}
+
+func recycle(ws *websocket.Conn, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
+	user := usersLobbyWs[ws]
+	if user != nil {
+		err := lobby.Recycle(user, recycleItems)
+
+		if err != nil {
+			// tODO обработка ошибки
+			return
+		}
+
+		lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
+			PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
+
+		storage.Updater(user.GetID())
 	}
 }

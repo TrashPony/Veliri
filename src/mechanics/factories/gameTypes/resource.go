@@ -36,10 +36,30 @@ func (r *resourceStore) GetRecycledByID(id int) (*resource.RecycledResource, boo
 	return &newResource, ok
 }
 
+func (r *resourceStore) GetRecycledByName(name string) *resource.RecycledResource {
+	for _, recycleRes := range r.recycled {
+		if recycleRes.Name == name {
+			return &recycleRes
+		}
+	}
+
+	return nil
+}
+
 func (r *resourceStore) GetDetailByID(id int) (*resource.CraftDetail, bool) {
 	var newResource resource.CraftDetail
 	newResource, ok := r.detail[id]
 	return &newResource, ok
+}
+
+func (r *resourceStore) GetDetailByName(name string) *resource.CraftDetail {
+	for _, detail := range r.detail {
+		if detail.Name == name {
+			return &detail
+		}
+	}
+
+	return nil
 }
 
 func (r *resourceStore) GetMapReservoirByID(id int) (*resource.Map, bool) {

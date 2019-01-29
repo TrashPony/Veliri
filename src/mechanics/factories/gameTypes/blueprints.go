@@ -7,7 +7,7 @@ import (
 )
 
 type bluePrintsStore struct {
-	bluePrints map[int]blueprints.Blueprints
+	bluePrints map[int]blueprints.Blueprint
 }
 
 var BluePrints = NewBluePrints()
@@ -16,18 +16,18 @@ func NewBluePrints() *bluePrintsStore {
 	return &bluePrintsStore{bluePrints: get.BlueprintsType()}
 }
 
-func (b *bluePrintsStore) GetAllType() (map[int]blueprints.Blueprints) {
+func (b *bluePrintsStore) GetAllType() map[int]blueprints.Blueprint {
 	return b.bluePrints
 }
 
-func (b *bluePrintsStore) GetByID(id int) (*blueprints.Blueprints, bool) {
-	var newBluePrint blueprints.Blueprints
+func (b *bluePrintsStore) GetByID(id int) (*blueprints.Blueprint, bool) {
+	var newBluePrint blueprints.Blueprint
 	newBluePrint, ok := b.bluePrints[id]
 	return &newBluePrint, ok
 }
 
-func (b *bluePrintsStore) GetByItemTypeAndID(itemID int, itemType string) *blueprints.Blueprints {
-	var newBluePrint blueprints.Blueprints
+func (b *bluePrintsStore) GetByItemTypeAndID(itemID int, itemType string) *blueprints.Blueprint {
+	var newBluePrint blueprints.Blueprint
 
 	for _, bluePrint := range b.bluePrints {
 		if bluePrint.ItemId == itemID && bluePrint.ItemType == itemType {

@@ -1,12 +1,12 @@
 package get
 
 import (
-	"dbConnect"
-	"log"
+	"../../../dbConnect"
 	"../../gameObjects/blueprints"
+	"log"
 )
 
-func BlueprintsType() map[int]blueprints.Blueprints {
+func BlueprintsType() map[int]blueprints.Blueprint {
 	rows, err := dbConnect.GetDBConnect().Query("" +
 		"SELECT " +
 		" id," +
@@ -25,7 +25,8 @@ func BlueprintsType() map[int]blueprints.Blueprints {
 		" plastic, " +
 		" steel, " +
 		" wire," +
-		" count " +
+		" count," +
+		" electronics " +
 		"" +
 		"FROM blueprints")
 	if err != nil {
@@ -33,15 +34,16 @@ func BlueprintsType() map[int]blueprints.Blueprints {
 	}
 	defer rows.Close()
 
-	allType := make(map[int]blueprints.Blueprints)
+	allType := make(map[int]blueprints.Blueprint)
 
 	for rows.Next() {
-		var blueprintType blueprints.Blueprints
+		var blueprintType blueprints.Blueprint
 
 		err := rows.Scan(&blueprintType.ID, &blueprintType.Name, &blueprintType.ItemType, &blueprintType.ItemId,
 			&blueprintType.Icon, &blueprintType.CraftTime, &blueprintType.Original, &blueprintType.Copies,
 			&blueprintType.EnrichedThorium, &blueprintType.Iron, &blueprintType.Copper, &blueprintType.Titanium,
-			&blueprintType.Silicon, &blueprintType.Plastic, &blueprintType.Steel, &blueprintType.Wire, &blueprintType.Count)
+			&blueprintType.Silicon, &blueprintType.Plastic, &blueprintType.Steel, &blueprintType.Wire,
+			&blueprintType.Count, &blueprintType.Electronics)
 		if err != nil {
 			log.Fatal("get scan all blueprints type " + err.Error())
 		}

@@ -192,3 +192,5 @@ body ::-webkit-scrollbar-thumb:disabled {
 }
 
 /*--------*/
+
+::-webkit-scrollbar-corner {background-color: transparent;}

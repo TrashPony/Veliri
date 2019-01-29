@@ -104,3 +104,25 @@
     position: absolute;
     z-index: -1;
 }
+
+.RecycleSection {
+
+}
+
+.nameSection {
+    width: 50%;
+    height: 14px;
+    font-size: 12px;
+    margin: 2px 0 1px 1px;
+    border-radius: 0 20px 0 0;
+    padding-left: 11px;
+    border: 1px solid #793f1f;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(251, 93, 0, 0.55), rgba(225, 37, 46, 0.6) 6px);
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.hideArrowSection {
+
+}

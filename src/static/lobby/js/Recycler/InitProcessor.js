@@ -11,7 +11,7 @@ function InitProcessor() {
     processor.id = "processorRoot";
 
     $(processor).resizable({
-        minHeight: 109,
+        minHeight: 128,
         minWidth: 461,
         handles: "se",
         resize: function (event, ui) {
@@ -69,13 +69,11 @@ function InitProcessor() {
                         event: "PlaceItemsToProcessor",
                         storage_slots: draggable.data("selectedItems").slotsNumbers,
                     }));
-                    console.log(1, draggable.data("selectedItems"))
                 } else {
                     lobby.send(JSON.stringify({
                         event: "PlaceItemToProcessor",
                         storage_slot: Number(draggable.data("slotData").number),
                     }));
-                    console.log(2, draggable.data("slotData"))
                 }
             }
         }
@@ -84,6 +82,7 @@ function InitProcessor() {
     let preview = document.createElement("div");
     preview.className = "itemsPools";
     preview.innerHTML = "<div class='pollHead'><h3>Output results</h3></div>";
+    preview.id = "previewPool";
 
     processor.appendChild(items);
     processor.appendChild(preview);
@@ -99,6 +98,8 @@ function InitProcessor() {
 
     let process = createInput("Переработать", processor);
     $(process).click(function () {
-        // TODO
+        lobby.send(JSON.stringify({
+            event: "recycle",
+        }));
     });
 }

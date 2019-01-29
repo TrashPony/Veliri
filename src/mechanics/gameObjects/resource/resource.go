@@ -33,6 +33,42 @@ type Resource struct {
 	Plastic         int `json:"plastic"`
 }
 
+func (r *Resource) GetEnrichedThorium() int {
+	return r.EnrichedThorium
+}
+
+func (r *Resource) GetIron() int {
+	return r.Iron
+}
+
+func (r *Resource) GetCopper() int {
+	return r.Copper
+}
+
+func (r *Resource) GetTitanium() int {
+	return r.Titanium
+}
+
+func (r *Resource) GetSilicon() int {
+	return r.Silicon
+}
+
+func (r *Resource) GetPlastic() int {
+	return r.Plastic
+}
+
+func (r *Resource) GetSteel() int {
+	return 0
+}
+
+func (r *Resource) GetWire() int {
+	return 0
+}
+
+func (r *Resource) GetElectronics() int {
+	return 0
+}
+
 type RecycledResource struct {
 	TypeID int     `json:"type_id"`
 	Name   string  `json:"name"`

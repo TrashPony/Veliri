@@ -51,7 +51,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -68,12 +68,16 @@ func Reader(ws *websocket.Conn) {
 			placeItemToProcessor(ws, msg, &recycleItems)
 		}
 
-		if msg.Event == "RemoveItemFromProcessor" {
+		if msg.Event == "RemoveItemFromProcessor" || msg.Event == "RemoveItemsFromProcessor" {
 			removeItemToProcessor(ws, msg, &recycleItems)
 		}
 
 		if msg.Event == "ClearProcessor" {
 			recycleItems = nil
+		}
+
+		if msg.Event == "recycle" {
+			recycle(ws, msg, &recycleItems)
 		}
 	}
 }

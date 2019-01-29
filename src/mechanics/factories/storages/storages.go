@@ -23,6 +23,10 @@ func (p *Pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
+	if baseId == 0 {
+		return nil, false
+	}
+
 	userStorages, userOk := p.storages[userId]
 	if userOk {
 		baseStorage, baseOk := userStorages[baseId]

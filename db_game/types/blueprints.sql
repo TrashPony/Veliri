@@ -28,7 +28,8 @@ CREATE TABLE blueprints (
 
   ---- детали
   steel            int         not null default 0,
-  wire             int         not null default 0
+  wire             int         not null default 0,
+  electronics      int         not null default 0
 );
 
 CREATE TABLE created_blueprint (
