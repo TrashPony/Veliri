@@ -1,5 +1,6 @@
-#processorRoot {
-    width: 800px;
+#processorRoot, #Workbench {
+    padding-top: 3px;
+    width: 560px;
     height: 300px;
     position: absolute;
     display: block;
@@ -38,7 +39,7 @@
 #processorRoot .itemsPools {
     overflow-y: auto;
     border-radius: 5px;
-    width: 386px;
+    width: 266px;
     height: 240px;
     float: left;
     box-shadow: inset 0 0 5px black;
@@ -48,7 +49,7 @@
     overflow-x: hidden;
 }
 
-#processorRoot .itemsPools .pollHead {
+#processorRoot .itemsPools .pollHead, #Workbench .blueHead {
     text-align: left;
     height: 17px;
     border-radius: 5px;
@@ -58,7 +59,7 @@
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     line-height: 19px;
     margin: 1px 0 0 1px;
-    width: 382px;
+    width: 262px;
     box-shadow: 0 0 5px black;
     color: #ff7800;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;

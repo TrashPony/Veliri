@@ -1,4 +1,4 @@
-function CreateControlButtons(top, moveRight, closeRight, hideRight) {
+function CreateControlButtons(top, moveRight, closeRight, hideRight, headText, width) {
     let move = document.createElement("div");
     move.className = "topButton";
     move.innerText = "⇿";
@@ -24,5 +24,10 @@ function CreateControlButtons(top, moveRight, closeRight, hideRight) {
     hide.style.right = hideRight;
     hide.style.lineHeight = "0";
 
-    return {move: move, close: close, hide: hide}
+    let head = document.createElement("div");
+    head.className = "windowsHead";
+    head.innerText = headText;
+    head.style.width = width;
+
+    return {move: move, close: close, hide: hide, head: head}
 }

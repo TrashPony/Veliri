@@ -1,4 +1,4 @@
-function InitProcessor() {
+function Init() {
     if (document.getElementById("processorRoot")) {
         document.getElementById("processorRoot").remove()
     }
@@ -21,7 +21,7 @@ function InitProcessor() {
         }
     });
 
-    let buttons = CreateControlButtons("0", "61px", "-3px", "29px");
+    let buttons = CreateControlButtons("0", "61px", "-3px", "29px", "ПЕРЕРАБОТЧИК", "145px");
     $(buttons.move).mousedown(function (event) {
         moveWindow(event, 'processorRoot')
     });
@@ -34,6 +34,7 @@ function InitProcessor() {
     processor.appendChild(buttons.move);
     processor.appendChild(buttons.hide);
     processor.appendChild(buttons.close);
+    processor.appendChild(buttons.head);
 
     let items = document.createElement("div");
     items.className = "itemsPools";

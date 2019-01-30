@@ -8,7 +8,7 @@ CREATE TABLE blueprints (
   item_id          INT,
   /* имя файла иконки */
   icon             VARCHAR(64) not null default '',
-  /* количесво минут необходимое для создания итема */
+  /* количесво секунд необходимое для создания итема */
   craft_time       INT         not null default 0,
   /* бесконечное количество прогонов */
   original         BOOLEAN     not null default false,

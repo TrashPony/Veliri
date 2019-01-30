@@ -1,0 +1,29 @@
+#Workbench {
+    width: 480px;
+    height: 280px;
+    padding: 23px 3px 3px 3px;
+}
+
+#Workbench #bluePrints, #Workbench #detailWork {
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    height: 260px;
+    width: 180px;
+    float: left;
+    border-radius: 5px;
+    padding: 10px;
+    overflow-x: hidden;
+}
+
+#Workbench #detailWork {
+    width: 255px;
+    float: right;
+}
+
+#Workbench .blueHead {
+    margin: -9px 0 0 -9px;
+    width: 186px;
+    padding-left: 10px;
+    font-size: 12px;
+    line-height: 17px;
+}
