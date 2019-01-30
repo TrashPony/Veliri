@@ -27,3 +27,38 @@
     font-size: 12px;
     line-height: 17px;
 }
+
+#bpName {
+    float: left;
+    text-align: left;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    line-height: 19px;
+    margin: 0px 0 0 10px;
+    width: 208px;
+    box-shadow: 0 0 5px black;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#bpIcon, #itemPreview {
+    height: 65px;
+    width: 65px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    background: rgba(63, 70, 74, 0.5);
+    border-radius: 5px;
+    float: left;
+}
+
+#bpIcon {
+    height: 35px;
+    width: 35px;
+}
+
+#itemPreview {
+    float: right;
+}

@@ -34,6 +34,23 @@ function InitWorkbench() {
     let detailWork = document.createElement("div");
     detailWork.id = "detailWork";
 
+    let bpIcon = document.createElement("div");
+    bpIcon.id = "bpIcon";
+
+    let info = document.createElement("div");
+    info.id = "bpName";
+
+    let itemPreview = document.createElement("div");
+    itemPreview.id = "itemPreview";
+
+    let needItems = document.createElement("div");
+    needItems.id = "needItems";
+
+    detailWork.appendChild(bpIcon);
+    detailWork.appendChild(info);
+    detailWork.appendChild(itemPreview);
+    detailWork.appendChild(needItems);
+
     workbench.appendChild(bluePrints);
     workbench.appendChild(detailWork);
 
