@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../mechanics/gameObjects/inventory"
+	inv "../../mechanics/gameObjects/inventory"
 	"../../mechanics/lobby"
 )
 
@@ -15,5 +15,7 @@ type Message struct {
 	StorageSlots []int `json:"storage_slots"`
 
 	RecycleSlots        map[int]*lobby.RecycleItem `json:"recycle_slots"`
-	PreviewRecycleSlots []*inventory.Slot          `json:"preview_recycle_slots"`
+	PreviewRecycleSlots []*inv.Slot                `json:"preview_recycle_slots"`
+
+	Storage *inv.Inventory `json:"storage"`
 }

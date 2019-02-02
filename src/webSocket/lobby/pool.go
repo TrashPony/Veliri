@@ -79,6 +79,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "recycle" {
 			recycle(ws, msg, &recycleItems)
 		}
+
+		if msg.Event == "OpenWorkbench" {
+			openWorkbench(ws, msg)
+		}
 	}
 }
 

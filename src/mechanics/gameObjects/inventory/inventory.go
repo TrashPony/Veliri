@@ -198,12 +198,32 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 			inv.Slots[slot] = &inventorySlot
 		}
 
-		if inventorySlot.Type == "boxes" {
-			resource, _ := gameTypes.Boxes.GetByID(inventorySlot.ItemID)
+		if inventorySlot.Type == "detail" {
+			detail, _ := gameTypes.Resource.GetDetailByID(inventorySlot.ItemID)
 
-			inventorySlot.Item = resource
-			inventorySlot.Size = resource.FoldSize * float32(inventorySlot.Quantity)
+			inventorySlot.Item = detail
+			inventorySlot.Size = detail.Size * float32(inventorySlot.Quantity)
 			inventorySlot.MaxHP = 1 // у ящиков тож нет хп
+
+			inv.Slots[slot] = &inventorySlot
+		}
+
+		if inventorySlot.Type == "boxes" {
+			box, _ := gameTypes.Boxes.GetByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = box
+			inventorySlot.Size = box.FoldSize * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у ящиков тож нет хп
+
+			inv.Slots[slot] = &inventorySlot
+		}
+
+		if inventorySlot.Type == "blueprints" {
+			blueprint, _ := gameTypes.BluePrints.GetByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = blueprint
+			inventorySlot.Size = 0  // чертежи не занимают места
+			inventorySlot.MaxHP = 1 // у чертежов нет хп
 
 			inv.Slots[slot] = &inventorySlot
 		}

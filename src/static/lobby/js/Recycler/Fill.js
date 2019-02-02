@@ -1,5 +1,4 @@
 function FillRecycler(jsonData) {
-    console.log(jsonData)
     let itemsPool = document.getElementById("itemsPool");
     let previewPool = document.getElementById("previewPool");
     if (!itemsPool) return;

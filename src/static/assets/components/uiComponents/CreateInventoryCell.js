@@ -9,6 +9,8 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         cell.style.backgroundImage = "url(/assets/" + slotData.type + "/" + slotData.item.name + ".png)";
     } else if (slotData.type === "detail") {
         cell.style.backgroundImage = "url(/assets/resource/detail/" + slotData.item.name + ".png)";
+    } else if (slotData.type === "blueprints") {
+        cell.style.backgroundImage = "url(/assets/blueprints/" + slotData.item.name + ".png)";
     } else {
         cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)";
     }
@@ -99,7 +101,8 @@ function CreateHealBar(cell, type, append) {
     let cellData = JSON.parse(cell.slotData);
 
     if (cellData.type !== "ammo" && cellData.type !== "resource" && cellData.type !== "recycle"
-        && cellData.type !== "boxes" && cellData.type !== "detail" && cellData.type !== "blueprint") {
+        && cellData.type !== "boxes" && cellData.type !== "detail" && cellData.type !== "blueprint" &&
+        cellData.type !== "blueprints") {
 
         let backHealBar = document.createElement("div");
 

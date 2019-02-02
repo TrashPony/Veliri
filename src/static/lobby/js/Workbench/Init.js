@@ -8,7 +8,7 @@ function InitWorkbench() {
 
     $(workbench).resizable({
         minHeight: 211,
-        minWidth: 478,
+        minWidth: 420,
         handles: "se",
         resize: function (event, ui) {
 
@@ -113,11 +113,12 @@ function InitWorkbench() {
 
     let cancel = createInput("Отмена", buttonWrapper);
     $(cancel).click(function () {
-        lobby.send(JSON.stringify({
-            event: "ClearProcessor",
-        }));
         workbench.remove();
     });
 
     document.body.appendChild(workbench);
+
+    lobby.send(JSON.stringify({
+        event: "OpenWorkbench",
+    }));
 }

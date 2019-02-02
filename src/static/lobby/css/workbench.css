@@ -16,15 +16,19 @@
 }
 
 #Workbench #bluePrints {
-    height: 125px;
+    height: 145px;
     overflow-y: scroll;
+    padding: 0;
+    width: 200px;
 }
 
 #currentCrafts {
-    height: 108px;
+    height: 128px;
     float: left;
     margin: 6px 3px 3px 0;
     overflow-y: scroll;
+    padding: 0;
+    width: 200px;
 }
 
 #Workbench #detailWork {
@@ -33,8 +37,7 @@
 }
 
 #Workbench .blueHead {
-    margin: -9px 0 0 -9px;
-    width: 186px;
+    width: 173px;
     padding-left: 10px;
     font-size: 12px;
     line-height: 17px;
@@ -147,4 +150,34 @@
     margin: 7px 2px 2px 16px;
     position: relative;
     height: 155px;
+}
+
+#Workbench .blueRow {
+    padding: 0 10px;
+    margin: 2px 0;
+    text-align: center;
+    box-shadow: inset 0 0 2px black;
+    border: 0;
+    font-size: 11px;
+    color: #9bc9f1;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    height: 16px;
+    line-height: 14px;
+    transition: 0.1s;
+}
+
+#Workbench .blueRow:hover {
+    transform: scale(1.03);
+    color: #66f5ff;
+    background: rgba(44, 44, 44, 0.15);
+}
+
+#Workbench .blueRow .nameBP {
+    float: left;
+}
+
+#Workbench .blueRow .countBP {
+    float: right;
+    color: #d6caca;
+    line-height: 17px;
 }

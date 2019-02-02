@@ -36,4 +36,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "updateRecycler") {
         FillRecycler(JSON.parse(jsonMessage));
     }
+
+    if (event === "WorkbenchStorage") {
+        FillWorkbench(JSON.parse(jsonMessage))
+    }
 }
