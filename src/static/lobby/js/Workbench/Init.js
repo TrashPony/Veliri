@@ -16,11 +16,11 @@ function InitWorkbench() {
             $(this).find('#needItems').css("height", $(this).height() - 70);
             $(this).find('#ButtonWrapper').css("height", $(this).height() - 125);
 
-            $(this).find('#bluePrints').css("height", $(this).height() / 2 - 15);
-            $(this).find('#currentCrafts').css("height", $(this).height() / 2 - 32);
+            $(this).find('#bluePrints').css("height", $(this).height() / 2 + 5);
+            $(this).find('#currentCrafts').css("height", $(this).height() / 2 - 12);
 
-            $(this).find('#bluePrints').css("width", $(this).width() - 300);
-            $(this).find('#currentCrafts').css("width", $(this).width() - 300);
+            $(this).find('#bluePrints').css("width", $(this).width() - 280);
+            $(this).find('#currentCrafts').css("width", $(this).width() - 280);
 
             $('#bluePrints').resizable({
                 maxHeight: $(this).height() - 70,
@@ -68,7 +68,7 @@ function InitWorkbench() {
     info.id = "bpName";
 
     let workStatus = document.createElement("div");
-    workStatus.innerHTML = "<div style='background-image: url(../../lobby/img/mineral.png)'><span>10%</span></div><div style='background-image: url(../../lobby/img/timeIcon.png)'><span>10%</span></div>";
+    workStatus.innerHTML = "<div style='background-image: url(../../lobby/img/mineral.png)'><span>0%</span></div><div style='background-image: url(../../lobby/img/timeIcon.png)'><span>0%</span></div>";
     workStatus.id = "workStatus";
 
     let itemPreview = document.createElement("div");
@@ -82,8 +82,9 @@ function InitWorkbench() {
     countHead.innerHTML = "Кол-во:";
 
     let count = document.createElement("input");
+    count.id = "bpCountWork";
     count.type = "number";
-    count.value = "1";
+    count.value = "";
     count.min = 1;
 
     let buttonWrapper = document.createElement("div");

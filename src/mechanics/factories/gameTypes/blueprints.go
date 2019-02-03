@@ -42,3 +42,36 @@ func (b *bluePrintsStore) GetByItemTypeAndID(itemID int, itemType string) *bluep
 
 	return nil
 }
+
+func (b *bluePrintsStore) GetItems(id int) interface{} {
+	bp, ok := b.bluePrints[id]
+
+	if ok {
+		if bp.ItemType == "weapon" {
+			weapon, _ := Weapons.GetByID(bp.ItemId)
+			return weapon
+		}
+		if bp.ItemType == "equip" {
+			equip, _ := Equips.GetByID(bp.ItemId)
+			return equip
+		}
+		if bp.ItemType == "detail" {
+			detail, _ := Resource.GetDetailByID(bp.ItemId)
+			return detail
+		}
+		if bp.ItemType == "ammo" {
+			ammo, _ := Ammo.GetByID(bp.ItemId)
+			return ammo
+		}
+		if bp.ItemType == "body" {
+			body, _ := Bodies.GetByID(bp.ItemId)
+			return body
+		}
+		if bp.ItemType == "boxes" {
+			box, _ := Boxes.GetByID(bp.ItemId)
+			return box
+		}
+	}
+
+	return nil
+}

@@ -37,6 +37,7 @@ function FillRecycler(jsonData) {
 
         if (!jsonData.recycle_slots[i].recycled) {
             cell.style.border = "1px solid red";
+            cell.innerHTML += "<div class='noAllowCell'></div>"
         }
 
         cell.onclick = function () {

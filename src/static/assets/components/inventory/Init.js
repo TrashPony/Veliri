@@ -9,7 +9,7 @@ function InitInventoryMenu(closeFunc, option) {
             }
             includeJS("../assets/components/uiComponents/Button.js");
             includeJS("../assets/components/uiComponents/ControlButtons.js");
-            includeJS("../assets/components/uiComponents/CreateInventoryCell.js");
+            includeJS("../assets/components/uiComponents/inventoryCells/CreateInventoryCell.js");
 
             includeJS("../assets/components/inventory/create/Create.js");
             includeJS("../assets/components/inventory/create/Constructor.js");
@@ -65,7 +65,6 @@ function InitInventoryMenu(closeFunc, option) {
             includeCSS("../assets/components/inventory/css/constructorUnit.css");
             includeCSS("../assets/components/inventory/css/equipMSBox.css");
             includeCSS("../assets/components/inventory/css/equipUnitBox.css");
-            includeCSS("../assets/components/inventory/css/inventoryCells.css");
             includeCSS("../assets/components/inventory/css/tip.css");
             includeCSS("../assets/components/inventory/css/repair.css");
             includeCSS("../assets/components/inventory/css/inventory.css");
@@ -75,6 +74,8 @@ function InitInventoryMenu(closeFunc, option) {
             includeCSS("../assets/components/inventory/css/storage.css");
             includeCSS("../assets/components/inventory/css/marketDialog.css");
             includeCSS("../assets/components/uiComponents/passwordProtectBox/passBlock.css");
+            includeCSS("../assets/components/uiComponents/inventoryCells/inventoryCells.css");
+
         }
         return resolve();
     });

@@ -83,6 +83,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "OpenWorkbench" {
 			openWorkbench(ws, msg)
 		}
+
+		if msg.Event == "SelectBP" {
+			selectBP(ws, msg)
+		}
 	}
 }
 

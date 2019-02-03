@@ -52,12 +52,13 @@
     z-index: 999;
     background-size: 10px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
-    line-height: 19px;
+    line-height: 15px;
     margin: 0px 0 0 10px;
-    width: 196px;
+    width: 186px;
     box-shadow: 0 0 5px black;
     color: #ff7800;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding-left: 10px;
 }
 
 #bpIcon, #itemPreview {
@@ -72,11 +73,21 @@
 #bpIcon {
     height: 35px;
     width: 35px;
+    background-position: center;
+    background-size: cover;
 }
 
 #itemPreview {
     margin-top: 10px;
     float: right;
+    background-position: center;
+    background-size: contain;
+}
+
+#itemPreview span{
+    float: right;
+    color: #ffffff;
+    line-height: 114px;
 }
 
 #needItems {
@@ -90,6 +101,7 @@
     float: left;
     overflow-y: scroll;
     overflow-x: hidden;
+    text-align: left;
 }
 
 #workStatus {
@@ -97,7 +109,7 @@
 }
 
 #workStatus div {
-    width: 52px;
+    width: 42px;
     text-align: right;
     margin: 7px 5px 0 10px;
     line-height: 18px;

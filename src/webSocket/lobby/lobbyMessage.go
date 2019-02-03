@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"../../mechanics/gameObjects/blueprints"
 	inv "../../mechanics/gameObjects/inventory"
 	"../../mechanics/lobby"
 )
@@ -18,4 +19,9 @@ type Message struct {
 	PreviewRecycleSlots []*inv.Slot                `json:"preview_recycle_slots"`
 
 	Storage *inv.Inventory `json:"storage"`
+
+	BluePrint *blueprints.Blueprint `json:"blue_print"`
+	BPItem    interface{}           `json:"bp_item"`
+	Count     int                   `json:"count"`
+	MaxCount  int                   `json:"max_count"`
 }

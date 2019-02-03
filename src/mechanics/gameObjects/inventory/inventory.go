@@ -22,6 +22,7 @@ type Slot struct {
 	HP         int         `json:"hp"`
 	MaxHP      int         `json:"max_hp"`
 	Size       float32     `json:"size"`
+	Find       bool        `json:"find"` // поле для верстака, обозначающие естли такое количество итемов на складе или нет
 }
 
 func (inv *Inventory) SetSlotsSize(size int) {
@@ -85,15 +86,7 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, qua
 
 func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int) error {
 	// надо убедиться что необходимое количество есть и его можно удалить
-	countRealItems := 0
-
-	for _, slot := range inv.Slots {
-		if slot.ItemID == itemID && slot.Type == itemType {
-			countRealItems += slot.Quantity
-		}
-	}
-
-	if countRealItems >= quantityRemove {
+	if inv.ViewItems(itemID, itemType, quantityRemove) {
 		for _, slot := range inv.Slots {
 			if slot.ItemID == itemID && slot.Type == itemType {
 				if slot.Quantity > quantityRemove {
@@ -108,6 +101,20 @@ func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int
 		return nil
 	} else {
 		return errors.New("few items")
+	}
+}
+
+func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) bool {
+	countRealItems := 0
+	for _, slot := range inv.Slots {
+		if slot.ItemID == itemID && slot.Type == itemType {
+			countRealItems += slot.Quantity
+		}
+	}
+	if countRealItems >= quantityFind {
+		return true
+	} else {
+		return false
 	}
 }
 

@@ -40,4 +40,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "WorkbenchStorage") {
         FillWorkbench(JSON.parse(jsonMessage))
     }
+
+    if (event === "SelectBP") {
+        SelectBP(JSON.parse(jsonMessage))
+    }
 }
