@@ -63,7 +63,7 @@ func recycle(ws *websocket.Conn, msg Message, recycleItems *map[int]*lobby.Recyc
 		err := lobby.Recycle(user, recycleItems)
 
 		if err != nil {
-			// tODO обработка ошибки
+			lobbyPipe <- Message{Event: msg.Event, Error: err.Error()}
 			return
 		}
 

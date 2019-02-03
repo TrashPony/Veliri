@@ -7,7 +7,7 @@ function InitWorkbench() {
     workbench.id = "Workbench";
 
     $(workbench).resizable({
-        minHeight: 211,
+        minHeight: 237,
         minWidth: 420,
         handles: "se",
         resize: function (event, ui) {
@@ -87,10 +87,16 @@ function InitWorkbench() {
     count.value = "";
     count.min = 1;
 
+    let time = document.createElement("div");
+    time.id = "bpCraftTime";
+    time.innerHTML = "";
+
     let buttonWrapper = document.createElement("div");
     buttonWrapper.id = "ButtonWrapper";
     buttonWrapper.appendChild(countHead);
     buttonWrapper.appendChild(count);
+    buttonWrapper.appendChild(time);
+
 
     detailWork.appendChild(bpIcon);
     detailWork.appendChild(info);

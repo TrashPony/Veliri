@@ -23,6 +23,7 @@ function FillWorkbench(jsonData) {
 function SelectBP(jsonData) {
     document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
     document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.name + ".png)";
+    document.getElementById("bpCraftTime").innerHTML = jsonData.blue_print.craft_time + "s";
 
     let itemPreview = document.getElementById("itemPreview");
 

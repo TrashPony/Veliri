@@ -87,6 +87,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "SelectBP" {
 			selectBP(ws, msg)
 		}
+
+		if msg.Event == "Craft" {
+			craft(ws, msg)
+		}
 	}
 }
 
