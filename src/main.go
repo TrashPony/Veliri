@@ -33,6 +33,8 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
 
 	go lobby.ReposeSender()
+	go lobby.WorkerChecker()
+
 	go chat.CommonChatSender()
 
 	go field.MoveSender()

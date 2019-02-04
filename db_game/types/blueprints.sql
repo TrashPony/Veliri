@@ -33,13 +33,21 @@ CREATE TABLE blueprints (
 );
 
 CREATE TABLE created_blueprint (
-  id           SERIAL PRIMARY KEY,
+  id                        SERIAL PRIMARY KEY,
   /* определяет итем который будет на выходе */
-  id_blueprint INT REFERENCES blueprints (id),
+  id_blueprint              INT REFERENCES blueprints (id),
   /* база где происходит крафт и куда упасть на склад */
-  id_base      INT REFERENCES bases (id),
+  id_base                   INT REFERENCES bases (id),
   /* какому игроку */
-  id_user      INT REFERENCES users (id),
+  id_user                   INT REFERENCES users (id),
   /* время окончания */
-  finish_time  timestamp
+  finish_time               timestamp,
+  /* процент экономии миниралов */
+  mineral_saving_percentage INT,
+  /* процент экономии времени */
+  time_saving_percentage    INT
 );
+
+-- TODO
+alter table created_blueprint add column mineral_saving_percentage int not null default 0;
+alter table created_blueprint add column time_saving_percentage int not null default 0;

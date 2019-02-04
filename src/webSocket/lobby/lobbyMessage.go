@@ -11,6 +11,8 @@ type Message struct {
 	UserID int    `json:"user_id"`
 	Error  string `json:"error"`
 
+	ID int `json:"id"`
+
 	StorageSlot  int   `json:"storage_slot"`
 	RecyclerSlot int   `json:"recycler_slot"`
 	StorageSlots []int `json:"storage_slots"`
