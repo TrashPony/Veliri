@@ -47,7 +47,3 @@ CREATE TABLE created_blueprint (
   /* процент экономии времени */
   time_saving_percentage    INT
 );
-
--- TODO
-alter table created_blueprint add column mineral_saving_percentage int not null default 0;
-alter table created_blueprint add column time_saving_percentage int not null default 0;

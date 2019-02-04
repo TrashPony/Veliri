@@ -114,9 +114,7 @@ function InitWorkbench() {
 
     let process = createInput("Создать", buttonWrapper);
     process.style.bottom = "20px";
-    $(process).click(function () {
-        // TODO
-    });
+    process.id = "processButton";
 
     let cancel = createInput("Отмена", buttonWrapper);
     $(cancel).click(function () {

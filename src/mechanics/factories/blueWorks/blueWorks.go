@@ -3,6 +3,7 @@ package blueWorks
 import (
 	bwDB "../../db/blueWorks"
 	"../../gameObjects/blueprints"
+	"../gameTypes"
 	"time"
 )
 
@@ -13,8 +14,16 @@ type blueWorks struct {
 var BlueWorks = newStorage()
 
 func newStorage() *blueWorks {
+	works := bwDB.BlueWorks()
+
+	for _, work := range works {
+		// докидываем обьекты ворка
+		work.Blueprint, _ = gameTypes.BluePrints.GetByID(work.BlueprintID)
+		work.Item = gameTypes.BluePrints.GetItems(work.BlueprintID)
+	}
+
 	return &blueWorks{
-		blueWorks: bwDB.BlueWorks(),
+		blueWorks: works,
 	}
 }
 
@@ -44,6 +53,10 @@ func (b *blueWorks) GetAll() map[int]*blueprints.BlueWork {
 }
 
 func (b *blueWorks) Add(newWork *blueprints.BlueWork) {
+
+	newWork.Blueprint, _ = gameTypes.BluePrints.GetByID(newWork.BlueprintID)
+	newWork.Item = gameTypes.BluePrints.GetItems(newWork.BlueprintID)
+
 	bwDB.InsertDW(newWork)
 	b.blueWorks[newWork.ID] = newWork
 }

@@ -101,7 +101,7 @@ func (p *Pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
 	}
 }
 
-func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) (bool, int) {
+func (p *Pool) RemoveItemBySlot(userId, baseId, numberSlot, quantityRemove int) (bool, int) {
 
 	p.mx.Lock()
 	defer p.mx.Unlock()
@@ -115,14 +115,28 @@ func (p *Pool) RemoveItem(userId, baseId, numberSlot, quantityRemove int) (bool,
 				countRemove := slot.RemoveItemBySlot(quantityRemove)
 				storage.Inventory(baseStorage, userId, baseId)
 				return true, countRemove
-			} else {
-				return false, 0
 			}
-		} else {
-			return false, 0
 		}
-	} else {
-		return false, 0
 	}
+
 	return false, 0
+}
+
+func (p *Pool) RemoveItem(userId, baseId, itemID int, itemType string, quantityRemove int) bool {
+	p.mx.Lock()
+	defer p.mx.Unlock()
+
+	userStorages, userOk := p.storages[userId]
+	if userOk {
+		baseStorage, baseOk := userStorages[baseId]
+		if baseOk {
+			err := baseStorage.RemoveItem(itemID, itemType, quantityRemove)
+			if err == nil {
+				storage.Inventory(baseStorage, userId, baseId)
+				return true
+			}
+		}
+	}
+
+	return false
 }

@@ -64,7 +64,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 				// добавляем его на фабрику
 				o.AddNewOrder(newOrder)
 				// удаляем итем со склада
-				storages.Storages.RemoveItem(user.GetID(), user.InBaseID, storageSlot, quantity)
+				storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, storageSlot, quantity)
 			} else {
 				return errors.New("unknown error")
 			}

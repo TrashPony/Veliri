@@ -7,6 +7,7 @@ import (
 	"../../mechanics/gameObjects/blueprints"
 	"../../mechanics/gameObjects/inventory"
 	"../../mechanics/lobby"
+	"../storage"
 	"github.com/gorilla/websocket"
 	"time"
 )
@@ -14,11 +15,14 @@ import (
 func openWorkbench(ws *websocket.Conn, msg Message) {
 	user := usersLobbyWs[ws]
 
-	// todo GET current works
-
 	baseStorage, find := storages.Storages.Get(user.GetID(), user.InBaseID)
 	if user != nil && find {
-		lobbyPipe <- Message{Event: "WorkbenchStorage", UserID: user.GetID(), Storage: baseStorage}
+		lobbyPipe <- Message{
+			Event:     "WorkbenchStorage",
+			UserID:    user.GetID(),
+			Storage:   baseStorage,
+			BlueWorks: blueWorks.BlueWorks.GetByUserAndBase(user.GetID(), user.InBaseID),
+		}
 	}
 }
 
@@ -84,9 +88,14 @@ func craft(ws *websocket.Conn, msg Message) {
 				}
 
 				blueWorks.BlueWorks.Add(&newWork)
-
-				storages.Storages.RemoveItem(user.GetID(), user.InBaseID, msg.StorageSlot, msg.Count)
 			}
+
+			storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, msg.StorageSlot, msg.Count)
+			for _, slot := range recyclerItems {
+				storages.Storages.RemoveItem(user.GetID(), user.InBaseID, slot.ItemID, slot.Type, slot.Quantity)
+			}
+
+			storage.Updater(user.GetID())
 		}
 	}
 }

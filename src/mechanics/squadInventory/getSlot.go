@@ -31,7 +31,7 @@ func RemoveSlotBySource(user *player.Player, inventorySlot int, source string, q
 	}
 
 	if source == "storage" {
-		_, countRemove := storages.Storages.RemoveItem(user.GetID(), user.InBaseID, inventorySlot, quantity)
+		_, countRemove := storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, inventorySlot, quantity)
 		return countRemove
 	}
 

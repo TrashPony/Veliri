@@ -50,7 +50,7 @@ func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
 			}
 
 			delete(*recycleItems, i)
-			storages.Storages.RemoveItem(user.GetID(), user.InBaseID, i, slot.Quantity)
+			storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, i, slot.Quantity)
 		}
 	}
 

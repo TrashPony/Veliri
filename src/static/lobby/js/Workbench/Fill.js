@@ -1,5 +1,9 @@
+// TODO надо сделать не удаление старых элементов а обновление старых, а то визуал ломает и ивенты не всегда работают
 function FillWorkbench(jsonData) {
     let bpBlock = document.getElementById("bluePrints");
+    if (!bpBlock) return;
+    $('#bluePrints .blueRow').remove();
+
     for (let i in jsonData.storage.slots) {
         if (jsonData.storage.slots[i].type === "blueprints") {
             let blueRow = document.createElement("div");
@@ -18,12 +22,69 @@ function FillWorkbench(jsonData) {
             });
         }
     }
+
+    FillCurrentWorks(jsonData.blue_works)
+}
+
+function FillCurrentWorks(works) {
+    let workBlock = document.getElementById("currentCrafts");
+    if (!workBlock) return;
+    $('#currentCrafts .blueRow').remove();
+
+    for (let i in works) {
+        let blueRow = document.createElement("div");
+        blueRow.className = "blueRow";
+
+        let data = new Date();
+        let finishTime = new Date(works[i].finish_time);
+        data.setTime(finishTime.getTime() - new Date().getTime());
+
+        let realTimeCraft = works[i].blueprint.craft_time - (works[i].blueprint.craft_time * works[i].time_saving_percentage / 100);
+        let startTime = new Date().setTime(finishTime.getTime() - realTimeCraft * 1000);
+        let diffTime = (new Date() - startTime) / 1000;
+
+        let percent = (diffTime * 100) / realTimeCraft;
+        let widthTimeLine = 0;
+
+        if (percent > 0) {
+            widthTimeLine = Math.round(percent);
+
+            //setInterval(function () { снизит трафик но я решил что бекендом проще ¯\_(ツ)_/¯
+            let days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
+            let hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
+            let minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
+            let seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
+
+            blueRow.innerHTML = "" +
+                "<div class='nameBP'>" + works[i].item.name + "</div>" +
+                "<div class='timerWork'><span>"
+                + days
+                + hours
+                + " : "
+                + minutes
+                + " : "
+                + seconds
+                + "</span><div class='workTimeLine' style='width: " + widthTimeLine + "%'></div></div>";
+        } else {
+            blueRow.innerHTML = "" +
+                "<div class='nameBP'>" + works[i].item.name + "</div>" +
+                "<div class='timerWork'><span> Ожидание... </span>" +
+                "<div class='workTimeLine' style='width: " + widthTimeLine + "%'></div>" +
+                "</div>";
+        }
+
+        //data.setTime(data.getTime() - 1000);
+        //}, 1000);
+
+        workBlock.appendChild(blueRow);
+        // TODO dialog отмены
+    }
 }
 
 function SelectBP(jsonData) {
     document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
     document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.name + ".png)";
-    document.getElementById("bpCraftTime").innerHTML = jsonData.blue_print.craft_time + "s";
+    document.getElementById("bpCraftTime").innerHTML = jsonData.blue_print.craft_time * jsonData.count + "s";
 
     let itemPreview = document.getElementById("itemPreview");
 
@@ -51,7 +112,17 @@ function SelectBP(jsonData) {
             storage_slot: Number(jsonData.storage_slot),
             count: Number(this.value)
         }));
-    }
+    };
+
+    let processButton = document.getElementById("processButton");
+    $(processButton).off('click'); // обязательно удаляем прошлое событие
+    $(processButton).click(function () {
+        lobby.send(JSON.stringify({
+            event: "Craft",
+            storage_slot: Number(jsonData.storage_slot),
+            count: Number(bpCountWork.value)
+        }));
+    });
 }
 
 function fillNeedItems(items) {

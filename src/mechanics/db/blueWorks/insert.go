@@ -13,7 +13,7 @@ func InsertDW(work *blueprints.BlueWork) {
 		"VALUES "+
 		"($1, $2, $3, $4, $5, $6) "+
 		"RETURNING id",
-		work.BlueprintID, work.BaseID, work.UserID, work.FinishTime, work.MineralSavingPercentage, work.TimeSavingPercentage).Scan(&work.ID)
+		work.BlueprintID, work.BaseID, work.UserID, work.FinishTime.UTC(), work.MineralSavingPercentage, work.TimeSavingPercentage).Scan(&work.ID)
 	if err != nil {
 		log.Fatal("add new blue work " + err.Error())
 	}

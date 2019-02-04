@@ -2,17 +2,29 @@ package lobby
 
 import (
 	"../../mechanics/factories/blueWorks"
-	"time"
 	"../../mechanics/factories/gameTypes"
 	"../../mechanics/factories/storages"
 	"../storage"
+	"time"
 )
 
 func WorkerChecker() {
 	for {
 		workers := blueWorks.BlueWorks.GetAll()
 
+		for _, user := range usersLobbyWs {
+			// просто обновляет всем юзера таймер крафта
+			baseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
+			lobbyPipe <- Message{
+				Event:     "WorkbenchStorage",
+				UserID:    user.GetID(),
+				Storage:   baseStorage,
+				BlueWorks: blueWorks.BlueWorks.GetByUserAndBase(user.GetID(), user.InBaseID),
+			}
+		}
+
 		for _, work := range workers {
+			// проверяет работы на готовность
 			if time.Now().Unix() >= work.FinishTime.Unix() {
 
 				bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
