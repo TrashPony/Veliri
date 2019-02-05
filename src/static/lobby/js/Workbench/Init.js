@@ -45,11 +45,11 @@ function InitWorkbench() {
 
     let bluePrints = document.createElement("div");
     bluePrints.id = "bluePrints";
-    bluePrints.innerHTML = "<div class='blueHead'>Доступные Чертежи:</div>";
+    bluePrints.innerHTML = "<div class='blueHead'>Доступные чертежи:</div>";
 
     let currentCrafts = document.createElement("div");
     currentCrafts.id = "currentCrafts";
-    currentCrafts.innerHTML = "<div class='blueHead'>Текущие проекты:</div>";
+    currentCrafts.innerHTML = "<div class='blueHead' id='queueProduction'>Очередь производаства:</div>";
 
     $(bluePrints).resizable({
         alsoResizeReverse: "#currentCrafts",
@@ -116,7 +116,7 @@ function InitWorkbench() {
     process.style.bottom = "20px";
     process.id = "processButton";
 
-    let cancel = createInput("Отмена", buttonWrapper);
+    let cancel = createInput("Закрыть", buttonWrapper);
     $(cancel).click(function () {
         workbench.remove();
     });

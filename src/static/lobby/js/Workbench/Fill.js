@@ -35,7 +35,8 @@ function FillWorkbench(jsonData) {
     // удаляем всех кого не обновили
     $('.blueRow').each(function () {
         if ($(this).data("update").update) {
-            $(this).data("update").update = false
+            $(this).data("update").update = false;
+            if ($(this).data("count")) $(this).data("count").count = 0;
         } else {
             $(this).remove()
         }
@@ -47,24 +48,49 @@ function FillCurrentWorks(works) {
     if (!workBlock) return;
 
     for (let i in works) {
-        let blueRow = document.getElementById("blueRow" + works[i].id);
+        let dataRow = innerDate(works[i]);
+
+        // сложный ид для того что бы групировать одинаковые итемы а не добавлять каждый раз новый
+        let idRow = "blueRow" +
+            works[i].blueprint.id +
+            "" + works[i].mineral_saving_percentage +
+            "" + works[i].time_saving_percentage;
+
+        if (dataRow.active) {
+            idRow = "blueRow" + works[i].id
+        }
+
+        let blueRow = document.getElementById(idRow);
         if (!blueRow) {
             blueRow = document.createElement("div");
             blueRow.className = "blueRow";
-            blueRow.id = "blueRow" + works[i].id;
+            blueRow.id = idRow;
 
-            workBlock.appendChild(blueRow);
+            if (dataRow.active) {
+                $(blueRow).insertAfter('#queueProduction');// активный крафт всегда первый
+            } else {
+                workBlock.appendChild(blueRow);
+            }
+
+            $(blueRow).data("count", {count: 0});
         }
-        innerDate(blueRow, works[i]);
 
+        blueRow.innerHTML = dataRow.html;
         $(blueRow).data("update", {update: true});
 
-        // TODO dialog отмены
-        // TODO групировать в 1 строку если крафт не активен, однинаковый итем, время и минерал экономии равны
+        if (!dataRow.active) {
+            $(blueRow).data("count").count++;
+            blueRow.innerHTML = dataRow.html;
+            blueRow.innerHTML += "<div class='countBP' style='margin-right: 4px'>x" + $(blueRow).data("count").count + "</div>";
+        }
+
+        $(blueRow).click(function () {
+            // TODO заполнять привью,
+        })
     }
 }
 
-function innerDate(row, work) {
+function innerDate(work) {
 
     let data = new Date();
     let finishTime = new Date(work.finish_time);
@@ -77,16 +103,26 @@ function innerDate(row, work) {
     let percent = (diffTime * 100) / realTimeCraft;
     let widthTimeLine = 0;
 
+    let days, hours, minutes, seconds;
     if (percent > 0) {
         widthTimeLine = Math.round(percent);
 
-        //setInterval(function () { снизит трафик но я решил что бекендом проще ¯\_(ツ)_/¯
-        let days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
-        let hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
-        let minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
-        let seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
+        days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
+        hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
+        minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
+        seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
+    } else {
 
-        row.innerHTML = "" +
+        data.setTime(work.blueprint.craft_time * 1000);
+
+        days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
+        hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
+        minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
+        seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
+    }
+
+    return {
+        html: "" +
             "<div class='nameBP'>" + work.item.name + "</div>" +
             "<div class='timerWork'><span>"
             + days
@@ -96,17 +132,7 @@ function innerDate(row, work) {
             + " : "
             + seconds
             + "</span>" +
-            "<div class='workTimeLine' style='width: " + widthTimeLine + "%'></div>" +
-            "<div class='countBP'>x" + 1 + "</div></div>";
-        //data.setTime(data.getTime() - 1000);
-        //}, 1000);
-
-    } else {
-        row.innerHTML = "" +
-            "<div class='nameBP'>" + work.item.name + "</div>" +
-            "<div class='timerWork'><span> Ожидание... </span>" +
-            "<div class='workTimeLine' style='width: " + widthTimeLine + "%'></div>" +
-            "</div>";
+            "<div class='workTimeLine' style='width: " + widthTimeLine + "%'></div></div>", active: percent > 0
     }
 }
 
@@ -128,7 +154,7 @@ function SelectBP(jsonData) {
     } else {
         itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)";
     }
-    itemPreview.innerHTML = "<span>x" + jsonData.blue_print.count + "</span>";
+    itemPreview.innerHTML = "<span>x" + jsonData.count + "</span>";
 
     fillNeedItems(jsonData.preview_recycle_slots);
 

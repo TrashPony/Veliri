@@ -53,6 +53,8 @@ function FillRecycler(jsonData) {
 
     for (let i in jsonData.preview_recycle_slots) {
 
+        if (jsonData.preview_recycle_slots[i].quantity === 0) continue;
+
         let cell = document.createElement("div");
         CreateInventoryCell(cell, jsonData.preview_recycle_slots[i], i, "", onclick);
 
