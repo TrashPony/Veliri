@@ -1,13 +1,13 @@
 package attackPhase
 
 import (
-	"../../../db/squad/update"
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/detail"
-	"../../../gameObjects/unit"
-	"../../../localGame"
-	"../../../localGame/Phases/movePhase"
-	"../../../localGame/map/watchZone"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 	"strconv"
 )
 

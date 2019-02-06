@@ -1,10 +1,10 @@
 package lobby
 
 import (
-	"../../mechanics/factories/players"
-	"../../mechanics/lobby"
-	"../../mechanics/player"
-	"../utils"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -51,7 +51,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}

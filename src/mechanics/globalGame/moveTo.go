@@ -1,10 +1,10 @@
 package globalGame
 
 import (
-	"../gameObjects/detail"
-	"../gameObjects/map"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/getlantern/deepcopy"
 	"math"
 )
@@ -29,7 +29,7 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
 
-	maxSpeed := float64(user.GetSquad().MatherShip.Speed*3)
+	maxSpeed := float64(user.GetSquad().MatherShip.Speed * 3)
 	minSpeed := float64(user.GetSquad().MatherShip.Speed)
 	speed := float64(user.GetSquad().MatherShip.Speed)
 

@@ -1,9 +1,9 @@
 package globalGame
 
 import (
-	"../factories/maps"
-	"../gameObjects/coordinate"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {

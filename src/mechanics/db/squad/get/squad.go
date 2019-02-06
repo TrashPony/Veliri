@@ -1,13 +1,13 @@
 package get
 
 import (
-	"../../../../dbConnect"
-	"../../../factories/gameTypes"
-	"../../../gameObjects/coordinate"
-	inv "../../../gameObjects/inventory"
-	"../../../gameObjects/squad"
-	"../../../gameObjects/unit"
 	"database/sql"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"log"
 	"strconv"
 	"strings"

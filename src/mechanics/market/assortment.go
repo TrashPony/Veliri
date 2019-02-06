@@ -1,10 +1,10 @@
 package market
 
 import (
-	"../gameObjects/ammo"
-	"../gameObjects/detail"
-	"../gameObjects/equip"
-	"../factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/ammo"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 )
 
 type Assortment struct {

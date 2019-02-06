@@ -1,9 +1,9 @@
 package lobby
 
 import (
-	"../../mechanics/factories/storages"
-	"../../mechanics/lobby"
-	"../storage"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/webSocket/storage"
 	"github.com/gorilla/websocket"
 )
 

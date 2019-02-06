@@ -1,13 +1,13 @@
 package squadInventory
 
 import (
-	"../db/squad/update"
-	"../factories/gameTypes"
-	"../gameObjects/detail"
-	"../gameObjects/equip"
-	"../gameObjects/unit"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEquipSlot int, unit *unit.Unit, source string) error {

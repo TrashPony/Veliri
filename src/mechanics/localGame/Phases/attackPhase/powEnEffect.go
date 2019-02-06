@@ -1,8 +1,8 @@
 package attackPhase
 
 import (
-	"../../../gameObjects/effect"
-	"../../../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 )
 
 func powEnEffect(effect *effect.Effect, toUseUnit *unit.Unit, targetsUnit *[]TargetUnit) {

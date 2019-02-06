@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"../dbConnect"
 	"encoding/json"
+	"github.com/TrashPony/Veliri/src/dbConnect"
 	"html/template"
 	"log"
 	"net/http"

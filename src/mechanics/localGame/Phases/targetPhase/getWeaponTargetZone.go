@@ -1,11 +1,11 @@
 package targetPhase
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/unit"
-	"../../../localGame"
-	"../../../player"
-	"../../Phases"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 )
 

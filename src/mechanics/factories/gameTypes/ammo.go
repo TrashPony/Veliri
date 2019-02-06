@@ -1,8 +1,8 @@
 package gameTypes
 
 import (
-	"../../db/get"
-	"../../gameObjects/ammo"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/ammo"
 )
 
 type ammoStore struct {
@@ -21,6 +21,6 @@ func (a *ammoStore) GetByID(id int) (*ammo.Ammo, bool) {
 	return &newAmmo, ok
 }
 
-func (a *ammoStore) GetAllType() (map[int]ammo.Ammo) {
+func (a *ammoStore) GetAllType() map[int]ammo.Ammo {
 	return a.ammo
 }

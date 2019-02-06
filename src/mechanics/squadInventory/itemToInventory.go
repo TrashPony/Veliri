@@ -1,10 +1,10 @@
 package squadInventory
 
 import (
-	"../db/squad/update"
-	"../factories/storages"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func ItemToInventory(user *player.Player, storageSlot int) error {

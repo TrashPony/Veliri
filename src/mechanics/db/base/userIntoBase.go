@@ -1,7 +1,7 @@
 package base
 
 import (
-	"../../../dbConnect"
+	"github.com/TrashPony/Veliri/src/dbConnect"
 	"log"
 )
 
@@ -12,7 +12,7 @@ func UserIntoBase(userID, baseID int) {
 	}
 }
 
-func UserOutBase(userID int)  {
+func UserOutBase(userID int) {
 	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM base_users WHERE user_id=$1", userID)
 	if err != nil {
 		log.Fatal(err)

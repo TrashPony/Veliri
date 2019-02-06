@@ -1,9 +1,9 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/boxes"
-	"../../mechanics/gameObjects/boxInMap"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 )
 

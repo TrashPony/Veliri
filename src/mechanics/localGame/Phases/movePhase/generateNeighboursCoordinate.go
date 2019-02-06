@@ -1,11 +1,11 @@
 package movePhase
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/map"
-	"../../../gameObjects/unit"
-	"../../../localGame/Phases"
-	"../../../player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 // TODO возможно есть способ это все упаковать в минимальное количества кода т.к. он тут ппц повтяющиеся

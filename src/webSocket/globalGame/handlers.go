@@ -1,10 +1,10 @@
 package globalGame
 
 import (
-	"../../mechanics/db/squad/update"
-	"../../mechanics/factories/bases"
-	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {

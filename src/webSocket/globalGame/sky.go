@@ -1,8 +1,8 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/maps"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/satori/go.uuid"
 	"math"
 	"math/rand"
@@ -36,7 +36,7 @@ func CreateCloud(mapID int) {
 
 	mp, _ := maps.Maps.GetByID(mapID)
 
-	Uuid := uuid.Must(uuid.NewV4())
+	Uuid := uuid.Must(uuid.NewV4(), nil)
 
 	randomCloud := "cloud" + strconv.Itoa(rand.Intn(13))
 	randomPos := rand.Intn(2)

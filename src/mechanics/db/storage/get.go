@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"../../../dbConnect"
-	inv "../../gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"log"
 )
 

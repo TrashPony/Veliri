@@ -1,8 +1,8 @@
 package field
 
 import (
-	"../../mechanics/factories/games"
-	"../../mechanics/localGame/Phases/targetPhase"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 )
 

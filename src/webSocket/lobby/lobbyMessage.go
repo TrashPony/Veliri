@@ -1,9 +1,9 @@
 package lobby
 
 import (
-	"../../mechanics/gameObjects/blueprints"
-	inv "../../mechanics/gameObjects/inventory"
-	"../../mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 )
 
 type Message struct {

@@ -1,8 +1,8 @@
 package chat
 
 import (
-	"../../mechanics/factories/players"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"

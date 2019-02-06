@@ -1,8 +1,8 @@
 package coordinate
 
 import (
-	"../dynamicMapObject"
-	"../effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 	"strconv"
 )
 

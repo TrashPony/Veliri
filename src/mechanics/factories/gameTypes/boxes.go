@@ -1,8 +1,8 @@
 package gameTypes
 
 import (
-	"../../db/get"
-	"../../gameObjects/box"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/box"
 	"math/rand"
 )
 

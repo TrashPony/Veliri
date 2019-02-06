@@ -1,7 +1,7 @@
 package games
 
 import (
-	"../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"sync"
 )
 

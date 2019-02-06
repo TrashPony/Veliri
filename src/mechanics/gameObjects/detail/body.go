@@ -1,9 +1,9 @@
 package detail
 
 import (
-	"../ammo"
-	"../coordinate"
-	"../equip"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/ammo"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 )
 
 type Body struct {

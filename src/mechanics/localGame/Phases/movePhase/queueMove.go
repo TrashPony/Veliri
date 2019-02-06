@@ -1,10 +1,10 @@
 package movePhase
 
 import (
-	"../../../db/squad/update"
-	"../../../gameObjects/unit"
-	"../../../localGame"
-	"../../../player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"math/rand"
 )
 

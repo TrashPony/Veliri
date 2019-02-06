@@ -1,8 +1,8 @@
 package _map
 
 import (
-	"../coordinate"
-	"../resource"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 )
 
 type Map struct {

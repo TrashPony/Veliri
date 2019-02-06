@@ -1,8 +1,8 @@
 package player
 
 import (
-	"../../../dbConnect"
-	"../../player"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"log"
 )
 

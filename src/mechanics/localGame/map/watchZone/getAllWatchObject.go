@@ -1,8 +1,8 @@
 package watchZone
 
 import (
-	"../../../localGame"
-	"../../../player"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {

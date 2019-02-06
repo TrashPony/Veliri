@@ -1,8 +1,8 @@
 package hexLineDraw
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"math"
 )
 

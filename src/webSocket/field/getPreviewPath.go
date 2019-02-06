@@ -1,9 +1,9 @@
 package field
 
 import (
-	"../../mechanics/factories/games"
-	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/localGame/Phases/movePhase"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
 	"github.com/gorilla/websocket"
 )
 

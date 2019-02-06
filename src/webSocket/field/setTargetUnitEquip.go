@@ -1,10 +1,10 @@
 package field
 
 import (
-	"../../mechanics/factories/games"
-	"../../mechanics/gameObjects/detail"
-	"../../mechanics/gameObjects/unit"
-	"../../mechanics/localGame/Phases/targetPhase"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 )
 

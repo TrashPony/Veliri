@@ -1,7 +1,7 @@
 package boxInMap
 
 import (
-	"../inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"time"
 )
 

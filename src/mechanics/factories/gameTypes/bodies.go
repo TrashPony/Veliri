@@ -1,8 +1,8 @@
 package gameTypes
 
 import (
-	"../../db/get"
-	"../../gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/getlantern/deepcopy"
 )
 
@@ -28,6 +28,6 @@ func (b *bodyStore) GetByID(id int) (*detail.Body, bool) {
 	return &newBody, ok
 }
 
-func (b *bodyStore) GetAllType() (map[int]detail.Body) {
+func (b *bodyStore) GetAllType() map[int]detail.Body {
 	return b.bodies
 }

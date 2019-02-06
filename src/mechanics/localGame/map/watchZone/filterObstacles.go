@@ -1,9 +1,9 @@
 package watchZone
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../localGame"
-	"../hexLineDraw"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/hexLineDraw"
 	"strconv"
 )
 

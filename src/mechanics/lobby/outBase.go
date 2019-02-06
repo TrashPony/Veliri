@@ -1,12 +1,12 @@
 package lobby
 
 import (
-	"../../webSocket/globalGame"
-	"../db/base"
-	"../db/squad/update"
-	"../factories/bases"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/base"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
 	"time"
 )
 

@@ -1,13 +1,13 @@
 package lobby
 
 import (
-	"../../mechanics/factories/blueWorks"
-	"../../mechanics/factories/gameTypes"
-	"../../mechanics/factories/storages"
-	"../../mechanics/gameObjects/blueprints"
-	"../../mechanics/gameObjects/inventory"
-	"../../mechanics/lobby"
-	"../storage"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/blueWorks"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/webSocket/storage"
 	"github.com/gorilla/websocket"
 	"time"
 )

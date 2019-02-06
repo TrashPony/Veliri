@@ -1,7 +1,7 @@
 package globalGame
 
 import (
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"sync"
 )
@@ -31,7 +31,7 @@ func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
 	return c.users[ws]
 }
 
-func (c *wsUsers) GetAll() (map[*websocket.Conn]*player.Player) {
+func (c *wsUsers) GetAll() map[*websocket.Conn]*player.Player {
 	c.mx.Lock()
 	defer c.mx.Unlock()
 	return c.users

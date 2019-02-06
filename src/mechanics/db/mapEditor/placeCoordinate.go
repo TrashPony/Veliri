@@ -1,8 +1,8 @@
 package mapEditor
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"log"
 	"strconv"
 )

@@ -1,13 +1,13 @@
 package market
 
 import (
-	"../../mechanics/factories/bases"
-	"../../mechanics/factories/players"
-	"../../mechanics/gameObjects/order"
-	"../../mechanics/market"
-	"../../mechanics/player"
-	"../storage"
-	"../utils"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
+	"github.com/TrashPony/Veliri/src/mechanics/market"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/storage"
+	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"

@@ -1,10 +1,10 @@
 package get
 
 import (
-	"../../../../dbConnect"
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/map"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"log"
 	"strconv"
 	"strings"

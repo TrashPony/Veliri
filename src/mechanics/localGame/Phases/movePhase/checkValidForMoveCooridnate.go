@@ -1,9 +1,9 @@
 package movePhase
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/map"
-	"../../../player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, q int, r int) (*coordinate.Coordinate, bool) {

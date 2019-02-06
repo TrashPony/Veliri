@@ -1,8 +1,8 @@
 package blueWorks
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/blueprints"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"log"
 )
 
@@ -36,7 +36,7 @@ func BlueWorks() map[int]*blueprints.BlueWork {
 			&blueWork.MineralSavingPercentage,
 			&blueWork.TimeSavingPercentage,
 		)
-		
+
 		if err != nil {
 			log.Fatal("get scan all blueWork " + err.Error())
 		}

@@ -1,12 +1,12 @@
 package field
 
 import (
-	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/localGame"
-	"../../mechanics/localGame/Phases/attackPhase"
-	"../../mechanics/localGame/map/hexLineDraw"
-	"../../mechanics/localGame/map/watchZone"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/attackPhase"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/hexLineDraw"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 )
 

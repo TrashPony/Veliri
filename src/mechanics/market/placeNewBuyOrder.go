@@ -1,13 +1,13 @@
 package market
 
 import (
-	"../db/market"
-	dbPlayer "../db/player"
-	"../factories/bases"
-	"../factories/gameTypes"
-	"../gameObjects/order"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/market"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package inventory
 
 import (
-	"../../mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 )
 
 type Message struct {

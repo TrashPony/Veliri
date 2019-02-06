@@ -1,9 +1,9 @@
 package update
 
 import (
-	"../../../../dbConnect"
-	"../../../player"
 	"encoding/json"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"log"
 )
 

@@ -1,8 +1,8 @@
 package gameTypes
 
 import (
-	"../../db/get"
-	"../../gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 )
 
 type weaponsStore struct {
@@ -21,6 +21,6 @@ func (w *weaponsStore) GetByID(id int) (*detail.Weapon, bool) {
 	return &newWeapon, ok
 }
 
-func (w *weaponsStore) GetAllType() (map[int]detail.Weapon) {
+func (w *weaponsStore) GetAllType() map[int]detail.Weapon {
 	return w.weapons
 }

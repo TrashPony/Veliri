@@ -1,9 +1,9 @@
 package maps
 
 import (
-	"../../gameObjects/map"
-	"../../gameObjects/resource"
-	"../gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"math/rand"
 )
 

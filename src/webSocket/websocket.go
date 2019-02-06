@@ -1,7 +1,7 @@
 package webSocket
 
 import (
-	"../auth"
+	"github.com/TrashPony/Veliri/src/auth"
 	"net/http"
 )
 

@@ -1,10 +1,10 @@
 package targetPhase
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../localGame"
-	"../../map/hexLineDraw"
-	"../../map/watchZone"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/hexLineDraw"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 	"strconv"
 )
 

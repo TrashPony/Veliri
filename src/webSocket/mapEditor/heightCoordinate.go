@@ -1,8 +1,8 @@
 package mapEditor
 
 import (
-	"../../mechanics/db/mapEditor"
-	"../../mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/db/mapEditor"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/gorilla/websocket"
 )
 

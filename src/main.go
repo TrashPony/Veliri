@@ -1,13 +1,13 @@
 package main
 
 import (
-	"./auth"
-	"./uploadFiles"
-	"./webSocket"
-	"./webSocket/chat"
-	"./webSocket/field"
-	"./webSocket/globalGame"
-	"./webSocket/lobby"
+	"github.com/TrashPony/Veliri/src/auth"
+	"github.com/TrashPony/Veliri/src/uploadFiles"
+	"github.com/TrashPony/Veliri/src/webSocket"
+	"github.com/TrashPony/Veliri/src/webSocket/chat"
+	"github.com/TrashPony/Veliri/src/webSocket/field"
+	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
+	"github.com/TrashPony/Veliri/src/webSocket/lobby"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"

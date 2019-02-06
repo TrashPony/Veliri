@@ -1,10 +1,10 @@
 package initGame
 
 import (
-	"../../db/localGame/get"
-	"../../localGame"
-	"../../localGame/Phases/movePhase"
-	"../../localGame/map/watchZone"
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/get"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 )
 
 func InitGame(idGAme int) (newGame *localGame.Game) {

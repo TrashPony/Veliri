@@ -1,11 +1,11 @@
 package market
 
 import (
-	"../db/market"
-	dbPlayer "../db/player"
-	"../factories/storages"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/market"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func (o *OrdersPool) Cancel(orderID int, user *player.Player) error {

@@ -1,13 +1,12 @@
 package lobby
 
 import (
-	"../factories/gameTypes"
-	"../factories/storages"
 	"errors"
-
-	"../gameObjects/inventory"
-	"../gameObjects/resource"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 type RecycleItem struct {

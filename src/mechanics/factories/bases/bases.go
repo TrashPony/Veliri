@@ -1,8 +1,8 @@
 package bases
 
 import (
-	dbBase "../../db/base"
-	"../../gameObjects/base"
+	dbBase "github.com/TrashPony/Veliri/src/mechanics/db/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"sync"
 )
 

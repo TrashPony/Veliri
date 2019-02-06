@@ -1,10 +1,10 @@
 package useEquip
 
 import (
-	"../../db/localGame/get"
-	"../../gameObjects/coordinate"
-	"../../gameObjects/effect"
-	"../../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 )
 
 func AddNewUnitEffect(gameUnit *unit.Unit, newEffect *effect.Effect, time int) {

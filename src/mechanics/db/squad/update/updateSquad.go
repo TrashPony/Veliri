@@ -1,9 +1,9 @@
 package update
 
 import (
-	"../../../../dbConnect"
-	"../../../gameObjects/squad"
 	"database/sql"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"log"
 )
 

@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../factories/boxes"
-	"../gameObjects/boxInMap"
-	"../gameObjects/coordinate"
-	"../gameObjects/map"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"math"
 )

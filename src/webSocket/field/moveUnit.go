@@ -1,13 +1,13 @@
 package field
 
 import (
-	"../../mechanics/db/localGame/update"
-	"../../mechanics/factories/games"
-	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/gameObjects/unit"
-	"../../mechanics/localGame"
-	"../../mechanics/localGame/Phases/movePhase"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"strconv"
 )

@@ -1,10 +1,10 @@
 package squadInventory
 
 import (
-	"../db/squad/update"
-	"../factories/gameTypes"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source string) error {

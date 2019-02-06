@@ -1,8 +1,8 @@
 package update
 
 import (
-	"../../../../dbConnect"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"log"
 )
 

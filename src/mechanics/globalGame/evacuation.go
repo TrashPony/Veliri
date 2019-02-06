@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../factories/bases"
-	"../gameObjects/base"
-	"../gameObjects/map"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"sync"
 )
 

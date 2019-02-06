@@ -1,14 +1,14 @@
 package globalGame
 
 import (
-	"../../mechanics/db/squad/update"
-	"../../mechanics/factories/boxes"
-	"../../mechanics/factories/gameTypes"
-	"../../mechanics/factories/maps"
-	"../../mechanics/gameObjects/inventory"
-	"../../mechanics/player"
-	"../gameObjects/boxInMap"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"math"
 	"math/rand"
 	"sync"

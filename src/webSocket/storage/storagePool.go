@@ -1,10 +1,10 @@
 package storage
 
 import (
-	"../../mechanics/factories/players"
-	"../../mechanics/factories/storages"
-	"../../mechanics/player"
-	"../utils"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"strconv"
 	"sync"

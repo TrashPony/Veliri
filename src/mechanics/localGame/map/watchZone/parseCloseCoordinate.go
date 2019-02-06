@@ -1,9 +1,9 @@
 package watchZone
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/unit"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 )
 
 func parseCloseCoordinate(closeCoordinates []*coordinate.Coordinate, closeUnit []*unit.Unit, game *localGame.Game) []*coordinate.Coordinate {

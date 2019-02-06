@@ -1,8 +1,8 @@
 package squad
 
 import (
-	"../../gameObjects/inventory"
-	"../../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"sync"
 )
 

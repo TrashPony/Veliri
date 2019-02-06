@@ -1,10 +1,10 @@
 package get
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/coordinate"
-	"../../gameObjects/effect"
-	"../../gameObjects/map"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"log"
 	"strconv"
 	"strings"
@@ -33,7 +33,7 @@ func Maps() map[int]*_map.Map {
 
 	for rows.Next() {
 
-		 mp := &_map.Map{}
+		mp := &_map.Map{}
 
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
 			&mp.Global, &mp.InGame)

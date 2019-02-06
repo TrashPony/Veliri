@@ -1,9 +1,9 @@
 package box
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/boxInMap"
-	inv "../../gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"log"
 )
 

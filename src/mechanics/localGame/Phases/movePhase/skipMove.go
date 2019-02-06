@@ -1,8 +1,8 @@
 package movePhase
 
 import (
-	"../../../gameObjects/unit"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 )
 
 func SkipMove(gameUnit *unit.Unit, game *localGame.Game) {

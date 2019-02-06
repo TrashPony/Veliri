@@ -1,9 +1,9 @@
 package inventory
 
 import (
-	"../../factories/gameTypes"
 	"database/sql"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"log"
 	"math"
 )

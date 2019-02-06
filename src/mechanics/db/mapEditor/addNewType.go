@@ -1,7 +1,7 @@
 package mapEditor
 
 import (
-	"../../../dbConnect"
+	"github.com/TrashPony/Veliri/src/dbConnect"
 	"log"
 )
 

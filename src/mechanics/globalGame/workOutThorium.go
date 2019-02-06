@@ -1,6 +1,6 @@
 package globalGame
 
-import "../gameObjects/detail"
+import "github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 
 func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner, highGravity bool) float64 {
 	fullCount := 0
@@ -19,7 +19,7 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner, highG
 			// формула выроботки топлива, если работает только 1 ячейка из 3х то ее эффективность в 66% больше
 			thorium := 1 / float32(100/efficiency)
 
-			if !highGravity && !afterburner{ // если не форсах и не высокая гравитация, то не тратим топливо
+			if !highGravity && !afterburner { // если не форсах и не высокая гравитация, то не тратим топливо
 				return efficiency
 			}
 
@@ -41,5 +41,3 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner, highG
 
 	return efficiency
 }
-
-

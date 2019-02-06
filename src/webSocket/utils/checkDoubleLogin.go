@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 )
 

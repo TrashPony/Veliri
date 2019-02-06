@@ -1,13 +1,13 @@
 package squadInventory
 
 import (
-	new "../db/squad"
-	"../db/squad/update"
-	"../factories/bases"
-	"../factories/gameTypes"
-	"../gameObjects/unit"
-	"../player"
 	"errors"
+	new "github.com/TrashPony/Veliri/src/mechanics/db/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) error {

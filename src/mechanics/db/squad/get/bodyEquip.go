@@ -1,26 +1,26 @@
 package get
 
 import (
-	"../../../../dbConnect"
-	"../../../factories/gameTypes"
-	"../../../gameObjects/detail"
-	"../../../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"log"
 )
 
 func BodyEquip(ship *unit.Unit) {
-	rows, err := dbConnect.GetDBConnect().Query("" +
-		"SELECT " +
-		"id_equipping, " +
-		"slot_in_body, " +
-		"type, type_slot, " +
-		"quantity, " +
-		"used, " +
-		"steps_for_reload, " +
-		"hp, " +
-		"target " +
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"SELECT "+
+		"id_equipping, "+
+		"slot_in_body, "+
+		"type, type_slot, "+
+		"quantity, "+
+		"used, "+
+		"steps_for_reload, "+
+		"hp, "+
+		"target "+
 		""+
-		"FROM squad_units_equipping " +
+		"FROM squad_units_equipping "+
 		"WHERE id_squad_unit = $1", ship.GetID())
 	if err != nil {
 		log.Fatal("get body equip" + err.Error())

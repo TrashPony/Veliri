@@ -1,9 +1,9 @@
 package squadInventory
 
 import (
-	"../factories/storages"
-	"../gameObjects/inventory"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func getSlotBySource(user *player.Player, inventorySlot int, source string) *inventory.Slot {

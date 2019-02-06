@@ -1,11 +1,11 @@
 package maps
 
 import (
-	"../../db/get"
-	"../../gameObjects/anomaly"
-	"../../gameObjects/coordinate"
-	"../../gameObjects/map"
-	"../../gameObjects/resource"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/anomaly"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 )
 
 type mapStore struct {

@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../../mechanics/db/squad/update"
-	"../../mechanics/factories/boxes"
-	"../../mechanics/factories/maps"
-	"../../mechanics/globalGame"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"time"
 )

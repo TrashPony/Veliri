@@ -1,8 +1,8 @@
 package squadInventory
 
 import (
-	"../db/squad/get"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/get"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"log"
 )
 

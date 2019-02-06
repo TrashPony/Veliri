@@ -1,8 +1,8 @@
 package storages
 
 import (
-	"../../db/storage"
-	inv "../../gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/db/storage"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"sync"
 )
 

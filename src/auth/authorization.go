@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"../dbConnect"
 	"encoding/gob"
 	"encoding/json"
+	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"log"

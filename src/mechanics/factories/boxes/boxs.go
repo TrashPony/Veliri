@@ -1,13 +1,13 @@
 package boxes
 
 import (
-	dbBox "../../db/box"
-	"../../gameObjects/boxInMap"
-	"sync"
-	"../../gameObjects/box"
+	dbBox "github.com/TrashPony/Veliri/src/mechanics/db/box"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/box"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"math/rand"
+	"sync"
 	"time"
-	"../../gameObjects/inventory"
 )
 
 type store struct {

@@ -1,15 +1,15 @@
 package attackPhase
 
 import (
-	"../../../db/localGame/update"
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/detail"
-	"../../../gameObjects/equip"
-	"../../../gameObjects/unit"
-	"../../../localGame"
-	"../../../localGame/map/watchZone"
-	"../../Phases"
-	"../../useEquip"
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/useEquip"
 )
 
 func ToUnit(useUnit, toUseUnit *unit.Unit, useEquipSlot *detail.BodyEquipSlot) *ResultBattle {

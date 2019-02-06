@@ -1,9 +1,9 @@
 package localGame
 
 import (
-	"../gameObjects/map"
-	"../gameObjects/unit"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 type Game struct {

@@ -1,8 +1,8 @@
 package gameTypes
 
 import (
-	"../../db/get"
-	"../../gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 	"github.com/getlantern/deepcopy"
 )
 
@@ -29,6 +29,6 @@ func (e *equipStore) GetByID(id int) (*equip.Equip, bool) {
 	return &newEquip, ok
 }
 
-func (e *equipStore) GetAllType() (map[int]equip.Equip) {
+func (e *equipStore) GetAllType() map[int]equip.Equip {
 	return e.equips
 }

@@ -1,9 +1,9 @@
 package update
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/squad"
 	"database/sql"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"log"
 	"strconv"
 )

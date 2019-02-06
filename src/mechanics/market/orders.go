@@ -1,8 +1,8 @@
 package market
 
 import (
-	"../db/market"
-	"../gameObjects/order"
+	"github.com/TrashPony/Veliri/src/mechanics/db/market"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
 	"sync"
 )
 

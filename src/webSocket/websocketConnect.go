@@ -1,14 +1,14 @@
 package webSocket
 
 import (
-	"./chat"
-	"./field"
-	"./globalGame"
-	"./inventory"
-	"./lobby"
-	"./mapEditor"
-	"./market"
-	"./storage"
+	"github.com/TrashPony/Veliri/src/webSocket/chat"
+	"github.com/TrashPony/Veliri/src/webSocket/field"
+	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
+	"github.com/TrashPony/Veliri/src/webSocket/inventory"
+	"github.com/TrashPony/Veliri/src/webSocket/lobby"
+	"github.com/TrashPony/Veliri/src/webSocket/mapEditor"
+	"github.com/TrashPony/Veliri/src/webSocket/market"
+	"github.com/TrashPony/Veliri/src/webSocket/storage"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"

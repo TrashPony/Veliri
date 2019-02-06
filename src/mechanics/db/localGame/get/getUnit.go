@@ -1,8 +1,8 @@
 package get
 
 import (
-	"../../../gameObjects/unit"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 )
 
 func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {

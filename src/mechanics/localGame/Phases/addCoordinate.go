@@ -1,7 +1,7 @@
 package Phases
 
 import (
-	"../../gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"strconv"
 )
 

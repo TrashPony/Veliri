@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"../../mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 	"github.com/gorilla/websocket"
 )
 

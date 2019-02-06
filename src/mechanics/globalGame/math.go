@@ -1,8 +1,8 @@
 package globalGame
 
 import (
-	"../gameObjects/coordinate"
-	"../gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"math"
 )
 

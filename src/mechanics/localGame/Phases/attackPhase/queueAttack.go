@@ -1,8 +1,8 @@
 package attackPhase
 
 import (
-	"../../../gameObjects/detail"
-	"../../../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"math/rand"
 )
 

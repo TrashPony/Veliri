@@ -1,10 +1,10 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/bases"
-	"../../mechanics/factories/boxes"
-	"../../mechanics/factories/maps"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,8 +16,8 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 		otherUsers := make([]*hostileMS, 0)
 
-		globalGame.GetPlaceCoordinate(user,  Clients.GetAll(), mp)
-		for _, otherUser := range  Clients.GetAll() {
+		globalGame.GetPlaceCoordinate(user, Clients.GetAll(), mp)
+		for _, otherUser := range Clients.GetAll() {
 			if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID {
 				otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 			}

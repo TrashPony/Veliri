@@ -1,9 +1,9 @@
 package field
 
 import (
-	"../../mechanics/factories/players"
-	"../../mechanics/player"
-	"../utils"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"

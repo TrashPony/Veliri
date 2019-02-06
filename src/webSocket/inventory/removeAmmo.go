@@ -1,8 +1,8 @@
 package inventory
 
 import (
-	"../../mechanics/squadInventory"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/squadInventory"
 	"github.com/gorilla/websocket"
 )
 

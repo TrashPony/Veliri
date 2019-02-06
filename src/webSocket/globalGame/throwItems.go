@@ -1,7 +1,7 @@
 package globalGame
 
 import (
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 )
 

@@ -1,10 +1,10 @@
 package squadInventory
 
 import (
-	"../db/squad/update"
-	"../factories/gameTypes"
-	"../gameObjects/detail"
-	"../player"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func ItemsRepair(user *player.Player) error {

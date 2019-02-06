@@ -1,11 +1,11 @@
 package squadInventory
 
 import (
-	"../db/squad/update"
-	"../factories/storages"
-	"../gameObjects/unit"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit.Unit, dst string, updateDB bool) error {

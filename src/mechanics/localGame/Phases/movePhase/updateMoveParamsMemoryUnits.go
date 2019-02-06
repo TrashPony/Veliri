@@ -1,7 +1,7 @@
 package movePhase
 
 import (
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 )
 
 func updateMoveParamsMemoryUnits(game *localGame.Game) {

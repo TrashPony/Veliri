@@ -1,14 +1,14 @@
 package mapEditor
 
 import (
-	"../../mechanics/db/get"
-	"../../mechanics/db/mapEditor"
-	"../../mechanics/factories/players"
-	"../../mechanics/gameObjects/base"
-	"../../mechanics/gameObjects/coordinate"
-	gameMap "../../mechanics/gameObjects/map"
-	"../../mechanics/player"
-	"../utils"
+	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	"github.com/TrashPony/Veliri/src/mechanics/db/mapEditor"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	gameMap "github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"strconv"
 	"sync"
@@ -87,7 +87,7 @@ type Message struct {
 type Response struct {
 	Event           string                   `json:"event"`
 	Map             gameMap.Map              `json:"map"`
-	Maps            map[int]*gameMap.Map      `json:"maps"`
+	Maps            map[int]*gameMap.Map     `json:"maps"`
 	TypeCoordinates []*coordinate.Coordinate `json:"type_coordinates"`
 	Success         bool                     `json:"success"`
 	Bases           map[int]*base.Base       `json:"bases"`

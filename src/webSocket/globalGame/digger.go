@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/boxes"
-	"../../mechanics/factories/maps"
-	"../../mechanics/gameObjects/coordinate"
-	"../../mechanics/gameObjects/dynamicMapObject"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 	"math/rand"
 	"time"

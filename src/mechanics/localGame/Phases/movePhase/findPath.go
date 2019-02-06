@@ -2,11 +2,11 @@ package movePhase
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/map"
-	"../../../gameObjects/unit"
-	"../../../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"math"
 )
 

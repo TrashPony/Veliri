@@ -1,9 +1,9 @@
 package mapEditor
 
 import (
-	"../../../dbConnect"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"log"
-	"../../gameObjects/coordinate"
 )
 
 // ------ ROWS ------- //
@@ -157,7 +157,7 @@ func setNewSizeMap(qSize, rSize, mapID int) {
 	}
 }
 
-func removeBigObjectsImpact(coordinates []*coordinate.Coordinate, idMap int)  {
+func removeBigObjectsImpact(coordinates []*coordinate.Coordinate, idMap int) {
 	for _, mcCoordinates := range coordinates {
 		if mcCoordinates.ImpactRadius > 0 && mcCoordinates.Impact == nil {
 			removeImpact(mcCoordinates, idMap)

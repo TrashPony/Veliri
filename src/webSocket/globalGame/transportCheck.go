@@ -1,8 +1,8 @@
 package globalGame
 
 import (
-	"../../mechanics/globalGame"
-	"../../mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"time"
 )

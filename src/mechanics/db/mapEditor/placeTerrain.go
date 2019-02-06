@@ -1,6 +1,6 @@
 package mapEditor
 
-import "../../gameObjects/coordinate"
+import "github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 
 func PlaceTerrain(idMap, idType, q, r int) {
 

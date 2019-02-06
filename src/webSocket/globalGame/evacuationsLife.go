@@ -1,11 +1,11 @@
 package globalGame
 
 import (
-	"../../mechanics/factories/bases"
-	"../../mechanics/factories/maps"
-	"../../mechanics/gameObjects/base"
-	"../../mechanics/gameObjects/map"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"math"
 	"math/rand"
 	"time"

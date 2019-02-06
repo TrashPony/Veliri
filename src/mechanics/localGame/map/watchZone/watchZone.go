@@ -1,10 +1,10 @@
 package watchZone
 
 import (
-	"../../../gameObjects/coordinate"
-	"../../../gameObjects/unit"
-	"../../../localGame"
-	"../../../player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 type UpdaterWatchZone struct {
@@ -14,7 +14,7 @@ type UpdaterWatchZone struct {
 }
 
 // отправляем открытые ячейки, удаляем закрытые
-func UpdateWatchZone(activeGame *localGame.Game, client *player.Player	) *UpdaterWatchZone {
+func UpdateWatchZone(activeGame *localGame.Game, client *player.Player) *UpdaterWatchZone {
 	var updaterWatchZone UpdaterWatchZone
 
 	oldWatchZone := client.GetWatchCoordinates()

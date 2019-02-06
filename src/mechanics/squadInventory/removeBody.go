@@ -1,13 +1,13 @@
 package squadInventory
 
 import (
-	"../../mechanics/db/squad/remove"
-	"../../mechanics/db/squad/update"
-	"../factories/storages"
-	"../gameObjects/detail"
-	"../gameObjects/unit"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/remove"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func RemoveMSBody(user *player.Player) error {

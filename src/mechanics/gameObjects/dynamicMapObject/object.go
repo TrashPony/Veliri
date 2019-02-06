@@ -1,8 +1,8 @@
 package dynamicMapObject
 
 import (
-	"../dialog"
-	"../effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 	"time"
 )
 

@@ -1,9 +1,9 @@
 package get
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/effect"
-	"../../gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 	"log"
 )
 

@@ -1,7 +1,7 @@
 package player
 
 import (
-	"../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"strconv"
 )
 

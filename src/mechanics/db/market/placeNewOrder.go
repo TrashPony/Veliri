@@ -1,8 +1,8 @@
 package market
 
 import (
-	"../../../dbConnect"
-	"../../gameObjects/order"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
 	"log"
 )
 

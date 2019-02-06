@@ -1,6 +1,6 @@
 package globalGame
 
-import "../../mechanics/player"
+import "github.com/TrashPony/Veliri/src/mechanics/player"
 
 func DisconnectUser(user *player.Player) {
 	globalPipe <- Message{Event: "DisconnectUser", OtherUser: GetShortUserInfo(user),

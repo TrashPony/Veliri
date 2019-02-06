@@ -1,12 +1,12 @@
 package market
 
 import (
-	"../db/market"
-	"../factories/bases"
-	"../factories/players"
-	"../factories/storages"
-	"../player"
 	"errors"
+	"github.com/TrashPony/Veliri/src/mechanics/db/market"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {

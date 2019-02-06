@@ -1,9 +1,9 @@
 package player
 
 import (
-	"../gameObjects/coordinate"
-	"../gameObjects/squad"
-	"../gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 )
 
 type Player struct {

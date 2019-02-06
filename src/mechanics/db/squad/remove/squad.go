@@ -1,8 +1,8 @@
 package remove
 
 import (
-	"../../../../dbConnect"
-	"../../../gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/dbConnect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"log"
 )
 

@@ -1,8 +1,8 @@
 package update
 
 import (
-	"../../../gameObjects/squad"
 	"database/sql"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"log"
 )
 

@@ -1,10 +1,10 @@
 package attackPhase
 
 import (
-	"../../../db/localGame/update"
-	"../../../gameObjects/detail"
-	"../../../gameObjects/unit"
-	"../../../localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 )
 
 func recovery(game *localGame.Game) {

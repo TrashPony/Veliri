@@ -1,9 +1,9 @@
 package unit
 
 import (
-	"../coordinate"
-	"../detail"
-	"../effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 )
 
 type Unit struct {

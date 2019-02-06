@@ -1,9 +1,9 @@
 package anomaly
 
 import (
-	"../boxInMap"
-	"../resource"
-	"../dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 )
 
 type Anomaly struct {
@@ -47,14 +47,14 @@ func (a *Anomaly) GetLoot() (*boxInMap.Box, *resource.Map, *dialog.Dialog) {
 	return a.box, a.resource, a.text
 }
 
-func (a *Anomaly)SetBox(box *boxInMap.Box)  {
+func (a *Anomaly) SetBox(box *boxInMap.Box) {
 	a.box = box
 }
 
-func (a *Anomaly)SetRes(res *resource.Map)  {
+func (a *Anomaly) SetRes(res *resource.Map) {
 	a.resource = res
 }
 
-func (a *Anomaly)SetDialog(dialog *dialog.Dialog)  {
+func (a *Anomaly) SetDialog(dialog *dialog.Dialog) {
 	a.text = dialog
 }

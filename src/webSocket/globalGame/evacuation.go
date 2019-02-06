@@ -1,9 +1,9 @@
 package globalGame
 
 import (
-	"../../mechanics/db/squad/update"
-	"../../mechanics/factories/maps"
-	"../../mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 	"time"
 )

@@ -1,8 +1,8 @@
 package equip
 
 import (
-	"../effect"
-	"../resource"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 )
 
 type Equip struct {

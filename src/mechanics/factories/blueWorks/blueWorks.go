@@ -1,9 +1,9 @@
 package blueWorks
 
 import (
-	bwDB "../../db/blueWorks"
-	"../../gameObjects/blueprints"
-	"../gameTypes"
+	bwDB "github.com/TrashPony/Veliri/src/mechanics/db/blueWorks"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"time"
 )
 
