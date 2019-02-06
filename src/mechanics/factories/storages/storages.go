@@ -6,20 +6,20 @@ import (
 	"sync"
 )
 
-type Pool struct {
+type pool struct {
 	mx       sync.Mutex
 	storages map[int]map[int]*inv.Inventory // [user_ID, base_ID, Inventory]
 }
 
-var Storages = NewStoragePoll()
+var Storages = newStoragePoll()
 
-func NewStoragePoll() *Pool {
-	return &Pool{
+func newStoragePoll() *pool {
+	return &pool{
 		storages: make(map[int]map[int]*inv.Inventory),
 	}
 }
 
-func (p *Pool) Get(userId, baseId int) (*inv.Inventory, bool) {
+func (p *pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
@@ -45,7 +45,7 @@ func (p *Pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	}
 }
 
-func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
+func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
@@ -73,7 +73,7 @@ func (p *Pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 	}
 }
 
-func (p *Pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
+func (p *pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
@@ -101,7 +101,7 @@ func (p *Pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
 	}
 }
 
-func (p *Pool) RemoveItemBySlot(userId, baseId, numberSlot, quantityRemove int) (bool, int) {
+func (p *pool) RemoveItemBySlot(userId, baseId, numberSlot, quantityRemove int) (bool, int) {
 
 	p.mx.Lock()
 	defer p.mx.Unlock()
@@ -122,7 +122,7 @@ func (p *Pool) RemoveItemBySlot(userId, baseId, numberSlot, quantityRemove int) 
 	return false, 0
 }
 
-func (p *Pool) RemoveItem(userId, baseId, itemID int, itemType string, quantityRemove int) bool {
+func (p *pool) RemoveItem(userId, baseId, itemID int, itemType string, quantityRemove int) bool {
 	p.mx.Lock()
 	defer p.mx.Unlock()
 

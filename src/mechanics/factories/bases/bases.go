@@ -6,15 +6,15 @@ import (
 	"sync"
 )
 
-type Store struct {
+type store struct {
 	mx    sync.Mutex
 	bases map[int]*base.Base
 }
 
-var Bases = NewBasesStore()
+var Bases = newBasesStore()
 
-func NewBasesStore() *Store {
-	return &Store{
+func newBasesStore() *store {
+	return &store{
 		bases: dbBase.Bases(),
 	}
 }
@@ -23,14 +23,14 @@ func UserIntoBase(userID, baseID int) {
 	dbBase.UserIntoBase(userID, baseID)
 }
 
-func (b *Store) Get(id int) (*base.Base, bool) {
+func (b *store) Get(id int) (*base.Base, bool) {
 	b.mx.Lock()
 	defer b.mx.Unlock()
 	val, ok := b.bases[id]
 	return val, ok
 }
 
-func (b *Store) GetBasesByMap(mapID int) map[int]*base.Base {
+func (b *store) GetBasesByMap(mapID int) map[int]*base.Base {
 	b.mx.Lock()
 	defer b.mx.Unlock()
 

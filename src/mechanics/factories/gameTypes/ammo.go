@@ -5,22 +5,22 @@ import (
 	"../../gameObjects/ammo"
 )
 
-type AmmoStore struct {
+type ammoStore struct {
 	ammo map[int]ammo.Ammo
 }
 
-var Ammo = NewAmmoStore()
+var Ammo = newAmmoStore()
 
-func NewAmmoStore() *AmmoStore {
-	return &AmmoStore{ammo: get.AmmoType()}
+func newAmmoStore() *ammoStore {
+	return &ammoStore{ammo: get.AmmoType()}
 }
 
-func (a *AmmoStore) GetByID(id int) (*ammo.Ammo, bool) {
+func (a *ammoStore) GetByID(id int) (*ammo.Ammo, bool) {
 	var newAmmo ammo.Ammo
 	newAmmo, ok := a.ammo[id]
 	return &newAmmo, ok
 }
 
-func (a *AmmoStore) GetAllType() (map[int]ammo.Ammo) {
+func (a *ammoStore) GetAllType() (map[int]ammo.Ammo) {
 	return a.ammo
 }

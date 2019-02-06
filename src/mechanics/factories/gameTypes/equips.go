@@ -6,17 +6,17 @@ import (
 	"github.com/getlantern/deepcopy"
 )
 
-type EquipStore struct {
+type equipStore struct {
 	equips map[int]equip.Equip
 }
 
-var Equips = NewEquipStore()
+var Equips = newEquipStore()
 
-func NewEquipStore() *EquipStore {
-	return &EquipStore{equips: get.EquipsType()}
+func newEquipStore() *equipStore {
+	return &equipStore{equips: get.EquipsType()}
 }
 
-func (e *EquipStore) GetByID(id int) (*equip.Equip, bool) {
+func (e *equipStore) GetByID(id int) (*equip.Equip, bool) {
 
 	var newEquip equip.Equip
 	factoryEquip, ok := e.equips[id]
@@ -29,6 +29,6 @@ func (e *EquipStore) GetByID(id int) (*equip.Equip, bool) {
 	return &newEquip, ok
 }
 
-func (e *EquipStore) GetAllType() (map[int]equip.Equip) {
+func (e *equipStore) GetAllType() (map[int]equip.Equip) {
 	return e.equips
 }

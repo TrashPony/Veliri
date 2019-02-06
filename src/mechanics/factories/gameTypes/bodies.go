@@ -6,17 +6,17 @@ import (
 	"github.com/getlantern/deepcopy"
 )
 
-type BodyStore struct {
+type bodyStore struct {
 	bodies map[int]detail.Body
 }
 
-var Bodies = NewBodyStore()
+var Bodies = newBodyStore()
 
-func NewBodyStore() *BodyStore {
-	return &BodyStore{bodies: get.BodiesType()}
+func newBodyStore() *bodyStore {
+	return &bodyStore{bodies: get.BodiesType()}
 }
 
-func (b *BodyStore) GetByID(id int) (*detail.Body, bool) {
+func (b *bodyStore) GetByID(id int) (*detail.Body, bool) {
 	var newBody detail.Body
 	factoryBody, ok := b.bodies[id]
 
@@ -28,6 +28,6 @@ func (b *BodyStore) GetByID(id int) (*detail.Body, bool) {
 	return &newBody, ok
 }
 
-func (b *BodyStore) GetAllType() (map[int]detail.Body) {
+func (b *bodyStore) GetAllType() (map[int]detail.Body) {
 	return b.bodies
 }

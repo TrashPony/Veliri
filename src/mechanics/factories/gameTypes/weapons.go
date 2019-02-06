@@ -5,22 +5,22 @@ import (
 	"../../gameObjects/detail"
 )
 
-type WeaponsStore struct {
+type weaponsStore struct {
 	weapons map[int]detail.Weapon
 }
 
-var Weapons = NewWeaponsStore()
+var Weapons = newWeaponsStore()
 
-func NewWeaponsStore() *WeaponsStore {
-	return &WeaponsStore{weapons: get.WeaponsType()}
+func newWeaponsStore() *weaponsStore {
+	return &weaponsStore{weapons: get.WeaponsType()}
 }
 
-func (w *WeaponsStore) GetByID(id int) (*detail.Weapon, bool) {
+func (w *weaponsStore) GetByID(id int) (*detail.Weapon, bool) {
 	var newWeapon detail.Weapon
 	newWeapon, ok := w.weapons[id]
 	return &newWeapon, ok
 }
 
-func (w *WeaponsStore) GetAllType() (map[int]detail.Weapon) {
+func (w *weaponsStore) GetAllType() (map[int]detail.Weapon) {
 	return w.weapons
 }

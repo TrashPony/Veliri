@@ -7,27 +7,27 @@ import (
 	"sync"
 )
 
-type UsersStore struct {
+type usersStore struct {
 	mx    sync.Mutex
 	users map[int]*player.Player
 }
 
-var Users = NewUsersStore()
+var Users = newUsersStore()
 
-func NewUsersStore() *UsersStore {
-	return &UsersStore{
+func newUsersStore() *usersStore {
+	return &usersStore{
 		users: make(map[int]*player.Player),
 	}
 }
 
-func (usersStore *UsersStore) Get(id int) (*player.Player, bool) {
+func (usersStore *usersStore) Get(id int) (*player.Player, bool) {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 	val, ok := usersStore.users[id]
 	return val, ok
 }
 
-func (usersStore *UsersStore) Add(id int, login string) *player.Player {
+func (usersStore *usersStore) Add(id int, login string) *player.Player {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 
@@ -39,7 +39,7 @@ func (usersStore *UsersStore) Add(id int, login string) *player.Player {
 	return newUser
 }
 
-func (usersStore *UsersStore) AddCash(userID, appendCash int) { // appendCash насколько увеличить баланс
+func (usersStore *usersStore) AddCash(userID, appendCash int) { // appendCash насколько увеличить баланс
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
 

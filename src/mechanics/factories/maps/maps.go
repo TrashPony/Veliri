@@ -8,15 +8,15 @@ import (
 	"../../gameObjects/resource"
 )
 
-type MapStore struct {
+type mapStore struct {
 	maps    map[int]*_map.Map
 	anomaly map[int][]*anomaly.Anomaly
 }
 
-var Maps = NewMapStore()
+var Maps = newMapStore()
 
-func NewMapStore() *MapStore {
-	m := &MapStore{maps: get.Maps(), anomaly: make(map[int][]*anomaly.Anomaly)}
+func newMapStore() *mapStore {
+	m := &mapStore{maps: get.Maps(), anomaly: make(map[int][]*anomaly.Anomaly)}
 
 	for id, mp := range m.maps {
 		respawns := 0
@@ -47,16 +47,16 @@ func NewMapStore() *MapStore {
 	return m
 }
 
-func (m *MapStore) GetByID(id int) (*_map.Map, bool) {
+func (m *mapStore) GetByID(id int) (*_map.Map, bool) {
 	newMap, ok := m.maps[id]
 	return newMap, ok
 }
 
-func (m *MapStore) GetAllMap() map[int]*_map.Map {
+func (m *mapStore) GetAllMap() map[int]*_map.Map {
 	return m.maps
 }
 
-func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
+func (m *mapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	newMap, _ := m.maps[id]
 	var respawns = make(map[int]*coordinate.Coordinate)
 
@@ -72,7 +72,7 @@ func (m *MapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	return respawns
 }
 
-func (m *MapStore) GetReservoirByQR(q, r, mapID int) *resource.Map {
+func (m *mapStore) GetReservoirByQR(q, r, mapID int) *resource.Map {
 	mp, findMap := m.maps[mapID]
 	if findMap {
 		q, findQ := mp.Reservoir[q]
@@ -84,7 +84,7 @@ func (m *MapStore) GetReservoirByQR(q, r, mapID int) *resource.Map {
 	return nil
 }
 
-func (m *MapStore) RemoveReservoirByQR(q, r, mapID int) {
+func (m *mapStore) RemoveReservoirByQR(q, r, mapID int) {
 	mp, findMap := m.maps[mapID]
 	if findMap {
 		qLine, findQ := mp.Reservoir[q]

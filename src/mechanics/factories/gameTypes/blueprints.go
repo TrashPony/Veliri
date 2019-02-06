@@ -10,9 +10,9 @@ type bluePrintsStore struct {
 	bluePrints map[int]blueprints.Blueprint
 }
 
-var BluePrints = NewBluePrints()
+var BluePrints = newBluePrints()
 
-func NewBluePrints() *bluePrintsStore {
+func newBluePrints() *bluePrintsStore {
 	return &bluePrintsStore{bluePrints: get.BlueprintsType()}
 }
 

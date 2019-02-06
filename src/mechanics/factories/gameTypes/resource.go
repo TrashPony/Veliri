@@ -13,9 +13,9 @@ type resourceStore struct {
 	mapReservoir map[int]resource.Map
 }
 
-var Resource = NewResourceStore()
+var Resource = newResourceStore()
 
-func NewResourceStore() *resourceStore {
+func newResourceStore() *resourceStore {
 	return &resourceStore{
 		base:         get.ResourceType(),
 		recycled:     get.RecycledResourceType(),

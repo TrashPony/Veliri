@@ -15,9 +15,9 @@ type store struct {
 	boxes map[int]*boxInMap.Box
 }
 
-var Boxes = NewBoxStore()
+var Boxes = newBoxStore()
 
-func NewBoxStore() *store {
+func newBoxStore() *store {
 	return &store{
 		boxes: dbBox.Boxes(),
 	}
