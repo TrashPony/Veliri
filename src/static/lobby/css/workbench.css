@@ -177,6 +177,7 @@
     height: 16px;
     line-height: 14px;
     transition: 0.1s;
+    min-width: 170px;
 }
 
 #Workbench .blueRow:hover {
