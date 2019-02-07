@@ -41,7 +41,7 @@ func GetInventory(client *player.Player) {
 			}
 		}
 
-		// если тела нет то надо выдать игроку стандартный инвентарь
+		// если тела нет то надо выдать игроку стандартный набор снаряжения
 		if !findMS {
 			msBody, _ := gameTypes.Bodies.GetByID(2) // MS
 			storages.Storages.AddItem(client.GetID(), client.InBaseID, msBody, "body",
@@ -50,6 +50,22 @@ func GetInventory(client *player.Player) {
 			lightTank, _ := gameTypes.Bodies.GetByID(3) // L. tank
 			storages.Storages.AddItem(client.GetID(), client.InBaseID, lightTank, "body",
 				lightTank.ID, 3, lightTank.MaxHP, lightTank.CapacitySize*float32(3), lightTank.MaxHP)
+
+			miningLaser, _ := gameTypes.Equips.GetByID(6) // mining laser
+			storages.Storages.AddItem(client.GetID(), client.InBaseID, miningLaser, "equip",
+				miningLaser.ID, 1, miningLaser.MaxHP, miningLaser.Size*float32(1), miningLaser.MaxHP)
+
+			smallMissile, _ := gameTypes.Weapons.GetByID(5) // weapon
+			storages.Storages.AddItem(client.GetID(), client.InBaseID, smallMissile, "weapon",
+				smallMissile.ID, 3, smallMissile.MaxHP, smallMissile.Size*float32(3), smallMissile.MaxHP)
+
+			ammoMissile, _ := gameTypes.Ammo.GetByID(5) // weapon
+			storages.Storages.AddItem(client.GetID(), client.InBaseID, ammoMissile, "ammo",
+				ammoMissile.ID, 50, 1, ammoMissile.Size*float32(50), 1)
+
+			enrichedThorium, _ := gameTypes.Resource.GetRecycledByID(1) // топляк
+			storages.Storages.AddItem(client.GetID(), client.InBaseID, enrichedThorium, "recycle",
+				enrichedThorium.TypeID, 500, 1, enrichedThorium.Size*float32(50), 1)
 		}
 	}
 }
