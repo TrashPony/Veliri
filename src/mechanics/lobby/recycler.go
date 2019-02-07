@@ -44,8 +44,8 @@ func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
 			recycleItem[i] = &RecycleItem{Slot: slot}
 
 			possibleRecycleItems := GetRecycleItems(&recycleItem)
-			for _, item := range possibleRecycleItems {
-				storages.Storages.AddSlot(user.GetID(), user.InBaseID, item)
+			for _, slot := range possibleRecycleItems {
+				storages.Storages.AddSlot(user.GetID(), user.InBaseID, slot)
 			}
 
 			delete(*recycleItems, i)

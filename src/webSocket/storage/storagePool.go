@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
+	"log"
 	"strconv"
 	"sync"
 )
@@ -77,7 +78,10 @@ func Updater(userID int) {
 		if user.GetID() == userID {
 			userStorage, ok := storages.Storages.Get(usersStorageWs[ws].GetID(), usersStorageWs[ws].InBaseID)
 			if ok {
-				ws.WriteJSON(userStorage)
+				err := ws.WriteJSON(userStorage)
+				if err != nil {
+					log.Fatal("Storage" + err.Error())
+				}
 			}
 		}
 	}

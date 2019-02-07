@@ -24,6 +24,7 @@ func (p *pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
 	if baseId == 0 {
+		p.mx.Unlock()
 		return nil, false
 	}
 
@@ -74,6 +75,7 @@ func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 }
 
 func (p *pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
+
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 

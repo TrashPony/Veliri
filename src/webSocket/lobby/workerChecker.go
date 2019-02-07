@@ -15,6 +15,7 @@ func WorkerChecker() {
 		for _, user := range usersLobbyWs {
 			// просто обновляет всем юзера таймер крафта
 			baseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
+
 			lobbyPipe <- Message{
 				Event:     "WorkbenchStorage",
 				UserID:    user.GetID(),

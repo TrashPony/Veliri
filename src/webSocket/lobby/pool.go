@@ -108,7 +108,7 @@ func ReposeSender() {
 			if client.GetID() == resp.UserID {
 				err := ws.WriteJSON(resp)
 				if err != nil {
-					log.Fatal(err)
+					log.Fatal("lobby sender " + err.Error())
 					utils.DelConn(ws, &usersLobbyWs, err)
 				}
 			}
