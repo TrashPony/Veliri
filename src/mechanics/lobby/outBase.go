@@ -14,7 +14,7 @@ func OutBase(user *player.Player) error {
 
 	// todo проверить топливо
 
-	if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.HP > 0 {
+	if user.GetSquad() != nil && user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.HP > 0 {
 
 		gameBase, find := bases.Bases.Get(user.InBaseID)
 		if !find {
@@ -36,6 +36,9 @@ func OutBase(user *player.Player) error {
 		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
+		if user.GetSquad() == nil {
+			return errors.New("no body")
+		}
 		if user.GetSquad().MatherShip.Body == nil {
 			return errors.New("no body")
 		}

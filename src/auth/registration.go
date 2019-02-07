@@ -95,10 +95,24 @@ func SuccessRegistration(login, email, password string) {
 		panic(err)
 	}
 
-	_, err = dbConnect.GetDBConnect().Exec("INSERT INTO users (name, password, mail, credits, experience_point) "+
-		"VALUES ($1, $2, $3, $4, $5)", login, hashPassword, email, 200, 100)
+	tx, err := dbConnect.GetDBConnect().Begin()
+	defer tx.Rollback()
 
+	userID := 0
+
+	err = tx.QueryRow("INSERT INTO users (name, password, mail, credits, experience_point) "+
+		"VALUES ($1, $2, $3, $4, $5) RETURNING id", login, hashPassword, email, 200, 100).Scan(&userID)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("registration new user " + err.Error())
+	}
+
+	_, err = tx.Exec("INSERT INTO base_users (user_id, base_id) VALUES ($1, $2)", userID, 1)
+	if err != nil {
+		log.Fatal("for registration user to base " + err.Error())
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("registration" + err.Error())
 	}
 }

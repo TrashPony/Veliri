@@ -30,8 +30,10 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		ws.WriteJSON(Message{Event: "OutBase"})
 		return
 	} else { // иначе убираем у него скорость)
-		newPlayer.GetSquad().GlobalX = 0
-		newPlayer.GetSquad().GlobalY = 0
+		if newPlayer.GetSquad() != nil {
+			newPlayer.GetSquad().GlobalX = 0
+			newPlayer.GetSquad().GlobalY = 0
+		}
 	}
 
 	usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента

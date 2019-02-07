@@ -41,5 +41,8 @@ func Inventory(inventory *inv.Inventory, userId, baseId int) {
 			}
 		}
 	}
-	tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("update storage: " + err.Error())
+	}
 }
