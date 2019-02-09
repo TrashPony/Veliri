@@ -43,7 +43,7 @@ func (b *bluePrintsStore) GetByItemTypeAndID(itemID int, itemType string) *bluep
 	return nil
 }
 
-func (b *bluePrintsStore) GetItems(id int) interface{} {
+func (b *bluePrintsStore) GetItemsByBluePrintID(id int) interface{} {
 	bp, ok := b.bluePrints[id]
 
 	if ok {

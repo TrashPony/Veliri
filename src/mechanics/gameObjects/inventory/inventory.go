@@ -31,7 +31,7 @@ func (inv *Inventory) SetSlotsSize(size int) {
 
 func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
 
-	if slot.Quantity <= 0 { // slot.Size/float32(slot.Quantity) иначе все сломается
+	if slot.Quantity <= 0 { // slot.Size/float32(slot.Quantity) деление на ноль все сломает
 		return false
 	}
 

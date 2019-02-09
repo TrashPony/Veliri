@@ -13,3 +13,10 @@ type BlueWork struct {
 	Blueprint               *Blueprint  `json:"blueprint"`
 	Item                    interface{} `json:"item"`
 }
+
+func (w *BlueWork) GetDonePercent() int {
+	realTimeCraft := time.Unix(int64(w.Blueprint.CraftTime-(w.Blueprint.CraftTime*w.TimeSavingPercentage/100)), 0)
+	startTime := time.Unix(w.FinishTime.UTC().Unix()-realTimeCraft.UTC().Unix(), 0)
+	diffTime := time.Unix(time.Now().UTC().Unix()-startTime.UTC().Unix(), 0)
+	return int(diffTime.UTC().Unix() * 100 / realTimeCraft.UTC().Unix())
+}

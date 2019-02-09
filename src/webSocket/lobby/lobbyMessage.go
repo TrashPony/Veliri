@@ -27,4 +27,10 @@ type Message struct {
 	BPItem    interface{}                  `json:"bp_item"`
 	Count     int                          `json:"count"`
 	MaxCount  int                          `json:"max_count"`
+
+	StartTime     int64 `json:"start_time"`
+	ToTime        int64 `json:"to_time"`
+	MineralSaving int   `json:"mineral_saving"`
+	TimeSaving    int   `json:"time_saving"`
+	BluePrintID   int   `json:"blue_print_id"`
 }
