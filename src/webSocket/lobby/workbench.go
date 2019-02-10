@@ -116,7 +116,7 @@ func selectWork(ws *websocket.Conn, msg Message) {
 
 				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: returnItems,
 					BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: bp.Count,
-					StorageSlot: msg.StorageSlot, ID: msg.ID}
+					StorageSlot: msg.StorageSlot, ID: msg.ID, BlueWork: work}
 			}
 		} else {
 			works := blueWorks.BlueWorks.GetSameWorks(
@@ -143,7 +143,7 @@ func selectWork(ws *websocket.Conn, msg Message) {
 				}
 			}
 
-			lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: returnItems,
+			lobbyPipe <- Message{Event: "SelectWork", UserID: user.GetID(), PreviewRecycleSlots: returnItems,
 				BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: bp.Count * count,
 				StorageSlot: msg.StorageSlot, ID: msg.ID, BluePrintID: msg.BluePrintID, MineralSaving: msg.MineralSaving,
 				TimeSaving: msg.TimeSaving, ToTime: msg.ToTime, StartTime: msg.StartTime, MaxCount: len(works)}
@@ -198,6 +198,9 @@ func cancelCraft(ws *websocket.Conn, msg Message) {
 			for _, item := range returnItems {
 				storages.Storages.AddSlot(user.GetID(), user.InBaseID, item)
 			}
+
+			msg.Count = len(works)
+			selectWork(ws, msg)
 		}
 		storage.Updater(user.GetID())
 	}

@@ -126,7 +126,7 @@
 #Workbench input[type="number"], #countHead, #bpCraftTime {
     text-align: center;
     float: left;
-    width: 50px;
+    width: 70px;
     line-height: 18px;
     padding-right: 5px;
     box-shadow: inset 0 0 2px black;
@@ -149,7 +149,7 @@
     width: 60px;
     position: absolute;
     bottom: -3px;
-    left: 0;
+    right: 0;
 }
 
 #Workbench .ui-resizable-s {
@@ -159,8 +159,8 @@
 
 #ButtonWrapper {
     float: left;
-    width: 50px;
-    margin: 7px 2px 2px 16px;
+    width: 70px;
+    margin: 7px 2px 2px 5px;
     position: relative;
     height: 155px;
 }

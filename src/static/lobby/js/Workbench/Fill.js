@@ -1,9 +1,11 @@
+let refreshSelectActiveWork;
+
 function FillWorkbench(jsonData) {
     let bpBlock = document.getElementById("bluePrints");
     if (!bpBlock) return;
-    $('#bluePrints .blueRow').remove();
 
-    $('.blueRow').each(function () {
+    let blueRows = $('.blueRow');
+    blueRows.each(function () {
         if ($(this).data("count")) $(this).data("count").count = 0;
         if ($(this).data("time")) $(this).data("time").finishTime = 0;
         if ($(this).data("time")) $(this).data("time").startTime = Infinity;
@@ -17,6 +19,7 @@ function FillWorkbench(jsonData) {
                 blueRow = document.createElement("div");
                 blueRow.className = "blueRow";
                 blueRow.id = "blueRowBP" + i;
+                bpBlock.appendChild(blueRow);
             }
 
             $(blueRow).data("update", {update: true});
@@ -24,9 +27,10 @@ function FillWorkbench(jsonData) {
             blueRow.innerHTML = "" +
                 "<div class='nameBP'>" + jsonData.storage.slots[i].item.name + "</div>" +
                 "<div class='countBP'>x" + jsonData.storage.slots[i].quantity + "</div>";
-            bpBlock.appendChild(blueRow);
 
             blueRow.onclick = function () {
+                clearInterval(refreshSelectActiveWork);
+                refreshSelectActiveWork = null;
                 lobby.send(JSON.stringify({
                     event: "SelectBP",
                     storage_slot: Number(i),
@@ -37,10 +41,9 @@ function FillWorkbench(jsonData) {
     }
 
     FillCurrentWorks(jsonData.blue_works);
-    // TODO обновление работ если выбрана
 
     // удаляем всех кого не обновили
-    $('.blueRow').each(function () {
+    blueRows.each(function () {
         if ($(this).data("update").update) {
             $(this).data("update").update = false;
         } else {
@@ -112,6 +115,9 @@ function FillCurrentWorks(works) {
             blueRow.innerHTML += "<div class='countBP' style='margin-right: 4px'>x" + $(blueRow).data("count").count + "</div>";
 
             blueRow.onclick = function () {
+                clearInterval(refreshSelectActiveWork);
+                refreshSelectActiveWork = null;
+
                 lobby.send(JSON.stringify({
                     event: "SelectWork",
                     start_time: $(this).data("time").startTime,
@@ -124,6 +130,9 @@ function FillCurrentWorks(works) {
             }
         } else {
             blueRow.onclick = function () {
+                clearInterval(refreshSelectActiveWork);
+                refreshSelectActiveWork = null;
+
                 lobby.send(JSON.stringify({
                     event: "SelectWork",
                     id: works[i].id,
@@ -183,13 +192,42 @@ function SelectWork(jsonData) {
     fillHeadWorkbench(jsonData, false);
 
     // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
-    // TODO блок со временем отображать оставшееся время крафта
+    // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер
+    if (jsonData.count === 0){
+        document.getElementById("bpName").innerHTML = "";
+        document.getElementById("bpIcon").style.backgroundImage = "none";
+        document.getElementById("bpCraftTime").innerHTML = "";
+        document.getElementById("processButton").value = "";
+        document.getElementById("processButton").onclick = null;
+        document.getElementById("itemPreview").style.backgroundImage = "none";
+        document.getElementById("itemPreview").innerHTML = "";
+        document.getElementById("bpCountWork").value = "";
+        return
+    }
 
     let bpCountWork = document.getElementById("bpCountWork");
     bpCountWork.value = jsonData.count;
     if (jsonData.id > 0) {
+
         bpCountWork.max = 1;
+        let time = getTimeWork(new Date(jsonData.blue_work.finish_time).getTime(), false);
+        document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
+
+        if (!refreshSelectActiveWork) {
+            refreshSelectActiveWork = setInterval(function () {
+                lobby.send(JSON.stringify({
+                    event: "SelectWork",
+                    id: jsonData.blue_work.id,
+                }));
+            }, 1000);
+        }
     } else {
+        clearInterval(refreshSelectActiveWork);
+        refreshSelectActiveWork = null;
+
+        let time = getTimeWork(jsonData.blue_print.craft_time * jsonData.count, true);
+        document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
+
         bpCountWork.max = jsonData.max_count;
         bpCountWork.oninput = function () {
             lobby.send(JSON.stringify({
@@ -226,9 +264,30 @@ function SelectWork(jsonData) {
     };
 }
 
+function getTimeWork(craftTime, full) {
+    let data = new Date();
+
+    if (full) {
+        data.setTime(craftTime * 1000);
+    } else {
+        data.setTime(craftTime - new Date().getTime());
+    }
+
+    let days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
+    let hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
+    let minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
+    let seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
+    return {days: days, hours: hours, minutes: minutes, seconds: seconds}
+}
+
 function SelectBP(jsonData) {
 
     fillHeadWorkbench(jsonData, true);
+    clearInterval(refreshSelectActiveWork);
+    refreshSelectActiveWork = null;
+
+    let time = getTimeWork(jsonData.blue_print.craft_time * jsonData.count, true);
+    document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
 
     let bpCountWork = document.getElementById("bpCountWork");
     bpCountWork.value = jsonData.count;
@@ -256,7 +315,6 @@ function SelectBP(jsonData) {
 function fillHeadWorkbench(jsonData, needMark) {
     document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
     document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.name + ".png)";
-    document.getElementById("bpCraftTime").innerHTML = jsonData.blue_print.craft_time * jsonData.count + "s";
 
     let itemPreview = document.getElementById("itemPreview");
 

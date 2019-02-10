@@ -24,6 +24,7 @@ type Message struct {
 
 	BluePrint *blueprints.Blueprint        `json:"blue_print"`
 	BlueWorks map[int]*blueprints.BlueWork `json:"blue_works"`
+	BlueWork  *blueprints.BlueWork         `json:"blue_work"`
 	BPItem    interface{}                  `json:"bp_item"`
 	Count     int                          `json:"count"`
 	MaxCount  int                          `json:"max_count"`
