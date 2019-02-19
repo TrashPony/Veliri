@@ -46,7 +46,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 func Reader(ws *websocket.Conn) {
-
+	// TODO проверять крафты и произвосдство на то что игрок находится на нужной базе
 	var recycleItems map[int]*lobby.RecycleItem
 
 	for {
@@ -92,6 +92,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "Craft" {
 			craft(ws, msg)
+		}
+
+		if msg.Event == "SelectWork" {
+			selectWork(ws, msg)
 		}
 
 		if msg.Event == "CancelCraft" {

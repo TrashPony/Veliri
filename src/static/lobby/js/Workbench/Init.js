@@ -112,7 +112,7 @@ function InitWorkbench() {
     workbench.appendChild(detailWork);
 
 
-    let process = createInput("Создать", buttonWrapper);
+    let process = createInput("", buttonWrapper);
     process.style.bottom = "20px";
     process.id = "processButton";
 

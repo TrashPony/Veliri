@@ -44,4 +44,9 @@ function ReaderLobby(jsonMessage) {
     if (event === "SelectBP") {
         SelectBP(JSON.parse(jsonMessage))
     }
+
+
+    if (event === "SelectWork") {
+        SelectWork(JSON.parse(jsonMessage))
+    }
 }
