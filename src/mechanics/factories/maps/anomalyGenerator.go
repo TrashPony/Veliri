@@ -4,7 +4,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/anomaly"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"math/rand"
 )
@@ -48,24 +47,7 @@ func anomalyGenerator(mp *_map.Map, m *mapStore) {
 
 			// текст
 			if typeAnomaly == 3 {
-				/// todo невероятный говнокод но ради фана
-
-				pages := make([]dialog.Page, 0)
-
-				ask1 := make([]dialog.Ask, 0)
-				ask1 = append(ask1, dialog.Ask{Text: "Прочитать запись", ToPage: 2})
-				ask1 = append(ask1, dialog.Ask{Text: "О-о-о нет я сваливаю", ToPage: 0})
-				pages = append(pages, dialog.Page{Text: "Вы находите старый ржавый не на что не похожий информационный пакет, вы попытаись " +
-					"подколючится к нему и считать информацию но сходу не удалось расшифровать запись, спустя не" +
-					" продолжительное время для человека и целую вечность для машины вы смогли расшифровать информацию " +
-					"и удивились тому насколько глубока мысль тех кто оставил этот пакет здесь когда то очень давно. <br><br> " +
-					"Информация в пакете гласила:", Asc: ask1})
-
-				ask2 := make([]dialog.Ask, 0)
-				ask2 = append(ask2, dialog.Ask{Text: "Понятно", ToPage: 0}) // если 0 то close
-				pages = append(pages, dialog.Page{Text: "\"Ты пидор\"", Asc: ask2})
-
-				anomalyMap.SetDialog(&dialog.Dialog{Pages: pages})
+				// todo TEXT
 			}
 
 			m.anomaly[mp.Id] = append(m.anomaly[mp.Id], anomalyMap)

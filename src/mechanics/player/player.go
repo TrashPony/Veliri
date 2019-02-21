@@ -2,6 +2,7 @@ package player
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 )
@@ -26,9 +27,20 @@ type Player struct {
 	gameID int
 	Ready  bool
 
+	Training   int `json:"training"`
+	openDialog dialog.Dialog
+
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
 	InBaseID   int // ид базы в которой сидит игрок
+}
+
+func (client *Player) getOpenDialog() dialog.Dialog {
+	return client.openDialog
+}
+
+func (client *Player) setOpenDialog(newDialog dialog.Dialog) {
+	client.openDialog = newDialog
 }
 
 func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {

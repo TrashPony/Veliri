@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 )
@@ -34,4 +35,6 @@ type Message struct {
 	MineralSaving int   `json:"mineral_saving"`
 	TimeSaving    int   `json:"time_saving"`
 	BluePrintID   int   `json:"blue_print_id"`
+
+	DialogPage dialog.Page `json:"dialog_page"`
 }

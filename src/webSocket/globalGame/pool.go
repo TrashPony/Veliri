@@ -213,6 +213,14 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "useDigger" {
 			useDigger(ws, msg)
 		}
+
+		if msg.Event == "OpenDialog" {
+
+		}
+
+		if msg.Event == "Ask" {
+
+		}
 	}
 }
 

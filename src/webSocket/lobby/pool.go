@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
@@ -33,6 +34,11 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		if newPlayer.GetSquad() != nil {
 			newPlayer.GetSquad().GlobalX = 0
 			newPlayer.GetSquad().GlobalY = 0
+
+			if newPlayer.Training == 0 {
+				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
+				ws.WriteJSON(Message{Event: "TrainingDialog", DialogPage: gameTypes.Dialogs.GetByID(2).Pages[1]})
+			}
 		}
 	}
 
@@ -100,6 +106,14 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "CancelCraft" {
 			cancelCraft(ws, msg)
+		}
+
+		if msg.Event == "OpenDialog" {
+
+		}
+
+		if msg.Event == "Ask" {
+
 		}
 	}
 }

@@ -18,7 +18,7 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
-} // методами приема обычного HTTP-соединения и обновления его до WebSocket
+}
 
 func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, pool string) {
 
@@ -27,6 +27,7 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 		log.Fatal(err)
 	}
 
+	// TODO функция AddNewUser везде по сути одинаковая, возможно стоить вынести реализацию из всех соедений в общую функцию
 	if pool == "/wsLobby" {
 		lobby.AddNewUser(ws, login, id)
 	}
