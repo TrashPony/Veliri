@@ -241,3 +241,10 @@ body ::-webkit-scrollbar-thumb:disabled {
 ::-webkit-scrollbar-corner {
     background-color: transparent;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    text-shadow: none !important;
+}

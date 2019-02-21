@@ -10,11 +10,7 @@ type Page struct {
 }
 
 type Ask struct {
-	Text   string `json:"text"`    // текст ответа
-	ToPage int    `json:"to_page"` // страница на которую ведет ответ
-	action func()				   // функция которая выолнается при выборе этого варианта ответа
-}
-
-func (a *Ask)GetAction()  {
-
+	Text       string `json:"text"`    // текст ответа
+	ToPage     int    `json:"to_page"` // страница на которую ведет ответ
+	typeAction string // функция которая выолнается при выборе этого варианта ответа
 }
