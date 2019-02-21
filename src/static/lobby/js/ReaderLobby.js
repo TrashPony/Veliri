@@ -50,6 +50,6 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "TrainingDialog") {
-        console.log(jsonMessage)
+        CreatePageDialog(JSON.parse(jsonMessage).dialog_page)
     }
 }

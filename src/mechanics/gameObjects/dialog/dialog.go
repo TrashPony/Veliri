@@ -4,16 +4,16 @@ type Dialog struct {
 	ID         int          `json:"id"`
 	Name       string       `json:"name"`
 	Pages      map[int]Page `json:"pages"` // все страницы диалога
-	Picture    string       `json:"picture"`
 	AccessType string       `json:"access_type"`
 }
 
 type Page struct {
-	ID     int    `json:"id"`
-	Number int    `json:"number"`
-	Name   string `json:"name"`
-	Text   string `json:"text"` // текст страницы
-	Asc    []Ask  `json:"asc"`  // варианты отетов
+	ID      int    `json:"id"`
+	Number  int    `json:"number"`
+	Name    string `json:"name"`
+	Text    string `json:"text"` // текст страницы
+	Asc     []Ask  `json:"asc"`  // варианты отетов
+	Picture string `json:"picture"`
 }
 
 type Ask struct {

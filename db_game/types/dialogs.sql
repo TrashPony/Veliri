@@ -2,8 +2,6 @@ CREATE TABLE dialogs
 (
   id          SERIAL PRIMARY KEY,
   name        text not null default '',
-  /* имя файла персонажа который ведет диалог */
-  picture     text not null default '',
   /*
   доступ диалога, base - можно вызвать на базе, object - привязан к какому либо обьекту и только рядом с ним можно
   его вызвать, world - можно вызвать везде и всегда
@@ -19,7 +17,9 @@ CREATE TABLE dialog_pages
   number    INT  not null default 0,
   name      text not null default '',
   /* содержание страницы, можно писать HTML */
-  text      text not null default ''
+  text      text not null default '',
+    /* имя файла персонажа который ведет диалог */
+  picture     text not null default ''
 );
 
 CREATE TABLE dialog_asc

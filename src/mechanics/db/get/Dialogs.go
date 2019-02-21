@@ -13,7 +13,6 @@ func Dialogs() map[int]dialog.Dialog {
 		"SELECT " +
 		" id," +
 		" name, " +
-		" picture, " +
 		" access_type" +
 		" " +
 		"FROM dialogs ")
@@ -24,7 +23,7 @@ func Dialogs() map[int]dialog.Dialog {
 
 	for rows.Next() {
 		dialogType := dialog.Dialog{}
-		err := rows.Scan(&dialogType.ID, &dialogType.Name, &dialogType.Picture, &dialogType.AccessType)
+		err := rows.Scan(&dialogType.ID, &dialogType.Name, &dialogType.AccessType)
 		if err != nil {
 			log.Fatal("get scan dialogs " + err.Error())
 		}
@@ -45,6 +44,7 @@ func getDialogPages(gameDialog *dialog.Dialog) {
 		" id,"+
 		" name,"+
 		" text,"+
+		" picture, "+
 		" number"+
 		" "+
 		"FROM dialog_pages "+
@@ -56,7 +56,7 @@ func getDialogPages(gameDialog *dialog.Dialog) {
 
 	for rows.Next() {
 		page := dialog.Page{}
-		err := rows.Scan(&page.ID, &page.Name, &page.Text, &page.Number)
+		err := rows.Scan(&page.ID, &page.Name, &page.Text, &page.Picture, &page.Number)
 		if err != nil {
 			log.Fatal("get scan all dialog pages " + err.Error())
 		}
