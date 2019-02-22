@@ -36,5 +36,8 @@ type Message struct {
 	TimeSaving    int   `json:"time_saving"`
 	BluePrintID   int   `json:"blue_print_id"`
 
-	DialogPage dialog.Page `json:"dialog_page"`
+	DialogPage   dialog.Page `json:"dialog_page"`
+	DialogAction string      `json:"dialog_action"`
+	ToPage       int         `json:"to_page"`
+	AskID        int         `json:"ask_id"`
 }

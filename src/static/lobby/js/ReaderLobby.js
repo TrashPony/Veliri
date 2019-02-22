@@ -49,7 +49,7 @@ function ReaderLobby(jsonMessage) {
         SelectWork(JSON.parse(jsonMessage))
     }
 
-    if (event === "TrainingDialog") {
-        CreatePageDialog(JSON.parse(jsonMessage).dialog_page)
+    if (event === "dialog") {
+        CreatePageDialog(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action)
     }
 }

@@ -1,11 +1,21 @@
-function CreatePageDialog(page) {
+function CreatePageDialog(page, action) {
 
-    console.log(page)
+    if (!page) {
+        return
+    }
 
-    let dialogBlock = document.createElement("div");
-    dialogBlock.id = "dialogBlock";
+    DialogAction(action);
 
-    let buttons = CreateControlButtons("82px", "30px", "-3px", "29px", "", "145px");
+    let dialogBlock = document.getElementById("dialogBlock");
+
+    if (!dialogBlock) {
+        dialogBlock = document.createElement("div");
+        dialogBlock.id = "dialogBlock";
+    } else {
+        $(dialogBlock).empty()
+    }
+
+    let buttons = CreateControlButtons("83px", "30px", "-3px", "29px", "", "145px");
     $(buttons.move).mousedown(function (event) {
         moveWindow(event, 'dialogBlock')
     });
@@ -44,7 +54,16 @@ function CreateAsk(dialogBlock, page) {
         ask.className = "asks";
         ask.innerHTML = "<div class='wrapperAsk'>" + page.asc[i].text + "</div>";
 
-        // TODO функция нажатия с отправкой сообщения на какую страницу перешел юзер
+        $(ask).click(function () {
+            lobby.send(JSON.stringify({
+                event: "Ask",
+                to_page: page.asc[i].to_page,
+                ask_id: page.asc[i].id,
+            }));
+            if (page.asc[i].to_page === 0) {
+                dialogBlock.remove();
+            }
+        });
 
         dialogBlock.appendChild(ask);
     }

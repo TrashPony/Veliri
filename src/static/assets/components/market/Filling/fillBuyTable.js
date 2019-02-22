@@ -51,35 +51,35 @@ function fillBuyTable(order, baseName) {
 }
 
 function sellDialog(order, e) {
-    let dialogBlock = document.createElement("div");
-    dialogBlock.id = "dialogBlock";
+    let subMenu = document.createElement("div");
+    subMenu.id = "subMenu";
 
-    dialogBlock.style.top = e.clientY + "px";
-    dialogBlock.style.left = e.clientX + "px";
+    subMenu.style.top = e.clientY + "px";
+    subMenu.style.left = e.clientX + "px";
 
     let head = document.createElement("h2");
     head.innerHTML = "Продажа    " + order.Item.name;
-    dialogBlock.appendChild(head);
+    subMenu.appendChild(head);
 
     // todo имеется на складе
 
     let div = createNumberInput(0, order.Count, order.Count, "штук");
-    dialogBlock.appendChild(div);
+    subMenu.appendChild(div);
 
     let resultSpan = document.createElement("div");
     resultSpan.innerHTML = "за <span style='color: chartreuse'>" + order.Count * order.Price + "</span> кредитов";
-    dialogBlock.appendChild(resultSpan);
+    subMenu.appendChild(resultSpan);
 
     div.inputBlock.oninput = function () {
         resultSpan.innerHTML = "за <span style='color: chartreuse'>" + this.value * order.Price + " </span> кредитов";
     };
 
-    let closeButton = createInput("Отменить", dialogBlock);
+    let closeButton = createInput("Отменить", subMenu);
     closeButton.onclick = function () {
-        dialogBlock.remove();
+        subMenu.remove();
     };
 
-    let sellButton = createInput("Продать", dialogBlock);
+    let sellButton = createInput("Продать", subMenu);
     sellButton.onclick = function () {
         if (div.inputBlock.value > 0) {
             marketSocket.send(JSON.stringify({
@@ -87,11 +87,11 @@ function sellDialog(order, e) {
                 order_id: Number(order.Id),
                 quantity: Number(div.inputBlock.value)
             }));
-            dialogBlock.remove();
+            subMenu.remove();
         } else {
             alert("нельзя продать 0 предметов")
         }
     };
 
-    document.body.appendChild(dialogBlock);
+    document.body.appendChild(subMenu);
 }

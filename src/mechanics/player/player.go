@@ -28,18 +28,18 @@ type Player struct {
 	Ready  bool
 
 	Training   int `json:"training"`
-	openDialog dialog.Dialog
+	openDialog *dialog.Dialog
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
 	InBaseID   int // ид базы в которой сидит игрок
 }
 
-func (client *Player) getOpenDialog() dialog.Dialog {
+func (client *Player) GetOpenDialog() *dialog.Dialog {
 	return client.openDialog
 }
 
-func (client *Player) setOpenDialog(newDialog dialog.Dialog) {
+func (client *Player) SetOpenDialog(newDialog *dialog.Dialog) {
 	client.openDialog = newDialog
 }
 

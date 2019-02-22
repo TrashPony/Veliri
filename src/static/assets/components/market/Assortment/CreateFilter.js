@@ -33,35 +33,35 @@ function selectItem(id, type, name, url) {
 
 function placeBuyDialog(type, id, name, e) {
 
-    if (document.getElementById("dialogBlock")) {
-        document.getElementById("dialogBlock").remove();
+    if (document.getElementById("subMenu")) {
+        document.getElementById("subMenu").remove();
     }
 
-    let dialogBlock = document.createElement("div");
-    dialogBlock.id = "dialogBlock";
+    let subMenu = document.createElement("div");
+    subMenu.id = "subMenu";
 
-    dialogBlock.style.top = e.clientY + "px";
-    dialogBlock.style.left = e.clientX + "px";
+    subMenu.style.top = e.clientY + "px";
+    subMenu.style.left = e.clientX + "px";
 
     let head = document.createElement("h2");
     head.innerHTML = "Покупака " + name;
-    dialogBlock.appendChild(head);
+    subMenu.appendChild(head);
 
     let divCount = createNumberInput(0, 99999999, 0, "штук");
-    dialogBlock.appendChild(divCount);
+    subMenu.appendChild(divCount);
 
     let divPrice = createNumberInput(0, 99999999, 0, "кредитов");
-    dialogBlock.appendChild(divPrice);
+    subMenu.appendChild(divPrice);
 
     let divMinCount = createNumberInput(0, 99999999, 0, "мин. выкуп");
-    dialogBlock.appendChild(divMinCount);
+    subMenu.appendChild(divMinCount);
 
     let divTime = createNumberInput(0, 99999999, 14, "дней");
-    dialogBlock.appendChild(divTime);
+    subMenu.appendChild(divTime);
 
     let divCalculate = document.createElement("div");
     divCalculate.style.textAlign = "center";
-    dialogBlock.appendChild(divCalculate);
+    subMenu.appendChild(divCalculate);
 
     divCount.inputBlock.oninput = function () {
         divCalculate.innerHTML = divCount.inputBlock.value + " за " + divCount.inputBlock.value * divPrice.inputBlock.value + " кредитов";
@@ -97,23 +97,23 @@ function placeBuyDialog(type, id, name, e) {
                 expires: Number(divTime.inputBlock.value),
                 min_buy_out: Number(divMinCount.inputBlock.value),
             }));
-            dialogBlock.remove();
+            subMenu.remove();
         } else {
             alert("ошибка ввода")
         }
     };
-    dialogBlock.appendChild(button);
+    subMenu.appendChild(button);
 
     let close = document.createElement("input");
     close.type = "button";
     close.className = "lobbyButton inventoryTip";
     close.value = "Отмена";
     close.onclick = function (){
-        document.getElementById("dialogBlock").remove();
+        document.getElementById("subMenu").remove();
     };
-    dialogBlock.appendChild(close);
+    subMenu.appendChild(close);
 
-    document.body.appendChild(dialogBlock);
+    document.body.appendChild(subMenu);
 }
 
 function createNumberInput(min, max, value, text) {

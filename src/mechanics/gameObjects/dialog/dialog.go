@@ -21,7 +21,11 @@ type Ask struct {
 	Name       string `json:"name"`
 	Text       string `json:"text"`    // текст ответа
 	ToPage     int    `json:"to_page"` // страница на которую ведет ответ
-	typeAction string // функция которая выолнается при выборе этого варианта ответа
+	typeAction string                  // функция которая выолнается при выборе этого варианта ответа
+}
+
+func (a *Ask) GetAction() string {
+	return a.typeAction
 }
 
 func (a *Ask) SetAction(action string) {
