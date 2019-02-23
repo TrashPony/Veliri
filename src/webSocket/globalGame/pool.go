@@ -88,6 +88,10 @@ type hostileMS struct {
 func GetShortUserInfo(user *player.Player) *hostileMS {
 	var hostile hostileMS
 
+	if user == nil || user.GetSquad() == nil || user.GetSquad().MatherShip == nil || user.GetSquad().MatherShip.Body == nil {
+		return nil
+	}
+
 	hostile.SquadID = user.GetSquad().ID
 	hostile.UserName = user.GetLogin()
 	hostile.X = user.GetSquad().GlobalX

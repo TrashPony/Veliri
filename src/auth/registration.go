@@ -22,7 +22,7 @@ type message struct {
 
 func Registration(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("src/static/registration/index.html")
+		t, _ := template.ParseFiles("static/registration/index.html")
 		t.Execute(w, nil)
 	}
 	if r.Method == "POST" {

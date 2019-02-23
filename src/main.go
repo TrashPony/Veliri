@@ -30,7 +30,7 @@ func main() {
 	router.HandleFunc("/wsMarket", webSocket.HandleConnections)
 	router.HandleFunc("/wsStorage", webSocket.HandleConnections)
 
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./src/static/"))) // раздача статичный файлов
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/"))) // раздача статичный файлов
 
 	go lobby.ReposeSender()
 	go lobby.WorkerChecker()

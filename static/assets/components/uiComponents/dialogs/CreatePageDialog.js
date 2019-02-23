@@ -1,37 +1,46 @@
-function CreatePageDialog(page, action) {
+function CreatePageDialog(id, page, action, full, needPicture) {
+
+    DialogAction(action);
 
     if (!page) {
         return
     }
 
-    DialogAction(action);
-
-    let dialogBlock = document.getElementById("dialogBlock");
+    let dialogBlock = document.getElementById(id);
 
     if (!dialogBlock) {
         dialogBlock = document.createElement("div");
-        dialogBlock.id = "dialogBlock";
+        dialogBlock.id = id;
+        dialogBlock.className = "dialogBlock";
     } else {
         $(dialogBlock).empty()
     }
 
-    let buttons = CreateControlButtons("83px", "30px", "-3px", "29px", "", "145px");
-    $(buttons.move).mousedown(function (event) {
-        moveWindow(event, 'dialogBlock')
-    });
-    $(buttons.close).mousedown(function () {
-        dialogBlock.remove();
-    });
-    dialogBlock.appendChild(buttons.move);
-    dialogBlock.appendChild(buttons.close);
+    if (needPicture) {
+        CreatePic(dialogBlock, page)
+    }
 
     CreateText(dialogBlock, page);
-    CreateAsk(dialogBlock, page);
+
+    if (full) {
+        let buttons = CreateControlButtons("83px", "30px", "-3px", "29px", "", "145px");
+        $(buttons.move).mousedown(function (event) {
+            moveWindow(event, id)
+        });
+        $(buttons.close).mousedown(function () {
+            dialogBlock.remove();
+        });
+        dialogBlock.appendChild(buttons.move);
+        dialogBlock.appendChild(buttons.close);
+
+        CreateAsk(dialogBlock, page);
+    }
 
     document.body.appendChild(dialogBlock);
+    return dialogBlock;
 }
 
-function CreateText(dialogBlock, page) {
+function CreatePic(dialogBlock, page) {
     let picture = document.createElement("div");
     picture.id = "dialogPicture";
     picture.innerHTML = "<div class='nameDialog'> Какой - то хер</div>";
@@ -41,7 +50,9 @@ function CreateText(dialogBlock, page) {
     pictureBack.id = "pictureBack";
     pictureBack.style.backgroundImage = "url(../assets/dialogPictures/" + page.picture + ")";
     picture.appendChild(pictureBack);
+}
 
+function CreateText(dialogBlock, page) {
     let dialogText = document.createElement("div");
     dialogText.className = "dialogText";
     dialogText.innerHTML = "<div class='wrapperText'>" + page.text + "</div>";

@@ -37,7 +37,7 @@ func Dialogs() map[int]dialog.Dialog {
 }
 
 func getDialogPages(gameDialog *dialog.Dialog) {
-	gameDialog.Pages = make(map[int]dialog.Page)
+	gameDialog.Pages = make(map[int]*dialog.Page)
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+
@@ -62,7 +62,7 @@ func getDialogPages(gameDialog *dialog.Dialog) {
 		}
 
 		getPageAsk(&page)
-		gameDialog.Pages[page.Number] = page
+		gameDialog.Pages[page.Number] = &page
 	}
 }
 

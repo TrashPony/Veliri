@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
@@ -28,19 +29,25 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer = players.Users.Add(id, login)
 	}
 
-	if newPlayer.InBaseID == 0 { // если игрок находиться не на базе то говорим ему что он загружал глобальную игру
+	if newPlayer.InBaseID == 0 {
+		// если игрок находиться не на базе то говорим ему что он загружал глобальную игру
 		ws.WriteJSON(Message{Event: "OutBase"})
 		return
-	} else { // иначе убираем у него скорость)
+	} else {
+		// иначе убираем у него скорость)
 		if newPlayer.GetSquad() != nil {
 			newPlayer.GetSquad().GlobalX = 0
 			newPlayer.GetSquad().GlobalY = 0
+		}
 
-			if newPlayer.Training == 0 {
-				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
-				trainingDialog := gameTypes.Dialogs.GetByID(2)
-				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
-				newPlayer.SetOpenDialog(&trainingDialog)
+		if newPlayer.Training == 0 {
+			// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
+			trainingDialog := gameTypes.Dialogs.GetByID(2)
+			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
+			newPlayer.SetOpenDialog(&trainingDialog)
+		} else {
+			if newPlayer.Training < 999 {
+				lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
 			}
 		}
 	}
@@ -55,14 +62,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 func Reader(ws *websocket.Conn) {
-	// TODO проверять крафты и произвосдство на то что игрок находится на нужной базе
+	// TODO проверять при крафте и произвосдстве на то что игрок находится на нужной базе
 	var recycleItems map[int]*lobby.RecycleItem
 
 	for {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -122,12 +129,18 @@ func Reader(ws *websocket.Conn) {
 				page, err, action := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
 
 				if usersLobbyWs[ws].InBaseID > 0 && err == nil {
-					if page != nil {
-						lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: *page, DialogAction: action}
-					}
+					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action}
 				} else {
 					lobbyPipe <- Message{Event: "Error", UserID: user.GetID(), Error: err.Error()}
 				}
+			}
+		}
+
+		if msg.Event == "training" {
+			user := usersLobbyWs[ws]
+			if user != nil {
+				user.Training = msg.Count
+				dbPlayer.UpdateUser(user)
 			}
 		}
 	}

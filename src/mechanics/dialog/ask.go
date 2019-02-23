@@ -46,7 +46,7 @@ func Ask(client *player.Player, gameDialog *dialog.Dialog, place string, toPage,
 				return nil, nil, actionInfo
 			}
 
-			return &page, nil, actionInfo
+			return page, nil, actionInfo
 
 		} else {
 			return nil, errors.New("no page"), actionInfo
@@ -56,17 +56,17 @@ func Ask(client *player.Player, gameDialog *dialog.Dialog, place string, toPage,
 	return nil, errors.New("unknown error"), ""
 }
 
-func actionDialog(client *player.Player, ask *dialog.Ask) (string, error) {
+func actionDialog(client *player.Player, ask *dialog.Ask) (actionInfo string, err error) {
 	if ask.GetAction() == "start_training" {
 		client.Training = 1
-		return "updateTraining", nil
+		actionInfo, err = "start_training", nil
 	}
 
 	if ask.GetAction() == "miss_training" {
 		client.Training = 999
-		return "updateTraining", nil
+		actionInfo, err = "miss_training", nil
 	}
 
 	dbPlayer.UpdateUser(client)
-	return "", nil
+	return actionInfo, err
 }

@@ -24,7 +24,7 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 		newEquip, _ := gameTypes.Equips.GetByID(idEquip)
 		equipping := SelectType(typeEquipSlot, body)
 
-		if equipping != nil {
+		if equipping != nil && newEquip.TypeSlot == typeEquipSlot {
 
 			equipSlot, ok := equipping[numEquipSlot]
 

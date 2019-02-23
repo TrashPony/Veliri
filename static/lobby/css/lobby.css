@@ -1,0 +1,98 @@
+body {
+    text-align: center;
+    background-image: url("../../assets/bases/baseBackgrounde.jpg");
+    background-color: #4c4c4c;
+}
+
+#ServiceTable {
+    top: 15px;
+    left: 15px;
+    text-align: center;
+    float: left;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    border-radius: 5px;
+    position: relative;
+    padding: 2px;
+}
+
+#ServiceTable div {
+    height: 30px;
+    width: 30px;
+    filter: drop-shadow(0 0 2px black);
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    margin: 2px 5px 2px 5px;
+    float: left;
+    transition: 0.2s;
+    background-size: contain;
+}
+
+#ServiceTable div:hover {
+    background-color: #b4eaff;
+}
+
+#ServiceTable div:active {
+    transform: scale(0.95);
+}
+
+@keyframes selectMenu {
+    0% {
+        -moz-box-shadow: 0 0 15px 0 rgb(255, 237, 0);
+        box-shadow: 0 0 15px 0 rgb(255, 237, 0);
+    }
+    95% {
+        -moz-box-shadow: inset 0 0 30px 15px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 30px 15px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 20px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 20px rgba(204, 169, 44, 0);
+    }
+}
+
+@keyframes selectMenu2 {
+    0% {
+        -moz-box-shadow: 0 0 15px 0 rgb(0, 255, 32);
+        box-shadow: 0 0 15px 0 rgb(0, 255, 46);
+    }
+    95% {
+        -moz-box-shadow: inset 0 0 30px 15px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 30px 15px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 20px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 20px rgba(204, 169, 44, 0);
+    }
+}
+
+@keyframes selectMenu3 {
+    0% {
+        -moz-box-shadow: 0 0 15px 0 rgb(255, 19, 10);
+        box-shadow: 0 0 15px 0 rgb(255, 0, 8);
+    }
+    95% {
+        -moz-box-shadow: inset 0 0 30px 15px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 30px 15px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 20px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 20px rgba(204, 169, 44, 0);
+    }
+}
+
+@keyframes selectMenu4 {
+    0% {
+        -moz-box-shadow: 0 0 15px 0 rgb(23, 0, 255);
+        box-shadow: 0 0 15px 0 rgb(0, 37, 255);
+    }
+    95% {
+        -moz-box-shadow: inset 0 0 30px 15px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 30px 15px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 20px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 20px rgba(204, 169, 44, 0);
+    }
+}

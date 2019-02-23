@@ -50,6 +50,11 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "dialog") {
-        CreatePageDialog(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action)
+        console.log("dfdf")
+        CreatePageDialog("dialogBlock", JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, true, true)
+    }
+
+    if (event === "training") {
+        Training(JSON.parse(jsonMessage).count)
     }
 }
