@@ -294,8 +294,8 @@ function Training(lvl) {
                         clearInterval(interval);
                         $('.inventoryUnit.select').css('animation', 'none');
                         unitSlot.css('animation', 'none');
-                        document.getElementById("training1SquadBlock").remove();
-                        document.getElementById("training1Squad2Block").remove();
+                        if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
+                        if (document.getElementById("training1Squad2Block")) document.getElementById("training1Squad2Block").remove();
                     }
                 });
 
@@ -304,8 +304,8 @@ function Training(lvl) {
                         clearInterval(interval);
                         passed = true;
                         unitSlot.css('animation', 'none');
-                        document.getElementById("training1SquadBlock").remove();
-                        document.getElementById("training1Squad2Block").remove();
+                        if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
+                        if (document.getElementById("training1Squad2Block")) document.getElementById("training1Squad2Block").remove();
                     }
                 });
 

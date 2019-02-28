@@ -95,7 +95,7 @@ func CoordinatesMap(mp *_map.Map) {
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error() + "map constructor")
 	}
 
 	defer rows.Close()
@@ -112,7 +112,7 @@ func CoordinatesMap(mp *_map.Map) {
 			&gameCoordinate.Transport, &gameCoordinate.Handler, &gameCoordinate.ToQ, &gameCoordinate.ToR,
 			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err.Error() + "scan map constructor")
 		}
 
 		gameCoordinate.Impact = ParseTarget(impact)

@@ -100,8 +100,8 @@ func SuccessRegistration(login, email, password string) {
 
 	userID := 0
 
-	err = tx.QueryRow("INSERT INTO users (name, password, mail, credits, experience_point) "+
-		"VALUES ($1, $2, $3, $4, $5) RETURNING id", login, hashPassword, email, 200, 100).Scan(&userID)
+	err = tx.QueryRow("INSERT INTO users (name, password, mail, credits, experience_point, training) "+
+		"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", login, hashPassword, email, 200, 100, 0).Scan(&userID)
 	if err != nil {
 		log.Fatal("registration new user " + err.Error())
 	}

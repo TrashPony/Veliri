@@ -51,7 +51,7 @@ VALUES (3, 1, 1, false, '');
 /* II */
 /* III */
 INSERT INTO body_slots (id_body, type_slot, number_slot, weapon, weapon_type)
-VALUES (4, 3, 1, true, '');
+VALUES (3, 3, 1, true, '');
 
 /* BODY MOTHER*/
 /* I */

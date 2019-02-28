@@ -29,7 +29,6 @@ CREATE TABLE body_thorium_slots (
   max_thorium   INT                            /* сколько макс, тория помещается в ячейке */
 );
 
-
 CREATE TABLE body_slots (
   id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/
   type_slot     INT,                           /* тип слота куда встаривается оборудование I (1) , II (2), III (3), IV (4), V (5) */

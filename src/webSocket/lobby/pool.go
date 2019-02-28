@@ -42,7 +42,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 		if newPlayer.Training == 0 {
 			// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
-			trainingDialog := gameTypes.Dialogs.GetByID(2)
+			trainingDialog := gameTypes.Dialogs.GetByID(1)
 			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
 			newPlayer.SetOpenDialog(&trainingDialog)
 		} else {

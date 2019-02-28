@@ -18,8 +18,8 @@ CREATE TABLE dialog_pages
   name      text not null default '',
   /* содержание страницы, можно писать HTML */
   text      text not null default '',
-    /* имя файла персонажа который ведет диалог */
-  picture     text not null default ''
+  /* имя файла персонажа который ведет диалог */
+  picture   text not null default ''
 );
 
 CREATE TABLE dialog_asc
@@ -28,7 +28,7 @@ CREATE TABLE dialog_asc
   /* id_page отвечает за то где показывать этот ответ */
   id_page     INT REFERENCES dialog_pages (id),
   /* номер страницы на которую ведет ответ, если 0 то закрывает диалог */
-  to_page     INT           default not null default 1,
+  to_page     INT  not null default 1,
   name        text not null default '',
   text        text not null default '',
   /* задает тип функции которая отрботает если нажать отмет */

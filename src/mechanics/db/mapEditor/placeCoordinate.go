@@ -72,9 +72,9 @@ func PlaceCoordinate(idMap, idType, q, r int) {
 
 		if newType.ImpactRadius == 0 {
 			_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed, "+
-				"x_offset, y_offset)"+
-				" VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9)",
-				idMap, idType, q, r, defaultLevel, 0, 60, 0, 0)
+				"x_offset, y_offset, texture_over_flore, transport, handler, to_q, to_r, to_base_id, to_map_id)"+
+				" VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)",
+				idMap, idType, q, r, defaultLevel, 0, 60, 0, 0, "", false, "", 0, 0, 1, 2)
 			if err != nil {
 				log.Fatal("add new type in mc " + err.Error())
 			}

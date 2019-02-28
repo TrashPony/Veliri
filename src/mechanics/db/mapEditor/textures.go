@@ -17,9 +17,9 @@ func PlaceTextures(idMap, q, r int, textureName string) {
 		defaultLevel, defaultType := getDefaultMap(idMap)
 
 		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed, "+
-			"x_offset, y_offset, texture_over_flore) "+
-			"VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9, $10)",
-			idMap, defaultType, q, r, defaultLevel, 0, 60, 0, 0, textureName)
+			"x_offset, y_offset, texture_over_flore, transport, handler, to_q, to_r, to_base_id, to_map_id) "+
+			"VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)",
+			idMap, defaultType, q, r, defaultLevel, 0, 60, 0, 0, textureName, false, "", 0, 0, 1, 2)
 		if err != nil {
 			log.Fatal("add new texture in map editor " + err.Error())
 		}
