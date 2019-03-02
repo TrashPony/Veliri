@@ -35,6 +35,7 @@
     <script src="./js/Textures.js"></script>
     <script src="./js/transport.js"></script>
     <script src="./js/handler.js"></script>
+    <script src="./js/GeoData.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -48,6 +49,7 @@
     <script src="../game/CreateMap/Terrain.js"></script>
     <script src="../game/CreateMap/MarkZoneEffect.js"></script>
     <script src="../game/CreateMap/DynamicMap.js"></script>
+    <script src="../game/CreateMap/GeoData.js"></script>
 
     <script src="../game/Interface/GrabCamera.js"></script>
     <script src="../game/Interface/RotateMap.js"></script>
@@ -133,27 +135,47 @@
         <div id="texturesBlock">
             <h4>Текстуры земли</h4>
             <div id="textures">
-                <div onclick="RemoveTexture()" style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('desertTexture')" style='background: url("/assets/terrainTextures/icon/desert.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('desertDunes')" style='background: url("/assets/terrainTextures/icon/desertDunes.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('desertCracks')" style='background: url("/assets/terrainTextures/icon/desertCracks.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('xenos')" style='background: url("/assets/terrainTextures/icon/xenos.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('arctic')" style='background: url("/assets/terrainTextures/icon/arctic.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('tundra')" style='background: url("/assets/terrainTextures/icon/tundra.jpg") center center / 115% no-repeat;'></div>
-                <div onclick="PlaceTexture('vulcanic')" style='background: url("/assets/terrainTextures/icon/vulcanic.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="RemoveTexture()"
+                     style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertTexture')"
+                     style='background: url("/assets/terrainTextures/icon/desert.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertDunes')"
+                     style='background: url("/assets/terrainTextures/icon/desertDunes.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('desertCracks')"
+                     style='background: url("/assets/terrainTextures/icon/desertCracks.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('xenos')"
+                     style='background: url("/assets/terrainTextures/icon/xenos.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('arctic')"
+                     style='background: url("/assets/terrainTextures/icon/arctic.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('tundra')"
+                     style='background: url("/assets/terrainTextures/icon/tundra.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('vulcanic')"
+                     style='background: url("/assets/terrainTextures/icon/vulcanic.jpg") center center / 115% no-repeat;'></div>
             </div>
         </div>
 
         <div id="transportBlock">
             <h4> Эвакуатор хедлер </h4>
-            <div onclick="RemoveTransport()" style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="RemoveTransport()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
             <div onclick="AddTransport()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
         </div>
 
         <div id="handlerBlock">
             <h4> Переходы </h4>
-            <div onclick="RemoveHandler()" style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddHandler()" style='background: url("/assets/map/objects/tunel.png") center center / 115% no-repeat;'></div>
+            <div onclick="RemoveHandler()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddHandler()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
+        </div>
+        <div id="geoPoint">
+            <h4> Гео дата </h4>
+            <div onclick="RemoveGeoData()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="CancelGeoData()"
+                 style='background: url("/assets/cancelIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddGeoData()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
         </div>
     </div>
 
@@ -182,12 +204,12 @@
                 <tr>
                     <td> Через нее можно смотреть</td>
                     <td><input type="checkbox" checked name="watch" title="watch"> Через нее можно ходить <input
-                            type="checkbox" checked name="move" title="move"></td>
+                                type="checkbox" checked name="move" title="move"></td>
                 </tr>
                 <tr>
                     <td> Через нее можно стрелять</td>
                     <td><input type="checkbox" checked name="attack" title="attack"> Обьект отбрасывает тень <input
-                            type="checkbox" checked name="shadow" title="shadow"></td>
+                                type="checkbox" checked name="shadow" title="shadow"></td>
                 </tr>
                 <tr>
                     <td> Радиус воздействия</td>

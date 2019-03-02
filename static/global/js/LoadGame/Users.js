@@ -9,7 +9,8 @@ function CreateUser(squad) {
         }
     }
 
-    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate + 90);
+    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate);
+    CreateMSGeo(squad);
     game.squad = squad;
 }
 
@@ -42,5 +43,8 @@ function CreateOtherUser(otherUser) {
     }
 
     if (!find) game.otherUsers.push(otherUser);
-    if (!sprite) CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate + 90);
+    if (!sprite) {
+        CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate);
+        CreateOtherMSGeo(otherUser);
+    }
 }

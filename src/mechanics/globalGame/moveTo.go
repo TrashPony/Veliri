@@ -52,13 +52,13 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 	}
 
 	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
-		fakeThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
+		fakeThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity, user.GetSquad().MatherShip.Body)
 
 	return path, err
 }
 
-func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int,
-	mp *_map.Map, ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool) (error, []PathUnit) {
+func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map,
+	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []PathUnit) {
 
 	path := make([]PathUnit, 0)
 
@@ -135,7 +135,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp)
+		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp, body)
 
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX

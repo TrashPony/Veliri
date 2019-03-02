@@ -40,6 +40,16 @@ type Body struct {
 	ThoriumSlots map[int]*ThoriumSlot `json:"thorium_slots"` /* слоты в которых хранится топливо */
 
 	Weapons map[int]*BodyWeaponSlot `json:"weapons"`
+
+	FrontRadius     int `json:"front_radius"`      /* радиус передней сферы мешины */
+	LeftFrontAngle  int `json:"left_front_angle"`  /* градус отклонения для детектора колизий */
+	RightFrontAngle int `json:"right_front_angle"` /* градус отклонения для детектора колизий */
+
+	BackRadius     int `json:"back_radius"`      /* радиус задней сферы мешины */
+	LeftBackAngle  int `json:"left_back_angle"`  /* градус отклонения для детектора колизий */
+	RightBackAngle int `json:"right_back_angle"` /* градус отклонения для детектора колизий */
+
+	SideRadius int `json:"side_radius"` /* радиус боковой сферы мешины */
 }
 
 func (body *Body) FindApplicableEquip(applicable string) *BodyEquipSlot {

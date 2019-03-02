@@ -152,6 +152,7 @@ function preload() {
     game.load.image('transportIcon', 'http://' + window.location.host + '/assets/icons/transport.png');
     game.load.image('baseInIcon', 'http://' + window.location.host + '/assets/icons/baseIcon.png');
     game.load.image('sectorOutIcon', 'http://' + window.location.host + '/assets/icons/sectorOutIcon.png');
+    game.load.image('cancelIcon', 'http://' + window.location.host + '/assets/icons/cancelIcon.png');
 
     autoPreload();
 }

@@ -49,7 +49,7 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 
 	// формируем путь для движения
 	_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 15, 15,
-		float64(x), float64(y), 0, mp, true, nil, false, false)
+		float64(x), float64(y), 0, mp, true, nil, false, false, nil)
 
 	// запускаем транспорт
 	go FlyTransport(transport, transportBase, mp, path)

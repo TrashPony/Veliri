@@ -10,6 +10,7 @@ function ChangeOptionSprite(q, r) {
 
     let block = document.getElementById("coordinates");
 
+    if (document.getElementById("rotateBlock")) document.getElementById("rotateBlock").remove();
     let rotate = document.createElement("div");
     rotate.id = "rotateBlock";
 

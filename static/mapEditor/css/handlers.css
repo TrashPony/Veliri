@@ -2,7 +2,7 @@
 
 }
 
-#handlerBlock h4 {
+#handlerBlock h4, #geoPoint h4 {
     background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
     color: aliceblue;
     text-shadow: 0 0 2px black;
@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-#handlerBlock div {
+#handlerBlock div ,#geoPoint div{
     border-radius: 5px;
     width: 39px;
     height: 39px;
@@ -28,7 +28,7 @@
     margin-top: 10px;
 }
 
-#handlerBlock div:active {
+#handlerBlock div:active,#geoPoint div:active {
     transform: scale(0.95);
 }
 

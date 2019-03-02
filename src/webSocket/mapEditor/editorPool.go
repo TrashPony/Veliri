@@ -82,6 +82,8 @@ type Message struct {
 	YSize        int `json:"y_size"`
 	XOffset      int `json:"x_offset"`
 	YOffset      int `json:"y_offset"`
+	X            int `json:"x"`
+	Y            int `json:"y"`
 }
 
 type Response struct {
@@ -246,6 +248,14 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "removeHandler" {
 			mapEditor.RemoveHandler(msg.ID, msg.Q, msg.R)
 			selectMap(msg, ws)
+		}
+
+		if msg.Event == "addGeoData" {
+			mapEditor.AddGeoData(msg.X, msg.Y, msg.Radius, msg.ID)
+		}
+
+		if msg.Event == "removeGeoData" {
+			mapEditor.RemoveGeoData(msg.ID)
 		}
 	}
 }

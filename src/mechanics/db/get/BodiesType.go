@@ -29,7 +29,14 @@ func BodiesType() map[int]detail.Body {
 		"standard_size, " +
 		"standard_size_small, " +
 		"standard_size_medium, " +
-		"standard_size_big " +
+		"standard_size_big, " +
+		"body_front_radius, " +
+		"body_left_front_angle, " +
+		"body_right_front_angle, " +
+		"body_back_radius, " +
+		"body_left_back_angle, " +
+		"body_right_back_angle, " +
+		"body_side_radius " +
 		"" +
 		"FROM body_type")
 	if err != nil {
@@ -65,6 +72,13 @@ func BodiesType() map[int]detail.Body {
 			&body.StandardSizeSmall,
 			&body.StandardSizeMedium,
 			&body.StandardSizeBig,
+			&body.FrontRadius,
+			&body.LeftFrontAngle,
+			&body.RightFrontAngle,
+			&body.BackRadius,
+			&body.LeftBackAngle,
+			&body.RightBackAngle,
+			&body.SideRadius,
 		)
 		if err != nil {
 			log.Fatal("get scan all type body: " + err.Error())

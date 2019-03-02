@@ -20,7 +20,8 @@ function MoveTo(jsonData) {
                 y: jsonData.path_unit.y
             }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
         );
-        SetMSAngle(game.squad, jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
+        SetMSAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
+        game.squad.mather_ship.rotate = jsonData.path_unit.rotate;
     } else {
         MoveOther(jsonData)
     }
@@ -37,7 +38,8 @@ function MoveOther(jsonData) {
                     y: jsonData.path_unit.y
                 }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
             );
-            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate + 90, jsonData.path_unit.millisecond)
+            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond)
+            game.otherUsers[i].rotate = jsonData.path_unit.rotate;
         }
     }
 }
@@ -46,6 +48,7 @@ function SetMSAngle(unit, angle, time) {
     if (angle > 180) {
         angle -= 360
     }
+
     ShortDirectionRotateTween(unit.sprite.unitBody, Phaser.Math.degToRad(angle), time);
     ShortDirectionRotateTween(unit.sprite.bodyShadow, Phaser.Math.degToRad(angle), time);
     if (unit.sprite.weapon) {

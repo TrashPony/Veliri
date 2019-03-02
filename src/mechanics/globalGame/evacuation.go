@@ -48,7 +48,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 
 			_, path := MoveTo(float64(startX), float64(startY), 15, 15, 15,
 				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
-				true, nil, false, false)
+				true, nil, false, false, nil)
 
 			return path, evacuationBase.ID, transport, nil
 		} else {
@@ -64,6 +64,6 @@ func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit 
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
-		float64(endX), float64(endY), 0, mp, true, nil, false, false)
+		float64(endX), float64(endY), 0, mp, true, nil, false, false, nil)
 	return path
 }

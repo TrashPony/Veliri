@@ -79,6 +79,7 @@ function create(game) {
 
     game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
+    game.geoDataLayer = game.add.group();
 
     game.icon = game.add.group();
 

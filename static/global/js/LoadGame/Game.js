@@ -24,5 +24,7 @@ function LoadGame() {
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     Anomaly(Data.squad);
 
+    CreateGeoData(Data.map.geo_data);
+
     FocusMS();
 }

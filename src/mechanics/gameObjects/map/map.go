@@ -19,6 +19,14 @@ type Map struct {
 	Global              bool                     `json:"global"`
 	InGame              bool                     `json:"in_game"`
 	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
+	GeoData             []*ObstaclePoint         `json:"geo_data"`
+}
+
+type ObstaclePoint struct {
+	ID     int `json:"id"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Radius int `json:"radius"`
 }
 
 func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {

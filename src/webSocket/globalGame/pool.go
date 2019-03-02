@@ -1,6 +1,7 @@
 package globalGame
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
@@ -74,15 +75,16 @@ type Message struct {
 type hostileMS struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	SquadID    int    `json:"squad_id"`
-	UserName   string `json:"user_name"`
-	X          int    `json:"x"`
-	Y          int    `json:"y"`
-	Q          int    `json:"q"`
-	R          int    `json:"r"`
-	BodyName   string `json:"body_name"`
-	WeaponName string `json:"weapon_name"`
-	Rotate     int    `json:"rotate"`
+	SquadID    int          `json:"squad_id"`
+	UserName   string       `json:"user_name"`
+	X          int          `json:"x"`
+	Y          int          `json:"y"`
+	Q          int          `json:"q"`
+	R          int          `json:"r"`
+	BodyName   string       `json:"body_name"`
+	WeaponName string       `json:"weapon_name"`
+	Rotate     int          `json:"rotate"`
+	Body       *detail.Body `json:"body"`
 }
 
 func GetShortUserInfo(user *player.Player) *hostileMS {
@@ -100,6 +102,8 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 	hostile.R = user.GetSquad().R
 	hostile.Rotate = user.GetSquad().MatherShip.Rotate
 	hostile.BodyName = user.GetSquad().MatherShip.Body.Name
+
+	hostile.Body, _ = gameTypes.Bodies.GetByID(user.GetSquad().MatherShip.Body.ID)
 
 	if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
 		hostile.WeaponName = user.GetSquad().MatherShip.GetWeaponSlot().Weapon.Name

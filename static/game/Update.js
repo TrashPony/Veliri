@@ -34,6 +34,16 @@ function update() {
 
         AnimateMiningLaser();
         AnimateDigger();
+
+        if (game.squad.colision) {
+            CreateCollision(game.squad.colision, game.squad.mather_ship.body, game.squad.mather_ship.rotate, game.squad)
+        }
+
+        for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
+            if (game.otherUsers[i].colision) {
+                CreateCollision(game.otherUsers[i].colision, game.otherUsers[i].body, game.otherUsers[i].rotate, game.otherUsers[i])
+            }
+        }
     }
 
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */

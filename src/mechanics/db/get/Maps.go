@@ -42,6 +42,7 @@ func Maps() map[int]*_map.Map {
 		}
 
 		CoordinatesMap(mp)
+		GeoData(mp)
 		allMap[mp.Id] = mp
 	}
 
@@ -78,10 +79,36 @@ func MapByID(id int) *_map.Map {
 		}
 
 		CoordinatesMap(&mp)
+		GeoData(&mp)
 		return &mp
 	}
 
 	return nil
+}
+
+func GeoData(mp *_map.Map) {
+	mp.GeoData = make([]*_map.ObstaclePoint, 0)
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"Select "+
+		"id, "+
+		"x, "+
+		"y, "+
+		"radius "+
+		""+
+		"FROM global_geo_data WHERE id_map = $1", mp.Id)
+	if err != nil {
+		log.Fatal(err.Error() + "db get geo data")
+	}
+
+	for rows.Next() { // заполняем карту значащами клетками
+		var obstaclePoint _map.ObstaclePoint
+		err := rows.Scan(&obstaclePoint.ID, &obstaclePoint.X, &obstaclePoint.Y, &obstaclePoint.Radius)
+		mp.GeoData = append(mp.GeoData, &obstaclePoint)
+		if err != nil {
+			log.Fatal(err.Error() + "scan geo data")
+		}
+	}
+	defer rows.Close()
 }
 
 func CoordinatesMap(mp *_map.Map) {

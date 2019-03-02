@@ -48,21 +48,23 @@ function createGame(jsonMessage) {
     if (game) {
         UpdateMap(JSON.parse(jsonMessage).map, game, JSON.parse(jsonMessage).bases);
     } else {
-        game = CreateGame(JSON.parse(jsonMessage).map);
-        game.typeService = "mapEditor";
-        game.bases = JSON.parse(jsonMessage).bases;
 
-        setTimeout(function () {
+        let loadFunc = function () {
             if (JSON.parse(jsonMessage).bases) {
                 CreateLabelBase(JSON.parse(jsonMessage).bases);
-                CreateMiniMap();
             }
-        }, 2000);
+            CreateMiniMap();
+            CreateGeoData(JSON.parse(jsonMessage).map.geo_data);
+        };
+
+        game = CreateGame(JSON.parse(jsonMessage).map, loadFunc);
+        game.typeService = "mapEditor";
+        game.bases = JSON.parse(jsonMessage).bases;
     }
 }
 
 function CreateLabelBase(bases) {
-    for (let i in bases){
+    for (let i in bases) {
         if (bases.hasOwnProperty(i) && game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
 
             let xy = GetXYCenterHex(bases[i].q, bases[i].r);

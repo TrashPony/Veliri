@@ -28,7 +28,7 @@ function CreateSquad(squad, x, y, bodyName, weaponName, rotate) {
     if (weaponName && weaponName !== '') {
         weapon = game.make.sprite(0, 0, weaponName);
         weaponShadow = game.make.sprite(game.shadowXOffset / 2, game.shadowYOffset / 2, weaponName);
-        weapon.anchor.setTo(0.5, 0.61);
+        weapon.anchor.setTo(0.5, 0.5);
         weapon.scale.setTo(0.5/2);
         weaponShadow.anchor.setTo(0.5, 0.61);
         weaponShadow.scale.setTo(0.5/2);
