@@ -1,5 +1,6 @@
 let game;
 let Data;
+let debug = false;
 
 function Game(jsonData) {
     Data = jsonData;
@@ -24,7 +25,9 @@ function LoadGame() {
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     Anomaly(Data.squad);
 
-    CreateGeoData(Data.map.geo_data);
+    if (debug) {
+        CreateGeoData(Data.map.geo_data);
+    }
 
     FocusMS();
 }

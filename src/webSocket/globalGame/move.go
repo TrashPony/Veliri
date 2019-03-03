@@ -114,7 +114,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 
 			// если на пути встречается ящик то мы его давим и падает скорость
-			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID)
+			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID, user.GetSquad().MatherShip.Body)
 			if mapBox != nil {
 				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
 				boxes.Boxes.DestroyBox(mapBox)

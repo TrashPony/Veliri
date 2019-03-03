@@ -1,3 +1,4 @@
+
 function CreateUser(squad) {
     let x = squad.global_x;
     let y = squad.global_y;
@@ -10,7 +11,9 @@ function CreateUser(squad) {
     }
 
     CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate);
-    CreateMSGeo(squad);
+    if (debug) {
+        CreateMSGeo(squad);
+    }
     game.squad = squad;
 }
 
@@ -45,6 +48,8 @@ function CreateOtherUser(otherUser) {
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) {
         CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate);
-        CreateOtherMSGeo(otherUser);
+        if (debug) {
+            CreateOtherMSGeo(otherUser);
+        }
     }
 }
