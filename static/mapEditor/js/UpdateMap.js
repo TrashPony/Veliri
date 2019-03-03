@@ -3,21 +3,27 @@ function UpdateMap(newMap, game, bases) {
 
     game.floorLayer.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
     game.floorObjectLayer.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
     game.floorOverObjectLayer.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
     game.redactorButton.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
     game.redactorMetaText.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
     game.SelectLayer.forEach(function (c) {
         c.kill();
+        c.destroy();
     });
 
     game.map = newMap;

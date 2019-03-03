@@ -125,13 +125,19 @@ function preload() {
 
     //Brush
     game.load.image('brush', 'http://' + window.location.host + '/assets/terrainTextures/brush.png');
-    game.load.image('desertTexture', 'http://' + window.location.host + '/assets/terrainTextures/desert.jpg');
     game.load.image('desertDunes', 'http://' + window.location.host + '/assets/terrainTextures/desertDunes.jpg');
-    game.load.image('desertCracks', 'http://' + window.location.host + '/assets/terrainTextures/desertCracks.jpg');
+    game.load.image('desertDunes_2', 'http://' + window.location.host + '/assets/terrainTextures/desertDunes_2.jpg');
     game.load.image('xenos', 'http://' + window.location.host + '/assets/terrainTextures/xenos.jpg');
+    game.load.image('xenos_2', 'http://' + window.location.host + '/assets/terrainTextures/xenos_2.jpg');
     game.load.image('arctic', 'http://' + window.location.host + '/assets/terrainTextures/arctic.jpg');
+    game.load.image('arctic_2', 'http://' + window.location.host + '/assets/terrainTextures/arctic_2.jpg');
     game.load.image('tundra', 'http://' + window.location.host + '/assets/terrainTextures/tundra.jpg');
-    game.load.image('vulcanic', 'http://' + window.location.host + '/assets/terrainTextures/vulcanic.jpg');
+    game.load.image('tundra_2', 'http://' + window.location.host + '/assets/terrainTextures/tundra_2.jpg');
+    game.load.image('grass_1', 'http://' + window.location.host + '/assets/terrainTextures/grass_1.jpg');
+    game.load.image('grass_2', 'http://' + window.location.host + '/assets/terrainTextures/grass_2.jpg');
+    game.load.image('grass_3', 'http://' + window.location.host + '/assets/terrainTextures/grass_3.jpg');
+    game.load.image('soil', 'http://' + window.location.host + '/assets/terrainTextures/soil.jpg');
+    game.load.image('soil_2', 'http://' + window.location.host + '/assets/terrainTextures/soil_2.jpg');
 
     //Clouds
     game.load.image('cloud0', 'http://' + window.location.host + '/assets/map/clouds/cloud13.png');

@@ -28,6 +28,5 @@ function LoadGame() {
     if (debug) {
         CreateGeoData(Data.map.geo_data);
     }
-
     FocusMS();
 }
