@@ -55,6 +55,7 @@ function createGame(jsonMessage) {
             }
             CreateMiniMap();
             CreateGeoData(JSON.parse(jsonMessage).map.geo_data);
+            CreateEmittersZone(JSON.parse(jsonMessage).map.emitters);
         };
 
         game = CreateGame(JSON.parse(jsonMessage).map, loadFunc);

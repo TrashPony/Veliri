@@ -44,6 +44,7 @@ func Maps() map[int]*_map.Map {
 		CoordinatesMap(mp)
 		GeoData(mp)
 		Beams(mp)
+		Emitters(mp)
 
 		allMap[mp.Id] = mp
 	}
@@ -83,11 +84,56 @@ func MapByID(id int) *_map.Map {
 		CoordinatesMap(&mp)
 		GeoData(&mp)
 		Beams(&mp)
+		Emitters(&mp)
 
 		return &mp
 	}
 
 	return nil
+}
+
+func Emitters(mp *_map.Map) {
+	mp.Emitters = make([]*_map.Emitter, 0)
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"Select "+
+		"id, "+
+		"x, "+
+		"y, "+
+		"min_scale, "+
+		"max_scale, "+
+		"min_speed, "+
+		"max_speed, "+
+		"ttl, "+
+		"width, "+
+		"height, "+
+		"color, "+
+		"frequency, "+
+		"min_alpha, "+
+		"max_alpha, "+
+		"animate, "+
+		"animate_speed, "+
+		"name_particle, "+
+		"alpha_loop_time, "+
+		"yoyo "+
+		""+
+		"FROM map_emitters WHERE id_map = $1", mp.Id)
+	if err != nil {
+		log.Fatal(err.Error() + "db get emitters")
+	}
+
+	for rows.Next() {
+		var emitter _map.Emitter
+
+		err := rows.Scan(&emitter.ID, &emitter.X, &emitter.Y, &emitter.MinScale, &emitter.MaxScale, &emitter.MinSpeed,
+			&emitter.MaxSpeed, &emitter.TTL, &emitter.Width, &emitter.Height, &emitter.Color, &emitter.Frequency,
+			&emitter.MinAlpha, &emitter.MaxAlpha, &emitter.Animate, &emitter.AnimateSpeed, &emitter.NameParticle,
+			&emitter.AlphaLoopTime, &emitter.Yoyo)
+		mp.Emitters = append(mp.Emitters, &emitter)
+		if err != nil {
+			log.Fatal(err.Error() + "scan emitters")
+		}
+	}
+	defer rows.Close()
 }
 
 func Beams(mp *_map.Map) {

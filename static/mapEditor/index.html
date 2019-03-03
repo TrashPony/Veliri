@@ -37,6 +37,7 @@
     <script src="./js/handler.js"></script>
     <script src="./js/GeoData.js"></script>
     <script src="./js/Beams.js"></script>
+    <script src="./js/Emitters.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -52,6 +53,7 @@
     <script src="../game/CreateMap/DynamicMap.js"></script>
     <script src="../game/CreateMap/GeoData.js"></script>
     <script src="../game/CreateMap/Beam.js"></script>
+    <script src="../game/CreateMap/Emitters.js"></script>
 
     <script src="../game/Interface/GrabCamera.js"></script>
     <script src="../game/Interface/RotateMap.js"></script>
@@ -167,14 +169,21 @@
                      style='background: url("/assets/terrainTextures/icon/tundra_2.jpg") center center / 115% no-repeat;'></div>
             </div>
         </div>
-
+        <div id="Emitters">
+            <h4> Излучатели </h4>
+            <div onclick="RemoveEmitter()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="ChangeEmitter()"
+                 style='background: url("/assets/changeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddEmitter()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
+        </div>
         <div id="transportBlock">
             <h4> Эвакуатор хедлер </h4>
             <div onclick="RemoveTransport()"
                  style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
             <div onclick="AddTransport()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
         </div>
-
         <div id="handlerBlock">
             <h4> Переходы </h4>
             <div onclick="RemoveHandler()"
@@ -191,7 +200,6 @@
             <div onclick="AddGeoData()"
                  style='background: url("") center center / 115% no-repeat;'></div>
         </div>
-
         <div id="Beams">
             <h4> Лучи ¯\_(ツ)_/¯ </h4>
             <div onclick="RemoveBeam()"

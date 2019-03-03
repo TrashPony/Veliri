@@ -50,6 +50,8 @@ function preload() {
     // equips
     game.load.image('digger', 'http://' + window.location.host + '/assets/units/equip/digger.png');
 
+    // Effects
+    game.load.spritesheet('Smoke45Frames', 'http://' + window.location.host + '/assets/fire_effects/Smoke45Frames.png', 256, 256, 45);
 
     // Map Terrains
     game.load.image('desert', 'http://' + window.location.host + '/assets/map/terrain/desert.png');

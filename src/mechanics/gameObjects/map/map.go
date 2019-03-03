@@ -21,6 +21,7 @@ type Map struct {
 	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
 	GeoData             []*ObstaclePoint         `json:"geo_data"`
 	Beams               []*Beam                  `json:"beams"`
+	Emitters            []*Emitter               `json:"emitters"`
 }
 
 type ObstaclePoint struct {
@@ -37,6 +38,28 @@ type Beam struct {
 	XEnd   int    `json:"x_end"`
 	YEnd   int    `json:"y_end"`
 	Color  string `json:"color"`
+}
+
+type Emitter struct {
+	ID            int    `json:"id"`
+	X             int    `json:"x"`
+	Y             int    `json:"y"`
+	MinScale      int    `json:"min_scale"`
+	MaxScale      int    `json:"max_scale"`
+	MinSpeed      int    `json:"min_speed"`
+	MaxSpeed      int    `json:"max_speed"`
+	TTL           int    `json:"ttl"`
+	Width         int    `json:"width"`
+	Height        int    `json:"height"`
+	Color         string `json:"color"`
+	Frequency     int    `json:"frequency"`
+	MinAlpha      int    `json:"min_alpha"`
+	MaxAlpha      int    `json:"max_alpha"`
+	Animate       bool   `json:"animate"`
+	AnimateSpeed  int    `json:"animate_speed"`
+	NameParticle  string `json:"name_particle"`
+	AlphaLoopTime int    `json:"alpha_loop_time"`
+	Yoyo          bool   `json:"yoyo"`
 }
 
 func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {

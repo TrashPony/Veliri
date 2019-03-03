@@ -89,13 +89,55 @@ CREATE TABLE global_geo_data
   radius INT /* размер непроходимой точки */
 );
 
+-- таблица лазерных людей на карте, например связи от сдания к здания, энерго забор и тд
 CREATE TABLE map_beams
 (
   id      SERIAL PRIMARY KEY,
-  id_map  INT REFERENCES maps (id), /* где находится непроходимая точка */
+  id_map  INT REFERENCES maps (id),
   x_start INT  not null default 0,
   y_start INT  not null default 0,
   x_end   INT  not null default 0,
   y_end   INT  not null default 0,
   color   text not null default '0x000000'
-)
+);
+
+-- таблица источников туманов, дыма, бурь и тд на карте
+CREATE TABLE map_emitters
+(
+  id              SERIAL PRIMARY KEY,
+  id_map          INT REFERENCES maps (id),
+  x               INT     not null default 0,
+  y               INT     not null default 0,
+  -- минимальный размер частицы в источнике min_scale/100
+  min_scale       INT     not null default 0,
+  -- макс размер частицы в источнике max_scale/100
+  max_scale       INT     not null default 0,
+  -- минимальный скорость частицы
+  min_speed       INT     not null default 0,
+  -- макс скорость частицы
+  max_speed       INT     not null default 0,
+  -- время жизни частицы
+  ttl             INT     not null default 0,
+  -- ширина источника
+  width           INT     not null default 0,
+  -- высота источника
+  height          INT     not null default 0,
+  -- цветовой фильтр который применится к частицам
+  color           text    not null default '',
+  -- скорость пораждения частиц ms
+  frequency       INT     not null default 0,
+  -- min_alpha/100
+  min_alpha       INT     not null default 0,
+  -- max_alpha/100
+  max_alpha       INT     not null default 0,
+  -- включить анимацтю для частицы
+  animate         BOOLEAN not null default false,
+  -- кадры в секунду
+  animate_speed   INT     not null default 0,
+  -- имя спрайта
+  name_particle   text    not null default '',
+  -- время за которое альфа пройдет от мин к макс
+  alpha_loop_time INT     not null default 0,
+  -- если тру то после того как альфа наберет макс, пойдет обратно плавно назад
+  yoyo            BOOLEAN not null default false
+);
