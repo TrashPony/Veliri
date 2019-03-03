@@ -88,3 +88,14 @@ CREATE TABLE global_geo_data
   y      INT,
   radius INT /* размер непроходимой точки */
 );
+
+CREATE TABLE map_beams
+(
+  id      SERIAL PRIMARY KEY,
+  id_map  INT REFERENCES maps (id), /* где находится непроходимая точка */
+  x_start INT  not null default 0,
+  y_start INT  not null default 0,
+  x_end   INT  not null default 0,
+  y_end   INT  not null default 0,
+  color   text not null default '0x000000'
+)

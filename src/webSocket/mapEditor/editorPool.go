@@ -77,13 +77,16 @@ type Message struct {
 
 	Radius int `json:"radius"`
 
-	CountSprites int `json:"count_sprites"`
-	XSize        int `json:"x_size"`
-	YSize        int `json:"y_size"`
-	XOffset      int `json:"x_offset"`
-	YOffset      int `json:"y_offset"`
-	X            int `json:"x"`
-	Y            int `json:"y"`
+	CountSprites int    `json:"count_sprites"`
+	XSize        int    `json:"x_size"`
+	YSize        int    `json:"y_size"`
+	XOffset      int    `json:"x_offset"`
+	YOffset      int    `json:"y_offset"`
+	X            int    `json:"x"`
+	Y            int    `json:"y"`
+	ToX          int    `json:"to_x"`
+	ToY          int    `json:"to_y"`
+	Color        string `json:"color"`
 }
 
 type Response struct {
@@ -256,6 +259,14 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "removeGeoData" {
 			mapEditor.RemoveGeoData(msg.ID)
+		}
+
+		if msg.Event == "addBeam" {
+			mapEditor.AddBeam(msg.X, msg.Y, msg.ToX, msg.ToY, msg.ID, msg.Color)
+		}
+
+		if msg.Event == "removeBeam" {
+
 		}
 	}
 }

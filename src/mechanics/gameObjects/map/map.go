@@ -20,6 +20,7 @@ type Map struct {
 	InGame              bool                     `json:"in_game"`
 	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
 	GeoData             []*ObstaclePoint         `json:"geo_data"`
+	Beams               []*Beam                  `json:"beams"`
 }
 
 type ObstaclePoint struct {
@@ -27,6 +28,15 @@ type ObstaclePoint struct {
 	X      int `json:"x"`
 	Y      int `json:"y"`
 	Radius int `json:"radius"`
+}
+
+type Beam struct {
+	ID     int    `json:"id"`
+	XStart int    `json:"x_start"`
+	YStart int    `json:"y_start"`
+	XEnd   int    `json:"x_end"`
+	YEnd   int    `json:"y_end"`
+	Color  string `json:"color"`
 }
 
 func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {

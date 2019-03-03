@@ -54,8 +54,21 @@ function CreateMap() {
         }
 
         CreateTexture();
+        CreateBeams();
         resolve()
     });
+}
+
+function CreateBeams() {
+    for (let i = 0; i < game.map.beams.length; i++) {
+        CreateBeamLaser(
+            game.map.beams[i].x_start,
+            game.map.beams[i].y_start,
+            game.map.beams[i].x_end,
+            game.map.beams[i].y_end,
+            game.map.beams[i].color,
+        );
+    }
 }
 
 function CreateTexture() {

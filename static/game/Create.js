@@ -5,7 +5,7 @@ function CreateGame(map, loadFunc) {
     LoadFunc = loadFunc;
     Map = map;
 
-    return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
+    return new Phaser.Game('100', '100', Phaser.WEBGL_MULTI, 'main', {
         preload: preload,
         create: create,
         update: update,

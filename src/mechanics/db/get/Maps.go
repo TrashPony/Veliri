@@ -43,6 +43,8 @@ func Maps() map[int]*_map.Map {
 
 		CoordinatesMap(mp)
 		GeoData(mp)
+		Beams(mp)
+
 		allMap[mp.Id] = mp
 	}
 
@@ -80,10 +82,40 @@ func MapByID(id int) *_map.Map {
 
 		CoordinatesMap(&mp)
 		GeoData(&mp)
+		Beams(&mp)
+
 		return &mp
 	}
 
 	return nil
+}
+
+func Beams(mp *_map.Map) {
+	mp.Beams = make([]*_map.Beam, 0)
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"Select "+
+		"id, "+
+		"x_start, "+
+		"y_start, "+
+		"x_end, "+
+		"y_end, "+
+		"color "+
+		""+
+		"FROM map_beams WHERE id_map = $1", mp.Id)
+	if err != nil {
+		log.Fatal(err.Error() + "db get beam")
+	}
+
+	for rows.Next() {
+		var beam _map.Beam
+
+		err := rows.Scan(&beam.ID, &beam.XStart, &beam.YStart, &beam.XEnd, &beam.YEnd, &beam.Color)
+		mp.Beams = append(mp.Beams, &beam)
+		if err != nil {
+			log.Fatal(err.Error() + "scan beam")
+		}
+	}
+	defer rows.Close()
 }
 
 func GeoData(mp *_map.Map) {
