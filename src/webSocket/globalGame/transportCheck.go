@@ -15,7 +15,7 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if int(dist) < distCheck && mapID == user.GetSquad().MapID {
 			if !user.GetSquad().ForceEvacuation {
-				globalPipe <- Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds}
+				globalPipe <- Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot}
 				go ForceEvacuation(ws, user, x, y, seconds, distCheck)
 			}
 			lock = true

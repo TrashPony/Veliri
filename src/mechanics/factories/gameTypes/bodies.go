@@ -28,6 +28,11 @@ func (b *bodyStore) GetByID(id int) (*detail.Body, bool) {
 	return &newBody, ok
 }
 
+func (b *bodyStore) GetRandom() *detail.Body {
+	body, _ := b.GetByID(2) // TODO
+	return body
+}
+
 func (b *bodyStore) GetAllType() map[int]detail.Body {
 	return b.bodies
 }

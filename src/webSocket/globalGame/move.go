@@ -30,10 +30,10 @@ func move(ws *websocket.Conn, msg Message) {
 		}
 
 		if err != nil && len(path) == 0 {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 		}
 
-		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 		if err != nil {
 			DisconnectUser(user)
 		}
@@ -67,7 +67,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 			if user.GetSquad().HighGravity != newGravity {
 				user.GetSquad().HighGravity = newGravity
-				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID}
+				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 				select {
 				case exitNow := <-user.GetSquad().GetMove():
 					if exitNow {
@@ -99,6 +99,10 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 							return
 						}
 					default:
+						if user.Bot {
+							user.GetSquad().MoveChecker = false
+							return
+						}
 						time.Sleep(100 * time.Millisecond)
 					}
 				} else {
@@ -110,7 +114,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 			if err == nil {
-				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID}
+				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot}
 			}
 
 			// если на пути встречается ящик то мы его давим и падает скорость
@@ -148,7 +152,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 
 			// говорим юзеру как расходуется его топливо
 			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID}
+				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID, Bot: user.Bot}
 
 			// оповещаем мир как двигается отряд
 			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
@@ -169,7 +173,9 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				user.GetSquad().Q = pathUnit.Q
 				user.GetSquad().R = pathUnit.R
 
-				go update.Squad(user.GetSquad(), false)
+				if !user.Bot {
+					go update.Squad(user.GetSquad(), false)
+				}
 			}
 		}
 	}

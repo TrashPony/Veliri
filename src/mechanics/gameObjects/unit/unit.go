@@ -148,8 +148,13 @@ func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз док
 			return weaponSlot
 		}
 	}
-
 	return nil
+}
+
+func (unit *Unit) SetWeaponSlot(newWeaponSlot *detail.BodyWeaponSlot) {
+	for i := range unit.Body.Weapons {
+		unit.Body.Weapons[i] = newWeaponSlot
+	}
 }
 
 func (unit *Unit) CalculateParams() {

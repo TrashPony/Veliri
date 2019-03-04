@@ -70,12 +70,13 @@ type Message struct {
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`
 	Cloud         *cloud                          `json:"cloud"`
+	Bot           bool                            `json:"bot"`
 }
 
 type hostileMS struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	SquadID    int          `json:"squad_id"`
+	SquadID    string       `json:"squad_id"`
 	UserName   string       `json:"user_name"`
 	X          int          `json:"x"`
 	Y          int          `json:"y"`
@@ -94,7 +95,12 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 		return nil
 	}
 
-	hostile.SquadID = user.GetSquad().ID
+	if user.Bot {
+		hostile.SquadID = user.UUID
+	} else {
+		hostile.SquadID = strconv.Itoa(user.GetSquad().ID)
+	}
+
 	hostile.UserName = user.GetLogin()
 	hostile.X = user.GetSquad().GlobalX
 	hostile.Y = user.GetSquad().GlobalY
@@ -240,6 +246,9 @@ func MoveSender() {
 
 		Clients.mx.Lock()
 		for ws, client := range usersGlobalWs {
+			if client.Bot || resp.Bot {
+				continue
+			}
 
 			var err error
 

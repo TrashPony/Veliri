@@ -54,8 +54,8 @@ function CreateMap() {
         }
 
         CreateTexture();
-        CreateBeams();
-        CreateEmitters();
+        // TODO CreateBeams();
+        // TODO CreateEmitters();
 
         resolve()
     });

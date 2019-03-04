@@ -33,7 +33,7 @@ function startMoveEvacuation(jsonData) {
     let x = jsonData.path_unit.x;
     let y = jsonData.path_unit.y;
 
-    if (game.squad.id === jsonData.other_user.squad_id) {
+    if (game.squad.id === Number(jsonData.other_user.squad_id)) {
         FocusMS();
         let tween = game.add.tween(game.squad.sprite.unitBody).to({alpha: 0.6}, 200, "Linear", true, 0, -1);
         tween.yoyo(true, 1000);
@@ -55,7 +55,7 @@ function startMoveEvacuation(jsonData) {
             evacuation = CreateEvacuation(x, y, jsonData.base_id, jsonData.transport_id);
         }
 
-        if (game.squad.id === jsonData.other_user.squad_id) {
+        if (game.squad.id === Number(jsonData.other_user.squad_id)) {
             game.camera.follow(evacuation);
         }
 
@@ -119,7 +119,7 @@ function evacuationMove(jsonData, squadMove) {
     let squad;
 
     if (jsonData.other_user) {
-        if (game.squad.id === jsonData.other_user.squad_id) {
+        if (game.squad.id === Number(jsonData.other_user.squad_id)) {
             squad = game.squad.sprite
         } else {
             for (let j = 0; j < game.otherUsers.length; j++) {
@@ -165,7 +165,7 @@ function stopEvacuation(jsonData) {
         sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id)
     }
 
-    if (game.squad.id === jsonData.other_user.squad_id) {
+    if (game.squad.id === Number(jsonData.other_user.squad_id)) {
         EvacuationDown(sprite, game.squad.sprite, true);
     } else {
         for (let j = 0; j < game.otherUsers.length; j++) {
@@ -190,7 +190,7 @@ function placeEvacuation(jsonData) {
     EvacuationDown(sprite);
 
     setTimeout(function () {
-        if (game.squad.id === jsonData.other_user.squad_id) {
+        if (game.squad.id === Number(jsonData.other_user.squad_id)) {
             EvacuationUp(sprite, game.squad.sprite);
         } else {
             for (let j = 0; j < game.otherUsers.length; j++) {

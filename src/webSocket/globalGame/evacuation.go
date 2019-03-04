@@ -79,7 +79,10 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.GetSquad().GlobalX = 0
 		user.GetSquad().GlobalY = 0
 
-		globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		if !user.Bot {
+			globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+			go update.Squad(user.GetSquad(), true)
+		}
 
 		DisconnectUser(user)
 
@@ -88,6 +91,5 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.GetSquad().InSky = false
 		transport.Job = false
 
-		go update.Squad(user.GetSquad(), true)
 	}
 }

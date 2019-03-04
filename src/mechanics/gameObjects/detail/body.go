@@ -191,7 +191,7 @@ type ThoriumSlot struct {
 }
 
 type BodyWeaponSlot struct {
-	Type         int        `json:"type_slot"`
+	Type         int        `json:"type_slot"` // по диз доку он может быть только 3
 	Number       int        `json:"number_slot"`
 	Weapon       *Weapon    `json:"weapon"`
 	WeaponType   string     `json:"weapon_type"`

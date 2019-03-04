@@ -4,7 +4,7 @@ function MoveTo(jsonData) {
 
     CreateMiniMap();
 
-    if (game.squad && jsonData.other_user.squad_id === game.squad.id) {
+    if (game.squad && Number(jsonData.other_user.squad_id) === game.squad.id) {
         game.floorSelectLineLayer.forEach(function (sprite) {
             sprite.visible = false;
         });
@@ -29,7 +29,7 @@ function MoveTo(jsonData) {
 
 function MoveOther(jsonData) {
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-        if (game.otherUsers[i].user_name === jsonData.other_user.user_name) {
+        if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
 
             if (!game.otherUsers[i].sprite) CreateOtherUser(game.otherUsers[i]);
 
@@ -38,7 +38,7 @@ function MoveOther(jsonData) {
                     y: jsonData.path_unit.y
                 }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
             );
-            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond)
+            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
             game.otherUsers[i].rotate = jsonData.path_unit.rotate;
         }
     }

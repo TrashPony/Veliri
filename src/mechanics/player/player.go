@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/gorilla/websocket"
 )
 
 type Player struct {
@@ -33,6 +34,19 @@ type Player struct {
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
 	InBaseID   int // ид базы в которой сидит игрок
+
+	Bot      bool `json:"bot"`      // переменная говорит что это не игрок))
+	Behavior int  `json:"behavior"` // тип поведения бота
+	fakeWS   *websocket.Conn
+	UUID     string `json:"uuid"`
+}
+
+func (client *Player) SetFakeWS(ws *websocket.Conn) {
+	client.fakeWS = ws
+}
+
+func (client *Player) GetFakeWS() *websocket.Conn {
+	return client.fakeWS
 }
 
 func (client *Player) GetOpenDialog() *dialog.Dialog {

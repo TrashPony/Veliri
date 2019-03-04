@@ -21,6 +21,11 @@ func (w *weaponsStore) GetByID(id int) (*detail.Weapon, bool) {
 	return &newWeapon, ok
 }
 
+func (w *weaponsStore) GetRandom() *detail.Weapon {
+	weapon, _ := w.GetByID(4) // TODO
+	return weapon
+}
+
 func (w *weaponsStore) GetAllType() map[int]detail.Weapon {
 	return w.weapons
 }
