@@ -274,6 +274,7 @@ func MoveSender() {
 				delete(usersGlobalWs, ws)
 			}
 		}
+
 		Clients.mx.Unlock()
 	}
 }

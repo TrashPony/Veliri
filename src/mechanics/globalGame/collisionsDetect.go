@@ -104,7 +104,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 
 	for _, user := range users {
 		if user != nil && user.GetSquad().MapID == mapID &&
-			(moveUser.GetID() > 0 && moveUser.GetID() != user.GetID() || moveUser.UUID != "" && moveUser.UUID != user.UUID) &&
+			/*moveUser.GetID() > 0 &&*/ moveUser.GetID() != user.GetID() && // || moveUser.UUID != "" && moveUser.UUID != user.UUID) &&
 			!user.GetSquad().Evacuation {
 
 			bodyUser := user.GetSquad().MatherShip.Body

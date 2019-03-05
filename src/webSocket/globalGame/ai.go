@@ -124,21 +124,21 @@ func Transport(bot *player.Player, mp *_map.Map) {
 				bot.GetSquad().MatherShip,
 			)
 
-			countPossible := 1
+			//countPossible := 1
 			for i := 0; i < len(path); i++ {
 				toX, toY := globalGame.GetXYCenterHex(path[i].Q, path[i].R)
 
 				// TODO учитывать наличие игроков при построение маршрута.
 				// ПРИМЕР ДЛЯ ПОНИМАНИЯ: если между точкой 5 и точкой 10 нет прептявий то идти напрямик
-				fastPath, _ := globalGame.MoveSquad(bot, float64(toX), float64(toY), mp)
-
-				if len(fastPath) > 10*countPossible && i < len(path)-1 {
-					countPossible++
-					continue
-				} else {
-					countPossible = 1
-					move(bot.GetFakeWS(), Message{ToX: float64(toX), ToY: float64(toY)})
-				}
+				//fastPath, _ := globalGame.MoveSquad(bot, float64(toX), float64(toY), mp)
+				//
+				//if len(fastPath) > 10*countPossible && i < len(path)-1 {
+				//	countPossible++
+				//	continue
+				//} else {
+				//	countPossible = 1
+				move(bot.GetFakeWS(), Message{ToX: float64(toX), ToY: float64(toY)})
+				//}
 
 				for {
 					time.Sleep(100 * time.Millisecond)

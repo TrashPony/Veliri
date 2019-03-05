@@ -63,6 +63,7 @@ func checkNeighbour(q, r int, client *player.Player, curr *coordinate.Coordinate
 	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r)
 
 	x, y := globalGame.GetXYCenterHex(q, r)
+	// TODO неправильный gameUnit.Rotate
 	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x, y, gameUnit.Rotate, gameMap, gameUnit.Body)
 
 	if find && possible {
