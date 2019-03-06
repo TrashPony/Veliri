@@ -5,7 +5,8 @@ function CreateGame(map, loadFunc) {
     LoadFunc = loadFunc;
     Map = map;
 
-    return new Phaser.Game('100', '100', Phaser.WEBGL, 'main', {
+    //TODO что бы работал блюр на линиях и эмиторы надо делать WEBGL
+    return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -14,7 +15,6 @@ function CreateGame(map, loadFunc) {
 }
 
 function create(game) {
-
 
     // размеры гексов карты по умолчанию
     game.hexagonWidth = 50;

@@ -5,11 +5,12 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"sync"
 )
 
-func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base.Transport, error) {
+func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]squad.PathUnit, int, *base.Transport, error) {
 
 	mapBases := bases.Bases.GetBasesByMap(mp.Id)
 	minDist := 0.0
@@ -59,7 +60,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]PathUnit, int, *base
 	}
 }
 
-func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []PathUnit {
+func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []squad.PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 

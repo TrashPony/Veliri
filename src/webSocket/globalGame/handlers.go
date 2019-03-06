@@ -16,7 +16,9 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR)
 	}
 
-	go update.Squad(user.GetSquad(), true)
+	if !user.Bot {
+		go update.Squad(user.GetSquad(), true)
+	}
 }
 
 func changeSector(user *player.Player, mapID, q, r int) {
@@ -26,7 +28,7 @@ func changeSector(user *player.Player, mapID, q, r int) {
 		user.GetSquad().CurrentSpeed = 0
 	}
 
-	globalPipe <- Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+	globalPipe <- Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 	DisconnectUser(user)
 
 	user.GetSquad().MapID = mapID
@@ -39,9 +41,11 @@ func changeSector(user *player.Player, mapID, q, r int) {
 }
 
 func intoToBase(user *player.Player, baseID int) {
-	bases.UserIntoBase(user.GetID(), baseID)
+	if !user.Bot {
+		bases.UserIntoBase(user.GetID(), baseID)
+	}
 
-	globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+	globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 	DisconnectUser(user)
 
 	user.InBaseID = baseID

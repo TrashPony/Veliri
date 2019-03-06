@@ -38,8 +38,8 @@ type Message struct {
 	R             int                             `json:"r"`
 	ToX           float64                         `json:"to_x"`
 	ToY           float64                         `json:"to_y"`
-	PathUnit      globalGame.PathUnit             `json:"path_unit"`
-	Path          []globalGame.PathUnit           `json:"path"`
+	PathUnit      squad.PathUnit                  `json:"path_unit"`
+	Path          []squad.PathUnit                `json:"path"`
 	BaseID        int                             `json:"base_id"`
 	OtherUser     *hostileMS                      `json:"other_user"`
 	OtherUsers    []*hostileMS                    `json:"other_users"`

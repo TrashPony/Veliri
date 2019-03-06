@@ -16,7 +16,7 @@ func evacuationSquad(ws *websocket.Conn) {
 	}
 
 	if user.GetSquad().HighGravity {
-		globalPipe <- Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		globalPipe <- Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 		return
 	}
 
@@ -30,7 +30,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		if err != nil {
-			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+			globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 			return
 		}
 

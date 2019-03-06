@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
@@ -15,11 +16,12 @@ func move(ws *websocket.Conn, msg Message) {
 
 	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
-	if find && user.InBaseID == 0 {
+	if find && user.InBaseID == 0 && !user.GetSquad().Evacuation {
 
 		stopMove(ws, false)
 
 		path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
+		user.GetSquad().ActualPath = &path
 
 		if len(path) > 1 {
 			user.GetSquad().ToX = float64(path[len(path)-1].X)
@@ -38,7 +40,7 @@ func move(ws *websocket.Conn, msg Message) {
 			DisconnectUser(user)
 		}
 
-		go MoveUserMS(ws, msg, user, path)
+		go MoveUserMS(ws, msg, user, &path)
 		user.GetSquad().MoveChecker = true
 	}
 }
@@ -53,33 +55,36 @@ func stopMove(ws *websocket.Conn, reserSpeed bool) {
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []globalGame.PathUnit) {
-	// TODO убрать много селектов но я не знаю как инче %(
-	for i, pathUnit := range path {
+func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]squad.PathUnit) {
+
+	moveRepeat := false
+
+	defer func() {
+		user.GetSquad().MoveChecker = false
+		stopMove(ws, false)
+		if moveRepeat {
+			move(ws, msg)
+		}
+	}()
+
+	for i, pathUnit := range *path {
 		select {
 		case exitNow := <-user.GetSquad().GetMove():
 			if exitNow {
-				user.GetSquad().MoveChecker = false
 				return
 			}
 		default:
+
+			if user.GetSquad().ActualPath != path {
+				return
+			}
 
 			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 			if user.GetSquad().HighGravity != newGravity {
 				user.GetSquad().HighGravity = newGravity
 				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-				select {
-				case exitNow := <-user.GetSquad().GetMove():
-					if exitNow {
-						user.GetSquad().MoveChecker = false
-						move(ws, msg)
-						return
-					}
-				default:
-					user.GetSquad().MoveChecker = false
-					move(ws, msg)
-					return
-				}
+				moveRepeat = true
+				return
 			}
 
 			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
@@ -87,28 +92,11 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				// TODO ломание корпуса
 			}
 
-			for { // ожидаем пока другой игрок уйдет с пути или первый не изменил путь
-
-				obstacle := !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, Clients.GetAll())
-
-				if obstacle {
-					select {
-					case exitNow := <-user.GetSquad().GetMove():
-						if exitNow {
-							user.GetSquad().MoveChecker = false
-							return
-						}
-					default:
-						if user.Bot {
-							user.GetSquad().MoveChecker = false
-							return
-						}
-						time.Sleep(100 * time.Millisecond)
-					}
-				} else {
-					break
-				}
-			}
+			// колизии игрок-игрок // TODO столкновения,  урон, оталкивание
+			//for !globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, Clients.GetAll()) {
+			//	time.Sleep(1 * time.Second)
+			//	return
+			//}
 
 			// находим аномалии
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
@@ -123,29 +111,17 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
 				boxes.Boxes.DestroyBox(mapBox)
 				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
-				select {
-				case exitNow := <-user.GetSquad().GetMove():
-					if exitNow {
-						user.GetSquad().MoveChecker = false
-						move(ws, msg)
-						return
-					}
-				default:
-					user.GetSquad().MoveChecker = false
-					move(ws, msg)
-					return
-				}
+				moveRepeat = true
+				return
 			}
 
 			// если клиент отключился то останавливаем его
 			if ws == nil || Clients.GetByWs(ws) == nil {
-				user.GetSquad().MoveChecker = false
 				return
 			}
 
 			coor := globalGame.HandlerDetect(user)
 			if coor != nil && coor.HandlerOpen {
-				user.GetSquad().MoveChecker = false
 				HandlerParse(user, coor)
 				return
 			}
@@ -157,7 +133,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			// оповещаем мир как двигается отряд
 			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
 
-			if i+1 != len(path) { // бeз этого ифа канал будет ловить деад лок
+			if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
 				time.Sleep(100 * time.Millisecond)
 				user.GetSquad().CurrentSpeed = pathUnit.Speed
 			} else {
@@ -169,7 +145,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			user.GetSquad().GlobalY = int(pathUnit.Y)
 
 			if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R)) ||
-				i+1 == len(path) {
+				i+1 == len(*path) {
 				user.GetSquad().Q = pathUnit.Q
 				user.GetSquad().R = pathUnit.R
 
@@ -179,6 +155,4 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path []glo
 			}
 		}
 	}
-	user.GetSquad().MoveChecker = false
-	return
 }

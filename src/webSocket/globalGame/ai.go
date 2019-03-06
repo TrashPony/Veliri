@@ -4,7 +4,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
@@ -12,6 +11,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 30
+const RespBots = 20
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -86,7 +86,7 @@ func respBot(base *base.Base, mp *_map.Map) {
 }
 
 func outBase(bot *player.Player, base *base.Base) {
-	for CheckTransportCoordinate(base.RespQ, base.RespR, 10, 75, base.MapID) {
+	for CheckTransportCoordinate(base.RespQ, base.RespR, 10, 95, base.MapID) {
 		// запускаем механизм проверки и эвакуации игрока с респауна))))
 		time.Sleep(time.Millisecond * 100)
 	}
@@ -102,6 +102,7 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
 	loadGame(bot.GetFakeWS(), Message{})
+	// todo после выхода из базы сваливать по прямой быстро а не стоять на токе и распа и строить путь
 }
 
 func Transport(bot *player.Player, mp *_map.Map) {
@@ -113,21 +114,11 @@ func Transport(bot *player.Player, mp *_map.Map) {
 			outBase(bot, botBase)
 		}
 
-		toQ, toR := rand.Intn(mp.QSize), rand.Intn(mp.RSize)
-
 		if !bot.GetSquad().MoveChecker {
-			_, path := find_path.FindPath(
-				bot,
-				mp,
-				&coordinate.Coordinate{Q: bot.GetSquad().Q, R: bot.GetSquad().R},
-				&coordinate.Coordinate{Q: toQ, R: toR},
-				bot.GetSquad().MatherShip,
-			)
+			path := getPathAI(bot, mp)
 
 			//countPossible := 1
 			for i := 0; i < len(path); i++ {
-				toX, toY := globalGame.GetXYCenterHex(path[i].Q, path[i].R)
-
 				// TODO учитывать наличие игроков при построение маршрута.
 				// ПРИМЕР ДЛЯ ПОНИМАНИЯ: если между точкой 5 и точкой 10 нет прептявий то идти напрямик
 				//fastPath, _ := globalGame.MoveSquad(bot, float64(toX), float64(toY), mp)
@@ -137,7 +128,7 @@ func Transport(bot *player.Player, mp *_map.Map) {
 				//	continue
 				//} else {
 				//	countPossible = 1
-				move(bot.GetFakeWS(), Message{ToX: float64(toX), ToY: float64(toY)})
+				move(bot.GetFakeWS(), Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
 				//}
 
 				for {
@@ -148,7 +139,27 @@ func Transport(bot *player.Player, mp *_map.Map) {
 				}
 			}
 		}
-
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
+	//toX, toY := globalGame.GetXYCenterHex(mp.GetRandomEntryBase().Q, mp.GetRandomEntryBase().R)
+
+	xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 50)
+	toX, toY := rand.Intn(xSize*50), rand.Intn(ySize*50)
+	startX, startY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
+
+	_, path := find_path.FindPath(bot, mp, &coordinate.Coordinate{X: startX, Y: startY},
+		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, 50)
+
+	if len(path) == 0 {
+		xSize, ySize = mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 25)
+		toX, toY = rand.Intn(xSize*25), rand.Intn(ySize*25)
+
+		_, path = find_path.FindPath(bot, mp, &coordinate.Coordinate{X: startX, Y: startY},
+			&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, 25)
+	}
+
+	return path
 }

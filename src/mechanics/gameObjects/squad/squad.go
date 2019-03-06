@@ -21,6 +21,7 @@ type Squad struct {
 	ToY             float64             `json:"to_y"`     /* куда отряд двигается */
 	MapID           int                 `json:"map_id"`
 	BaseID          int                 `json:"base_id"` /* если отряд не у игрока то он храниться на этой базе */
+	ActualPath      *[]PathUnit         `json:"actual_path"`
 	CurrentSpeed    float64             `json:"current_speed"`
 	HighGravity     bool                `json:"high_gravity"`
 	Afterburner     bool                `json:"afterburner"`
@@ -31,6 +32,16 @@ type Squad struct {
 	SoftTransition  bool                `json:"soft_transition"`
 	stopMove        chan bool
 	updateDB        sync.Mutex
+}
+
+type PathUnit struct {
+	X           int `json:"x"`
+	Y           int `json:"y"`
+	Q           int `json:"q"`
+	R           int `json:"r"`
+	Rotate      int `json:"rotate"`
+	Millisecond int `json:"millisecond"`
+	Speed       float64
 }
 
 func (s *Squad) UpdateLock() {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/getlantern/deepcopy"
 	"math"
@@ -14,17 +15,7 @@ const HexagonWidth = 50
 const VerticalOffset = HexagonHeight * 3 / 4
 const HorizontalOffset = HexagonWidth
 
-type PathUnit struct {
-	X           int `json:"x"`
-	Y           int `json:"y"`
-	Q           int `json:"q"`
-	R           int `json:"r"`
-	Rotate      int `json:"rotate"`
-	Millisecond int `json:"millisecond"`
-	Speed       float64
-}
-
-func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit, error) {
+func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]squad.PathUnit, error) {
 	startX := float64(user.GetSquad().GlobalX)
 	startY := float64(user.GetSquad().GlobalY)
 	rotate := user.GetSquad().MatherShip.Rotate
@@ -58,9 +49,9 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]PathUnit,
 }
 
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map,
-	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []PathUnit) {
+	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []squad.PathUnit) {
 
-	path := make([]PathUnit, 0)
+	path := make([]squad.PathUnit, 0)
 
 	fullMax := maxSpeed
 
@@ -159,7 +150,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		path = append(path, PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
+		path = append(path, squad.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
 			Q: forecastQ, R: forecastR, Speed: speed})
 	}
 

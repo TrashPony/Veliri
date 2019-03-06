@@ -24,6 +24,15 @@ type Map struct {
 	Emitters            []*Emitter               `json:"emitters"`
 }
 
+func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "base" {
+			return entry
+		}
+	}
+	return nil
+}
+
 type ObstaclePoint struct {
 	ID     int `json:"id"`
 	X      int `json:"x"`
@@ -70,4 +79,8 @@ func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find 
 func (mp *Map) GetResource(q, r int) *resource.Map {
 	res, _ := mp.Reservoir[q][r]
 	return res
+}
+
+func (mp *Map) SetXYSize(hexWidth, hexHeight, Scale int) (int, int) {
+	return (mp.QSize * hexWidth) / Scale, (mp.RSize * hexHeight) / Scale
 }

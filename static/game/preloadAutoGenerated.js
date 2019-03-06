@@ -8,4 +8,6 @@ function autoPreload() { // файл который заполняет авто�
     game.load.spritesheet('recycler', 'http://' + window.location.host + '/assets/map/animate/recycler.png', 256, 256, 50);
     game.load.image('destroySpaceShip', 'http://' + window.location.host + '/assets/map/objects/destroySpaceShip.png');
     game.load.spritesheet('danger_becon', 'http://' + window.location.host + '/assets/map/animate/danger_becon.png', 512, 512, 2);
+    game.load.image('mountain_1', 'http://' + window.location.host + '/assets/map/objects/mountain_1.png');
+    game.load.image('mountain_2', 'http://' + window.location.host + '/assets/map/objects/mountain_2.png');
 }

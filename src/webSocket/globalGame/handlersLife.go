@@ -58,7 +58,7 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 
 func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) {
 	countTime := 0
-	globalPipe <- Message{Event: "softTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: 3}
+	globalPipe <- Message{Event: "softTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot}
 
 	user.GetSquad().SoftTransition = true
 	defer func() {
@@ -78,7 +78,7 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) 
 			return
 		} else {
 			if dist > 120 {
-				globalPipe <- Message{Event: "removeSoftTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+				globalPipe <- Message{Event: "removeSoftTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 				return
 			}
 		}
