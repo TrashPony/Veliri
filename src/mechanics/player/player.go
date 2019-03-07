@@ -106,7 +106,10 @@ func (client *Player) GetLobbyReady() bool {
 }
 
 func (client *Player) GetSquad() *squad.Squad {
-	return client.squad
+	if client != nil && client.squad != nil {
+		return client.squad
+	}
+	return nil
 }
 
 func (client *Player) SetSquad(squad *squad.Squad) {

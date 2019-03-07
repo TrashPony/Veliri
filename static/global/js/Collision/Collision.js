@@ -1,6 +1,18 @@
 function CreateCollision(graphics, body, angle, squad) {
     graphics.clear();
 
+    if (!squad.rectDebag) squad.rectDebag = game.add.graphics(squad.sprite.x, squad.sprite.y);
+
+    squad.rectDebag.clear();
+    squad.rectDebag.lineStyle(2, 0x00ffF7, 0.6);
+    squad.rectDebag.beginFill(0x00ffF7, 0.1);
+    squad.rectDebag.drawRect(-25, -25, 50, 50);
+    squad.rectDebag.endFill();
+
+    squad.rectDebag.x = squad.sprite.x;
+    squad.rectDebag.y = squad.sprite.y;
+    squad.rectDebag.angle = angle
+
     graphics.beginFill(0x00FF00, 0.5);
     graphics.arc(
         squad.sprite.x,

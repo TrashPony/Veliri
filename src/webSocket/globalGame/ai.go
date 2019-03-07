@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 20
+const RespBots = 1
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -109,7 +109,7 @@ func Transport(bot *player.Player, mp *_map.Map) {
 	//-- транспортник, поиску пути
 	for {
 		if bot.InBaseID > 0 {
-			time.Sleep(10000 * time.Millisecond)
+			time.Sleep(15000 * time.Millisecond)
 			botBase, _ := bases.Bases.Get(bot.InBaseID)
 			outBase(bot, botBase)
 		}
@@ -144,7 +144,7 @@ func Transport(bot *player.Player, mp *_map.Map) {
 }
 
 func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
-	//toX, toY := globalGame.GetXYCenterHex(mp.GetRandomEntryBase().Q, mp.GetRandomEntryBase().R)
+	//toX, toY := globalGame.GetXYCenterHex(15, 15)
 
 	xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 50)
 	toX, toY := rand.Intn(xSize*50), rand.Intn(ySize*50)

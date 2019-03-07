@@ -99,8 +99,9 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 	return true, startCoordinate.Q, startCoordinate.R, true
 }
 
-func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) bool {
+func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) (bool, *player.Player) {
 	bodyMove := moveUser.GetSquad().MatherShip.Body
+	mX, mY := float64(moveUser.GetSquad().GlobalX), float64(moveUser.GetSquad().GlobalY)
 
 	for _, user := range users {
 		if user != nil && user.GetSquad().MapID == mapID &&
@@ -114,7 +115,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 			if dist < bodyMove.SideRadius+bodyUser.SideRadius {
 				// проверяем боковые радиусы
 				if checkCollision(0, 0, 360, bodyMove.SideRadius, x, y, user.GetSquad().GlobalX, user.GetSquad().GlobalY, bodyUser.SideRadius) {
-					return false
+					return false, user
 				}
 			}
 
@@ -136,7 +137,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false
+							return false, user
 						}
 					}
 				}
@@ -167,7 +168,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false
+							return false, user
 						}
 					}
 				}
@@ -176,7 +177,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 			if dist < bodyMove.FrontRadius+bodyUser.SideRadius {
 				// проверяем морду идущего и бока стоящего
 				if checkCollision(rotate, bodyMove.LeftFrontAngle, bodyMove.RightFrontAngle, bodyMove.FrontRadius, x, y, user.GetSquad().GlobalX, user.GetSquad().GlobalY, bodyUser.SideRadius) {
-					return false
+					return false, user
 				}
 			}
 
@@ -205,7 +206,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false
+							return false, user
 						}
 					}
 				}
@@ -228,14 +229,89 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false
+							return false, user
 						}
 					}
 				}
 			}
+
+			uX, uY := float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY)
+			mUserRect := rect{
+				sides: []sideRec{
+					{x1: mX - 25, y1: mY - 25, x2: mX - 25, y2: mY + 25},
+					{x1: mX - 25, y1: mY + 25, x2: mX + 25, y2: mY + 25},
+					{x1: mX + 25, y1: mY + 25, x2: mX + 25, y2: mY - 25},
+					{x1: mX + 25, y1: mY - 25, x2: mX - 25, y2: mY - 25},
+				},
+				centerX: float64(moveUser.GetSquad().GlobalX),
+				centerY: float64(moveUser.GetSquad().GlobalY),
+			}
+
+			userRect := rect{
+				sides: []sideRec{
+					{x1: uX - 25, y1: uY - 25, x2: uX - 25, y2: uY + 25},
+					{x1: uX - 25, y1: uY + 25, x2: uX + 25, y2: uY + 25},
+					{x1: uX + 25, y1: uY + 25, x2: uX + 25, y2: uY - 25},
+					{x1: uX + 25, y1: uY - 25, x2: uX - 25, y2: uY - 25},
+				},
+				centerX: float64(user.GetSquad().GlobalX),
+				centerY: float64(user.GetSquad().GlobalY),
+			}
+
+			if mUserRect.detect(&userRect, float64(moveUser.GetSquad().MatherShip.Rotate), float64(user.GetSquad().MatherShip.Rotate)) {
+				return false, user
+			}
 		}
 	}
-	return true
+	return true, nil
+}
+
+type rect struct {
+	sides            []sideRec
+	centerX, centerY float64
+}
+
+type sideRec struct {
+	x1, y1 float64
+	x2, y2 float64
+}
+
+func (r *rect) detect(r2 *rect, alpha11, alpha22 float64) bool {
+	for _, side1 := range r.sides {
+		for _, side2 := range r2.sides {
+			// поворачиваем квадрат по формуле
+			//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
+			//Y = (x — x0) * sin(alpha) + (y — y0) * cos(alpha) + y0;
+
+			alpha1 := float64(alpha11) * math.Pi / 180
+			alpha2 := float64(alpha22) * math.Pi / 180
+
+			x1a := (side1.x1-r.centerX)*math.Cos(alpha1) - (side1.y1-r.centerY)*math.Sin(alpha1) + r.centerX
+			x2a := (side1.x2-r.centerX)*math.Cos(alpha1) - (side1.y2-r.centerY)*math.Sin(alpha1) + r.centerX
+			y1a := (side1.x1-r.centerX)*math.Sin(alpha1) + (side1.y1-r.centerY)*math.Cos(alpha1) + r.centerY
+			y2a := (side1.x2-r.centerX)*math.Sin(alpha1) + (side1.y2-r.centerY)*math.Cos(alpha1) + r.centerY
+
+			x1b := (side2.x1-r2.centerX)*math.Cos(alpha2) - (side2.y1-r2.centerY)*math.Sin(alpha2) + r2.centerX
+			x2b := (side2.x2-r2.centerX)*math.Cos(alpha2) - (side2.y2-r2.centerY)*math.Sin(alpha2) + r2.centerX
+			y1b := (side2.x1-r2.centerX)*math.Sin(alpha2) + (side2.y1-r2.centerY)*math.Cos(alpha2) + r2.centerY
+			y2b := (side2.x2-r2.centerX)*math.Sin(alpha2) + (side2.y2-r2.centerY)*math.Cos(alpha2) + r2.centerY
+
+			if Intersection(x1a, y1a, x2a, y2a, x1b, y1b, x2b, y2b) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func Intersection(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2 float64) bool {
+	v1 := (bx2-bx1)*(ay1-by1) - (by2-by1)*(ax1-bx1)
+	v2 := (bx2-bx1)*(ay2-by1) - (by2-by1)*(ax2-bx1)
+	v3 := (ax2-ax1)*(by1-ay1) - (ay2-ay1)*(bx1-ax1)
+	v4 := (ax2-ax1)*(by2-ay1) - (ay2-ay1)*(bx2-ax1)
+
+	return (v1*v2 < 0) && (v3*v4 < 0)
 }
 
 func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.Box {
