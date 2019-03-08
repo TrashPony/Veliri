@@ -28,8 +28,6 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 			user.GetSquad().Afterburner = false
 			user.GetSquad().MoveChecker = false
-
-			go MoveUserMS(ws, user)
 			user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 
 			globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID(), idMap: user.GetSquad().MapID}

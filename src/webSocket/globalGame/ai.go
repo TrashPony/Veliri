@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 10
+const RespBots = 5
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -113,7 +113,7 @@ func Transport(bot *player.Player, mp *_map.Map) {
 			outBase(bot, botBase)
 		}
 
-		if bot.GetSquad().ActualPath == nil {
+		if bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 {
 			path := getPathAI(bot, mp)
 
 			//countPossible := 1

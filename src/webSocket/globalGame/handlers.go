@@ -13,7 +13,6 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 	}
 
 	if coor.Handler == "sector" {
-		println("dfd")
 		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR)
 	}
 
@@ -23,23 +22,21 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 }
 
 func changeSector(user *player.Player, mapID, q, r int) {
-
-	if user.GetSquad().MoveChecker {
-		user.GetSquad().MoveChecker = false
-		user.GetSquad().ActualPath = nil
-		user.GetSquad().CurrentSpeed = 0
-	}
-
-	globalPipe <- Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-	DisconnectUser(user)
-
-	user.GetSquad().MapID = mapID
-
-	user.GetSquad().Q = q
-	user.GetSquad().R = r
-
-	user.GetSquad().GlobalX = 0
-	user.GetSquad().GlobalY = 0
+	// TODO
+	//if user.GetSquad().MoveChecker {
+	//	stopMove(user, true)
+	//}
+	//
+	//globalPipe <- Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+	//DisconnectUser(user)
+	//
+	//user.GetSquad().MapID = mapID
+	//
+	//user.GetSquad().Q = q
+	//user.GetSquad().R = r
+	//
+	//user.GetSquad().GlobalX = 0
+	//user.GetSquad().GlobalY = 0
 }
 
 func intoToBase(user *player.Player, baseID int) {

@@ -33,7 +33,7 @@ func openBox(ws *websocket.Conn, msg Message) {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 			if dist < 150 {
-				stopMove(ws, true)
+				stopMove(user, true)
 
 				if mapBox.Protect {
 					if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {

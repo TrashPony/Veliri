@@ -26,7 +26,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		user.GetSquad().Evacuation = true
 
-		stopMove(ws, true)
+		stopMove(user, true)
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		if err != nil {

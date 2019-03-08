@@ -58,7 +58,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 
 	if user != nil && squadCoordinate != nil {
 
-		stopMove(ws, true)
+		stopMove(user, true)
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {

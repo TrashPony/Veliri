@@ -17,13 +17,22 @@ func move(ws *websocket.Conn, msg Message) {
 
 	if user != nil && user.GetSquad() != nil {
 		// обнуляем маршрут что бы игрок больше не двигался
-		stopMove(ws, false)
+		stopMove(user, false)
 
 		mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 		if find && user.InBaseID == 0 && !user.GetSquad().Evacuation {
 
+			for user.GetSquad().MoveChecker {
+				time.Sleep(10 * time.Millisecond) // без этого будет блокировка
+				// Ожидаем пока не завершится текущая клетка хода
+				// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
+				// менятся и когда начнется движение то отряд телепортирует обратно
+			}
+
 			path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 			user.GetSquad().ActualPath = &path
+
+			go MoveUserMS(ws, msg, user, &path)
 
 			if len(path) > 1 {
 				user.GetSquad().ToX = float64(path[len(path)-1].X)
@@ -41,10 +50,8 @@ func move(ws *websocket.Conn, msg Message) {
 	}
 }
 
-func stopMove(ws *websocket.Conn, reserSpeed bool) {
-	user := globalGame.Clients.GetByWs(ws)
+func stopMove(user *player.Player, reserSpeed bool) {
 	if user.GetSquad() != nil && user.GetSquad().MoveChecker {
-		user.GetSquad().MoveChecker = false
 		user.GetSquad().ActualPath = nil // останавливаем прошлое движение
 		if reserSpeed {
 			user.GetSquad().CurrentSpeed = 0
@@ -52,104 +59,96 @@ func stopMove(ws *websocket.Conn, reserSpeed bool) {
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, user *player.Player) {
-	for {
-		user.GetSquad().MoveChecker = false
+func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]squad.PathUnit) {
+	moveRepeat := false
+	user.GetSquad().MoveChecker = true
 
-		for user.GetSquad().ActualPath == nil {
-			// ожидает пока появится актуальный путь
-			time.Sleep(100 * time.Millisecond)
+	defer func() {
+		user.GetSquad().MoveChecker = false
+		if moveRepeat {
+			move(ws, msg)
+		}
+	}()
+
+	for i, pathUnit := range *path {
+		if user.GetSquad().ActualPath == nil || user.GetSquad().ActualPath != path {
+			return
 		}
 
-		// если мы получили путь то сохраняем на него сылку что бы мы могли всегда сравнить его с аутальным
-		currentPath := user.GetSquad().ActualPath
+		newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
+		if user.GetSquad().HighGravity != newGravity {
+			user.GetSquad().HighGravity = newGravity
+			globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+			moveRepeat = true
+			return
+		}
 
-		for i, pathUnit := range *currentPath {
-			user.GetSquad().MoveChecker = true
+		globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
+		if user.GetSquad().Afterburner {
+			// TODO ломание корпуса
+		}
 
-			if (*currentPath)[i].Traversed {
-				continue
-			}
-			(*currentPath)[i].Traversed = true
+		// колизии игрок-игрок // TODO столкновения,  урон
+		noCollision, collisionUser := globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, globalGame.Clients.GetAll())
+		if !noCollision && collisionUser != nil {
+			playerToPlayerCollisionReaction(user, collisionUser)
+			moveRepeat = true
+			return
+		}
 
-			if user.GetSquad().ActualPath == nil || user.GetSquad().ActualPath != currentPath {
-				break
-			}
+		// находим аномалии
+		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
+		anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
+		if err == nil {
+			globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot}
+		}
 
-			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
-			if user.GetSquad().HighGravity != newGravity {
-				user.GetSquad().HighGravity = newGravity
-				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-				go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
-				break
-			}
+		// если на пути встречается ящик то мы его давим и падает скорость
+		mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID, user.GetSquad().MatherShip.Body)
+		if mapBox != nil {
+			globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
+			boxes.Boxes.DestroyBox(mapBox)
+			user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
+			moveRepeat = true
+			return
+		}
 
-			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
-			if user.GetSquad().Afterburner {
-				// TODO ломание корпуса
-			}
+		// если клиент отключился то останавливаем его
+		if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
+			return
+		}
 
-			// колизии игрок-игрок // TODO столкновения,  урон
-			noCollision, collisionUser := globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, globalGame.Clients.GetAll())
-			if !noCollision && collisionUser != nil {
-				playerToPlayerCollisionReaction(user, collisionUser)
-				if !user.Bot {
-					go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
-				}
-				break
-			}
+		coor := globalGame.HandlerDetect(user)
+		if coor != nil && coor.HandlerOpen {
+			HandlerParse(user, coor)
+			return
+		}
 
-			// находим аномалии
-			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
-			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
-			if err == nil {
-				globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot}
-			}
+		// говорим юзеру как расходуется его топливо
+		globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID, Bot: user.Bot}
 
-			// если на пути встречается ящик то мы его давим и падает скорость
-			mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID, user.GetSquad().MatherShip.Body)
-			if mapBox != nil {
-				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
-				boxes.Boxes.DestroyBox(mapBox)
-				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
-				go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
-				break
-			}
+		// оповещаем мир как двигается отряд
+		globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
 
-			// если клиент отключился то останавливаем его
-			if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
-				break
-			}
-
-			coor := globalGame.HandlerDetect(user)
-			if coor != nil && coor.HandlerOpen {
-				HandlerParse(user, coor)
-				break
-			}
-
-			// говорим юзеру как расходуется его топливо
-			globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-				ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID, Bot: user.Bot}
-
-			// оповещаем мир как двигается отряд
-			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
-
+		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
 			time.Sleep(100 * time.Millisecond)
 			user.GetSquad().CurrentSpeed = pathUnit.Speed
+		} else {
+			user.GetSquad().CurrentSpeed = 0
+		}
 
-			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
-			user.GetSquad().GlobalX = int(pathUnit.X)
-			user.GetSquad().GlobalY = int(pathUnit.Y)
+		user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
+		user.GetSquad().GlobalX = int(pathUnit.X)
+		user.GetSquad().GlobalY = int(pathUnit.Y)
 
-			// помечаем что ячейка пройдена
+		if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R)) ||
+			i+1 == len(*path) {
+			user.GetSquad().Q = pathUnit.Q
+			user.GetSquad().R = pathUnit.R
 
-			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R) {
-				user.GetSquad().Q = pathUnit.Q
-				user.GetSquad().R = pathUnit.R
-
-				if !user.Bot {
-					go update.Squad(user.GetSquad(), false)
-				}
+			if !user.Bot {
+				go update.Squad(user.GetSquad(), false)
 			}
 		}
 	}

@@ -169,7 +169,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "StopMove" {
-			stopMove(ws, true)
+			stopMove(globalGame.Clients.GetByWs(ws), true)
 		}
 
 		//if msg.Event == "IntoToBase" {
