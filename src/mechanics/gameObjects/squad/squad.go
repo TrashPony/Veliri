@@ -30,7 +30,6 @@ type Squad struct {
 	MoveChecker     bool                `json:"move_checker"`
 	ForceEvacuation bool                `json:"force_evacuation"`
 	SoftTransition  bool                `json:"soft_transition"`
-	stopMove        chan bool
 	updateDB        sync.Mutex
 }
 
@@ -42,6 +41,7 @@ type PathUnit struct {
 	Rotate      int `json:"rotate"`
 	Millisecond int `json:"millisecond"`
 	Speed       float64
+	Traversed   bool `json:"traversed"`
 }
 
 func (s *Squad) UpdateLock() {
@@ -50,17 +50,4 @@ func (s *Squad) UpdateLock() {
 
 func (s *Squad) UpdateUnlock() {
 	s.updateDB.Unlock()
-}
-
-func (s *Squad) CreateMove() {
-
-	if s.stopMove != nil {
-		close(s.stopMove)
-	}
-
-	s.stopMove = make(chan bool)
-}
-
-func (s *Squad) GetMove() chan bool {
-	return s.stopMove
 }

@@ -1,12 +1,13 @@
 package globalGame
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/squadInventory"
 	"github.com/gorilla/websocket"
 )
 
 func updateThorium(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 
 		// "squadInventory" потому что в глобальной игре нет больше инвентарей
@@ -24,7 +25,7 @@ func updateThorium(ws *websocket.Conn, msg Message) {
 }
 
 func removeThorium(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 
 		squadInventory.RemoveThorium(user, msg.ThoriumSlot, true)

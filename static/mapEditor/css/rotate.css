@@ -8,11 +8,11 @@
     text-shadow: 0 0 2px black;
     padding-top: 10px;
     text-align: left;
-    width: 270px;
+    width: 370px;
 }
 
 #rotateBlock input[type = range] {
-    width: 254px;
+    width: 354px;
 }
 
 #rotateBlock input[type = submit] {

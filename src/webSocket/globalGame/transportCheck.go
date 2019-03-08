@@ -11,7 +11,7 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 	x, y := globalGame.GetXYCenterHex(q, r)
 
 	lock := false
-	for ws, user := range Clients.GetAll() {
+	for ws, user := range globalGame.Clients.GetAll() {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if int(dist) < distCheck && mapID == user.GetSquad().MapID {
 			if !user.GetSquad().ForceEvacuation {

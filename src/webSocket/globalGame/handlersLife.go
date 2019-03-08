@@ -46,7 +46,7 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 }
 
 func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
-	for _, user := range Clients.GetAll() {
+	for _, user := range globalGame.Clients.GetAll() {
 		if mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
@@ -89,7 +89,7 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) 
 func checkHandlerCoordinate(x, y, mapID int) bool {
 	// true занята
 	// false свободна
-	for _, user := range Clients.GetAll() {
+	for _, user := range globalGame.Clients.GetAll() {
 		if mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 75 {

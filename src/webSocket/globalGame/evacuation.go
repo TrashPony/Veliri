@@ -9,7 +9,7 @@ import (
 )
 
 func evacuationSquad(ws *websocket.Conn) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	if user == nil {
 		return

@@ -13,6 +13,7 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 	}
 
 	if coor.Handler == "sector" {
+		println("dfd")
 		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR)
 	}
 
@@ -23,8 +24,9 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 
 func changeSector(user *player.Player, mapID, q, r int) {
 
-	if user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
-		user.GetSquad().GetMove() <- true
+	if user.GetSquad().MoveChecker {
+		user.GetSquad().MoveChecker = false
+		user.GetSquad().ActualPath = nil
 		user.GetSquad().CurrentSpeed = 0
 	}
 

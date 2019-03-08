@@ -147,6 +147,9 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 					forecastX = forecastX + stopX
 					forecastY = forecastY + stopY
 				}
+			} else {
+				// если мы поворачиваемся то наша скорость = 0
+				speed = 0
 			}
 		}
 

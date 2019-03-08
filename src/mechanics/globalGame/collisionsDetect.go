@@ -56,9 +56,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 
 		if dist < body.SideRadius+obstacle.Radius {
 			// проверяем бока машины
-			if checkCollision(0, 0, 360, body.SideRadius, x, y, obstacle.X, obstacle.Y, obstacle.Radius) {
-				return false, startCoordinate.Q, startCoordinate.R, false
-			}
+			return false, startCoordinate.Q, startCoordinate.R, true
 		}
 	}
 
@@ -89,9 +87,7 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 
 			if dist < body.SideRadius+reservoirRadius {
 				// проверяем бока машины
-				if checkCollision(0, 0, 360, body.SideRadius, x, y, reservoirX, reservoirY, reservoirRadius) {
-					return false, startCoordinate.Q, startCoordinate.R, false
-				}
+				return false, startCoordinate.Q, startCoordinate.R, true
 			}
 		}
 	}
@@ -114,9 +110,7 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 
 			if dist < bodyMove.SideRadius+bodyUser.SideRadius {
 				// проверяем боковые радиусы
-				if checkCollision(0, 0, 360, bodyMove.SideRadius, x, y, user.GetSquad().GlobalX, user.GetSquad().GlobalY, bodyUser.SideRadius) {
-					return false, user
-				}
+				return false, user
 			}
 
 			if dist < bodyMove.FrontRadius+bodyUser.FrontRadius {
@@ -235,13 +229,26 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 				}
 			}
 
+			/*
+				    squad.rectDebag.moveTo(-50, -25);
+					squad.rectDebag.lineTo(-50, +25);
+					squad.rectDebag.lineTo(-25, +25);
+					squad.rectDebag.lineTo(+50, +25);
+					squad.rectDebag.lineTo(+50, +25);
+					squad.rectDebag.lineTo(+50, -25);
+					squad.rectDebag.lineTo(+25, -25);
+					squad.rectDebag.lineTo(-50, -25);
+			*/
+
+			height, width := float64(25), float64(40)
+
 			uX, uY := float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY)
 			mUserRect := rect{
 				sides: []sideRec{
-					{x1: mX - 25, y1: mY - 25, x2: mX - 25, y2: mY + 25},
-					{x1: mX - 25, y1: mY + 25, x2: mX + 25, y2: mY + 25},
-					{x1: mX + 25, y1: mY + 25, x2: mX + 25, y2: mY - 25},
-					{x1: mX + 25, y1: mY - 25, x2: mX - 25, y2: mY - 25},
+					{x1: mX - width, y1: mY - height, x2: mX - width, y2: mY + height},
+					{x1: mX - height, y1: mY + height, x2: mX + width, y2: mY + height},
+					{x1: mX + width, y1: mY + height, x2: mX + width, y2: mY - height},
+					{x1: mX + height, y1: mY - height, x2: mX - width, y2: mY - height},
 				},
 				centerX: float64(moveUser.GetSquad().GlobalX),
 				centerY: float64(moveUser.GetSquad().GlobalY),
@@ -249,10 +256,10 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, us
 
 			userRect := rect{
 				sides: []sideRec{
-					{x1: uX - 25, y1: uY - 25, x2: uX - 25, y2: uY + 25},
-					{x1: uX - 25, y1: uY + 25, x2: uX + 25, y2: uY + 25},
-					{x1: uX + 25, y1: uY + 25, x2: uX + 25, y2: uY - 25},
-					{x1: uX + 25, y1: uY - 25, x2: uX - 25, y2: uY - 25},
+					{x1: uX - width, y1: uY - height, x2: uX - width, y2: uY + height},
+					{x1: uX - height, y1: uY + height, x2: uX + width, y2: uY + height},
+					{x1: uX + width, y1: uY + height, x2: uX + width, y2: uY - height},
+					{x1: uX + height, y1: uY - height, x2: uX - width, y2: uY - height},
 				},
 				centerX: float64(user.GetSquad().GlobalX),
 				centerY: float64(user.GetSquad().GlobalY),

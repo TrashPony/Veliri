@@ -9,8 +9,8 @@ import (
 )
 
 func loadGame(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
-
+	user := globalGame.Clients.GetByWs(ws)
+	// TODO при загрузке нового игрока весь мир замерает на некоторые секунды, возможно актуально только для ботов
 	if user != nil {
 
 		mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
@@ -19,16 +19,17 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 			otherUsers := make([]*hostileMS, 0)
 
-			globalGame.GetPlaceCoordinate(user, Clients.GetAll(), mp)
-			for _, otherUser := range Clients.GetAll() {
-				if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID {
+			globalGame.GetPlaceCoordinate(user, globalGame.Clients.GetAll(), mp)
+			for _, otherUser := range globalGame.Clients.GetAll() {
+				if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID && otherUser.InBaseID == 0 {
 					otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 				}
 			}
 
 			user.GetSquad().Afterburner = false
 			user.GetSquad().MoveChecker = false
-			user.GetSquad().CreateMove()
+
+			go MoveUserMS(ws, user)
 			user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 
 			globalPipe <- Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID(), idMap: user.GetSquad().MapID}

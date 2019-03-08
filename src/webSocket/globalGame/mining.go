@@ -12,7 +12,7 @@ import (
 )
 
 func startMining(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 		reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, user.GetSquad().MapID)
 		if reservoir == nil {
@@ -72,7 +72,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 				}
 			default:
 
-				if ws == nil || Clients.GetByWs(ws) == nil {
+				if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
 					// игрок вышел
 					globalPipe <- Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
 						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID}

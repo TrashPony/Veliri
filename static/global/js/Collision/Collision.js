@@ -4,14 +4,23 @@ function CreateCollision(graphics, body, angle, squad) {
     if (!squad.rectDebag) squad.rectDebag = game.add.graphics(squad.sprite.x, squad.sprite.y);
 
     squad.rectDebag.clear();
-    squad.rectDebag.lineStyle(2, 0x00ffF7, 0.6);
-    squad.rectDebag.beginFill(0x00ffF7, 0.1);
-    squad.rectDebag.drawRect(-25, -25, 50, 50);
+    squad.rectDebag.lineStyle(1, 0xFF0000, 0.8);
+
+    let height = 25, width = 40;
+
+    squad.rectDebag.moveTo(-width, -height);
+    squad.rectDebag.lineTo(-width, +height);
+    squad.rectDebag.lineTo(-height, +height);
+    squad.rectDebag.lineTo(+width, +height);
+    squad.rectDebag.lineTo(+width, +height);
+    squad.rectDebag.lineTo(+width, -height);
+    squad.rectDebag.lineTo(+height, -height);
+    squad.rectDebag.lineTo(-width, -height);
     squad.rectDebag.endFill();
 
     squad.rectDebag.x = squad.sprite.x;
     squad.rectDebag.y = squad.sprite.y;
-    squad.rectDebag.angle = angle
+    squad.rectDebag.angle = angle;
 
     graphics.beginFill(0x00FF00, 0.5);
     graphics.arc(

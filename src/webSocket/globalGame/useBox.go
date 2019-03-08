@@ -8,7 +8,7 @@ import (
 )
 
 func placeNewBox(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 		err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 		if err != nil {
@@ -21,7 +21,7 @@ func placeNewBox(ws *websocket.Conn, msg Message) {
 }
 
 func openBox(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	if user != nil {
 		mapBox, mx := boxes.Boxes.Get(msg.BoxID)
@@ -61,7 +61,7 @@ func useBox(ws *websocket.Conn, msg Message) {
 	var err error
 	var mapBox *boxInMap.Box
 
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	if user != nil {
 		if msg.Event == "getItemFromBox" {
@@ -96,7 +96,7 @@ func useBox(ws *websocket.Conn, msg Message) {
 }
 
 func boxToBox(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	if msg.BoxID == msg.ToBoxID {
 		return
@@ -133,7 +133,7 @@ func updateBoxInfo(box *boxInMap.Box) {
 		return
 	}
 
-	for _, user := range Clients.GetAll() {
+	for _, user := range globalGame.Clients.GetAll() {
 		boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
 

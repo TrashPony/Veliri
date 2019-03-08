@@ -7,37 +7,41 @@ import (
 )
 
 type Coordinate struct {
-	ID                  int                             `json:"id"`
-	Type                string                          `json:"type"`
-	TextureFlore        string                          `json:"texture_flore"`
-	TextureOverFlore    string                          `json:"texture_over_flore"`
-	TextureObject       string                          `json:"texture_object"`
-	AnimateSpriteSheets string                          `json:"animate_sprite_sheets"`
-	AnimateLoop         bool                            `json:"animate_loop"`
-	ImpactRadius        int                             `json:"impact_radius"`
-	Impact              *Coordinate                     `json:"impact"`
-	GameID              int                             `json:"game_id"`
-	X                   int                             `json:"x"`
-	Y                   int                             `json:"y"`
-	Z                   int                             `json:"z"`
-	R                   int                             `json:"r"`
-	Q                   int                             `json:"q"`
-	State               int                             `json:"state"`
-	Effects             []*effect.Effect                `json:"effects"`
-	Move                bool                            `json:"move"`
-	View                bool                            `json:"view"`
-	Attack              bool                            `json:"attack"`
-	Level               int                             `json:"level"`
-	Scale               int                             `json:"scale"`
-	Shadow              bool                            `json:"shadow"`
-	UnitOverlap         bool                            `json:"unit_overlap"`
-	ObjRotate           int                             `json:"obj_rotate"`
-	AnimationSpeed      int                             `json:"animation_speed"`
-	XOffset             int                             `json:"x_offset"`
-	YOffset             int                             `json:"y_offset"`
-	DynamicObject       *dynamicMapObject.DynamicObject `json:"dynamic_object"`
-	H, G, F             int
-	Parent              *Coordinate
+	ID                  int              `json:"id"`
+	Type                string           `json:"type"`
+	TextureFlore        string           `json:"texture_flore"`
+	TextureOverFlore    string           `json:"texture_over_flore"`
+	TextureObject       string           `json:"texture_object"`
+	AnimateSpriteSheets string           `json:"animate_sprite_sheets"`
+	AnimateLoop         bool             `json:"animate_loop"`
+	ImpactRadius        int              `json:"impact_radius"`
+	Impact              *Coordinate      `json:"impact"`
+	GameID              int              `json:"game_id"`
+	X                   int              `json:"x"`
+	Y                   int              `json:"y"`
+	Z                   int              `json:"z"`
+	R                   int              `json:"r"`
+	Q                   int              `json:"q"`
+	State               int              `json:"state"`
+	Effects             []*effect.Effect `json:"effects"`
+	Move                bool             `json:"move"`
+	View                bool             `json:"view"`
+	Attack              bool             `json:"attack"`
+	Level               int              `json:"level"`
+	Scale               int              `json:"scale"`
+	Shadow              bool             `json:"shadow"`
+	UnitOverlap         bool             `json:"unit_overlap"`
+	ObjRotate           int              `json:"obj_rotate"`
+	AnimationSpeed      int              `json:"animation_speed"`
+	XOffset             int              `json:"x_offset"`
+	YOffset             int              `json:"y_offset"`
+	XShadowOffset       int              `json:"x_shadow_offset"`
+	YShadowOffset       int              `json:"y_shadow_offset"`
+	ShadowIntensity     int              `json:"shadow_intensity"`
+
+	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
+	H, G, F       int
+	Parent        *Coordinate
 
 	/* если тру то с течением времени или по эвенту игрока эвакуируют с этой клетки без его желания */
 	Transport bool `json:"transport"`

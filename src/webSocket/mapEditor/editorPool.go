@@ -77,6 +77,10 @@ type Message struct {
 
 	Radius int `json:"radius"`
 
+	XShadowOffset   int `json:"x_shadow_offset"`
+	YShadowOffset   int `json:"y_shadow_offset"`
+	ShadowIntensity int `json:"shadow_intensity"`
+
 	CountSprites int    `json:"count_sprites"`
 	XSize        int    `json:"x_size"`
 	YSize        int    `json:"y_size"`
@@ -177,7 +181,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "rotateObject" {
-			mapEditor.Rotate(msg.ID, msg.Q, msg.R, msg.Rotate, msg.Speed, msg.XOffset, msg.YOffset)
+			mapEditor.Rotate(msg.ID, msg.Q, msg.R, msg.Rotate, msg.Speed, msg.XOffset, msg.YOffset, msg.XShadowOffset, msg.YShadowOffset, msg.ShadowIntensity)
 			selectMap(msg, ws)
 		}
 

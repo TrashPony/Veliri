@@ -68,6 +68,46 @@ function ChangeOptionSprite(q, r) {
     let outputYOffset = document.createElement("div");
     outputYOffset.innerHTML = "<span> Смещение по Y: </span> <span id='YOutput'> " + coordinate.y_offset + " </span>";
 
+    if (coordinate.objectSprite.shadow) {
+        let rangeShadowXOffset = createRange("rangeShadowXOffset", -100, 200, 1, coordinate.x_offset);
+        rangeShadowXOffset.oninput = function () {
+            document.getElementById("XShadowOutput").innerHTML = rangeShadowXOffset.value;
+            coordinate.objectSprite.shadow.x = xy.x + game.shadowXOffset + Number(rangeShadowXOffset.value);
+        };
+
+        let outputShadowXOffset = document.createElement("div");
+        outputShadowXOffset.innerHTML = "<span> Смещение Тени по Х: </span> <span id='XShadowOutput'> " + coordinate.x_offset + " </span>";
+
+        let rangeShadowYOffset = createRange("rangeShadowYOffset", -100, 200, 1, coordinate.y_offset);
+        rangeShadowYOffset.oninput = function () {
+            document.getElementById("YShadowOutput").innerHTML = rangeShadowYOffset.value;
+            coordinate.objectSprite.shadow.y = xy.y + game.shadowYOffset + Number(rangeShadowYOffset.value);
+        };
+
+        let outputShadowYOffset = document.createElement("div");
+        outputShadowYOffset.innerHTML = "<span> Смещение Тени по Y: </span> <span id='YShadowOutput'> " + coordinate.y_offset + " </span>";
+
+        let rangeShadowIntensity = createRange("rangeShadowIntensity", 0, 100, 1, coordinate.shadow_intensity);
+        rangeShadowIntensity.oninput = function () {
+            document.getElementById("YShadowIOutput").innerHTML = rangeShadowIntensity.value;
+            coordinate.objectSprite.shadow.alpha = Number(rangeShadowIntensity.value) / 100;
+        };
+
+        let outputShadowIntensity = document.createElement("div");
+        outputShadowIntensity.innerHTML = "<span> Интенсивность тени: </span> <span id='YShadowIOutput'> " + coordinate.shadow_intensity + " </span>";
+
+        rotate.appendChild(rangeShadowYOffset);
+        rotate.appendChild(outputShadowYOffset);
+
+        rotate.appendChild(rangeShadowXOffset);
+        rotate.appendChild(outputShadowXOffset);
+
+        rotate.appendChild(rangeShadowIntensity);
+        rotate.appendChild(outputShadowIntensity);
+
+        rotate.style.height = '350px';
+    }
+
     let apply = document.createElement("input");
     apply.value = "Применить";
     apply.type = "submit";
@@ -77,16 +117,32 @@ function ChangeOptionSprite(q, r) {
             speed = Number(document.getElementById("speedRange").value);
         }
 
-        mapEditor.send(JSON.stringify({
-            event: "rotateObject",
-            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(coordinate.q),
-            r: Number(coordinate.r),
-            rotate: Number(document.getElementById("rotateRange").value),
-            speed: speed,
-            x_offset: Number(document.getElementById("rangeXOffset").value),
-            y_offset: Number(document.getElementById("rangeYOffset").value)
-        }));
+        if (coordinate.objectSprite.shadow) {
+            mapEditor.send(JSON.stringify({
+                event: "rotateObject",
+                id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+                q: Number(coordinate.q),
+                r: Number(coordinate.r),
+                rotate: Number(document.getElementById("rotateRange").value),
+                speed: speed,
+                x_offset: Number(document.getElementById("rangeXOffset").value),
+                y_offset: Number(document.getElementById("rangeYOffset").value),
+                x_shadow_offset: Number(document.getElementById("rangeShadowXOffset").value),
+                y_shadow_offset: Number(document.getElementById("rangeShadowYOffset").value),
+                shadow_intensity: Number(document.getElementById("rangeShadowIntensity").value),
+            }));
+        } else {
+            mapEditor.send(JSON.stringify({
+                event: "rotateObject",
+                id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+                q: Number(coordinate.q),
+                r: Number(coordinate.r),
+                rotate: Number(document.getElementById("rotateRange").value),
+                speed: speed,
+                x_offset: Number(document.getElementById("rangeXOffset").value),
+                y_offset: Number(document.getElementById("rangeYOffset").value)
+            }));
+        }
 
         mapEditor.send(JSON.stringify({
             event: "getAllTypeCoordinate"

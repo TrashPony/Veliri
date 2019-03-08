@@ -1,9 +1,12 @@
 package globalGame
 
-import "github.com/gorilla/websocket"
+import (
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/gorilla/websocket"
+)
 
 func afterburnerToggle(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 
 		if user.GetSquad().Afterburner {

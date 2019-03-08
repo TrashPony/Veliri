@@ -33,6 +33,15 @@ func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {
 	return nil
 }
 
+func (mp *Map) GetRandomEntrySector() *coordinate.Coordinate {
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "sector" {
+			return entry
+		}
+	}
+	return nil
+}
+
 type ObstaclePoint struct {
 	ID     int `json:"id"`
 	X      int `json:"x"`

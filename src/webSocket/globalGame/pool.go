@@ -120,7 +120,7 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
-	usersGlobalWs := Clients.GetAll()
+	usersGlobalWs := globalGame.Clients.GetAll()
 	utils.CheckDoubleLogin(login, &usersGlobalWs)
 
 	newPlayer, ok := players.Users.Get(id)
@@ -129,7 +129,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer = players.Users.Add(id, login)
 	}
 
-	Clients.addNewClient(ws, newPlayer) // Регистрируем нового Клиента
+	globalGame.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
 
 	print("WS global Сессия: ") // просто смотрим новое подключение
 	print(ws)
@@ -144,7 +144,7 @@ func Reader(ws *websocket.Conn) {
 
 	for {
 
-		if Clients.GetByWs(ws) != nil && Clients.GetByWs(ws).GetSquad().Evacuation {
+		if globalGame.Clients.GetByWs(ws) != nil && globalGame.Clients.GetByWs(ws).GetSquad().Evacuation {
 			continue
 		}
 
@@ -152,9 +152,9 @@ func Reader(ws *websocket.Conn) {
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
-			DisconnectUser(Clients.GetByWs(ws))
+			DisconnectUser(globalGame.Clients.GetByWs(ws))
 
-			usersGlobalWs := Clients.GetAll()
+			usersGlobalWs := globalGame.Clients.GetAll()
 			utils.DelConn(ws, &usersGlobalWs, err)
 
 			break
@@ -165,7 +165,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "MoveTo" {
-			move(ws, msg)
+			go move(ws, msg)
 		}
 
 		if msg.Event == "StopMove" {
@@ -242,9 +242,8 @@ func MoveSender() {
 	for {
 		resp := <-globalPipe
 
-		usersGlobalWs := Clients.GetAll()
+		usersGlobalWs := globalGame.Clients.GetAll()
 
-		Clients.mx.Lock()
 		for ws, client := range usersGlobalWs {
 			if client.Bot || resp.Bot {
 				continue
@@ -274,7 +273,5 @@ func MoveSender() {
 				delete(usersGlobalWs, ws)
 			}
 		}
-
-		Clients.mx.Unlock()
 	}
 }

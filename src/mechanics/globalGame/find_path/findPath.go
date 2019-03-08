@@ -29,7 +29,7 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
 
-	if end.X > xSize || end.Y > ySize {
+	if end.X >= xSize || end.Y >= ySize || end.X < 0 || end.Y < 0 || start.X >= xSize || start.Y >= ySize || start.X < 0 || start.Y < 0 {
 		return errors.New("no path"), nil
 	}
 

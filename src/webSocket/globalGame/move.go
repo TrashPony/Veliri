@@ -13,14 +13,14 @@ import (
 )
 
 func move(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	if user != nil && user.GetSquad() != nil {
+		// обнуляем маршрут что бы игрок больше не двигался
+		stopMove(ws, false)
+
 		mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
-
 		if find && user.InBaseID == 0 && !user.GetSquad().Evacuation {
-
-			stopMove(ws, false)
 
 			path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 			user.GetSquad().ActualPath = &path
@@ -36,58 +36,52 @@ func move(ws *websocket.Conn, msg Message) {
 			if err != nil && len(path) == 0 {
 				globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
 			}
-
 			globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-			if err != nil {
-				DisconnectUser(user)
-			}
-
-			go MoveUserMS(ws, msg, user, &path)
-			user.GetSquad().MoveChecker = true
 		}
 	}
 }
 
 func stopMove(ws *websocket.Conn, reserSpeed bool) {
-	user := Clients.GetByWs(ws)
-	if user.GetSquad() != nil && user.GetSquad().MoveChecker && user.GetSquad().GetMove() != nil {
-		user.GetSquad().GetMove() <- true // останавливаем прошлое движение
+	user := globalGame.Clients.GetByWs(ws)
+	if user.GetSquad() != nil && user.GetSquad().MoveChecker {
+		user.GetSquad().MoveChecker = false
+		user.GetSquad().ActualPath = nil // останавливаем прошлое движение
 		if reserSpeed {
 			user.GetSquad().CurrentSpeed = 0
 		}
 	}
 }
 
-func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]squad.PathUnit) {
-
-	moveRepeat := false
-
-	defer func() {
+func MoveUserMS(ws *websocket.Conn, user *player.Player) {
+	for {
 		user.GetSquad().MoveChecker = false
-		stopMove(ws, false)
-		if moveRepeat {
-			move(ws, msg)
+
+		for user.GetSquad().ActualPath == nil {
+			// ожидает пока появится актуальный путь
+			time.Sleep(100 * time.Millisecond)
 		}
-	}()
 
-	for i, pathUnit := range *path {
-		select {
-		case exitNow := <-user.GetSquad().GetMove():
-			if exitNow {
-				return
+		// если мы получили путь то сохраняем на него сылку что бы мы могли всегда сравнить его с аутальным
+		currentPath := user.GetSquad().ActualPath
+
+		for i, pathUnit := range *currentPath {
+			user.GetSquad().MoveChecker = true
+
+			if (*currentPath)[i].Traversed {
+				continue
 			}
-		default:
+			(*currentPath)[i].Traversed = true
 
-			if user.GetSquad().ActualPath != path {
-				return
+			if user.GetSquad().ActualPath == nil || user.GetSquad().ActualPath != currentPath {
+				break
 			}
 
 			newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 			if user.GetSquad().HighGravity != newGravity {
 				user.GetSquad().HighGravity = newGravity
 				globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-				moveRepeat = true
-				return
+				go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
+				break
 			}
 
 			globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity)
@@ -96,11 +90,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 			}
 
 			// колизии игрок-игрок // TODO столкновения,  урон
-			noCollision, collisionUser := globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, Clients.GetAll())
+			noCollision, collisionUser := globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, globalGame.Clients.GetAll())
 			if !noCollision && collisionUser != nil {
 				playerToPlayerCollisionReaction(user, collisionUser)
-				moveRepeat = true
-				return
+				if !user.Bot {
+					go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
+				}
+				break
 			}
 
 			// находим аномалии
@@ -116,19 +112,19 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 				globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
 				boxes.Boxes.DestroyBox(mapBox)
 				user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
-				moveRepeat = true
-				return
+				go move(ws, Message{ToX: user.GetSquad().ToX, ToY: user.GetSquad().ToY})
+				break
 			}
 
 			// если клиент отключился то останавливаем его
-			if ws == nil || Clients.GetByWs(ws) == nil {
-				return
+			if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
+				break
 			}
 
 			coor := globalGame.HandlerDetect(user)
 			if coor != nil && coor.HandlerOpen {
 				HandlerParse(user, coor)
-				return
+				break
 			}
 
 			// говорим юзеру как расходуется его топливо
@@ -138,19 +134,16 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 			// оповещаем мир как двигается отряд
 			globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
 
-			if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
-				time.Sleep(100 * time.Millisecond)
-				user.GetSquad().CurrentSpeed = pathUnit.Speed
-			} else {
-				user.GetSquad().CurrentSpeed = 0
-			}
+			time.Sleep(100 * time.Millisecond)
+			user.GetSquad().CurrentSpeed = pathUnit.Speed
 
 			user.GetSquad().MatherShip.Rotate = pathUnit.Rotate
 			user.GetSquad().GlobalX = int(pathUnit.X)
 			user.GetSquad().GlobalY = int(pathUnit.Y)
 
-			if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R)) ||
-				i+1 == len(*path) {
+			// помечаем что ячейка пройдена
+
+			if (pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != user.GetSquad().Q && pathUnit.R != user.GetSquad().R) {
 				user.GetSquad().Q = pathUnit.Q
 				user.GetSquad().R = pathUnit.R
 
@@ -167,36 +160,35 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 	mass1 := 1
 	mass2 := 1
 
-	startDist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, toUser.GetSquad().GlobalX, toUser.GetSquad().GlobalY)
+	if user.GetSquad().CurrentSpeed < 2 {
+		user.GetSquad().CurrentSpeed = 2
+	}
 
 	// задаем переменные скорости
 	// расчет для первой машины
-	radRotate := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
-	xVel1 := float64(user.GetSquad().CurrentSpeed) * math.Cos(radRotate) // идем по вектору движения корпуса
-	yVel1 := float64(user.GetSquad().CurrentSpeed) * math.Sin(radRotate)
+	radRotate1 := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
+	xVel1 := float64(user.GetSquad().CurrentSpeed) * math.Cos(radRotate1) // идем по вектору движения корпуса
+	yVel1 := float64(user.GetSquad().CurrentSpeed) * math.Sin(radRotate1)
 
 	// расчет для второй машины
-	radRotate = float64(toUser.GetSquad().MatherShip.Rotate) * math.Pi / 180
-	xVel2 := float64(toUser.GetSquad().CurrentSpeed) * math.Cos(radRotate) // идем по вектору движения корпуса
-	yVel2 := float64(toUser.GetSquad().CurrentSpeed) * math.Sin(radRotate)
-
-	run := user.GetSquad().GlobalX - toUser.GetSquad().GlobalX
-	rise := user.GetSquad().GlobalY - toUser.GetSquad().GlobalY
+	radRotate2 := float64(toUser.GetSquad().MatherShip.Rotate) * math.Pi / 180
+	xVel2 := float64(toUser.GetSquad().CurrentSpeed) * math.Cos(radRotate2) // идем по вектору движения корпуса
+	yVel2 := float64(toUser.GetSquad().CurrentSpeed) * math.Sin(radRotate2)
 
 	//Угол между осью х и линией действия
-	Alfa := math.Atan2(float64(rise), float64(run))
-	cosAlfa := math.Cos(Alfa)
-	sinAlfa := math.Sin(Alfa)
+	needRad := math.Atan2(float64(toUser.GetSquad().GlobalY-user.GetSquad().GlobalY), float64(toUser.GetSquad().GlobalX-user.GetSquad().GlobalX))
+	cosAlfa := math.Cos(needRad)
+	sinAlfa := math.Sin(needRad)
 
 	// находим скорости вдоль линии действия
-	xVel1prime := float64(xVel1)*cosAlfa + float64(yVel1)*sinAlfa
-	xVel2prime := float64(xVel2)*cosAlfa + float64(yVel2)*sinAlfa
+	xVel1prime := xVel1*cosAlfa + yVel1*sinAlfa
+	xVel2prime := xVel2*cosAlfa + yVel2*sinAlfa
 
 	// находим скорости перпендикулярные линии действия
-	yVel1prime := float64(yVel1)*cosAlfa - float64(xVel1)*sinAlfa
-	yVel2prime := (yVel2)*cosAlfa - float64(xVel2)*sinAlfa
+	yVel1prime := yVel1*cosAlfa - xVel1*sinAlfa
+	yVel2prime := yVel2*cosAlfa - xVel2*sinAlfa
 
-	// применяем законы сохранения
+	//// применяем законы сохранения
 	P := float64(mass1)*xVel1prime + float64(mass2)*xVel2prime
 	V := xVel1prime - xVel2prime
 	v2f := (P + float64(mass1)*V) / (float64(mass1) + float64(mass2))
@@ -206,40 +198,34 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 
 	// Проецируем обратно на оси Х и У.
 	xVel1 = xVel1prime*cosAlfa - yVel1prime*sinAlfa
-	xVel2 = xVel2prime*cosAlfa - yVel2prime*sinAlfa
 	yVel1 = yVel1prime*cosAlfa + xVel1prime*sinAlfa
+
+	xVel2 = xVel2prime*cosAlfa - yVel2prime*sinAlfa
 	yVel2 = yVel2prime*cosAlfa + xVel2prime*sinAlfa
 
 	// TODO проверка нового места на колизию (уперся в стенку, уперся в другово игрока)
-	// TODO если игрок заденет другово игрока при повороте жопой с отрицательной скоростью то происходит обратное слипание
+	// TODO если нет разгона то надо отьехать назад
+	speed1 := math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))
+	speed2 := math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))
 
-	endDist := globalGame.GetBetweenDist(user.GetSquad().GlobalX+int(xVel1), user.GetSquad().GlobalY+int(yVel1),
-		toUser.GetSquad().GlobalX+int(xVel2), toUser.GetSquad().GlobalY+int(xVel2))
-
-	//println(int(startDist), int(endDist))
-	//println(startDist > endDist)
-
-	if startDist > endDist {
-		user.GetSquad().GlobalX -= int(xVel1)
-		user.GetSquad().GlobalY -= int(yVel1)
-		toUser.GetSquad().GlobalX -= int(xVel2)
-		toUser.GetSquad().GlobalY -= int(yVel2)
+	if user.GetSquad().CurrentSpeed > float64(user.GetSquad().MatherShip.Speed)*1.2 {
+		user.GetSquad().CurrentSpeed = speed1
+		user.GetSquad().GlobalX += int(float64(-speed1) * math.Cos(needRad))
+		user.GetSquad().GlobalY += int(float64(-speed1) * math.Sin(needRad))
 	} else {
-		user.GetSquad().GlobalX += int(xVel1)
-		user.GetSquad().GlobalY += int(yVel1)
-		toUser.GetSquad().GlobalX += int(xVel2)
-		toUser.GetSquad().GlobalY += int(yVel2)
+		// если скорость пинимальна то мы тащим а не оталкиваемся
+		// todo всеравно остаются рывки
 	}
 
-	//меняем скорость у того кто врезался на минимальную
-	user.GetSquad().CurrentSpeed = float64(user.GetSquad().MatherShip.Body.Speed)
+	toUser.GetSquad().GlobalX += int(float64(speed2) * math.Cos(needRad))
+	toUser.GetSquad().GlobalY += int(float64(speed2) * math.Sin(needRad))
 
 	userPath := squad.PathUnit{
 		X:           user.GetSquad().GlobalX,
 		Y:           user.GetSquad().GlobalY,
 		Rotate:      user.GetSquad().MatherShip.Rotate,
 		Millisecond: 200,
-		Speed:       3,
+		Speed:       user.GetSquad().CurrentSpeed,
 	}
 
 	toUserPath := squad.PathUnit{
@@ -247,10 +233,10 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 		Y:           toUser.GetSquad().GlobalY,
 		Rotate:      toUser.GetSquad().MatherShip.Rotate,
 		Millisecond: 200,
-		Speed:       3,
+		Speed:       speed2,
 	}
 
 	globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: userPath, idMap: user.GetSquad().MapID}
 	globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(toUser), PathUnit: toUserPath, idMap: user.GetSquad().MapID}
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(200 * time.Millisecond)
 }

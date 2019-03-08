@@ -58,19 +58,8 @@ function preload() {
     game.load.image('desert_2', 'http://' + window.location.host + '/assets/map/terrain/desert_2.png');
 
     // Map Objects
-    game.load.image('terrain_1', 'http://' + window.location.host + '/assets/map/objects/terrain_1.png');
-    game.load.image('terrain_2', 'http://' + window.location.host + '/assets/map/objects/terrain_2.png');
-    game.load.image('terrain_3', 'http://' + window.location.host + '/assets/map/objects/terrain_3.png');
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/objects/crater.png');
     game.load.image('crater_2', 'http://' + window.location.host + '/assets/map/objects/crater_2.png');
-    game.load.image('base', 'http://' + window.location.host + '/assets/map/objects/base.png');
-
-    game.load.image('sand_stone_04', 'http://' + window.location.host + '/assets/map/objects/sand_stone_04.png');
-    game.load.image('sand_stone_05', 'http://' + window.location.host + '/assets/map/objects/sand_stone_05.png');
-    game.load.image('sand_stone_06', 'http://' + window.location.host + '/assets/map/objects/sand_stone_06.png');
-    game.load.image('sand_stone_07', 'http://' + window.location.host + '/assets/map/objects/sand_stone_07.png');
-    game.load.image('sand_stone_08', 'http://' + window.location.host + '/assets/map/objects/sand_stone_08.png');
-
     game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/objects/fallen_01.png');
     game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
@@ -140,6 +129,30 @@ function preload() {
     game.load.image('grass_3', 'http://' + window.location.host + '/assets/terrainTextures/grass_3.jpg');
     game.load.image('soil', 'http://' + window.location.host + '/assets/terrainTextures/soil.jpg');
     game.load.image('soil_2', 'http://' + window.location.host + '/assets/terrainTextures/soil_2.jpg');
+
+    // Mountains
+    game.load.image('mountain_1', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_1.png');
+    game.load.image('mountain_1_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_1_2.png');
+    game.load.image('mountain_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_2.png');
+    game.load.image('mountain_2_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_2_2.png');
+    game.load.image('mountain_3', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_3.png');
+    game.load.image('mountain_3_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_3_2.png');
+    game.load.image('mountain_4', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_4.png');
+    game.load.image('mountain_4_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_4_2.png');
+    game.load.image('mountain_5', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_5.png');
+    game.load.image('mountain_5_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_5_2.png');
+    game.load.image('mountain_6', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_6.png');
+    game.load.image('mountain_6_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_6_2.png');
+    game.load.image('mountain_7', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_7.png');
+    game.load.image('mountain_7_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_7_2.png');
+    game.load.image('mountain_8', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_8.png');
+
+    // Plants
+    game.load.image('plant_1', 'http://' + window.location.host + '/assets/map/objects/plants/plant_1.png');
+    game.load.image('plant_2', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2.png');
+    game.load.image('plant_3', 'http://' + window.location.host + '/assets/map/objects/plants/plant_3.png');
+    game.load.image('plant_4', 'http://' + window.location.host + '/assets/map/objects/plants/plant_4.png');
+    game.load.image('plant_5', 'http://' + window.location.host + '/assets/map/objects/plants/plant_5.png');
 
     //Clouds
     game.load.image('cloud0', 'http://' + window.location.host + '/assets/map/clouds/cloud13.png');

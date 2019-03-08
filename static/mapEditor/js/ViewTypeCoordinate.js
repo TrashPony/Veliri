@@ -14,6 +14,16 @@ function ViewPatternCoordinate(typeCoordinates) {
 
             typeBlock.style.background = "url(/assets/map/animate/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / contain no-repeat," +
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+        } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "mountain") {
+
+            typeBlock.style.background = "url(/assets/map/objects/mountains/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
+                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+
+        } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "plant"){
+
+            typeBlock.style.background = "url(/assets/map/objects/plants/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
+                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+
         } else {
 
             typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +

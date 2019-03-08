@@ -12,7 +12,7 @@ import (
 )
 
 func selectDigger(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
 
@@ -51,7 +51,7 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 }
 
 func useDigger(ws *websocket.Conn, msg Message) {
-	user := Clients.GetByWs(ws)
+	user := globalGame.Clients.GetByWs(ws)
 
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
@@ -150,7 +150,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
 							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID}
 
-						for _, otherUser := range Clients.GetAll() {
+						for _, otherUser := range globalGame.Clients.GetAll() {
 							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
 							if err == nil {
