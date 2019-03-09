@@ -1,4 +1,3 @@
-
 function CreateUser(squad) {
     let x = squad.global_x;
     let y = squad.global_y;
@@ -20,15 +19,18 @@ function CreateUser(squad) {
 function CreateOtherUsers(otherUsers) {
     if (!game.otherUsers) game.otherUsers = [];
     for (let i = 0; i < otherUsers.length; i++) { // создаем новых
+        console.log("4")
         CreateOtherUser(otherUsers[i])
     }
 
     for (let i = 0; i < game.otherUsers.length; i++) { // докидываем тех кто долетел до загрузки и не смог создатся т.к. небыло группы
+        console.log("3")
         CreateOtherUser(game.otherUsers[i])
     }
 }
 
 function CreateOtherUser(otherUser) {
+    console.log(otherUser);
     let x = otherUser.x;
     let y = otherUser.y;
 

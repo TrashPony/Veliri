@@ -34,21 +34,23 @@ func loadGame(ws *websocket.Conn, msg Message) {
 				Credits:    user.GetCredits(),
 				Experience: user.GetExperiencePoint(),
 				idMap:      user.GetSquad().MapID,
+				Bot:        user.Bot,
 			})
 
 			// находим аномалии
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 			if err == nil {
-				go sendMessage(Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID})
+				go sendMessage(Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot})
 			}
 		} else {
-			go sendMessage(Message{Event: "Error", Error: "no allow", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go sendMessage(Message{Event: "Error", Error: "no allow", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
 		}
 	}
 }
 
 func getOtherSquads(user *player.Player, mp *_map.Map) []*hostileMS {
+	// TODO источник проблем
 	otherUsers := make([]*hostileMS, 0)
 
 	users, rLock := globalGame.Clients.GetAll()
@@ -57,6 +59,7 @@ func getOtherSquads(user *player.Player, mp *_map.Map) []*hostileMS {
 	globalGame.GetPlaceCoordinate(user, users, mp)
 	for _, otherUser := range users {
 		if user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID && otherUser.InBaseID == 0 {
+
 			otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
 		}
 	}

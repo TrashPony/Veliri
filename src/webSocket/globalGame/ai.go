@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 10
+const RespBots = 1
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -80,7 +80,7 @@ func respBot(base *base.Base, mp *_map.Map) {
 	outBase(&newBot, base)
 
 	if newBot.Behavior == 1 || newBot.Behavior == 0 {
-		go Transport(&newBot, mp)
+		go Transport(&newBot)
 	}
 }
 
@@ -104,7 +104,7 @@ func outBase(bot *player.Player, base *base.Base) {
 	// todo после выхода из базы сваливать по прямой быстро а не стоять на токе и распа и строить путь
 }
 
-func Transport(bot *player.Player, mp *_map.Map) {
+func Transport(bot *player.Player) {
 	//-- транспортник, поиску пути
 	for {
 		if bot.InBaseID > 0 {
@@ -114,13 +114,18 @@ func Transport(bot *player.Player, mp *_map.Map) {
 		}
 
 		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 {
+			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)
 
 			//countPossible := 1
+			exit := false
 			for i := 0; path != nil && i < len(path); i++ {
+				if exit {
+					break
+				}
 				// TODO учитывать наличие игроков при построение маршрута.
-				// ПРИМЕР ДЛЯ ПОНИМАНИЯ: если между точкой 5 и точкой 10 нет прептявий то идти напрямик
-				//fastPath, _ := globalGame.MoveSquad(bot, float64(toX), float64(toY), mp)
+				// ПРИМЕР ДЛЯ ПОНИМАНИЯ: если между точкой 5 и точкой 10 нет прептявий то идти напрямик сохраняя скорость
+				//fastPath, _ := globalGame.MoveSquad(bot, float64(path[i].X), float64(path[i].Y), mp)
 				//
 				//if len(fastPath) > 10*countPossible && i < len(path)-1 {
 				//	countPossible++
@@ -128,14 +133,20 @@ func Transport(bot *player.Player, mp *_map.Map) {
 				//} else {
 				//	countPossible = 1
 				go move(bot.GetFakeWS(), Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
-				//}
-
 				for {
 					time.Sleep(100 * time.Millisecond)
+
+					if mp.Id != bot.GetSquad().MapID {
+						//это означает что сектор сменился
+						exit = true
+						bot.GetSquad().ActualPath = nil
+					}
+
 					if !bot.GetSquad().MoveChecker {
 						break
 					}
 				}
+				//}
 			}
 		}
 		time.Sleep(100 * time.Millisecond)
@@ -145,8 +156,8 @@ func Transport(bot *player.Player, mp *_map.Map) {
 func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
 	// сектор
-	//toSector := mp.GetRandomEntrySector()
-	//toX, toY := globalGame.GetXYCenterHex(toSector.Q, toSector.R)
+	toSector := mp.GetRandomEntrySector()
+	toX, toY := globalGame.GetXYCenterHex(toSector.Q, toSector.R)
 
 	// база
 	//toBase := mp.GetRandomEntryBase()
@@ -154,9 +165,9 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
 	// todo игрок
 
-	//рандом
-	xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 1)
-	toX, toY := rand.Intn(xSize), rand.Intn(ySize)
+	////рандом
+	//xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 1)
+	//toX, toY := rand.Intn(xSize), rand.Intn(ySize)
 
 	println("я иду в х:", toX, " y:", toY)
 

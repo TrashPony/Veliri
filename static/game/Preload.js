@@ -150,6 +150,11 @@ function preload() {
     // Plants
     game.load.image('plant_1', 'http://' + window.location.host + '/assets/map/objects/plants/plant_1.png');
     game.load.image('plant_2', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2.png');
+    game.load.image('plant_2_2', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2_2.png');
+    game.load.image('plant_2_3', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2_3.png');
+    game.load.image('plant_2_4', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2_4.png');
+    game.load.image('plant_2_5', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2_5.png');
+    game.load.image('plant_2_6', 'http://' + window.location.host + '/assets/map/objects/plants/plant_2_6.png');
     game.load.image('plant_3', 'http://' + window.location.host + '/assets/map/objects/plants/plant_3.png');
     game.load.image('plant_3_2', 'http://' + window.location.host + '/assets/map/objects/plants/plant_3_2.png');
     game.load.image('plant_3_3', 'http://' + window.location.host + '/assets/map/objects/plants/plant_3_3.png');

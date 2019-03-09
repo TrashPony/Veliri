@@ -4,7 +4,7 @@ function UseDigger(jsonData) {
         sprite.visible = false;
     });
 
-    if (jsonData.other_user.squad_id === game.squad.id) {
+    if (Number(jsonData.other_user.squad_id) === game.squad.id) {
 
         if (!game.squad.equipDrons) {
             game.squad.equipDrons = [];

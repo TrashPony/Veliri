@@ -1,5 +1,5 @@
 function DisconnectUser(jsonData) {
-
+    console.log(jsonData)
     if (!game.otherUsers) return;
 
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {

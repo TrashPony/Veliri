@@ -24,6 +24,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ConnectNewUser") {
+        console.log("2", jsonData)
         CreateOtherUser(jsonData.other_user);
     }
 

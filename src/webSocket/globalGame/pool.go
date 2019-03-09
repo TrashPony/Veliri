@@ -152,7 +152,7 @@ func Reader(ws *websocket.Conn) {
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
-			go DisconnectUser(globalGame.Clients.GetByWs(ws), ws)
+			go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
 			return
 		}
 
@@ -236,7 +236,6 @@ func Reader(ws *websocket.Conn) {
 
 func MoveSender() {
 	for {
-		// TODO тут происходит деадлок, если при большом трафике постоянно жмакать ф5
 		select {
 		case resp := <-globalPipe:
 
@@ -265,7 +264,7 @@ func MoveSender() {
 				}
 
 				if err != nil {
-					go DisconnectUser(globalGame.Clients.GetByWs(ws), ws)
+					go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
 					log.Printf("error: %v", err)
 					//panic(err)
 				}

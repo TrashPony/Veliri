@@ -31,15 +31,18 @@ function MoveOther(jsonData) {
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
         if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
 
-            if (!game.otherUsers[i].sprite) CreateOtherUser(game.otherUsers[i]);
-
-            game.add.tween(game.otherUsers[i].sprite).to({
-                    x: jsonData.path_unit.x,
-                    y: jsonData.path_unit.y
-                }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
-            );
-            SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
-            game.otherUsers[i].rotate = jsonData.path_unit.rotate;
+            if (!game.otherUsers[i].sprite) {
+                console.log("1")
+                CreateOtherUser(game.otherUsers[i]);
+            }  else  {
+                game.add.tween(game.otherUsers[i].sprite).to({
+                        x: jsonData.path_unit.x,
+                        y: jsonData.path_unit.y
+                    }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
+                );
+                SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
+                game.otherUsers[i].rotate = jsonData.path_unit.rotate;
+            }
         }
     }
 }

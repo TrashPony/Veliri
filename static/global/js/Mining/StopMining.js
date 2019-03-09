@@ -1,5 +1,5 @@
 function StopMining(jsonData) {
-    if (game.squad && jsonData.other_user.squad_id === game.squad.id) {
+    if (game.squad && Number(jsonData.other_user.squad_id) === game.squad.id) {
         for (let i in game.squad.miningLaser) {
             if (game.squad.miningLaser[i] && game.squad.miningLaser[i].id === "miningEquip" + jsonData.type_slot + "" + jsonData.slot) {
                 game.squad.miningLaser[i].out.destroy();

@@ -27,7 +27,7 @@ function update() {
 
 
         /* DEBAG COLLISION */
-        if (game.squad.colision) {
+        if (game.squad && game.squad.colision) {
             CreateCollision(game.squad.colision, game.squad.mather_ship.body, game.squad.mather_ship.rotate, game.squad);
             for (let i = 0; i < game.boxes.length; i++) {
                 game.squad.colision.beginFill(0xFF0000, 0.5);

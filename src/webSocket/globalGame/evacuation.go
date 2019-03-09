@@ -2,6 +2,7 @@ package globalGame
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
@@ -82,9 +83,10 @@ func evacuationSquad(ws *websocket.Conn) {
 		if !user.Bot {
 			go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
 			go update.Squad(user.GetSquad(), true)
+			go bases.UserIntoBase(user.GetID(), baseID)
 		}
 
-		go DisconnectUser(user, ws)
+		go DisconnectUser(user, ws, true)
 
 		user.GetSquad().ForceEvacuation = false
 		user.GetSquad().Evacuation = false

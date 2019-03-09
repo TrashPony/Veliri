@@ -12,7 +12,7 @@ function AnimateMiningLaser() {
         miningLaser.in.lineTo(miningLaser.xy.x, miningLaser.xy.y);
     }
 
-    if (game.squad.miningLaser && game.squad.miningLaser.length > 0) {
+    if (game.squad && game.squad.miningLaser && game.squad.miningLaser.length > 0) {
         for (let i in game.squad.miningLaser) {
             if (game.squad.miningLaser[i]) {
                 animateLaser(game.squad, game.squad.miningLaser[i])
@@ -30,7 +30,7 @@ function AnimateMiningLaser() {
         }
     }
 
-    if (game.squad.selectMiningLine) {
+    if (game.squad && game.squad.selectMiningLine) {
         game.squad.selectMiningLine.graphics.clear();
         game.squad.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
         game.squad.selectMiningLine.graphics.drawCircle(game.squad.sprite.x, game.squad.sprite.y, game.squad.selectMiningLine.radius);

@@ -28,7 +28,7 @@ function StartMining(jsonData) {
         laserIn.destroy();
     }, jsonData.seconds * 1000 - 3000);
 
-    if (jsonData.other_user.squad_id === game.squad.id) {
+    if (Number(jsonData.other_user.squad_id) === game.squad.id) {
 
         if (!game.squad.miningLaser) {
             game.squad.miningLaser = [];

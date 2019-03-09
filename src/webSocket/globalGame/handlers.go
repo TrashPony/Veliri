@@ -23,21 +23,21 @@ func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coor
 }
 
 func changeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
-	// TODO
-	//if user.GetSquad().MoveChecker {
-	//	stopMove(user, true)
-	//}
-	//
-	//globalPipe <- Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-	//DisconnectUser(user)
-	//
-	//user.GetSquad().MapID = mapID
-	//
-	//user.GetSquad().Q = q
-	//user.GetSquad().R = r
-	//
-	//user.GetSquad().GlobalX = 0
-	//user.GetSquad().GlobalY = 0
+	stopMove(user, true)
+
+	go sendMessage(Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+	DisconnectUser(user, ws, true) // если только сообщение то можно не горутиной
+
+	user.GetSquad().MapID = mapID
+	user.GetSquad().Q = q
+	user.GetSquad().R = r
+
+	user.GetSquad().GlobalX = 0
+	user.GetSquad().GlobalY = 0
+
+	if user.Bot {
+		loadGame(ws, Message{Event: "InitGame"})
+	}
 }
 
 func intoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
@@ -46,7 +46,7 @@ func intoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
 	}
 
 	go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
-	go DisconnectUser(user, ws)
+	go DisconnectUser(user, ws, true)
 
 	user.InBaseID = baseID
 

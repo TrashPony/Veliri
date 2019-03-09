@@ -1,5 +1,5 @@
 function AnimateDigger() {
-    if (game.squad.equipDrons && game.squad.equipDrons.length > 0) {
+    if (game.squad && game.squad.equipDrons && game.squad.equipDrons.length > 0) {
         for (let i in game.squad.equipDrons) {
             if (game.squad.equipDrons[i] && game.squad.equipDrons[i].drone.alive) {
                 FlyDrone(game.squad.equipDrons[i]);

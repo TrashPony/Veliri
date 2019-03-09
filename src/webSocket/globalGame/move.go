@@ -50,10 +50,10 @@ func move(ws *websocket.Conn, msg Message) {
 	}
 }
 
-func stopMove(user *player.Player, reserSpeed bool) {
+func stopMove(user *player.Player, resetSpeed bool) {
 	if user.GetSquad() != nil {
 		user.GetSquad().ActualPath = nil // останавливаем прошлое движение
-		if reserSpeed {
+		if resetSpeed {
 			user.GetSquad().CurrentSpeed = 0
 		}
 	}
