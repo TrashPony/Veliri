@@ -14,13 +14,12 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
-	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
 )
 
-var globalPipe = make(chan Message)
+var globalPipe = make(chan Message, 1)
 
 type Message struct {
 	idSender      int
@@ -120,11 +119,7 @@ func GetShortUserInfo(user *player.Player) *hostileMS {
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
-	usersGlobalWs := globalGame.Clients.GetAll()
-	utils.CheckDoubleLogin(login, &usersGlobalWs)
-
 	newPlayer, ok := players.Users.Get(id)
-
 	if !ok {
 		newPlayer = players.Users.Add(id, login)
 	}
@@ -134,30 +129,31 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	print("WS global Сессия: ") // просто смотрим новое подключение
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
-
-	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
-
-	Reader(ws)
+	go Reader(ws)
 }
 
+func sendMessage(msg Message) {
+	globalPipe <- msg
+}
+
+/*
+если случается дедлок то скорее всего кто то закрыл соеденение а мьютекс там закрывается не через девер и он остается закрытым
+ненадо так
+
+UPD нельзя делать дефер в функции которыя шлет в pipe месаги, это верный путь к дедлоку т.к. на другом конце канала опять происходит лок
+	Выносить все где есть defer .Unlock в отдельные функции
+
+// TODO еще раз проверить где используется Clients.GetAll()
+*/
+
 func Reader(ws *websocket.Conn) {
-
 	for {
-
-		if globalGame.Clients.GetByWs(ws) != nil && globalGame.Clients.GetByWs(ws).GetSquad().Evacuation {
-			continue
-		}
-
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
-			DisconnectUser(globalGame.Clients.GetByWs(ws))
-
-			usersGlobalWs := globalGame.Clients.GetAll()
-			utils.DelConn(ws, &usersGlobalWs, err)
-
-			break
+			go DisconnectUser(globalGame.Clients.GetByWs(ws), ws)
+			return
 		}
 
 		if msg.Event == "InitGame" {
@@ -240,38 +236,42 @@ func Reader(ws *websocket.Conn) {
 
 func MoveSender() {
 	for {
-		resp := <-globalPipe
+		// TODO тут происходит деадлок, если при большом трафике постоянно жмакать ф5
+		select {
+		case resp := <-globalPipe:
 
-		usersGlobalWs := globalGame.Clients.GetAll()
+			usersGlobalWs, rLock := globalGame.Clients.GetAllConnects()
+			for ws, client := range usersGlobalWs {
+				// боты не получают сообщений они и так все знают
+				if client.Bot || resp.Bot || ws == nil {
+					continue
+				}
 
-		for ws, client := range usersGlobalWs {
-			if client.Bot || resp.Bot {
-				continue
+				var err error
+
+				// получают все кроме отправителя
+				if client.ID != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
+					err = ws.WriteJSON(resp)
+				}
+
+				// получает только отправитель
+				if client.ID == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 && client.MapID == resp.idMap {
+					err = ws.WriteJSON(resp)
+				}
+
+				// получают все
+				if resp.idSender == 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
+					err = ws.WriteJSON(resp)
+				}
+
+				if err != nil {
+					go DisconnectUser(globalGame.Clients.GetByWs(ws), ws)
+					log.Printf("error: %v", err)
+					//panic(err)
+				}
 			}
-
-			var err error
-
-			// получают все кроме отправителя
-			if client.GetID() != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 && client.GetSquad().MapID == resp.idMap {
-				err = ws.WriteJSON(resp)
-			}
-
-			// получает только отправитель
-			if client.GetID() == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 && client.GetSquad().MapID == resp.idMap {
-				err = ws.WriteJSON(resp)
-			}
-
-			// получают все
-			if resp.idSender == 0 && resp.idUserSend == 0 && client.GetSquad().MapID == resp.idMap {
-				err = ws.WriteJSON(resp)
-			}
-
-			if err != nil {
-				DisconnectUser(usersGlobalWs[ws])
-				log.Printf("error: %v", err)
-				ws.Close()
-				delete(usersGlobalWs, ws)
-			}
+			rLock.Unlock()
+		default:
 		}
 	}
 }

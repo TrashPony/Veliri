@@ -87,7 +87,7 @@ func MoveCloud(cloud *cloud) {
 		cloud.X = int(float64(cloud.Speed)*math.Cos(radRotate)) + cloud.X // идем по вектору движения
 		cloud.Y = int(float64(cloud.Speed)*math.Sin(radRotate)) + cloud.Y
 
-		globalPipe <- Message{Event: "MoveCloud", Cloud: cloud, idMap: cloud.idMap}
+		go sendMessage(Message{Event: "MoveCloud", Cloud: cloud, idMap: cloud.idMap})
 
 		if cloud.X > cloud.sizeMapX+500 || cloud.Y > cloud.sizeMapY+500 || -500 > cloud.X || -500 > cloud.Y {
 			go CreateCloud(cloud.idMap)

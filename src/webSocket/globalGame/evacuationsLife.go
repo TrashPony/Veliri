@@ -67,8 +67,8 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 
 		TransportMonitor(transport, transportBase, mp)
 
-		globalPipe <- Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
-			BaseID: transportBase.ID, TransportID: transport.ID, idMap: mp.Id}
+		go sendMessage(Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
+			BaseID: transportBase.ID, TransportID: transport.ID, idMap: mp.Id})
 
 		transport.X = pathUnit.X
 		transport.Y = pathUnit.Y

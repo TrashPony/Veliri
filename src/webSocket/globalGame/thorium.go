@@ -17,10 +17,10 @@ func updateThorium(ws *websocket.Conn, msg Message) {
 		msg.ToY = user.GetSquad().ToY
 
 		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
 
-		globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID}
+		go sendMessage(Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID})
 	}
 }
 
@@ -34,8 +34,8 @@ func removeThorium(ws *websocket.Conn, msg Message) {
 		msg.ToY = user.GetSquad().ToY
 
 		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		globalPipe <- Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
-		globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID}
+		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+		go sendMessage(Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID})
 	}
 }

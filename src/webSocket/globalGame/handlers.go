@@ -5,15 +5,16 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/gorilla/websocket"
 )
 
-func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
+func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coordinate) {
 	if coor.Handler == "base" {
-		intoToBase(user, coor.ToBaseID)
+		intoToBase(user, coor.ToBaseID, ws)
 	}
 
 	if coor.Handler == "sector" {
-		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR)
+		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
 	}
 
 	if !user.Bot {
@@ -21,7 +22,7 @@ func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 	}
 }
 
-func changeSector(user *player.Player, mapID, q, r int) {
+func changeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
 	// TODO
 	//if user.GetSquad().MoveChecker {
 	//	stopMove(user, true)
@@ -39,13 +40,13 @@ func changeSector(user *player.Player, mapID, q, r int) {
 	//user.GetSquad().GlobalY = 0
 }
 
-func intoToBase(user *player.Player, baseID int) {
+func intoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
 	if !user.Bot {
 		bases.UserIntoBase(user.GetID(), baseID)
 	}
 
-	globalPipe <- Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
-	DisconnectUser(user)
+	go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+	go DisconnectUser(user, ws)
 
 	user.InBaseID = baseID
 

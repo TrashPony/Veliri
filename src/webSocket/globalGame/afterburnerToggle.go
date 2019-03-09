@@ -19,6 +19,6 @@ func afterburnerToggle(ws *websocket.Conn, msg Message) {
 		msg.ToY = user.GetSquad().ToY
 
 		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		globalPipe <- Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner, idUserSend: user.GetID(), idMap: user.GetSquad().MapID}
+		go sendMessage(Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner, idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
 	}
 }

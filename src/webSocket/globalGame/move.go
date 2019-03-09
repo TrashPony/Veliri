@@ -43,15 +43,15 @@ func move(ws *websocket.Conn, msg Message) {
 			}
 
 			if err != nil && len(path) == 0 {
-				globalPipe <- Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+				go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
 			}
-			globalPipe <- Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+			go sendMessage(Message{Event: "PreviewPath", Path: path, idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
 		}
 	}
 }
 
 func stopMove(user *player.Player, reserSpeed bool) {
-	if user.GetSquad() != nil && user.GetSquad().MoveChecker {
+	if user.GetSquad() != nil {
 		user.GetSquad().ActualPath = nil // останавливаем прошлое движение
 		if reserSpeed {
 			user.GetSquad().CurrentSpeed = 0
@@ -64,6 +64,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 	user.GetSquad().MoveChecker = true
 
 	defer func() {
+		stopMove(user, false)
 		user.GetSquad().MoveChecker = false
 		if moveRepeat {
 			move(ws, msg)
@@ -78,7 +79,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 		newGravity := globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 		if user.GetSquad().HighGravity != newGravity {
 			user.GetSquad().HighGravity = newGravity
-			globalPipe <- Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+			go sendMessage(Message{Event: "ChangeGravity", idUserSend: user.GetID(), Squad: user.GetSquad(), idMap: user.GetSquad().MapID, Bot: user.Bot})
 			moveRepeat = true
 			return
 		}
@@ -89,10 +90,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 		}
 
 		// колизии игрок-игрок // TODO столкновения,  урон
-		noCollision, collisionUser := globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, globalGame.Clients.GetAll())
+
+		noCollision, collisionUser := initCheckCollision(user, &pathUnit)
 		if !noCollision && collisionUser != nil {
 			playerToPlayerCollisionReaction(user, collisionUser)
-			moveRepeat = true
+			if !user.Bot {
+				moveRepeat = true
+			}
 			return
 		}
 
@@ -100,13 +104,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 		anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 		if err == nil {
-			globalPipe <- Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot}
+			go sendMessage(Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot})
 		}
 
 		// если на пути встречается ящик то мы его давим и падает скорость
 		mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, user.GetSquad().MapID, user.GetSquad().MatherShip.Body)
 		if mapBox != nil {
-			globalPipe <- Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID}
+			go sendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, idMap: user.GetSquad().MapID})
 			boxes.Boxes.DestroyBox(mapBox)
 			user.GetSquad().CurrentSpeed -= float64(user.GetSquad().MatherShip.Body.Speed)
 			moveRepeat = true
@@ -120,16 +124,16 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 
 		coor := globalGame.HandlerDetect(user)
 		if coor != nil && coor.HandlerOpen {
-			HandlerParse(user, coor)
+			HandlerParse(user, ws, coor)
 			return
 		}
 
 		// говорим юзеру как расходуется его топливо
-		globalPipe <- Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID, Bot: user.Bot}
+		go sendMessage(Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID, Bot: user.Bot})
 
 		// оповещаем мир как двигается отряд
-		globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID}
+		go sendMessage(Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit, idMap: user.GetSquad().MapID})
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
 			time.Sleep(100 * time.Millisecond)
@@ -152,6 +156,13 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 			}
 		}
 	}
+}
+
+func initCheckCollision(user *player.Player, pathUnit *squad.PathUnit) (bool, *player.Player) {
+	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
+	users, rLock := globalGame.Clients.GetAll()
+	defer rLock.Unlock()
+	return globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, users)
 }
 
 func playerToPlayerCollisionReaction(user, toUser *player.Player) {
@@ -203,7 +214,7 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 	yVel2 = yVel2prime*cosAlfa + xVel2prime*sinAlfa
 
 	// TODO проверка нового места на колизию (уперся в стенку, уперся в другово игрока)
-	// TODO если нет разгона то надо отьехать назад
+
 	speed1 := math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))
 	speed2 := math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))
 
@@ -235,7 +246,7 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 		Speed:       speed2,
 	}
 
-	globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: userPath, idMap: user.GetSquad().MapID}
-	globalPipe <- Message{Event: "MoveTo", OtherUser: GetShortUserInfo(toUser), PathUnit: toUserPath, idMap: user.GetSquad().MapID}
+	go sendMessage(Message{Event: "MoveTo", OtherUser: GetShortUserInfo(user), PathUnit: userPath, idMap: user.GetSquad().MapID})
+	go sendMessage(Message{Event: "MoveTo", OtherUser: GetShortUserInfo(toUser), PathUnit: toUserPath, idMap: user.GetSquad().MapID})
 	time.Sleep(200 * time.Millisecond)
 }

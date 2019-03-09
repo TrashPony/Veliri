@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 5
+const RespBots = 10
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -113,7 +113,7 @@ func Transport(bot *player.Player, mp *_map.Map) {
 			outBase(bot, botBase)
 		}
 
-		if bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 {
+		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 {
 			path := getPathAI(bot, mp)
 
 			//countPossible := 1
@@ -158,9 +158,15 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 	xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 1)
 	toX, toY := rand.Intn(xSize), rand.Intn(ySize)
 
-	path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
+	println("я иду в х:", toX, " y:", toY)
 
-	return path
+	// проверка на то что х, у достижимы
+	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body)
+	if possible {
+		path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
+		return path
+	}
+	return nil
 }
 
 func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {

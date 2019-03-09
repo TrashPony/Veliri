@@ -91,5 +91,5 @@ func (mp *Map) GetResource(q, r int) *resource.Map {
 }
 
 func (mp *Map) SetXYSize(hexWidth, hexHeight, Scale int) (int, int) {
-	return (mp.QSize * hexWidth) / Scale, (mp.RSize * hexHeight) / Scale
+	return (mp.QSize * hexWidth) / Scale, int(float64(mp.RSize)*float64(hexHeight)*0.75) / Scale
 }

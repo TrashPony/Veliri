@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/gorilla/websocket"
 	"time"
 )
 
@@ -35,30 +36,33 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 		xOut, yOut := globalGame.GetXYCenterHex(coor.ToQ, coor.ToR)
 		if checkHandlerCoordinate(xOut, yOut, coor.ToMapID) {
 			// отключение телепорта
-			globalPipe <- Message{Event: "handlerClose", idMap: mp.Id, Q: coor.Q, R: coor.R}
+			go sendMessage(Message{Event: "handlerClose", idMap: mp.Id, Q: coor.Q, R: coor.R})
 			coor.HandlerOpen = false
 		} else {
 			// включение телепорт
-			globalPipe <- Message{Event: "handlerOpen", idMap: mp.Id, Q: coor.Q, R: coor.R}
+			go sendMessage(Message{Event: "handlerOpen", idMap: mp.Id, Q: coor.Q, R: coor.R})
 			coor.HandlerOpen = true
 		}
 	}
 }
 
 func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
-	for _, user := range globalGame.Clients.GetAll() {
+	users, rLock := globalGame.Clients.GetAll()
+	defer rLock.Unlock()
+
+	for ws, user := range users {
 		if mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
-				go softTransition(user, x, y, coor)
+				go softTransition(user, x, y, coor, ws)
 			}
 		}
 	}
 }
 
-func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) {
+func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, ws *websocket.Conn) {
 	countTime := 0
-	globalPipe <- Message{Event: "softTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot}
+	go sendMessage(Message{Event: "softTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot})
 
 	user.GetSquad().SoftTransition = true
 	defer func() {
@@ -70,15 +74,15 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) 
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 120 && countTime > 50 {
 			if coor.Handler == "base" {
-				go intoToBase(user, coor.ToBaseID)
+				go intoToBase(user, coor.ToBaseID, ws)
 			}
 			if coor.Handler == "sector" {
-				go changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR)
+				go changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
 			}
 			return
 		} else {
 			if dist > 120 {
-				globalPipe <- Message{Event: "removeSoftTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot}
+				go sendMessage(Message{Event: "removeSoftTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
 				return
 			}
 		}
@@ -89,7 +93,10 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) 
 func checkHandlerCoordinate(x, y, mapID int) bool {
 	// true занята
 	// false свободна
-	for _, user := range globalGame.Clients.GetAll() {
+	users, rLock := globalGame.Clients.GetAll()
+	defer rLock.Unlock()
+
+	for _, user := range users {
 		if mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 75 {
