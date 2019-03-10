@@ -3,6 +3,7 @@ package gameTypes
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/get"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"math/rand"
 )
 
 type weaponsStore struct {
@@ -22,8 +23,18 @@ func (w *weaponsStore) GetByID(id int) (*detail.Weapon, bool) {
 }
 
 func (w *weaponsStore) GetRandom() *detail.Weapon {
-	weapon, _ := w.GetByID(4) // TODO
-	return weapon
+
+	count := 0
+	count2 := rand.Intn(len(w.weapons))
+	for id := range w.weapons {
+		if count == count2 {
+			weapon, _ := w.GetByID(id)
+			return weapon
+		}
+		count++
+	}
+	return nil
+
 }
 
 func (w *weaponsStore) GetAllType() map[int]detail.Weapon {

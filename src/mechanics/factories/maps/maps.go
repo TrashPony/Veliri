@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"math/rand"
 )
 
 type mapStore struct {
@@ -93,4 +94,16 @@ func (m *mapStore) RemoveReservoirByQR(q, r, mapID int) {
 			mp.OneLayerMap[q][r].Move = true
 		}
 	}
+}
+
+func (m *mapStore) GetRandomMap() *_map.Map {
+	count := 0
+	count2 := rand.Intn(len(m.maps))
+	for _, mp := range m.maps {
+		if count == count2 {
+			return mp
+		}
+		count++
+	}
+	return nil
 }

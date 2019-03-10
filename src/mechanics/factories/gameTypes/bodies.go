@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/get"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/getlantern/deepcopy"
+	"math/rand"
 )
 
 type bodyStore struct {
@@ -29,8 +30,20 @@ func (b *bodyStore) GetByID(id int) (*detail.Body, bool) {
 }
 
 func (b *bodyStore) GetRandom() *detail.Body {
-	body, _ := b.GetByID(2) // TODO
-	return body
+	for {
+		// TODO возможны проблемы))
+		count := 0
+		count2 := rand.Intn(len(b.bodies))
+		for id := range b.bodies {
+			if count == count2 {
+				body, _ := b.GetByID(id)
+				if body.MotherShip {
+					return body
+				}
+			}
+			count++
+		}
+	}
 }
 
 func (b *bodyStore) GetAllType() map[int]detail.Body {

@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const RespBots = 1
+const RespBots = 2
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -97,11 +97,20 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.GetSquad().MapID = base.MapID
 	bot.GetSquad().GlobalX = x
 	bot.GetSquad().GlobalY = y
+	bot.GetSquad().Evacuation = false
+
+	// если мы зашли на базу сбрасываем путь бота в ноль
+	bot.GlobalPath = nil
+	bot.CurrentPoint = 0
 
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
 	loadGame(bot.GetFakeWS(), Message{})
 	// todo после выхода из базы сваливать по прямой быстро а не стоять на токе и распа и строить путь
+	// TODO проверка на топливо)) (это причина их зваисания похоже что)
+	for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
+		slot.Count = slot.MaxCount
+	}
 }
 
 func Transport(bot *player.Player) {
@@ -113,32 +122,32 @@ func Transport(bot *player.Player) {
 			outBase(bot, botBase)
 		}
 
-		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 {
+		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)
 
+			if path != nil {
+				println("нашел путь")
+			} else {
+				println("не нашел путь")
+			}
+
 			//countPossible := 1
 			exit := false
+
 			for i := 0; path != nil && i < len(path); i++ {
 				if exit {
 					break
 				}
-				// TODO учитывать наличие игроков при построение маршрута.
-				// ПРИМЕР ДЛЯ ПОНИМАНИЯ: если между точкой 5 и точкой 10 нет прептявий то идти напрямик сохраняя скорость
-				//fastPath, _ := globalGame.MoveSquad(bot, float64(path[i].X), float64(path[i].Y), mp)
-				//
-				//if len(fastPath) > 10*countPossible && i < len(path)-1 {
-				//	countPossible++
-				//	continue
-				//} else {
-				//	countPossible = 1
-				go move(bot.GetFakeWS(), Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
+				move(bot.GetFakeWS(), Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
 				for {
 					time.Sleep(100 * time.Millisecond)
 
 					if mp.Id != bot.GetSquad().MapID {
 						//это означает что сектор сменился
 						exit = true
+						// если у бота есть цель то она выросла на 1 пройденный сектор)
+						bot.CurrentPoint++
 						bot.GetSquad().ActualPath = nil
 					}
 
@@ -146,7 +155,6 @@ func Transport(bot *player.Player) {
 						break
 					}
 				}
-				//}
 			}
 		}
 		time.Sleep(100 * time.Millisecond)
@@ -154,33 +162,73 @@ func Transport(bot *player.Player) {
 }
 
 func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
+	var toX, toY int
 
-	// сектор
-	toSector := mp.GetRandomEntrySector()
-	toX, toY := globalGame.GetXYCenterHex(toSector.Q, toSector.R)
+	if bot.GlobalPath == nil {
+		// имитация бурной деятельности)
 
-	// база
-	//toBase := mp.GetRandomEntryBase()
-	//toX, toY := globalGame.GetXYCenterHex(toBase.Q, toBase.R)
+		// сектор
+		//toSector = mp.GetRandomEntrySector()
+		//toX, toY = globalGame.GetXYCenterHex(toSector.Q, toSector.R)
 
-	// todo игрок
+		// база
+		//toBase := mp.GetRandomEntryBase()
+		//toX, toY = globalGame.GetXYCenterHex(toBase.Q, toBase.R)
 
-	////рандом
-	//xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 1)
-	//toX, toY := rand.Intn(xSize), rand.Intn(ySize)
+		// база в другом секторе
+		randMap := maps.Maps.GetRandomMap()
+		randEntryBase := randMap.GetRandomEntryBase()
+		if randMap.Id == bot.GetSquad().MapID {
+			toX, toY = globalGame.GetXYCenterHex(randEntryBase.Q, randEntryBase.R)
+		} else {
+			_, transitionPoints := maps.Maps.FindGlobalPath(bot.GetSquad().MapID, randMap.Id)
+			if len(transitionPoints) > 0 {
+				// добавляем координату входа в базу в путь
+				baseCoordinate, _ := randMap.GetCoordinate(randEntryBase.Q, randEntryBase.R)
+				transitionPoints = append(transitionPoints, baseCoordinate)
+				bot.GlobalPath = transitionPoints
+
+				bot.CurrentPoint = 0
+				toX, toY = globalGame.GetXYCenterHex(transitionPoints[0].Q, transitionPoints[0].R)
+			} else {
+				return nil
+			}
+		}
+
+		// todo преследование игрока
+
+		//рандом
+		//xSize, ySize := mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, 1)
+		//toX, toY = rand.Intn(xSize), rand.Intn(ySize)
+
+	} else {
+		if len(bot.GlobalPath) >= bot.CurrentPoint {
+			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
+		} else {
+			bot.GlobalPath = nil
+			return nil
+		}
+	}
 
 	println("я иду в х:", toX, " y:", toY)
 
 	// проверка на то что х, у достижимы
-	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body)
+	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true)
+	println("достижимость: ", possible)
 	if possible {
 		path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
 		return path
+	} else {
+		bot.GlobalPath = nil
+		return nil
 	}
-	return nil
 }
 
 func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
+
+	if scale < 10 {
+		return nil
+	}
 
 	mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, scale)
 
@@ -188,12 +236,7 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale)
 
 	if len(path) == 0 {
-		scale /= 2
-		if scale > 10 {
-			return aiSearchPath(toX, toY, startX, startY, scale/2, bot, mp)
-		} else {
-			return nil
-		}
+		return aiSearchPath(toX, toY, startX, startY, scale-10, bot, mp)
 	} else {
 		return path
 	}

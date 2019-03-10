@@ -50,7 +50,7 @@ func loadGame(ws *websocket.Conn, msg Message) {
 }
 
 func getOtherSquads(user *player.Player, mp *_map.Map) []*hostileMS {
-	// TODO источник проблем
+
 	otherUsers := make([]*hostileMS, 0)
 
 	users, rLock := globalGame.Clients.GetAll()
@@ -64,9 +64,11 @@ func getOtherSquads(user *player.Player, mp *_map.Map) []*hostileMS {
 		}
 	}
 
+	// обнуляем все параметры глобальной игры
 	user.GetSquad().Afterburner = false
 	user.GetSquad().MoveChecker = false
 	user.GetSquad().ActualPath = nil
+
 	user.GetSquad().HighGravity = globalGame.GetGravity(user.GetSquad().GlobalX, user.GetSquad().GlobalY, user.GetSquad().MapID)
 
 	return otherUsers

@@ -61,7 +61,7 @@ func FindPath(client *player.Player, gameMap *_map.Map, start *coordinate.Coordi
 		}
 		current := *MinF(openPoints)   // Берем точку с мин стоимостью пути
 		if current.Equal(&END_POINT) { // если текущая точка и есть конец начинаем генерить путь
-			for !current.Equal(&START_POINT) { // если текущая точка не стартовая точка то цикл крутиться путь мутиться
+			for !current.Equal(&START_POINT) { // идем обратно до тех пор пока не дойдет пдо стартовой точки
 				current = *current.Parent         // берем текущую точку и на ее место ставить ее родителя
 				if !current.Equal(&START_POINT) { // если текущая точка попрежнему не стартовая то
 					matrix[current.Q][current.R].State = PATH // помечаем ее как часть пути

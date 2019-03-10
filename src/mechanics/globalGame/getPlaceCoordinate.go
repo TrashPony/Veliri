@@ -37,8 +37,8 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 		respCoordinates := coordinate.GetCoordinatesRadius(resp, 2)
 
 		for _, respFakeCoordinate := range respCoordinates {
-			respCoordinate, _ := mp.GetCoordinate(respFakeCoordinate.Q, respFakeCoordinate.R)
-			if respCoordinate.Move {
+			respCoordinate, ok := mp.GetCoordinate(respFakeCoordinate.Q, respFakeCoordinate.R)
+			if ok && respCoordinate.Move {
 				x, y := GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 				find := false
 

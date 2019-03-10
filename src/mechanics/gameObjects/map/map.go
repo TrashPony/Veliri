@@ -3,6 +3,7 @@ package _map
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"math/rand"
 )
 
 type Map struct {
@@ -19,14 +20,31 @@ type Map struct {
 	Global              bool                     `json:"global"`
 	InGame              bool                     `json:"in_game"`
 	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
-	GeoData             []*ObstaclePoint         `json:"geo_data"`
 	Beams               []*Beam                  `json:"beams"`
 	Emitters            []*Emitter               `json:"emitters"`
+	GeoData             []*ObstaclePoint         `json:"geo_data"`
+
+	// тут хранятся просчитанные шаблоны координат, что бы не проверять координаты при каждом поиске пути
+	GeoDataMaps map[int]map[int]map[int]coordinate.Coordinate `json:"-"`
 }
 
 func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {
+	for {
+		// TODO возможны проблемы))
+		count := 0
+		count2 := rand.Intn(len(mp.HandlersCoordinates))
+		for _, entry := range mp.HandlersCoordinates {
+			if count == count2 && entry.Handler == "base" {
+				return entry
+			}
+			count++
+		}
+	}
+}
+
+func (mp *Map) GetEntryBase(baseID int) *coordinate.Coordinate {
 	for _, entry := range mp.HandlersCoordinates {
-		if entry.Handler == "base" {
+		if entry.Handler == "base" && entry.ToBaseID == baseID {
 			return entry
 		}
 	}
@@ -40,6 +58,26 @@ func (mp *Map) GetRandomEntrySector() *coordinate.Coordinate {
 		}
 	}
 	return nil
+}
+
+func (mp *Map) GetEntryTySector(sectorID int) *coordinate.Coordinate {
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "sector" && entry.ToMapID == sectorID {
+			return entry
+		}
+	}
+	return nil
+}
+
+func (mp *Map) GetAllEntrySectors() []*coordinate.Coordinate {
+	entrySectors := make([]*coordinate.Coordinate, 0)
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "sector" {
+			entrySectors = append(entrySectors, entry)
+		}
+	}
+
+	return entrySectors
 }
 
 type ObstaclePoint struct {

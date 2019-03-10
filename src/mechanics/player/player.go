@@ -35,10 +35,13 @@ type Player struct {
 	Respawn    *coordinate.Coordinate
 	InBaseID   int // ид базы в которой сидит игрок
 
-	Bot      bool `json:"bot"`      // переменная говорит что это не игрок))
-	Behavior int  `json:"behavior"` // тип поведения бота
-	fakeWS   *websocket.Conn
-	UUID     string `json:"uuid"`
+	/* мета для ботов */
+	Bot          bool `json:"bot"`      // переменная говорит что это не игрок))
+	Behavior     int  `json:"behavior"` // тип поведения бота
+	fakeWS       *websocket.Conn
+	UUID         string                   `json:"uuid"`
+	GlobalPath   []*coordinate.Coordinate `json:"global_path"`   // маршрут через сектора, тут лежат координаты переходов, входов на базы
+	CurrentPoint int                      `json:"current_point"` // номер ячейку куда надо пиздовать
 }
 
 func (client *Player) SetFakeWS(ws *websocket.Conn) {

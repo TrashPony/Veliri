@@ -29,65 +29,88 @@ func checkCollision(rotate, fromAngle, toAngle, radius, x, y, obstacleX, obstacl
 	return false
 }
 
-func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body) (bool, int, int, bool) {
-
+func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body, fast bool) (bool, int, int, bool) {
+	// TODO так как карта статична, нет необходимости считать это каждый раз заного, можно запомнить и использовать пресеты
 	startCoordinate := GetQRfromXY(x, y, mp)
 
 	if body == nil {
 		return true, startCoordinate.Q, startCoordinate.R, true
 	}
 
-	for _, obstacle := range mp.GeoData {
-		dist := int(GetBetweenDist(x, y, obstacle.X, obstacle.Y))
-
-		if dist < body.FrontRadius+obstacle.Radius {
-			// проверяем фронт машины
-			if checkCollision(rotate, body.LeftFrontAngle, body.RightFrontAngle, body.FrontRadius, x, y, obstacle.X, obstacle.Y, obstacle.Radius) {
+	if fast {
+		for _, obstacle := range mp.GeoData {
+			dist := int(GetBetweenDist(x, y, obstacle.X, obstacle.Y))
+			if dist < body.FrontRadius+obstacle.Radius {
 				return false, startCoordinate.Q, startCoordinate.R, true
 			}
 		}
+	} else {
+		for _, obstacle := range mp.GeoData {
+			dist := int(GetBetweenDist(x, y, obstacle.X, obstacle.Y))
 
-		if dist < body.BackRadius+obstacle.Radius {
-			// проверяем жопку
-			if checkCollision(rotate+180, body.LeftBackAngle, body.RightBackAngle, body.BackRadius, x, y, obstacle.X, obstacle.Y, obstacle.Radius) {
-				return false, startCoordinate.Q, startCoordinate.R, false
-			}
-		}
-
-		if dist < body.SideRadius+obstacle.Radius {
-			// проверяем бока машины
-			return false, startCoordinate.Q, startCoordinate.R, true
-		}
-	}
-
-	return CheckMapResource(x, y, rotate, mp, body, startCoordinate)
-}
-
-func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCoordinate *coordinate.Coordinate) (bool, int, int, bool) {
-	const reservoirRadius = 15
-	for _, qLine := range mp.Reservoir {
-		for _, reservoir := range qLine {
-			reservoirX, reservoirY := GetXYCenterHex(reservoir.Q, reservoir.R)
-
-			dist := int(GetBetweenDist(x, y, reservoirX, reservoirY))
-
-			if dist < body.FrontRadius+reservoirRadius {
+			if dist < body.FrontRadius+obstacle.Radius {
 				// проверяем фронт машины
-				if checkCollision(rotate, body.LeftFrontAngle, body.RightFrontAngle, body.FrontRadius, x, y, reservoirX, reservoirY, reservoirRadius) {
+				if checkCollision(rotate, body.LeftFrontAngle, body.RightFrontAngle, body.FrontRadius, x, y, obstacle.X, obstacle.Y, obstacle.Radius) {
 					return false, startCoordinate.Q, startCoordinate.R, true
 				}
 			}
 
-			if dist < body.BackRadius+reservoirRadius {
+			if dist < body.BackRadius+obstacle.Radius {
 				// проверяем жопку
-				if checkCollision(rotate+180, body.LeftBackAngle, body.RightBackAngle, body.BackRadius, x, y, reservoirX, reservoirY, reservoirRadius) {
+				if checkCollision(rotate+180, body.LeftBackAngle, body.RightBackAngle, body.BackRadius, x, y, obstacle.X, obstacle.Y, obstacle.Radius) {
 					return false, startCoordinate.Q, startCoordinate.R, false
 				}
 			}
 
-			if dist < body.SideRadius+reservoirRadius {
+			if dist < body.SideRadius+obstacle.Radius {
 				// проверяем бока машины
 				return false, startCoordinate.Q, startCoordinate.R, true
+			}
+		}
+	}
+
+	return CheckMapResource(x, y, rotate, mp, body, startCoordinate, fast)
+}
+
+func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCoordinate *coordinate.Coordinate, fast bool) (bool, int, int, bool) {
+	const reservoirRadius = 15
+
+	if fast {
+		for _, qLine := range mp.Reservoir {
+			for _, reservoir := range qLine {
+				reservoirX, reservoirY := GetXYCenterHex(reservoir.Q, reservoir.R)
+				dist := int(GetBetweenDist(x, y, reservoirX, reservoirY))
+				if dist < body.FrontRadius+reservoirRadius {
+					// проверяем бока машины
+					return false, startCoordinate.Q, startCoordinate.R, true
+				}
+			}
+		}
+	} else {
+		for _, qLine := range mp.Reservoir {
+			for _, reservoir := range qLine {
+				reservoirX, reservoirY := GetXYCenterHex(reservoir.Q, reservoir.R)
+
+				dist := int(GetBetweenDist(x, y, reservoirX, reservoirY))
+
+				if dist < body.FrontRadius+reservoirRadius {
+					// проверяем фронт машины
+					if checkCollision(rotate, body.LeftFrontAngle, body.RightFrontAngle, body.FrontRadius, x, y, reservoirX, reservoirY, reservoirRadius) {
+						return false, startCoordinate.Q, startCoordinate.R, true
+					}
+				}
+
+				if dist < body.BackRadius+reservoirRadius {
+					// проверяем жопку
+					if checkCollision(rotate+180, body.LeftBackAngle, body.RightBackAngle, body.BackRadius, x, y, reservoirX, reservoirY, reservoirRadius) {
+						return false, startCoordinate.Q, startCoordinate.R, false
+					}
+				}
+
+				if dist < body.SideRadius+reservoirRadius {
+					// проверяем бока машины
+					return false, startCoordinate.Q, startCoordinate.R, true
+				}
 			}
 		}
 	}
@@ -95,21 +118,29 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 	return true, startCoordinate.Q, startCoordinate.R, true
 }
 
-func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate, mapID int, users map[*websocket.Conn]*player.Player) (bool, *player.Player) {
+func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map[*websocket.Conn]*player.Player) (bool, *player.Player) {
 	bodyMove := moveUser.GetSquad().MatherShip.Body
 	mX, mY := float64(moveUser.GetSquad().GlobalX), float64(moveUser.GetSquad().GlobalY)
 
 	for _, user := range users {
-		if user != nil && user.GetSquad().MapID == mapID &&
-			(moveUser.GetID() > 0 && moveUser.GetID() != user.GetID()) || (moveUser.UUID != "" && moveUser.UUID != user.UUID) &&
-			!user.GetSquad().Evacuation {
+
+		if user.GetSquad().MapID != moveUser.GetSquad().MapID {
+			// по неведомой причине нельзя этот иф класть в общий, он не работает там
+			// TODO тут я тоже не уверен надо дебажить, проблема что боты сталкиваются на разных картах имея одинаковые координаты
+			continue
+		}
+
+		if user != nil && (moveUser.GetID() > 0 && moveUser.GetID() != user.GetID()) || (moveUser.UUID != "" && moveUser.UUID != user.UUID) && !user.GetSquad().Evacuation {
+
+			if user.GetSquad().MapID != moveUser.GetSquad().MapID {
+				println("колизия: ", user.GetID(), user.GetSquad().MapID, moveUser.GetID(), moveUser.GetSquad().MapID, user.GetSquad().MapID == moveUser.GetSquad().MapID)
+			}
 
 			bodyUser := user.GetSquad().MatherShip.Body
 
 			dist := int(GetBetweenDist(x, y, user.GetSquad().GlobalX, user.GetSquad().GlobalY))
 
 			if dist < bodyMove.SideRadius+bodyUser.SideRadius {
-				// проверяем боковые радиусы
 				return false, user
 			}
 

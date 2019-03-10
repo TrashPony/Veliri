@@ -43,6 +43,7 @@ type Coordinate struct {
 	H, G, F       int
 	Parent        *Coordinate
 
+	/* мета слушателей */
 	/* если тру то с течением времени или по эвенту игрока эвакуируют с этой клетки без его желания */
 	Transport bool `json:"transport"`
 	/* если строка не пуста значит эта клетка прослушивается, например вход в базу (base) или переход в другой сектор (sector),
@@ -87,7 +88,7 @@ func (coor *Coordinate) GetG(target Coordinate) int { // наименьшая с
 	return coor.G + 10 // если находиться на 1 линии по Х или У то стоимость 10
 }
 
-func (coor *Coordinate) GetXYG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины
+func (coor *Coordinate) GetXYG(target *Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины
 	if target.X != coor.X && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
 		target.Y != coor.Y { // можно реализовывать стоимость пути по различной поверхности
 		return coor.G + 14

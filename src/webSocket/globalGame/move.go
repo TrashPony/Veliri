@@ -162,7 +162,8 @@ func initCheckCollision(user *player.Player, pathUnit *squad.PathUnit) (bool, *p
 	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
-	return globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, user.GetSquad().MapID, users)
+	// TODO поохже возникают колизии между игроками на разных картах Оо
+	return globalGame.CheckCollisionsPlayers(user, pathUnit.X, pathUnit.Y, pathUnit.Rotate, users)
 }
 
 func playerToPlayerCollisionReaction(user, toUser *player.Player) {
