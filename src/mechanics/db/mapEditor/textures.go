@@ -1,35 +1,26 @@
 package mapEditor
 
 import (
-	"github.com/TrashPony/Veliri/src/dbConnect"
-	"log"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 )
 
-func PlaceTextures(idMap, q, r int, textureName string) {
-	changeCoordinate := getMapCoordinateInMC(idMap, q, r)
-	if changeCoordinate != nil {
-		_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET texture_over_flore = $1 WHERE id_map = $2 AND q=$3 AND r = $4",
-			textureName, idMap, q, r)
-		if err != nil {
-			log.Fatal("update texture in map editor" + err.Error())
-		}
-	} else {
-		defaultLevel, defaultType := getDefaultMap(idMap)
+func PlaceTextures(coordinate *coordinate.Coordinate, mp *_map.Map, textureName string) {
+	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
 
-		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO map_constructor (id_map, id_type, q, r, level, impact, rotate, animate_speed, "+
-			"x_offset, y_offset, texture_over_flore, transport, handler, to_q, to_r, to_base_id, to_map_id) "+
-			"VALUES ($1, $2, $3, $4, $5, '', $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)",
-			idMap, defaultType, q, r, defaultLevel, 0, 60, 0, 0, textureName, false, "", 0, 0, 1, 2)
-		if err != nil {
-			log.Fatal("add new texture in map editor " + err.Error())
-		}
+	coordinate.TextureOverFlore = textureName
+
+	coordinate.TexturePriority = mp.GetMaxPriorityTexture()
+	coordinate.TexturePriority++
+
+	if changeCoordinate != nil {
+		UpdateMapCoordinate(coordinate, mp)
+	} else {
+		InsertMapCoordinate(coordinate, mp)
 	}
 }
 
-func RemoveTextures(idMap, q, r int) {
-	_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET texture_over_flore = $1 WHERE id_map = $2 AND q=$3 AND r = $4",
-		"", idMap, q, r)
-	if err != nil {
-		log.Fatal("delete texture in map editor" + err.Error())
-	}
+func RemoveTextures(coordinate *coordinate.Coordinate, mp *_map.Map) {
+	coordinate.TextureOverFlore = ""
+	UpdateMapCoordinate(coordinate, mp)
 }

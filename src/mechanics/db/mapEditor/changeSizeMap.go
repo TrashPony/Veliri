@@ -2,40 +2,24 @@ package mapEditor
 
 import (
 	"github.com/TrashPony/Veliri/src/dbConnect"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"log"
 )
 
 // ------ ROWS ------- //
 func AddStartRow(mapID int) {
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	rOffset(1, mapID)
 	qSize, rSize := getSizeMap(mapID)
 	rSize++
 	setNewSizeMap(qSize, rSize, mapID)
-
-	// проверяем занятое пространство обьемников после перестановки
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func AddEndRow(mapID int) {
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	qSize, rSize := getSizeMap(mapID)
 	rSize++
 	setNewSizeMap(qSize, rSize, mapID)
-
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func RemoveStartRow(mapID int) {
-
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	removeAllRCoordinate(0, mapID)
 
 	rOffset(-1, mapID)
@@ -43,55 +27,31 @@ func RemoveStartRow(mapID int) {
 	qSize, rSize := getSizeMap(mapID)
 	rSize--
 	setNewSizeMap(qSize, rSize, mapID)
-
-	// проверяем занятое пространство обьемников после перестановки
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func RemoveEndRow(mapID int) {
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	qSize, rSize := getSizeMap(mapID)
 	removeAllRCoordinate(rSize-1, mapID) // -1 потому что отсчет на карте идет с нуля
 	rSize--
 	setNewSizeMap(qSize, rSize, mapID)
-
-	// проверяем занятое пространство обьемников после перестановки
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 // ------ Columns ------- //
 func AddStartColumn(mapID int) {
-
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	qOffset(1, mapID)
 	qSize, rSize := getSizeMap(mapID)
 	qSize++
 	setNewSizeMap(qSize, rSize, mapID)
-
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func AddEndColumn(mapID int) {
 
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	qSize, rSize := getSizeMap(mapID)
 	qSize++
 	setNewSizeMap(qSize, rSize, mapID)
-
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func RemoveStartColumn(mapID int) {
-
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	removeAllQCoordinate(0, mapID)
 
 	qOffset(-1, mapID)
@@ -99,21 +59,13 @@ func RemoveStartColumn(mapID int) {
 	qSize, rSize := getSizeMap(mapID)
 	qSize--
 	setNewSizeMap(qSize, rSize, mapID)
-
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 func RemoveEndColumn(mapID int) {
-
-	// удаляем все большим обьектам импакт что бы они нормально передвинулись
-	removeBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
-
 	qSize, rSize := getSizeMap(mapID)
 	removeAllQCoordinate(qSize-1, mapID) // -1 потому что отсчет на карте идет с нуля
 	qSize--
 	setNewSizeMap(qSize, rSize, mapID)
-
-	clipBigObjectsImpact(getMapALLCoordinateInMC(mapID), mapID)
 }
 
 // -------------------//
@@ -154,21 +106,5 @@ func setNewSizeMap(qSize, rSize, mapID int) {
 		qSize, rSize, mapID)
 	if err != nil {
 		log.Fatal("update size map " + err.Error())
-	}
-}
-
-func removeBigObjectsImpact(coordinates []*coordinate.Coordinate, idMap int) {
-	for _, mcCoordinates := range coordinates {
-		if mcCoordinates.ImpactRadius > 0 && mcCoordinates.Impact == nil {
-			removeImpact(mcCoordinates, idMap)
-		}
-	}
-}
-
-func clipBigObjectsImpact(coordinates []*coordinate.Coordinate, idMap int) {
-	for _, mcCoordinates := range coordinates {
-		if mcCoordinates.ImpactRadius > 0 && mcCoordinates.Impact == nil {
-			placeRadiusCoordinate(mcCoordinates, idMap, false)
-		}
 	}
 }

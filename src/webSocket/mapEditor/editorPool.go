@@ -3,6 +3,7 @@ package mapEditor
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/get"
 	"github.com/TrashPony/Veliri/src/mechanics/db/mapEditor"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
@@ -116,76 +117,73 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "getMapList" {
-			getMapList(msg, ws)
+			getMapList(msg, ws) // +
 		}
 
 		if msg.Event == "SelectMap" {
-			selectMap(msg, ws)
+			selectMap(msg, ws) // +
 		}
 
-		if msg.Event == "getAllTypeCoordinate" {
+		if msg.Event == "getAllTypeCoordinate" { // +
 			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: get.AllTypeCoordinate()})
 		}
 
 		if msg.Event == "addHeightCoordinate" {
-			heightCoordinate(msg, ws, 1)
+			heightCoordinate(msg, ws, 1) // +
 		}
 
-		if msg.Event == "subtractHeightCoordinate" {
+		if msg.Event == "subtractHeightCoordinate" { // +
 			heightCoordinate(msg, ws, -1)
 		}
 
-		if msg.Event == "placeCoordinate" {
-			mapEditor.PlaceCoordinate(msg.ID, msg.IDType, msg.Q, msg.R)
-			selectMap(msg, ws)
-		}
-
-		if msg.Event == "placeTerrain" {
-			mapEditor.PlaceTerrain(msg.ID, msg.IDType, msg.Q, msg.R)
-			selectMap(msg, ws)
-		}
-
-		if msg.Event == "placeObjects" {
-			mapEditor.PlaceObject(msg.ID, msg.IDType, msg.Q, msg.R)
-			selectMap(msg, ws)
-		}
-
-		if msg.Event == "placeAnimate" {
-			mapEditor.PlaceAnimate(msg.ID, msg.IDType, msg.Q, msg.R)
+		if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "loadNewTypeTerrain" {
-			ws.WriteJSON(Response{Event: "loadNewTypeTerrain", Success: mapEditor.CreateNewTerrain(msg.TerrainName)})
+			//ws.WriteJSON(Response{Event: "loadNewTypeTerrain", Success: mapEditor.CreateNewTerrain(msg.TerrainName)})
 		}
 
 		if msg.Event == "loadNewTypeObject" {
-			success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch,
-				msg.Attack, msg.Radius, msg.Scale, msg.Shadow, msg.CountSprites, msg.XSize, msg.YSize)
-			ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
+			//success := mapEditor.CreateNewObject(msg.ObjectName, msg.AnimateName, msg.Move, msg.Watch, msg.Attack, msg.CountSprites, msg.XSize, msg.YSize)
+			//ws.WriteJSON(Response{Event: "loadNewTypeObject", Success: success})
 		}
 
 		if msg.Event == "deleteType" {
-			mapEditor.DeleteType(msg.IDType)
-			selectMap(msg, ws)
+			//mapEditor.DeleteType(msg.IDType)
+			//selectMap(msg, ws)
 		}
 
 		if msg.Event == "replaceCoordinateType" {
-			mapEditor.ReplaceType(msg.OldIDType, msg.NewIDType)
-			selectMap(msg, ws)
+			//mapEditor.ReplaceType(msg.OldIDType, msg.NewIDType)
+			//selectMap(msg, ws)
 		}
 
 		if msg.Event == "changeType" {
-			mapEditor.ChangeType(msg.IDType, msg.Scale, msg.Shadow, msg.Move, msg.Watch, msg.Attack, msg.Radius)
+			mapEditor.ChangeType(msg.IDType, msg.Move, msg.Watch, msg.Attack)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "rotateObject" {
-			mapEditor.Rotate(msg.ID, msg.Q, msg.R, msg.Rotate, msg.Speed, msg.XOffset, msg.YOffset, msg.XShadowOffset, msg.YShadowOffset, msg.ShadowIntensity)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+
+			coordinateMap.ObjRotate = msg.Rotate
+			coordinateMap.AnimationSpeed = msg.Speed
+			coordinateMap.XOffset = msg.XOffset
+			coordinateMap.YOffset = msg.YOffset
+			coordinateMap.XShadowOffset = msg.XShadowOffset
+			coordinateMap.YShadowOffset = msg.YShadowOffset
+			coordinateMap.ShadowIntensity = msg.ShadowIntensity
+
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
-		// ---------------------------- //
+		// TODO ---------------------------- //
 		if msg.Event == "addStartRow" {
 			mapEditor.AddStartRow(msg.ID)
 			selectMap(msg, ws)
@@ -206,7 +204,6 @@ func Reader(ws *websocket.Conn) {
 			selectMap(msg, ws)
 		}
 
-		// ---------------------------- //
 		if msg.Event == "addStartColumn" {
 			mapEditor.AddStartColumn(msg.ID)
 			selectMap(msg, ws)
@@ -226,34 +223,47 @@ func Reader(ws *websocket.Conn) {
 			mapEditor.RemoveEndColumn(msg.ID)
 			selectMap(msg, ws)
 		}
+		// TODO --------------------------- //
 
 		if msg.Event == "addOverTexture" {
-			mapEditor.PlaceTextures(msg.ID, msg.Q, msg.R, msg.TextureName)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.PlaceTextures(coordinateMap, mapChange, msg.TextureName)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeOverTexture" {
-			mapEditor.RemoveTextures(msg.ID, msg.Q, msg.R)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.RemoveTextures(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addTransport" {
-			mapEditor.PlaceTransport(msg.ID, msg.Q, msg.R)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.PlaceTransport(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeTransport" {
-			mapEditor.RemoveTransport(msg.ID, msg.Q, msg.R)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.RemoveTransport(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addHandler" {
-			mapEditor.PlaceHandler(msg.ID, msg.Q, msg.R, msg.ToQ, msg.ToR, msg.ToBaseID, msg.ToMapID, msg.TypeHandler)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.PlaceHandler(coordinateMap, mapChange, msg.ToQ, msg.ToR, msg.ToBaseID, msg.ToMapID, msg.TypeHandler)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeHandler" {
-			mapEditor.RemoveHandler(msg.ID, msg.Q, msg.R)
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			mapEditor.RemoveHandler(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 

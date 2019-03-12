@@ -15,7 +15,7 @@ func CreateNewTerrain(terrainName string) bool {
 	} else {
 
 		AddNewTypeCoordinate("", terrainName, "",
-			"", false, true, true, true, 0, 0, false)
+			"", false, true, true, true)
 
 		addJSPreloadFile(terrainName, "terrain", 0, 0, 0)
 
@@ -23,7 +23,7 @@ func CreateNewTerrain(terrainName string) bool {
 	}
 }
 
-func CreateNewObject(objectName, animateName string, move, watch, attack bool, radius int, scale int, shadow bool, countSprites, xSize, ySize int) bool {
+func CreateNewObject(objectName, animateName string, move, watch, attack bool, countSprites, xSize, ySize int) bool {
 	if objectName != "" {
 		rows, err := dbConnect.GetDBConnect().Query("SELECT id FROM coordinate_type WHERE texture_object=$1", objectName)
 		if err != nil {
@@ -41,7 +41,7 @@ func CreateNewObject(objectName, animateName string, move, watch, attack bool, r
 		} else {
 			// desert тип по умолчанию
 			AddNewTypeCoordinate("", "desert", objectName,
-				"", false, move, watch, attack, radius, scale, shadow)
+				"", false, move, watch, attack)
 
 			addJSPreloadFile(objectName, "objects", 0, 0, 0)
 
@@ -64,7 +64,7 @@ func CreateNewObject(objectName, animateName string, move, watch, attack bool, r
 		} else {
 			// desert тип по умолчанию
 			AddNewTypeCoordinate("", "desert", "",
-				animateName, true, move, watch, attack, radius, scale, shadow)
+				animateName, true, move, watch, attack)
 
 			addJSPreloadFile(animateName, "animate", countSprites, xSize, ySize)
 

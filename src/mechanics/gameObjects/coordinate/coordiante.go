@@ -11,11 +11,10 @@ type Coordinate struct {
 	Type                string           `json:"type"`
 	TextureFlore        string           `json:"texture_flore"`
 	TextureOverFlore    string           `json:"texture_over_flore"`
+	TexturePriority     int              `json:"texture_priority"`
 	TextureObject       string           `json:"texture_object"`
 	AnimateSpriteSheets string           `json:"animate_sprite_sheets"`
 	AnimateLoop         bool             `json:"animate_loop"`
-	ImpactRadius        int              `json:"impact_radius"`
-	Impact              *Coordinate      `json:"impact"`
 	GameID              int              `json:"game_id"`
 	X                   int              `json:"x"`
 	Y                   int              `json:"y"`
