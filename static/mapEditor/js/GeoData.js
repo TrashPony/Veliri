@@ -163,3 +163,16 @@ function addGeoData(e) {
         );
     }
 }
+
+function createRange(id, min, max, step, startValue) {
+
+    let range = document.createElement("input");
+    range.id = id;
+    range.type = "range";
+    range.min = min;
+    range.max = max;
+    range.step = step;
+    range.value = startValue;
+
+    return range
+}

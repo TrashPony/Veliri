@@ -47,7 +47,7 @@ function CreateMap() {
                     y: startY,
                     q: q,
                     r: r,
-                    textureOverFlore: coordinate.texture_over_flore
+                    coordinate: coordinate
                 }); // x y - пиксельная координата положения, q r гексовая сеть
                 startX += horizontalOffset;
             }
@@ -99,10 +99,15 @@ function CreateBeams() {
 }
 
 function CreateTexture() {
+    // сортировка по приоритету отрисовки текстур
+    game.mapPoints.sort(function (a, b) {
+        return a.coordinate.texture_priority - b.coordinate.texture_priority;
+    });
+
     for (let i in game.mapPoints) {
-        if (game.mapPoints[i].textureOverFlore !== '') {
+        if (game.mapPoints[i].coordinate.texture_over_flore !== '') {
             let bmd = game.make.bitmapData(512, 512);
-            bmd.alphaMask(game.mapPoints[i].textureOverFlore, 'brush');
+            bmd.alphaMask(game.mapPoints[i].coordinate.texture_over_flore, 'brush');
             game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 256, game.mapPoints[i].y - 256);
             bmd.destroy();
         }

@@ -145,27 +145,6 @@ function CreateSubMenu(typeCoordinate) {
         attack.type = "checkbox";
         attack.checked = typeCoordinate.attack;
 
-        let shadowText = document.createElement("span");
-        shadowText.innerHTML = "Тень";
-        let shadow = document.createElement("input");
-        shadow.id = "changeShadow";
-        shadow.type = "checkbox";
-        shadow.checked = typeCoordinate.shadow;
-
-        let scaleText = document.createElement("span");
-        scaleText.innerHTML = "Размер";
-        let scale = document.createElement("input");
-        scale.id = "changeScale";
-        scale.type = "number";
-        scale.value = typeCoordinate.scale;
-
-        let impactText = document.createElement("span");
-        impactText.innerHTML = "Радиус воздействия";
-        let impact = document.createElement("input");
-        impact.id = "changeImpact";
-        impact.type = "number";
-        impact.value = typeCoordinate.impact_radius;
-
         let apply = document.createElement("input");
         apply.value = "Применить";
         apply.type = "submit";
