@@ -179,7 +179,7 @@ func Reader(ws *websocket.Conn) {
 			coordinateMap.YShadowOffset = msg.YShadowOffset
 			coordinateMap.ShadowIntensity = msg.ShadowIntensity
 			coordinateMap.Scale = msg.Scale
-			// TODO coordinateMap.Shadow = msg.Shadow
+			coordinateMap.Shadow = msg.Shadow
 
 			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
 			selectMap(msg, ws)

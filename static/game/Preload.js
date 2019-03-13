@@ -129,6 +129,8 @@ function preload() {
     game.load.image('grass_3', 'http://' + window.location.host + '/assets/terrainTextures/grass_3.jpg');
     game.load.image('soil', 'http://' + window.location.host + '/assets/terrainTextures/soil.jpg');
     game.load.image('soil_2', 'http://' + window.location.host + '/assets/terrainTextures/soil_2.jpg');
+    game.load.image('ravine_1_9', 'http://' + window.location.host + '/assets/terrainTextures/ravine_1_9.png');
+    game.load.image('ravine_2_9', 'http://' + window.location.host + '/assets/terrainTextures/ravine_2_9.png');
 
     // Mountains
     game.load.image('mountain_1', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_1.png');
@@ -146,6 +148,29 @@ function preload() {
     game.load.image('mountain_7', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_7.png');
     game.load.image('mountain_7_2', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_7_2.png');
     game.load.image('mountain_8', 'http://' + window.location.host + '/assets/map/objects/mountains/mountain_8.png');
+
+    // Ravine
+    game.load.image('ravine_1_1', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_1.png');
+    game.load.image('ravine_1_2', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_2.png');
+    game.load.image('ravine_1_3', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_3.png');
+    game.load.image('ravine_1_4', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_4.png');
+    game.load.image('ravine_1_5', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_5.png');
+    game.load.image('ravine_1_6', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_6.png');
+    game.load.image('ravine_1_7', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_7.png');
+    game.load.image('ravine_1_8', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_8.png');
+    game.load.image('ravine_1_9', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_9.png');
+    game.load.image('ravine_1_10', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_10.png');
+    game.load.image('ravine_1_Full', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_1_Full.png');
+
+    game.load.image('ravine_2_1', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_1.png');
+    game.load.image('ravine_2_2', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_2.png');
+    game.load.image('ravine_2_3', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_3.png');
+    game.load.image('ravine_2_4', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_4.png');
+    game.load.image('ravine_2_5', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_5.png');
+    game.load.image('ravine_2_6', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_6.png');
+    game.load.image('ravine_2_7', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_7.png');
+    game.load.image('ravine_2_8', 'http://' + window.location.host + '/assets/map/objects/ravines/ravine_2_8.png');
+    game.load.image('ravine_2_9', 'http://' + window.location.host + '/assets/terrainTextures/ravine_2_9.png');
 
     // Plants
     game.load.image('plant_1', 'http://' + window.location.host + '/assets/map/objects/plants/plant_1.png');

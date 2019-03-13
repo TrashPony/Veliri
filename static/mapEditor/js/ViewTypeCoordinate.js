@@ -19,13 +19,17 @@ function ViewPatternCoordinate(typeCoordinates) {
             typeBlock.style.background = "url(/assets/map/objects/mountains/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
 
-        } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "plant"){
+        } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "plant") {
 
             typeBlock.style.background = "url(/assets/map/objects/plants/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
 
-        } else {
+        } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "ravine") {
 
+            typeBlock.style.background = "url(/assets/map/objects/ravines/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
+                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+
+        } else {
             typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
                 " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         }
@@ -162,7 +166,7 @@ function CreateTipType(type) {
         "<div><span> Watch </span><span style=color:" + view + ">" + type.view + "</span></div>" +
         "<div><span> Attack </span><span style=color:" + attack + ">" + type.attack + "</span></div>" +
         "<div><span> Размер </span><span style=color:#fff91e>" + type.scale + " %</span></div>" +
-        "<div><span> Радиус </span><span style=color:#fff91e>" + type.impact_radius + "</span></div>";
+        "<div><span> Обьект </span><span style=color:#fff91e>" + type.texture_object + "</span></div>";
 
 
     document.body.appendChild(tip);

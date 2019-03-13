@@ -127,7 +127,7 @@ func Transport(bot *player.Player) {
 			path := getPathAI(bot, mp)
 
 			if path != nil {
-				println("нашел путь")
+				//println("нашел путь")
 			} else {
 				println("не нашел путь")
 			}
@@ -202,7 +202,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		//toX, toY = rand.Intn(xSize), rand.Intn(ySize)
 
 	} else {
-		if len(bot.GlobalPath) >= bot.CurrentPoint {
+		if len(bot.GlobalPath) > bot.CurrentPoint {
 			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
 		} else {
 			bot.GlobalPath = nil
@@ -210,11 +210,11 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		}
 	}
 
-	println("я иду в х:", toX, " y:", toY)
+	//println("я иду в х:", toX, " y:", toY)
 
 	// проверка на то что х, у достижимы
 	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true)
-	println("достижимость: ", possible)
+	//println("достижимость: ", possible)
 	if possible {
 		path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
 		return path

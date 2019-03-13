@@ -38,6 +38,7 @@
     <script src="./js/GeoData.js"></script>
     <script src="./js/Beams.js"></script>
     <script src="./js/Emitters.js"></script>
+    <script src="./js/SaveMap.js"></script>
 
     <script src="../game/Create.js"></script>
     <script src="../game/Preload.js"></script>
@@ -54,6 +55,7 @@
     <script src="../game/CreateMap/GeoData.js"></script>
     <script src="../game/CreateMap/Beam.js"></script>
     <script src="../game/CreateMap/Emitters.js"></script>
+    <script src="../game/CreateMap/Reservoir.js"></script>
 
     <script src="../game/Interface/GrabCamera.js"></script>
     <script src="../game/Interface/RotateMap.js"></script>
@@ -167,6 +169,10 @@
                      style='background: url("/assets/terrainTextures/icon/tundra.jpg") center center / 115% no-repeat;'></div>
                 <div onclick="PlaceTexture('tundra_2')"
                      style='background: url("/assets/terrainTextures/icon/tundra_2.jpg") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('ravine_1_9')"
+                     style='background: url("/assets/terrainTextures/icon/ravine_1_9.png") center center / 115% no-repeat;'></div>
+                <div onclick="PlaceTexture('ravine_2_9')"
+                     style='background: url("/assets/terrainTextures/icon/ravine_2_9.png") center center / 115% no-repeat;'></div>
             </div>
         </div>
         <div id="Emitters">
@@ -262,6 +268,7 @@
             </table>
             <input type="submit" value="Загрузить" onclick="CreateNewObject()">
         </form>
+        <input type="button" value="Сохранить карту" onclick="SaveMap()">
     </div>
 
     <div id="main">
