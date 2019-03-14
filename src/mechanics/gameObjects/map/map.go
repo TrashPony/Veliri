@@ -23,9 +23,19 @@ type Map struct {
 	Beams               []*Beam                  `json:"beams"`
 	Emitters            []*Emitter               `json:"emitters"`
 	GeoData             []*ObstaclePoint         `json:"geo_data"`
+	Anomalies           []*Anomalies             `json:"anomalies"`
 
 	// тут хранятся просчитанные шаблоны координат, что бы не проверять координаты при каждом поиске пути
 	GeoDataMaps map[int]map[int]map[int]coordinate.Coordinate `json:"-"`
+}
+
+type Anomalies struct {
+	ID     int    `json:"id"`
+	X      int    `json:"x"`
+	Y      int    `json:"y"`
+	Radius int    `json:"radius"`
+	Type   string `json:"type"`
+	Power  int    `json:"power"`
 }
 
 func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {

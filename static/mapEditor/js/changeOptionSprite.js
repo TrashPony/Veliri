@@ -43,10 +43,7 @@ function ChangeOptionSprite(q, r) {
             <input type="submit" value="Применить" id="applyRotate">
             <input type="submit" value="Отменить" id="cancelRotate">`;
 
-    // TODO отрицательное значение поворота
-    // TODO правильное позиционирование тени
-    // TODO включение и отключение теней
-    console.log(coordinate);
+    // TODO включение и отключение теней при изменение состояние чекбокса для теней
 
     let xy = GetXYCenterHex(q, r);
 

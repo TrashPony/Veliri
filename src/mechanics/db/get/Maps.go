@@ -42,6 +42,7 @@ func Maps() map[int]*_map.Map {
 
 		CoordinatesMap(mp)
 		GeoData(mp)
+		Anomalies(mp)
 		Beams(mp)
 		Emitters(mp)
 
@@ -118,6 +119,33 @@ func Beams(mp *_map.Map) {
 		mp.Beams = append(mp.Beams, &beam)
 		if err != nil {
 			log.Fatal(err.Error() + "scan beam")
+		}
+	}
+	defer rows.Close()
+}
+
+func Anomalies(mp *_map.Map) {
+	mp.Anomalies = make([]*_map.Anomalies, 0)
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"Select "+
+		"id, "+
+		"x, "+
+		"y, "+
+		"radius,"+
+		"type,"+
+		"power "+
+		""+
+		"FROM map_danger_anomalies WHERE id_map = $1", mp.Id)
+	if err != nil {
+		log.Fatal(err.Error() + "db get anomalies")
+	}
+
+	for rows.Next() { // заполняем карту значащами клетками
+		var anomaly _map.Anomalies
+		err := rows.Scan(&anomaly.ID, &anomaly.X, &anomaly.Y, &anomaly.Radius, &anomaly.Type, &anomaly.Power)
+		mp.Anomalies = append(mp.Anomalies, &anomaly)
+		if err != nil {
+			log.Fatal(err.Error() + "scan geo data")
 		}
 	}
 	defer rows.Close()
