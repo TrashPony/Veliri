@@ -1,6 +1,6 @@
 let game;
 let Data;
-let debug = false;
+let debug = true;
 
 function Game(jsonData) {
     Data = jsonData;
@@ -27,6 +27,7 @@ function LoadGame() {
 
     if (debug) {
         CreateGeoData(Data.map.geo_data);
+        CreateAnomalies(Data.map.anomalies)
     }
     FocusMS();
 }

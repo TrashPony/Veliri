@@ -46,10 +46,11 @@ func main() {
 	go globalGame.SkyGenerator()    // запускает генерацию облаков на картах
 	go globalGame.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	go globalGame.HandlersLife()    // мониторинг входов выходов секторов
-	go globalGame.InitAI()
+	go globalGame.InitAI()			// запускает ботов
+	go globalGame.AnomaliesLife()   // запускает работу аномалий на карте
 
-	log.Println("http server started on :8080")
-	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
+	log.Println("http server started on :8090")
+	err := http.ListenAndServe(":8090", router) // запускает веб сервер на 8080 порту
 	if err != nil {
 		log.Panic(err)
 	}

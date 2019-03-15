@@ -65,6 +65,7 @@ type Message struct {
 	Coordinates   []*coordinate.Coordinate        `json:"coordinates"`
 	Radius        int                             `json:"radius"`
 	Anomalies     []globalGame.VisibleAnomaly     `json:"anomalies"`
+	Anomaly       *_map.Anomalies                 `json:"anomaly"`
 	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`

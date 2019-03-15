@@ -33,7 +33,9 @@ type Player struct {
 
 	LobbyReady bool
 	Respawn    *coordinate.Coordinate
+
 	InBaseID   int // ид базы в которой сидит игрок
+	LastBaseID int // последняя база которую посетил игрок
 
 	/* мета для ботов */
 	Bot          bool `json:"bot"`      // переменная говорит что это не игрок))

@@ -34,7 +34,9 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		ws.WriteJSON(Message{Event: "OutBase"})
 		return
 	} else {
-		// иначе убираем у него скорость)
+		newPlayer.LastBaseID = newPlayer.InBaseID
+
+		// убираем у него скорость)
 		if newPlayer.GetSquad() != nil {
 			newPlayer.GetSquad().GlobalX = 0
 			newPlayer.GetSquad().GlobalY = 0
@@ -69,7 +71,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}

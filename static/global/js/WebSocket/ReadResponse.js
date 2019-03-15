@@ -153,4 +153,16 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "handlerOpen") {
         OpenTunnel(jsonData)
     }
+
+    if (jsonData.event === "AnomalyCatch") {
+        console.log(jsonData)
+    }
+
+    if (jsonData.event === "DamageSquad") {
+        FillSquadBlock(jsonData.squad)
+    }
+
+    if (jsonData.event === "DeadSquad") {
+        // todo
+    }
 }

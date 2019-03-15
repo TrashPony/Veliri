@@ -5,6 +5,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/gorilla/websocket"
+	"time"
 )
 
 func AnomaliesLife() {
@@ -30,19 +32,30 @@ func mortalityAnomaly(anomaly *_map.Anomalies) {
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 	for ws, user := range users {
-		// TODO провекра на попадание в зону, отправка сообщения что "опасность! вы находитесь рядом с аномалией!"
-		println(ws, user)
-		SquadDamage(user, anomaly.Power) // todo damage anomaly.Power * (radius/radius * dist))
+		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, anomaly.X, anomaly.Y)
+
+		if int(dist) < anomaly.Radius {
+			// чем ближе к центру тем полнее урон
+			SquadDamage(user, anomaly.Power*(anomaly.Radius/anomaly.Radius-int(dist)), ws)
+
+			// отправка сообщения что "опасность! вы находитесь рядом с аномалией!"
+			go sendMessage(Message{Event: "AnomalyCatch", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot, Anomaly: anomaly})
+		}
 	}
 }
 
-func SquadDamage(user *player.Player, damage int) {
+func SquadDamage(user *player.Player, damage int, ws *websocket.Conn) {
 	// 1 наносим урон корпусу
 	user.GetSquad().MatherShip.HP -= damage
 
-	//todo 2 наносим урон 2м рандомным эквипам
+	//todo 2 наносим урон рандомным эквипам
 
+	go sendMessage(Message{Event: "DamageSquad", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot, Squad: user.GetSquad()})
 	if user.GetSquad().MatherShip.HP <= 0 {
-		// игрок умирает 
+		go sendMessage(Message{Event: "DeadSquad", OtherUser: GetShortUserInfo(user), idMap: user.GetSquad().MapID})
+		user.SetSquad(nil) // отнимание всего отряда и инвентаря в трюме
+
+		time.Sleep(3 * time.Second)// время для проигрыша анимации например
+		intoToBase(user, user.LastBaseID, ws)
 	}
 }
