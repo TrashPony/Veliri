@@ -46,6 +46,7 @@ function fillSquadUnit(id, unit) {
 
 function fillDamageEquip(id, unit) {
     let damageBlock = document.getElementById(id);
+    damageBlock.innerHTML = "";
 
     if (unit.hp < unit.body.max_hp) {
         let wrapper = document.createElement("div");
@@ -55,6 +56,10 @@ function fillDamageEquip(id, unit) {
             " center center / contain no-repeat";
 
         let healBar = createHealBat(unit.hp, unit.body.max_hp);
+
+        if (unit.body.mother_ship && 100 / (unit.body.max_hp / unit.hp) < 25) {
+            document.getElementById("criticalDamage").style.visibility = 'visible';
+        }
 
         wrapper.appendChild(healBar);
         wrapper.appendChild(damage);
@@ -121,7 +126,7 @@ function createHealBat(hp, maxHP) {
 
     if (percentHP === 100) {
         backHealBar.style.opacity = "0"
-    } else if (percentHP < 90 && percentHP >= 75) {
+    } else if (percentHP < 100 && percentHP >= 75) {
         healBar.style.backgroundColor = "#fff326"
     } else if (percentHP < 75 && percentHP >= 50) {
         healBar.style.backgroundColor = "#fac227"
@@ -139,6 +144,7 @@ function createHealBat(hp, maxHP) {
 
 function fillMiningBlock(unit) {
     let mining = document.getElementById("MiningPanel");
+    mining.innerHTML = "";
 
     function checkEquip(equips, type) {
         for (let i in equips) {

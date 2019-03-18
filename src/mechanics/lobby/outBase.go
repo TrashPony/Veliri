@@ -3,6 +3,7 @@ package lobby
 import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/base"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
@@ -29,17 +30,15 @@ func OutBase(user *player.Player) error {
 		user.GetSquad().Q = gameBase.RespQ
 		user.GetSquad().R = gameBase.RespR
 		user.GetSquad().MapID = gameBase.MapID
-
+		user.LastBaseID = user.InBaseID
 		base.UserOutBase(user.GetID())
 		user.InBaseID = 0
 
+		dbPlayer.UpdateUser(user)
 		update.Squad(user.GetSquad(), true)
 		return nil
 	} else {
-		if user.GetSquad() == nil {
-			return errors.New("no body")
-		}
-		if user.GetSquad().MatherShip.Body == nil {
+		if user.GetSquad() == nil || user.GetSquad().MatherShip.Body == nil {
 			return errors.New("no body")
 		}
 		if user.GetSquad().MatherShip.HP == 0 {

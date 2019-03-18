@@ -51,7 +51,7 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 	defer rLock.Unlock()
 
 	for ws, user := range users {
-		if mapID == user.GetSquad().MapID {
+		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
 				go softTransition(user, x, y, coor, ws)
@@ -97,7 +97,7 @@ func checkHandlerCoordinate(x, y, mapID int) bool {
 	defer rLock.Unlock()
 
 	for _, user := range users {
-		if mapID == user.GetSquad().MapID {
+		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if dist < 75 {
 				return true

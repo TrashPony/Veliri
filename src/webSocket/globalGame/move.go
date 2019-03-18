@@ -65,7 +65,9 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 
 	defer func() {
 		stopMove(user, false)
-		user.GetSquad().MoveChecker = false
+		if user.GetSquad() != nil {
+			user.GetSquad().MoveChecker = false
+		}
 		if moveRepeat {
 			move(ws, msg)
 		}

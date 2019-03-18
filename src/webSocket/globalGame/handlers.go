@@ -45,11 +45,13 @@ func intoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
 		bases.UserIntoBase(user.GetID(), baseID)
 	}
 
-	go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+	go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), Bot: user.Bot})
 	go DisconnectUser(user, ws, true)
 
 	user.InBaseID = baseID
 
-	user.GetSquad().GlobalX = 0
-	user.GetSquad().GlobalY = 0
+	if user.GetSquad() != nil {
+		user.GetSquad().GlobalX = 0
+		user.GetSquad().GlobalY = 0
+	}
 }

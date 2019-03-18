@@ -155,7 +155,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "AnomalyCatch") {
-        console.log(jsonData)
+        AnomalyCatch(jsonData)
     }
 
     if (jsonData.event === "DamageSquad") {
@@ -163,6 +163,6 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "DeadSquad") {
-        // todo
+        SquadDead(jsonData.other_user);
     }
 }

@@ -30,6 +30,7 @@
 
     <script src="js/Services.js"></script>
     <script src="js/Squad/CreateSquad.js"></script>
+    <script src="js/Squad/DeadSquad.js"></script>
     <script src="js/DisconnectUser.js"></script>
 
     <script src="js/Mining/StartMining.js"></script>
@@ -67,6 +68,7 @@
     <script src="js/Interface/SquadBlock.js"></script>
     <script src="js/Interface/FillUserMeta.js"></script>
     <script src="js/Interface/VisibleAnomalies.js"></script>
+    <script src="js/Interface/AnomalyCatch.js"></script>
 
     <script src="js/Collision/Collision.js"></script>
 
@@ -143,7 +145,11 @@
 
         <div id="Notifications"></div>
 
-        <div id="lowGravity"></div>
+        <div id="displayNotify">
+            <div id="lowGravity"></div>
+            <div id="catchAnomaly">Danger anomaly!</div>
+            <div id="criticalDamage">Critical Damage!!!</div>
+        </div>
 
         <div id="anomalyScanner">
             <div id="anomalyDisplay"></div>

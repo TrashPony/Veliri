@@ -119,10 +119,19 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 }
 
 func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map[*websocket.Conn]*player.Player) (bool, *player.Player) {
+
+	if moveUser.GetSquad() == nil {
+		return true, nil
+	}
+
 	bodyMove := moveUser.GetSquad().MatherShip.Body
 	mX, mY := float64(moveUser.GetSquad().GlobalX), float64(moveUser.GetSquad().GlobalY)
 
 	for _, user := range users {
+
+		if user.GetSquad() == nil {
+			continue
+		}
 
 		if user.GetSquad().MapID != moveUser.GetSquad().MapID {
 			// по неведомой причине нельзя этот иф класть в общий, он не работает там

@@ -22,7 +22,7 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 
 	findPlace := false
 	for _, gameUser := range users {
-		if gameUser.GetID() != user.GetID() && !user.GetSquad().InSky {
+		if gameUser.GetSquad() != nil && gameUser.GetID() != user.GetID() && !user.GetSquad().InSky {
 			dist := GetBetweenDist(gameUser.GetSquad().GlobalX, gameUser.GetSquad().GlobalY,
 				user.GetSquad().GlobalX, user.GetSquad().GlobalY)
 

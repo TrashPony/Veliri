@@ -14,14 +14,16 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 	for ws, user := range users {
-		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-		if int(dist) < distCheck && mapID == user.GetSquad().MapID {
-			if !user.GetSquad().ForceEvacuation {
-				go sendMessage(Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot})
-				go ForceEvacuation(ws, user, x, y, seconds, distCheck)
+		if user.GetSquad() != nil {
+			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+			if int(dist) < distCheck && mapID == user.GetSquad().MapID {
+				if !user.GetSquad().ForceEvacuation {
+					go sendMessage(Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot})
+					go ForceEvacuation(ws, user, x, y, seconds, distCheck)
+				}
+				lock = true
+				user.GetSquad().ForceEvacuation = true
 			}
-			lock = true
-			user.GetSquad().ForceEvacuation = true
 		}
 	}
 

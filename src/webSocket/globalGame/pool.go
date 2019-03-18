@@ -249,17 +249,17 @@ func MoveSender() {
 
 				var err error
 
-				// получают все кроме отправителя
+				// получают все кроме отправителя в пределах карты
 				if client.ID != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
 					err = ws.WriteJSON(resp)
 				}
 
 				// получает только отправитель
-				if client.ID == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 && client.MapID == resp.idMap {
+				if client.ID == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 {
 					err = ws.WriteJSON(resp)
 				}
 
-				// получают все
+				// получают все в пределах карты
 				if resp.idSender == 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
 					err = ws.WriteJSON(resp)
 				}
