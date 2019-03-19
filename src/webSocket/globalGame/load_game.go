@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func loadGame(ws *websocket.Conn, msg Message) {
+func LoadGame(ws *websocket.Conn, msg Message) {
 	user := globalGame.Clients.GetByWs(ws)
 	// TODO при загрузке нового игрока весь мир замерает на некоторые секунды, возможно актуально только для ботов
 	if user != nil {
@@ -21,8 +21,8 @@ func loadGame(ws *websocket.Conn, msg Message) {
 
 			otherUsers := getOtherSquads(user, mp)
 
-			go sendMessage(Message{Event: "ConnectNewUser", OtherUser: GetShortUserInfo(user), idSender: user.GetID(), idMap: user.GetSquad().MapID})
-			go sendMessage(Message{
+			go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{
 				Event:      msg.Event,
 				Map:        mp,
 				User:       user,
@@ -30,10 +30,10 @@ func loadGame(ws *websocket.Conn, msg Message) {
 				Bases:      bases.Bases.GetBasesByMap(mp.Id),
 				OtherUsers: otherUsers,
 				Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
-				idUserSend: user.GetID(),
+				IDUserSend: user.GetID(),
 				Credits:    user.GetCredits(),
 				Experience: user.GetExperiencePoint(),
-				idMap:      user.GetSquad().MapID,
+				IDMap:      user.GetSquad().MapID,
 				Bot:        user.Bot,
 			})
 
@@ -41,26 +41,27 @@ func loadGame(ws *websocket.Conn, msg Message) {
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 			if err == nil {
-				go sendMessage(Message{Event: "AnomalySignal", idUserSend: user.GetID(), Anomalies: anomalies, idMap: user.GetSquad().MapID, Bot: user.Bot})
+				go SendMessage(Message{Event: "AnomalySignal", IDUserSend: user.GetID(), Anomalies: anomalies, IDMap: user.GetSquad().MapID, Bot: user.Bot})
 			}
 		} else {
-			go sendMessage(Message{Event: "Error", Error: "no allow", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+			go SendMessage(Message{Event: "Error", Error: "no allow", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 		}
 	}
 }
 
-func getOtherSquads(user *player.Player, mp *_map.Map) []*hostileMS {
+func getOtherSquads(user *player.Player, mp *_map.Map) []*player.ShortUserInfo {
 
-	otherUsers := make([]*hostileMS, 0)
+	otherUsers := make([]*player.ShortUserInfo, 0)
 
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 
 	globalGame.GetPlaceCoordinate(user, users, mp)
 	for _, otherUser := range users {
-		if user.GetSquad() != nil && otherUser.GetSquad() != nil && user.GetID() != otherUser.GetID() && user.GetSquad().MapID == otherUser.GetSquad().MapID && otherUser.InBaseID == 0 {
+		if user.GetSquad() != nil && otherUser.GetSquad() != nil && user.GetID() != otherUser.GetID() &&
+			user.GetSquad().MapID == otherUser.GetSquad().MapID && otherUser.InBaseID == 0 {
 
-			otherUsers = append(otherUsers, GetShortUserInfo(otherUser))
+			otherUsers = append(otherUsers, otherUser.GetShortUserInfo())
 		}
 	}
 

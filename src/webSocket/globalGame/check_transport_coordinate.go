@@ -18,7 +18,7 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 			if int(dist) < distCheck && mapID == user.GetSquad().MapID {
 				if !user.GetSquad().ForceEvacuation {
-					go sendMessage(Message{Event: "setFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot})
+					go SendMessage(Message{Event: "setFreeCoordinate", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot})
 					go ForceEvacuation(ws, user, x, y, seconds, distCheck)
 				}
 				lock = true
@@ -43,7 +43,7 @@ func ForceEvacuation(ws *websocket.Conn, user *player.Player, x, y, seconds, dis
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 
 		if int(dist) > distCheck {
-			go sendMessage(Message{Event: "removeNoticeFreeCoordinate", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "removeNoticeFreeCoordinate", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			user.GetSquad().ForceEvacuation = false
 			break
 		} else {

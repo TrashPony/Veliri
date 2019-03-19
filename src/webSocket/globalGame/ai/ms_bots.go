@@ -1,4 +1,4 @@
-package globalGame
+package ai
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
@@ -13,6 +13,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/globalGame"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"math/rand"
@@ -85,7 +86,7 @@ func respBot(base *base.Base, mp *_map.Map) {
 }
 
 func outBase(bot *player.Player, base *base.Base) {
-	for CheckTransportCoordinate(base.RespQ, base.RespR, 10, 95, base.MapID) {
+	for wsGlobal.CheckTransportCoordinate(base.RespQ, base.RespR, 10, 95, base.MapID) {
 		// запускаем механизм проверки и эвакуации игрока с респауна))))
 		time.Sleep(time.Millisecond * 100)
 	}
@@ -105,9 +106,10 @@ func outBase(bot *player.Player, base *base.Base) {
 
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
-	loadGame(bot.GetFakeWS(), Message{})
+	wsGlobal.LoadGame(bot.GetFakeWS(), wsGlobal.Message{})
 	// todo после выхода из базы сваливать по прямой быстро а не стоять на токе и распа и строить путь
-	// TODO проверка на топливо)) (это причина их зваисания похоже что)
+
+	// следим что бы у ботов осталавалось топливо
 	for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
 		slot.Count = slot.MaxCount
 	}
@@ -139,7 +141,7 @@ func Transport(bot *player.Player) {
 				if exit {
 					break
 				}
-				move(bot.GetFakeWS(), Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
+				wsGlobal.Move(bot.GetFakeWS(), wsGlobal.Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
 				for {
 					time.Sleep(100 * time.Millisecond)
 

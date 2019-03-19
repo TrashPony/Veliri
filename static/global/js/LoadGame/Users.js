@@ -10,8 +10,8 @@ function CreateUser(squad) {
     }
 
     CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate);
-    if (debug) {
-        CreateMSGeo(squad);
+    if (game && debug) {
+       // CreateMSGeo(squad);
     }
     game.squad = squad;
 }
@@ -19,22 +19,19 @@ function CreateUser(squad) {
 function CreateOtherUsers(otherUsers) {
     if (!game.otherUsers) game.otherUsers = [];
     for (let i = 0; i < otherUsers.length; i++) { // создаем новых
-        console.log("4")
         CreateOtherUser(otherUsers[i])
     }
 
     for (let i = 0; i < game.otherUsers.length; i++) { // докидываем тех кто долетел до загрузки и не смог создатся т.к. небыло группы
-        console.log("3")
         CreateOtherUser(game.otherUsers[i])
     }
 }
 
 function CreateOtherUser(otherUser) {
-    console.log(otherUser);
     let x = otherUser.x;
     let y = otherUser.y;
 
-    if (!game.otherUsers) game.otherUsers = [];
+    if (game && !game.otherUsers) game.otherUsers = [];
     let find = false;
     let sprite = false;
 
@@ -50,7 +47,7 @@ function CreateOtherUser(otherUser) {
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) {
         CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate);
-        if (debug) {
+        if (game && debug) {
             CreateOtherMSGeo(otherUser);
         }
     }

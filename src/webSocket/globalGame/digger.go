@@ -20,7 +20,7 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			go sendMessage(Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
 
@@ -45,8 +45,8 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 			}
 		}
 
-		go sendMessage(Message{Event: "SelectDigger", Coordinates: result, idUserSend: user.GetID(),
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "SelectDigger", Coordinates: result, IDUserSend: user.GetID(),
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 	}
 }
 
@@ -62,7 +62,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			go sendMessage(Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
 
@@ -149,26 +149,26 @@ func useDigger(ws *websocket.Conn, msg Message) {
 
 						mpCoordinate.DynamicObject = &dynamicObject
 
-						go sendMessage(Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
+						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
-							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID})
+							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
 
 						for _, otherUser := range users {
 							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
 							if err == nil {
-								go sendMessage(Message{Event: "AnomalySignal", idUserSend: otherUser.GetID(),
-									Anomalies: anomalies, idMap: user.GetSquad().MapID})
+								go SendMessage(Message{Event: "AnomalySignal", IDUserSend: otherUser.GetID(),
+									Anomalies: anomalies, IDMap: user.GetSquad().MapID})
 							} else {
-								go sendMessage(Message{Event: "RemoveAnomalies", idUserSend: otherUser.GetID(),
-									idMap: user.GetSquad().MapID})
+								go SendMessage(Message{Event: "RemoveAnomalies", IDUserSend: otherUser.GetID(),
+									IDMap: user.GetSquad().MapID})
 							}
 						}
 					} else {
 						mpCoordinate.DynamicObject = &dynamicObject
-						go sendMessage(Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Q: msg.Q, R: msg.R,
+						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
-							Name: diggerSlot.Equip.Name, idMap: user.GetSquad().MapID})
+							Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
 					}
 				}
 			}

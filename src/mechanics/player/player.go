@@ -1,11 +1,14 @@
 package player
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/gorilla/websocket"
+	"strconv"
 )
 
 type Player struct {
@@ -44,6 +47,51 @@ type Player struct {
 	UUID         string                   `json:"uuid"`
 	GlobalPath   []*coordinate.Coordinate `json:"global_path"`   // маршрут через сектора, тут лежат координаты переходов, входов на базы
 	CurrentPoint int                      `json:"current_point"` // номер ячейку куда надо пиздовать
+}
+
+type ShortUserInfo struct {
+	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
+	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
+	SquadID    string       `json:"squad_id"`
+	UserName   string       `json:"user_name"`
+	X          int          `json:"x"`
+	Y          int          `json:"y"`
+	Q          int          `json:"q"`
+	R          int          `json:"r"`
+	BodyName   string       `json:"body_name"`
+	WeaponName string       `json:"weapon_name"`
+	Rotate     int          `json:"rotate"`
+	Body       *detail.Body `json:"body"`
+}
+
+func (client *Player) GetShortUserInfo() *ShortUserInfo {
+	var hostile ShortUserInfo
+
+	if client == nil || client.GetSquad() == nil || client.GetSquad().MatherShip == nil || client.GetSquad().MatherShip.Body == nil {
+		return nil
+	}
+
+	if client.Bot {
+		hostile.SquadID = client.UUID
+	} else {
+		hostile.SquadID = strconv.Itoa(client.GetSquad().ID)
+	}
+
+	hostile.UserName = client.GetLogin()
+	hostile.X = client.GetSquad().GlobalX
+	hostile.Y = client.GetSquad().GlobalY
+	hostile.Q = client.GetSquad().Q
+	hostile.R = client.GetSquad().R
+	hostile.Rotate = client.GetSquad().MatherShip.Rotate
+	hostile.BodyName = client.GetSquad().MatherShip.Body.Name
+
+	hostile.Body, _ = gameTypes.Bodies.GetByID(client.GetSquad().MatherShip.Body.ID)
+
+	if client.GetSquad().MatherShip.GetWeaponSlot() != nil && client.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
+		hostile.WeaponName = client.GetSquad().MatherShip.GetWeaponSlot().Weapon.Name
+	}
+
+	return &hostile
 }
 
 func (client *Player) SetFakeWS(ws *websocket.Conn) {

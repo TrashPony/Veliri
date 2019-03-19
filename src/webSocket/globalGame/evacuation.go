@@ -17,7 +17,7 @@ func evacuationSquad(ws *websocket.Conn) {
 	}
 
 	if user.GetSquad().HighGravity {
-		go sendMessage(Message{Event: "Error", Error: "High Gravity", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+		go SendMessage(Message{Event: "Error", Error: "High Gravity", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 		return
 	}
 
@@ -29,7 +29,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		if err != nil {
-			go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 			return
 		}
 
@@ -39,13 +39,13 @@ func evacuationSquad(ws *websocket.Conn) {
 
 		// начали эвакуацию, ставим флаг
 		user.GetSquad().Evacuation = true
-		go sendMessage(Message{Event: "startMoveEvacuation", OtherUser: GetShortUserInfo(user),
-			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "startMoveEvacuation", OtherUser: user.GetShortUserInfo(),
+			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)
 
 		for _, pathUnit := range path {
-			go sendMessage(Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
-				TransportID: transport.ID, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
+				TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -53,16 +53,16 @@ func evacuationSquad(ws *websocket.Conn) {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		go sendMessage(Message{Event: "placeEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
-			TransportID: transport.ID, idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "placeEvacuation", OtherUser: user.GetShortUserInfo(), BaseID: baseID,
+			TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
 		user.GetSquad().InSky = true
 		path = globalGame.ReturnEvacuation(user, mp, baseID)
 
 		for _, pathUnit := range path {
-			go sendMessage(Message{Event: "ReturnEvacuation", OtherUser: GetShortUserInfo(user), PathUnit: pathUnit,
-				BaseID: baseID, TransportID: transport.ID, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "ReturnEvacuation", OtherUser: user.GetShortUserInfo(), PathUnit: pathUnit,
+				BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -72,8 +72,8 @@ func evacuationSquad(ws *websocket.Conn) {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		go sendMessage(Message{Event: "stopEvacuation", OtherUser: GetShortUserInfo(user), BaseID: baseID,
-			TransportID: transport.ID, idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "stopEvacuation", OtherUser: user.GetShortUserInfo(), BaseID: baseID,
+			TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 
 		user.InBaseID = baseID
@@ -81,7 +81,7 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.GetSquad().GlobalY = 0
 
 		if !user.Bot {
-			go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "IntoToBase", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			go update.Squad(user.GetSquad(), true)
 			go bases.UserIntoBase(user.GetID(), baseID)
 		}
@@ -92,6 +92,5 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.GetSquad().Evacuation = false
 		user.GetSquad().InSky = false
 		transport.Job = false
-
 	}
 }

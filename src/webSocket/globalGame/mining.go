@@ -16,18 +16,18 @@ func startMining(ws *websocket.Conn, msg Message) {
 	if user != nil {
 		reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, user.GetSquad().MapID)
 		if reservoir == nil {
-			go sendMessage(Message{Event: "Error", Error: "no reservoir", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no reservoir", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
 
 		miningEquip := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if miningEquip == nil || miningEquip.Equip == nil && miningEquip.Equip.Applicable == reservoir.Type {
-			go sendMessage(Message{Event: "Error", Error: "no equip", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
 
 		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			go sendMessage(Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
 
@@ -35,8 +35,8 @@ func startMining(ws *websocket.Conn, msg Message) {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if int(dist) < miningEquip.Equip.Radius*100 && !miningEquip.Equip.MiningChecker {
 
-			go sendMessage(Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Equip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Equip.Reload,
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MapID})
 
 			miningEquip.Equip.MiningChecker = true
 			miningEquip.Equip.CreateMining()
@@ -44,11 +44,11 @@ func startMining(ws *websocket.Conn, msg Message) {
 			go Mining(ws, user, miningEquip.Equip, reservoir, msg)
 		} else {
 			if int(dist) > miningEquip.Equip.Radius*100 {
-				go sendMessage(Message{Event: "Error", Error: "not enough distance", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+				go SendMessage(Message{Event: "Error", Error: "not enough distance", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 				return
 			}
 			if miningEquip.Equip.MiningChecker {
-				go sendMessage(Message{Event: "Error", Error: "extractor work", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+				go SendMessage(Message{Event: "Error", Error: "extractor work", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 				return
 			}
 		}
@@ -66,16 +66,16 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 			case exitNow := <-miningEquip.GetMining():
 				if exitNow {
 					// игрок сам отменить копание
-					go sendMessage(Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID})
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
 			default:
 
 				if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
 					// игрок вышел
-					go sendMessage(Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID})
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
 
@@ -84,8 +84,8 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 				if int(dist) > miningEquip.Radius*100 {
 					// игрок уехал слишком далеко
-					go sendMessage(Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID})
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
 
@@ -101,7 +101,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		// проверка на полный трюм
 		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			go sendMessage(Message{Event: "Error", Error: "inventory is full", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			miningEquip.MiningChecker = false
 			return
 		}
@@ -129,24 +129,24 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		update.Squad(user.GetSquad(), true)
 
-		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
-		go sendMessage(Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count,
-			idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count,
+			IDMap: user.GetSquad().MapID})
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
-			go sendMessage(Message{Event: "stopMining", OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 
 			maps.Maps.RemoveReservoirByQR(reservoir.Q, reservoir.R, reservoir.MapID)
-			go sendMessage(Message{Event: "destroyReservoir", OtherUser: GetShortUserInfo(user), Q: reservoir.Q,
-				R: reservoir.R, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "destroyReservoir", OtherUser: user.GetShortUserInfo(), Q: reservoir.Q,
+				R: reservoir.R, IDMap: user.GetSquad().MapID})
 
 			miningEquip.MiningChecker = false
 			return
 		} else {
-			go sendMessage(Message{Event: msg.Event, OtherUser: GetShortUserInfo(user), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MapID})
 		}
 	}
 }

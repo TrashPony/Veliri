@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/webSocket/chat"
 	"github.com/TrashPony/Veliri/src/webSocket/field"
 	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
+	"github.com/TrashPony/Veliri/src/webSocket/globalGame/ai"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
 	"github.com/gorilla/mux"
 	"log"
@@ -41,13 +42,14 @@ func main() {
 	go field.UnitSender()
 	go field.PhaseSender()
 	go field.AttackSender()
+
 	go globalGame.MoveSender()
 
-	go globalGame.SkyGenerator()    // запускает генерацию облаков на картах
-	go globalGame.EvacuationsLife() // простенький аи для эвакуаторов на базах
-	go globalGame.HandlersLife()    // мониторинг входов выходов секторов
-	go globalGame.InitAI()          // запускает ботов
-	go globalGame.AnomaliesLife()   // запускает работу аномалий на карте
+	go ai.AnomaliesLife()   // запускает работу аномалий на карте
+	go ai.SkyGenerator()    // запускает генерацию облаков на картах, небо тоже немножко аи)
+	go ai.HandlersLife()    // мониторинг входов выходов секторов
+	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
+	go ai.InitAI()          // запускает ботов
 
 	log.Println("http server started on :8080")
 	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту

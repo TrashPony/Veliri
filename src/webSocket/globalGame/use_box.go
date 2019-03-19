@@ -12,10 +12,10 @@ func placeNewBox(ws *websocket.Conn, msg Message) {
 	if user != nil {
 		err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 		if err != nil {
-			go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 		} else {
-			go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
-			go sendMessage(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().GlobalX, Y: user.GetSquad().GlobalY, IDMap: user.GetSquad().MapID})
 		}
 	}
 }
@@ -37,20 +37,20 @@ func openBox(ws *websocket.Conn, msg Message) {
 
 				if mapBox.Protect {
 					if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
-						go sendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-							Size: mapBox.CapacitySize, idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+						go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
+							Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 					} else {
 						if msg.BoxPassword == 0 {
-							go sendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password",
-								idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+							go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password",
+								IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 						} else {
-							go sendMessage(Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password",
-								idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+							go SendMessage(Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password",
+								IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 						}
 					}
 				} else {
-					go sendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-						Size: mapBox.CapacitySize, idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+					go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
+						Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 				}
 			}
 		}
@@ -89,9 +89,9 @@ func useBox(ws *websocket.Conn, msg Message) {
 		}
 
 		if err != nil {
-			go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 		}
-		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 	}
 }
 
@@ -105,7 +105,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 	if msg.Event == "boxToBoxItem" {
 		err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
 		if err != nil {
-			go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 		} else {
 			updateBoxInfo(getBox)
 			updateBoxInfo(toBox)
@@ -116,7 +116,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 		for _, i := range msg.Slots {
 			err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
 			if err != nil {
-				go sendMessage(Message{Event: "Error", Error: err.Error(), idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+				go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			} else {
 				updateBoxInfo(getBox)
 				updateBoxInfo(toBox)
@@ -124,7 +124,7 @@ func boxToBox(ws *websocket.Conn, msg Message) {
 		}
 	}
 
-	go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 }
 
 func updateBoxInfo(box *boxInMap.Box) {
@@ -140,8 +140,8 @@ func updateBoxInfo(box *boxInMap.Box) {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
-			go sendMessage(Message{Event: "UpdateBox", idUserSend: user.GetID(), BoxID: box.ID,
-				Inventory: box.GetStorage(), Size: box.CapacitySize, idMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID,
+				Inventory: box.GetStorage(), Size: box.CapacitySize, IDMap: user.GetSquad().MapID})
 		}
 	}
 }

@@ -16,11 +16,11 @@ func updateThorium(ws *websocket.Conn, msg Message) {
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY
 
-		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
+		Move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 
-		go sendMessage(Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MapID})
 	}
 }
 
@@ -33,9 +33,9 @@ func removeThorium(ws *websocket.Conn, msg Message) {
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY
 
-		move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		go sendMessage(Message{Event: "UpdateInventory", idUserSend: user.GetID(), idMap: user.GetSquad().MapID})
-		go sendMessage(Message{Event: "WorkOutThorium", idUserSend: user.GetID(),
-			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, idMap: user.GetSquad().MapID})
+		Move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(),
+			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MapID})
 	}
 }

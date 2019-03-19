@@ -1,27 +1,15 @@
-package globalGame
+package ai
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/globalGame"
 	"github.com/satori/go.uuid"
 	"math"
 	"math/rand"
 	"strconv"
 	"time"
 )
-
-type cloud struct {
-	Name     string  `json:"name"`
-	Speed    int     `json:"speed"`
-	Alpha    float64 `json:"alpha"`
-	X        int     `json:"x"`
-	Y        int     `json:"y"`
-	Angle    int     `json:"angle"`
-	Uuid     string  `json:"uuid"`
-	sizeMapX int
-	sizeMapY int
-	idMap    int
-}
 
 func SkyGenerator() {
 	allMaps := maps.Maps.GetAllMap()
@@ -46,40 +34,40 @@ func CreateCloud(mapID int) {
 	speed := rand.Intn(40) + 20
 	alpha := 0.2 + rand.Float64()*(0.8-0.2)
 
-	var newCloud *cloud
+	var newCloud *wsGlobal.Cloud
 	if randomPos == 0 {
-		newCloud = &cloud{
+		newCloud = &wsGlobal.Cloud{
 			Name:     randomCloud,
 			Uuid:     Uuid.String(),
 			Speed:    speed,
 			Alpha:    alpha,
-			sizeMapX: sizeMapX,
-			sizeMapY: sizeMapY,
+			SizeMapX: sizeMapX,
+			SizeMapY: sizeMapY,
 			X:        rand.Intn(sizeMapX),
 			Y:        -500,
 			Angle:    135,
-			idMap:    mp.Id,
+			IDMap:    mp.Id,
 		}
 	}
 	if randomPos == 1 {
-		newCloud = &cloud{
+		newCloud = &wsGlobal.Cloud{
 			Name:     randomCloud,
 			Uuid:     Uuid.String(),
 			Speed:    speed,
 			Alpha:    alpha,
-			sizeMapX: sizeMapX,
-			sizeMapY: sizeMapY,
+			SizeMapX: sizeMapX,
+			SizeMapY: sizeMapY,
 			X:        sizeMapX + 500,
 			Y:        rand.Intn(sizeMapY),
 			Angle:    135,
-			idMap:    mp.Id,
+			IDMap:    mp.Id,
 		}
 	}
 
 	go MoveCloud(newCloud)
 }
 
-func MoveCloud(cloud *cloud) {
+func MoveCloud(cloud *wsGlobal.Cloud) {
 	for {
 		time.Sleep(1000 * time.Millisecond)
 
@@ -87,10 +75,10 @@ func MoveCloud(cloud *cloud) {
 		cloud.X = int(float64(cloud.Speed)*math.Cos(radRotate)) + cloud.X // идем по вектору движения
 		cloud.Y = int(float64(cloud.Speed)*math.Sin(radRotate)) + cloud.Y
 
-		go sendMessage(Message{Event: "MoveCloud", Cloud: cloud, idMap: cloud.idMap})
+		go wsGlobal.SendMessage(wsGlobal.Message{Event: "MoveCloud", Cloud: cloud, IDMap: cloud.IDMap})
 
-		if cloud.X > cloud.sizeMapX+500 || cloud.Y > cloud.sizeMapY+500 || -500 > cloud.X || -500 > cloud.Y {
-			go CreateCloud(cloud.idMap)
+		if cloud.X > cloud.SizeMapX+500 || cloud.Y > cloud.SizeMapY+500 || -500 > cloud.X || -500 > cloud.Y {
+			go CreateCloud(cloud.IDMap)
 			break
 		}
 	}

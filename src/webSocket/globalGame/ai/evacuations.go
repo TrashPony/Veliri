@@ -1,4 +1,4 @@
-package globalGame
+package ai
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
@@ -7,6 +7,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/globalGame"
+
 	"math"
 	"math/rand"
 	"time"
@@ -67,8 +69,8 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 
 		TransportMonitor(transport, transportBase, mp)
 
-		go sendMessage(Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
-			BaseID: transportBase.ID, TransportID: transport.ID, idMap: mp.Id})
+		go wsGlobal.SendMessage(wsGlobal.Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
+			BaseID: transportBase.ID, TransportID: transport.ID, IDMap: mp.Id})
 
 		transport.X = pathUnit.X
 		transport.Y = pathUnit.Y
@@ -87,7 +89,7 @@ func TransportMonitor(transport *base.Transport, transportBase *base.Base, mp *_
 		dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
 		if dist < transportBase.GravityRadius {
 			if coordinate.Transport {
-				CheckTransportCoordinate(coordinate.Q, coordinate.R, 10, 60, mp.Id)
+				wsGlobal.CheckTransportCoordinate(coordinate.Q, coordinate.R, 10, 60, mp.Id)
 			}
 		}
 	}

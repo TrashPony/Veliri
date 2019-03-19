@@ -1,4 +1,4 @@
-package globalGame
+package ai
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/globalGame"
 	"github.com/gorilla/websocket"
 	"time"
 )
@@ -36,11 +37,11 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 		xOut, yOut := globalGame.GetXYCenterHex(coor.ToQ, coor.ToR)
 		if checkHandlerCoordinate(xOut, yOut, coor.ToMapID) {
 			// отключение телепорта
-			go sendMessage(Message{Event: "handlerClose", idMap: mp.Id, Q: coor.Q, R: coor.R})
+			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerClose", IDMap: mp.Id, Q: coor.Q, R: coor.R})
 			coor.HandlerOpen = false
 		} else {
 			// включение телепорт
-			go sendMessage(Message{Event: "handlerOpen", idMap: mp.Id, Q: coor.Q, R: coor.R})
+			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerOpen", IDMap: mp.Id, Q: coor.Q, R: coor.R})
 			coor.HandlerOpen = true
 		}
 	}
@@ -62,7 +63,7 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 
 func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, ws *websocket.Conn) {
 	countTime := 0
-	go sendMessage(Message{Event: "softTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot})
+	go wsGlobal.SendMessage(wsGlobal.Message{Event: "softTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot})
 
 	user.GetSquad().SoftTransition = true
 	defer func() {
@@ -74,15 +75,15 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, 
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if dist < 120 && countTime > 50 {
 			if coor.Handler == "base" {
-				go intoToBase(user, coor.ToBaseID, ws)
+				go wsGlobal.IntoToBase(user, coor.ToBaseID, ws)
 			}
 			if coor.Handler == "sector" {
-				go changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
+				go wsGlobal.ChangeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
 			}
 			return
 		} else {
 			if dist > 120 {
-				go sendMessage(Message{Event: "removeSoftTransition", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+				go wsGlobal.SendMessage(wsGlobal.Message{Event: "removeSoftTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 				return
 			}
 		}

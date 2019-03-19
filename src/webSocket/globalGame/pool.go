@@ -1,7 +1,6 @@
 package globalGame
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
@@ -22,9 +21,9 @@ import (
 var globalPipe = make(chan Message, 1)
 
 type Message struct {
-	idSender      int
-	idUserSend    int
-	idMap         int
+	IDSender      int
+	IDUserSend    int
+	IDMap         int
 	Event         string                          `json:"event"`
 	Map           *_map.Map                       `json:"map"`
 	Error         string                          `json:"error"`
@@ -40,8 +39,8 @@ type Message struct {
 	PathUnit      squad.PathUnit                  `json:"path_unit"`
 	Path          []squad.PathUnit                `json:"path"`
 	BaseID        int                             `json:"base_id"`
-	OtherUser     *hostileMS                      `json:"other_user"`
-	OtherUsers    []*hostileMS                    `json:"other_users"`
+	OtherUser     *player.ShortUserInfo           `json:"other_user"`
+	OtherUsers    []*player.ShortUserInfo         `json:"other_users"`
 	ThrowItems    []inventory.Slot                `json:"throw_items"`
 	Boxes         []*boxInMap.Box                 `json:"boxes"`
 	Box           *boxInMap.Box                   `json:"box"`
@@ -69,57 +68,25 @@ type Message struct {
 	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`
-	Cloud         *cloud                          `json:"cloud"`
+	Cloud         *Cloud                          `json:"cloud"`
 	Bot           bool                            `json:"bot"`
 }
 
-type hostileMS struct {
-	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
-	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	SquadID    string       `json:"squad_id"`
-	UserName   string       `json:"user_name"`
-	X          int          `json:"x"`
-	Y          int          `json:"y"`
-	Q          int          `json:"q"`
-	R          int          `json:"r"`
-	BodyName   string       `json:"body_name"`
-	WeaponName string       `json:"weapon_name"`
-	Rotate     int          `json:"rotate"`
-	Body       *detail.Body `json:"body"`
-}
-
-func GetShortUserInfo(user *player.Player) *hostileMS {
-	var hostile hostileMS
-
-	if user == nil || user.GetSquad() == nil || user.GetSquad().MatherShip == nil || user.GetSquad().MatherShip.Body == nil {
-		return nil
-	}
-
-	if user.Bot {
-		hostile.SquadID = user.UUID
-	} else {
-		hostile.SquadID = strconv.Itoa(user.GetSquad().ID)
-	}
-
-	hostile.UserName = user.GetLogin()
-	hostile.X = user.GetSquad().GlobalX
-	hostile.Y = user.GetSquad().GlobalY
-	hostile.Q = user.GetSquad().Q
-	hostile.R = user.GetSquad().R
-	hostile.Rotate = user.GetSquad().MatherShip.Rotate
-	hostile.BodyName = user.GetSquad().MatherShip.Body.Name
-
-	hostile.Body, _ = gameTypes.Bodies.GetByID(user.GetSquad().MatherShip.Body.ID)
-
-	if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
-		hostile.WeaponName = user.GetSquad().MatherShip.GetWeaponSlot().Weapon.Name
-	}
-
-	return &hostile
+// TODO тут необходим рефакторинг)
+type Cloud struct {
+	Name     string  `json:"name"`
+	Speed    int     `json:"speed"`
+	Alpha    float64 `json:"alpha"`
+	X        int     `json:"x"`
+	Y        int     `json:"y"`
+	Angle    int     `json:"angle"`
+	Uuid     string  `json:"uuid"`
+	SizeMapX int     `json:"-"`
+	SizeMapY int     `json:"-"`
+	IDMap    int     `json:"-"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-
 	newPlayer, ok := players.Users.Get(id)
 	if !ok {
 		newPlayer = players.Users.Add(id, login)
@@ -133,7 +100,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	go Reader(ws)
 }
 
-func sendMessage(msg Message) {
+func SendMessage(msg Message) {
 	globalPipe <- msg
 }
 
@@ -158,11 +125,11 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "InitGame" {
-			loadGame(ws, msg)
+			LoadGame(ws, msg)
 		}
 
 		if msg.Event == "MoveTo" {
-			go move(ws, msg)
+			go Move(ws, msg)
 		}
 
 		if msg.Event == "StopMove" {
@@ -250,24 +217,23 @@ func MoveSender() {
 				var err error
 
 				// получают все кроме отправителя в пределах карты
-				if client.ID != resp.idSender && resp.idSender > 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
+				if client.ID != resp.IDSender && resp.IDSender > 0 && resp.IDUserSend == 0 && client.MapID == resp.IDMap {
 					err = ws.WriteJSON(resp)
 				}
 
 				// получает только отправитель
-				if client.ID == resp.idUserSend && resp.idUserSend > 0 && resp.idSender == 0 {
+				if client.ID == resp.IDUserSend && resp.IDUserSend > 0 && resp.IDSender == 0 {
 					err = ws.WriteJSON(resp)
 				}
 
 				// получают все в пределах карты
-				if resp.idSender == 0 && resp.idUserSend == 0 && client.MapID == resp.idMap {
+				if resp.IDSender == 0 && resp.IDUserSend == 0 && client.MapID == resp.IDMap {
 					err = ws.WriteJSON(resp)
 				}
 
 				if err != nil {
 					go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
 					log.Printf("error: %v", err)
-					//panic(err)
 				}
 			}
 			rLock.Unlock()

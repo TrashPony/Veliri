@@ -10,11 +10,11 @@ import (
 
 func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coordinate) {
 	if coor.Handler == "base" {
-		intoToBase(user, coor.ToBaseID, ws)
+		IntoToBase(user, coor.ToBaseID, ws)
 	}
 
 	if coor.Handler == "sector" {
-		changeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
+		ChangeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
 	}
 
 	if !user.Bot {
@@ -22,10 +22,10 @@ func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coor
 	}
 }
 
-func changeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
+func ChangeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
 	stopMove(user, true)
 
-	go sendMessage(Message{Event: "changeSector", idUserSend: user.GetID(), idMap: user.GetSquad().MapID, Bot: user.Bot})
+	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 	DisconnectUser(user, ws, true) // если только сообщение то можно не горутиной
 
 	user.GetSquad().MapID = mapID
@@ -36,16 +36,16 @@ func changeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
 	user.GetSquad().GlobalY = 0
 
 	if user.Bot {
-		loadGame(ws, Message{Event: "InitGame"})
+		LoadGame(ws, Message{Event: "InitGame"})
 	}
 }
 
-func intoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
+func IntoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
 	if !user.Bot {
 		bases.UserIntoBase(user.GetID(), baseID)
 	}
 
-	go sendMessage(Message{Event: "IntoToBase", idUserSend: user.GetID(), Bot: user.Bot})
+	go SendMessage(Message{Event: "IntoToBase", IDUserSend: user.GetID(), Bot: user.Bot})
 	go DisconnectUser(user, ws, true)
 
 	user.InBaseID = baseID

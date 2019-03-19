@@ -2,73 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8"/>
-    <title>Hello World</title>
-
-    <link href="./assets/css/all.css" rel="stylesheet">
-    <link href="./assets/css/menuAnimation.css" rel="stylesheet">
-    <link href="./assets/css/constructor.css" rel="stylesheet">
-
-    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-
+    <title>Veliri</title>
 </head>
 <body>
-<div id="root"></div>
-
-<script type="text/babel">
-
-    function Constructor() {
-        return (
-                <div id="Constructor">
-                    <EquippingPanelV> </EquippingPanelV>
-                    <Equipping> </Equipping> <UnitIcon> </UnitIcon> <EquippingPanelII> </EquippingPanelII> <br/>
-                    <EquippingPanelV> </EquippingPanelV>
-                </div>
-        )
-    }
-
-    function EquippingPanelV() {
-        return (
-                <div>
-                    <Equipping> </Equipping>
-                    <Equipping> </Equipping>
-                    <Equipping> </Equipping>
-                </div>
-        )
-    }
-
-    function EquippingPanelII() {
-        return (
-                <div className="panel">
-                    <Equipping> </Equipping><br/>
-                    <Equipping> </Equipping><br/>
-                    <Equipping> </Equipping><br/>
-                </div>
-        )
-    }
-
-    function UnitIcon() {
-        return (
-                <div id="UnitIcon">
-                </div>
-        )
-    }
-
-    function Equipping() {
-        return (
-                <div className="Equipping" onClick={function () {
-                    console.log("dfdfd")
-                }}> </div>
-        )
-    }
-
-    ReactDOM.render(
-            <Constructor>
-            </Constructor>,
-            document.getElementById('root')
-    );
-
-</script>
+<header></header>
+<div id="main">
+    <div id="news"></div>
+</div>
+<footer></footer>
 </body>
 </html>
