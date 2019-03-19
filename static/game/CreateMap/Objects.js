@@ -26,7 +26,7 @@ function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOf
     object.angle = rotate;
 
     if (needShadow) {
-        let shadow = group.create(x + game.shadowXOffset + xShadowOffset, y + game.shadowYOffset + yShadowOffset, texture);
+        let shadow = group.create(object.x + game.shadowXOffset + xShadowOffset, object.y + game.shadowYOffset + yShadowOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
         shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;

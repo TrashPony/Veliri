@@ -11,7 +11,7 @@ function CreateUser(squad) {
 
     CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate);
     if (game && debug) {
-       // CreateMSGeo(squad);
+        // CreateMSGeo(squad);
     }
     game.squad = squad;
 }
@@ -31,7 +31,11 @@ function CreateOtherUser(otherUser) {
     let x = otherUser.x;
     let y = otherUser.y;
 
-    if (game && !game.otherUsers) game.otherUsers = [];
+    // куда ж без пары костылей
+    if (!game) return;
+    if (game.squad && Number(otherUser.squad_id) === game.squad.id) return;
+
+    if (!game.otherUsers) game.otherUsers = [];
     let find = false;
     let sprite = false;
 

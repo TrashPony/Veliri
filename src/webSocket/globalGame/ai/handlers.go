@@ -100,7 +100,7 @@ func checkHandlerCoordinate(x, y, mapID int) bool {
 	for _, user := range users {
 		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-			if dist < 75 {
+			if dist < 105 {
 				return true
 			}
 		}

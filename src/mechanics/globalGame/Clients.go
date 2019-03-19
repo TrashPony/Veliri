@@ -67,7 +67,6 @@ func (c *wsUsers) GetAll() (map[*websocket.Conn]*player.Player, *sync.RWMutex) {
 }
 
 func (c *wsUsers) DelClientByWS(ws *websocket.Conn) {
-
 	c.mx.Lock()
 	if c.users[ws] != nil && !c.users[ws].Bot {
 		delete(c.users, ws)

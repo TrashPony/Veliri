@@ -58,7 +58,8 @@ func getOtherSquads(user *player.Player, mp *_map.Map) []*player.ShortUserInfo {
 
 	globalGame.GetPlaceCoordinate(user, users, mp)
 	for _, otherUser := range users {
-		if user.GetSquad() != nil && otherUser.GetSquad() != nil && user.GetID() != otherUser.GetID() &&
+		if user.GetSquad() != nil && otherUser.GetSquad() != nil &&
+			user.GetID() != otherUser.GetID() &&
 			user.GetSquad().MapID == otherUser.GetSquad().MapID && otherUser.InBaseID == 0 {
 
 			otherUsers = append(otherUsers, otherUser.GetShortUserInfo())

@@ -24,10 +24,12 @@ function LoadGame() {
     FillSquadBlock(Data.squad);
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     Anomaly(Data.squad);
-
-    if (debug) {
-        CreateGeoData(Data.map.geo_data);
-        CreateAnomalies(Data.map.anomalies)
-    }
     FocusMS();
+
+    setTimeout(function () {
+          if (debug) {
+              CreateGeoData(Data.map.geo_data);
+              CreateAnomalies(Data.map.anomalies)
+          }
+    }, 1000)
 }

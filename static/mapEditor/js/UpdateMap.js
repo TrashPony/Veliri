@@ -1,35 +1,33 @@
 function UpdateMap(newMap, game, bases) {
     removeSubMenus();
+    // TODO нехуя не работает
+    let clear = function (group) {
+        while (group && group.children.length > 0) {
+            let sprite = group.children.shift();
+            sprite.destroy();
+        }
+    };
 
-    game.floorLayer.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-    game.floorObjectLayer.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-    game.floorOverObjectLayer.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-    game.redactorButton.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-    game.redactorMetaText.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-    game.SelectLayer.forEach(function (c) {
-        c.kill();
-        c.destroy();
-    });
-
-    game.map = newMap;
-    game.bases = bases;
-
-    //game.world.setBounds(0, 0, (game.hexagonWidth + 5) * game.map.QSize, 185 * game.map.RSize/2); //размеры карты
+    clear(game.floorLayer);
+    clear(game.SelectLayer);
+    clear(game.floorObjectSelectLineLayer);
+    clear(game.floorSelectLineLayer);
+    clear(game.floorObjectLayer);
+    clear(game.floorOverObjectLayer);
+    clear(game.redactorButton);
+    clear(game.redactorMetaText);
+    clear(game.unitLayer);
+    clear(game.SelectRangeLayer);
+    clear(game.SelectLineLayer);
+    clear(game.SelectTargetLineLayer);
+    clear(game.effectsLayer);
+    clear(game.artilleryBulletLayer);
+    clear(game.weaponEffectsLayer);
+    clear(game.flyObjectsLayer);
+    clear(game.cloudsLayer);
+    clear(game.fogOfWar);
+    clear(game.geoDataLayer);
+    clear(game.icon);
 
     if (bases) {
         CreateLabelBase(bases);

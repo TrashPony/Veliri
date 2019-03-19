@@ -128,12 +128,6 @@ func Transport(bot *player.Player) {
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)
 
-			if path != nil {
-				//println("нашел путь")
-			} else {
-				println("не нашел путь")
-			}
-
 			//countPossible := 1
 			exit := false
 
