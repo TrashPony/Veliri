@@ -24,7 +24,6 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ConnectNewUser") {
-        console.log("2", jsonData)
         CreateOtherUser(jsonData.other_user);
     }
 
@@ -164,5 +163,9 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "DeadSquad") {
         SquadDead(jsonData.other_user);
+    }
+
+    if (jsonData.event === "LocalGame") {
+        location.href = "../../../field";
     }
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/ammo"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
+	"math/rand"
 )
 
 type Body struct {
@@ -109,6 +110,46 @@ func (body *Body) GetEquip(typeSlot, numberSlot int) *BodyEquipSlot {
 	}
 
 	return nil
+}
+
+func (body *Body) GetRandomEquip() *BodyEquipSlot {
+
+	typeSlot := rand.Intn(5) + 1
+
+	randEquip := func(equips map[int]*BodyEquipSlot) *BodyEquipSlot {
+		count := 0
+
+		if equips == nil || len(equips) == 0 {
+			return body.GetRandomEquip()
+		}
+
+		count2 := rand.Intn(len(equips))
+		for _, slot := range equips {
+			if count == count2 {
+				return slot
+			}
+			count++
+		}
+		return body.GetRandomEquip()
+	}
+
+	if typeSlot == 1 {
+		return randEquip(body.EquippingI)
+	}
+	if typeSlot == 2 {
+		return randEquip(body.EquippingII)
+	}
+	if typeSlot == 3 {
+		return randEquip(body.EquippingIII)
+	}
+	if typeSlot == 4 {
+		return randEquip(body.EquippingIV)
+	}
+	if typeSlot == 5 {
+		return randEquip(body.EquippingV)
+	}
+
+	return body.GetRandomEquip()
 }
 
 func (body *Body) GetUsePower() int {

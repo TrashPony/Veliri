@@ -19,6 +19,7 @@ var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут
 
 var mutex = &sync.Mutex{}
 
+// TODO изменить модель поведения на более безопасную, сейчас это не так
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 	mutex.Lock()
 
@@ -36,7 +37,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	print(ws)
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 
-	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
+	defer ws.Close()
 
 	mutex.Unlock()
 

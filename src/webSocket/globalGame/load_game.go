@@ -17,7 +17,7 @@ func LoadGame(ws *websocket.Conn, msg Message) {
 
 		mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
 
-		if find && user.InBaseID == 0 {
+		if find {
 
 			otherUsers := getOtherSquads(user, mp)
 

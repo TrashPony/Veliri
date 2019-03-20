@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-const RespBots = 2
+const RespBots = 0
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -28,7 +28,6 @@ func InitAI() {
 		mapBases := bases.Bases.GetBasesByMap(mp.Id)
 		for _, mapBase := range mapBases {
 			for i := 0; i < RespBots; i++ {
-				// на карту базу делаем по 3 юнита
 				go respBot(mapBase, mp)
 				time.Sleep(15 * time.Second)
 			}

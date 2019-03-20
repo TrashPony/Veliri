@@ -74,7 +74,8 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 	}()
 
 	for i, pathUnit := range *path {
-		if user.GetSquad().ActualPath == nil || user.GetSquad().ActualPath != path {
+		// TODO приложение падает если во время движения он погибает
+		if user.GetSquad() == nil || user.GetSquad().ActualPath == nil || user.GetSquad().ActualPath != path {
 			return
 		}
 
@@ -232,12 +233,12 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 
 	// проверка нового места толкаемого юзера на колизию с другими юзерами // TODO не отдебажено
 	noCollision, _ := initCheckCollision(toUser, &squad.PathUnit{
-		X:           int(toUser.GetSquad().GlobalX+int(float64(speed2)*math.Cos(needRad))),
-		Y:           int(toUser.GetSquad().GlobalY+int(float64(speed2)*math.Sin(needRad))),
-		Rotate:      toUser.GetSquad().MatherShip.Rotate,
+		X:      int(toUser.GetSquad().GlobalX + int(float64(speed2)*math.Cos(needRad))),
+		Y:      int(toUser.GetSquad().GlobalY + int(float64(speed2)*math.Sin(needRad))),
+		Rotate: toUser.GetSquad().MatherShip.Rotate,
 	})
 
-	if possibleMove && noCollision{
+	if possibleMove && noCollision {
 		toUser.GetSquad().GlobalX += int(float64(speed2) * math.Cos(needRad))
 		toUser.GetSquad().GlobalY += int(float64(speed2) * math.Sin(needRad))
 	} else {

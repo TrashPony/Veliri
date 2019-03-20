@@ -51,6 +51,19 @@ func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
 	return user
 }
 
+func (c *wsUsers) GetById(id int) *player.Player {
+	c.mx.Lock()
+	defer c.mx.Unlock()
+
+	for _, client := range c.users {
+		if client.GetID() == id {
+			return client
+		}
+	}
+
+	return nil
+}
+
 func (c *wsUsers) GetAllConnects() (map[*websocket.Conn]gameConnect, *sync.RWMutex) {
 	c.connectMX.Lock()
 	return c.connects, &c.connectMX

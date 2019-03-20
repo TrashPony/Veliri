@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"github.com/getlantern/deepcopy"
 	"math/rand"
 )
 
@@ -51,6 +52,19 @@ func newMapStore() *mapStore {
 func (m *mapStore) GetByID(id int) (*_map.Map, bool) {
 	newMap, ok := m.maps[id]
 	return newMap, ok
+}
+
+func (m *mapStore) GetCopyByID(id int) (*_map.Map, bool) {
+
+	var copyMap _map.Map
+	oldMap, ok := m.maps[id]
+
+	err := deepcopy.Copy(&copyMap, &oldMap) // функция глубокого копировния (very slow, but work)
+	if err != nil {
+		println(err.Error())
+	}
+
+	return &copyMap, ok
 }
 
 func (m *mapStore) GetAllMap() map[int]*_map.Map {

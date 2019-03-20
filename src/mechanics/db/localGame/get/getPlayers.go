@@ -19,7 +19,7 @@ func Players(game *localGame.Game) []*player.Player {
 		"FROM action_game_user as agu, users "+
 		"WHERE agu.id_user=users.id AND agu.id_game=$1", game.Id)
 	if err != nil {
-		println("get game user stat")
+		println("get local game user stat")
 		log.Fatal(err)
 	}
 	defer rows.Close()
@@ -27,15 +27,13 @@ func Players(game *localGame.Game) []*player.Player {
 	users := make([]*player.Player, 0)
 
 	for rows.Next() {
-		var client *player.Player
-
 		var login string
 		var ready bool
 		var id int
 
 		err := rows.Scan(&login, &ready, &id)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err, "scan local game user stat")
 		}
 
 		client, ok := players.Users.Get(id)

@@ -21,6 +21,7 @@ import (
 var globalPipe = make(chan Message, 1)
 
 type Message struct {
+	// когда я забил х на эту структуру данных а теперь тут какое то адище
 	IDSender      int
 	IDUserSend    int
 	IDMap         int
@@ -69,10 +70,10 @@ type Message struct {
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`
 	Cloud         *Cloud                          `json:"cloud"`
+	ToUserID      int                             `json:"to_user_id"`
 	Bot           bool                            `json:"bot"`
 }
 
-// TODO тут необходим рефакторинг)
 type Cloud struct {
 	Name     string  `json:"name"`
 	Speed    int     `json:"speed"`
@@ -94,10 +95,9 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	globalGame.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
 
-	print("WS global Сессия: ") // просто смотрим новое подключение
-	print(ws)
-	println(" login: " + login + " id: " + strconv.Itoa(id))
-	go Reader(ws)
+	println("WS global Сессия: login: " + login + " id: " + strconv.Itoa(id))
+	go Reader(ws, newPlayer)
+
 }
 
 func SendMessage(msg Message) {
@@ -110,11 +110,9 @@ func SendMessage(msg Message) {
 
 UPD нельзя делать дефер в функции которыя шлет в pipe месаги, это верный путь к дедлоку т.к. на другом конце канала опять происходит лок
 	Выносить все где есть defer .Unlock в отдельные функции
-
-// TODO еще раз проверить где используется Clients.GetAll()
 */
 
-func Reader(ws *websocket.Conn) {
+func Reader(ws *websocket.Conn, user *player.Player) {
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
@@ -122,6 +120,12 @@ func Reader(ws *websocket.Conn) {
 			println(err.Error())
 			go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
 			return
+		}
+
+		// если игрок на базе или в локальной игре то ему нельзя поднимать соеденение глобальной игры
+		if user.InBaseID != 0 || user.GetSquad().InGame {
+			// todo перенаправлять на нужный сервис а не тупо кикать
+			DisconnectUser(user, ws, false)
 		}
 
 		if msg.Event == "InitGame" {
@@ -135,10 +139,6 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "StopMove" {
 			stopMove(globalGame.Clients.GetByWs(ws), true)
 		}
-
-		//if msg.Event == "IntoToBase" {
-		//	intoToBase(ws, msg)
-		//}
 
 		if msg.Event == "ThrowItems" {
 			throwItems(ws, msg)
@@ -190,6 +190,10 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "useDigger" {
 			useDigger(ws, msg)
+		}
+
+		if msg.Event == "Attack" {
+			startLocalGame(ws, msg)
 		}
 
 		if msg.Event == "OpenDialog" {

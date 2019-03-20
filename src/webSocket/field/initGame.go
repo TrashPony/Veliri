@@ -11,11 +11,14 @@ import (
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
-	loadGame, ok := games.Games.Get(msg.IdGame)
+	// TODO смотреть в какой игре состоит пользователь и загружать ее а не присылать ее сообщением
+	IDGame := 0
+
+	loadGame, ok := games.Games.Get(IDGame)
 	newClient, _ := usersFieldWs[ws]
 
 	if !ok {
-		loadGame = initGame.InitGame(msg.IdGame)
+		loadGame = initGame.InitGame(IDGame)
 		games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
 	}
 

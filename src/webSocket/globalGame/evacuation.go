@@ -28,6 +28,15 @@ func evacuationSquad(ws *websocket.Conn) {
 		stopMove(user, true)
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
+		defer func() {
+			if user.GetSquad() != nil {
+				user.GetSquad().ForceEvacuation = false
+				user.GetSquad().Evacuation = false
+				user.GetSquad().InSky = false
+			}
+			transport.Job = false
+		}()
+
 		if err != nil {
 			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 			return
@@ -38,12 +47,23 @@ func evacuationSquad(ws *websocket.Conn) {
 		}
 
 		// начали эвакуацию, ставим флаг
-		user.GetSquad().Evacuation = true
+		if user.GetSquad() != nil {
+			user.GetSquad().Evacuation = true
+		} else {
+			return
+		}
+
 		go SendMessage(Message{Event: "startMoveEvacuation", OtherUser: user.GetShortUserInfo(),
 			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)
 
 		for _, pathUnit := range path {
+
+			if user.GetSquad() == nil {
+				// игрок умер, больше нечего телепортировать)
+				return
+			}
+
 			go SendMessage(Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
 				TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 
@@ -57,10 +77,20 @@ func evacuationSquad(ws *websocket.Conn) {
 			TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
-		user.GetSquad().InSky = true
+		if user.GetSquad() != nil {
+			user.GetSquad().InSky = true
+		} else {
+			return
+		}
 		path = globalGame.ReturnEvacuation(user, mp, baseID)
 
 		for _, pathUnit := range path {
+
+			if user.GetSquad() == nil {
+				// игрок умер, больше нечего телепортировать)
+				return
+			}
+
 			go SendMessage(Message{Event: "ReturnEvacuation", OtherUser: user.GetShortUserInfo(), PathUnit: pathUnit,
 				BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 
@@ -77,8 +107,13 @@ func evacuationSquad(ws *websocket.Conn) {
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 
 		user.InBaseID = baseID
-		user.GetSquad().GlobalX = 0
-		user.GetSquad().GlobalY = 0
+
+		if user.GetSquad() != nil {
+			user.GetSquad().GlobalX = 0
+			user.GetSquad().GlobalY = 0
+		} else {
+			return
+		}
 
 		if !user.Bot {
 			go SendMessage(Message{Event: "IntoToBase", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
@@ -87,10 +122,5 @@ func evacuationSquad(ws *websocket.Conn) {
 		}
 
 		go DisconnectUser(user, ws, true)
-
-		user.GetSquad().ForceEvacuation = false
-		user.GetSquad().Evacuation = false
-		user.GetSquad().InSky = false
-		transport.Job = false
 	}
 }
