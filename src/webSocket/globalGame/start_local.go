@@ -13,7 +13,7 @@ func startLocalGame(ws *websocket.Conn, msg Message) {
 	toUser := globalGame.Clients.GetById(msg.ToUserID)
 
 	if user != nil && toUser != nil && user.GetSquad() != nil && toUser.GetSquad() != nil &&
-		user.GetSquad().MapID == toUser.GetSquad().MapID {
+		user.GetSquad().MapID == toUser.GetSquad().MapID && user.GetID() != toUser.GetID() {
 
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, toUser.GetSquad().GlobalX, toUser.GetSquad().GlobalY)
 

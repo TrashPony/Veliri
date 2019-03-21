@@ -24,6 +24,7 @@
     <link href="./css/reservoirTip.css" rel="stylesheet">
     <link href="./css/miningPanel.css" rel="stylesheet">
     <link href="./css/anomalyScanner.css" rel="stylesheet">
+    <link href="./css/action_panel.css" rel="stylesheet">
 
     <script src="js/WebSocket/OpenSockets.js"></script>
     <script src="js/WebSocket/ReadResponse.js"></script>
@@ -69,6 +70,12 @@
     <script src="js/Interface/FillUserMeta.js"></script>
     <script src="js/Interface/VisibleAnomalies.js"></script>
     <script src="js/Interface/AnomalyCatch.js"></script>
+
+    <script src="js/Actions/Stop.js"></script>
+    <script src="js/Actions/Attack.js"></script>
+    <script src="js/Actions/Scan.js"></script>
+    <script src="js/Actions/Chase.js"></script>
+    <script src="js/Actions/Dialog.js"></script>
 
     <script src="js/Collision/Collision.js"></script>
 
@@ -182,7 +189,6 @@
                 <div class="Thorium noActive"></div>
                 <div class="Thorium noActive"></div>
                 <div class="Thorium noActive"></div>
-                <div id="stopMove" onclick="Stop()">STOP</div>
             </div>
             <div id="backAfterburner">
                 <div id="Afterburner" onclick="AfterburnerToggle()"></div>
@@ -237,6 +243,17 @@
         <div id="damageUnit">
         </div>
     </div>
+
+    <div id="ActionPanel">
+        <div id="ActionPanelWrapper">
+            <div id="Attack" onclick="Attack()">Attack</div>
+            <div id="Scan" onclick="Scan()">Scan</div>
+            <div id="Chase" onclick="Chase()">Chase</div>
+            <div id="Dialog" onclick="Dialog()">Dialog</div>
+            <div id="Stop" onclick="Stop()">Stop</div>
+        </div>
+    </div>
+
     <div id="MiningPanel">
     </div>
 </div>
