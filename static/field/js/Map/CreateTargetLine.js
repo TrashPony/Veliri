@@ -29,40 +29,33 @@ function CreateTargetLine(unitStat) {
     }
 
     for (let i in unit.body.equippingIII) {
-            if (unit.body.equippingIII.hasOwnProperty(i) && unit.body.equippingIII[i].equip && unit.body.equippingIII[i].target) {
+        if (unit.body.equippingIII.hasOwnProperty(i) && unit.body.equippingIII[i].equip && unit.body.equippingIII[i].target) {
             createEquipLine(unit, unit.body.equippingIII[i].target)
         }
     }
 }
 
 function createWeaponLine(unit) {
-    if (game.map.OneLayerMap[unit.target.q][unit.target.r] && game.map.OneLayerMap[unit.target.q][unit.target.r].sprite) {
 
-        let target = game.map.OneLayerMap[unit.target.q][unit.target.r].sprite;
+    let xy = GetXYCenterHex(unit.target.q, unit.target.r);
+    let targetLine = game.add.graphics(0, 0);
+    targetLine.lineStyle(3, 0xff0000, 0.3);
+    targetLine.moveTo(unit.sprite.x, unit.sprite.y);
+    targetLine.lineTo(xy.x, xy.y);
+    targetLine.endFill();
 
-        let targetLine = game.add.graphics(0, 0);
-        targetLine.lineStyle(6, 0xff0000, 0.3);
-        targetLine.moveTo(unit.sprite.x, unit.sprite.y);
-        targetLine.lineTo(target.x, target.y);
-        targetLine.endFill();
-
-        unit.targetLine = targetLine;
-    }
+    unit.targetLine = targetLine;
 }
 
 function createEquipLine(unit, target) {
-    if (game.map.OneLayerMap[target.q][target.r] && game.map.OneLayerMap[target.q][target.r].sprite) {
+    let xy = GetXYCenterHex(target.q, target.r);
+    let targetLine = game.add.graphics(0, 0);
+    targetLine.lineStyle(3, 0x0000FF, 0.3);
+    targetLine.moveTo(unit.sprite.x, unit.sprite.y);
+    targetLine.lineTo(xy.x, xy.y);
+    targetLine.endFill();
 
-        target = game.map.OneLayerMap[target.q][target.r].sprite;
-
-        let targetLine = game.add.graphics(0, 0);
-        targetLine.lineStyle(6, 0x0000FF, 0.3);
-        targetLine.moveTo(unit.sprite.x, unit.sprite.y);
-        targetLine.lineTo(target.x, target.y);
-        targetLine.endFill();
-
-        unit.targetsEquipLine.push(targetLine);
-    }
+    unit.targetsEquipLine.push(targetLine);
 }
 
 function RemoveTargetsLine() {

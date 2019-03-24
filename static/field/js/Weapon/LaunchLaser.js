@@ -13,8 +13,8 @@ function LaunchLaser(xStart, yStart, angle, targetX, targetY) {
 
     let laserTrail = game.add.emitter(0, 0, 1000);
     laserTrail.makeParticles('fire1');
-    laserTrail.minParticleScale = 0.2;
-    laserTrail.maxParticleScale = 1;
+    laserTrail.minParticleScale = 0.1;
+    laserTrail.maxParticleScale = 0.5;
     laserTrail.lifespan = 1000;
     laserTrail.setXSpeed(-50, 50);
     laserTrail.setYSpeed(-50, 50);
@@ -22,10 +22,10 @@ function LaunchLaser(xStart, yStart, angle, targetX, targetY) {
     laserTrail.setAlpha(0.03, 0, 500, null, true);
 
     let laserOut = game.add.graphics(0, 0);
-    laserOut.lineStyle(6, 0x10EDFF, 1);
+    laserOut.lineStyle(3, 0x10EDFF, 1);
 
     let laserIn = game.add.graphics(0, 0);
-    laserIn.lineStyle(2, 0xFFFFFF, 1);
+    laserIn.lineStyle(1, 0xFFFFFF, 1);
 
     let blurX = game.add.filter('BlurX');
     let blurY = game.add.filter('BlurY');

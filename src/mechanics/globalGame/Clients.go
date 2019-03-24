@@ -51,6 +51,19 @@ func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
 	return user
 }
 
+func (c *wsUsers) GetBySquadId(id int) *player.Player {
+	c.mx.Lock()
+	defer c.mx.Unlock()
+
+	for _, client := range c.users {
+		if client.GetSquad().ID == id {
+			return client
+		}
+	}
+
+	return nil
+}
+
 func (c *wsUsers) GetById(id int) *player.Player {
 	c.mx.Lock()
 	defer c.mx.Unlock()

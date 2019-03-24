@@ -1,6 +1,7 @@
 function RemoveSelect(target) {
     RemoveSelectLine();
     RemoveSelectCoordinate();
+
     if (!target) {
         activateUnitInput();
         RemoveTargetLine();
@@ -15,6 +16,11 @@ function RemoveSelect(target) {
 
     if (document.getElementById("effectDetailZonePanel")) {
         document.getElementById("effectDetailZonePanel").remove();
+    }
+
+    while (game.PreviewPath && game.PreviewPath.children.length > 0) {
+        let lineSprite = game.PreviewPath.children.shift();
+        lineSprite.destroy();
     }
 }
 

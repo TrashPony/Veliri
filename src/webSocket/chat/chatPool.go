@@ -54,6 +54,7 @@ func Reader(ws *websocket.Conn) {
 		var msg chatMessage
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+			// TODO concurrent map writes
 			DelConn(ws, &usersChatWs, err)
 			break
 		}

@@ -1,39 +1,35 @@
-function SelectUnit() {
-
-
-    CreateUnitSubMenu(this);
-
-    MarkUnitSelect(this, 1);
-
-
-    //let testWeapon = {};
-    //testWeapon.type = "laser";
-    //testWeapon.artillery = false;
-    //testWeapon.name = "big_laser";
-
-    //OutFogFire(game.map.OneLayerMap[10][2], game.map.OneLayerMap[1][2], testWeapon, "coordinate").then(function () {
+function SelectUnit(focus) {
+    // let testWeapon = {};
+    // testWeapon.type = "laser";
+    // testWeapon.artillery = false;
+    // testWeapon.name = "big_laser";
+    //
+    // OutFogFire(game.map.OneLayerMap[10][2], game.map.OneLayerMap[1][2], testWeapon, "coordinate").then(function () {
     //    console.log("dfdfd")
-    //});
+    // });
+    //
+    // let unit = this;
+    //
+    // Fire(unit, game.map.OneLayerMap[1][2], "coordinate").then(
+    //     function () {
+    //         Fire(unit, game.map.OneLayerMap[1][9], "coordinate").then(
+    //             function () {
+    //                 Fire(unit, game.map.OneLayerMap[10][2], "coordinate").then(
+    //                     function () {
+    //                         Fire(unit, game.map.OneLayerMap[10][9], "coordinate");
+    //                     }
+    //                 );
+    //             }
+    //         );
+    //     }
+    // );
 
-    /*let unit = this;
+    Fire(this, GetGameUnitID(31));
 
-    Fire(unit, game.map.OneLayerMap[1][2], "coordinate").then(
-        function () {
-            Fire(unit, game.map.OneLayerMap[1][9], "coordinate").then(
-                function () {
-                    Fire(unit, game.map.OneLayerMap[10][2], "coordinate").then(
-                        function () {
-                            Fire(unit, game.map.OneLayerMap[10][9], "coordinate");
-                        }
-                    );
-                }
-            );
-        }
-    );*/
-
-    //Fire(this, GetGameUnitID(357));
-
-    game.camera.focusOn(this.sprite);
+    if (focus) {
+        // TODO если юнит вызван через панель очереди то он должен фокусится
+        game.camera.focusOn(this.sprite);
+    }
 
     if (game.Phase === "targeting" && this.owner === game.user.name) {
         field.send(JSON.stringify({
@@ -42,7 +38,7 @@ function SelectUnit() {
             r: Number(this.r)
         }));
         removeUnitInput();
-        RemoveSelect(true);
+        RemoveSelect(true, true);
     } else {
         RemoveSelect(false);
     }
@@ -52,4 +48,7 @@ function SelectUnit() {
         q: Number(this.q),
         r: Number(this.r)
     }));
+
+    CreateUnitSubMenu(this);
+    MarkUnitSelect(this, 1);
 }

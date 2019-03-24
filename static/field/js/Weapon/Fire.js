@@ -22,9 +22,11 @@ function Fire(unit, target, targetType) {
     if (!weapon) return;
 
     let rotate = Math.atan2(targetY - unit.sprite.weapon.world.y, targetX - unit.sprite.weapon.world.x);
-    let angle = (rotate * 180 / 3.14) + 90;
+    let angle = (rotate * 180 / 3.14);
 
     // todo timeRotate не верно считается, и юнит выбирает не самый оптимальный угол поворота
+    // TODO стартовая позиция снаряда с зависимостью от скейла карты
+    
     let timeRotate;
     if (angle >= unit.sprite.weapon.angle) {
         timeRotate = (angle - unit.sprite.weapon.angle) * 15;
@@ -55,8 +57,8 @@ function Fire(unit, target, targetType) {
 
             if (weapon.type === "firearms") {
                 if (weapon.artillery) {
-                    let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 85, unit.sprite.weapon.width);
-                    let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle - 95, unit.sprite.weapon.width);
+                    let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 5, unit.sprite.weapon.width);
+                    let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle + 5, unit.sprite.weapon.width);
 
                     LaunchArtilleryBallistics(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, targetX, targetY, targetType);
                     setTimeout(function () {
@@ -66,7 +68,7 @@ function Fire(unit, target, targetType) {
                             });
                     }, 500);
                 } else {
-                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width / 1.1);
+                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, unit.sprite.weapon.width / 1.1);
 
                     LaunchSmallBallistics(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, targetX, targetY, targetType)
                         .then(function () {
@@ -77,8 +79,8 @@ function Fire(unit, target, targetType) {
 
             if (weapon.type === "laser") {
                 if (weapon.name === "big_laser") {
-                    let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 85, unit.sprite.weapon.width / 1.5);
-                    let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle - 95, unit.sprite.weapon.width / 1.5);
+                    let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 5, unit.sprite.weapon.width / 1.5);
+                    let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle + 5, unit.sprite.weapon.width / 1.5);
 
                     LaunchLaser(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, targetX, targetY, targetType);
                     LaunchLaser(unit.sprite.weapon.world.x + connectPointsTwo.x, unit.sprite.weapon.world.y + connectPointsTwo.y, angle, targetX, targetY, targetType)
@@ -87,7 +89,7 @@ function Fire(unit, target, targetType) {
                         })
                 }
                 if (weapon.name === "small_laser") {
-                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle - 90, unit.sprite.weapon.width / 1.5);
+                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, unit.sprite.weapon.width / 1.5);
                     LaunchLaser(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, targetX, targetY, targetType)
                         .then(function () {
                             resolve();

@@ -38,7 +38,7 @@ type Message struct {
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	mutex.Lock()
-
+	// todo concurrent map iteration and map write
 	utils.CheckDoubleLogin(login, &usersMarketWs)
 
 	newPlayer, ok := players.Users.Get(id)

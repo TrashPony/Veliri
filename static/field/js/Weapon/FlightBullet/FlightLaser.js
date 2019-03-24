@@ -29,12 +29,12 @@ function FlightLaser(bullet) {
     }
 
     bullet.laserOut.clear();
-    bullet.laserOut.lineStyle(6, 0x10EDFF, 1);
+    bullet.laserOut.lineStyle(3, 0x10EDFF, 1);
     bullet.laserOut.moveTo(bullet.x, bullet.y);
     bullet.laserOut.lineTo(bullet.fakeBulletEnd.x, bullet.fakeBulletEnd.y);
 
     bullet.laserIn.clear();
-    bullet.laserIn.lineStyle(2, 0xFFFFFF, 1);
+    bullet.laserIn.lineStyle(1, 0xFFFFFF, 1);
     bullet.laserIn.moveTo(bullet.x, bullet.y);
     bullet.laserIn.lineTo(bullet.fakeBulletEnd.x, bullet.fakeBulletEnd.y);
 

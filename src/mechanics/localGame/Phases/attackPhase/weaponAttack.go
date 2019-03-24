@@ -105,8 +105,10 @@ func breakingEquip(targetUnit *unit.Unit, damage int) bool { // если хот�
 		targetUnit.GetWeaponSlot().HP -= damage / 5
 		breakingWeapon = false
 	} else {
-		targetUnit.GetWeaponSlot().HP = 0
-		breakingWeapon = true
+		if targetUnit.GetWeaponSlot() != nil {
+			targetUnit.GetWeaponSlot().HP = 0
+			breakingWeapon = true
+		}
 	}
 
 	return breaking(targetUnit.Body.EquippingI, damage) || breaking(targetUnit.Body.EquippingII, damage) ||

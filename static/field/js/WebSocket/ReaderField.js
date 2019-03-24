@@ -2,7 +2,7 @@ function ReadResponse(jsonMessage) {
     let event = JSON.parse(jsonMessage).event;
 
     if (event === "LoadGame") {
-        Game(jsonMessage)
+        LoadGame(jsonMessage)
     }
 
     if (event === "SelectStorageUnit") {

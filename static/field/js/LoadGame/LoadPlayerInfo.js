@@ -7,7 +7,6 @@ function InitPlayer() {
         ready.onclick = null
     } else {
         ready.value = "Завершить ход";
-        ready.className = "button";
         ready.onclick = function () {
             Ready();
         };

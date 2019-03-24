@@ -6,7 +6,7 @@ function CreateUnit(unitStat, inVisible) {
     let y = 0;
 
     game.mapPoints.forEach(function (point) {
-        if (point.q === q && point.r === r){
+        if (point.q === q && point.r === r) {
             x = point.x;
             y = point.y;
         }
@@ -16,7 +16,7 @@ function CreateUnit(unitStat, inVisible) {
 
     if (game.user.name === unitStat.owner) {
         unit = game.unitLayer.create(x, y, 'MySelectUnit', 0);
-        if (unitStat.body.mother_ship){
+        if (unitStat.body.mother_ship) {
             game.camera.focusOn(unit);
         }
     } else {
@@ -36,9 +36,9 @@ function CreateUnit(unitStat, inVisible) {
     unit.addChild(bodyShadow);
 
     if (unitStat.body.mother_ship) {
-        bodyShadow.scale.setTo(0.5, 0.5);
+        bodyShadow.scale.setTo(0.5 / 2);
     } else {
-        bodyShadow.scale.setTo(0.3, 0.3);
+        bodyShadow.scale.setTo(0.3 / 2);
     }
 
     bodyShadow.anchor.set(0.5);
@@ -56,20 +56,20 @@ function CreateUnit(unitStat, inVisible) {
     }
 
     if (weapon) {
-        weapon.anchor.setTo(0.5, 0.61);
+        weapon.anchor.setTo(0.5);
 
         if (unitStat.body.mother_ship) {
-            weapon.scale.setTo(0.5, 0.5);
+            weapon.scale.setTo(0.5 / 2);
         } else {
-            weapon.scale.setTo(0.3, 0.3);
+            weapon.scale.setTo(0.3 / 2);
         }
 
-        weaponShadow.anchor.setTo(0.5, 0.61);
+        weaponShadow.anchor.setTo(0.5);
 
         if (unitStat.body.mother_ship) {
-            weaponShadow.scale.setTo(0.5, 0.5);
+            weaponShadow.scale.setTo(0.5 / 2);
         } else {
-            weaponShadow.scale.setTo(0.3, 0.3);
+            weaponShadow.scale.setTo(0.3 / 2);
         }
 
         weaponShadow.tint = 0x000000;
@@ -81,9 +81,9 @@ function CreateUnit(unitStat, inVisible) {
     game.physics.arcade.enable(body);
 
     if (unitStat.body.mother_ship) {
-        body.scale.setTo(0.5, 0.5);
+        body.scale.setTo(0.5 / 2);
     } else {
-        body.scale.setTo(0.3, 0.3);
+        body.scale.setTo(0.3 / 2);
     }
 
     body.inputEnabled = true;             // включаем ивенты на спрайт
@@ -93,7 +93,7 @@ function CreateUnit(unitStat, inVisible) {
 
     body.events.onInputDown.add(SelectUnit, unitStat);    // обрабатываем наведение мышки
     body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
-    body.events.onInputOut.add(UnitMouseOut, unitStat);   // обрабатываем убирание мышки
+    body.events.onInputOut.add(UnitMouseOut, unitStat);   // TODO onInputOut работает плохо везде, его надо чемто заменить обрабатываем убирание мышки
 
     if (weapon) {
         unit.addChild(weaponShadow);
@@ -142,7 +142,7 @@ function CreateUnit(unitStat, inVisible) {
     }
 
     addToGameUnit(unitStat);
-    SetAngle(unitStat, unitStat.rotate + 90);
+    SetAngle(unitStat, unitStat.rotate);
 
     return unitStat
 }

@@ -25,6 +25,20 @@ func (gamesStore *store) Get(id int) (*localGame.Game, bool) {
 	return val, ok
 }
 
+func (gamesStore *store) GetPlayerID(playerID int) (*localGame.Game, bool) {
+	gamesStore.mx.Lock()
+	defer gamesStore.mx.Unlock()
+	// игрок может быть одновременно только в 1 битве, поэтому это безопасно
+	for _, game := range gamesStore.games {
+		for _, user := range game.GetPlayers() {
+			if user.GetID() == playerID {
+				return game, true
+			}
+		}
+	}
+	return nil, false
+}
+
 func (gamesStore *store) Add(id int, game *localGame.Game) {
 	gamesStore.mx.Lock()
 	defer gamesStore.mx.Unlock()

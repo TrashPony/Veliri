@@ -70,7 +70,7 @@ type Message struct {
 	BoxPassword   int                             `json:"box_password"`
 	Reservoir     *resource.Map                   `json:"reservoir"`
 	Cloud         *Cloud                          `json:"cloud"`
-	ToUserID      int                             `json:"to_user_id"`
+	ToSquadID     string                          `json:"to_squad_id"`
 	Bot           bool                            `json:"bot"`
 }
 

@@ -11,17 +11,17 @@ function SelectTargetCoordinateCreate(jsonMessage, func) {
         if (targetCoordinates.hasOwnProperty(q)) {
             for (let r in targetCoordinates[q]) {
                 if (targetCoordinates[q].hasOwnProperty(r)) {
-                    let cellSprite = game.map.OneLayerMap[targetCoordinates[q][r].q][targetCoordinates[q][r].r].sprite;
+                    let xy = GetXYCenterHex(q, r);
 
                     if (event === "GetFirstTargets") {
-                        MarkZone(cellSprite, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer, true);
+                        MarkZone(xy, targetCoordinates, q, r, 'Target', false, game.SelectTargetLineLayer, null, game.SelectLayer, true);
                     }
 
                     if (event === "GetTargets" || event === "GetEquipMapTargets") {
-                        let selectSprite = MarkZone(cellSprite, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, false);
+                        let selectSprite = MarkZone(xy, targetCoordinates, q, r, 'Target', true, game.SelectTargetLineLayer, "target", game.SelectLayer, false);
 
-                        selectSprite.TargetQ = targetCoordinates[q][r].q;
-                        selectSprite.TargetR = targetCoordinates[q][r].r;
+                        selectSprite.TargetQ = q;
+                        selectSprite.TargetR = r;
 
                         selectSprite.unitQ = unitQ;
                         selectSprite.unitR = unitR;

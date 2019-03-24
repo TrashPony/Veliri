@@ -102,7 +102,7 @@ function CheckPath(unit) {
     }
 
     if (unit.path.length === 0) {
-        DeleteMarkLastPathCell(unit.lastCell); // удаляем метку
+        DeleteMarkLastPathCell(unit.lastCell); // удаляем метку куда идет моб
         unit.lastCell = null;
     }
 }
@@ -141,13 +141,10 @@ function MoveUnit() {
                         StopUnit(unit);
                     } else {
 
-                        let moveSprite = game.map.OneLayerMap[unit.movePoint.q][unit.movePoint.r].sprite;
-
-                        let x = moveSprite.x;
-                        let y = moveSprite.y;
+                        let xy = GetXYCenterHex(unit.movePoint.q, unit.movePoint.r);
 
                         let spriteRotate = unit.sprite.unitBody.angle;
-                        let needRotate = unit.rotate + 90;
+                        let needRotate = unit.rotate;
 
                         if (spriteRotate < 0) {
                             spriteRotate += 360;
@@ -158,20 +155,19 @@ function MoveUnit() {
                         }
 
                         if (spriteRotate === needRotate) {
-                            MoveToCell(unit, x, y);
+                            MoveToCell(unit, xy.x, xy.y);
                         } else {
 
-                            let markerMove = game.add.sprite(x, y); // пустой спрайт что бы юнит мог ориентироваться
+                            let markerMove = game.add.sprite(xy.x, xy.y); // пустой спрайт что бы юнит мог ориентироваться
                             markerMove.anchor.setTo(0.5, 0.5);
 
                             StopUnit(unit);
 
-                            moveSprite = null;    // если убрать это то будет утекать производительность
                             markerMove.destroy();
                         }
 
 
-                        let dist = game.physics.arcade.distanceToXY(unit.sprite, x, y);
+                        let dist = game.physics.arcade.distanceToXY(unit.sprite, xy.x, xy.y);
 
                         if (Math.round(dist) >= -10 && Math.round(dist) <= 10) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
 

@@ -1,7 +1,9 @@
 #BoxUnitSubMenu {
     position: relative;
-    top: 30px;
+    margin-top: 10px;
     text-align: center;
+    float: right;
+    width: 100%;
 }
 
 #UnitSubMenu {

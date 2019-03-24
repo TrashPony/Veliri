@@ -1,10 +1,11 @@
 let LoadFunc;
 let Map;
+let TypeService;
 
-function CreateGame(map, loadFunc) {
+function CreateGame(map, loadFunc, typeService) {
     LoadFunc = loadFunc;
     Map = map;
-
+    TypeService = typeService;
     //TODO что бы работал блюр на линиях и эмиторы надо делать WEBGL
     return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
         preload: preload,
@@ -59,6 +60,9 @@ function create(game) {
     game.SelectRangeLayer = game.add.group();
     game.SelectRangeLayer.alpha = 0.6;
 
+    game.PreviewPath = game.add.group();
+    game.PreviewPath.alpha = 0.6;
+
     game.SelectLineLayer = game.add.group();
     game.SelectLineLayer.alpha = 0.9;
     game.add.tween(game.SelectLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
@@ -85,6 +89,8 @@ function create(game) {
 
     game.icon = game.add.group();
 
+    game.typeService = TypeService;
+
     CreateMap().then(function () {
         if (LoadFunc) {
             LoadFunc();
@@ -92,12 +98,6 @@ function create(game) {
 
         if (game.map.reservoir) {
             CreateReservoirs()
-        }
-
-        if (game.typeService === "battle") {
-            CreateMyGameUnits();
-            CreateHostileGameUnits();
-            LoadOpenCoordinate();
         }
     });
 }

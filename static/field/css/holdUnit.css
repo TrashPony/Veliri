@@ -1,5 +1,5 @@
 .boxUnit {
-    pointer-events:visible;
+    pointer-events: visible;
     text-align: center;
     vertical-align: middle;
     display: inline-block;
@@ -10,7 +10,8 @@
     background-color: rgba(0, 0, 0, .4);
     background-size: 100% 100%;
     background-repeat: no-repeat;
-    margin: 5px;
+    margin: 2px;
+    border-radius: 5px;
 }
 
 .boxUnit.Move {

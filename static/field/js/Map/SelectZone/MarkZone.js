@@ -1,4 +1,4 @@
-function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typeLine, selector, typeSelect, drawLine) {
+function MarkZone(xy, placeCoordinates, q, r, selectClass, addEmpty, typeLine, selector, typeSelect, drawLine) {
     let topLeft = false;
     let topRight = false;
     let left = false;
@@ -8,7 +8,7 @@ function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typ
 
     let sprite;
 
-    if (!cellSprite) {
+    if (!xy) {
         return
     }
 
@@ -87,41 +87,54 @@ function MarkZone(cellSprite, placeCoordinates, q, r, selectClass, addEmpty, typ
             }
         }
     }
-    
+
     if (addEmpty) {
-        if (selector === "move" || selector === "place"){
-            sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectEmpty');
+        if (selector === "move" || selector === "place") {
+            sprite = typeSelect.create(xy.x, xy.y, 'selectEmpty');
             sprite.anchor.setTo(0.5);
         }
-        if (selector === "target"){
-            sprite = typeSelect.create(cellSprite.x, cellSprite.y, 'selectTarget');
+        if (selector === "target") {
+            sprite = typeSelect.create(xy.x, xy.y, 'selectTarget');
             sprite.anchor.setTo(0.5);
         }
+        sprite.scale.set(0.5);
     }
 
     if (drawLine) {
         if (!left) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 4).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 4);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
 
         if (!right) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 1).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 1);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
 
         if (!topLeft) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 5).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 5);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
 
         if (!topRight) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 0).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 0);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
 
         if (!botLeft) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 3).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 3);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
 
         if (!botRight) {
-            typeLine.create(cellSprite.x, cellSprite.y, 'line' + selectClass, 2).anchor.setTo(0.5);
+            let line = typeLine.create(xy.x, xy.y, 'line' + selectClass, 2);
+            line.anchor.setTo(0.5);
+            line.scale.set(0.5)
         }
     }
 

@@ -6,9 +6,9 @@ function GrabCamera() {
 
             if (game && game.typeService === "battle") {
                 RemoveSelect();
-            } else if (game && game.typeService === "global" || game.typeService === "mapEditor") {
-                CreateMiniMap(game.map);
             }
+
+            CreateMiniMap();
             game.camera.target = null;
         }
         game.origDragPoint = game.input.activePointer.position.clone(); // установите новое начало перетаскивания в текущую позицию

@@ -8,9 +8,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 )
 
-func InitGame(idGAme int) (newGame *localGame.Game) {
+func InitGame(userID int) (newGame *localGame.Game) {
 
-	newGame = get.Game(idGAme)
+	newGame = get.Game(userID)
 
 	newGame.SetPlayers(get.Players(newGame)) // добавляем параметры всех игроков к обьекту игры
 

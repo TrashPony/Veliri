@@ -6,7 +6,7 @@ function UpdateRotateUnit() {
                     let unit = game.units[q][r];
 
                     if (unit) {
-                        rotateUnitSprites(unit.sprite.unitBody.angle, unit.rotate + 90, unit)
+                        rotateUnitSprites(unit.sprite.unitBody.angle, unit.rotate, unit)
                     }
                 }
             }

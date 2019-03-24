@@ -20,65 +20,51 @@ body {
 }
 
 input {
-    pointer-events:visible;
+    pointer-events: visible;
 }
 
 .moveWindow {
-    pointer-events:visible;
+    pointer-events: visible;
 }
 
 .info.subMenu {
-    background-size: 10px 2px;
-    pointer-events:none;
+    border-radius: 5px;
     border: 1px solid #25a0e1;
-    border-radius: 10px;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    pointer-events: none;
     text-shadow: #28a5e4 0 0 4px;
     color: #a5d5ef;
     width: 170px;
     display: inline-block;
-    height: 100px;
-    padding: 10px;
-    z-index: 900;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    height: 113px;
+    padding: 3px;
 }
 
-#inventory {
-    pointer-events:none;
+.gameInfo {
+    border-radius: 5px;
+    text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 9pt;
-    border: 1px solid #25a0e1;
-    border-radius: 10px;
-    width: 100px;
-    height: 110px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    width: 171px;
+    height: 93px;
 }
 
-.cell {
-    pointer-events:visible;
-    width: 17px;
-    height: 17px;
-    border-radius: 5px;
-    border: 1px solid #959595;
-    background-color: #4c4c4c;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.cell:hover {
-    box-shadow: 0 0 5px 3px rgb(255, 149, 32);
-    color: #00fffd;
-    cursor: pointer;
-}
-
-.cell.Inventory:active{
-    box-shadow: 0 0 5px 3px rgb(165, 213, 239);
+.gameInfo th {
+    font-size: 13px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 19px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 #TipEquip {
-    pointer-events:none;
+    pointer-events: none;
     position: absolute;
     display: inline-block;
     z-index: 901;
@@ -91,10 +77,10 @@ input {
     color: #a5d5ef;
     font-size: 12px;
     text-shadow: 1px 1px 2px #FF0000;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
-#TipEquip td{
+#TipEquip td {
     text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 6pt;
@@ -104,7 +90,7 @@ input {
 }
 
 #TipEffect {
-    pointer-events:none;
+    pointer-events: none;
     position: absolute;
     display: inline-block;
     z-index: 901;
@@ -114,10 +100,10 @@ input {
     transition-property: background-image;
     width: 90px;
     padding: 5px;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
-#TipEffect td{
+#TipEffect td {
     text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 6pt;
@@ -130,11 +116,11 @@ input {
     font-family: sans-serif;
     font-size: 6pt;
     text-shadow: #28a5e4 0 0 4px;
-    color:  #a5d5ef
+    color: #a5d5ef
 }
 
 #ControlPanel {
-    pointer-events:none;
+    pointer-events: none;
     display: inline-block;
     vertical-align: top;
     margin-right: 15px;
@@ -145,7 +131,7 @@ input {
 }
 
 #chatBlock {
-    pointer-events:none;
+    pointer-events: none;
     bottom: 240px;
     left: 3.2%;
     position: fixed;
@@ -158,33 +144,32 @@ input {
     z-index: 0;
 }
 
-#unitTip {
-    pointer-events:none;
-    vertical-align: top;
-    position: fixed;
-    display: none;
-    font-family: sans-serif;
-    font-size: 9pt;
-    border-radius: 10px;
-    z-index: 0;
-    bottom: 1%;
-    right: 1%;
-}
-
-#unitTip td {
+#holdUnitsBlock {
+    margin-top: 15px;
+    border-radius: 5px;
     border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    width: 139px;
+    float: right;
 }
 
-#unitTip tr td:first-child{
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-#unitTip tr td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+#holdUnitsBlock h3 {
+    font-size: 13px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 19px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 .table.units {
-    margin-top: 15px;
+    border-radius: 5px;
+    text-align: left;
+    text-shadow: #28a5e4 0 0 4px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    width: 100%;
 }
