@@ -1,5 +1,11 @@
 package field
 
+type message struct {
+	userID  int
+	gameID  int
+	message interface{}
+}
+
 type Message struct {
 	Event      string `json:"event"`
 	IdGame     int    `json:"id_game"`

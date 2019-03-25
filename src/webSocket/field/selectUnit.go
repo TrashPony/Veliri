@@ -14,37 +14,50 @@ func SelectUnit(msg Message, ws *websocket.Conn) {
 	var findUnit bool
 	var gameUnit *unit.Unit
 
-	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
 
-	if msg.Event == "SelectStorageUnit" {
-		// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
-		gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
-		if findUnit {
-			gameUnit.Q = client.GetSquad().MatherShip.Q
-			gameUnit.R = client.GetSquad().MatherShip.R
-			SelectMove(client, gameUnit, activeGame, ws, msg.Event)
+	if client != nil {
+
+		activeGame, findGame := games.Games.Get(client.GetGameID())
+
+		if msg.Event == "SelectStorageUnit" {
+			// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
+			gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
+			if findUnit {
+				gameUnit.Q = client.GetSquad().MatherShip.Q
+				gameUnit.R = client.GetSquad().MatherShip.R
+				SelectMove(client, gameUnit, activeGame, msg.Event)
+			}
+		} else {
+			gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 		}
-	} else {
-		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
-	}
 
-	if findClient && findUnit && findGame {
-		if activeGame.Phase == "move" {
-			SelectMove(client, gameUnit, activeGame, ws, msg.Event)
+		if findUnit && findGame {
+			if activeGame.Phase == "move" {
+				SelectMove(client, gameUnit, activeGame, msg.Event)
+			}
 		}
 	}
 }
 
-func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn, event string) {
+func SelectMove(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, event string) {
 	if !client.GetReady() {
 		if gameUnit.ActionPoints > 0 && gameUnit.Move {
-			ws.WriteJSON(MoveCoordinate{Event: "SelectMoveUnit", Unit: gameUnit, Move: movePhase.GetMoveCoordinate(gameUnit, client, actionGame, event)})
+			SendMessage(
+				MoveCoordinate{
+					Event: "SelectMoveUnit",
+					Unit:  gameUnit,
+					Move:  movePhase.GetMoveCoordinate(gameUnit, client, actionGame, event),
+				},
+				client.GetID(),
+				actionGame.Id,
+			)
+
 		} else {
-			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "unit already move"})
+			SendMessage(ErrorMessage{Event: "Error", Error: "unit already move"}, client.GetID(), actionGame.Id)
 		}
 	} else {
-		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
+		SendMessage(ErrorMessage{Event: "Error", Error: "you ready"}, client.GetID(), actionGame.Id)
 	}
 }
 

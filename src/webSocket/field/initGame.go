@@ -6,47 +6,44 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/initGame"
 	"github.com/gorilla/websocket"
 )
 
 func loadGame(msg Message, ws *websocket.Conn) {
-	client := usersFieldWs[ws]
+	client := localGame.Clients.GetByWs(ws)
 
 	loadGame, ok := games.Games.GetPlayerID(client.GetID())
-	newClient, _ := usersFieldWs[ws]
-
 	if !ok {
 		loadGame = initGame.InitGame(client.GetID())
 		games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
 	}
 
-	player := loadGame.GetPlayer(newClient.GetID(), newClient.GetLogin())
-
+	// берется заного игрок что бы проверить нашлась игра или нет
+	player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
 	if player != nil {
-
-		usersFieldWs[ws] = player
-
 		var sendLoadGame = LoadGame{
 			Event:             "LoadGame",
-			UserName:          usersFieldWs[ws].GetLogin(),
-			Ready:             usersFieldWs[ws].GetReady(),
-			Units:             usersFieldWs[ws].GetUnits(),
-			HostileUnits:      usersFieldWs[ws].GetHostileUnits(),
-			MemoryHostileUnit: usersFieldWs[ws].GetMemoryHostileUnits(),
-			UnitStorage:       usersFieldWs[ws].GetUnitsStorage(),
+			UserName:          player.GetLogin(),
+			Ready:             player.GetReady(),
+			Units:             player.GetUnits(),
+			HostileUnits:      player.GetHostileUnits(),
+			MemoryHostileUnit: player.GetMemoryHostileUnits(),
+			UnitStorage:       player.GetUnitsStorage(),
 			Map:               loadGame.GetMap(),
-			Watch:             usersFieldWs[ws].GetWatchCoordinates(),
+			Watch:             player.GetWatchCoordinates(),
 			GameStep:          loadGame.GetStep(),
-			GamePhase:         loadGame.GetPhase()}
-		ws.WriteJSON(sendLoadGame)
+			GamePhase:         loadGame.GetPhase(),
+		}
+		SendMessage(sendLoadGame, player.GetID(), loadGame.Id)
 
 		if loadGame.Phase == "move" {
-			UserQueueSender(newClient, loadGame)
+			UserQueueSender(client, loadGame)
 		}
 
 	} else {
-		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "error"})
+		SendMessage(ErrorMessage{Event: "Error", Error: "error"}, player.GetID(), loadGame.Id)
 	}
 }
 

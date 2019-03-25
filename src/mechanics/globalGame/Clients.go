@@ -73,7 +73,6 @@ func (c *wsUsers) GetById(id int) *player.Player {
 			return client
 		}
 	}
-
 	return nil
 }
 

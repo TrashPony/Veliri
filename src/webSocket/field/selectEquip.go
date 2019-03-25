@@ -5,53 +5,90 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 )
 
 func SelectEquip(msg Message, ws *websocket.Conn) {
 
-	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
 
-	ok := false
-	equipSlot := &detail.BodyEquipSlot{}
+	if client != nil {
 
-	if msg.EquipType == 3 {
-		equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
-	}
+		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+		activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if msg.EquipType == 2 {
-		equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
-	}
+		ok := false
+		equipSlot := &detail.BodyEquipSlot{}
 
-	if findClient && findUnit && findGame && ok && equipSlot.Equip != nil {
-		if !client.GetReady() {
-			if equipSlot.Equip.Applicable == "map" {
-				ws.WriteJSON(EquipMapCoordinate{Event: "GetEquipMapTargets", Unit: gameUnit,
-					EquipSlot: equipSlot, Targets: targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame)})
+		if msg.EquipType == 3 {
+			equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
+		}
+
+		if msg.EquipType == 2 {
+			equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
+		}
+
+		if findUnit && findGame && ok && equipSlot.Equip != nil {
+			if !client.GetReady() {
+				if equipSlot.Equip.Applicable == "map" {
+					SendMessage(
+						EquipMapCoordinate{
+							Event:     "GetEquipMapTargets",
+							Unit:      gameUnit,
+							EquipSlot: equipSlot,
+							Targets:   targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame),
+						},
+						client.GetID(),
+						activeGame.Id,
+					)
+				}
+
+				if equipSlot.Equip.Applicable == "my_units" {
+					SendMessage(
+						EquipTargetCoordinate{
+							Event:     "GetEquipMyUnitTargets",
+							Unit:      gameUnit,
+							EquipSlot: equipSlot,
+							Units:     targetPhase.GetEquipMyUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
+						},
+						client.GetID(),
+						activeGame.Id,
+					)
+				}
+
+				if equipSlot.Equip.Applicable == "hostile_units" {
+					SendMessage(
+						EquipTargetCoordinate{
+							Event:     "GetEquipHostileUnitTargets",
+							Unit:      gameUnit,
+							EquipSlot: equipSlot,
+							Units:     targetPhase.GetEquipHostileUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
+						},
+						client.GetID(),
+						activeGame.Id,
+					)
+				}
+
+				if equipSlot.Equip.Applicable == "myself" {
+					SendMessage(
+						EquipTargetCoordinate{
+							Event:     "GetEquipMySelfTarget",
+							Unit:      gameUnit,
+							EquipSlot: equipSlot,
+						},
+						client.GetID(),
+						activeGame.Id,
+					)
+				}
+
+				if equipSlot.Equip.Applicable == "all" {
+					// todo и свои и чужие но не карта GetEquipAllUnitTarget
+				}
+			} else {
+				SendMessage(ErrorMessage{Event: "Error", Error: "you ready"}, client.GetID(), activeGame.Id)
 			}
-
-			if equipSlot.Equip.Applicable == "my_units" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMyUnitTargets", Unit: gameUnit, EquipSlot: equipSlot,
-					Units: targetPhase.GetEquipMyUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client)})
-			}
-
-			if equipSlot.Equip.Applicable == "hostile_units" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipHostileUnitTargets", Unit: gameUnit, EquipSlot: equipSlot,
-					Units: targetPhase.GetEquipHostileUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client)})
-			}
-
-			if equipSlot.Equip.Applicable == "myself" {
-				ws.WriteJSON(EquipTargetCoordinate{Event: "GetEquipMySelfTarget", Unit: gameUnit, EquipSlot: equipSlot})
-			}
-
-			if equipSlot.Equip.Applicable == "all" {
-				// todo  и свои и чужие но не карта GetEquipAllUnitTarget
-			}
-		} else {
-			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "you ready"})
 		}
 	}
 }

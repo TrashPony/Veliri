@@ -22,15 +22,30 @@ func attack(activeGame *localGame.Game) {
 	resultBattle := attackPhase.AttackPhase(activeGame)
 
 	for _, gamePlayer := range activeGame.GetPlayers() {
-		attack := AttackMessage{Event: "AttackPhase", UserName: gamePlayer.GetLogin(), GameID: gamePlayer.GetGameID(),
-			ResultBattle: dataPreparation(resultBattle, gamePlayer, activeGame)}
-		attackPipe <- attack
+		SendMessage(
+			AttackMessage{
+				Event:        "AttackPhase",
+				UserName:     gamePlayer.GetLogin(),
+				GameID:       gamePlayer.GetGameID(),
+				ResultBattle: dataPreparation(resultBattle, gamePlayer, activeGame),
+			},
+			gamePlayer.GetID(),
+			activeGame.Id,
+		)
 
 		for _, q := range gamePlayer.GetUnits() {
 			for _, userUnit := range q {
 				// обновляем всю стату юнитов у всех пользователей
-				moves := Move{Event: "UpdateUnit", UserName: gamePlayer.GetLogin(), GameID: activeGame.Id, Unit: userUnit}
-				move <- moves
+				SendMessage(
+					Move{
+						Event:    "UpdateUnit",
+						UserName: gamePlayer.GetLogin(),
+						GameID:   activeGame.Id,
+						Unit:     userUnit,
+					},
+					gamePlayer.GetID(),
+					activeGame.Id,
+				)
 			}
 		}
 	}

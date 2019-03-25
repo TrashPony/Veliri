@@ -28,45 +28,51 @@ TODO улучшить метод движения за счет общения �
 TODO юниты при передвежение будет говорить бекенду свои координаты
 TODO и бекенд будет решать за счет этого кому из игроков говорить где и как двигается юнит
 TODO тогда беда с туманом войны и баг с проебом координаты решается на все 100%
+
+TODO расчет пути реализован в глобал гейм мовеТо, но без тумана войны
 */
 
 func MoveUnit(msg Message, ws *websocket.Conn) {
 	var event string
 
-	client, findClient := usersFieldWs[ws]
-	activeGame, findGame := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
 
-	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
-	if !findUnit {
-		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
-	} else {
-		event = "SelectStorageUnit"
-	}
+	if client != nil {
 
-	if findUnit && findClient && findGame {
-		if !client.GetReady() && gameUnit.ActionPoints > 0 {
+		activeGame, findGame := games.Games.Get(client.GetGameID())
 
-			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
-			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
+		gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+		if !findUnit {
+			gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+		} else {
+			event = "SelectStorageUnit"
+		}
 
-			if find {
-				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
-				client.DelUnitStorage(gameUnit.ID)
+		if findUnit && findGame {
+			if !client.GetReady() && gameUnit.ActionPoints > 0 {
 
-				ws.WriteJSON(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path})
-				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
-				QueueSender(activeGame)
+				moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
+				_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
+
+				if find {
+					path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
+					client.DelUnitStorage(gameUnit.ID)
+
+					SendMessage(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path}, client.GetID(), activeGame.Id)
+					updateWatchHostileUser(client, activeGame, gameUnit, path, event)
+					QueueSender(activeGame)
+				} else {
+					resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
+					SendMessage(resp, client.GetID(), activeGame.Id)
+				}
 			} else {
-				resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
-				ws.WriteJSON(resp)
+				resp := ErrorMessage{Event: msg.Event, Error: "unit already move"}
+				SendMessage(resp, client.GetID(), activeGame.Id)
 			}
 		} else {
-			resp := ErrorMessage{Event: msg.Event, Error: "unit already move"}
-			ws.WriteJSON(resp)
+			resp := ErrorMessage{Event: msg.Event, Error: "not found unit"}
+			SendMessage(resp, client.GetID(), activeGame.Id)
 		}
-	} else {
-		resp := ErrorMessage{Event: msg.Event, Error: "not found unit"}
-		ws.WriteJSON(resp)
 	}
 }
 
@@ -75,16 +81,14 @@ func UserQueueSender(client *player.Player, game *localGame.Game) {
 		for _, q := range client.GetUnits() {
 			for _, gameUnit := range q {
 				if gameUnit.Move {
-					moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
-					move <- moves
+					SendMessage(Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}, client.GetID(), game.Id)
 				}
 			}
 		}
 
 		for _, gameUnit := range client.GetUnitsStorage() {
 			if gameUnit.Move {
-				moves := Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}
-				move <- moves
+				SendMessage(Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}, client.GetID(), game.Id)
 			}
 		}
 	}
@@ -97,8 +101,7 @@ func QueueSender(game *localGame.Game) {
 	for _, user := range game.GetPlayers() {
 		for _, q := range user.GetUnits() {
 			for _, gameUnit := range q {
-				moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-				move <- moves
+				SendMessage(Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}, user.GetID(), game.Id)
 			}
 			if !user.Ready {
 				allReady = false
@@ -106,12 +109,9 @@ func QueueSender(game *localGame.Game) {
 		}
 
 		for _, gameUnit := range user.GetUnitsStorage() {
-			moves := Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}
-			move <- moves
+			SendMessage(Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}, user.GetID(), game.Id)
 		}
-
-		memoryUnits := Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}
-		move <- memoryUnits
+		SendMessage(Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}, user.GetID(), game.Id)
 	}
 
 	if allReady {
@@ -121,22 +121,22 @@ func QueueSender(game *localGame.Game) {
 
 func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
-	gameUnit, findUnit := usersFieldWs[ws].GetUnitStorage(msg.UnitID)
+	client := localGame.Clients.GetByWs(ws)
 
+	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if gameUnit == nil {
-		gameUnit, findUnit = usersFieldWs[ws].GetUnit(msg.Q, msg.R)
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 	}
 
-	client, findClient := usersFieldWs[ws]
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if findUnit && findClient && findGame {
+	if findUnit && client != nil && findGame {
 		movePhase.SkipMove(gameUnit, activeGame)
-		ws.WriteJSON(Move{Event: "UpdateUnit", Unit: gameUnit, UserName: client.GetLogin()})
+		SendMessage(Move{Event: "UpdateUnit", Unit: gameUnit, UserName: client.GetLogin()}, client.GetID(), activeGame.Id)
 		QueueSender(activeGame)
 	} else {
 		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}
-		ws.WriteJSON(resp)
+		SendMessage(resp, client.GetID(), activeGame.Id)
 	}
 }
 
@@ -217,8 +217,7 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 					update.Player(user)
 				}
 
-				moves := Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}
-				move <- moves
+				SendMessage(Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}, user.GetID(), activeGame.Id)
 			}
 		}
 	}

@@ -38,10 +38,7 @@ func main() {
 
 	go chat.CommonChatSender()
 
-	go field.MoveSender()
-	go field.UnitSender()
-	go field.PhaseSender()
-	go field.AttackSender()
+	go field.Sender()
 
 	go globalGame.MoveSender()
 

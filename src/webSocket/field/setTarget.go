@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 	"strconv"
@@ -10,20 +11,23 @@ import (
 
 func SetTarget(msg Message, ws *websocket.Conn) {
 
-	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
+	if client != nil {
 
-	if findClient && findUnit && findGame && !client.GetReady() && !gameUnit.Defend && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
+		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+		activeGame, findGame := games.Games.Get(client.GetGameID())
 
-		targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame, client, "GetTargets")
-		_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
+		if findUnit && findGame && !client.GetReady() && !gameUnit.Defend && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
 
-		if find {
-			targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
-			ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
-		} else {
-			ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
+			targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame, client, "GetTargets")
+			_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
+
+			if find {
+				targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
+				SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
+			} else {
+				SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
+			}
 		}
 	}
 }

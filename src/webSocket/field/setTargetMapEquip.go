@@ -3,42 +3,47 @@ package field
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/gorilla/websocket"
 )
 
 func SetTargetMapEquip(msg Message, ws *websocket.Conn) {
 
-	client, findClient := usersFieldWs[ws]
-	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-	activeGame, findGame := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
 
-	ok := false
-	equipSlot := &detail.BodyEquipSlot{}
+	if client != nil {
 
-	if msg.EquipType == 3 {
-		equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
-	}
+		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+		activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if msg.EquipType == 2 {
-		equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
-	}
+		ok := false
+		equipSlot := &detail.BodyEquipSlot{}
 
-	if findUnit && findClient && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
-		if equipSlot.Equip.Applicable == "map" {
-			gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.TargetQ, msg.TargetR)
-			if findCoordinate {
-				err := targetPhase.SetEquipTarget(gameUnit, gameCoordinate, equipSlot, client)
-				if err == nil {
-					ws.WriteJSON(Unit{Event: "UpdateUnit", Unit: gameUnit})
-				} else {
-					ws.WriteJSON(ErrorMessage{Event: "Error", Error: err.Error()})
-				}
-			} else {
-				ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not find game coordinate"})
-			}
+		if msg.EquipType == 3 {
+			equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
 		}
-	} else {
-		ws.WriteJSON(ErrorMessage{Event: "Error", Error: "not allow"})
+
+		if msg.EquipType == 2 {
+			equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
+		}
+
+		if findUnit && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
+			if equipSlot.Equip.Applicable == "map" {
+				gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.TargetQ, msg.TargetR)
+				if findCoordinate {
+					err := targetPhase.SetEquipTarget(gameUnit, gameCoordinate, equipSlot, client)
+					if err == nil {
+						SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
+					} else {
+						SendMessage(ErrorMessage{Event: "Error", Error: err.Error()}, client.GetID(), activeGame.Id)
+					}
+				} else {
+					SendMessage(ErrorMessage{Event: "Error", Error: "not find game coordinate"}, client.GetID(), activeGame.Id)
+				}
+			}
+		} else {
+			SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
+		}
 	}
 }

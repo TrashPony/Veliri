@@ -2,194 +2,127 @@ package field
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
-	"github.com/TrashPony/Veliri/src/webSocket/utils"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
 	"sync"
 )
 
-var phasePipe = make(chan PhaseInfo)
-var targetPipe = make(chan Unit)
-var attackPipe = make(chan AttackMessage)
-var move = make(chan Move)
-
-var usersFieldWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
-
+var sendMessagePipe = make(chan message)
 var mutex = &sync.Mutex{}
 
-// TODO изменить модель поведения на более безопасную, сейчас это не так
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-	mutex.Lock()
-
-	utils.CheckDoubleLogin(login, &usersFieldWs)
-
 	newPlayer, ok := players.Users.Get(id)
-
 	if !ok {
 		newPlayer = players.Users.Add(id, login)
 	}
 
-	usersFieldWs[ws] = newPlayer // Регистрируем нового Клиента
+	localGame.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
+	println("WS field Сессия: login: " + login + " id: " + strconv.Itoa(id))
 
-	print("WS field Сессия: ") // просто смотрим новое подключение
-	print(ws)
-	println(" login: " + login + " id: " + strconv.Itoa(id))
-
-	defer ws.Close()
-
-	mutex.Unlock()
-
-	fieldReader(ws, usersFieldWs)
+	fieldReader(ws)
 }
 
-func fieldReader(ws *websocket.Conn, usersFieldWs map[*websocket.Conn]*player.Player) {
+func fieldReader(ws *websocket.Conn) {
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			utils.DelConn(ws, &usersFieldWs, err)
-			break
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+			println(err, "field")
+			localGame.Clients.DelClientByWS(ws)
+			return
 		}
 
 		if msg.Event == "InitGame" {
 			mutex.Lock() // это тут что бы при создание новой игры когда все пишут одновременно не создавались копии игр
 			loadGame(msg, ws)
 			mutex.Unlock()
-			continue
 		}
 
 		if msg.Event == "Ready" {
 			Ready(ws)
-			continue
 		}
 
 		if msg.Event == "SelectUnit" || msg.Event == "SelectStorageUnit" {
 			SelectUnit(msg, ws)
-			continue
 		}
 
 		if msg.Event == "GetTargetZone" {
 			GetTargetZone(msg, ws)
-			continue
 		}
 
 		if msg.Event == "GetPreviewPath" {
 			GetPreviewPath(msg, ws)
-			continue
 		}
 
 		if msg.Event == "MoveUnit" || msg.Event == "PlaceUnit" {
 			MoveUnit(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SkipMoveUnit" {
 			SkipMoveUnit(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SetWeaponTarget" {
 			SetTarget(msg, ws)
-			continue
 		}
 
 		if msg.Event == "Defend" {
 			DefendTarget(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SetTargetMapEquip" {
 			SetTargetMapEquip(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SetTargetUnitEquip" {
 			SetTargetUnitEquip(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SelectWeapon" {
 			SelectWeapon(msg, ws)
-			continue
 		}
 
 		if msg.Event == "SelectEquip" {
 			SelectEquip(msg, ws)
-			continue
+		}
+
+		if msg.Event == "Reload" {
+			// TODO Перезарядка оружия
+		}
+
+		if msg.Event == "Diplomacy" {
+			// TODO Дипломатия
+		}
+
+		if msg.Event == "Mining" {
+			// TODO добыча ресурсов в локальной игре
 		}
 	}
 }
 
-func PhaseSender() {
-	for {
-		resp := <-phasePipe
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
+func SendMessage(senderMessage interface{}, userID, gameID int) {
+	moves := message{message: senderMessage, userID: userID, gameID: gameID}
+	sendMessagePipe <- moves
 }
 
-func MoveSender() {
+func Sender() {
 	for {
-		resp := <-move
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
+		resp := <-sendMessagePipe
 
-func UnitSender() {
-	for {
-		resp := <-targetPipe
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
-				err := ws.WriteJSON(resp)
-				if err != nil {
-					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
-				}
-			}
-		}
-		mutex.Unlock()
-	}
-}
+		users, mx := localGame.Clients.GetAllConnects()
 
-func AttackSender() {
-	for {
-		resp := <-attackPipe
-		mutex.Lock()
-		for ws, client := range usersFieldWs {
-			if client.GetLogin() == resp.UserName && client.GetGameID() == resp.GameID {
-				err := ws.WriteJSON(resp)
+		for ws, client := range users {
+			if client.GetID() == resp.userID && client.GetGameID() == resp.gameID {
+				err := ws.WriteJSON(resp.message)
 				if err != nil {
 					log.Printf("error: %v", err)
-					ws.Close()
-					delete(usersFieldWs, ws)
+					mx.Unlock()
+					localGame.Clients.DelClientByWS(ws)
 				}
 			}
 		}
-		mutex.Unlock()
+		mx.Unlock()
 	}
 }

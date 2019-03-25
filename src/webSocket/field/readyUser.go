@@ -9,16 +9,21 @@ import (
 )
 
 func Ready(ws *websocket.Conn) {
-	client := usersFieldWs[ws]
-	activeGame, _ := games.Games.Get(client.GetGameID())
+	client := localGame.Clients.GetByWs(ws)
 
-	userReady.UserReady(client)
+	if client != nil {
+		activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	changePhase := CheckAllReady(activeGame)
+		if findGame {
+			userReady.UserReady(client)
 
-	if !changePhase {
-		ws.WriteJSON(UserReady{Event: "Ready", Ready: client.GetReady()})
-		QueueSender(activeGame)
+			changePhase := CheckAllReady(activeGame)
+
+			if !changePhase {
+				SendMessage(UserReady{Event: "Ready", Ready: client.GetReady()}, client.GetID(), activeGame.Id)
+				QueueSender(activeGame)
+			}
+		}
 	}
 }
 
@@ -52,9 +57,9 @@ func ChangePhase(actionGame *localGame.Game) {
 			Ready:     client.GetReady(),
 			Units:     client.GetUnits(),
 			GameStep:  actionGame.Step,
-			GamePhase: actionGame.Phase}
-
-		phasePipe <- phaseInfo
+			GamePhase: actionGame.Phase,
+		}
+		SendMessage(phaseInfo, client.GetID(), actionGame.Id)
 	}
 }
 
