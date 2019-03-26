@@ -8,6 +8,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/getlantern/deepcopy"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -58,7 +59,19 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 					path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
 					client.DelUnitStorage(gameUnit.ID)
 
-					SendMessage(Move{Event: msg.Event, Unit: gameUnit, UserName: client.GetLogin(), Path: path}, client.GetID(), activeGame.Id)
+					SendMessage(
+						Move{
+							Event:    msg.Event,
+							Unit:     gameUnit,
+							UserName: client.GetLogin(),
+							Path:     path,
+						},
+						client.GetID(),
+						activeGame.Id,
+					)
+
+					// если враг видит бнита то пользователю отдаетася странный путь с хайдами и тд, хотя такого быт ьне может
+					// иначе путь отдается правильный но юнит некуда не идет Оо
 					updateWatchHostileUser(client, activeGame, gameUnit, path, event)
 					QueueSender(activeGame)
 				} else {
@@ -101,7 +114,15 @@ func QueueSender(game *localGame.Game) {
 	for _, user := range game.GetPlayers() {
 		for _, q := range user.GetUnits() {
 			for _, gameUnit := range q {
-				SendMessage(Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}, user.GetID(), game.Id)
+				SendMessage(
+					Move{Event: "QueueMove",
+						UserName: user.GetLogin(),
+						GameID:   game.Id,
+						Unit:     gameUnit,
+					},
+					user.GetID(),
+					game.Id,
+				)
 			}
 			if !user.Ready {
 				allReady = false
@@ -109,9 +130,25 @@ func QueueSender(game *localGame.Game) {
 		}
 
 		for _, gameUnit := range user.GetUnitsStorage() {
-			SendMessage(Move{Event: "QueueMove", UserName: user.GetLogin(), GameID: game.Id, Unit: gameUnit}, user.GetID(), game.Id)
+			SendMessage(
+				Move{
+					Event:    "QueueMove",
+					UserName: user.GetLogin(),
+					GameID:   game.Id, Unit: gameUnit,
+				},
+				user.GetID(),
+				game.Id,
+			)
 		}
-		SendMessage(Move{Event: "UpdateMemoryUnit", UserName: user.GetLogin(), GameID: game.Id, MemoryHostileUnit: user.GetMemoryHostileUnits()}, user.GetID(), game.Id)
+		SendMessage(
+			Move{Event: "UpdateMemoryUnit",
+				UserName:          user.GetLogin(),
+				GameID:            game.Id,
+				MemoryHostileUnit: user.GetMemoryHostileUnits(),
+			},
+			user.GetID(),
+			game.Id,
+		)
 	}
 
 	if allReady {
@@ -141,9 +178,13 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 }
 
 func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, gameUnit *unit.Unit, pathNodes []*movePhase.TruePatchNode, event string) {
-
+	// глубокое копирование pathNodes для каждого клиента
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
+
+			// глубокое копирование pathNodes для каждого клиента что бы не менять исходные данные
+			var path []*movePhase.TruePatchNode
+			deepcopy.Copy(&path, &pathNodes)
 
 			// пытаемся взять юнита по начальной координате
 			_, okGetUnit := user.GetHostileUnitByID(gameUnit.ID)
@@ -165,17 +206,17 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			okSecondNode := false
 			okEarlyNode := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
-			for i, pathNode := range pathNodes {
+			for i, pathNode := range path {
 
 				pathNode.WatchNode = nil
 
 				firstNode, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)
 
-				if len(pathNodes) > i+1 {
-					_, okSecondNode = user.GetWatchCoordinate(pathNodes[i+1].PathNode.Q, pathNodes[i+1].PathNode.R)
+				if len(path) > i+1 {
+					_, okSecondNode = user.GetWatchCoordinate(path[i+1].PathNode.Q, path[i+1].PathNode.R)
 				}
 				if 0 < i {
-					_, okEarlyNode = user.GetWatchCoordinate(pathNodes[i-1].PathNode.Q, pathNodes[i-1].PathNode.R)
+					_, okEarlyNode = user.GetWatchCoordinate(path[i-1].PathNode.Q, path[i-1].PathNode.R)
 				}
 
 				if event == "SelectStorageUnit" && i == 0 && okFirstNode {
@@ -217,7 +258,17 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 					update.Player(user)
 				}
 
-				SendMessage(Move{Event: "HostileUnitMove", Unit: gameUnit, UserName: user.GetLogin(), GameID: activeGame.Id, Path: pathNodes}, user.GetID(), activeGame.Id)
+				SendMessage(
+					Move{
+						Event:    "HostileUnitMove",
+						Unit:     gameUnit,
+						UserName: user.GetLogin(),
+						GameID:   activeGame.Id,
+						Path:     path,
+					},
+					user.GetID(),
+					activeGame.Id,
+				)
 			}
 		}
 	}

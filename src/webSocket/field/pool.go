@@ -4,7 +4,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/gorilla/websocket"
-	"log"
 	"strconv"
 	"sync"
 )
@@ -28,8 +27,7 @@ func fieldReader(ws *websocket.Conn) {
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			println(err, "field")
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			localGame.Clients.DelClientByWS(ws)
 			return
 		}
@@ -109,6 +107,7 @@ func SendMessage(senderMessage interface{}, userID, gameID int) {
 
 func Sender() {
 	for {
+		// Помни что пока отправляются данные, они могут изменится!
 		resp := <-sendMessagePipe
 
 		users, mx := localGame.Clients.GetAllConnects()
@@ -117,7 +116,6 @@ func Sender() {
 			if client.GetID() == resp.userID && client.GetGameID() == resp.gameID {
 				err := ws.WriteJSON(resp.message)
 				if err != nil {
-					log.Printf("error: %v", err)
 					mx.Unlock()
 					localGame.Clients.DelClientByWS(ws)
 				}
