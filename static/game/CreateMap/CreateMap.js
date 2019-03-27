@@ -50,8 +50,12 @@ function CreateMap() {
                     coordinate: coordinate
                 }); // x y - пиксельная координата положения, q r гексовая сеть
                 startX += horizontalOffset;
+
+                CreateFowOfWar(coordinate, startX, startY);
             }
         }
+
+        game.fogOfWar.add(game.add.sprite(-50, 0, game.bmdFogOfWar));
 
         CreateTexture();
         CreateBeams();
