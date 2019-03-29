@@ -1,4 +1,5 @@
 function OpenCoordinate(q, r) {
+    // TODO перерисовка бмд
     let openFog = game.map.OneLayerMap[q][r].fogSprite; //.hide = true;
     game.map.OneLayerMap[q][r].open = true;
     if (openFog) {
@@ -7,6 +8,7 @@ function OpenCoordinate(q, r) {
 }
 
 function OpenCoordinates(coordinates) {
+    // TODO перерисовка бмд
     while (coordinates.length > 0) {
         let coordinate = coordinates.shift();
 

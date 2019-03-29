@@ -16,7 +16,6 @@ function CreateGame(map, loadFunc, typeService) {
 }
 
 function create(game) {
-
     // размеры гексов карты по умолчанию
     game.hexagonWidth = 50;
     game.hexagonHeight = 55;
@@ -80,8 +79,9 @@ function create(game) {
 
     game.cloudsLayer = game.add.group();
 
-    game.fogOfWar = game.add.group();
+    game.fogOfWar = game.add.group(); // группа тумана войны что бы воспроизводить анимацию открытия клеток
     game.fogOfWar.alpha = 0.5;
+    game.bmdFogOfWar = game.make.bitmapData(game.hexagonWidth * game.map.QSize + 80, heightMap + 80);
 
     game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
