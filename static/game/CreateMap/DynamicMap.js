@@ -22,7 +22,7 @@ function dynamicMap(group, points) {
 
             // && !coordinate.base что бы не уничтожались значимые спрайты с их ивентами)
             if (coordinate.texture_object !== "" && !coordinate.base && !coordinate.objectSprite) {
-                CreateObjects(coordinate, point.x, point.y);
+                CreateObject(coordinate, point.x, point.y);
             }
 
             if (coordinate.animate_sprite_sheets !== "" && !coordinate.objectSprite) {

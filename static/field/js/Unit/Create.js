@@ -104,6 +104,7 @@ function CreateUnit(unitStat, inVisible) {
     unit.addChild(healBar);
     healBar.anchor.setTo(0.5);
     healBar.alpha = 0;
+    healBar.scale.setTo(1);
 
     let heal = game.make.sprite(-50, 0, 'heal');
     healBar.addChild(heal);
@@ -137,8 +138,10 @@ function CreateUnit(unitStat, inVisible) {
         unitStat.sprite.bodyShadow.alpha = 0;
         unitStat.sprite.healBar.alpha = 0;
         unitStat.sprite.heal.alpha = 0;
-        unitStat.sprite.weapon.alpha = 0;
-        unitStat.sprite.weaponShadow.alpha = 0;
+        if (unitStat.sprite.weapon) {
+            unitStat.sprite.weapon.alpha = 0;
+            unitStat.sprite.weaponShadow.alpha = 0;
+        }
     }
 
     addToGameUnit(unitStat);

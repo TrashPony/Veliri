@@ -31,10 +31,11 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"to_r, "+
 		"to_base_id, "+
 		"to_map_id,"+
-		"id_type "+
+		"id_type, "+
+		"object_priority "+
 		""+
 		") "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)",
+		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)",
 		mp.Id,
 		coordinate.Q,
 		coordinate.R,
@@ -57,6 +58,7 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.ToBaseID,
 		coordinate.ToMapID,
 		coordinate.ID,
+		coordinate.ObjectPriority,
 	)
 	if err != nil {
 		log.Fatal("add new mc coordinate " + err.Error())

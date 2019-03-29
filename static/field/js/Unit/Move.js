@@ -1,5 +1,5 @@
 function CreatePathToUnit(jsonMessage) {
-
+    console.log(jsonMessage);
     let error = JSON.parse(jsonMessage).error;
     if (error === null || error === "") {
 
@@ -7,6 +7,7 @@ function CreatePathToUnit(jsonMessage) {
         let unitStat = JSON.parse(jsonMessage).unit;
 
         let unit = GetGameUnitID(unitStat.id);         // берем юнита
+
         if (!unit) {
 
             let boxUnit = document.getElementById(JSON.parse(jsonMessage).unit.id);

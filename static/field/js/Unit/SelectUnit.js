@@ -24,7 +24,7 @@ function SelectUnit(focus) {
     //     }
     // );
 
-    Fire(this, GetGameUnitID(31));
+    //Fire(this, GetGameUnitID(31));
 
     if (focus) {
         // TODO если юнит вызван через панель очереди то он должен фокусится

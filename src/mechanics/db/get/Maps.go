@@ -183,7 +183,7 @@ func CoordinatesMap(mp *_map.Map) {
 		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
 		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
 		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_q, mc.to_r, mc.to_base_id, mc.to_map_id, "+
-		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority "+
+		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority, mc.object_priority "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -203,7 +203,8 @@ func CoordinatesMap(mp *_map.Map) {
 			&gameCoordinate.YOffset, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
 			&gameCoordinate.Transport, &gameCoordinate.Handler, &gameCoordinate.ToQ, &gameCoordinate.ToR,
 			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID, &gameCoordinate.XShadowOffset,
-			&gameCoordinate.YShadowOffset, &gameCoordinate.ShadowIntensity, &gameCoordinate.TexturePriority)
+			&gameCoordinate.YShadowOffset, &gameCoordinate.ShadowIntensity, &gameCoordinate.TexturePriority,
+			&gameCoordinate.ObjectPriority)
 		if err != nil {
 			log.Fatal(err.Error() + "scan map constructor")
 		}

@@ -13,6 +13,7 @@ type Coordinate struct {
 	TextureOverFlore    string           `json:"texture_over_flore"`
 	TexturePriority     int              `json:"texture_priority"`
 	TextureObject       string           `json:"texture_object"`
+	ObjectPriority      int              `json:"object_priority"`
 	AnimateSpriteSheets string           `json:"animate_sprite_sheets"`
 	AnimateLoop         bool             `json:"animate_loop"`
 	GameID              int              `json:"game_id"`

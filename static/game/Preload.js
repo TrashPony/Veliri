@@ -190,8 +190,18 @@ function preload() {
     // roads
     game.load.image('road_1_1', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_1.png');
     game.load.image('road_1_2', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_2.png');
+    game.load.image('road_1_3', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_3.png');
+    game.load.image('road_1_4', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_4.png');
+    game.load.image('road_1_5', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_5.png');
+    game.load.image('road_1_6', 'http://' + window.location.host + '/assets/map/objects/roads/road_1_6.png');
+
     game.load.image('road_2_1', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_1.png');
     game.load.image('road_2_2', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_2.png');
+    game.load.image('road_2_3', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_3.png');
+    game.load.image('road_2_4', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_4.png');
+    game.load.image('road_2_5', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_5.png');
+    game.load.image('road_2_6', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_6.png');
+    game.load.image('road_2_7', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_7.png');
 
     //Clouds
     game.load.image('cloud0', 'http://' + window.location.host + '/assets/map/clouds/cloud13.png');

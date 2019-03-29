@@ -23,8 +23,8 @@ function LoadGame(jsonMessage) {
 
             game.map.selectSprites = [];
 
-            game.camera.scale.x = 1.5;
-            game.camera.scale.y = 1.5;
+            // game.camera.scale.x = 1.5;
+            // game.camera.scale.y = 1.5;
 
             GameInfo();
             InitPlayer();

@@ -1,4 +1,4 @@
-function CreateObjects(coordinate, x, y) {
+function CreateObject(coordinate, x, y) {
     let object;
 
     if (coordinate.impact) {
@@ -19,21 +19,22 @@ function CreateObjects(coordinate, x, y) {
 }
 
 function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOffset, group, xShadowOffset, yShadowOffset, shadowIntensity) {
+    let shadow;
+    if (needShadow) {
+        shadow = group.create(x + xOffset + game.shadowXOffset + xShadowOffset, y + yOffset + game.shadowYOffset + yShadowOffset, texture);
+        shadow.anchor.setTo(0.5, 0.5);
+        shadow.scale.set((scale / 100) / 2);
+        shadow.tint = 0x000000;
+        shadow.angle = rotate;
+        shadow.alpha = shadowIntensity / 100;
+    }
 
     let object = group.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5, 0.5);
     object.scale.set((scale / 100) / 2);
     object.angle = rotate;
 
-    if (needShadow) {
-        let shadow = group.create(object.x + game.shadowXOffset + xShadowOffset, object.y + game.shadowYOffset + yShadowOffset, texture);
-        shadow.anchor.setTo(0.5, 0.5);
-        shadow.scale.set((scale / 100) / 2);
-        shadow.tint = 0x000000;
-        shadow.angle = rotate;
-        shadow.alpha = shadowIntensity / 100;
-        object.shadow = shadow;
-    }
+    object.shadow = shadow;
 
     return object
 }

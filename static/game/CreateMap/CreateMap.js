@@ -26,9 +26,9 @@ function CreateMap() {
 
                 CreateTerrain(coordinate, startX, startY, q, r);
 
-                if (coordinate.texture_object !== "") {
-                    CreateObjects(coordinate, startX, startY);
-                }
+                // if (coordinate.texture_object !== "") {
+                //     //CreateObject(coordinate, startX, startY);
+                // }
 
                 if (coordinate.animate_sprite_sheets !== "") {
                     CreateAnimate(coordinate, startX, startY);
@@ -53,12 +53,28 @@ function CreateMap() {
             }
         }
 
-        CreateTexture();
-        CreateBeams();
-        // TODO CreateEmitters();
-
-        resolve()
+        CreateTexture().then(function () {
+            CreateObjects();
+        }).then(function () {
+            CreateBeams();
+        }).then(function () {
+            // TODO CreateEmitters();
+            resolve()
+        });
     });
+}
+
+function CreateObjects() {
+    // сортировка по приоритету отрисовки обьектов
+    game.mapPoints.sort(function (a, b) {
+        return a.coordinate.object_priority - b.coordinate.object_priority;
+    });
+
+    for (let i in game.mapPoints) {
+        if (game.mapPoints[i].coordinate.texture_object !== '') {
+            CreateObject(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
+        }
+    }
 }
 
 function CreateEmitters() {
@@ -100,16 +116,20 @@ function CreateBeams() {
 
 function CreateTexture() {
     // сортировка по приоритету отрисовки текстур
-    game.mapPoints.sort(function (a, b) {
-        return a.coordinate.texture_priority - b.coordinate.texture_priority;
-    });
+    return new Promise(function (resolve) {
+        game.mapPoints.sort(function (a, b) {
+            return a.coordinate.texture_priority - b.coordinate.texture_priority;
+        });
 
-    for (let i in game.mapPoints) {
-        if (game.mapPoints[i].coordinate.texture_over_flore !== '') {
-            let bmd = game.make.bitmapData(512, 512);
-            bmd.alphaMask(game.mapPoints[i].coordinate.texture_over_flore, 'brush');
-            game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 256, game.mapPoints[i].y - 256);
-            bmd.destroy();
+        for (let i in game.mapPoints) {
+            if (game.mapPoints[i].coordinate.texture_over_flore !== '') {
+                let bmd = game.make.bitmapData(512, 512);
+                bmd.alphaMask(game.mapPoints[i].coordinate.texture_over_flore, 'brush');
+                game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 256, game.mapPoints[i].y - 256);
+                bmd.destroy();
+            }
         }
-    }
+
+        resolve();
+    });
 }

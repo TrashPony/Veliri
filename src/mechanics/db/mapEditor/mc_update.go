@@ -29,7 +29,8 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"to_r = $19, "+
 		"to_base_id = $20, "+
 		"to_map_id = $21,"+
-		"id_type = $22 "+
+		"id_type = $22, "+
+		"object_priority = $23 "+
 		""+
 		"WHERE id_map = $1 AND q=$2 AND r = $3",
 		mp.Id,
@@ -54,6 +55,7 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.ToBaseID,
 		coordinate.ToMapID,
 		coordinate.ID,
+		coordinate.ObjectPriority,
 	)
 	if err != nil {
 		log.Fatal("update mc coordinate" + err.Error())

@@ -139,6 +139,10 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
 			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+
+			coordinateMap.ObjectPriority = mapChange.GetMaxPriorityTexture()
+			coordinateMap.ObjectPriority++
+
 			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
 			selectMap(msg, ws)
 		}

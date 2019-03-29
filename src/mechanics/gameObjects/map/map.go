@@ -142,6 +142,7 @@ func (mp *Map) SetXYSize(hexWidth, hexHeight, Scale int) (int, int) {
 	return (mp.QSize * hexWidth) / Scale, int(float64(mp.RSize)*float64(hexHeight)*0.75) / Scale
 }
 
+// TODO GetMaxPriorityTexture, GetMaxPriorityObject близнецы
 func (mp *Map) GetMaxPriorityTexture() int {
 	max := 0
 
@@ -149,6 +150,20 @@ func (mp *Map) GetMaxPriorityTexture() int {
 		for _, coordinate := range xLine {
 			if max < coordinate.TexturePriority {
 				max = coordinate.TexturePriority
+			}
+		}
+	}
+
+	return max
+}
+
+func (mp *Map) GetMaxPriorityObject() int {
+	max := 0
+
+	for _, xLine := range mp.OneLayerMap {
+		for _, coordinate := range xLine {
+			if max < coordinate.ObjectPriority {
+				max = coordinate.ObjectPriority
 			}
 		}
 	}
