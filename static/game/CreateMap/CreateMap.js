@@ -26,10 +26,6 @@ function CreateMap() {
 
                 CreateTerrain(coordinate, startX, startY, q, r);
 
-                // if (coordinate.texture_object !== "") {
-                //     //CreateObject(coordinate, startX, startY);
-                // }
-
                 if (coordinate.animate_sprite_sheets !== "") {
                     CreateAnimate(coordinate, startX, startY);
                 }
@@ -47,15 +43,12 @@ function CreateMap() {
                     y: startY,
                     q: q,
                     r: r,
-                    coordinate: coordinate
+                    coordinate: coordinate,
+                    fogOfWar: true,
                 }); // x y - пиксельная координата положения, q r гексовая сеть
                 startX += horizontalOffset;
-
-                CreateFowOfWar(coordinate, startX, startY);
             }
         }
-
-        game.fogOfWar.add(game.add.sprite(-50, 0, game.bmdFogOfWar));
 
         CreateTexture().then(function () {
             CreateObjects();
@@ -63,9 +56,22 @@ function CreateMap() {
             CreateBeams();
         }).then(function () {
             // TODO CreateEmitters();
+        }).then(function () {
+            CreateAllFogOfWar();
+        }).then(function () {
+            game.fogOfWar.add(game.add.sprite(0, 0, game.bmdFogOfWar));
             resolve()
         });
     });
+}
+
+function CreateAllFogOfWar() {
+    game.bmdFogOfWar.clear();
+    for (let i in game.mapPoints) {
+        if (game.mapPoints[i].fogOfWar) {
+            CreateFowOfWar(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
+        }
+    }
 }
 
 function CreateObjects() {
@@ -133,7 +139,6 @@ function CreateTexture() {
                 bmd.destroy();
             }
         }
-
         resolve();
     });
 }

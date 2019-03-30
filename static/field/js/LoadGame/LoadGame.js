@@ -1,5 +1,11 @@
 let game;
 
+function InitGame() {
+        field.send(JSON.stringify({
+                event: "InitGame",
+        }));
+}
+
 function LoadGame(jsonMessage) {
 
     game = CreateGame(
