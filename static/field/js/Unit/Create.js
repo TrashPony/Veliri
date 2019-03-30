@@ -91,7 +91,9 @@ function CreateUnit(unitStat, inVisible) {
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    body.events.onInputDown.add(SelectUnit, unitStat);    // обрабатываем наведение мышки
+    body.events.onInputDown.add(function () {
+        SelectUnit(unitStat, false)
+    });
     body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
     body.events.onInputOut.add(UnitMouseOut, unitStat);   // TODO onInputOut работает плохо везде, его надо чемто заменить обрабатываем убирание мышки
 

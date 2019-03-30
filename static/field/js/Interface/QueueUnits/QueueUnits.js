@@ -121,7 +121,7 @@ function createQueueBlock(units) {
             if (units[0].on_map) {
                 moveUnit.onclick = function () {
                     if (game.user.name === units[0].owner) {
-                        SelectUnit.call(units[0]);
+                        SelectUnit(units[0], true);
                     }
                 }
             } else {

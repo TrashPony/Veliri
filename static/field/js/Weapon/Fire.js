@@ -21,12 +21,9 @@ function Fire(unit, target, targetType) {
 
     if (!weapon) return;
 
-    let rotate = Math.atan2(targetY - unit.sprite.weapon.world.y, targetX - unit.sprite.weapon.world.x);
+    let rotate = Math.atan2(targetY - unit.sprite.weapon.world.y / game.camera.scale.y, targetX - unit.sprite.weapon.world.x / game.camera.scale.x);
     let angle = (rotate * 180 / 3.14);
 
-    // todo timeRotate не верно считается, и юнит выбирает не самый оптимальный угол поворота
-    // TODO стартовая позиция снаряда с зависимостью от скейла карты
-    
     let timeRotate;
     if (angle >= unit.sprite.weapon.angle) {
         timeRotate = (angle - unit.sprite.weapon.angle) * 15;
@@ -38,17 +35,23 @@ function Fire(unit, target, targetType) {
     // game.world.bringToTop(target.sprite); // позволяет поднять группу спрайтов поверх всего мира
     // var oldParent = sprite.parent;oldParent.remove(sprite);newParent.add(sprite); переместить спрайт из 1 в другую группу
 
-    game.add.tween(unit.sprite.weaponShadow).to({angle: angle}, timeRotate, Phaser.Easing.Linear.None, true, 0);
-    let rotateTower = game.add.tween(unit.sprite.weapon).to({angle: angle}, timeRotate, Phaser.Easing.Linear.None, true, 0);
+    ShortDirectionRotateTween(unit.sprite.weaponShadow, Phaser.Math.degToRad(angle), timeRotate);
+    let rotateTower = ShortDirectionRotateTween(unit.sprite.weapon, Phaser.Math.degToRad(angle), timeRotate);
 
     return new Promise((resolve) => {
         rotateTower.onComplete.add(function () {
             if (weapon.type === "missile") {
                 let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, unit.sprite.weapon.width / 2);
 
-                launchRocket(unit.sprite.weapon.world.x - connectPoints.x / 2, unit.sprite.weapon.world.y - connectPoints.y / 2, unit.sprite.weapon.angle, targetX, targetY, weapon.artillery, targetType);
+                launchRocket(
+                    (unit.sprite.weapon.world.x / game.camera.scale.x) - (connectPoints.x / 2),
+                    (unit.sprite.weapon.world.y / game.camera.scale.y) - (connectPoints.y / 2),
+                    unit.sprite.weapon.angle, targetX, targetY, weapon.artillery, targetType);
                 setTimeout(function () {
-                    launchRocket(unit.sprite.weapon.world.x + connectPoints.x / 2, unit.sprite.weapon.world.y + connectPoints.y / 2, unit.sprite.weapon.angle, targetX, targetY, weapon.artillery, targetType)
+                    launchRocket(
+                        unit.sprite.weapon.world.x + connectPoints.x / 2,
+                        unit.sprite.weapon.world.y + connectPoints.y / 2,
+                        unit.sprite.weapon.angle, targetX, targetY, weapon.artillery, targetType)
                         .then(function () {
                             resolve();
                         });
@@ -60,9 +63,16 @@ function Fire(unit, target, targetType) {
                     let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 5, unit.sprite.weapon.width);
                     let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle + 5, unit.sprite.weapon.width);
 
-                    LaunchArtilleryBallistics(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, targetX, targetY, targetType);
+                    LaunchArtilleryBallistics(
+                        (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPointsOne.x,
+                        (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPointsOne.y,
+                        angle, targetX, targetY, targetType);
+
                     setTimeout(function () {
-                        LaunchArtilleryBallistics(unit.sprite.weapon.world.x + connectPointsTwo.x, unit.sprite.weapon.world.y + connectPointsTwo.y, angle, targetX - 9, targetY - 7, targetType)
+                        LaunchArtilleryBallistics(
+                            (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPointsTwo.x,
+                            (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPointsTwo.y,
+                            angle, targetX - 9, targetY - 7, targetType)
                             .then(function () {
                                 resolve();
                             });
@@ -70,7 +80,10 @@ function Fire(unit, target, targetType) {
                 } else {
                     let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, unit.sprite.weapon.width / 1.1);
 
-                    LaunchSmallBallistics(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, targetX, targetY, targetType)
+                    LaunchSmallBallistics(
+                        (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPoints.x,
+                        (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPoints.y,
+                        angle, targetX, targetY, targetType)
                         .then(function () {
                             resolve();
                         });
@@ -82,15 +95,24 @@ function Fire(unit, target, targetType) {
                     let connectPointsOne = PositionAttachSprite(unit.sprite.weapon.angle - 5, unit.sprite.weapon.width / 1.5);
                     let connectPointsTwo = PositionAttachSprite(unit.sprite.weapon.angle + 5, unit.sprite.weapon.width / 1.5);
 
-                    LaunchLaser(unit.sprite.weapon.world.x + connectPointsOne.x, unit.sprite.weapon.world.y + connectPointsOne.y, angle, targetX, targetY, targetType);
-                    LaunchLaser(unit.sprite.weapon.world.x + connectPointsTwo.x, unit.sprite.weapon.world.y + connectPointsTwo.y, angle, targetX, targetY, targetType)
+                    LaunchLaser(
+                        (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPointsOne.x,
+                        (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPointsOne.y,
+                        angle, targetX, targetY, targetType);
+                    LaunchLaser(
+                        (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPointsTwo.x,
+                        (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPointsTwo.y,
+                        angle, targetX, targetY, targetType)
                         .then(function () {
                             resolve();
                         })
                 }
                 if (weapon.name === "small_laser") {
-                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, unit.sprite.weapon.width / 1.5);
-                    LaunchLaser(unit.sprite.weapon.world.x + connectPoints.x, unit.sprite.weapon.world.y + connectPoints.y, angle, targetX, targetY, targetType)
+                    let connectPoints = PositionAttachSprite(unit.sprite.weapon.angle, (unit.sprite.weapon.width / 1.5));
+                    LaunchLaser(
+                        (unit.sprite.weapon.world.x / game.camera.scale.x) + connectPoints.x,
+                        (unit.sprite.weapon.world.y / game.camera.scale.y) + connectPoints.y,
+                        angle, targetX, targetY, targetType)
                         .then(function () {
                             resolve();
                         })

@@ -1,4 +1,4 @@
-function SelectUnit(focus) {
+function SelectUnit(unitStat, focus) {
     // let testWeapon = {};
     // testWeapon.type = "laser";
     // testWeapon.artillery = false;
@@ -24,18 +24,16 @@ function SelectUnit(focus) {
     //     }
     // );
 
-    //Fire(this, GetGameUnitID(31));
-
+    //Fire(unitStat, GetGameUnitID(31));
     if (focus) {
-        // TODO если юнит вызван через панель очереди то он должен фокусится
-        game.camera.focusOn(this.sprite);
+        game.camera.focusOnXY(unitStat.sprite.x*game.camera.scale.x, unitStat.sprite.y*game.camera.scale.y);
     }
 
-    if (game.Phase === "targeting" && this.owner === game.user.name) {
+    if (game.Phase === "targeting" && unitStat.owner === game.user.name) {
         field.send(JSON.stringify({
             event: "SelectWeapon",
-            q: Number(this.q),
-            r: Number(this.r)
+            q: Number(unitStat.q),
+            r: Number(unitStat.r)
         }));
         removeUnitInput();
         RemoveSelect(true, true);
@@ -45,10 +43,10 @@ function SelectUnit(focus) {
 
     field.send(JSON.stringify({
         event: "SelectUnit",
-        q: Number(this.q),
-        r: Number(this.r)
+        q: Number(unitStat.q),
+        r: Number(unitStat.r)
     }));
 
-    CreateUnitSubMenu(this);
-    MarkUnitSelect(this, 1);
+    CreateUnitSubMenu(unitStat);
+    MarkUnitSelect(unitStat, 1);
 }
