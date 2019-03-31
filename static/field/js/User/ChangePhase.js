@@ -1,5 +1,7 @@
 function ChangePhase(jsonMessage) {
 
+    ChangePhaseNotification(jsonMessage);
+
     game.Step = JSON.parse(jsonMessage).game_step;
     game.Phase = JSON.parse(jsonMessage).game_phase;
     GameInfo();
@@ -8,6 +10,10 @@ function ChangePhase(jsonMessage) {
         LoadQueueUnits();
     } else {
         document.getElementById("queue").style.visibility = "hidden";
+    }
+
+    if (game.Phase === "targeting" && JSON.parse(jsonMessage).flee_battle) {
+        // TODO кнопка ливнуть из боя
     }
 
     game.user.ready = JSON.parse(jsonMessage).ready;

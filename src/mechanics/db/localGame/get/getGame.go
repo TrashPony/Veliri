@@ -7,8 +7,8 @@ import (
 )
 
 func Game(playerID int) *localGame.Game {
-	// игрок может быть одновременно только в 1 битве, поэтому находим ид по таблице action_game_user
-	rowsID, err := dbConnect.GetDBConnect().Query("Select id_game FROM action_game_user WHERE id_user=$1", playerID)
+	// игрок может быть одновременно только в 1 битве, поэтому находим ид по таблице action_game_user с параметром leave=false
+	rowsID, err := dbConnect.GetDBConnect().Query("Select id_game FROM action_game_user WHERE id_user=$1 AND leave=false", playerID)
 	if err != nil {
 		log.Fatal(err, "Error GetInfo Game")
 	}

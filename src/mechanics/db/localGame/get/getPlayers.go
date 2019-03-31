@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/getlantern/deepcopy"
 	"log"
 )
 
@@ -14,7 +15,8 @@ func Players(game *localGame.Game) []*player.Player {
 
 	rows, err := dbConnect.GetDBConnect().Query("Select users.name, "+
 		"agu.ready, "+
-		"users.id "+
+		"users.id, "+
+		"agu.leave "+
 		""+
 		"FROM action_game_user as agu, users "+
 		"WHERE agu.id_user=users.id AND agu.id_game=$1", game.Id)
@@ -30,14 +32,14 @@ func Players(game *localGame.Game) []*player.Player {
 		var login string
 		var ready bool
 		var id int
+		var leave bool
 
-		err := rows.Scan(&login, &ready, &id)
+		err := rows.Scan(&login, &ready, &id, &leave)
 		if err != nil {
 			log.Fatal(err, "scan local game user stat")
 		}
 
 		client, ok := players.Users.Get(id)
-
 		if !ok {
 			client = players.Users.Add(id, login)
 		}
@@ -45,8 +47,20 @@ func Players(game *localGame.Game) []*player.Player {
 		client.SetReady(ready)
 		client.SetGameID(game.Id)
 
-		users = append(users, client)
-		memoryPlayer(client)
+		if !leave {
+			users = append(users, client)
+			memoryPlayer(client)
+		} else {
+			// т.к. игрока реально нет в игре то он тупо для того что бы говорить другим
+			// что был такой игрок и юниты если они остались в игре
+			var fakePlayer player.Player
+			err := deepcopy.Copy(&fakePlayer, &client)
+			if err != nil {
+				println(err.Error())
+			}
+			fakePlayer.Leave = true
+			users = append(users, &fakePlayer)
+		}
 	}
 
 	return users

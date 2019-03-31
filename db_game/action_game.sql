@@ -15,7 +15,8 @@ CREATE TABLE action_game_squads (              /* отряды которые у
 CREATE TABLE action_game_user (                       /* пользователи которые участвуют в игре */
   id_game        INT REFERENCES action_games (id),
   id_user        INT REFERENCES users (id),
-  ready          BOOLEAN                              /* готовность пользователя */
+  ready          BOOLEAN,                             /* готовность пользователя */
+  leave          BOOLEAN -- игрок ливнул из игры по той или иной причине
 );
 
 CREATE TABLE action_game_unit_effects (        /* эфекты которые в данный момент висят на юнитах */

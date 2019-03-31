@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/userReady"
 	"github.com/gorilla/websocket"
+	"strconv"
 )
 
 func Ready(ws *websocket.Conn) {
@@ -50,25 +51,32 @@ type UserReady struct {
 
 func ChangePhase(actionGame *localGame.Game) {
 	for _, client := range actionGame.GetPlayers() {
+
+		gameZone := actionGame.GetGameZone(client)
+		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
+		// проверяем игровую зону, если игрок вышел из зоны боевых действий то он может выйти из боя.
+
 		phaseInfo := PhaseInfo{
-			Event:     "ChangePhase",
-			UserName:  client.GetLogin(),
-			GameID:    actionGame.Id,
-			Ready:     client.GetReady(),
-			Units:     client.GetUnits(),
-			GameStep:  actionGame.Step,
-			GamePhase: actionGame.Phase,
+			Event:      "ChangePhase",
+			UserName:   client.GetLogin(),
+			GameID:     actionGame.Id,
+			Ready:      client.GetReady(),
+			Units:      client.GetUnits(),
+			GameStep:   actionGame.Step,
+			GamePhase:  actionGame.Phase,
+			FleeBattle: find,
 		}
 		SendMessage(phaseInfo, client.GetID(), actionGame.Id)
 	}
 }
 
 type PhaseInfo struct {
-	Event     string                           `json:"event"`
-	UserName  string                           `json:"user_name"`
-	GameID    int                              `json:"game_id"`
-	Ready     bool                             `json:"ready"`
-	Units     map[string]map[string]*unit.Unit `json:"units"`
-	GameStep  int                              `json:"game_step"`
-	GamePhase string                           `json:"game_phase"`
+	Event      string                           `json:"event"`
+	UserName   string                           `json:"user_name"`
+	GameID     int                              `json:"game_id"`
+	Ready      bool                             `json:"ready"`
+	Units      map[string]map[string]*unit.Unit `json:"units"`
+	GameStep   int                              `json:"game_step"`
+	GamePhase  string                           `json:"game_phase"`
+	FleeBattle bool                             `json:"flee_battle"`
 }

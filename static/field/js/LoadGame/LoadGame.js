@@ -1,9 +1,9 @@
 let game;
 
 function InitGame() {
-        field.send(JSON.stringify({
-                event: "InitGame",
-        }));
+    field.send(JSON.stringify({
+        event: "InitGame",
+    }));
 }
 
 function LoadGame(jsonMessage) {
@@ -29,8 +29,8 @@ function LoadGame(jsonMessage) {
 
             game.map.selectSprites = [];
 
-            // game.camera.scale.x = 1.5;
-            // game.camera.scale.y = 1.5;
+            game.camera.scale.x = 1.5;
+            game.camera.scale.y = 1.5;
 
             GameInfo();
             InitPlayer();
@@ -40,6 +40,7 @@ function LoadGame(jsonMessage) {
             CreateHostileGameUnits();
             LoadOpenCoordinate();
             CreateMiniMap();
+            MarkGameZone(JSON.parse(jsonMessage).game_zone);
         },
         "battle");
 }

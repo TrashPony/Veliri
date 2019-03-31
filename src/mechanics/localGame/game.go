@@ -1,9 +1,12 @@
 package localGame
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/getlantern/deepcopy"
 )
 
 type Game struct {
@@ -21,6 +24,21 @@ type Game struct {
 
 func (game *Game) SetPlayers(players []*player.Player) {
 	game.players = players
+}
+
+func (game *Game) SetFakePlayer(realPlayer *player.Player) {
+	// функция для замены юзеров болванками если игрок ливнул, погибнул в игре
+	for i, user := range game.players {
+		if user.GetID() == realPlayer.GetID() {
+			var fakePlayer player.Player
+			err := deepcopy.Copy(&fakePlayer, &user)
+			if err != nil {
+				println(err.Error())
+			}
+			fakePlayer.Leave = true
+			game.players[i] = &fakePlayer
+		}
+	}
 }
 
 func (game *Game) SetMap(gameMap *_map.Map) {
@@ -88,6 +106,32 @@ func (game *Game) GetPlayer(id int, login string) (Players *player.Player) {
 	}
 
 	return nil
+}
+
+func (game *Game) GetGameZone(player *player.Player) map[string]map[string]*coordinate.Coordinate {
+	// зона игры от лица пользователя.
+	zone := make(map[string]map[string]*coordinate.Coordinate)
+
+	for _, gamePlayer := range game.players {
+
+		if gamePlayer.Leave {
+			continue
+		}
+
+		if gamePlayer.GetID() != player.GetID() && gamePlayer != nil && gamePlayer.GetSquad() != nil &&
+			gamePlayer.GetSquad().MatherShip != nil && gamePlayer.GetSquad().MatherShip.Body != nil {
+
+			center, find := game.Map.GetCoordinate(gamePlayer.GetSquad().MatherShip.Q, gamePlayer.GetSquad().MatherShip.R)
+			if find {
+				watchZone := coordinate.GetCoordinatesRadius(center, gamePlayer.GetSquad().MatherShip.RangeView*2)
+				for _, coor := range watchZone {
+					Phases.AddCoordinate(zone, coor)
+				}
+			}
+		}
+	}
+
+	return zone
 }
 
 func (game *Game) GetStep() int {

@@ -31,7 +31,7 @@ func (gamesStore *store) GetPlayerID(playerID int) (*localGame.Game, bool) {
 	// игрок может быть одновременно только в 1 битве, поэтому это безопасно
 	for _, game := range gamesStore.games {
 		for _, user := range game.GetPlayers() {
-			if user.GetID() == playerID {
+			if user.GetID() == playerID && !user.Leave {
 				return game, true
 			}
 		}

@@ -66,6 +66,10 @@ function create(game) {
     game.SelectLineLayer.alpha = 0.9;
     game.add.tween(game.SelectLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
 
+    game.GameZone = game.add.group();
+    game.GameZone.alpha = 0.9;
+    game.add.tween(game.GameZone).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
+
     game.SelectTargetLineLayer = game.add.group();
     game.SelectTargetLineLayer.alpha = 0.9;
     game.add.tween(game.SelectTargetLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();

@@ -18,9 +18,11 @@ func AllReady(actionGame *localGame.Game) bool {
 	allReady := true
 
 	for _, user := range actionGame.GetPlayers() {
-		if user.GetReady() == false {
-			allReady = false
-			break
+		if !user.Leave { // если юзер ливнул то его смотреть ненадо
+			if user.GetReady() == false {
+				allReady = false
+				break
+			}
 		}
 	}
 
@@ -53,7 +55,9 @@ func changeGamePhase(actionGame *localGame.Game) {
 	update.Game(actionGame)
 
 	for _, user := range actionGame.GetPlayers() {
-		user.SetReady(false)
-		update.Player(user)
+		if !user.Leave {
+			user.SetReady(false)
+			update.Player(user)
+		}
 	}
 }

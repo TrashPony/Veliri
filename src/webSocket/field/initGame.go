@@ -35,6 +35,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			Watch:             player.GetWatchCoordinates(),
 			GameStep:          loadGame.GetStep(),
 			GamePhase:         loadGame.GetPhase(),
+			GameZone:          loadGame.GetGameZone(player),
 		}
 		SendMessage(sendLoadGame, player.GetID(), loadGame.Id)
 
@@ -60,4 +61,5 @@ type LoadGame struct {
 	Watch             map[string]map[string]*coordinate.Coordinate `json:"watch"`
 	GameStep          int                                          `json:"game_step"`
 	GamePhase         string                                       `json:"game_phase"`
+	GameZone          map[string]map[string]*coordinate.Coordinate `json:"game_zone"`
 }

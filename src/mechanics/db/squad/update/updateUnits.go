@@ -101,7 +101,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"power = $8, "+
 					"action_point = $9, "+
 					"defend = $10, "+
-					"move = $13 "+
+					"move = $13, "+
+					"id_game = $14 "+
 					"WHERE id_squad = $11 AND slot = $12",
 				slotUnit.Unit.Body.ID,
 				slotUnit.Unit.Q,
@@ -116,6 +117,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				squad.ID,
 				slot,
 				slotUnit.Unit.Move,
+				slotUnit.Unit.GameID,
 			)
 
 			if err != nil {

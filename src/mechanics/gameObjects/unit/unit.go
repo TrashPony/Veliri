@@ -18,6 +18,7 @@ type Unit struct {
 
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
+	GameID int  `json:"game_id"`
 
 	Target *coordinate.Coordinate `json:"target"`
 	Defend bool                   `json:"defend"`

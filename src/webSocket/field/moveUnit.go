@@ -14,14 +14,15 @@ import (
 )
 
 type Move struct {
-	Event             string                     `json:"event"`
-	UserName          string                     `json:"user_name"`
-	GameID            int                        `json:"game_id"`
-	Unit              *unit.Unit                 `json:"unit"`
-	Path              []*movePhase.TruePatchNode `json:"path"`
-	Error             string                     `json:"error"`
-	Move              bool                       `json:"move"`
-	MemoryHostileUnit map[string]unit.Unit       `json:"memory_hostile_unit"`
+	Event             string                                       `json:"event"`
+	UserName          string                                       `json:"user_name"`
+	GameID            int                                          `json:"game_id"`
+	Unit              *unit.Unit                                   `json:"unit"`
+	Path              []*movePhase.TruePatchNode                   `json:"path"`
+	Error             string                                       `json:"error"`
+	Move              bool                                         `json:"move"`
+	MemoryHostileUnit map[string]unit.Unit                         `json:"memory_hostile_unit"`
+	GameZone          map[string]map[string]*coordinate.Coordinate `json:"game_zone"`
 }
 
 /*
@@ -182,6 +183,15 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 	for _, user := range activeGame.GetPlayers() {
 		if user.GetLogin() != client.GetLogin() {
 
+			// если ходим мс, то у всех игроков обновляется игровая зона независимо от того видят они его или нет
+			if gameUnit.Body.MotherShip {
+				SendMessage(
+					Move{Event: "UpdateGameZone", UserName: user.GetLogin(), GameID: activeGame.Id, GameZone: activeGame.GetGameZone(user)},
+					user.GetID(),
+					activeGame.Id,
+				)
+			}
+
 			// глубокое копирование pathNodes для каждого клиента что бы не менять исходные данные
 			var path []*movePhase.TruePatchNode
 			deepcopy.Copy(&path, &pathNodes)
@@ -207,7 +217,6 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			okEarlyNode := false
 			// тут происходит формирование пути для пользователя который может видеть не весь путь юнита
 			for i, pathNode := range path {
-
 				pathNode.WatchNode = nil
 
 				firstNode, okFirstNode := user.GetWatchCoordinate(pathNode.PathNode.Q, pathNode.PathNode.R)

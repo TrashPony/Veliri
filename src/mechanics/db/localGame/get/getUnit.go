@@ -11,27 +11,32 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 
 	for _, gamePlayer := range game.GetPlayers() {
 
-		gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
+		if gamePlayer.Leave {
+			// TODO брать юзера из фабрики, для сохраненеия сылки, и переливать сюда юнитов с ид игры таким же как у игры
+		} else {
 
-		UnitEffects(gamePlayer.GetSquad().MatherShip)         // берем эфекты ms
-		addUnitToMap(units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
-		gamePlayer.GetSquad().MatherShip.CalculateParams()    // пересчитываем статы со всем эффектами
+			gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
 
-		for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
-			if playerUnit.Unit != nil {
-				if playerUnit.Unit.OnMap {
+			UnitEffects(gamePlayer.GetSquad().MatherShip)         // берем эфекты ms
+			addUnitToMap(units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
+			gamePlayer.GetSquad().MatherShip.CalculateParams()    // пересчитываем статы со всем эффектами
 
-					playerUnit.Unit.Owner = gamePlayer.GetLogin()
-					UnitEffects(playerUnit.Unit)         // берем эфекты юнита
-					addUnitToMap(units, playerUnit.Unit) // и кладем на карту
+			for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
+				if playerUnit.Unit != nil {
+					if playerUnit.Unit.OnMap {
 
-				} else {
-					playerUnit.Unit.Owner = gamePlayer.GetLogin()
-					unitStorage = append(unitStorage, playerUnit.Unit)
-					gamePlayer.AddUnitStorage(playerUnit.Unit)
+						playerUnit.Unit.Owner = gamePlayer.GetLogin()
+						UnitEffects(playerUnit.Unit)         // берем эфекты юнита
+						addUnitToMap(units, playerUnit.Unit) // и кладем на карту
+
+					} else {
+						playerUnit.Unit.Owner = gamePlayer.GetLogin()
+						unitStorage = append(unitStorage, playerUnit.Unit)
+						gamePlayer.AddUnitStorage(playerUnit.Unit)
+					}
+
+					playerUnit.Unit.CalculateParams() // пересчитываем статы со всем эффектами
 				}
-
-				playerUnit.Unit.CalculateParams() // пересчитываем статы со всем эффектами
 			}
 		}
 	}

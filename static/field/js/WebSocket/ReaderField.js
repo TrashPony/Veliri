@@ -37,7 +37,6 @@ function ReadResponse(jsonMessage) {
 
     if (event === "ChangePhase") {
         ChangePhase(jsonMessage);
-        ChangePhaseNotification(jsonMessage);
     }
 
     if (event === "MoveUnit") {
@@ -68,6 +67,10 @@ function ReadResponse(jsonMessage) {
 
     if (event === "UpdateMemoryUnit") {
         UpdateMemoryUnit(jsonMessage)
+    }
+
+    if (event === "UpdateGameZone") {
+        MarkGameZone(JSON.parse(jsonMessage).game_zone);
     }
 
     if (event === "Error") {

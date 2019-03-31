@@ -25,6 +25,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 func fieldReader(ws *websocket.Conn) {
 	for {
+		// TODO проверка во всех методах что игрок не ливнул
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
@@ -84,6 +85,10 @@ func fieldReader(ws *websocket.Conn) {
 
 		if msg.Event == "SelectEquip" {
 			SelectEquip(msg, ws)
+		}
+
+		if msg.Event == "FleeBattle" {
+			fleeBattle(msg, ws)
 		}
 
 		if msg.Event == "Reload" {
