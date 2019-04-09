@@ -42,4 +42,12 @@ CREATE TABLE user_memory_unit (
   id_game INT REFERENCES action_games (id),
   id_unit INT REFERENCES squad_units(id),
   unit    JSON                                 /* хранит текущие состояние юнита в виде строки json */
-)
+);
+
+-- таблица хранит в себе юнитов игроков которые вышли из игры
+CREATE TABLE game_leave_unit (
+  id      SERIAL PRIMARY KEY,
+  id_user INT REFERENCES users (id),
+  id_game INT REFERENCES action_games (id),
+  unit    JSON                                 /* хранит текущие состояние юнита в виде строки json */
+);

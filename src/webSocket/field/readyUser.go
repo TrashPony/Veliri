@@ -52,6 +52,10 @@ type UserReady struct {
 func ChangePhase(actionGame *localGame.Game) {
 	for _, client := range actionGame.GetPlayers() {
 
+		if client.Leave {
+			continue
+		}
+
 		gameZone := actionGame.GetGameZone(client)
 		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 		// проверяем игровую зону, если игрок вышел из зоны боевых действий то он может выйти из боя.

@@ -79,6 +79,11 @@ func QueueMove(game *localGame.Game) {
 	}
 
 	for _, gameUser := range game.GetPlayers() {
+
+		if gameUser.Leave {
+			continue
+		}
+
 		update.Squad(gameUser.GetSquad(), true)
 	}
 
@@ -86,9 +91,7 @@ func QueueMove(game *localGame.Game) {
 }
 
 func randomUnitMove(moveUnits []*unit.Unit) *unit.Unit {
-
 	numberUnit := rand.Intn(len(moveUnits))
-
 	return moveUnits[numberUnit]
 }
 
@@ -104,7 +107,7 @@ func canMoveUser(game *localGame.Game) bool {
 
 func canMoveUnit(client *player.Player) bool {
 
-	if client.Ready {
+	if client.Ready || client.Leave {
 		return false
 	}
 

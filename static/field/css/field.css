@@ -12,8 +12,8 @@ body {
     vertical-align: top;
     text-align: left;
     position: fixed;
-    top: 4%;
-    right: 5%;
+    top: 15px;
+    right: 15px;
     height: 400px;
     width: 730px;
     pointer-events: none;

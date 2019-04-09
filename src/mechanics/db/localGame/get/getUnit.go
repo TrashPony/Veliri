@@ -1,8 +1,12 @@
 package get
 
 import (
+	"encoding/json"
+	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"log"
 )
 
 func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
@@ -12,22 +16,22 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 	for _, gamePlayer := range game.GetPlayers() {
 
 		if gamePlayer.Leave {
-			// TODO брать юзера из фабрики, для сохраненеия сылки, и переливать сюда юнитов с ид игры таким же как у игры
+			getLeaveUnit(game, gamePlayer, &units)
 		} else {
 
 			gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
 
-			UnitEffects(gamePlayer.GetSquad().MatherShip)         // берем эфекты ms
-			addUnitToMap(units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
-			gamePlayer.GetSquad().MatherShip.CalculateParams()    // пересчитываем статы со всем эффектами
+			UnitEffects(gamePlayer.GetSquad().MatherShip)          // берем эфекты ms
+			addUnitToMap(&units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
+			gamePlayer.GetSquad().MatherShip.CalculateParams()     // пересчитываем статы со всем эффектами
 
 			for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
 				if playerUnit.Unit != nil {
 					if playerUnit.Unit.OnMap {
 
 						playerUnit.Unit.Owner = gamePlayer.GetLogin()
-						UnitEffects(playerUnit.Unit)         // берем эфекты юнита
-						addUnitToMap(units, playerUnit.Unit) // и кладем на карту
+						UnitEffects(playerUnit.Unit)          // берем эфекты юнита
+						addUnitToMap(&units, playerUnit.Unit) // и кладем на карту
 
 					} else {
 						playerUnit.Unit.Owner = gamePlayer.GetLogin()
@@ -43,11 +47,33 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 	return units, unitStorage
 }
 
-func addUnitToMap(units map[int]map[int]*unit.Unit, gameUnit *unit.Unit) {
-	if units[gameUnit.Q] != nil { // кладем юнита в матрицу
-		units[gameUnit.Q][gameUnit.R] = gameUnit
+func getLeaveUnit(game *localGame.Game, gamePlayer *player.Player, units *map[int]map[int]*unit.Unit) {
+	rows, err := dbConnect.GetDBConnect().Query(
+		"SELECT unit FROM game_leave_unit WHERE id_user = $1 AND id_game = $2", gamePlayer.GetID(), game.Id)
+	if err != nil {
+		log.Fatal("get game_leave_unit", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var jsonUnit []byte
+		var memoryUnit unit.Unit
+
+		err := rows.Scan(&jsonUnit)
+		if err != nil {
+			log.Fatal("scan game_leave_unit", err)
+		}
+		json.Unmarshal(jsonUnit, &memoryUnit)
+
+		addUnitToMap(units, &memoryUnit) // и кладем на карту
+	}
+}
+
+func addUnitToMap(units *map[int]map[int]*unit.Unit, gameUnit *unit.Unit) {
+	if (*units)[gameUnit.Q] != nil { // кладем юнита в матрицу
+		(*units)[gameUnit.Q][gameUnit.R] = gameUnit
 	} else {
-		units[gameUnit.Q] = make(map[int]*unit.Unit)
-		units[gameUnit.Q][gameUnit.R] = gameUnit
+		(*units)[gameUnit.Q] = make(map[int]*unit.Unit)
+		(*units)[gameUnit.Q][gameUnit.R] = gameUnit
 	}
 }

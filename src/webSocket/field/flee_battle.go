@@ -1,6 +1,7 @@
 package field
 
 import (
+	localGame2 "github.com/TrashPony/Veliri/src/mechanics/db/localGame"
 	gameUpdate "github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
@@ -17,14 +18,17 @@ func fleeBattle(msg Message, ws *websocket.Conn) {
 		if findGame && activeGame.Phase == "targeting" {
 
 			// когда игрок ливает из боя все юниты которые на карте остаются на поле
-			// боя как болванки и больше не принадлежат отряду
+			// боя как болванки и больше не принадлежат отряду и хранятся в отдельной таблице
 			// оставлять игрока в игре со статусом leave true
 
 			for _, unitSlot := range client.GetSquad().MatherShip.Units {
-				if unitSlot.Unit.OnMap {
+				if unitSlot.Unit != nil && unitSlot.Unit.OnMap {
 					unitSlot.Unit.GameID = activeGame.Id
+					localGame2.AddLeaveUnit(unitSlot.Unit, client.GetID(), activeGame.Id)
+					unitSlot.Unit = nil
 				}
 			}
+
 			client.GetSquad().InGame = false
 			update.Squad(client.GetSquad(), true)
 

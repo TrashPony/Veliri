@@ -14,37 +14,42 @@ import (
 func loadGame(msg Message, ws *websocket.Conn) {
 	client := localGame.Clients.GetByWs(ws)
 
-	loadGame, ok := games.Games.GetPlayerID(client.GetID())
-	if !ok {
-		loadGame = initGame.InitGame(client.GetID())
-		games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
-	}
+	if client != nil {
 
-	// берется заного игрок что бы проверить нашлась игра или нет
-	player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
-	if player != nil {
-		var sendLoadGame = LoadGame{
-			Event:             "LoadGame",
-			UserName:          player.GetLogin(),
-			Ready:             player.GetReady(),
-			Units:             player.GetUnits(),
-			HostileUnits:      player.GetHostileUnits(),
-			MemoryHostileUnit: player.GetMemoryHostileUnits(),
-			UnitStorage:       player.GetUnitsStorage(),
-			Map:               loadGame.GetMap(),
-			Watch:             player.GetWatchCoordinates(),
-			GameStep:          loadGame.GetStep(),
-			GamePhase:         loadGame.GetPhase(),
-			GameZone:          loadGame.GetGameZone(player),
-		}
-		SendMessage(sendLoadGame, player.GetID(), loadGame.Id)
-
-		if loadGame.Phase == "move" {
-			UserQueueSender(client, loadGame)
+		loadGame, ok := games.Games.GetPlayerID(client.GetID())
+		if !ok {
+			loadGame = initGame.InitGame(client.GetID())
+			games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
 		}
 
+		// берется заного игрок что бы проверить нашлась игра или нет
+		player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
+		if player != nil && !player.Leave{
+			var sendLoadGame = LoadGame{
+				Event:             "LoadGame",
+				UserName:          player.GetLogin(),
+				Ready:             player.GetReady(),
+				Units:             player.GetUnits(),
+				HostileUnits:      player.GetHostileUnits(),
+				MemoryHostileUnit: player.GetMemoryHostileUnits(),
+				UnitStorage:       player.GetUnitsStorage(),
+				Map:               loadGame.GetMap(),
+				Watch:             player.GetWatchCoordinates(),
+				GameStep:          loadGame.GetStep(),
+				GamePhase:         loadGame.GetPhase(),
+				GameZone:          loadGame.GetGameZone(player),
+			}
+			SendMessage(sendLoadGame, player.GetID(), loadGame.Id)
+
+			if loadGame.Phase == "move" {
+				UserQueueSender(client, loadGame)
+			}
+
+		} else {
+			SendMessage(ErrorMessage{Event: "Error", Error: "error"}, client.GetID(), loadGame.Id)
+		}
 	} else {
-		SendMessage(ErrorMessage{Event: "Error", Error: "error"}, player.GetID(), loadGame.Id)
+		SendMessage(ErrorMessage{Event: "Error", Error: "error"}, client.GetID(), 0)
 	}
 }
 
