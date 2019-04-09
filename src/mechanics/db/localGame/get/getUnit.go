@@ -49,7 +49,7 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 
 func getLeaveUnit(game *localGame.Game, gamePlayer *player.Player, units *map[int]map[int]*unit.Unit) {
 	rows, err := dbConnect.GetDBConnect().Query(
-		"SELECT unit FROM game_leave_unit WHERE id_user = $1 AND id_game = $2", gamePlayer.GetID(), game.Id)
+		"SELECT unit, id_user FROM game_leave_unit WHERE id_user = $1 AND id_game = $2", gamePlayer.GetID(), game.Id)
 	if err != nil {
 		log.Fatal("get game_leave_unit", err)
 	}
@@ -58,13 +58,16 @@ func getLeaveUnit(game *localGame.Game, gamePlayer *player.Player, units *map[in
 	for rows.Next() {
 		var jsonUnit []byte
 		var memoryUnit unit.Unit
+		var ownerID int
 
-		err := rows.Scan(&jsonUnit)
+		err := rows.Scan(&jsonUnit, &ownerID)
 		if err != nil {
 			log.Fatal("scan game_leave_unit", err)
 		}
 		json.Unmarshal(jsonUnit, &memoryUnit)
 
+		memoryUnit.Leave = true
+		memoryUnit.OwnerID = ownerID
 		addUnitToMap(units, &memoryUnit) // и кладем на карту
 	}
 }

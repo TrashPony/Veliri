@@ -10,6 +10,7 @@ type Unit struct {
 	ID      int    `json:"id"`
 	SquadID int    `json:"squad_id"`
 	Owner   string `json:"owner"`
+	OwnerID int    `json:"owner_id"`
 
 	Body *detail.Body `json:"body"`
 
@@ -18,6 +19,7 @@ type Unit struct {
 
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
+	Leave  bool `json:"leave"`
 	GameID int  `json:"game_id"`
 
 	Target *coordinate.Coordinate `json:"target"`

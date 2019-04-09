@@ -25,7 +25,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 func fieldReader(ws *websocket.Conn) {
 	for {
-		// TODO проверка во всех методах что игрок не ливнул
+
+		// TODO проверка во всех методах что игрок не ливнул и что client.GetSquad().InGame = true и что ToLeave = false
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
@@ -39,68 +40,84 @@ func fieldReader(ws *websocket.Conn) {
 			mutex.Unlock()
 		}
 
-		if msg.Event == "Ready" {
-			Ready(ws)
-		}
+		client := localGame.Clients.GetByWs(ws)
+		// TODO вытащить сюда все проверки и передавать в методы уже клиента а не соеденение
+		if client != nil && client.GetSquad().InGame && !client.ToLeave {
+			if msg.Event == "Ready" {
+				Ready(ws)
+			}
 
-		if msg.Event == "SelectUnit" || msg.Event == "SelectStorageUnit" {
-			SelectUnit(msg, ws)
-		}
+			if msg.Event == "SelectUnit" || msg.Event == "SelectStorageUnit" {
+				SelectUnit(msg, ws)
+			}
 
-		if msg.Event == "GetTargetZone" {
-			GetTargetZone(msg, ws)
-		}
+			if msg.Event == "GetTargetZone" {
+				GetTargetZone(msg, ws)
+			}
 
-		if msg.Event == "GetPreviewPath" {
-			GetPreviewPath(msg, ws)
-		}
+			if msg.Event == "GetPreviewPath" {
+				GetPreviewPath(msg, ws)
+			}
 
-		if msg.Event == "MoveUnit" || msg.Event == "PlaceUnit" {
-			MoveUnit(msg, ws)
-		}
+			if msg.Event == "MoveUnit" || msg.Event == "PlaceUnit" {
+				MoveUnit(msg, ws)
+			}
 
-		if msg.Event == "SkipMoveUnit" {
-			SkipMoveUnit(msg, ws)
-		}
+			if msg.Event == "SkipMoveUnit" {
+				SkipMoveUnit(msg, ws)
+			}
 
-		if msg.Event == "SetWeaponTarget" {
-			SetTarget(msg, ws)
-		}
+			if msg.Event == "SetWeaponTarget" {
+				SetTarget(msg, ws)
+			}
 
-		if msg.Event == "Defend" {
-			DefendTarget(msg, ws)
-		}
+			if msg.Event == "Defend" {
+				DefendTarget(msg, ws)
+			}
 
-		if msg.Event == "SetTargetMapEquip" {
-			SetTargetMapEquip(msg, ws)
-		}
+			if msg.Event == "SetTargetMapEquip" {
+				SetTargetMapEquip(msg, ws)
+			}
 
-		if msg.Event == "SetTargetUnitEquip" {
-			SetTargetUnitEquip(msg, ws)
-		}
+			if msg.Event == "SetTargetUnitEquip" {
+				SetTargetUnitEquip(msg, ws)
+			}
 
-		if msg.Event == "SelectWeapon" {
-			SelectWeapon(msg, ws)
-		}
+			if msg.Event == "SelectWeapon" {
+				SelectWeapon(msg, ws)
+			}
 
-		if msg.Event == "SelectEquip" {
-			SelectEquip(msg, ws)
-		}
+			if msg.Event == "SelectEquip" {
+				SelectEquip(msg, ws)
+			}
 
-		if msg.Event == "FleeBattle" {
-			fleeBattle(msg, ws)
-		}
+			if msg.Event == "InitLeave" {
+				initFlee(msg, ws)
+			}
 
-		if msg.Event == "Reload" {
-			// TODO Перезарядка оружия
-		}
+			if msg.Event == "FleeBattle" {
+				fleeBattle(msg, ws)
+			}
 
-		if msg.Event == "Diplomacy" {
-			// TODO Дипломатия
-		}
+			if msg.Event == "softFlee" {
+				softFlee(msg, ws)
+			}
 
-		if msg.Event == "Mining" {
-			// TODO добыча ресурсов в локальной игре
+			if msg.Event == "LoadingUnitToMS" {
+				// TODO погрузка юнита в трюм мса
+			}
+
+			if msg.Event == "Reload" {
+				// TODO Перезарядка оружия
+			}
+
+			if msg.Event == "Diplomacy" {
+				// TODO Дипломатия
+			}
+
+			if msg.Event == "Mining" {
+				// TODO добыча ресурсов в локальной игре
+			}
 		}
 	}
 }

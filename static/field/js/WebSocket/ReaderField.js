@@ -57,7 +57,6 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "AttackPhase") {
-        console.log(jsonMessage);
         AttackPhase(jsonMessage)
     }
 
@@ -71,6 +70,22 @@ function ReadResponse(jsonMessage) {
 
     if (event === "UpdateGameZone") {
         MarkGameZone(JSON.parse(jsonMessage).game_zone);
+    }
+
+    if (event === 'leave') {
+        LeaveBattle(false);
+    }
+
+    if (event === 'softLeave') {
+        LeaveBattle(true);
+    }
+
+    if (event === 'timeToLeave') {
+        LeaveTimer(JSON.parse(jsonMessage).seconds)
+    }
+
+    if (event === 'toGlobal') {
+        location.href = "../../../global";
     }
 
     if (event === "Error") {

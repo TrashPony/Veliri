@@ -1,6 +1,7 @@
 package attackPhase
 
 import (
+	localGameDB "github.com/TrashPony/Veliri/src/mechanics/db/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
@@ -26,7 +27,19 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 	movePhase.QueueMove(game)
 
 	for _, player := range game.GetPlayers() {
-		update.Squad(player.GetSquad(), true) // вносим все изменениея в базу данных
+		if !player.Leave {
+			update.Squad(player.GetSquad(), true) // вносим все изменениея в базу данных
+		}
+	}
+
+	// обновляем ливнутых юнитов
+	localGameDB.DeleteAllLeaveUnit(game.Id)
+	for _, qLine := range game.GetUnits() {
+		for _, leaveUnit := range qLine {
+			if leaveUnit.Leave && leaveUnit.HP > 0 {
+				localGameDB.AddLeaveUnit(leaveUnit, leaveUnit.OwnerID, game.Id)
+			}
+		}
 	}
 
 	return

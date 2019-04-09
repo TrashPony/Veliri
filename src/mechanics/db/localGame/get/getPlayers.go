@@ -58,6 +58,10 @@ func Players(game *localGame.Game) []*player.Player {
 			if err != nil {
 				println(err.Error())
 			}
+
+			fakePlayer.SetID(client.GetID())
+			fakePlayer.SetLogin(client.GetLogin())
+
 			fakePlayer.SetSquad(nil)
 			fakePlayer.Leave = true
 			users = append(users, &fakePlayer)

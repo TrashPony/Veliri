@@ -5,7 +5,7 @@ import (
 )
 
 func updateMoveParamsMemoryUnits(game *localGame.Game) {
-	//todo вершина моего говнокода и он нехуя не работает
+	//todo вершина моего говнокода и он работает
 	for _, gameUser := range game.GetPlayers() {
 		for _, memoryUnit := range gameUser.GetMemoryHostileUnits() {
 			for _, gameUser2 := range game.GetPlayers() {
@@ -16,7 +16,7 @@ func updateMoveParamsMemoryUnits(game *localGame.Game) {
 						}
 					}
 
-					if memoryUnit.ID == gameUser2.GetSquad().MatherShip.ID {
+					if gameUser2.GetSquad() != nil && memoryUnit.ID == gameUser2.GetSquad().MatherShip.ID {
 						gameUser.SetMoveParamsMemoryUnit(memoryUnit.ID, gameUser2.GetSquad().MatherShip.Move, gameUser2.GetSquad().MatherShip.ActionPoints)
 					}
 				}

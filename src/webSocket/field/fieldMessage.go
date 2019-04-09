@@ -21,6 +21,7 @@ type Message struct {
 	TargetR    int    `json:"target_r"`
 	EquipType  int    `json:"equip_type"`
 	NumberSlot int    `json:"number_slot"`
+	Seconds    int    `json:"seconds"`
 }
 
 type ErrorMessage struct {

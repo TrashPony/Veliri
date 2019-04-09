@@ -76,16 +76,13 @@ func MoveUnit(msg Message, ws *websocket.Conn) {
 					updateWatchHostileUser(client, activeGame, gameUnit, path, event)
 					QueueSender(activeGame)
 				} else {
-					resp := ErrorMessage{Event: msg.Event, Error: "not allow"}
-					SendMessage(resp, client.GetID(), activeGame.Id)
+					SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 				}
 			} else {
-				resp := ErrorMessage{Event: msg.Event, Error: "unit already move"}
-				SendMessage(resp, client.GetID(), activeGame.Id)
+				SendMessage(ErrorMessage{Event: msg.Event, Error: "unit already move"}, client.GetID(), activeGame.Id)
 			}
 		} else {
-			resp := ErrorMessage{Event: msg.Event, Error: "not found unit"}
-			SendMessage(resp, client.GetID(), activeGame.Id)
+			SendMessage(ErrorMessage{Event: msg.Event, Error: "not found unit"}, client.GetID(), activeGame.Id)
 		}
 	}
 }

@@ -18,3 +18,10 @@ func AddLeaveUnit(unit *unit.Unit, clientID, gameID int) {
 		log.Fatal(err)
 	}
 }
+
+func DeleteAllLeaveUnit(gameID int) {
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM game_leave_unit WHERE id_game=$1", gameID)
+	if err != nil {
+		log.Fatal("delete all leave unit" + err.Error())
+	}
+}

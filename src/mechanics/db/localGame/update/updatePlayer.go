@@ -21,7 +21,15 @@ func Player(client *player.Player) {
 }
 
 func memoryPlayer(client *player.Player) {
+	if client.Leave {
+		return
+	}
+
 	for _, memoryUnit := range client.GetMemoryHostileUnits() {
+
+		if memoryUnit.Leave {
+			continue
+		}
 
 		var find bool
 

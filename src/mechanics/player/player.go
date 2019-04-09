@@ -48,6 +48,7 @@ type Player struct {
 	GlobalPath   []*coordinate.Coordinate `json:"global_path"`   // маршрут через сектора, тут лежат координаты переходов, входов на базы
 	CurrentPoint int                      `json:"current_point"` // номер ячейку куда надо пиздовать
 	Leave        bool                     `json:"leave"`
+	ToLeave      bool                     `json:"to_leave"`
 }
 
 type ShortUserInfo struct {
