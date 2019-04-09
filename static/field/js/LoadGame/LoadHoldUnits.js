@@ -62,6 +62,7 @@ function LoadHoldUnits() {
             }
         }
     } else {
+        document.getElementById("holdUnitsBlock").style.display = "none";
         holdTable.style.display = "none";
     }
 }
