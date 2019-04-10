@@ -13,7 +13,7 @@ func SetTarget(msg Message, client *player.Player) {
 	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if findUnit && findGame && !client.GetReady() && !gameUnit.Defend && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
+	if findUnit && findGame && !client.GetReady() && !gameUnit.Defend && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 && gameUnit.Reload == nil {
 
 		targetCoordinate := targetPhase.GetWeaponTargetCoordinate(gameUnit, activeGame, client, "GetTargets")
 		_, find := targetCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]

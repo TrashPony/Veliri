@@ -37,7 +37,6 @@ func MoveUnit(msg Message, client *player.Player) {
 	var event string
 
 	activeGame, findGame := games.Games.Get(client.GetGameID())
-
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if !findUnit {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
@@ -52,6 +51,9 @@ func MoveUnit(msg Message, client *player.Player) {
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 			if find {
+
+				// TODO если точка назначения МС то происходит загрузка юнита на борт
+
 				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
 				client.DelUnitStorage(gameUnit.ID)
 
@@ -66,8 +68,6 @@ func MoveUnit(msg Message, client *player.Player) {
 					activeGame.Id,
 				)
 
-				// если враг видит бнита то пользователю отдаетася странный путь с хайдами и тд, хотя такого быт ьне может
-				// иначе путь отдается правильный но юнит некуда не идет Оо
 				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
 				QueueSender(activeGame)
 			} else {

@@ -102,12 +102,12 @@ func fieldReader(ws *websocket.Conn) {
 				softFlee(client)
 			}
 
-			if msg.Event == "LoadingUnitToMS" {
-				// TODO погрузка юнита в трюм мса
+			if msg.Event == "initReload" {
+				initAmmoReload(msg, client)
 			}
 
 			if msg.Event == "Reload" {
-				// TODO Перезарядка оружия
+				ammoReload(msg, client)
 			}
 
 			if msg.Event == "Diplomacy" {

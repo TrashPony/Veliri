@@ -50,6 +50,14 @@ type Unit struct {
 	Effects []*effect.Effect `json:"effects"`
 	MS      bool             `json:"ms"`
 	Units   map[int]*Slot    `json:"units"` // в роли ключей карты выступают
+
+	Reload *ReloadAction `json:"reload"`
+}
+
+type ReloadAction struct {
+	AmmoID int
+	InventorySlot int
+
 }
 
 type Slot struct {
