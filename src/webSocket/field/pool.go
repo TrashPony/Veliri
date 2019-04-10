@@ -110,8 +110,16 @@ func fieldReader(ws *websocket.Conn) {
 				ammoReload(msg, client)
 			}
 
-			if msg.Event == "Diplomacy" {
-				// TODO Дипломатия
+			if msg.Event == "OpenDiplomacy" {
+				openDiplomacy(msg, client)
+			}
+
+			if msg.Event == "ArmisticePact" {
+				armisticePact(msg, client)
+			}
+
+			if msg.Event == "BuyOut" {
+				buyOut(msg, client)
 			}
 
 			if msg.Event == "Mining" {
