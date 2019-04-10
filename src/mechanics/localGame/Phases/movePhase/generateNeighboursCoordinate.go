@@ -25,7 +25,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	*/
 	var noMyMS bool // переменная которая говорит что ненеадо проверять клетки вокруг мса
 
-	if event == "SelectStorageUnit" {
+	if event == "SelectStorageUnit" || event == "ToMC" {
 		noMyMS = true
 	}
 
@@ -37,39 +37,41 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
 	//left
-	checkNeighbour(curr.Q-1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS)
+	checkNeighbour(curr.Q-1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS, event)
 	//right
-	checkNeighbour(curr.Q+1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS)
+	checkNeighbour(curr.Q+1, curr.R, client, curr, gameMap, gameUnit, res, noMyMS, event)
 
 	if curr.R%2 != 0 {
 		// topLeft
-		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// topRight
-		checkNeighbour(curr.Q+1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q+1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// botLeft
-		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// botRight
-		checkNeighbour(curr.Q+1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q+1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 	} else {
 		// topLeft
-		checkNeighbour(curr.Q-1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q-1, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// topRight
-		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q, curr.R-1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// botLeft
-		checkNeighbour(curr.Q-1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q-1, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 		// botRight
-		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS)
+		checkNeighbour(curr.Q, curr.R+1, client, curr, gameMap, gameUnit, res, noMyMS, event)
 	}
 
 	return
 }
 
 func checkNeighbour(q, r int, client *player.Player, curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit,
-	res map[string]map[string]*coordinate.Coordinate, noMyMS bool) {
+	res map[string]map[string]*coordinate.Coordinate, noMyMS bool, event string) {
 
-	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r)
+	neighbour, find := checkValidForMoveCoordinate(client, gameMap, q, r, event)
+
 	if find && checkLevelCoordinate(curr, neighbour) && checkMSPlace(client, neighbour, gameUnit, noMyMS) &&
 		checkMSPatency(neighbour, gameUnit, client, gameMap) {
+
 		Phases.AddCoordinate(res, neighbour)
 	}
 }
@@ -141,7 +143,7 @@ func checkMSCoordinate(gameUnit *unit.Unit, neighbour *coordinate.Coordinate) bo
 
 func checkMSPatency(curr *coordinate.Coordinate, gameUnit *unit.Unit, client *player.Player, gameMap *_map.Map) bool {
 	if gameUnit.Body.MotherShip {
-
+		// метод проверяет проходимость только для МСов
 		var left, right, topLeft, topRight, botLeft, botRight bool
 
 		left = checkMsCoordinate(curr, curr.Q-1, curr.R, gameUnit, client, gameMap)
@@ -167,7 +169,7 @@ func checkMSPatency(curr *coordinate.Coordinate, gameUnit *unit.Unit, client *pl
 
 func checkMsCoordinate(curr *coordinate.Coordinate, q, r int, gameUnit *unit.Unit, client *player.Player, gameMap *_map.Map) bool {
 	if !(gameUnit.Q == q && gameUnit.R == r) {
-		neighbours, pass := checkValidForMoveCoordinate(client, gameMap, q, r)
+		neighbours, pass := checkValidForMoveCoordinate(client, gameMap, q, r, "")
 		if pass {
 			return checkLevelCoordinate(curr, neighbours)
 		} else {

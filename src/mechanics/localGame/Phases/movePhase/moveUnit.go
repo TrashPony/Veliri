@@ -15,6 +15,7 @@ type TruePatchNode struct {
 	WatchNode  *watchZone.UpdaterWatchZone `json:"watch_node"`
 	PathNode   *coordinate.Coordinate      `json:"path_node"`
 	UnitRotate int                         `json:"unit_rotate"`
+	ToMC       bool                        `json:"to_mc"`
 }
 
 func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game *localGame.Game, event string) (path []*TruePatchNode) {
@@ -42,12 +43,28 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 			deleteUnit = false
 		}
 
-		errorMove, unitRotate, watchNode := Move(gameUnit, pathNode, client, game, deleteUnit)
+		errorMove, unitRotate, watchNode := Move(gameUnit, pathNode, client, game, deleteUnit, event)
 
 		if errorMove != nil {
+
+			if errorMove.Error() == "ToMC" {
+				truePatchNode := TruePatchNode{}
+
+				truePatchNode.WatchNode = watchNode // обновляем у клиента открытые ячейки, удаляем закрытые кидаем в карту
+				truePatchNode.PathNode = pathNode   // добавляем ячейку в путь
+				truePatchNode.UnitRotate = unitRotate
+				truePatchNode.ToMC = true
+
+				gameUnit.Rotate = unitRotate
+
+				path = append(path, &truePatchNode)
+				break
+			}
+
 			if errorMove.Error() == "cell is busy" {
 				break
 			}
+
 			if errorMove.Error() == "find hostile" { // если нашли юнита то выходим из цикла но добавляем последние клетки
 				truePatchNode := TruePatchNode{}
 
@@ -78,7 +95,11 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	}
 
 	gameUnit.FindHostile = false
-	gameUnit.OnMap = true
+
+	// если мы идем в трюм то юнит не может быть на карте
+	if event != "ToMC" {
+		gameUnit.OnMap = true
+	}
 
 	squadUpdate.Squad(client.GetSquad(), true)
 	update.Player(client)
@@ -86,9 +107,23 @@ func InitMove(gameUnit *unit.Unit, toQ int, toR int, client *player.Player, game
 	return
 }
 
-func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, game *localGame.Game, deleteUnit bool) (error, int, *watchZone.UpdaterWatchZone) {
+func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.Player, game *localGame.Game, deleteUnit bool, event string) (error, int, *watchZone.UpdaterWatchZone) {
 
-	_, ok := game.GetUnit(pathNode.Q, pathNode.R)
+	obstacleUnit, ok := game.GetUnit(pathNode.Q, pathNode.R)
+
+	if event == "ToMC" && ok && obstacleUnit.Body.MotherShip && obstacleUnit.Owner == client.GetLogin() {
+		// убераем юнита из игры и кладем в трюм
+		gameUnit.OnMap = false
+
+		game.DelUnit(gameUnit)
+		client.DelUnit(gameUnit, false)
+
+		game.AddUnitToStorage(gameUnit)
+		client.AddUnitStorage(gameUnit)
+
+		return errors.New("ToMC"), 0, watchZone.UpdateWatchZone(game, client)
+	}
+
 	if ok || !checkMSPlace(client, pathNode, gameUnit, false) {
 		return errors.New("cell is busy"), 0, nil // если клетка занято то выходит из этого пути и генерить новый
 	}

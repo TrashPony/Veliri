@@ -38,8 +38,16 @@ func MoveUnit(msg Message, client *player.Player) {
 
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+
 	if !findUnit {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+
+		if msg.Event == "ToMC" && gameUnit.Body.MotherShip {
+			msg.ToQ = client.GetSquad().MatherShip.Q
+			msg.ToR = client.GetSquad().MatherShip.R
+			event = "ToMC"
+		}
+
 	} else {
 		event = "SelectStorageUnit"
 	}
@@ -51,8 +59,6 @@ func MoveUnit(msg Message, client *player.Player) {
 			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
 			if find {
-
-				// TODO если точка назначения МС то происходит загрузка юнита на борт
 
 				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
 				client.DelUnitStorage(gameUnit.ID)

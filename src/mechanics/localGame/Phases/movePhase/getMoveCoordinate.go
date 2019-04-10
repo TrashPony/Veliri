@@ -20,7 +20,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 
 	for _, xLine := range startMatrix {
 		for _, gameCoordinate := range xLine {
-			_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
+			_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R, event)
 			if find {
 				Phases.AddCoordinate(openCoordinate, gameCoordinate)
 			}
@@ -35,7 +35,7 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 					for _, gameCoordinate := range xLine {
 						_, ok := openCoordinate[strconv.Itoa(gameCoordinate.Q)][strconv.Itoa(gameCoordinate.R)]
 						if !ok {
-							_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
+							_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R, event)
 							if find {
 								Phases.AddCoordinate(closeCoordinate, gameCoordinate)
 							}
@@ -47,12 +47,16 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 
 		for _, xLine := range closeCoordinate {
 			for _, gameCoordinate := range xLine {
-				_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R)
+				_, find := checkValidForMoveCoordinate(client, activeGame.Map, gameCoordinate.Q, gameCoordinate.R, event)
 				if find {
 					Phases.AddCoordinate(openCoordinate, gameCoordinate)
 				}
 			}
 		}
+	}
+
+	if event == "ToMC" {
+		// TODO Удалить все координаты вокруг МС но не координату самого МС если она конечно достигнута
 	}
 
 	return openCoordinate

@@ -142,6 +142,10 @@ func (game *Game) GetPhase() string {
 	return game.Phase
 }
 
+func (game *Game) AddUnitToStorage(gameUnit *unit.Unit) {
+	game.unitStorage = append(game.unitStorage, gameUnit)
+}
+
 func (game *Game) DelUnitStorage(id int) (find bool) {
 	for _, storageUnit := range game.GetUnitsStorage() {
 		if id == storageUnit.ID {
