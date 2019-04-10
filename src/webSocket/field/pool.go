@@ -26,7 +26,6 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 func fieldReader(ws *websocket.Conn) {
 	for {
 
-		// TODO проверка во всех методах что игрок не ливнул и что client.GetSquad().InGame = true и что ToLeave = false
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
 		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
@@ -41,66 +40,66 @@ func fieldReader(ws *websocket.Conn) {
 		}
 
 		client := localGame.Clients.GetByWs(ws)
-		// TODO вытащить сюда все проверки и передавать в методы уже клиента а не соеденение
 		if client != nil && client.GetSquad().InGame && !client.ToLeave {
+
 			if msg.Event == "Ready" {
-				Ready(ws)
+				Ready(client)
 			}
 
 			if msg.Event == "SelectUnit" || msg.Event == "SelectStorageUnit" {
-				SelectUnit(msg, ws)
+				SelectUnit(msg, client)
 			}
 
 			if msg.Event == "GetTargetZone" {
-				GetTargetZone(msg, ws)
+				GetTargetZone(msg, client)
 			}
 
 			if msg.Event == "GetPreviewPath" {
-				GetPreviewPath(msg, ws)
+				GetPreviewPath(msg, client)
 			}
 
 			if msg.Event == "MoveUnit" || msg.Event == "PlaceUnit" {
-				MoveUnit(msg, ws)
+				MoveUnit(msg, client)
 			}
 
 			if msg.Event == "SkipMoveUnit" {
-				SkipMoveUnit(msg, ws)
+				SkipMoveUnit(msg, client)
 			}
 
 			if msg.Event == "SetWeaponTarget" {
-				SetTarget(msg, ws)
+				SetTarget(msg, client)
 			}
 
 			if msg.Event == "Defend" {
-				DefendTarget(msg, ws)
+				DefendTarget(msg, client)
 			}
 
 			if msg.Event == "SetTargetMapEquip" {
-				SetTargetMapEquip(msg, ws)
+				SetTargetMapEquip(msg, client)
 			}
 
 			if msg.Event == "SetTargetUnitEquip" {
-				SetTargetUnitEquip(msg, ws)
+				SetTargetUnitEquip(msg, client)
 			}
 
 			if msg.Event == "SelectWeapon" {
-				SelectWeapon(msg, ws)
+				SelectWeapon(msg, client)
 			}
 
 			if msg.Event == "SelectEquip" {
-				SelectEquip(msg, ws)
+				SelectEquip(msg, client)
 			}
 
 			if msg.Event == "InitLeave" {
-				initFlee(msg, ws)
+				initFlee(msg, client)
 			}
 
 			if msg.Event == "FleeBattle" {
-				fleeBattle(msg, ws)
+				fleeBattle(msg, client)
 			}
 
 			if msg.Event == "softFlee" {
-				softFlee(msg, ws)
+				softFlee(client)
 			}
 
 			if msg.Event == "LoadingUnitToMS" {

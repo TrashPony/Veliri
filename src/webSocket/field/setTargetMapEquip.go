@@ -3,47 +3,41 @@ package field
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
-	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
-func SetTargetMapEquip(msg Message, ws *websocket.Conn) {
+func SetTargetMapEquip(msg Message, client *player.Player) {
 
-	client := localGame.Clients.GetByWs(ws)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
+	ok := false
+	equipSlot := &detail.BodyEquipSlot{}
 
-		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-		activeGame, findGame := games.Games.Get(client.GetGameID())
+	if msg.EquipType == 3 {
+		equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
+	}
 
-		ok := false
-		equipSlot := &detail.BodyEquipSlot{}
+	if msg.EquipType == 2 {
+		equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
+	}
 
-		if msg.EquipType == 3 {
-			equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
-		}
-
-		if msg.EquipType == 2 {
-			equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
-		}
-
-		if findUnit && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
-			if equipSlot.Equip.Applicable == "map" {
-				gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.TargetQ, msg.TargetR)
-				if findCoordinate {
-					err := targetPhase.SetEquipTarget(gameUnit, gameCoordinate, equipSlot, client)
-					if err == nil {
-						SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
-					} else {
-						SendMessage(ErrorMessage{Event: "Error", Error: err.Error()}, client.GetID(), activeGame.Id)
-					}
+	if findUnit && findGame && !client.GetReady() && ok && equipSlot.Equip != nil {
+		if equipSlot.Equip.Applicable == "map" {
+			gameCoordinate, findCoordinate := activeGame.Map.GetCoordinate(msg.TargetQ, msg.TargetR)
+			if findCoordinate {
+				err := targetPhase.SetEquipTarget(gameUnit, gameCoordinate, equipSlot, client)
+				if err == nil {
+					SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
 				} else {
-					SendMessage(ErrorMessage{Event: "Error", Error: "not find game coordinate"}, client.GetID(), activeGame.Id)
+					SendMessage(ErrorMessage{Event: "Error", Error: err.Error()}, client.GetID(), activeGame.Id)
 				}
+			} else {
+				SendMessage(ErrorMessage{Event: "Error", Error: "not find game coordinate"}, client.GetID(), activeGame.Id)
 			}
-		} else {
-			SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
+	} else {
+		SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
 	}
 }

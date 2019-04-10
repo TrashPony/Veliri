@@ -9,7 +9,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/getlantern/deepcopy"
-	"github.com/gorilla/websocket"
 	"strconv"
 )
 
@@ -34,56 +33,51 @@ TODO тогда беда с туманом войны и баг с проебо�
 TODO расчет пути реализован в глобал гейм мовеТо, но без тумана войны
 */
 
-func MoveUnit(msg Message, ws *websocket.Conn) {
+func MoveUnit(msg Message, client *player.Player) {
 	var event string
 
-	client := localGame.Clients.GetByWs(ws)
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
+	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+	if !findUnit {
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	} else {
+		event = "SelectStorageUnit"
+	}
 
-		activeGame, findGame := games.Games.Get(client.GetGameID())
+	if findUnit && findGame {
+		if !client.GetReady() && gameUnit.ActionPoints > 0 {
 
-		gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
-		if !findUnit {
-			gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
-		} else {
-			event = "SelectStorageUnit"
-		}
+			moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
+			_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
 
-		if findUnit && findGame {
-			if !client.GetReady() && gameUnit.ActionPoints > 0 {
+			if find {
+				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
+				client.DelUnitStorage(gameUnit.ID)
 
-				moveCoordinate := movePhase.GetMoveCoordinate(gameUnit, client, activeGame, event)
-				_, find := moveCoordinate[strconv.Itoa(msg.ToQ)][strconv.Itoa(msg.ToR)]
+				SendMessage(
+					Move{
+						Event:    msg.Event,
+						Unit:     gameUnit,
+						UserName: client.GetLogin(),
+						Path:     path,
+					},
+					client.GetID(),
+					activeGame.Id,
+				)
 
-				if find {
-					path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
-					client.DelUnitStorage(gameUnit.ID)
-
-					SendMessage(
-						Move{
-							Event:    msg.Event,
-							Unit:     gameUnit,
-							UserName: client.GetLogin(),
-							Path:     path,
-						},
-						client.GetID(),
-						activeGame.Id,
-					)
-
-					// если враг видит бнита то пользователю отдаетася странный путь с хайдами и тд, хотя такого быт ьне может
-					// иначе путь отдается правильный но юнит некуда не идет Оо
-					updateWatchHostileUser(client, activeGame, gameUnit, path, event)
-					QueueSender(activeGame)
-				} else {
-					SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
-				}
+				// если враг видит бнита то пользователю отдаетася странный путь с хайдами и тд, хотя такого быт ьне может
+				// иначе путь отдается правильный но юнит некуда не идет Оо
+				updateWatchHostileUser(client, activeGame, gameUnit, path, event)
+				QueueSender(activeGame)
 			} else {
-				SendMessage(ErrorMessage{Event: msg.Event, Error: "unit already move"}, client.GetID(), activeGame.Id)
+				SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 			}
 		} else {
-			SendMessage(ErrorMessage{Event: msg.Event, Error: "not found unit"}, client.GetID(), activeGame.Id)
+			SendMessage(ErrorMessage{Event: msg.Event, Error: "unit already move"}, client.GetID(), activeGame.Id)
 		}
+	} else {
+		SendMessage(ErrorMessage{Event: msg.Event, Error: "not found unit"}, client.GetID(), activeGame.Id)
 	}
 }
 
@@ -154,9 +148,7 @@ func QueueSender(game *localGame.Game) {
 	}
 }
 
-func SkipMoveUnit(msg Message, ws *websocket.Conn) {
-
-	client := localGame.Clients.GetByWs(ws)
+func SkipMoveUnit(msg Message, client *player.Player) {
 
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
 	if gameUnit == nil {
@@ -165,13 +157,12 @@ func SkipMoveUnit(msg Message, ws *websocket.Conn) {
 
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if findUnit && client != nil && findGame {
+	if findUnit && findGame {
 		movePhase.SkipMove(gameUnit, activeGame)
 		SendMessage(Move{Event: "UpdateUnit", Unit: gameUnit, UserName: client.GetLogin()}, client.GetID(), activeGame.Id)
 		QueueSender(activeGame)
 	} else {
-		resp := ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}
-		SendMessage(resp, client.GetID(), activeGame.Id)
+		SendMessage(ErrorMessage{Event: "MoveUnit", Error: "not found unit or game or player"}, client.GetID(), activeGame.Id)
 	}
 }
 

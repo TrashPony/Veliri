@@ -7,35 +7,29 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
-	"github.com/gorilla/websocket"
 )
 
-func SelectUnit(msg Message, ws *websocket.Conn) {
+func SelectUnit(msg Message, client *player.Player) {
 	var findUnit bool
 	var gameUnit *unit.Unit
 
-	client := localGame.Clients.GetByWs(ws)
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
-
-		activeGame, findGame := games.Games.Get(client.GetGameID())
-
-		if msg.Event == "SelectStorageUnit" {
-			// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
-			gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
-			if findUnit {
-				gameUnit.Q = client.GetSquad().MatherShip.Q
-				gameUnit.R = client.GetSquad().MatherShip.R
-				SelectMove(client, gameUnit, activeGame, msg.Event)
-			}
-		} else {
-			gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	if msg.Event == "SelectStorageUnit" {
+		// т.к. юнит в корпусе берем координаты мс и присваиваем их юниту.
+		gameUnit, findUnit = client.GetUnitStorage(msg.UnitID)
+		if findUnit {
+			gameUnit.Q = client.GetSquad().MatherShip.Q
+			gameUnit.R = client.GetSquad().MatherShip.R
+			SelectMove(client, gameUnit, activeGame, msg.Event)
 		}
+	} else {
+		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
+	}
 
-		if findUnit && findGame {
-			if activeGame.Phase == "move" {
-				SelectMove(client, gameUnit, activeGame, msg.Event)
-			}
+	if findUnit && findGame {
+		if activeGame.Phase == "move" {
+			SelectMove(client, gameUnit, activeGame, msg.Event)
 		}
 	}
 }

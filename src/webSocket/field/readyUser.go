@@ -5,25 +5,21 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/userReady"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 )
 
-func Ready(ws *websocket.Conn) {
-	client := localGame.Clients.GetByWs(ws)
+func Ready(client *player.Player) {
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
-		activeGame, findGame := games.Games.Get(client.GetGameID())
+	if findGame {
+		userReady.UserReady(client)
 
-		if findGame {
-			userReady.UserReady(client)
+		changePhase := CheckAllReady(activeGame)
 
-			changePhase := CheckAllReady(activeGame)
-
-			if !changePhase {
-				SendMessage(UserReady{Event: "Ready", Ready: client.GetReady()}, client.GetID(), activeGame.Id)
-				QueueSender(activeGame)
-			}
+		if !changePhase {
+			SendMessage(UserReady{Event: "Ready", Ready: client.GetReady()}, client.GetID(), activeGame.Id)
+			QueueSender(activeGame)
 		}
 	}
 }

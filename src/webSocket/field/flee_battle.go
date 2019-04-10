@@ -7,7 +7,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
-	"github.com/gorilla/websocket"
 	"strconv"
 	"time"
 )
@@ -16,25 +15,21 @@ import (
 // 1) мгноменно с потерей
 // 2) с ожиданием 15 сек но без потерь
 
-func initFlee(msg Message, ws *websocket.Conn) {
-	client := localGame.Clients.GetByWs(ws)
+func initFlee(msg Message, client *player.Player) {
+	activeGame, findGame := games.Games.Get(client.GetGameID())
+	if findGame {
 
-	if client != nil {
-		activeGame, findGame := games.Games.Get(client.GetGameID())
-		if findGame {
+		gameZone := activeGame.GetGameZone(client)
+		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 
-			gameZone := activeGame.GetGameZone(client)
-			_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
-
-			if find || LastLeave(activeGame, false) {
-				if !LastLeave(activeGame, false) && activeGame.Phase == "targeting" {
-					SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
-				} else {
-					SendMessage(Message{Event: "softLeave"}, client.GetID(), activeGame.Id)
-				}
+		if find || LastLeave(activeGame, false) {
+			if !LastLeave(activeGame, false) && activeGame.Phase == "targeting" {
+				SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
 			} else {
-				SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
+				SendMessage(Message{Event: "softLeave"}, client.GetID(), activeGame.Id)
 			}
+		} else {
+			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
 	}
 }
@@ -60,36 +55,29 @@ func LastLeave(activeGame *localGame.Game, message bool) bool {
 	return false
 }
 
-func fleeBattle(msg Message, ws *websocket.Conn) {
-	client := localGame.Clients.GetByWs(ws)
+func fleeBattle(msg Message, client *player.Player) {
 
-	if client != nil {
-		activeGame, findGame := games.Games.Get(client.GetGameID())
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-		if findGame && activeGame.Phase == "targeting" {
+	if findGame && activeGame.Phase == "targeting" {
 
-			gameZone := activeGame.GetGameZone(client)
-			_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
+		gameZone := activeGame.GetGameZone(client)
+		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 
-			if find || LastLeave(activeGame, false) {
+		if find || LastLeave(activeGame, false) {
 
-				leave(client, activeGame, false)
+			leave(client, activeGame, false)
 
-			} else {
-				SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
-			}
+		} else {
+			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
 	}
 }
 
-func softFlee(msg Message, ws *websocket.Conn) {
-	client := localGame.Clients.GetByWs(ws)
-
-	if client != nil {
-		activeGame, findGame := games.Games.Get(client.GetGameID())
-		if findGame && LastLeave(activeGame, false) {
-			go softFleeTimer(client, activeGame)
-		}
+func softFlee(client *player.Player) {
+	activeGame, findGame := games.Games.Get(client.GetGameID())
+	if findGame && LastLeave(activeGame, false) {
+		go softFleeTimer(client, activeGame)
 	}
 }
 

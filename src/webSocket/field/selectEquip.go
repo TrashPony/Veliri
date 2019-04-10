@@ -5,90 +5,84 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
-func SelectEquip(msg Message, ws *websocket.Conn) {
+func SelectEquip(msg Message, client *player.Player) {
 
-	client := localGame.Clients.GetByWs(ws)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
+	ok := false
+	equipSlot := &detail.BodyEquipSlot{}
 
-		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-		activeGame, findGame := games.Games.Get(client.GetGameID())
+	if msg.EquipType == 3 {
+		equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
+	}
 
-		ok := false
-		equipSlot := &detail.BodyEquipSlot{}
+	if msg.EquipType == 2 {
+		equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
+	}
 
-		if msg.EquipType == 3 {
-			equipSlot, ok = gameUnit.Body.EquippingIII[msg.NumberSlot]
-		}
-
-		if msg.EquipType == 2 {
-			equipSlot, ok = gameUnit.Body.EquippingII[msg.NumberSlot]
-		}
-
-		if findUnit && findGame && ok && equipSlot.Equip != nil {
-			if !client.GetReady() {
-				if equipSlot.Equip.Applicable == "map" {
-					SendMessage(
-						EquipMapCoordinate{
-							Event:     "GetEquipMapTargets",
-							Unit:      gameUnit,
-							EquipSlot: equipSlot,
-							Targets:   targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame),
-						},
-						client.GetID(),
-						activeGame.Id,
-					)
-				}
-
-				if equipSlot.Equip.Applicable == "my_units" {
-					SendMessage(
-						EquipTargetCoordinate{
-							Event:     "GetEquipMyUnitTargets",
-							Unit:      gameUnit,
-							EquipSlot: equipSlot,
-							Units:     targetPhase.GetEquipMyUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
-						},
-						client.GetID(),
-						activeGame.Id,
-					)
-				}
-
-				if equipSlot.Equip.Applicable == "hostile_units" {
-					SendMessage(
-						EquipTargetCoordinate{
-							Event:     "GetEquipHostileUnitTargets",
-							Unit:      gameUnit,
-							EquipSlot: equipSlot,
-							Units:     targetPhase.GetEquipHostileUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
-						},
-						client.GetID(),
-						activeGame.Id,
-					)
-				}
-
-				if equipSlot.Equip.Applicable == "myself" {
-					SendMessage(
-						EquipTargetCoordinate{
-							Event:     "GetEquipMySelfTarget",
-							Unit:      gameUnit,
-							EquipSlot: equipSlot,
-						},
-						client.GetID(),
-						activeGame.Id,
-					)
-				}
-
-				if equipSlot.Equip.Applicable == "all" {
-					// todo и свои и чужие но не карта GetEquipAllUnitTarget
-				}
-			} else {
-				SendMessage(ErrorMessage{Event: "Error", Error: "you ready"}, client.GetID(), activeGame.Id)
+	if findUnit && findGame && ok && equipSlot.Equip != nil {
+		if !client.GetReady() {
+			if equipSlot.Equip.Applicable == "map" {
+				SendMessage(
+					EquipMapCoordinate{
+						Event:     "GetEquipMapTargets",
+						Unit:      gameUnit,
+						EquipSlot: equipSlot,
+						Targets:   targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame),
+					},
+					client.GetID(),
+					activeGame.Id,
+				)
 			}
+
+			if equipSlot.Equip.Applicable == "my_units" {
+				SendMessage(
+					EquipTargetCoordinate{
+						Event:     "GetEquipMyUnitTargets",
+						Unit:      gameUnit,
+						EquipSlot: equipSlot,
+						Units:     targetPhase.GetEquipMyUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
+					},
+					client.GetID(),
+					activeGame.Id,
+				)
+			}
+
+			if equipSlot.Equip.Applicable == "hostile_units" {
+				SendMessage(
+					EquipTargetCoordinate{
+						Event:     "GetEquipHostileUnitTargets",
+						Unit:      gameUnit,
+						EquipSlot: equipSlot,
+						Units:     targetPhase.GetEquipHostileUnitsTarget(gameUnit, equipSlot.Equip, activeGame, client),
+					},
+					client.GetID(),
+					activeGame.Id,
+				)
+			}
+
+			if equipSlot.Equip.Applicable == "myself" {
+				SendMessage(
+					EquipTargetCoordinate{
+						Event:     "GetEquipMySelfTarget",
+						Unit:      gameUnit,
+						EquipSlot: equipSlot,
+					},
+					client.GetID(),
+					activeGame.Id,
+				)
+			}
+
+			if equipSlot.Equip.Applicable == "all" {
+				// todo и свои и чужие но не карта GetEquipAllUnitTarget
+			}
+		} else {
+			SendMessage(ErrorMessage{Event: "Error", Error: "you ready"}, client.GetID(), activeGame.Id)
 		}
 	}
 }

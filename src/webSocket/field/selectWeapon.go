@@ -7,27 +7,21 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
-	"github.com/gorilla/websocket"
 )
 
-func SelectWeapon(msg Message, ws *websocket.Conn) {
+func SelectWeapon(msg Message, client *player.Player) {
 
-	client := localGame.Clients.GetByWs(ws)
+	gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
+	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if client != nil {
-
-		gameUnit, findUnit := client.GetUnit(msg.Q, msg.R)
-		activeGame, findGame := games.Games.Get(client.GetGameID())
-
-		if findUnit && findGame && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
-			if activeGame.Phase == "targeting" {
-				SelectTarget(client, gameUnit, activeGame, ws)
-			}
+	if findUnit && findGame && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
+		if activeGame.Phase == "targeting" {
+			SelectTarget(client, gameUnit, activeGame)
 		}
 	}
 }
 
-func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game, ws *websocket.Conn) {
+func SelectTarget(client *player.Player, gameUnit *unit.Unit, actionGame *localGame.Game) {
 	if !client.GetReady() && !gameUnit.Defend {
 		SendMessage(
 			TargetCoordinate{
