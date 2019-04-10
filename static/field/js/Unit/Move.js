@@ -80,6 +80,13 @@ function MoveHostileUnit(jsonMessage) {
 function CheckPath(unit) {
     let pathNode = unit.path.shift();   // берем первый пункт назначения
 
+    if (pathNode.to_mc) {
+        UnitHide(unit);
+        DeleteMarkLastPathCell(unit.lastCell);
+        unit.lastCell = null;
+        return
+    }
+
     if (pathNode.path_node.type === "hide") {
         StopUnit(unit);
 

@@ -89,7 +89,7 @@ func softFleeTimer(client *player.Player, activeGame *localGame.Game) {
 		SendMessage(Message{Event: "timeToLeave", Seconds: i}, client.GetID(), activeGame.Id)
 	}
 
-	// TODO leave(client, activeGame, true)
+	leave(client, activeGame, true)
 	client.ToLeave = false
 }
 

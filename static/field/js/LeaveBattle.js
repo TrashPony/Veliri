@@ -51,6 +51,16 @@ function LeaveBattle() {
 }
 
 function LeaveTimer(sec) {
-    console.log(sec)
-    // TODO создание окошка по центру экрана с текстом выйдете из боя через ...  sec sec
+    let alert = document.getElementById("leaveAlert");
+    if (!alert) alert = document.createElement("div");
+    alert.id = "leaveAlert";
+    alert.innerHTML = "<div>Вы покинете бой через " + sec + " сек</div>";
+
+    document.body.appendChild(alert);
+
+    if (sec < 2) {
+        setTimeout(function () {
+            alert.remove();
+        }, 2000)
+    }
 }

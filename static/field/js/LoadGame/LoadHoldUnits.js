@@ -1,5 +1,9 @@
 function LoadHoldUnits() {
     let holdTable = document.getElementById("holdUnits");
+    document.getElementById("holdUnitsBlock").style.display = "block";
+    holdTable.style.display = "block";
+    holdTable.innerHTML = '';
+
     let tr;
 
     if (game.unitStorage !== null && game.unitStorage.length !== 0) {

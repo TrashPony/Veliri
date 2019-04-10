@@ -124,7 +124,7 @@ func Move(gameUnit *unit.Unit, pathNode *coordinate.Coordinate, client *player.P
 		return errors.New("ToMC"), 0, watchZone.UpdateWatchZone(game, client)
 	}
 
-	if ok || !checkMSPlace(client, pathNode, gameUnit, false) {
+	if ok || !checkMSPlace(client, pathNode, gameUnit, event == "ToMC") {
 		return errors.New("cell is busy"), 0, nil // если клетка занято то выходит из этого пути и генерить новый
 	}
 

@@ -30,26 +30,28 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 			for _, qLine := range player.GetUnits() {
 
 				for _, reloadUnit := range qLine {
-					err := squadInventory.SetAmmo(
-						player, reloadUnit.Reload.AmmoID,
-						reloadUnit.Reload.InventorySlot,
-						reloadUnit.GetWeaponSlot().Number,
-						reloadUnit,
-						"squadInventory",
-					)
-
-					if err == nil {
-						resultBattle = append(
-							resultBattle,
-							&ResultBattle{
-								AttackUnit: *player.GetSquad().MatherShip,
-								Target:     coordinate.Coordinate{Q: reloadUnit.Q, R: reloadUnit.R},
-								Reload:     true,
-							},
+					if reloadUnit.Reload != nil {
+						err := squadInventory.SetAmmo(
+							player, reloadUnit.Reload.AmmoID,
+							reloadUnit.Reload.InventorySlot,
+							reloadUnit.GetWeaponSlot().Number,
+							reloadUnit,
+							"squadInventory",
 						)
-					}
 
-					reloadUnit.Reload = nil
+						if err == nil {
+							resultBattle = append(
+								resultBattle,
+								&ResultBattle{
+									AttackUnit: *player.GetSquad().MatherShip,
+									Target:     coordinate.Coordinate{Q: reloadUnit.Q, R: reloadUnit.R},
+									Reload:     true,
+								},
+							)
+						}
+
+						reloadUnit.Reload = nil
+					}
 				}
 			}
 		}
@@ -78,18 +80,18 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 }
 
 type ResultBattle struct {
-	AttackUnit       unit.Unit             `json:"attack_unit"`
-	RotateTower      int                   `json:"rotate_tower"`                // на сколько надо повернуть орудие
-	TargetUnits      []TargetUnit          `json:"targets_units"`               // юниты на которых воздействует действие
-	WeaponSlot       detail.BodyWeaponSlot `json:"weapon_slot"`                 // Чем воздействуем (если оружием то EquipSlot == nil)
-	EquipSlot        detail.BodyEquipSlot  `json:"equip_slot"`                  // Чем воздействуем (если снарягой то WeaponSlot == nil)
-	Reload           bool                  `json:"reload"`                      // Чем воздействуем (Перезарядка оба предыдущийх == nil)
-	StartWatchAttack coordinate.Coordinate `json:"start_watch_attack"`          // Первая ячейка откуда игрок вижит летящий снаряд, расчитывается перед отправкой
-	EndWatchAttack   coordinate.Coordinate `json:"end_watch_attack"`            // последняя ячейка где игрок вижит летящий снаряд, расчитывается перед отправкой
-	Target           coordinate.Coordinate `json:"target"`                      // куда летит снаряд, действие
-	watchPlayer      map[string]map[string]map[string]*coordinate.Coordinate    // видимые координаты пользователем на данный шаг, нужно при отправке данных
-	WatchNode        map[string]*watchZone.UpdaterWatchZone `json:"watch_node"` // расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
-	Error            string                                 `json:"error"`
+	AttackUnit       unit.Unit                                               `json:"attack_unit"`
+	RotateTower      int                                                     `json:"rotate_tower"`       // на сколько надо повернуть орудие
+	TargetUnits      []TargetUnit                                            `json:"targets_units"`      // юниты на которых воздействует действие
+	WeaponSlot       detail.BodyWeaponSlot                                   `json:"weapon_slot"`        // Чем воздействуем (если оружием то EquipSlot == nil)
+	EquipSlot        detail.BodyEquipSlot                                    `json:"equip_slot"`         // Чем воздействуем (если снарягой то WeaponSlot == nil)
+	Reload           bool                                                    `json:"reload"`             // Чем воздействуем (Перезарядка оба предыдущийх == nil)
+	StartWatchAttack coordinate.Coordinate                                   `json:"start_watch_attack"` // Первая ячейка откуда игрок вижит летящий снаряд, расчитывается перед отправкой
+	EndWatchAttack   coordinate.Coordinate                                   `json:"end_watch_attack"`   // последняя ячейка где игрок вижит летящий снаряд, расчитывается перед отправкой
+	Target           coordinate.Coordinate                                   `json:"target"`             // куда летит снаряд, действие
+	watchPlayer      map[string]map[string]map[string]*coordinate.Coordinate // видимые координаты пользователем на данный шаг, нужно при отправке данных
+	WatchNode        map[string]*watchZone.UpdaterWatchZone                  `json:"watch_node"` // расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
+	Error            string                                                  `json:"error"`
 }
 
 func (result *ResultBattle) GetUserWatchCoordinate(id, q, r int) (*coordinate.Coordinate, bool) {

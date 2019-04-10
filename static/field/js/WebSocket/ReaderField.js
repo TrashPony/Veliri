@@ -84,6 +84,11 @@ function ReadResponse(jsonMessage) {
         LeaveTimer(JSON.parse(jsonMessage).seconds)
     }
 
+    if (event === 'UpdateUnitStorage') {
+        game.unitStorage = JSON.parse(jsonMessage).unit_storage;
+        LoadHoldUnits();
+    }
+
     if (event === 'toGlobal') {
         location.href = "../../../global";
     }

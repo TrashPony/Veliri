@@ -55,8 +55,35 @@ func GetMoveCoordinate(gameUnit *unit.Unit, client *player.Player, activeGame *l
 		}
 	}
 
+	// удаляем все координаты вокруг МС т.к. нам доступно только войти в него а не стоять рядом
 	if event == "ToMC" {
-		// TODO Удалить все координаты вокруг МС но не координату самого МС если она конечно достигнута
+		msQ := client.GetSquad().MatherShip.Q
+		msR := client.GetSquad().MatherShip.R
+
+		//left
+		delete(openCoordinate[strconv.Itoa(msQ-1)], strconv.Itoa(msR))
+		//right
+		delete(openCoordinate[strconv.Itoa(msQ+1)], strconv.Itoa(msR))
+
+		if msR%2 != 0 {
+			// topLeft
+			delete(openCoordinate[strconv.Itoa(msQ)], strconv.Itoa(msR-1))
+			// topRight
+			delete(openCoordinate[strconv.Itoa(msQ+1)], strconv.Itoa(msR-1))
+			// botLeft
+			delete(openCoordinate[strconv.Itoa(msQ)], strconv.Itoa(msR+1))
+			// botRight
+			delete(openCoordinate[strconv.Itoa(msQ+1)], strconv.Itoa(msR+1))
+		} else {
+			// topLeft
+			delete(openCoordinate[strconv.Itoa(msQ-1)], strconv.Itoa(msR-1))
+			// topRight
+			delete(openCoordinate[strconv.Itoa(msQ)], strconv.Itoa(msR-1))
+			// botLeft
+			delete(openCoordinate[strconv.Itoa(msQ-1)], strconv.Itoa(msR+1))
+			// botRight
+			delete(openCoordinate[strconv.Itoa(msQ)], strconv.Itoa(msR+1))
+		}
 	}
 
 	return openCoordinate

@@ -42,9 +42,7 @@ func MoveUnit(msg Message, client *player.Player) {
 	if !findUnit {
 		gameUnit, findUnit = client.GetUnit(msg.Q, msg.R)
 
-		if msg.Event == "ToMC" && gameUnit.Body.MotherShip {
-			msg.ToQ = client.GetSquad().MatherShip.Q
-			msg.ToR = client.GetSquad().MatherShip.R
+		if !gameUnit.Body.MotherShip && msg.ToQ == client.GetSquad().MatherShip.Q && msg.ToR == client.GetSquad().MatherShip.R {
 			event = "ToMC"
 		}
 
@@ -61,7 +59,11 @@ func MoveUnit(msg Message, client *player.Player) {
 			if find {
 
 				path := movePhase.InitMove(gameUnit, msg.ToQ, msg.ToR, client, activeGame, event)
-				client.DelUnitStorage(gameUnit.ID)
+				if event != "ToMC" {
+					client.DelUnitStorage(gameUnit.ID)
+				} else {
+					SendMessage(LoadGame{Event: "UpdateUnitStorage", UnitStorage: client.GetUnitsStorage()}, client.GetID(), activeGame.Id)
+				}
 
 				SendMessage(
 					Move{
@@ -201,8 +203,8 @@ func updateWatchHostileUser(client *player.Player, activeGame *localGame.Game, g
 			// пытаемся взять юнита по конечной координате
 			_, okGetEndQR := user.GetWatchCoordinate(gameUnit.Q, gameUnit.R)
 
-			// если конечная точка пути видима то добавляем юнита
-			if okGetEndQR {
+			// если конечная точка пути видима и он не погрузился в мс то добавляем юнита
+			if okGetEndQR && gameUnit.OnMap {
 				user.AddHostileUnit(gameUnit)
 			}
 

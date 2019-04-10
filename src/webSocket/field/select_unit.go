@@ -31,7 +31,7 @@ func SelectUnit(msg Message, client *player.Player) {
 		if activeGame.Phase == "move" {
 
 			// если юнит не в трюме добавляем в путь МС для возвращения в трюм
-			if !gameUnit.OnMap {
+			if gameUnit.OnMap {
 				msg.Event = "ToMC"
 			}
 
