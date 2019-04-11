@@ -16,7 +16,14 @@ CREATE TABLE action_game_user (                       /* пользовател�
   id_game        INT REFERENCES action_games (id),
   id_user        INT REFERENCES users (id),
   ready          BOOLEAN,                             /* готовность пользователя */
-  leave          BOOLEAN -- игрок ливнул из игры по той или иной причине
+  leave          BOOLEAN                              -- игрок ливнул из игры по той или иной причине
+);
+
+-- таблица которая хранит текущие состояния союзов игроков, связи многие ко многим
+CREATE TABLE action_game_pacts (
+  id_game        INT REFERENCES action_games (id),
+  id_user        INT REFERENCES users (id),
+  id_to_user     INT REFERENCES users (id)
 );
 
 CREATE TABLE action_game_unit_effects (        /* эфекты которые в данный момент висят на юнитах */

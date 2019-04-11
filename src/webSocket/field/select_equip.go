@@ -27,6 +27,7 @@ func SelectEquip(msg Message, client *player.Player) {
 
 	if findUnit && findGame && ok && equipSlot.Equip != nil {
 		if !client.GetReady() {
+
 			if equipSlot.Equip.Applicable == "map" {
 				SendMessage(
 					EquipMapCoordinate{
@@ -81,6 +82,11 @@ func SelectEquip(msg Message, client *player.Player) {
 			if equipSlot.Equip.Applicable == "all" {
 				// todo и свои и чужие но не карта GetEquipAllUnitTarget
 			}
+
+			if equipSlot.Equip.Applicable == "mining" {
+				// todo выбрана копающая хуйня для добычи ресурсов
+			}
+
 		} else {
 			SendMessage(ErrorMessage{Event: "Error", Error: "you ready"}, client.GetID(), activeGame.Id)
 		}

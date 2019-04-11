@@ -49,6 +49,7 @@ type Player struct {
 	CurrentPoint int                      `json:"current_point"` // номер ячейку куда надо пиздовать
 	Leave        bool                     `json:"leave"`
 	ToLeave      bool                     `json:"to_leave"`
+	LocalPact    int                      `json:"local_pact"`
 }
 
 type ShortUserInfo struct {

@@ -20,6 +20,23 @@ type Game struct {
 	players     []*player.Player
 	unitStorage []*unit.Unit
 	units       map[int]map[int]*unit.Unit
+	Pacts       []*Pact
+}
+
+type Pact struct {
+	UserID1 int `json:"user_id_1"`
+	UserID2 int `json:"user_id_2"`
+}
+
+func (game *Game) CheckPacts(userID1, userID2 int) bool {
+
+	for _, pact := range game.Pacts {
+		if (pact.UserID1 == userID1 && pact.UserID2 == userID2) || (pact.UserID2 == userID1 && pact.UserID1 == userID2) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (game *Game) SetPlayers(players []*player.Player) {

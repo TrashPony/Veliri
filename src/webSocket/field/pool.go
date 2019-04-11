@@ -28,7 +28,7 @@ func fieldReader(ws *websocket.Conn) {
 
 		var msg Message
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			localGame.Clients.DelClientByWS(ws)
 			return
 		}
@@ -111,11 +111,15 @@ func fieldReader(ws *websocket.Conn) {
 			}
 
 			if msg.Event == "OpenDiplomacy" {
-				openDiplomacy(msg, client)
+				openDiplomacy(client)
 			}
 
 			if msg.Event == "ArmisticePact" {
 				armisticePact(msg, client)
+			}
+
+			if msg.Event == "AcceptArmisticePact" {
+				acceptArmisticePact(msg, client)
 			}
 
 			if msg.Event == "BuyOut" {

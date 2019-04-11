@@ -10,7 +10,23 @@ func Game(game *localGame.Game) {
 	_, err := dbConnect.GetDBConnect().Exec("Update action_games SET phase=$1, step=$2 WHERE id=$3", game.Phase, game.Step, game.Id)
 
 	if err != nil {
-		println("update game")
-		log.Fatal(err)
+		log.Fatal("update game", err)
+	}
+
+	updatePacts(game)
+}
+
+func updatePacts(game *localGame.Game) {
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM action_game_pacts WHERE id_game = $1", game.Id)
+	if err != nil {
+		log.Fatal("delete all pacts game" + err.Error())
+	}
+
+	for _, pact := range game.Pacts {
+		_, err := dbConnect.GetDBConnect().Exec("INSERT INTO action_game_pacts (id_game, id_user, id_to_user) VALUES ($1, $2, $3)",
+			game.Id, pact.UserID1, pact.UserID2)
+		if err != nil {
+			log.Fatal("add pact to game" + err.Error())
+		}
 	}
 }
