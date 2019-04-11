@@ -104,7 +104,6 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 			client.GetSquad().Inventory.AddItemFromSlot(slot)
 		}
 	}
-	defer rejectFunc()
 
 	for i := 15; i > 0; i -- {
 		time.Sleep(1 * time.Second)
@@ -112,6 +111,7 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 		if game.CheckPacts(client.GetID(), toUser.GetID()) {
 			// проверка на то что союза небыло раньше
 			SendMessage(ErrorMessage{Event: "ArmisticePact", Error: "pact already"}, client.GetID(), game.Id)
+			rejectFunc()
 			return
 		}
 
@@ -120,10 +120,8 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 			if request.Accept {
 
 				toUser.SetCredits(toUser.GetCredits() + request.Credits)
-				// TODO что делает если у игрока нет места для итемов?
-				for _, slot := range request.Slots {
-					toUser.GetSquad().Inventory.AddItemFromSlot(slot)
-				}
+
+				// TODO под мс client выкидываем протектор ящик и отдаем пароль user тот должен запомнится на фронте
 
 				game.Pacts = append(game.Pacts, &localGame.Pact{UserID1: toUser.GetID(), UserID2: client.GetID()})
 				update.Game(game)
@@ -137,6 +135,7 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 		}
 	}
 
+	rejectFunc()
 	SendMessage(Message{Event: "timeOutDiplomacyRequests", ToUser: toUser.GetLogin()}, client.GetID(), game.Id)
 }
 
