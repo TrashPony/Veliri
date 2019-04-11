@@ -122,10 +122,6 @@ func fieldReader(ws *websocket.Conn) {
 				acceptArmisticePact(msg, client)
 			}
 
-			if msg.Event == "BuyOut" {
-				buyOut(msg, client)
-			}
-
 			if msg.Event == "Mining" {
 				// TODO добыча ресурсов в локальной игре
 			}

@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"time"
@@ -26,11 +27,14 @@ func openDiplomacy(client *player.Player) {
 }
 
 type diplomacyRequest struct {
-	ID       string `json:"id"`
-	Response bool   `json:"response"`
+	ID       string                  `json:"id"`
+	Response bool                    `json:"response"`
+	Accept   bool                    `json:"accept"`
+	Credits  int                     `json:"credits"`
+	Slots    map[int]*inventory.Slot `json:"slots"`
 }
 
-var diplomacyRequests = make(map[string]diplomacyRequest)
+var diplomacyRequests = make(map[string]*diplomacyRequest)
 
 // метод, когда игрок предложил мир другому игроку
 func armisticePact(msg Message, client *player.Player) {
@@ -46,86 +50,107 @@ func armisticePact(msg Message, client *player.Player) {
 
 				if !activeGame.CheckPacts(client.GetID(), user.GetID()) && !find {
 
-					SendMessage(
-						Message{
-							Event:  "DiplomacyRequests",
-							ToUser: client.GetLogin(),
-						},
-						user.GetID(),
-						activeGame.Id,
-					)
+					if msg.Slots == nil && msg.Credits < user.GetCredits() || client.GetSquad().Inventory.ViewItemsBySlots(msg.Slots) && msg.Credits < user.GetCredits() {
 
-					diplomacyRequests[client.GetLogin()+user.GetLogin()] = diplomacyRequest{ID: client.GetLogin() + user.GetLogin()}
-					go requestTimer(client.GetLogin()+user.GetLogin(), client, user, activeGame.Id)
-
-				} else {
-					SendMessage(ErrorMessage{Event: msg.Event, Error: "pact already"}, client.GetID(), activeGame.Id)
-				}
-
-				return
-			}
-		}
-	}
-}
-
-func requestTimer(id string, client, toUser *player.Player, gameID int) {
-	for i := 15; i > 0; i -- {
-		time.Sleep(1 * time.Second)
-	}
-
-	delete(diplomacyRequests, id)
-
-	SendMessage(
-		Message{
-			Event:  "timeOutDiplomacyRequests",
-			ToUser: toUser.GetLogin(),
-		},
-		client.GetID(),
-		gameID,
-	)
-}
-
-// метод когда игрок соглашается или нет с перемирием которое ему предложили
-func acceptArmisticePact(msg Message, client *player.Player) {
-	activeGame, findGame := games.Games.Get(client.GetGameID())
-
-	if findGame {
-		for _, user := range activeGame.GetPlayers() {
-			if !user.Leave && user.GetLogin() == msg.ToUser {
-
-				request, find := diplomacyRequests[user.GetLogin()+client.GetLogin()]
-
-				if find && !request.Response {
-					request.Response = true
-					if msg.Accept {
-						if !activeGame.CheckPacts(client.GetID(), user.GetID()) {
-							activeGame.Pacts = append(activeGame.Pacts, &localGame.Pact{UserID1: user.GetID(), UserID2: client.GetID()})
-							update.Game(activeGame)
-						} else {
-							SendMessage(ErrorMessage{Event: msg.Event, Error: "pact already"}, client.GetID(), activeGame.Id)
+						// мы удостоверились в том что все слоты и нужное количество присутсвует в инвентаре
+						// в теории это удаление безопасно
+						for number, slots := range client.GetSquad().Inventory.Slots {
+							realSlot, _ := client.GetSquad().Inventory.Slots[number]
+							realSlot.RemoveItemBySlot(slots.Quantity)
 						}
-					} else {
+
+						// отнимает кридиты у юзера
+						client.SetCredits(client.GetCredits() - msg.Credits)
+
+						request := diplomacyRequest{
+							ID:      client.GetLogin() + user.GetLogin(),
+							Credits: msg.Credits,
+							Slots:   msg.Slots,
+						}
+
+						diplomacyRequests[client.GetLogin()+user.GetLogin()] = &request
+
 						SendMessage(
 							Message{
-								Event:  "DiplomacyRequestsReject",
-								ToUser: client.GetLogin(),
+								Event:            "DiplomacyRequests",
+								ToUser:           client.GetLogin(),
+								DiplomacyRequest: &request,
 							},
 							user.GetID(),
 							activeGame.Id,
 						)
+
+						go requestTimer(client.GetLogin()+user.GetLogin(), client, user, activeGame, &request)
+
+					} else {
+						SendMessage(ErrorMessage{Event: msg.Event, Error: "few items"}, client.GetID(), activeGame.Id)
 					}
+
+				} else {
+					SendMessage(ErrorMessage{Event: msg.Event, Error: "pact already"}, client.GetID(), activeGame.Id)
 				}
 			}
 		}
 	}
 }
 
-// выкупи игрока за ресурсы, принудительный мир
-func buyOut(msg Message, client *player.Player) {
+func requestTimer(id string, client, toUser *player.Player, game *localGame.Game, request *diplomacyRequest) {
 
+	rejectFunc := func() {
+		delete(diplomacyRequests, id)
+
+		client.SetCredits(client.GetCredits() + request.Credits)
+		for _, slot := range request.Slots {
+			client.GetSquad().Inventory.AddItemFromSlot(slot)
+		}
+	}
+	defer rejectFunc()
+
+	for i := 15; i > 0; i -- {
+		time.Sleep(1 * time.Second)
+
+		if game.CheckPacts(client.GetID(), toUser.GetID()) {
+			// проверка на то что союза небыло раньше
+			SendMessage(ErrorMessage{Event: "ArmisticePact", Error: "pact already"}, client.GetID(), game.Id)
+			return
+		}
+
+		if request.Response {
+
+			if request.Accept {
+
+				toUser.SetCredits(toUser.GetCredits() + request.Credits)
+				// TODO что делает если у игрока нет места для итемов?
+				for _, slot := range request.Slots {
+					toUser.GetSquad().Inventory.AddItemFromSlot(slot)
+				}
+
+				game.Pacts = append(game.Pacts, &localGame.Pact{UserID1: toUser.GetID(), UserID2: client.GetID()})
+				update.Game(game)
+
+			} else {
+				rejectFunc()
+				SendMessage(Message{Event: "DiplomacyRequestsReject", ToUser: client.GetLogin()}, client.GetID(), game.Id)
+			}
+
+			return
+		}
+	}
+
+	SendMessage(Message{Event: "timeOutDiplomacyRequests", ToUser: toUser.GetLogin()}, client.GetID(), game.Id)
 }
 
-// метод когда игрок соглашается или нет с выкупом
-func acceptBuyOut(msg Message, client *player.Player) {
+// метод когда игрок соглашается или нет с перемирием которое ему предложили
+func acceptArmisticePact(msg Message, client *player.Player) {
+	_, findGame := games.Games.Get(client.GetGameID())
 
+	if findGame {
+
+		request, find := diplomacyRequests[msg.ToUser+client.GetLogin()]
+		if find && !request.Response {
+
+			request.Response = true
+			request.Accept = msg.Accept
+		}
+	}
 }

@@ -109,6 +109,17 @@ func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int
 	}
 }
 
+func (inv *Inventory) ViewItemsBySlots(slots map[int]*Slot) bool {
+	checkItems := true
+	for number, slot := range slots {
+		realSlot, findSlot := inv.Slots[number]
+		if !findSlot || slot.Quantity > realSlot.Quantity {
+			checkItems = false
+		}
+	}
+	return checkItems
+}
+
 func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) bool {
 	countRealItems := 0
 	for _, slot := range inv.Slots {
