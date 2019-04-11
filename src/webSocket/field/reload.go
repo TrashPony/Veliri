@@ -42,7 +42,7 @@ func initAmmoReload(msg Message, client *player.Player) {
 					}
 				}
 			}
-			SendMessage(Message{Event: msg.Event, AmmoSlots: ammoSlots}, client.GetID(), activeGame.Id)
+			SendMessage(Message{Event: msg.Event, AmmoSlots: ammoSlots, Q: msg.Q, R: msg.R}, client.GetID(), activeGame.Id)
 		} else {
 			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
@@ -66,6 +66,8 @@ func ammoReload(msg Message, client *player.Player) {
 			gameUnit.Target = nil
 			// делаем экшон на перезарядку в фазе атаки
 			gameUnit.Reload = &unit.ReloadAction{AmmoID: ammo.ID, InventorySlot: msg.Slot}
+
+			SendMessage(Message{Event: msg.Event, Accept: true, Q: msg.Q, R: msg.R}, client.GetID(), activeGame.Id)
 		}
 	} else {
 		SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)

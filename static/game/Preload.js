@@ -19,6 +19,7 @@ function preload() {
     game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
 
     //Equip_Animate
+    game.load.spritesheet('ReloadEquip', 'http://' + window.location.host + '/assets/reload.png', 256, 256, 30);
     game.load.spritesheet('EnergyShield', 'http://' + window.location.host + '/assets/equipAnimate/energy_shield_animate.png', 100, 100, 20);
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
     game.load.image('labelEffects', 'http://' + window.location.host + '/assets/effects/label_effects.png');

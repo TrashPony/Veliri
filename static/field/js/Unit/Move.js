@@ -83,6 +83,7 @@ function CheckPath(unit) {
     if (pathNode.to_mc) {
         UnitHide(unit);
         DeleteMarkLastPathCell(unit.lastCell);
+        UpdateWatchZone(pathNode.watch_node);
         unit.lastCell = null;
         return
     }

@@ -149,6 +149,10 @@ function CreateUnit(unitStat, inVisible) {
     addToGameUnit(unitStat);
     SetAngle(unitStat, unitStat.rotate);
 
+    if (unitStat.reload) {
+        ReloadMark({q: unitStat.q, r: unitStat.r})
+    }
+
     return unitStat
 }
 

@@ -4,8 +4,9 @@ function CreateUnitSubMenu(unit) {
         let BoxUnitSubMenu = document.getElementById("BoxUnitSubMenu");
         let unitSubMenu = document.getElementById("UnitSubMenu");
 
+        BoxUnitSubMenu.style.display = "block";
         if (unitSubMenu) {
-            unitSubMenu.remove();
+            BoxUnitSubMenu.innerHTML = '';
         }
 
         unitSubMenu = document.createElement("div");
@@ -22,12 +23,16 @@ function CreateUnitSubMenu(unit) {
             FillingEquipPanel(equipPanel, unit);
 
             if (game.Phase === "move") {
-                ActionButton(equipPanel, unit, "SkipMoveUnit", "Пропустить ход");
+                BoxUnitSubMenu.appendChild(unitSubMenu);
+                ActionButton(BoxUnitSubMenu, unit, "SkipMoveUnit", "Пропустить ход");
             }
 
             if (game.Phase === "targeting" && !unit.defend) {
-                ActionButton(equipPanel, unit, "Defend", "Защита");
+                BoxUnitSubMenu.appendChild(unitSubMenu);
+                ActionButton(BoxUnitSubMenu, unit, "Defend", "Защита");
+                ActionButton(BoxUnitSubMenu, unit, "initReload", "Перезарядка");
             }
+
         } else {
             unitSubMenu.style.boxShadow = "none";
             unitSubMenu.style.animation = "none";
@@ -36,9 +41,7 @@ function CreateUnitSubMenu(unit) {
         }
 
         if (unit.effects !== null && unit.effects.length > 0) {
-            EffectsPanel(unitSubMenu, unit);
+            // TODO EffectsPanel(unitSubMenu, unit);
         }
-
-        BoxUnitSubMenu.appendChild(unitSubMenu);
     }
 }

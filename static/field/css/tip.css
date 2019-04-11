@@ -13,8 +13,8 @@
     display: none;
     font-family: sans-serif;
     font-size: 9pt;
-    bottom: 70px;
-    right: 15px;
+    top: 15px;
+    left: 240px;
 }
 
 .tableTip {

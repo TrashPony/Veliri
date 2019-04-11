@@ -2,6 +2,7 @@ package coordinate
 
 func GetCoordinatesRadius(center *Coordinate, Radius int) []*Coordinate {
 	var coordinates = make([]*Coordinate, 0)
+	center.CalculateXYZ()
 
 	for x := center.X - Radius; x <= center.X+Radius; x++ {
 		for y := center.Y - Radius; y <= center.Y+Radius; y++ {

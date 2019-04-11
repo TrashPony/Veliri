@@ -80,6 +80,14 @@ function ReadResponse(jsonMessage) {
         LeaveBattle(true);
     }
 
+    if (event === 'initReload') {
+        initReload(JSON.parse(jsonMessage))
+    }
+
+    if (event === 'Reload') {
+        ReloadMark(JSON.parse(jsonMessage));
+    }
+
     if (event === 'timeToLeave') {
         LeaveTimer(JSON.parse(jsonMessage).seconds)
     }

@@ -11,7 +11,8 @@ function RemoveSelect(target) {
     RemoveSelectRangeCoordinate();
 
     if (document.getElementById("UnitSubMenu")) {
-        document.getElementById("UnitSubMenu").remove()
+        document.getElementById("BoxUnitSubMenu").innerHTML = '';
+        document.getElementById("BoxUnitSubMenu").style.display = "none";
     }
 
     if (document.getElementById("effectDetailZonePanel")) {

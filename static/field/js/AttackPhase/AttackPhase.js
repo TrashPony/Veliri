@@ -76,8 +76,12 @@ function* PlayAttack(resultBattle) {
             }
         }
 
+        if (resultAction.reload) { // юнит перезаряжается
+
+        }
+
         // если нечего не использовалось, значит это конец боя и отрабатывают наложеные эффекты
-        if (! resultAction.equip_slot.equip && !resultAction.weapon_slot.weapon) {
+        if (!resultAction.equip_slot.equip && !resultAction.weapon_slot.weapon && !resultAction.reload) {
             yield UpdateTargetUnits(resultAction)
         }
     }

@@ -29,6 +29,7 @@ function FillingEquipPanel(equipPanel, unit) {
             ammoBox.id = "ammoBox";
             if (unit.body.weapons[weaponSlot].ammo) {
                 ammoBox.style.backgroundImage = "url(/assets/units/ammo/" + unit.body.weapons[weaponSlot].ammo.name + ".png)";
+                ammoBox.innerHTML = unit.body.weapons[weaponSlot].ammo_quantity + "/" + unit.body.weapons[weaponSlot].weapon.ammo_capacity
             } else {
                 ammoBox.className = "blink"
             }
