@@ -23,11 +23,21 @@ func initFlee(msg Message, client *player.Player) {
 		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 
 		if find || LastLeave(activeGame, false) {
-			if !LastLeave(activeGame, false) && activeGame.Phase == "targeting" {
-				SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
-			} else {
+
+			// если игрок последний или у него нет врагов ему доступно софт лив
+			if LastLeave(activeGame, false) || !activeGame.FindUserHostile(client) {
+
 				SendMessage(Message{Event: "softLeave"}, client.GetID(), activeGame.Id)
+
+			} else {
+				// иначе он может ливнуть только в фазе таргетинга с потерей всех юнитов
+				if activeGame.Phase == "targeting" {
+					SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
+				} else {
+					SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
+				}
 			}
+
 		} else {
 			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
@@ -66,6 +76,10 @@ func fleeBattle(msg Message, client *player.Player) {
 
 		if find || LastLeave(activeGame, false) {
 
+			if activeGame.CheckEndGame() {
+				SendAllMessage(Message{Event: "EndGame"}, activeGame)
+			}
+
 			leave(client, activeGame, false)
 
 		} else {
@@ -76,7 +90,8 @@ func fleeBattle(msg Message, client *player.Player) {
 
 func softFlee(client *player.Player) {
 	activeGame, findGame := games.Games.Get(client.GetGameID())
-	if findGame && LastLeave(activeGame, false) {
+	// если игрок последний или он достиг мира со всеми другими то он может легко ливнуть в софте
+	if findGame && (LastLeave(activeGame, false) || !activeGame.FindUserHostile(client)) {
 		go softFleeTimer(client, activeGame)
 	}
 }
@@ -98,7 +113,16 @@ func leave(client *player.Player, activeGame *localGame.Game, soft bool) {
 	// боя как болванки и больше не принадлежат отряду и хранятся в отдельной таблице
 	// оставлять игрока в игре со статусом leave true
 
-	if !soft {
+	if soft {
+		// если софт лив то всех юнитов кладем в трюм
+		for _, unitSlot := range client.GetSquad().MatherShip.Units {
+			if unitSlot.Unit != nil {
+				unitSlot.Unit.OnMap = false
+				SendAllMessage(Message{Event: "LeaveUnit", UnitID: unitSlot.Unit.ID}, activeGame)
+			}
+		}
+	} else {
+		// иначе они остаются в игре
 		for _, unitSlot := range client.GetSquad().MatherShip.Units {
 			if unitSlot.Unit != nil && unitSlot.Unit.OnMap {
 				unitSlot.Unit.GameID = activeGame.Id
@@ -107,6 +131,8 @@ func leave(client *player.Player, activeGame *localGame.Game, soft bool) {
 			}
 		}
 	}
+
+	SendAllMessage(Message{Event: "LeaveUnit", UnitID: client.GetSquad().MatherShip.ID}, activeGame)
 
 	client.GetSquad().InGame = false
 	update.Squad(client.GetSquad(), true)

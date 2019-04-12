@@ -27,6 +27,10 @@ func GetPreviewPath(msg Message, client *player.Player) {
 		if findUnit {
 			startCoordinate, findStart = activeGame.GetMap().GetCoordinate(gameUnit.Q, gameUnit.R)
 			endCoordinate, findEnd = activeGame.GetMap().GetCoordinate(msg.ToQ, msg.ToR)
+
+			if client.GetSquad().MatherShip.Q == endCoordinate.Q && client.GetSquad().MatherShip.R == endCoordinate.R {
+				event = "ToMC"
+			}
 		}
 	}
 

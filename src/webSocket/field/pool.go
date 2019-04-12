@@ -129,6 +129,12 @@ func fieldReader(ws *websocket.Conn) {
 	}
 }
 
+func SendAllMessage(senderMessage interface{}, game *localGame.Game) {
+	for _, user := range game.GetPlayers() {
+		SendMessage(senderMessage, user.GetID(), game.Id)
+	}
+}
+
 func SendMessage(senderMessage interface{}, userID, gameID int) {
 	moves := message{message: senderMessage, userID: userID, gameID: gameID}
 	sendMessagePipe <- moves

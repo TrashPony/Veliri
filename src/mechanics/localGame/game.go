@@ -174,6 +174,26 @@ func (game *Game) DelUnitStorage(id int) (find bool) {
 	return
 }
 
+// метод проверяет остались ли еще игроки которые враждую между собой
+func (game *Game) CheckEndGame() bool {
+	for _, user := range game.GetPlayers() {
+		if game.FindUserHostile(user) {
+			return false
+		}
+	}
+	return true
+}
+
+func (game *Game) FindUserHostile(user *player.Player) bool {
+	for _, otherUser := range game.GetPlayers() {
+		// если игрок не состояит в союзер с этим игроком и этот игрок не ливнул то значит они враги
+		if otherUser.GetID() != user.GetID() && !game.CheckPacts(user.GetID(), otherUser.GetID()) && !otherUser.Leave{
+			return true
+		}
+	}
+	return false
+}
+
 func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {
 	for i, v := range units {
 		if v == item {

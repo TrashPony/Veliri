@@ -15,7 +15,7 @@ func SelectWeapon(msg Message, client *player.Player) {
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
 	if findUnit && findGame && gameUnit.GetWeaponSlot() != nil && gameUnit.GetAmmoCount() > 0 {
-		if activeGame.Phase == "targeting" {
+		if activeGame.Phase == "targeting" && gameUnit.Reload == nil {
 			SelectTarget(client, gameUnit, activeGame)
 		}
 	}

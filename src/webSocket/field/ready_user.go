@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/userReady"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
+	"time"
 )
 
 func Ready(client *player.Player) {
@@ -32,12 +33,38 @@ func CheckAllReady(activeGame *localGame.Game) bool {
 
 		ChangePhase(activeGame)
 
+		if activeGame.Phase == "targeting" {
+			go timerTargetingPhase(activeGame)
+		}
+
 		if activeGame.Phase == "attack" {
 			attack(activeGame)
 		}
 	}
 
 	return changePhase
+}
+
+// принудительная смена фазы по таймеру
+func timerTargetingPhase(game *localGame.Game) {
+	currentStep := game.Step
+
+	for i := 60; i > 0; i-- {
+
+		if currentStep != game.Step || game.Phase != "targeting" {
+			// если шаг или фаза изменились то значит смена произошла уже с помощью игроков
+			return
+		}
+
+		time.Sleep(1 * time.Second)
+		SendAllMessage(Message{Event: "timeToChangePhase", Seconds: i}, game)
+	}
+
+	for _, user := range game.GetPlayers() {
+		userReady.UserReady(user)
+	}
+
+	CheckAllReady(game)
 }
 
 type UserReady struct {
@@ -52,9 +79,9 @@ func ChangePhase(actionGame *localGame.Game) {
 			continue
 		}
 
+		// проверяем игровую зону, если игрок вышел из зоны боевых действий то он может выйти из боя.
 		gameZone := actionGame.GetGameZone(client)
 		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
-		// проверяем игровую зону, если игрок вышел из зоны боевых действий то он может выйти из боя.
 
 		phaseInfo := PhaseInfo{
 			Event:      "ChangePhase",

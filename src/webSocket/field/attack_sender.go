@@ -21,6 +21,10 @@ func attack(activeGame *localGame.Game) {
 
 	resultBattle := attackPhase.AttackPhase(activeGame)
 
+	if activeGame.CheckEndGame() {
+		SendAllMessage(Message{Event: "EndGame"}, activeGame)
+	}
+
 	for _, gamePlayer := range activeGame.GetPlayers() {
 		SendMessage(
 			AttackMessage{

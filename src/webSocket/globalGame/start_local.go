@@ -33,8 +33,11 @@ func startLocalGame(ws *websocket.Conn, msg Message) {
 			gamePlayers = append(gamePlayers, user)
 			gamePlayers = append(gamePlayers, toUser)
 
-			// TODO неправильно забиваются начальные позиции мсов
 			// TODO посмотреть кто находится в радиусе боя и предложить им участие в бою и добавить их в бой
+
+			// костыль
+			user.GetSquad().MatherShip.Q = user.GetSquad().Q
+			user.GetSquad().MatherShip.R = user.GetSquad().R
 
 			_, err := localGame.StartNewGame("", user.GetSquad().MapID, gamePlayers)
 			if err == nil {
