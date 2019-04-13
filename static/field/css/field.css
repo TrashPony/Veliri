@@ -7,18 +7,6 @@ body {
     -ms-user-select: none;
 }
 
-.info {
-    display: inline-block;
-    vertical-align: top;
-    text-align: left;
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    height: 400px;
-    width: 730px;
-    pointer-events: none;
-}
-
 input {
     pointer-events: visible;
 }
@@ -27,7 +15,7 @@ input {
     pointer-events: visible;
 }
 
-.info.subMenu {
+#subMenu {
     border-radius: 5px;
     border: 1px solid #25a0e1;
     z-index: 999;
@@ -40,6 +28,14 @@ input {
     display: inline-block;
     height: 113px;
     padding: 3px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+#Ready {
+    display: block;
+    margin: 2px auto;
 }
 
 .gameInfo {
@@ -145,7 +141,9 @@ input {
 }
 
 #holdUnitsBlock {
-    margin-top: 15px;
+    left: 250px;
+    top: 15px;
+    position: absolute;
     border-radius: 5px;
     border: 1px solid #25a0e1;
     z-index: 999;

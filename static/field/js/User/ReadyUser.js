@@ -1,57 +1,71 @@
 function ReadyUser(jsonMessage) {
     if (JSON.parse(jsonMessage).error === null || JSON.parse(jsonMessage).error === undefined) {
-        var ready = document.getElementById("Ready");
-
-        if (JSON.parse(jsonMessage).ready) {
-            ready.value = "Ты готов!";
-            ready.className = "button noActive";
-            ready.onclick = null;
-        } else {
-            ready.value = "Завершить ход";
-            ready.className = "button";
-            ready.onclick = function () {
-                Ready();
-            };
-        }
+        game.user.ready = JSON.parse(jsonMessage).ready;
+        InitPlayer()
     } else {
         alert(JSON.parse(jsonMessage).error)
     }
 }
 
 function Ready() {
-    // TODO смотреть есть еще очки действий у отряда или нет
-    let confirmReady = document.createElement("div");
-    confirmReady.id = "confirmReady";
+    let passMove = false;
+    let passTarget = false;
 
-    let head = document.createElement("h3");
-    head.innerHTML = "Завершить ход?";
-    confirmReady.appendChild(head);
+    for (let q in game.units) {
+        for (let r in game.units[q]) {
+            if (game.units[q][r].action_points > 0 && game.units[q][r].move && game.units[q][r].owner === game.user.name) {
+                passMove = true;
+            }
+            if (!game.units[q][r].target && game.units[q][r].owner === game.user.name) {
+                passTarget = true;
+            }
+        }
+    }
 
-    let text = document.createElement("p");
-    text.innerHTML = "Вы уверены что хотите завершить ход? У вас еще остались не использованые очки движения.";
-    confirmReady.appendChild(text);
-
-    let cancel = document.createElement("input");
-    cancel.type = "submit";
-    cancel.value = "Отмена";
-    cancel.onclick = function () {
-        confirmReady.remove();
-    };
-    confirmReady.appendChild(cancel);
-
-    let button = document.createElement("input");
-    button.type = "submit";
-    button.value = "OK";
-    button.onclick = function () {
-
+    if (passMove && game.Phase === "move") {
+        ViewAlert("У вас еще остались не использованые очки движения.");
+    } else if (passTarget && game.Phase === "targeting") {
+        ViewAlert("Не у всех юнитов есть цель.");
+    } else {
         RemoveSelect();
         field.send(JSON.stringify({
             event: "Ready"
         }));
+    }
+}
 
-        confirmReady.remove();
+function ViewAlert(text) {
+
+    let page = {
+        text: text,
+        picture: "base.png",
+        asc: [],
     };
-    confirmReady.appendChild(button);
 
-    document.body.appendChild(confirmReady)
+    let dialogBlock = CreatePageDialog("LeaveBlock", page, null, false, true);
+    dialogBlock.style.right = "calc(50% - 125px)";
+    dialogBlock.style.top = "calc(50% - 300px)";
+    dialogBlock.style.bottom = "unset";
+    dialogBlock.style.left = "unset";
+
+    let ask = document.createElement("div");
+    ask.className = "asks";
+    ask.innerHTML = "<div class='wrapperAsk'>Завершить фазу</div>";
+    ask.onclick = function () {
+        RemoveSelect();
+        field.send(JSON.stringify({
+            event: "Ready"
+        }));
+        dialogBlock.remove();
+    };
+
+    let ask2 = document.createElement("div");
+    ask2.className = "asks";
+    ask2.innerHTML = "<div class='wrapperAsk'>Отмена</div>";
+    ask2.onclick = function () {
+        dialogBlock.remove();
+    };
+
+    dialogBlock.appendChild(ask);
+    dialogBlock.appendChild(ask2);
 }

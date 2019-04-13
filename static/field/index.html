@@ -10,7 +10,6 @@
     <link href="css/equipSlotsUnitSubMenu.css" rel="stylesheet">
     <link href="css/zoneTip.css" rel="stylesheet">
     <link href="css/notification.css" rel="stylesheet">
-    <link href="css/ready.css" rel="stylesheet">
     <link href="css/queueMove.css" rel="stylesheet">
     <link href="css/holdUnit.css" rel="stylesheet">
     <link href="css/tip.css" rel="stylesheet">
@@ -184,38 +183,39 @@
         <script>ConnectChat()</script>
     </div>
 
-    <div class="info" align="center">
-
-        <div id="queue">
-            <div id="moveUnit"></div>
-            <div id="queueMove">
-                <div id="queueLine"></div>
-            </div>
+    <div id="queue">
+        <div id="moveUnit"></div>
+        <div id="queueMove">
+            <div id="queueLine"></div>
         </div>
+    </div>
 
-        <div class="info subMenu" id="subMenu">
-            <table class="gameInfo">
-                <tr align="center">
-                    <th class="h" colspan="2" width="160"> Информация:</th>
-                </tr>
-                <tr align="center">
-                    <td> Ход №</td>
-                    <td><span id="step" class="Value"> </span></td>
-                </tr>
-                <tr align="center">
-                    <td> Фаза:</td>
-                    <td><span id="phase" class="Value"> </span></td>
-                </tr>
-            </table>
-            <input type="submit" id="Ready" onclick="Ready()" value="Завершить ход"
-                   style="display: block; margin: 2px auto">
+    <div class="info subMenu" id="subMenu">
+        <table class="gameInfo">
+            <tr align="center">
+                <th class="h" colspan="2" width="160"> Информация:</th>
+            </tr>
+            <tr align="center">
+                <td> Ход №</td>
+                <td><span id="step" class="Value"> </span></td>
+            </tr>
+            <tr align="center">
+                <td> Фаза:</td>
+                <td><span id="phase" class="Value"> </span></td>
+            </tr>
+            <tr align="center">
+                <td> Время:</td>
+                <td><span id="stepTime" class="Value"> 0 </span></td>
+            </tr>
+        </table>
+        <input type="submit" id="Ready" onclick="Ready()" value="Завершить ход">
+    </div>
 
-            <div id="holdUnitsBlock">
-                <h3>Юниты в трюме:</h3>
-                <table class="table units" id="holdUnits"></table>
-            </div>
-            <div id="BoxUnitSubMenu"></div>
-        </div>
+    <div id="BoxUnitSubMenu"></div>
+
+    <div id="holdUnitsBlock">
+        <h3>Юниты в трюме:</h3>
+        <table class="table units" id="holdUnits"></table>
     </div>
 
     <div id="bottomMenu">

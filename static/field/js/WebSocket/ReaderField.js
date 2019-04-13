@@ -92,6 +92,10 @@ function ReadResponse(jsonMessage) {
         LeaveTimer(JSON.parse(jsonMessage).seconds)
     }
 
+    if (event === 'timeToChangePhase') {
+        document.getElementById("stepTime").innerHTML = JSON.parse(jsonMessage).seconds;
+    }
+
     if (event === 'UpdateUnitStorage') {
         game.unitStorage = JSON.parse(jsonMessage).unit_storage;
         LoadHoldUnits();

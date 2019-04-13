@@ -104,31 +104,10 @@ input:hover {
     color: #a5d5ef
 }
 
-.button {
-    outline: none;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 2px 10px 2px;
-    z-index: 11;
-    background: linear-gradient(15deg, #28a5e4, #25e1a4);
-}
-
-.button:hover {
-    background: linear-gradient(0deg, red, yellow);
-}
-
-.button:active {
-    background: linear-gradient(180deg, red, yellow);
-    top: 3px;
-}
-
 .button.noActive {
     background-color: rgba(20, 81, 111, 0.5);
     text-shadow: rgba(45, 122, 170, 0.55) 0 0 4px;
     color: rgba(165, 213, 239, 0.67);
-}
-
-.button.noActive:hover {
 }
 
 .button.noActive:active {

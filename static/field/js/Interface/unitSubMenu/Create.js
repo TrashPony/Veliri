@@ -3,8 +3,8 @@ function CreateUnitSubMenu(unit) {
 
         let BoxUnitSubMenu = document.getElementById("BoxUnitSubMenu");
         let unitSubMenu = document.getElementById("UnitSubMenu");
-
         BoxUnitSubMenu.style.display = "block";
+
         if (unitSubMenu) {
             BoxUnitSubMenu.innerHTML = '';
         }
@@ -38,6 +38,7 @@ function CreateUnitSubMenu(unit) {
             unitSubMenu.style.animation = "none";
             unitSubMenu.style.border = "0px";
             unitSubMenu.style.visibility = "hidden";
+            BoxUnitSubMenu.style.display = "none";
         }
 
         if (unit.effects !== null && unit.effects.length > 0) {
