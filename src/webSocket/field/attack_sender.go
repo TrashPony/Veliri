@@ -85,6 +85,9 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 			if actionBattle.EquipSlot.Equip != nil {
 				preloadActionBattle.EquipSlot.Equip = actionBattle.EquipSlot.Equip
 			}
+			if actionBattle.Reload {
+				preloadActionBattle.Reload = true
+			}
 		}
 
 		if !findAttackUnit && findTargetCoordinate {
@@ -128,7 +131,7 @@ func dataPreparation(resultBattle []*attackPhase.ResultBattle, gamePlayer *playe
 
 		for _, targetUnit := range actionBattle.TargetUnits {
 			_, findTargetUnit := actionBattle.GetUserWatchCoordinate(gamePlayer.GetID(), targetUnit.Unit.Q, targetUnit.Unit.R)
-			// если игрок видит юнита добавляем его
+			// если игрок видит юнита по которому стреляют добавляем его
 			if findTargetUnit {
 				preloadActionBattle.TargetUnits = append(preloadActionBattle.TargetUnits, targetUnit)
 			}

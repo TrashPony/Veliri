@@ -19,13 +19,24 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 	if ok && slot != nil && slot.Ammo != nil {
 
 		if dst == "squadInventory" {
-			// TODO
-			return nil
+			okAddItem := user.GetSquad().Inventory.AddItem(slot.Ammo, "ammo", slot.Ammo.ID, slot.AmmoQuantity, 1, slot.Ammo.Size, 1)
+			if okAddItem {
+				slot.Ammo = nil
+
+				if updateDB {
+					go update.Squad(user.GetSquad(), true)
+				}
+
+				return nil
+			} else {
+				return errors.New("add item in inventory error")
+			}
 		}
 
 		if dst == "storage" {
 			okAddItem := storages.Storages.AddItem(user.GetID(), user.InBaseID, slot.Ammo, "ammo", slot.Ammo.ID,
 				slot.AmmoQuantity, 1, slot.Ammo.Size, 1)
+
 			if okAddItem {
 				slot.Ammo = nil
 

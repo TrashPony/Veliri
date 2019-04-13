@@ -4,8 +4,8 @@ function Fire(unit, target, targetType) {
     let targetY;
 
     if (targetType === "coordinate" || targetType === "inFog") {
-        targetX = target.sprite.x + 50;
-        targetY = target.sprite.y + 40;
+        targetX = target.x + 50;
+        targetY = target.y + 40;
     } else {
         targetX = target.sprite.x;
         targetY = target.sprite.y;

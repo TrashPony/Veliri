@@ -1,5 +1,5 @@
 function UseDigger(jsonData) {
-    console.log(jsonData)
+
     game.floorObjectSelectLineLayer.forEach(function (sprite) {
         sprite.visible = false;
     });

@@ -16,6 +16,9 @@ func Draw(a, b *coordinate.Coordinate, game *localGame.Game) []*coordinate.Coord
 	*/
 	result := make([]*coordinate.Coordinate, 0)
 
+	b.CalculateXYZ()
+	a.CalculateXYZ()
+
 	distance := int(cubeDistance(a, b))
 
 	for i := 0; i <= distance; i++ {

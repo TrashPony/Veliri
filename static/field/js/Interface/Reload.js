@@ -47,11 +47,17 @@ function ReloadMark(msg) {
 
     let unit = GetGameUnitXY(msg.q, msg.r);
 
-    let ReloadEquip = game.make.sprite(0, 0, 'ReloadEquip', 0);
-    ReloadEquip.animations.add('RepairKit');
-    ReloadEquip.animations.play('RepairKit', 30, true, false);
-    ReloadEquip.anchor.set(0.5);
-    ReloadEquip.scale.set(0.2);
+    let ReloadEquip = ReloadAnimation(true, false);
     unit.sprite.addChild(ReloadEquip);
     unit.reloadIcon = ReloadEquip;
+}
+
+function ReloadAnimation(loop, kill) {
+    let ReloadEquip = game.make.sprite(0, 0, 'ReloadEquip', 0);
+    ReloadEquip.animations.add('RepairKit');
+    ReloadEquip.animations.play('RepairKit', 30, loop, kill);
+    ReloadEquip.anchor.set(0.5);
+    ReloadEquip.scale.set(0.2);
+
+    return ReloadEquip
 }

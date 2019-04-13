@@ -35,7 +35,10 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 			}
 
 			if ammoSlot.Ammo != nil {
-				RemoveAmmo(user, numEquipSlot, unit, "storage", true)
+				err := RemoveAmmo(user, numEquipSlot, unit, source, true)
+				if err != nil && err.Error() == "add item in inventory error" {
+					RemoveAmmo(user, numEquipSlot, unit, "storage", true)
+				}
 			}
 
 			ammoSlot.Ammo = newAmmo

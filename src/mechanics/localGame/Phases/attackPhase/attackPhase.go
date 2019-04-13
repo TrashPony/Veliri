@@ -32,7 +32,8 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 				for _, reloadUnit := range qLine {
 					if reloadUnit.Reload != nil {
 						err := squadInventory.SetAmmo(
-							player, reloadUnit.Reload.AmmoID,
+							player,
+							reloadUnit.Reload.AmmoID,
 							reloadUnit.Reload.InventorySlot,
 							reloadUnit.GetWeaponSlot().Number,
 							reloadUnit,
@@ -40,14 +41,20 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 						)
 
 						if err == nil {
-							resultBattle = append(
-								resultBattle,
-								&ResultBattle{
-									AttackUnit: *player.GetSquad().MatherShip,
-									Target:     coordinate.Coordinate{Q: reloadUnit.Q, R: reloadUnit.R},
-									Reload:     true,
-								},
-							)
+							reloadAction := &ResultBattle{
+								AttackUnit: *player.GetSquad().MatherShip,
+								Target:     coordinate.Coordinate{Q: reloadUnit.Q, R: reloadUnit.R},
+								Reload:     true,
+							}
+
+							reloadAction.watchPlayer = make(map[string]map[string]map[string]*coordinate.Coordinate)
+							reloadAction.WatchNode = make(map[string]*watchZone.UpdaterWatchZone)
+							for _, gameUser := range game.GetPlayers() {
+								reloadAction.watchPlayer[strconv.Itoa(gameUser.GetID())] = gameUser.GetWatchCoordinates()
+								reloadAction.WatchNode[strconv.Itoa(gameUser.GetID())] = watchZone.UpdateWatchZone(game, gameUser)
+							}
+
+							resultBattle = append(resultBattle, reloadAction)
 						}
 
 						reloadUnit.Reload = nil
@@ -186,7 +193,7 @@ func attack(sortItems []*QueueAttack, game *localGame.Game) (resultBattle []*Res
 		for _, gameUser := range game.GetPlayers() {
 
 			resultAction.watchPlayer[strconv.Itoa(gameUser.GetID())] = gameUser.GetWatchCoordinates()
-			// расчет видимости на каждый экшен для каждого пользователя [user_ID]watch
+			// расчет видимости на каждый экшен для каждого пользователя [user_ID]watch, что бы понимать на каждый шаг обзор каждого пользователя
 			resultAction.WatchNode[strconv.Itoa(gameUser.GetID())] = watchZone.UpdateWatchZone(game, gameUser)
 		}
 

@@ -3,12 +3,12 @@ function OutFogFire(start, target, weapon, targetType) {
     let targetX;
     let targetY;
 
-    let startX = start.sprite.x;
-    let startY = start.sprite.y;
+    let startX = start.x;
+    let startY = start.y;
 
     if (targetType === "coordinate") {
-        targetX = target.sprite.x + 50;
-        targetY = target.sprite.y + 40;
+        targetX = target.x + 50;
+        targetY = target.y + 40;
     } else {
         targetX = target.sprite.x;
         targetY = target.sprite.y;
