@@ -21,6 +21,7 @@
     <link href="css/tip.css" rel="stylesheet">
     <link href="css/bottomMenu.css" rel="stylesheet">
     <link href="css/leaveAlert.css" rel="stylesheet">
+    <link href="css/diplomacy.css" rel="stylesheet">
 
     <title>Veliri</title>
 
@@ -81,6 +82,7 @@
     <script src="../game/utils/ShortDirectionRotateTween.js"></script>
 
     <script src="js/LeaveBattle.js"></script>
+    <script src="js/Diplomacy.js"></script>
 
     <script src="js/WebSocket/OpenSocket.js"></script>
     <script src="js/WebSocket/WebSocket.js"></script>
@@ -158,6 +160,7 @@
     <script src="../assets/lib/jquery-ui.js"></script>
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
+    <script src="../assets/components/uiComponents/ControlButtons.js"></script>
 </head>
 
 <body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
@@ -226,7 +229,7 @@
 
     <div id="bottomMenu">
         <div><img src="https://img.icons8.com/ios/50/000000/settings-filled.png"></div> <!-- настройки -->
-        <div><img src="https://img.icons8.com/color/48/000000/diplomacy.png"></div> <!-- дипломатия -->
+        <div><img src="https://img.icons8.com/color/48/000000/diplomacy.png" onclick="OpenDiplomacy()"></div> <!-- дипломатия -->
         <div><img src="https://img.icons8.com/office/40/000000/exit.png" onclick="InitLeave()"></div> <!-- убежать -->
     </div>
 

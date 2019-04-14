@@ -96,6 +96,10 @@ function ReadResponse(jsonMessage) {
         document.getElementById("stepTime").innerHTML = JSON.parse(jsonMessage).seconds;
     }
 
+    if (event === 'OpenDiplomacy') {
+        CreateDiplomacyMenu(JSON.parse(jsonMessage))
+    }
+
     if (event === 'UpdateUnitStorage') {
         game.unitStorage = JSON.parse(jsonMessage).unit_storage;
         LoadHoldUnits();

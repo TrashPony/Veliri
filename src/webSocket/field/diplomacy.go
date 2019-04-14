@@ -14,11 +14,18 @@ import (
 // отдает текущее состояние дипломатии, игроков, пакты которые уже заключены
 func openDiplomacy(client *player.Player) {
 	activeGame, findGame := games.Games.Get(client.GetGameID())
+
+	usersName := make([]string, 0)
+	for _, user := range activeGame.GetPlayers() {
+		usersName = append(usersName, user.GetLogin())
+	}
+
 	if findGame {
 		SendMessage(
 			Message{
 				Event:          "OpenDiplomacy",
 				DiplomacyUsers: activeGame.Pacts,
+				UsersName:      usersName,
 			},
 			client.GetID(),
 			activeGame.Id,
@@ -105,7 +112,7 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 		}
 	}
 
-	for i := 15; i > 0; i -- {
+	for i := 15; i > 0; i-- {
 		time.Sleep(1 * time.Second)
 
 		if game.CheckPacts(client.GetID(), toUser.GetID()) {

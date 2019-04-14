@@ -35,6 +35,7 @@ type Message struct {
 	Credits          int                     `json:"credits"`
 	Slots            map[int]*inventory.Slot `json:"slots"`
 	DiplomacyRequest *diplomacyRequest       `json:"diplomacy_request"`
+	UsersName        []string                `json:"users_name"`
 }
 
 type ErrorMessage struct {
