@@ -1,82 +1,91 @@
 package chat
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/chat"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/gorilla/websocket"
-	"log"
-	"strconv"
-	"sync"
 )
 
-var mutex = &sync.Mutex{}
-
-var usersChatWs = make(map[*websocket.Conn]*player.Player) // тут будут храниться наши подключения
-var chatPipe = make(chan chatResponse)
+var chatPipe = make(chan chatMessage)
 
 type chatMessage struct {
-	Event    string `json:"event"`
-	UserName string `json:"user_name"`
-	Message  string `json:"message"`
-}
-
-type chatResponse struct {
-	Event    string `json:"event"`
-	UserName string `json:"user_name"`
-	GameUser string `json:"game_user"`
-	Message  string `json:"message"`
+	Event    string              `json:"event"`
+	UserName string              `json:"user_name"`
+	Message  string              `json:"message"`
+	GroupID  int                 `json:"group_id"`
+	UserID   int                 `json:"user_id"`
+	Group    *chat.Group         `json:"group"`
+	Groups   map[int]*chat.Group `json:"groups"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
-
-	mutex.Lock()
-
 	newPlayer, ok := players.Users.Get(id)
-
 	if !ok {
 		newPlayer = players.Users.Add(id, login)
 	}
 
-	usersChatWs[ws] = newPlayer // Регистрируем нового Клиента
-
-	print("WS chat Сессия: ") // просто смотрим новое подключение
-	println(" login: " + newPlayer.GetLogin() + " id: " + strconv.Itoa(newPlayer.GetID()))
-
-	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция завершается
-
-	mutex.Unlock()
-
+	chat.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
 	Reader(ws)
 }
 
 func Reader(ws *websocket.Conn) {
 	for {
+
 		var msg chatMessage
-		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
-			// TODO concurrent map writes
-			DelConn(ws, &usersChatWs, err)
+		err := ws.ReadJSON(&msg)
+		if err != nil {
+			chat.Clients.DelClientByWS(ws)
 			break
 		}
-		if msg.Event == "NewChatMessage" {
-			var resp = chatResponse{Event: msg.Event, Message: msg.Message, GameUser: usersChatWs[ws].GetLogin()}
-			chatPipe <- resp
+
+		client := localGame.Clients.GetByWs(ws)
+
+		if client != nil {
+			if msg.Event == "OpenChat" {
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chat.Groups.GetGroup(msg.GroupID), chat.Groups.GetAllUserGroups(client))
+			}
+
+			if msg.Event == "ChangeGroup" {
+				if chat.Groups.CheckUserSubscribe(msg.GroupID, client) {
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, chat.Groups.GetGroup(msg.GroupID), nil)
+				}
+			}
+
+			if msg.Event == "NewChatMessage" {
+				if chat.Groups.CheckUserSubscribe(msg.GroupID, client) {
+					SendMessage(msg.Event, msg.Message, 0, msg.GroupID, nil, nil)
+				}
+			}
 		}
 	}
+}
+
+// todo уменьшить количество арументов и сделать как в field)
+func SendMessage(event, senderMessage string, userID, GroupID int, group *chat.Group, groups map[int]*chat.Group) {
+	chatPipe <- chatMessage{Event: event, Message: senderMessage, GroupID: GroupID, UserID: userID, Group: group, Groups: groups}
 }
 
 func CommonChatSender() {
 	for {
 		resp := <-chatPipe
-		mutex.Lock()
-		for ws := range usersChatWs {
-			err := ws.WriteJSON(resp)
-			if err != nil {
-				log.Printf("error: %v", err)
-				ws.Close()
-				delete(usersChatWs, ws)
+
+		users, mx := chat.Clients.GetAllConnects()
+		for ws, client := range users {
+			if chat.Groups.CheckUserSubscribe(resp.GroupID, client) && resp.UserID == 0 { // отправляем всей подписоте
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					chat.Clients.DelClientByWS(ws)
+				}
+			}
+
+			if resp.GroupID == 0 && resp.UserID == client.GetID() { // отправляем только инициатору
+				err := ws.WriteJSON(resp)
+				if err != nil {
+					chat.Clients.DelClientByWS(ws)
+				}
 			}
 		}
-		mutex.Unlock()
+		mx.Unlock()
 	}
 }

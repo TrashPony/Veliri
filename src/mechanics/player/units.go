@@ -114,7 +114,7 @@ func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool
 			if hostile.ID == id {
 
 				shortInfoUnit := shortHostileUnit(hostile)
-				
+
 				return shortInfoUnit, true
 			}
 		}
