@@ -25,30 +25,34 @@ function MoveNotification(jsonMessage) {
     }
 
     if (unitStat.move && game.Phase === "move") {
-        let queueBlock = document.getElementById("queue");
-
-        let notificationBlock = document.createElement("div");
-        notificationBlock.className = "notificationBlock";
-
-        let head = document.createElement("h3");
-        head.innerHTML = "Движение";
-        notificationBlock.appendChild(head);
-
-        let text = document.createElement("p");
-        text.innerHTML = "Твоя очередь двигать юнита";
-        notificationBlock.appendChild(text);
-
-        if (queueBlock) {
-            queueBlock.appendChild(notificationBlock);
-        }
-
-        let timeNotification = 500;
-        setTimeout(function () {
-            notificationBlock.style.animation = "notification "+ timeNotification +"ms 1";
-        }, 4000);
-
-        setTimeout(function () {
-            notificationBlock.style.display = "none";
-        }, 4000 + timeNotification)
+        notification("Движение", "Твоя очередь двигать юнита")
     }
+}
+
+function notification(headText, textText) {
+    let queueBlock = document.getElementById("queue");
+
+    let notificationBlock = document.createElement("div");
+    notificationBlock.className = "notificationBlock";
+
+    let head = document.createElement("h3");
+    head.innerHTML = headText;
+    notificationBlock.appendChild(head);
+
+    let text = document.createElement("p");
+    text.innerHTML = textText;
+    notificationBlock.appendChild(text);
+
+    if (queueBlock) {
+        queueBlock.appendChild(notificationBlock);
+    }
+
+    let timeNotification = 500;
+    setTimeout(function () {
+        notificationBlock.style.animation = "notification "+ timeNotification +"ms 1";
+    }, 4000);
+
+    setTimeout(function () {
+        notificationBlock.style.display = "none";
+    }, 4000 + timeNotification)
 }

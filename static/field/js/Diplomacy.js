@@ -42,8 +42,8 @@ function fillDiplomacyTable(data) {
             if (cell && data.users_name[i] === game.user.name) {
                 cell.innerHTML = `
                     <div style="margin: 0 auto; width: 48px">
-                        <div class='DiplomacyButton' style='background-image: url(https://img.icons8.com/doodle/48/000000/handshake.png)'></div>
-                        <div class='DiplomacyButton' style='background-image: url(https://img.icons8.com/office/16/000000/coins.png)'></div>
+                        <div class='DiplomacyButton' onclick="SendRequestPact(\'${data.users_name[j]}\')" style='background-image: url(https://img.icons8.com/doodle/48/000000/handshake.png)'></div>
+                        <div class='DiplomacyButton' onclick="BuyOutPact(\'${data.users_name[j]}\')" style='background-image: url(https://img.icons8.com/office/16/000000/coins.png)'></div>
                     </div>`
             }
         }
@@ -85,4 +85,56 @@ function createDiplomacyTable(data) {
             row.appendChild(cell);
         }
     }
+}
+
+function BuyOutPact(user) {
+    console.log(user)
+}
+
+function SendRequestPact(userName) {
+    field.send(JSON.stringify({
+        event: "ArmisticePact",
+        to_user: userName,
+    }));
+}
+
+function CreateDiplomacyRequests(jsonData) {
+    let page = {
+        text: "Игрок " + jsonData.to_user + " предлагает перемирие!",
+        picture: "base.png",
+        asc: [],
+    };
+
+    let dialogBlock = CreatePageDialog("DiplomacyRequestsBlock", page, null, false, true);
+    dialogBlock.style.right = "calc(50% - 125px)";
+    dialogBlock.style.top = "calc(50% - 300px)";
+    dialogBlock.style.bottom = "unset";
+    dialogBlock.style.left = "unset";
+
+    let ask = document.createElement("div");
+    ask.className = "asks";
+    ask.innerHTML = "<div class='wrapperAsk'>Принять</div>";
+    ask.onclick = function () {
+        field.send(JSON.stringify({
+            event: "AcceptArmisticePact",
+            accept: true,
+            to_user: jsonData.to_user,
+        }));
+        dialogBlock.remove();
+    };
+
+    let ask2 = document.createElement("div");
+    ask2.className = "asks";
+    ask2.innerHTML = "<div class='wrapperAsk'>Отказать</div>";
+    ask2.onclick = function () {
+        field.send(JSON.stringify({
+            event: "AcceptArmisticePact",
+            accept: false,
+            to_user: jsonData.to_user,
+        }));
+        dialogBlock.remove();
+    };
+
+    dialogBlock.appendChild(ask);
+    dialogBlock.appendChild(ask2);
 }

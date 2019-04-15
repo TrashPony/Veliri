@@ -109,12 +109,16 @@ function ReadResponse(jsonMessage) {
         location.href = "../../../global";
     }
 
+    if (event === 'DiplomacyRequests') {
+        CreateDiplomacyRequests(JSON.parse(jsonMessage))
+    }
+
     if (event === 'timeOutDiplomacyRequests') {
-        // todo игрок не отреагировал на запрос о мире
+        notification("Дипломатия", "Игрок " + JSON.parse(jsonMessage).to_user + " не отреагировал на запрос!")
     }
 
     if (event === 'DiplomacyRequestsReject') {
-        // todo на запрос игрока о перемирии ответили отказом
+        notification("Дипломатия", "Игрок " + JSON.parse(jsonMessage).to_user + " отказался от союза!")
     }
 
     if (event === 'CreatePact') {

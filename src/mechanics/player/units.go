@@ -123,6 +123,10 @@ func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool
 }
 
 func shortHostileUnit(gameUnit *unit.Unit) *unit.Unit {
+	if gameUnit == nil {
+		return nil
+	}
+
 	var shortInfoUnit unit.Unit
 	deepcopy.Copy(&shortInfoUnit, &gameUnit)
 
