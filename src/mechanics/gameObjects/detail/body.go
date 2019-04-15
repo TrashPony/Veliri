@@ -16,15 +16,18 @@ type Body struct {
 	MaxHP           int    `json:"max_hp"`
 	Armor           int    `json:"armor"`
 	EvasionCritical int    `json:"evasion_critical"`
-	VulToKinetics   int    `json:"vul_to_kinetics"`
-	VulToThermo     int    `json:"vul_to_thermo"`
-	VulToExplosion  int    `json:"vul_to_explosion"`
-	RangeView       int    `json:"range_view"`
-	Accuracy        int    `json:"accuracy"`
-	MaxPower        int    `json:"max_power"`
-	RecoveryPower   int    `json:"recovery_power"`
-	RecoveryHP      int    `json:"recovery_hp"`
-	WallHack        bool   `json:"wall_hack"`
+
+	VulToKinetics  int `json:"vul_to_kinetics"`
+	VulToThermo    int `json:"vul_to_thermo"`
+	VulToExplosion int `json:"vul_to_explosion"`
+	VulToEM        int `json:"vul_to_em"`
+
+	RangeView     int  `json:"range_view"`
+	Accuracy      int  `json:"accuracy"`
+	MaxPower      int  `json:"max_power"`
+	RecoveryPower int  `json:"recovery_power"`
+	RecoveryHP    int  `json:"recovery_hp"`
+	WallHack      bool `json:"wall_hack"`
 
 	CapacitySize       float32 `json:"capacity_size"`        /* вместимость корпуса к кубо-метрах */
 	StandardSize       int     `json:"standard_size"`        /* small - 1, medium - 2, big - 3, размер корпуса (если корпус мс то неучитывается)*/

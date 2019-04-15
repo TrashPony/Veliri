@@ -2,6 +2,7 @@ package player
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/getlantern/deepcopy"
 	"strconv"
 )
 
@@ -78,27 +79,94 @@ func (client *Player) DelUnit(gameUnit *unit.Unit, delSquad bool) {
 }
 
 func (client *Player) GetHostileUnits() (units map[string]map[string]*unit.Unit) {
+
+	hostilesUnits := make(map[string]map[string]*unit.Unit)
+
+	// удаляем всю информацию которую не должен видит другой юзер в игре
+	for q, xLine := range client.hostileUnits {
+		for r, hostile := range xLine {
+
+			shortInfoUnit := shortHostileUnit(hostile)
+
+			if hostilesUnits[q] != nil {
+				hostilesUnits[q][r] = shortInfoUnit
+			} else {
+				hostilesUnits[q] = make(map[string]*unit.Unit)
+				hostilesUnits[q][r] = shortInfoUnit
+			}
+		}
+	}
+
 	return client.hostileUnits
 }
 
-func (client *Player) SetHostileUnits(units map[string]map[string]*unit.Unit) {
-	client.hostileUnits = units
-}
+func (client *Player) GetHostileUnit(q, r int) (*unit.Unit, bool) {
+	gameUnit, find := client.hostileUnits[strconv.Itoa(q)][strconv.Itoa(r)]
 
-func (client *Player) GetHostileUnit(q, r int) (gameUnit *unit.Unit, find bool) {
-	gameUnit, find = client.hostileUnits[strconv.Itoa(q)][strconv.Itoa(r)]
-	return
+	shortInfoUnit := shortHostileUnit(gameUnit)
+
+	return shortInfoUnit, find
 }
 
 func (client *Player) GetHostileUnitByID(id int) (gameUnit *unit.Unit, find bool) {
 	for _, xLine := range client.GetHostileUnits() {
 		for _, hostile := range xLine {
 			if hostile.ID == id {
-				return hostile, true
+
+				shortInfoUnit := shortHostileUnit(hostile)
+				
+				return shortInfoUnit, true
 			}
 		}
 	}
 	return
+}
+
+func shortHostileUnit(gameUnit *unit.Unit) *unit.Unit {
+	var shortInfoUnit unit.Unit
+	deepcopy.Copy(&shortInfoUnit, &gameUnit)
+
+	shortInfoUnit.Target = nil
+	shortInfoUnit.Defend = false
+	shortInfoUnit.Power = 0
+
+	shortInfoUnit.Speed = shortInfoUnit.Body.Speed
+	shortInfoUnit.MaxHP = shortInfoUnit.Body.MaxHP
+	shortInfoUnit.Armor = shortInfoUnit.Body.Armor
+	shortInfoUnit.EvasionCritical = shortInfoUnit.Body.EvasionCritical
+	shortInfoUnit.VulToKinetics = shortInfoUnit.Body.VulToKinetics
+	shortInfoUnit.VulToThermo = shortInfoUnit.Body.VulToThermo
+	shortInfoUnit.VulToEM = shortInfoUnit.Body.VulToEM
+	shortInfoUnit.VulToExplosion = shortInfoUnit.Body.VulToExplosion
+	shortInfoUnit.RangeView = shortInfoUnit.Body.RangeView
+	shortInfoUnit.Accuracy = shortInfoUnit.Body.Accuracy
+	shortInfoUnit.MaxPower = shortInfoUnit.Body.MaxPower
+	shortInfoUnit.RecoveryPower = shortInfoUnit.Body.RecoveryPower
+	shortInfoUnit.RecoveryHP = shortInfoUnit.Body.RecoveryHP
+	shortInfoUnit.WallHack = shortInfoUnit.Body.WallHack
+
+	shortInfoUnit.Units = nil
+
+	shortInfoUnit.Reload = nil
+
+	shortInfoUnit.Body.EquippingI = nil
+	shortInfoUnit.Body.EquippingII = nil
+	shortInfoUnit.Body.EquippingIII = nil
+	shortInfoUnit.Body.EquippingIV = nil
+	shortInfoUnit.Body.EquippingV = nil
+	shortInfoUnit.Body.ThoriumSlots = nil
+
+	if weaponSlot := shortInfoUnit.GetWeaponSlot(); weaponSlot != nil && weaponSlot.Weapon != nil {
+		weaponSlot.HP = 0
+		weaponSlot.AmmoQuantity = 0
+		weaponSlot.Ammo = nil
+	}
+
+	return &shortInfoUnit
+}
+
+func (client *Player) SetHostileUnits(units map[string]map[string]*unit.Unit) {
+	client.hostileUnits = units
 }
 
 func (client *Player) DelHostileUnit(id int) {

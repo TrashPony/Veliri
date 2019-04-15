@@ -25,15 +25,6 @@ type Move struct {
 	GameZone          map[string]map[string]*coordinate.Coordinate `json:"game_zone"`
 }
 
-/*
-TODO улучшить метод движения за счет общения бекенда и фронтенда
-TODO юниты при передвежение будет говорить бекенду свои координаты
-TODO и бекенд будет решать за счет этого кому из игроков говорить где и как двигается юнит
-TODO тогда беда с туманом войны и баг с проебом координаты решается на все 100%
-
-TODO расчет пути реализован в глобал гейм мовеТо, но без тумана войны
-*/
-
 func MoveUnit(msg Message, client *player.Player) {
 	var event string
 
