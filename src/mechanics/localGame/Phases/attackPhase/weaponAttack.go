@@ -53,7 +53,12 @@ func MapAttack(attacking *unit.Unit, target *coordinate.Coordinate, game *localG
 
 			targetUnit.HP -= damage
 
-			broken := breakingEquip(targetUnit, damage)
+			// наносим урон по эквипу, если какойто экип сломался говорим об этом
+			broken := breakingEquip(
+				targetUnit,
+				weapon.Weapon.EquipDamage+weapon.Ammo.EquipDamage,
+				weapon.Weapon.EquipCriticalDamage+weapon.Ammo.EquipCriticalDamage,
+			)
 
 			targetsUnit = append(targetsUnit, TargetUnit{Unit: *targetUnit, Damage: damage, BreakingEquip: broken})
 		}
@@ -96,39 +101,69 @@ func calculateDamage(targetUnit *unit.Unit, maxDamage, minDamage int) int {
 	return damage
 }
 
-func breakingEquip(targetUnit *unit.Unit, damage int) bool { // если хотя бы 1 эквип сломался надо оповестить игроков об этом )
+func breakingEquip(targetUnit *unit.Unit, damage int, chanceCrit int) bool { // если хотя бы 1 эквип сломался надо оповестить игроков об этом )
+
+	weaponDamage := damage
+	countDamage := 0
+
+	if chanceCrit < rand.Intn(100) {
+		// есть некий шанс нанести урон по снаряжение х2
+		weaponDamage = damage * 2
+	}
+
+	// 25 < rand.Intn(100) сломать эквип 1 к 4, наверное...
 
 	var breakingWeapon bool
 
-	// TODO дамаг в 20%, в итоге должен зависеть от скила игрока и типа оружия
-	if targetUnit.GetWeaponSlot() != nil && targetUnit.GetWeaponSlot().HP-damage/5 > 0 {
-		targetUnit.GetWeaponSlot().HP -= damage / 5
+	if targetUnit.GetWeaponSlot() != nil && targetUnit.GetWeaponSlot().HP-damage > 0 && 25 < rand.Intn(100) {
+		targetUnit.GetWeaponSlot().HP -= weaponDamage
+		countDamage++
 		breakingWeapon = false
 	} else {
-		if targetUnit.GetWeaponSlot() != nil {
+		if targetUnit.GetWeaponSlot() != nil && 25 < rand.Intn(100) {
 			targetUnit.GetWeaponSlot().HP = 0
+			countDamage++
 			breakingWeapon = true
 		}
 	}
 
-	return breaking(targetUnit.Body.EquippingI, damage) || breaking(targetUnit.Body.EquippingII, damage) ||
-		breaking(targetUnit.Body.EquippingIII, damage) || breaking(targetUnit.Body.EquippingIV, damage) ||
-		breaking(targetUnit.Body.EquippingV, damage) || breakingWeapon
+	return breaking(targetUnit.Body.EquippingI, damage, chanceCrit, &countDamage) ||
+		breaking(targetUnit.Body.EquippingII, damage, chanceCrit, &countDamage) ||
+		breaking(targetUnit.Body.EquippingIII, damage, chanceCrit, &countDamage) ||
+		breaking(targetUnit.Body.EquippingIV, damage, chanceCrit, &countDamage) ||
+		breaking(targetUnit.Body.EquippingV, damage, chanceCrit, &countDamage) || breakingWeapon
 }
 
-func breaking(equip map[int]*detail.BodyEquipSlot, damage int) bool {
+func breaking(equip map[int]*detail.BodyEquipSlot, damage, chanceCrit int, countDamage *int) bool {
+
+	if *countDamage > 2 {
+		return false
+	}
+
+	equipDamage := damage
+
+	if chanceCrit < rand.Intn(100) {
+		// есть некий шанс нанести урон по снаряжение х2
+		equipDamage = damage * 2
+	}
+
 	for _, equipSlot := range equip {
+
 		if equipSlot.Equip != nil {
 
-			// TODO дамаг в 20%, в итоге должен зависеть от скила игрока и типа оружия
-			if equipSlot.HP-damage/5 > 0 {
-				equipSlot.HP -= damage / 5
+			if equipSlot.HP-damage > 0 && 25 < rand.Intn(100) {
+				equipSlot.HP -= equipDamage
+				*countDamage++
 				return false
 			} else {
-				equipSlot.HP = 0
-				return true
+				if 25 < rand.Intn(100) {
+					equipSlot.HP = 0
+					*countDamage++
+					return true
+				}
 			}
 		}
+
 	}
 
 	return false

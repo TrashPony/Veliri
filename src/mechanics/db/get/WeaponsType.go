@@ -21,7 +21,9 @@ func WeaponsType() map[int]detail.Weapon {
 		" type," +
 		" standard_size," +
 		" size, " +
-		" initiative " +
+		" initiative," +
+		" equip_damage," +
+		" equip_critical_damage " +
 		"" +
 		"FROM weapon_type")
 	if err != nil {
@@ -36,7 +38,7 @@ func WeaponsType() map[int]detail.Weapon {
 
 		err := rows.Scan(&weapon.ID, &weapon.Name, &weapon.MinAttackRange, &weapon.Range, &weapon.Accuracy,
 			&weapon.AmmoCapacity, &weapon.Artillery, &weapon.Power, &weapon.MaxHP, &weapon.Type, &weapon.StandardSize,
-			&weapon.Size, &weapon.Initiative)
+			&weapon.Size, &weapon.Initiative, &weapon.EquipDamage, &weapon.EquipCriticalDamage)
 		if err != nil {
 			log.Fatal("get all type scan weapon: " + err.Error())
 		}
