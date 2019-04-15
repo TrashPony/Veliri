@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/attackPhase"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
@@ -54,6 +55,7 @@ func SetTargetUnitEquip(msg Message, client *player.Player) {
 							SendMessage(ErrorMessage{Event: "Error", Error: err.Error()}, client.GetID(), activeGame.Id)
 						} else {
 							SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
+							SendMessage(Message{Event: "QueueAttack", QueueAttack: attackPhase.CreateQueueAttack(client.GetUnitsINTKEY())}, client.GetID(), activeGame.Id)
 						}
 					}
 				}

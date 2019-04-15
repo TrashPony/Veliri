@@ -16,7 +16,7 @@ import (
 func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 
 	// формирует очередь боя
-	sortItems := createQueueAttack(game.GetUnits())
+	sortItems := CreateQueueAttack(game.GetUnits())
 
 	// отыгрываем бой
 	resultBattle = attack(sortItems, game)

@@ -187,11 +187,39 @@ func (game *Game) CheckEndGame() bool {
 func (game *Game) FindUserHostile(user *player.Player) bool {
 	for _, otherUser := range game.GetPlayers() {
 		// если игрок не состояит в союзер с этим игроком и этот игрок не ливнул то значит они враги
-		if otherUser.GetID() != user.GetID() && !game.CheckPacts(user.GetID(), otherUser.GetID()) && !otherUser.Leave{
+		if otherUser.GetID() != user.GetID() && !game.CheckPacts(user.GetID(), otherUser.GetID()) && !otherUser.Leave {
 			return true
 		}
 	}
 	return false
+}
+
+func (game *Game) GetUserByName(login string) *player.Player  {
+	for _, user := range game.GetPlayers() {
+		if user.GetLogin() == login {
+			return user
+		}
+	}
+
+	return nil
+}
+
+func (game *Game) GetMoveUnit() *unit.Unit {
+	for _, q := range game.GetUnits() {
+		for _, gameUnit := range q {
+			if gameUnit.Move {
+				return gameUnit
+			}
+		}
+	}
+
+	for _, gameUnit := range game.GetUnitsStorage() {
+		if gameUnit.Move {
+			return gameUnit
+		}
+	}
+
+	return nil
 }
 
 func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {

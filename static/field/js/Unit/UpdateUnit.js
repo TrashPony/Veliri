@@ -11,6 +11,10 @@ function UpdateUnit(unitStat) {
         unit = GetStorageUnit(unitStat.id)
     }
 
+    if (!unit.defend && unitStat.defend) {
+        // TODO анимация защиты
+    }
+
     unit.rotate = unitStat.rotate;
     unit.target = unitStat.target;
     unit.effects = unitStat.effects;

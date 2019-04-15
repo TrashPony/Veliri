@@ -3,6 +3,7 @@ package field
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/attackPhase"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
@@ -21,6 +22,7 @@ func SetTarget(msg Message, client *player.Player) {
 		if find {
 			targetPhase.SetTarget(gameUnit, activeGame, msg.ToQ, msg.ToR, client)
 			SendMessage(Unit{Event: "UpdateUnit", Unit: gameUnit}, client.GetID(), activeGame.Id)
+			SendMessage(Message{Event: "QueueAttack", QueueAttack: attackPhase.CreateQueueAttack(client.GetUnitsINTKEY())}, client.GetID(), activeGame.Id)
 		} else {
 			SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
 		}

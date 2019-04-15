@@ -10,6 +10,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/getlantern/deepcopy"
 	"strconv"
+	"time"
 )
 
 type Move struct {
@@ -89,20 +90,37 @@ func MoveUnit(msg Message, client *player.Player) {
 	}
 }
 
-func UserQueueSender(client *player.Player, game *localGame.Game) {
-	if game.Phase == "move" {
-		for _, q := range client.GetUnits() {
-			for _, gameUnit := range q {
-				if gameUnit.Move {
-					SendMessage(Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}, client.GetID(), game.Id)
-				}
-			}
-		}
+// воркер который следит за тем что бы ходы менялись каждый n секунд
+func timerMoveUnits(game *localGame.Game) {
+	for {
 
-		for _, gameUnit := range client.GetUnitsStorage() {
-			if gameUnit.Move {
-				SendMessage(Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: game.Id, Unit: gameUnit}, client.GetID(), game.Id)
+		moveUnit := game.GetMoveUnit()
+		forceMove := true
+
+		if game.Phase == "move" && moveUnit != nil {
+
+			for i := 60; i > 0; i-- {
+
+				if !moveUnit.Move {
+					// если юнит больше не мове значит им походили
+					forceMove = false
+					break
+				}
+
+				time.Sleep(1 * time.Second)
+				SendAllMessage(Message{Event: "timeToChangePhase", Seconds: i}, game)
 			}
+
+			if forceMove {
+				movePhase.SkipMove(moveUnit, game)
+				client := game.GetUserByName(moveUnit.Owner)
+				SendMessage(Move{Event: "UpdateUnit", Unit: moveUnit, UserName: client.GetLogin()}, client.GetID(), game.Id)
+
+				QueueSender(game)
+			}
+
+		} else {
+			time.Sleep(1 * time.Second)
 		}
 	}
 }
@@ -113,6 +131,7 @@ func QueueSender(game *localGame.Game) {
 
 	for _, user := range game.GetPlayers() {
 		for _, q := range user.GetUnits() {
+
 			for _, gameUnit := range q {
 				SendMessage(
 					Move{Event: "QueueMove",
@@ -124,6 +143,7 @@ func QueueSender(game *localGame.Game) {
 					game.Id,
 				)
 			}
+
 			if !user.Ready {
 				allReady = false
 			}

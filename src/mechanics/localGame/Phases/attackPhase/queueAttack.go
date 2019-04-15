@@ -14,7 +14,7 @@ type QueueAttack struct {
 	sort           bool
 }
 
-func createQueueAttack(Units map[int]map[int]*unit.Unit) (sortItems []*QueueAttack) {
+func CreateQueueAttack(Units map[int]map[int]*unit.Unit) (sortItems []*QueueAttack) {
 
 	preloadQueue := make([]*QueueAttack, 0)
 

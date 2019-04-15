@@ -20,11 +20,12 @@ func loadGame(msg Message, ws *websocket.Conn) {
 		if !ok {
 			loadGame = initGame.InitGame(client.GetID())
 			games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
+			go timerMoveUnits(loadGame) // активируем таймер для юнитов
 		}
 
 		// берется заного игрок что бы проверить нашлась игра или нет
 		player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
-		if player != nil && !player.Leave{
+		if player != nil && !player.Leave {
 			var sendLoadGame = LoadGame{
 				Event:             "LoadGame",
 				UserName:          player.GetLogin(),
@@ -41,8 +42,8 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			}
 			SendMessage(sendLoadGame, player.GetID(), loadGame.Id)
 
-			if loadGame.Phase == "move" {
-				UserQueueSender(client, loadGame)
+			if moveUnit := player.GetMoveUnit(); moveUnit != nil && loadGame.Phase == "move" {
+				SendMessage(Move{Event: "QueueMove", UserName: client.GetLogin(), GameID: loadGame.Id, Unit: moveUnit}, client.GetID(), loadGame.Id)
 			}
 
 		} else {

@@ -33,6 +33,23 @@ func (client *Player) AddHostileUnit(hostile *unit.Unit) {
 	}
 }
 
+//TODO метод костыль, потому что я долбаеб
+func (client *Player) GetUnitsINTKEY() (units map[int]map[int]*unit.Unit) {
+
+	units = make(map[int]map[int]*unit.Unit)
+	for _, qLine := range client.GetUnits() {
+		for _, clientUnit := range qLine {
+			if units[clientUnit.Q] != nil {
+				units[clientUnit.Q][clientUnit.R] = clientUnit
+			} else {
+				units[clientUnit.Q] = make(map[int]*unit.Unit)
+				units[clientUnit.Q][clientUnit.R] = clientUnit
+			}
+		}
+	}
+	return units
+}
+
 func (client *Player) GetUnits() (units map[string]map[string]*unit.Unit) {
 	return client.units
 }
@@ -160,4 +177,22 @@ func remove(units []*unit.Unit, item *unit.Unit) []*unit.Unit {
 		}
 	}
 	return units
+}
+
+func (client *Player) GetMoveUnit() *unit.Unit {
+	for _, q := range client.GetUnits() {
+		for _, gameUnit := range q {
+			if gameUnit.Move {
+				return gameUnit
+			}
+		}
+	}
+
+	for _, gameUnit := range client.GetUnitsStorage() {
+		if gameUnit.Move {
+			return gameUnit
+		}
+	}
+
+	return nil
 }

@@ -109,6 +109,30 @@ function ReadResponse(jsonMessage) {
         location.href = "../../../global";
     }
 
+    if (event === 'timeOutDiplomacyRequests') {
+        // todo игрок не отреагировал на запрос о мире
+    }
+
+    if (event === 'DiplomacyRequestsReject') {
+        // todo на запрос игрока о перемирии ответили отказом
+    }
+
+    if (event === 'CreatePact') {
+        // TODO люди заключили пакт
+    }
+
+    if (event === "LeaveUnit") {
+        // TODO ливание юнитов с карты
+    }
+
+    if (event === "QueueAttack") {
+        // TODO отрисовка очереди атаки
+    }
+
+    if (event === "EndGame") {
+        // TODO оповезение игроков о том что бой кончается
+    }
+
     if (event === "Error") {
         console.log(jsonMessage);
     }
