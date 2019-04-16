@@ -40,4 +40,6 @@ type Message struct {
 	DialogAction string       `json:"dialog_action"`
 	ToPage       int          `json:"to_page"`
 	AskID        int          `json:"ask_id"`
+
+	Fraction string `json:"fraction"`
 }

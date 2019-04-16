@@ -36,20 +36,24 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	} else {
 		newPlayer.LastBaseID = newPlayer.InBaseID
 
-		// убираем у него скорость)
-		if newPlayer.GetSquad() != nil {
-			newPlayer.GetSquad().GlobalX = 0
-			newPlayer.GetSquad().GlobalY = 0
-		}
-
-		if newPlayer.Training == 0 {
-			// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
-			trainingDialog := gameTypes.Dialogs.GetByID(1)
-			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
-			newPlayer.SetOpenDialog(&trainingDialog)
+		if newPlayer.Fraction == "" {
+			lobbyPipe <- Message{Event: "choiceFraction", UserID: newPlayer.GetID()}
 		} else {
-			if newPlayer.Training < 999 {
-				lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
+			// убираем у него скорость)
+			if newPlayer.GetSquad() != nil {
+				newPlayer.GetSquad().GlobalX = 0
+				newPlayer.GetSquad().GlobalY = 0
+			}
+
+			if newPlayer.Training == 0 {
+				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
+				trainingDialog := gameTypes.Dialogs.GetByID(1)
+				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
+				newPlayer.SetOpenDialog(&trainingDialog)
+			} else {
+				if newPlayer.Training < 999 {
+					lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
+				}
 			}
 		}
 	}
@@ -71,62 +75,73 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
 
-		if msg.Event == "Logout" {
-			ws.Close()
+		user := usersLobbyWs[ws]
+
+		if msg.Event == "choiceFraction" {
+			if msg.Fraction == "Replicas" || msg.Fraction == "Explores" || msg.Fraction == "Reverses" {
+				user.Fraction = msg.Fraction
+				// TODO у каждый фракции своя база для респауна
+				//			выбераем базу, обновляем юзера, выставляем LastBaseID, запускаем туториал
+				dbPlayer.UpdateUser(user)
+			}
 		}
 
-		if msg.Event == "OutBase" {
-			outBase(ws, msg)
-		}
+		if user != nil && user.Fraction == "Replicas" || user.Fraction == "Explores" || user.Fraction == "Reverses" {
 
-		if msg.Event == "PlaceItemsToProcessor" || msg.Event == "PlaceItemToProcessor" {
-			placeItemToProcessor(ws, msg, &recycleItems)
-		}
+			if msg.Event == "Logout" {
+				ws.Close()
+			}
 
-		if msg.Event == "RemoveItemFromProcessor" || msg.Event == "RemoveItemsFromProcessor" {
-			removeItemToProcessor(ws, msg, &recycleItems)
-		}
+			if msg.Event == "OutBase" {
+				outBase(user, msg)
+			}
 
-		if msg.Event == "ClearProcessor" {
-			recycleItems = nil
-		}
+			if msg.Event == "PlaceItemsToProcessor" || msg.Event == "PlaceItemToProcessor" {
+				placeItemToProcessor(user, msg, &recycleItems)
+			}
 
-		if msg.Event == "recycle" {
-			recycle(ws, msg, &recycleItems)
-		}
+			if msg.Event == "RemoveItemFromProcessor" || msg.Event == "RemoveItemsFromProcessor" {
+				removeItemToProcessor(user, msg, &recycleItems)
+			}
 
-		if msg.Event == "OpenWorkbench" {
-			openWorkbench(ws, msg)
-		}
+			if msg.Event == "ClearProcessor" {
+				recycleItems = nil
+			}
 
-		if msg.Event == "SelectBP" {
-			selectBP(ws, msg)
-		}
+			if msg.Event == "recycle" {
+				recycle(user, msg, &recycleItems)
+			}
 
-		if msg.Event == "Craft" {
-			craft(ws, msg)
-		}
+			if msg.Event == "OpenWorkbench" {
+				openWorkbench(user, msg)
+			}
 
-		if msg.Event == "SelectWork" {
-			selectWork(ws, msg)
-		}
+			if msg.Event == "SelectBP" {
+				selectBP(user, msg)
+			}
 
-		if msg.Event == "CancelCraft" {
-			cancelCraft(ws, msg)
-		}
+			if msg.Event == "Craft" {
+				craft(user, msg)
+			}
 
-		if msg.Event == "OpenDialog" {
+			if msg.Event == "SelectWork" {
+				selectWork(user, msg)
+			}
 
-		}
+			if msg.Event == "CancelCraft" {
+				cancelCraft(user, msg)
+			}
 
-		if msg.Event == "Ask" {
-			user := usersLobbyWs[ws]
-			if user != nil {
+			if msg.Event == "OpenDialog" {
+
+			}
+
+			if msg.Event == "Ask" {
 
 				page, err, action := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
 
@@ -136,11 +151,8 @@ func Reader(ws *websocket.Conn) {
 					lobbyPipe <- Message{Event: "Error", UserID: user.GetID(), Error: err.Error()}
 				}
 			}
-		}
 
-		if msg.Event == "training" {
-			user := usersLobbyWs[ws]
-			if user != nil {
+			if msg.Event == "training" {
 				user.Training = msg.Count
 				dbPlayer.UpdateUser(user)
 			}

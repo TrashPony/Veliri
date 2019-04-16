@@ -8,9 +8,9 @@ import (
 
 func UpdateUser(user *player.Player) {
 	_, err := dbConnect.GetDBConnect().Exec("UPDATE users "+
-		"SET mail = $2, credits = $3, experience_point = $4, training = $5, last_base_id = $6 "+
+		"SET mail = $2, credits = $3, experience_point = $4, training = $5, last_base_id = $6, fraction = $7 "+
 		"WHERE id = $1",
-		user.GetID(), user.GetEmail(), user.GetCredits(), user.GetExperiencePoint(), user.Training, user.LastBaseID)
+		user.GetID(), user.GetEmail(), user.GetCredits(), user.GetExperiencePoint(), user.Training, user.LastBaseID, user.Fraction)
 	if err != nil {
 		log.Fatal("update user " + err.Error())
 	}

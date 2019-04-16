@@ -1,4 +1,5 @@
-CREATE TABLE users (
+CREATE TABLE users
+(
   id               SERIAL PRIMARY KEY,
   name             VARCHAR(64),
   password         VARCHAR(255),
@@ -10,5 +11,7 @@ CREATE TABLE users (
   last_base_id     INT default 0 not null,
 
   /* этот инт показывает раздел обучения на котором остановился игрок, существует только ради обучения) */
-  training         INT
+  training         INT,
+  --Replicas Explores Reverses, нация за кторую играет игрок
+  fraction         varchar(64)
 );

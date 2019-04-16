@@ -2,22 +2,19 @@ package lobby
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
-func outBase(ws *websocket.Conn, msg Message) {
-	user := usersLobbyWs[ws]
+func outBase(user *player.Player, msg Message) {
 
-	if user != nil {
-		err := lobby.OutBase(usersLobbyWs[ws])
+	err := lobby.OutBase(user)
 
-		// todo запускать метод в отдельной горутине
-		// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
+	// todo запускать метод в отдельной горутине
+	// todo флаг выхода с базы, т.к. пока освобождается респаун игрок может передумать
 
-		if err != nil {
-			lobbyPipe <- Message{Event: "Error", Error: err.Error(), UserID: user.GetID()}
-		} else {
-			lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID()}
-		}
+	if err != nil {
+		lobbyPipe <- Message{Event: "Error", Error: err.Error(), UserID: user.GetID()}
+	} else {
+		lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID()}
 	}
 }

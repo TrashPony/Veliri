@@ -50,6 +50,7 @@ type Player struct {
 	Leave        bool                     `json:"leave"`
 	ToLeave      bool                     `json:"to_leave"`
 	LocalPact    int                      `json:"local_pact"`
+	Fraction     string                   `json:"fraction"`
 }
 
 type ShortUserInfo struct {
