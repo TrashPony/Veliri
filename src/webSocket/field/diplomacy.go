@@ -130,10 +130,6 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 
 				// TODO под мс client выкидываем протектор ящик и отдаем пароль user тот должен запомнится на фронте
 
-				if game.CheckEndGame() {
-					SendAllMessage(Message{Event: "EndGame"}, game)
-				}
-
 				SendAllMessage(Message{Event: "CreatePact", UsersName: []string{client.GetLogin(), toUser.GetLogin()}}, game)
 				game.Pacts = append(game.Pacts, &localGame.Pact{
 					UserID1:   toUser.GetID(),
@@ -143,6 +139,10 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 				})
 
 				update.Game(game)
+
+				if game.CheckEndGame() {
+					EndGame(game)
+				}
 
 			} else {
 				rejectFunc()

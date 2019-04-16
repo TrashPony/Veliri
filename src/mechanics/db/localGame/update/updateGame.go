@@ -7,7 +7,7 @@ import (
 )
 
 func Game(game *localGame.Game) {
-	_, err := dbConnect.GetDBConnect().Exec("Update action_games SET phase=$1, step=$2 WHERE id=$3", game.Phase, game.Step, game.Id)
+	_, err := dbConnect.GetDBConnect().Exec("Update action_games SET phase=$1, step=$2, end_game=$4 WHERE id=$3", game.Phase, game.Step, game.Id, game.End)
 
 	if err != nil {
 		log.Fatal("update game", err)

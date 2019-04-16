@@ -21,6 +21,7 @@ type Game struct {
 	unitStorage []*unit.Unit
 	units       map[int]map[int]*unit.Unit
 	Pacts       []*Pact
+	End         bool
 }
 
 type Pact struct {

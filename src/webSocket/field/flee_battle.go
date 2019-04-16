@@ -77,7 +77,7 @@ func fleeBattle(msg Message, client *player.Player) {
 		if find || LastLeave(activeGame, false) {
 
 			if activeGame.CheckEndGame() {
-				SendAllMessage(Message{Event: "EndGame"}, activeGame)
+				EndGame(activeGame)
 			}
 
 			leave(client, activeGame, false)

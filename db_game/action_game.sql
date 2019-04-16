@@ -1,10 +1,11 @@
 CREATE TABLE action_games (
-  id     SERIAL PRIMARY KEY,
-  name   VARCHAR(64),
-  id_map INT REFERENCES maps (id), /* карта боя */
-  step   INT,                      /* шаг боя */
-  phase  VARCHAR(64),              /* фаза боя */
-  winner VARCHAR(64)               /* победитель */
+  id       SERIAL PRIMARY KEY,
+  name     VARCHAR(64),
+  id_map   INT REFERENCES maps (id), /* карта боя */
+  step     INT,                      /* шаг боя */
+  phase    VARCHAR(64),              /* фаза боя */
+  winner   VARCHAR(64),             /* победитель */
+  end_game boolean
 );
 
 CREATE TABLE action_game_squads (              /* отряды которые участвую в игре */
