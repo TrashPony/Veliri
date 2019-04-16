@@ -10,7 +10,9 @@ CREATE TABLE bases (
   resp_r          int,
   transport_count int, /* количество эвакуатор у базы */
   defender_count  int, /* количество защитников */
-  gravity_radius  int  /* радиус стабильной гравитации вокруг баз */
+  gravity_radius  int,  /* радиус стабильной гравитации вокруг баз */
+    --Replicas Explores Reverses, нация за кторую играет игрок
+  fraction         varchar(64)
 );
 
 CREATE TABLE base_users ( /* игроки которые сейчас сидят на конкретной базу */

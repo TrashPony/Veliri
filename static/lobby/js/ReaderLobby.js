@@ -50,11 +50,18 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "dialog") {
-        console.log("dfdf")
         CreatePageDialog("dialogBlock", JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, true, true)
     }
 
     if (event === "training") {
         Training(JSON.parse(jsonMessage).count)
+    }
+
+    if (event === 'choiceFractionComplete') {
+        if (document.getElementById("mask")) document.getElementById("mask").remove();
+        if (document.getElementById("choiceBlock")) document.getElementById("choiceBlock").remove();
+    }
+    if (event === "choiceFraction") {
+        choiceFraction()
     }
 }
