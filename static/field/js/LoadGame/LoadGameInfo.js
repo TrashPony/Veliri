@@ -6,6 +6,7 @@ function GameInfo() {
     phaseGame.innerHTML = game.Phase;
 
     if (game.Phase !== "move") {
-        document.getElementById("queue").style.visibility = "hidden";
+        document.getElementById("moveUnit").style.visibility = "hidden";
+        document.getElementById("queueMove").style.visibility = "hidden";
     }
 }

@@ -9,7 +9,8 @@ function ChangePhase(jsonMessage) {
     if (game.Phase === "move") {
         LoadQueueUnits();
     } else {
-        document.getElementById("queue").style.visibility = "hidden";
+        document.getElementById("moveUnit").style.visibility = "hidden";
+        document.getElementById("queueMove").style.visibility = "hidden";
     }
 
     if (game.Phase === "targeting" && JSON.parse(jsonMessage).flee_battle) {

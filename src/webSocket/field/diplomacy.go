@@ -135,7 +135,13 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 				}
 
 				SendAllMessage(Message{Event: "CreatePact", UsersName: []string{client.GetLogin(), toUser.GetLogin()}}, game)
-				game.Pacts = append(game.Pacts, &localGame.Pact{UserID1: toUser.GetID(), UserID2: client.GetID()})
+				game.Pacts = append(game.Pacts, &localGame.Pact{
+					UserID1:   toUser.GetID(),
+					UserName1: toUser.GetLogin(),
+					UserID2:   client.GetID(),
+					UserName2: client.GetLogin(),
+				})
+
 				update.Game(game)
 
 			} else {

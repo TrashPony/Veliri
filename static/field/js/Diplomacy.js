@@ -5,6 +5,10 @@ function OpenDiplomacy() {
 }
 
 function CreateDiplomacyMenu(data) {
+    if (document.getElementById("diplomacyBlock")) {
+        document.getElementById("diplomacyBlock").remove();
+    }
+
     let diplomacyBlock = document.createElement("div");
     diplomacyBlock.id = "diplomacyBlock";
     document.body.appendChild(diplomacyBlock);
@@ -36,18 +40,42 @@ function CreateDiplomacyMenu(data) {
 function fillDiplomacyTable(data) {
     for (let i = 0; i < data.users_name.length; i++) {
         for (let j = 0; j < data.users_name.length; j++) {
-            // todo проверка на наличие пакта, если да ставить влажек
-            //  https://img.icons8.com/doodle/48/000000/filled-flag.png
-            let cell = document.getElementById(data.users_name[i] + data.users_name[j]);
-            if (cell && data.users_name[i] === game.user.name) {
-                cell.innerHTML = `
+
+            let cell = document.getElementById(data.users_name[i] + ':' + data.users_name[j]);
+
+            if (cell && cell.className === '' && (data.users_name[i] === game.user.name || data.users_name[j] === game.user.name)) {
+                let sendUser;
+
+                if (findPack(data, data.users_name[j], data.users_name[i])) {
+                    cell.innerHTML = `
                     <div style="margin: 0 auto; width: 48px">
-                        <div class='DiplomacyButton' onclick="SendRequestPact(\'${data.users_name[j]}\')" style='background-image: url(https://img.icons8.com/doodle/48/000000/handshake.png)'></div>
-                        <div class='DiplomacyButton' onclick="BuyOutPact(\'${data.users_name[j]}\')" style='background-image: url(https://img.icons8.com/office/16/000000/coins.png)'></div>
+                        <div class='DiplomacyButton' style='background-image: url(https://img.icons8.com/doodle/48/000000/filled-flag.png)'></div>
                     </div>`
+
+                } else {
+
+                    if (data.users_name[j] === game.user.name) sendUser = data.users_name[i];
+                    if (data.users_name[i] === game.user.name) sendUser = data.users_name[j];
+
+                    cell.innerHTML = `
+                    <div style="margin: 0 auto; width: 48px">
+                        <div class='DiplomacyButton' onclick="SendRequestPact(\'${sendUser}\')" style='background-image: url(https://img.icons8.com/doodle/48/000000/handshake.png)'></div>
+                        <div class='DiplomacyButton' onclick="BuyOutPact(\'${sendUser}\')" style='background-image: url(https://img.icons8.com/office/16/000000/coins.png)'></div>
+                    </div>`
+                }
             }
         }
     }
+}
+
+function findPack(data, user1, user2) {
+    for (let i = 0; i < data.diplomacy_user.length; i++) {
+        if ((user1 === data.diplomacy_user[i].user_name_1 && user2 === data.diplomacy_user[i].user_name_2) ||
+            (user1 === data.diplomacy_user[i].user_name_2 && user2 === data.diplomacy_user[i].user_name_1)) {
+            return true
+        }
+    }
+    return false
 }
 
 function createDiplomacyTable(data) {
@@ -79,7 +107,7 @@ function createDiplomacyTable(data) {
             if (data.users_name[i] === data.users_name[j] || j < i) {
                 cell.className = "noActive"
             } else {
-                cell.id = data.users_name[i] + data.users_name[j];
+                cell.id = data.users_name[i] + ':' + data.users_name[j];
             }
 
             row.appendChild(cell);

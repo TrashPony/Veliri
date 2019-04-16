@@ -122,7 +122,8 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === 'CreatePact') {
-        // TODO люди заключили пакт
+        notification("Дипломатия", "Игроки " + JSON.parse(jsonMessage).users_name[0] + " и " + JSON.parse(jsonMessage).users_name[1] + " создали союз!")
+        OpenDiplomacy();
     }
 
     if (event === "LeaveUnit") {
@@ -134,6 +135,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "EndGame") {
+        console.log(jsonMessage);
         // TODO оповезение игроков о том что бой кончается
     }
 

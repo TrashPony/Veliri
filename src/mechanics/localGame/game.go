@@ -24,8 +24,10 @@ type Game struct {
 }
 
 type Pact struct {
-	UserID1 int `json:"user_id_1"`
-	UserID2 int `json:"user_id_2"`
+	UserID1   int    `json:"user_id_1"`
+	UserName1 string `json:"user_name_1"`
+	UserID2   int    `json:"user_id_2"`
+	UserName2 string `json:"user_name_2"`
 }
 
 func (game *Game) CheckPacts(userID1, userID2 int) bool {
@@ -194,7 +196,7 @@ func (game *Game) FindUserHostile(user *player.Player) bool {
 	return false
 }
 
-func (game *Game) GetUserByName(login string) *player.Player  {
+func (game *Game) GetUserByName(login string) *player.Player {
 	for _, user := range game.GetPlayers() {
 		if user.GetLogin() == login {
 			return user

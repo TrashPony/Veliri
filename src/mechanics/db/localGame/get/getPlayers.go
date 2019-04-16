@@ -47,6 +47,16 @@ func Players(game *localGame.Game) []*player.Player {
 		client.SetReady(ready)
 		client.SetGameID(game.Id)
 
+		for _, pact := range game.Pacts {
+			// TODO очередной костыль
+			if pact.UserID1 == client.GetID() {
+				pact.UserName1 = client.GetLogin()
+			}
+			if pact.UserID2 == client.GetID() {
+				pact.UserName2 = client.GetLogin()
+			}
+		}
+
 		if !leave {
 			users = append(users, client)
 			memoryPlayer(client)

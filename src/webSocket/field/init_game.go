@@ -20,7 +20,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 		if !ok {
 			loadGame = initGame.InitGame(client.GetID())
 			games.Games.Add(loadGame.Id, loadGame) // добавляем новую игру в карту активных игор
-			go timerMoveUnits(loadGame) // активируем таймер для юнитов
+			go timerMoveUnits(loadGame)            // активируем таймер для юнитов
 		}
 
 		// берется заного игрок что бы проверить нашлась игра или нет
@@ -29,6 +29,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			var sendLoadGame = LoadGame{
 				Event:             "LoadGame",
 				UserName:          player.GetLogin(),
+				UserID:            player.GetID(),
 				Ready:             player.GetReady(),
 				Units:             player.GetUnits(),
 				HostileUnits:      player.GetHostileUnits(),
@@ -57,6 +58,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 type LoadGame struct {
 	Event             string                                       `json:"event"`
 	UserName          string                                       `json:"user_name"`
+	UserID            int                                          `json:"user_id"`
 	Ready             bool                                         `json:"ready"`
 	Equip             []*equip.Equip                               `json:"equip"`
 	Units             map[string]map[string]*unit.Unit             `json:"units"`

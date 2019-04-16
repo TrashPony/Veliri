@@ -13,6 +13,7 @@ function LoadGame(jsonMessage) {
         function () {
             game.user = {};
             game.user.name = JSON.parse(jsonMessage).user_name;
+            game.user.userID = JSON.parse(jsonMessage).user_id;
             game.user.ready = JSON.parse(jsonMessage).ready;
             game.user.equip = JSON.parse(jsonMessage).equip;
 

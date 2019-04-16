@@ -54,6 +54,8 @@ func getPacts(loadGame *localGame.Game) {
 	for rows.Next() {
 		var pact localGame.Pact
 		err := rows.Scan(&pact.UserID1, &pact.UserID2)
+
+		loadGame.Pacts = append(loadGame.Pacts, &pact)
 		if err != nil {
 			log.Fatal(err, "Error Get pacts in Game")
 		}
