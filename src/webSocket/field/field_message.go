@@ -40,6 +40,7 @@ type Message struct {
 	UsersName        []string                    `json:"users_name"`
 	QueueAttack      []*attackPhase.QueueAttack  `json:"queue_attack"`
 	Update           *watchZone.UpdaterWatchZone `json:"update"`
+	Inventory        inventory.Inventory         `json:"inventory"`
 }
 
 type ErrorMessage struct {

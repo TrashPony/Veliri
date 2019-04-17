@@ -194,6 +194,10 @@ func (client *Player) GetUnitsStorage() (gameUnit []*unit.Unit) {
 	return client.unitStorage
 }
 
+func (client *Player) RemoveUnitsStorage() {
+	client.unitStorage = nil
+}
+
 func (client *Player) GetUnitStorage(id int) (storageUnit *unit.Unit, find bool) {
 	for _, storageUnit := range client.GetUnitsStorage() {
 		if id == storageUnit.ID {

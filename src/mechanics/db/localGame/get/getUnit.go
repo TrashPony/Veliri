@@ -25,6 +25,9 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 			addUnitToMap(&units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
 			gamePlayer.GetSquad().MatherShip.CalculateParams()     // пересчитываем статы со всем эффектами
 
+			// удаяем юнитов если они там есть
+			gamePlayer.RemoveUnitsStorage()
+
 			for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
 				if playerUnit.Unit != nil {
 					if playerUnit.Unit.OnMap {

@@ -13,7 +13,7 @@ func EndGame(game *localGame.Game) {
 	}
 	game.StartEnd = true
 
-	for i := 3600; i > 0; i-- {
+	for i := 60; i > 0; i-- {
 
 		SendAllMessage(Message{Event: "EndGame", Seconds: i}, game)
 

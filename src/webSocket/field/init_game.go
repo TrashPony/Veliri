@@ -29,6 +29,7 @@ func loadGame(msg Message, ws *websocket.Conn) {
 
 		// берется заного игрок что бы проверить нашлась игра или нет
 		player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
+
 		if player != nil && !player.Leave {
 			var sendLoadGame = LoadGame{
 				Event:             "LoadGame",
@@ -52,9 +53,11 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			}
 
 		} else {
+			localGame.Clients.DelClientByWS(ws)
 			SendMessage(ErrorMessage{Event: "Error", Error: "error"}, client.GetID(), loadGame.Id)
 		}
 	} else {
+		localGame.Clients.DelClientByWS(ws)
 		SendMessage(ErrorMessage{Event: "Error", Error: "error"}, client.GetID(), 0)
 	}
 }

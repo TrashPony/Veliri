@@ -180,3 +180,17 @@ func acceptArmisticePact(msg Message, client *player.Player) {
 		}
 	}
 }
+
+func initBuyOut(msg Message, client *player.Player) {
+	game, findGame := games.Games.Get(client.GetGameID())
+	if findGame {
+		SendMessage(
+			Message{
+				Event:     "timeOutDiplomacyRequests",
+				Credits:   client.GetCredits(),
+				Inventory: client.GetSquad().Inventory,
+				ToUser:    msg.ToUser,
+			},
+			client.GetID(), game.Id)
+	}
+}

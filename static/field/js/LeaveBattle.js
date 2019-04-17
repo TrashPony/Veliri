@@ -4,7 +4,7 @@ function InitLeave() {
     }));
 }
 
-function LeaveBattle() {
+function LeaveBattle(soft) {
 
     let page = {
         text: "Уйти из боя?",
@@ -27,16 +27,20 @@ function LeaveBattle() {
         }));
         dialogBlock.remove();
     };
+    dialogBlock.appendChild(ask);
 
-    let ask2 = document.createElement("div");
-    ask2.className = "asks";
-    ask2.innerHTML = "<div class='wrapperAsk'>Уходим! но медленно... (ждем 15 сек)</div>";
-    ask2.onclick = function () {
-        field.send(JSON.stringify({
-            event: "softFlee",
-        }));
-        dialogBlock.remove();
-    };
+    if (soft) {
+        let ask2 = document.createElement("div");
+        ask2.className = "asks";
+        ask2.innerHTML = "<div class='wrapperAsk'>Уходим! но медленно... (ждем 15 сек)</div>";
+        ask2.onclick = function () {
+            field.send(JSON.stringify({
+                event: "softFlee",
+            }));
+            dialogBlock.remove();
+        };
+        dialogBlock.appendChild(ask2);
+    }
 
     let ask3 = document.createElement("div");
     ask3.className = "asks";
@@ -44,9 +48,6 @@ function LeaveBattle() {
     ask3.onclick = function () {
         dialogBlock.remove();
     };
-
-    dialogBlock.appendChild(ask);
-    dialogBlock.appendChild(ask2);
     dialogBlock.appendChild(ask3);
 }
 

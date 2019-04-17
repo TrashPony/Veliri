@@ -116,7 +116,14 @@ function createDiplomacyTable(data) {
 }
 
 function BuyOutPact(user) {
-    console.log(user)
+    field.send(JSON.stringify({
+        event: "ArmisticePact",
+        to_user: user,
+    }));
+}
+
+function BuyOutMenu(data) {
+
 }
 
 function SendRequestPact(userName) {

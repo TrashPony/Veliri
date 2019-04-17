@@ -71,19 +71,14 @@ func fleeBattle(msg Message, client *player.Player) {
 
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
-	if findGame && activeGame.Phase == "targeting" {
+	if findGame && activeGame.Phase == "targeting" || !activeGame.FindUserHostile(client) {
 
 		gameZone := activeGame.GetGameZone(client)
 		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 
-		if find || LastLeave(activeGame, false) {
-
-			if activeGame.CheckEndGame() {
-				go EndGame(activeGame)
-			}
-
+		// !find - значит мы вышли за зону игры и можем ливнуть
+		if !find || LastLeave(activeGame, false) || !activeGame.FindUserHostile(client) {
 			leave(client, activeGame, false)
-
 		} else {
 			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
@@ -139,8 +134,10 @@ func leave(client *player.Player, activeGame *localGame.Game, soft bool) {
 	client.GetSquad().InGame = false
 	update.Squad(client.GetSquad(), true)
 
+	//todo очередной костыль богу костылей
 	client.Leave = true
 	gameUpdate.Player(client)
+	client.Leave = false
 
 	// заменяем игрока на фейка т.к. тот уже не игре
 	activeGame.SetFakePlayer(client)
@@ -151,6 +148,9 @@ func leave(client *player.Player, activeGame *localGame.Game, soft bool) {
 	// отправляем вышедшему игроку что он может переходить в глобальную игру
 	SendMessage(Message{Event: "toGlobal"}, client.GetID(), activeGame.Id)
 
+	if activeGame.CheckEndGame() {
+		go EndGame(activeGame)
+	}
 	// обновления тумана войны у всех игроков т.к. союзник мог ливнуть и видимость поменялась
 	for _, user := range activeGame.GetPlayers() {
 		SendMessage(Message{Event: "UpdateWatchMap", Update: watchZone.UpdateWatchZone(activeGame, user)}, user.GetID(), activeGame.Id)

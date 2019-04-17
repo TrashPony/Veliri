@@ -61,7 +61,9 @@ func timerTargetingPhase(game *localGame.Game) {
 	}
 
 	for _, user := range game.GetPlayers() {
-		userReady.UserReady(user)
+		if !user.Leave {
+			userReady.UserReady(user)
+		}
 	}
 
 	CheckAllReady(game)

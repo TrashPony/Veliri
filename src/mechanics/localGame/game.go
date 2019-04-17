@@ -121,7 +121,7 @@ func (game *Game) GetPlayers() (Players []*player.Player) {
 
 func (game *Game) GetPlayer(id int, login string) (Players *player.Player) {
 	for i, gamePlayer := range game.players {
-		if (login == gamePlayer.GetLogin()) && (id == gamePlayer.GetID()) {
+		if (login == gamePlayer.GetLogin()) && (id == gamePlayer.GetID()) && !gamePlayer.Leave {
 			return game.players[i]
 		}
 	}
@@ -181,7 +181,7 @@ func (game *Game) DelUnitStorage(id int) (find bool) {
 // метод проверяет остались ли еще игроки которые враждую между собой
 func (game *Game) CheckEndGame() bool {
 	for _, user := range game.GetPlayers() {
-		if game.FindUserHostile(user) {
+		if !user.Leave && game.FindUserHostile(user) {
 			return false
 		}
 	}
@@ -190,7 +190,7 @@ func (game *Game) CheckEndGame() bool {
 
 func (game *Game) FindUserHostile(user *player.Player) bool {
 	for _, otherUser := range game.GetPlayers() {
-		// если игрок не состояит в союзер с этим игроком и этот игрок не ливнул то значит они враги
+		// если игрок не состояит в союзе с этим игроком и этот игрок не ливнул то значит они враги
 		if otherUser.GetID() != user.GetID() && !game.CheckPacts(user.GetID(), otherUser.GetID()) && !otherUser.Leave {
 			return true
 		}
