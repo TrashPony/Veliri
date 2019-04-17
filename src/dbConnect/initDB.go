@@ -17,7 +17,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 
 	var err error
-	DB, err = sql.Open("postgres", "postgres://postgres:yxHie25@localhost:5432/game?sslmode=disable")
+	DB, err = sql.Open("postgres", "postgres://postgres:yxHie25@192.168.88.253:5432/game?sslmode=disable")
 
 	if err != nil {
 		log.Fatal(err)

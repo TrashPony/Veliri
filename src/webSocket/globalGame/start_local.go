@@ -2,6 +2,7 @@ package globalGame
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
@@ -36,8 +37,14 @@ func startLocalGame(ws *websocket.Conn, msg Message) {
 			// TODO посмотреть кто находится в радиусе боя и предложить им участие в бою и добавить их в бой
 
 			// костыль
-			user.GetSquad().MatherShip.Q = user.GetSquad().Q
-			user.GetSquad().MatherShip.R = user.GetSquad().R
+			mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
+			startCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
+			user.GetSquad().MatherShip.Q = startCoordinate.Q
+			user.GetSquad().MatherShip.R = startCoordinate.R
+
+			startCoordinate = globalGame.GetQRfromXY(toUser.GetSquad().GlobalX, toUser.GetSquad().GlobalY, mp)
+			toUser.GetSquad().MatherShip.Q = startCoordinate.Q
+			toUser.GetSquad().MatherShip.R = startCoordinate.R
 
 			_, err := localGame.StartNewGame("", user.GetSquad().MapID, gamePlayers)
 			if err == nil {

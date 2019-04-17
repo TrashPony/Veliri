@@ -22,7 +22,11 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 	allCoordinate = make(map[string]*coordinate.Coordinate)
 	unitsCoordinate = make(map[int]map[int]*unit.Unit)
 
-	if login == gameObject.GetOwnerUser() {
+	// если игрок является владельцем юнита или состоит в пакте с тем игроком который владеет юнитом
+	owner := game.GetUserByName(gameObject.GetOwnerUser())
+	client := game.GetUserByName(login)
+	// TODO ошибка!
+	if owner != nil && client != nil && (login == gameObject.GetOwnerUser() || game.CheckPacts(owner.GetID(), client.GetID())) {
 
 		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())
 

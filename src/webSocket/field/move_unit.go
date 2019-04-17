@@ -88,7 +88,7 @@ func timerMoveUnits(game *localGame.Game) {
 		moveUnit := game.GetMoveUnit()
 		forceMove := true
 
-		if game.Phase == "move" && moveUnit != nil {
+		if game.Phase == "move" && moveUnit != nil && !game.End {
 
 			for i := 60; i > 0; i-- {
 
@@ -102,7 +102,7 @@ func timerMoveUnits(game *localGame.Game) {
 				SendAllMessage(Message{Event: "timeToChangePhase", Seconds: i}, game)
 			}
 
-			if forceMove {
+			if forceMove && !game.End {
 				movePhase.SkipMove(moveUnit, game)
 				client := game.GetUserByName(moveUnit.Owner)
 				SendMessage(Move{Event: "UpdateUnit", Unit: moveUnit, UserName: client.GetLogin()}, client.GetID(), game.Id)

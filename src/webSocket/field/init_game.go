@@ -23,6 +23,10 @@ func loadGame(msg Message, ws *websocket.Conn) {
 			go timerMoveUnits(loadGame)            // активируем таймер для юнитов
 		}
 
+		if loadGame.CheckEndGame() {
+			go EndGame(loadGame)
+		}
+
 		// берется заного игрок что бы проверить нашлась игра или нет
 		player := loadGame.GetPlayer(client.GetID(), client.GetLogin())
 		if player != nil && !player.Leave {

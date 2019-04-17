@@ -14,6 +14,7 @@ type UpdaterWatchZone struct {
 }
 
 // отправляем открытые ячейки, удаляем закрытые
+// TODO адаптация под дипломатию
 func UpdateWatchZone(activeGame *localGame.Game, client *player.Player) *UpdaterWatchZone {
 	var updaterWatchZone UpdaterWatchZone
 

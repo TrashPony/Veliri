@@ -27,8 +27,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "UpdateWatchMap") {
-        let watch = JSON.parse(jsonMessage).update;
-        UpdateWatchZone(watch);
+        UpdateWatchZone(JSON.parse(jsonMessage).update);
     }
 
     if (event === "Ready") {
@@ -122,12 +121,15 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === 'CreatePact') {
-        notification("Дипломатия", "Игроки " + JSON.parse(jsonMessage).users_name[0] + " и " + JSON.parse(jsonMessage).users_name[1] + " создали союз!")
-        OpenDiplomacy();
+        notification("Дипломатия", "Игроки " + JSON.parse(jsonMessage).users_name[0] + " и " + JSON.parse(jsonMessage).users_name[1] + " создали союз!");
+        if (document.getElementById("diplomacyBlock")) {
+            document.getElementById("diplomacyBlock").remove();
+            OpenDiplomacy();
+        }
     }
 
     if (event === "LeaveUnit") {
-        // TODO ливание юнитов с карты
+        UnitHide(GetGameUnitID(JSON.parse(jsonMessage).unit_id))
     }
 
     if (event === "QueueAttack") {
@@ -135,8 +137,8 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === "EndGame") {
-        console.log(jsonMessage);
-        // TODO оповезение игроков о том что бой кончается
+        // TODO
+        LeaveTimer(JSON.parse(jsonMessage).seconds)
     }
 
     if (event === "Error") {

@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 	"time"
@@ -22,7 +23,8 @@ func initFlee(msg Message, client *player.Player) {
 		gameZone := activeGame.GetGameZone(client)
 		_, find := gameZone[strconv.Itoa(client.GetSquad().MatherShip.Q)][strconv.Itoa(client.GetSquad().MatherShip.R)]
 
-		if find || LastLeave(activeGame, false) {
+		// !find - значит мы вышли за зону игры и можем ливнуть
+		if !find || LastLeave(activeGame, false) || !activeGame.FindUserHostile(client) {
 
 			// если игрок последний или у него нет врагов ему доступно софт лив
 			if LastLeave(activeGame, false) || !activeGame.FindUserHostile(client) {
@@ -34,12 +36,12 @@ func initFlee(msg Message, client *player.Player) {
 				if activeGame.Phase == "targeting" {
 					SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
 				} else {
-					SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
+					SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
 				}
 			}
 
 		} else {
-			SendMessage(ErrorMessage{Event: msg.Event, Error: "not allow"}, client.GetID(), activeGame.Id)
+			SendMessage(ErrorMessage{Event: "Error", Error: "not allow"}, client.GetID(), activeGame.Id)
 		}
 	}
 }
@@ -77,7 +79,7 @@ func fleeBattle(msg Message, client *player.Player) {
 		if find || LastLeave(activeGame, false) {
 
 			if activeGame.CheckEndGame() {
-				EndGame(activeGame)
+				go EndGame(activeGame)
 			}
 
 			leave(client, activeGame, false)
@@ -148,4 +150,9 @@ func leave(client *player.Player, activeGame *localGame.Game, soft bool) {
 
 	// отправляем вышедшему игроку что он может переходить в глобальную игру
 	SendMessage(Message{Event: "toGlobal"}, client.GetID(), activeGame.Id)
+
+	// обновления тумана войны у всех игроков т.к. союзник мог ливнуть и видимость поменялась
+	for _, user := range activeGame.GetPlayers() {
+		SendMessage(Message{Event: "UpdateWatchMap", Update: watchZone.UpdateWatchZone(activeGame, user)}, user.GetID(), activeGame.Id)
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
+	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"time"
 )
@@ -12,6 +13,9 @@ import (
 // если между всеми участниками боя достигнут мир или остались только те игроки которые в мире то бой прекращается.
 
 // отдает текущее состояние дипломатии, игроков, пакты которые уже заключены
+
+// TODO обновления тумана войны при заключение союза
+
 func openDiplomacy(client *player.Player) {
 	activeGame, findGame := games.Games.Get(client.GetGameID())
 
@@ -141,7 +145,12 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 				update.Game(game)
 
 				if game.CheckEndGame() {
-					EndGame(game)
+					go EndGame(game)
+				}
+
+				// обновления тумана войны ибо союзники видят обзоры друг друга
+				for _, user := range game.GetPlayers() {
+					SendMessage(Message{Event: "UpdateWatchMap", Update: watchZone.UpdateWatchZone(game, user)}, user.GetID(), game.Id)
 				}
 
 			} else {

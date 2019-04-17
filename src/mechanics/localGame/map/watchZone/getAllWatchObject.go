@@ -16,10 +16,18 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 
 			watchCoordinate, watchUnit, err := watch(gameUnit, client.GetLogin(), activeGame)
 
-			if err != nil { // если крип не мой то пропускаем дальнейшее действие
-				continue
-			} else {
-				client.AddUnit(gameUnit)
+			// если юнит не игрока и не его союзника то пропускаем следующие действия
+			owner := activeGame.GetUserByName(gameUnit.GetOwnerUser())
+
+			if owner != nil {
+				if err != nil && !activeGame.CheckPacts(client.GetID(), owner.GetID()) {
+					continue
+				}
+
+				// если юнит игрока то добавляем его в пул юнитов игрока
+				if gameUnit.GetOwnerUser() == client.GetLogin() {
+					client.AddUnit(gameUnit)
+				}
 
 				for _, xLine := range watchUnit {
 					for _, hostile := range xLine {
