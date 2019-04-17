@@ -186,7 +186,7 @@ func initBuyOut(msg Message, client *player.Player) {
 	if findGame {
 		SendMessage(
 			Message{
-				Event:     "timeOutDiplomacyRequests",
+				Event:     "initBuyOut",
 				Credits:   client.GetCredits(),
 				Inventory: client.GetSquad().Inventory,
 				ToUser:    msg.ToUser,

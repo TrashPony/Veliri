@@ -4,8 +4,7 @@ let debug = false;
 
 function Game(jsonData) {
     Data = jsonData;
-    game = CreateGame(jsonData.map, LoadGame);
-    game.typeService = "global";
+    game = CreateGame(jsonData.map, LoadGame, "global");
     game.evacuations = [];
 }
 
@@ -27,9 +26,9 @@ function LoadGame() {
     FocusMS();
 
     setTimeout(function () {
-          if (debug) {
-              CreateGeoData(Data.map.geo_data);
-              CreateAnomalies(Data.map.anomalies)
-          }
+        if (debug) {
+            CreateGeoData(Data.map.geo_data);
+            CreateAnomalies(Data.map.anomalies)
+        }
     }, 1000)
 }
