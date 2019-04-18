@@ -65,7 +65,7 @@ func armisticePact(msg Message, client *player.Player) {
 
 						// мы удостоверились в том что все слоты и нужное количество присутсвует в инвентаре
 						// в теории это удаление безопасно
-						for number, slots := range client.GetSquad().Inventory.Slots {
+						for number, slots := range msg.Slots {
 							realSlot, _ := client.GetSquad().Inventory.Slots[number]
 							realSlot.RemoveItemBySlot(slots.Quantity)
 						}
@@ -155,6 +155,7 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 
 			} else {
 				rejectFunc()
+				// TODO обновление инвентаря, если открыто окно должно обновится без перезагрузки
 				SendMessage(Message{Event: "DiplomacyRequestsReject", ToUser: client.GetLogin()}, client.GetID(), game.Id)
 			}
 

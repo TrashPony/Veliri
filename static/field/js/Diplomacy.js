@@ -1,3 +1,5 @@
+let slots = [];
+
 function OpenDiplomacy() {
     field.send(JSON.stringify({
         event: "OpenDiplomacy",
@@ -22,13 +24,14 @@ function CreateDiplomacyMenu(data) {
     </div>`;
 
     let buttons = CreateControlButtons("0px", "31px", "-3px", "");
-    buttons.close.onclick = function () {
+    $(buttons.close).click(function () {
         diplomacyBlock.remove();
-    };
+    });
+
     diplomacyBlock.appendChild(buttons.close);
-    buttons.move.onmousedown = function (event) {
+    $(buttons.move).mousedown(function (event) {
         moveWindow(event, "diplomacyBlock")
-    };
+    });
     diplomacyBlock.appendChild(buttons.move);
 
     createDiplomacyTable(data);
@@ -116,6 +119,7 @@ function createDiplomacyTable(data) {
 }
 
 function BuyOutPact(user) {
+    slots = [];
     field.send(JSON.stringify({
         event: "initBuyOut",
         to_user: user,
@@ -123,14 +127,63 @@ function BuyOutPact(user) {
 }
 
 function BuyOutMenu(data) {
-    console.log(data)
+    slots = [];
+    let diplomacyBlock = document.getElementById("diplomacyBlock");
+
+    if (document.getElementById("BuyOutMenu")) document.getElementById("BuyOutMenu").remove();
+    let BuyOutMenu = document.createElement("div");
+    BuyOutMenu.id = "BuyOutMenu";
+    BuyOutMenu.innerHTML = `
+        <div>
+            <input id="buyOutCredits" type="number" placeholder="Кредиты">
+            <div id="buyOutItems"></div>
+        </div>
+        
+        <div style="margin-left: 44px;">
+            <div id="buyOutUserCredits"> Кредиты: ${data.credits}</div>
+            <div id="buyOutInventory"></div>
+        </div>
+        
+        <input type="button" value="Предложить" onclick="SendRequestPact(\'${data.to_user}\')" style="width: 75px; float: left; margin-left: 25px; margin-top: 2px;">
+        <input type="button" value="Отмена" onclick="removeBuyOutBlock()" style="width: 75px; float: right; margin-right: 25px; margin-top: 2px;">`;
+
+    diplomacyBlock.appendChild(BuyOutMenu);
+
+    for (let i in data.inventory.slots) {
+        if (data.inventory.slots.hasOwnProperty(i) && data.inventory.slots[i].item) {
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, data.inventory.slots[i], i, "");
+
+            $(cell).draggable({
+                disabled: true,
+            });
+
+            cell.onclick = function () {
+                BuyOutMenu.innerHTML+='<span id="buyOutMask"></span>';
+
+                // TODO открыть инпут который бы спрашивал количество
+            };
+
+            $('#buyOutInventory').append(cell);
+        }
+    }
+}
+
+function removeBuyOutBlock() {
+    slots = [];
+    if (document.getElementById("BuyOutMenu")) document.getElementById("BuyOutMenu").remove();
 }
 
 function SendRequestPact(userName) {
+    // TODO кредиты и итемы передавать
+    //buyOutCredits
+    //console.log(slots);
+
     field.send(JSON.stringify({
         event: "ArmisticePact",
         to_user: userName,
     }));
+    slots = [];
 }
 
 function CreateDiplomacyRequests(jsonData) {

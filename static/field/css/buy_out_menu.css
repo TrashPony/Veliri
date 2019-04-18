@@ -1,0 +1,68 @@
+#BuyOutMenu {
+    position: relative;
+    margin-top: 5px;
+    display: block;
+    border-radius: 5px;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background: url(https://img.icons8.com/office/40/000000/chevron-left.png) center center no-repeat,
+    linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px) center center / 10px 2px repeat;
+    padding: 3px;
+    margin-left: -3px;
+}
+
+#BuyOutMenu > div {
+    border-radius: 5px;
+    text-align: left;
+    text-shadow: #28a5e4 0 0 4px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    width: 128px;
+    height: 81px;
+    overflow-y: scroll;
+    float: left;
+}
+
+#buyOutUserCredits {
+    text-align: left;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    line-height: 19px;
+    font-size: 12px;
+    margin: 2px 0 2px 1px;
+    width: 108px;
+    box-shadow: 0 0 5px black;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding-left: 4px;
+}
+
+#buyOutCredits {
+    margin-left: 1px;
+    width: 105px;
+    box-shadow: 0 0 5px black;
+}
+
+#buyOutItems, #buyOutInventory {
+}
+
+#buyOutMask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+#buyOutItemCount {
+}
