@@ -129,7 +129,7 @@ function ReadResponse(jsonMessage) {
     }
 
     if (event === 'initBuyOut') {
-        BuyOutMenu(JSON.parse(jsonMessage));
+        BuyOutMenu(JSON.parse(jsonMessage), {});
     }
 
     if (event === "LeaveUnit") {

@@ -14,7 +14,7 @@ import (
 
 // отдает текущее состояние дипломатии, игроков, пакты которые уже заключены
 
-// TODO обновления тумана войны при заключение союза
+// TODO не давать делать запрос если он уже есть
 
 func openDiplomacy(client *player.Player) {
 	activeGame, findGame := games.Games.Get(client.GetGameID())
@@ -57,7 +57,7 @@ func armisticePact(msg Message, client *player.Player) {
 			// отправляем игроку сообщение о намерение заключить мир
 			if !user.Leave && user.GetLogin() == msg.ToUser {
 
-				_, find := diplomacyRequests[user.GetLogin()+client.GetLogin()]
+				_, find := diplomacyRequests[client.GetLogin()+user.GetLogin()]
 
 				if !activeGame.CheckPacts(client.GetID(), user.GetID()) && !find {
 
@@ -94,11 +94,11 @@ func armisticePact(msg Message, client *player.Player) {
 						go requestTimer(client.GetLogin()+user.GetLogin(), client, user, activeGame, &request)
 
 					} else {
-						SendMessage(ErrorMessage{Event: msg.Event, Error: "few items"}, client.GetID(), activeGame.Id)
+						SendMessage(ErrorMessage{Event: "Error", Error: "few items"}, client.GetID(), activeGame.Id)
 					}
 
 				} else {
-					SendMessage(ErrorMessage{Event: msg.Event, Error: "pact already"}, client.GetID(), activeGame.Id)
+					SendMessage(ErrorMessage{Event: "Error", Error: "pact already"}, client.GetID(), activeGame.Id)
 				}
 			}
 		}

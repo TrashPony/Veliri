@@ -113,7 +113,7 @@ func (inv *Inventory) ViewItemsBySlots(slots map[int]*Slot) bool {
 	checkItems := true
 	for number, slot := range slots {
 		realSlot, findSlot := inv.Slots[number]
-		if !findSlot || slot.Quantity > realSlot.Quantity {
+		if !findSlot || slot == nil || slot.Quantity > realSlot.Quantity {
 			checkItems = false
 		}
 	}

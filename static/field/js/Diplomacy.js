@@ -119,23 +119,23 @@ function createDiplomacyTable(data) {
 }
 
 function BuyOutPact(user) {
-    slots = [];
+    slots = {};
     field.send(JSON.stringify({
         event: "initBuyOut",
         to_user: user,
     }));
 }
 
-function BuyOutMenu(data) {
-    slots = [];
+function BuyOutMenu(data, buyOuySlots) {
+    slots = buyOuySlots;
     let diplomacyBlock = document.getElementById("diplomacyBlock");
 
     if (document.getElementById("BuyOutMenu")) document.getElementById("BuyOutMenu").remove();
-    let BuyOutMenu = document.createElement("div");
-    BuyOutMenu.id = "BuyOutMenu";
-    BuyOutMenu.innerHTML = `
+    let BuyOutMenuBlock = document.createElement("div");
+    BuyOutMenuBlock.id = "BuyOutMenu";
+    BuyOutMenuBlock.innerHTML = `
         <div>
-            <input id="buyOutCredits" type="number" placeholder="Кредиты">
+            <input id="buyOutCredits" max="${data.credits}" type="number" placeholder="Кредиты">
             <div id="buyOutItems"></div>
         </div>
         
@@ -147,10 +147,16 @@ function BuyOutMenu(data) {
         <input type="button" value="Предложить" onclick="SendRequestPact(\'${data.to_user}\')" style="width: 75px; float: left; margin-left: 25px; margin-top: 2px;">
         <input type="button" value="Отмена" onclick="removeBuyOutBlock()" style="width: 75px; float: right; margin-right: 25px; margin-top: 2px;">`;
 
-    diplomacyBlock.appendChild(BuyOutMenu);
+    diplomacyBlock.appendChild(BuyOutMenuBlock);
+
+    document.getElementById("buyOutCredits").oninput = function () {
+        if (this.value > data.credits) {
+            this.value = data.credits;
+        }
+    };
 
     for (let i in data.inventory.slots) {
-        if (data.inventory.slots.hasOwnProperty(i) && data.inventory.slots[i].item) {
+        if (data.inventory.slots.hasOwnProperty(i) && data.inventory.slots[i].item && data.inventory.slots[i].quantity > 0) {
             let cell = document.createElement("div");
             CreateInventoryCell(cell, data.inventory.slots[i], i, "");
 
@@ -159,34 +165,137 @@ function BuyOutMenu(data) {
             });
 
             cell.onclick = function () {
-                BuyOutMenu.innerHTML+='<span id="buyOutMask"></span>';
 
-                // TODO открыть инпут который бы спрашивал количество
+                let mask = document.createElement("span");
+                mask.id = "buyOutMask";
+                $(BuyOutMenuBlock).append(mask);
+                // todo немножк говнокода
+                let quantityRange = document.createElement("span");
+                quantityRange.id = "QuantityRange";
+                quantityRange.innerHTML = `
+                    <form name="quantityForm" oninput="quantityOut.value = quantity.value">
+                        <div class="iconItem" style='background-image: ${cell.style.backgroundImage}'></div>
+                        <input name="quantity" id="quantityRangeValue" type="range" min="0" max="${data.inventory.slots[i].quantity}" value="${data.inventory.slots[i].quantity}"> 
+                        <output name="quantityOut">${data.inventory.slots[i].quantity}</output>
+                    </form>
+                    <input type="button" id="BuyOutButton" value="Предложить" style="width: 75px; float: left; margin-left: 20px; margin-top: 2px;">
+                    <input type="button" id="BuyOutCancelButton" value="Отмена" style="width: 75px; float: right; margin-right: 20px; margin-top: 2px;">
+                `;
+                $(BuyOutMenuBlock).append(quantityRange);
+
+                $('#BuyOutButton').click(function () {
+                    let quantity = document.getElementById("quantityRangeValue").value;
+                    data.inventory.slots[i].quantity -= quantity;
+
+                    let buySlot = Object.assign({}, data.inventory.slots[i]);
+                    buySlot.quantity = Number(quantity);
+
+                    if (buyOuySlots[i]) {
+                        buyOuySlots[i].quantity = Number(buyOuySlots[i].quantity) + Number(quantity)
+                    } else {
+                        buyOuySlots[i] = buySlot;
+                    }
+
+                    quantityRange.remove();
+                    mask.remove();
+
+                    BuyOutMenu(data, buyOuySlots)
+                });
+
+                $('#BuyOutCancelButton').click(function () {
+                    if (document.getElementById("buyOutMask")) document.getElementById("buyOutMask").remove();
+                    if (document.getElementById("QuantityRange")) document.getElementById("QuantityRange").remove();
+                })
             };
 
             $('#buyOutInventory').append(cell);
         }
     }
+
+    for (let i in buyOuySlots) {
+        if (buyOuySlots.hasOwnProperty(i) && buyOuySlots[i].item && buyOuySlots[i].quantity > 0) {
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, buyOuySlots[i], i, "");
+
+            $(cell).draggable({
+                disabled: true,
+            });
+
+            cell.onclick = function () {
+
+                let mask = document.createElement("span");
+                mask.id = "buyOutMask";
+                $(BuyOutMenuBlock).append(mask);
+
+                let quantityRange = document.createElement("span");
+                quantityRange.id = "QuantityRange";
+                quantityRange.innerHTML = `
+                    <form name="quantityForm" oninput="quantityOut.value = quantity.value">
+                        <div class="iconItem" style='background-image: ${cell.style.backgroundImage}'></div>
+                        <input name="quantity" id="quantityRangeValue" type="range" min="0" max="${buyOuySlots[i].quantity}" value="${buyOuySlots[i].quantity}"> 
+                        <output name="quantityOut">${buyOuySlots[i].quantity}</output>
+                    </form>
+                    <input type="button" id="BuyOutButton" value="Предложить" style="width: 75px; float: left; margin-left: 20px; margin-top: 2px;">
+                    <input type="button" id="BuyOutCancelButton" value="Отмена" style="width: 75px; float: right; margin-right: 20px; margin-top: 2px;">
+                `;
+                $(BuyOutMenuBlock).append(quantityRange);
+
+                $('#BuyOutButton').click(function () {
+                    let quantity = document.getElementById("quantityRangeValue").value;
+                    buyOuySlots[i].quantity -= quantity;
+                    data.inventory.slots[i].quantity = Number(data.inventory.slots[i].quantity) + Number(quantity);
+
+                    quantityRange.remove();
+                    mask.remove();
+
+                    BuyOutMenu(data, buyOuySlots)
+                });
+
+                $('#BuyOutCancelButton').click(function () {
+                    if (document.getElementById("buyOutMask")) document.getElementById("buyOutMask").remove();
+                    if (document.getElementById("QuantityRange")) document.getElementById("QuantityRange").remove();
+                })
+            };
+
+            $('#buyOutItems').append(cell);
+        }
+    }
 }
 
 function removeBuyOutBlock() {
-    slots = [];
+    slots = {};
     if (document.getElementById("BuyOutMenu")) document.getElementById("BuyOutMenu").remove();
 }
 
 function SendRequestPact(userName) {
-    // TODO кредиты и итемы передавать
-    //buyOutCredits
-    //console.log(slots);
+
+    let credits = 0;
+    if (document.getElementById('buyOutCredits'))
+        credits = Number(document.getElementById('buyOutCredits').value);
+
+    let sendSlots;
+    for (let key in slots) {
+        sendSlots = true;
+    }
+
+    if (!sendSlots) {
+        slots = null;
+    }
 
     field.send(JSON.stringify({
         event: "ArmisticePact",
         to_user: userName,
+        slots: slots,
+        credits: credits
     }));
-    slots = [];
+
+
+    removeBuyOutBlock();
 }
 
 function CreateDiplomacyRequests(jsonData) {
+    // TODO отрисовка итемов и кредитов если он есть
+    console.log(jsonData.diplomacy_request);
     let page = {
         text: "Игрок " + jsonData.to_user + " предлагает перемирие!",
         picture: "base.png",
