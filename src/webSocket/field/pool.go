@@ -55,6 +55,10 @@ func fieldReader(ws *websocket.Conn) {
 				GetTargetZone(msg, client)
 			}
 
+			if msg.Event == "GetAmmoZone" {
+				GetAmmoZone(msg, client)
+			}
+
 			if msg.Event == "GetPreviewPath" {
 				GetPreviewPath(msg, client)
 			}

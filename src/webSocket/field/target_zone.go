@@ -9,8 +9,8 @@ import (
 func GetTargetZone(msg Message, client *player.Player) {
 
 	activeGame, findGame := games.Games.Get(client.GetGameID())
-
 	gameUnit, findUnit := client.GetUnitStorage(msg.UnitID)
+
 	if !findUnit {
 		gameUnit, findUnit = client.GetHostileUnit(msg.Q, msg.R)
 		if !findUnit {

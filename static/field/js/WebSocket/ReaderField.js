@@ -145,6 +145,10 @@ function ReadResponse(jsonMessage) {
         LeaveTimer(JSON.parse(jsonMessage).seconds)
     }
 
+    if (event === "GetAmmoZone") {
+        AmmoZone(JSON.parse(jsonMessage).targets)
+    }
+
     if (event === "Error") {
         console.log(jsonMessage);
     }

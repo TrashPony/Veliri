@@ -14,7 +14,7 @@ func getAllWatchObject(activeGame *localGame.Game, client *player.Player) {
 				continue
 			}
 
-			watchCoordinate, watchUnit, err := watch(gameUnit, client.GetLogin(), activeGame)
+			watchCoordinate, watchUnit, err := Watch(gameUnit, client.GetLogin(), activeGame)
 
 			// если юнит не игрока и не его союзника то пропускаем следующие действия
 			owner := activeGame.GetUserByName(gameUnit.GetOwnerUser())

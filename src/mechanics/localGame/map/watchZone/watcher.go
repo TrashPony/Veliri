@@ -17,7 +17,7 @@ type Watcher interface {
 	GetWallHack() bool
 }
 
-func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, Err error) {
+func Watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinate map[string]*coordinate.Coordinate, unitsCoordinate map[int]map[int]*unit.Unit, Err error) {
 
 	allCoordinate = make(map[string]*coordinate.Coordinate)
 	unitsCoordinate = make(map[int]map[int]*unit.Unit)
@@ -25,7 +25,7 @@ func watch(gameObject Watcher, login string, game *localGame.Game) (allCoordinat
 	// если игрок является владельцем юнита или состоит в пакте с тем игроком который владеет юнитом
 	owner := game.GetUserByName(gameObject.GetOwnerUser())
 	client := game.GetUserByName(login)
-	// TODO ошибка!
+
 	if owner != nil && client != nil && (login == gameObject.GetOwnerUser() || game.CheckPacts(owner.GetID(), client.GetID())) {
 
 		centerCoordinate, _ := game.Map.GetCoordinate(gameObject.GetQ(), gameObject.GetR())

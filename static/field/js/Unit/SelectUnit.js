@@ -26,7 +26,13 @@ function SelectUnit(unitStat, focus) {
 
     //Fire(unitStat, GetGameUnitID(31));
     if (focus) {
-        game.camera.focusOnXY(unitStat.sprite.x*game.camera.scale.x, unitStat.sprite.y*game.camera.scale.y);
+        game.camera.focusOnXY(unitStat.sprite.x * game.camera.scale.x, unitStat.sprite.y * game.camera.scale.y);
+    }
+
+    if(!unitStat.body.mother_ship && unitStat.owner === game.user.name) {
+        field.send(JSON.stringify({
+            event: "GetAmmoZone"
+        }));
     }
 
     if (game.Phase === "targeting" && unitStat.owner === game.user.name) {
