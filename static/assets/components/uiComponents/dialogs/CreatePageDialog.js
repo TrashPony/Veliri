@@ -1,4 +1,4 @@
-function CreatePageDialog(id, page, action, full, needPicture) {
+function CreatePageDialog(id, page, action, full, needPicture, credits, items) {
 
     DialogAction(action);
 
@@ -20,21 +20,23 @@ function CreatePageDialog(id, page, action, full, needPicture) {
         CreatePic(dialogBlock, page)
     }
 
-    CreateText(dialogBlock, page);
+    let dialogText = CreateText(dialogBlock, page);
 
     if (full) {
-        let buttons = CreateControlButtons("83px", "30px", "-3px", "29px", "", "145px");
+        let buttons = CreateControlButtons("83px", "-8px", "-3px", "29px", "", "145px");
         $(buttons.move).mousedown(function (event) {
             moveWindow(event, id)
         });
-        $(buttons.close).mousedown(function () {
-            dialogBlock.remove();
-        });
         dialogBlock.appendChild(buttons.move);
-        dialogBlock.appendChild(buttons.close);
 
         CreateAsk(dialogBlock, page);
     }
+
+    if (credits || items) {
+        dialogBlock.style.height = "140px";
+        CreateItems(dialogText, credits, items);
+    }
+
 
     document.body.appendChild(dialogBlock);
     return dialogBlock;
@@ -57,6 +59,35 @@ function CreateText(dialogBlock, page) {
     dialogText.className = "dialogText";
     dialogText.innerHTML = "<div class='wrapperText'>" + page.text + "</div>";
     dialogBlock.appendChild(dialogText);
+    return dialogText;
+}
+
+function CreateItems(dialogBlock, items, credits) {
+    let dialogItems = document.createElement("div");
+    dialogItems.className = "dialogItems";
+    dialogBlock.appendChild(dialogItems);
+    let dialogCredits = document.createElement("div");
+    dialogCredits.className = "dialogCredits";
+    dialogItems.appendChild(dialogCredits);
+    dialogCredits.innerHTML = `
+        <div>Кредиты: </div>
+        <div> ${credits} </div>
+    `;
+
+    let dialogSlots = document.createElement("div");
+    dialogSlots.className = "dialogSlots";
+    dialogItems.appendChild(dialogSlots);
+
+    for (let i in items) {
+        if (items.hasOwnProperty(i) && items[i].item && items[i].quantity > 0) {
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, items[i], i, "");
+            $(cell).draggable({
+                disabled: true,
+            });
+            $(dialogSlots).append(cell);
+        }
+    }
 }
 
 function CreateAsk(dialogBlock, page) {

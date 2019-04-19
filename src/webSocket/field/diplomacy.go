@@ -67,7 +67,14 @@ func armisticePact(msg Message, client *player.Player) {
 						// в теории это удаление безопасно
 						for number, slots := range msg.Slots {
 							realSlot, _ := client.GetSquad().Inventory.Slots[number]
+
+							//смотрим сколько весит 1 итем что бы расчитать правильно вес
+							sizeOneItem := realSlot.Size / float32(realSlot.Quantity)
+
 							realSlot.RemoveItemBySlot(slots.Quantity)
+
+							// обновить вес в итемах
+							slots.Size = float32(slots.Quantity) * sizeOneItem
 						}
 
 						// отнимает кридиты у юзера
@@ -131,7 +138,9 @@ func requestTimer(id string, client, toUser *player.Player, game *localGame.Game
 			if request.Accept {
 
 				toUser.SetCredits(toUser.GetCredits() + request.Credits)
-
+				for _, slot := range request.Slots {
+					toUser.GetSquad().Inventory.AddItemFromSlot(slot)
+				}
 				// TODO под мс client выкидываем протектор ящик и отдаем пароль user тот должен запомнится на фронте
 
 				SendAllMessage(Message{Event: "CreatePact", UsersName: []string{client.GetLogin(), toUser.GetLogin()}}, game)

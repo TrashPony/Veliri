@@ -75,7 +75,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -89,10 +89,14 @@ func Reader(ws *websocket.Conn) {
 				//			выбераем базу, обновляем юзера, выставляем LastBaseID, запускаем туториал
 				dbPlayer.UpdateUser(user)
 				lobbyPipe <- Message{Event: "choiceFractionComplete", UserID: user.GetID()}
+
+				trainingDialog := gameTypes.Dialogs.GetByID(1)
+				lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: trainingDialog.Pages[1]}
+				user.SetOpenDialog(&trainingDialog)
 			}
 		}
 
-		if user != nil && user.Fraction == "Replicas" || user.Fraction == "Explores" || user.Fraction == "Reverses" {
+		if user != nil && user.Fraction == "Replics" || user.Fraction == "Explores" || user.Fraction == "Reverses" {
 
 			if msg.Event == "Logout" {
 				ws.Close()

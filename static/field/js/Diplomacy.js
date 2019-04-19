@@ -294,15 +294,16 @@ function SendRequestPact(userName) {
 }
 
 function CreateDiplomacyRequests(jsonData) {
-    // TODO отрисовка итемов и кредитов если он есть
-    console.log(jsonData.diplomacy_request);
+
+    let text = "Игрок " + jsonData.to_user + " предлагает перемирие!";
+
     let page = {
-        text: "Игрок " + jsonData.to_user + " предлагает перемирие!",
+        text: text,
         picture: "base.png",
         asc: [],
     };
 
-    let dialogBlock = CreatePageDialog("DiplomacyRequestsBlock", page, null, false, true);
+    let dialogBlock = CreatePageDialog("DiplomacyRequestsBlock", page, null, true, true, jsonData.diplomacy_request.slots, jsonData.diplomacy_request.credits);
     dialogBlock.style.right = "calc(50% - 125px)";
     dialogBlock.style.top = "calc(50% - 300px)";
     dialogBlock.style.bottom = "unset";
@@ -310,7 +311,7 @@ function CreateDiplomacyRequests(jsonData) {
 
     let ask = document.createElement("div");
     ask.className = "asks";
-    ask.innerHTML = "<div class='wrapperAsk'>Принять</div>";
+    ask.innerHTML = `<div class='wrapperAsk'>Принять</div>`;
     ask.onclick = function () {
         field.send(JSON.stringify({
             event: "AcceptArmisticePact",
@@ -322,7 +323,7 @@ function CreateDiplomacyRequests(jsonData) {
 
     let ask2 = document.createElement("div");
     ask2.className = "asks";
-    ask2.innerHTML = "<div class='wrapperAsk'>Отказать</div>";
+    ask2.innerHTML = `<div class='wrapperAsk'>Отказать</div>`;
     ask2.onclick = function () {
         field.send(JSON.stringify({
             event: "AcceptArmisticePact",

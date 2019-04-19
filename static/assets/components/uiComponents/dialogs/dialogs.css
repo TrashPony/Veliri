@@ -46,7 +46,6 @@
     margin: auto auto 2px 3px;
     height: 77px;
     width: 274px;
-    text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 9pt;
     float: left;
@@ -112,4 +111,50 @@
 .dialogBlock .asks .wrapperAsk:hover:after {
     content: '  <--';
     color: yellow;
+}
+
+.dialogItems {
+    border-radius: 5px;
+    height: 40px;
+    float: left;
+    width: 294px;
+    margin: auto auto 2px 3px;
+}
+
+.dialogCredits {
+    background: #307294;
+    box-shadow: inset 0 0 5px black;
+    height: 100%;
+    float: left;
+    width: 70px;
+    border-radius: 5px;
+}
+
+.dialogCredits div {
+    text-align: center;
+    height: 15px;
+    border-radius: 5px;
+    border: 1px solid #0ba1f1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0), rgb(37, 160, 225) 6px);
+    line-height: 19px;
+    font-size: 12px;
+    margin: 2px 0 2px 1px;
+    width: 62px;
+    box-shadow: 0 0 5px black;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding-left: 4px;
+}
+
+.dialogSlots {
+    background: #8cb3c7;
+    box-shadow: inset 0 0 5px black;
+    height: calc(100% - 10px);
+    float: right;
+    width: 212px;
+    border-radius: 5px;
+    overflow-y: scroll;
+    padding: 5px;
 }
