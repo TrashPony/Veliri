@@ -1,6 +1,6 @@
 let flagMiniMap = true;
 
-function CreateMiniMap(map) {
+function CreateMiniMap() {
 
     // отпмизация мини карты что бы не ресовалось чаще чем раз в 100 мс
     if (!flagMiniMap) {
@@ -23,13 +23,6 @@ function CreateMiniMap(map) {
         let hexagonHeight = (canvas.offsetWidth / game.map.QSize) * 0.90;
         let hexagonWidth = (canvas.offsetHeight / game.map.RSize) * 1.59;
 
-        let verticalOffset = hexagonHeight * 3 / 4;
-        let horizontalOffset = hexagonWidth;
-        let startX;
-        let startY;
-        let startXInit = hexagonWidth / 2;
-        let startYInit = hexagonHeight / 2;
-
         let kX = game.hexagonWidth / hexagonWidth;
         let kY = game.hexagonHeight / hexagonHeight;
 
@@ -37,30 +30,34 @@ function CreateMiniMap(map) {
             fastMove(e, canvas, hexagonWidth, hexagonHeight)
         };
 
-        let mapPoints = [];
-        for (let r = 0; r < game.map.RSize; r++) {
-
-            if (r % 2 !== 0) {
-                startX = 2 * startXInit;
-            } else {
-                startX = startXInit;
-            }
-
-            startY = startYInit + (r * verticalOffset);
-
-            for (let q = 0; q < game.map.QSize; q++) {
-                mapPoints.push({x: startX, y: startY, q: q, r: r, move: game.map.OneLayerMap[q][r].move});
-                startX += horizontalOffset;
-            }
-        }
-
-        for (let i = 0; i < mapPoints.length; i++) {
-            if (mapPoints[i].move) {
+        for (let i in game.mapPoints) {
+            if (game.mapPoints[i].coordinate.move) {
                 ctx.fillStyle = "#7f8189";
             } else {
                 ctx.fillStyle = "#000000";
             }
-            ctx.fillRect(mapPoints[i].x, mapPoints[i].y, hexagonWidth, hexagonHeight);
+            ctx.fillRect(game.mapPoints[i].x / kX, game.mapPoints[i].y / kY, hexagonWidth, hexagonHeight);
+
+            if (game.mapPoints[i].fogOfWar && game.typeService === "battle") {
+                ctx.fillStyle = "#4e4e4e";
+                ctx.fillRect(game.mapPoints[i].x / kX, game.mapPoints[i].y / kY, hexagonWidth, hexagonHeight);
+            }
+        }
+
+        for (let q in game.units) {
+            for (let r in game.units[q]) {
+                if (game.units[q][r].sprite) {
+
+                    if (game.units[q][r].owner === game.user.name) {
+                        ctx.fillStyle = "#19ff00";
+                    } else {
+                        // TODO союзные юниты  ctx.fillStyle = "#00F7FF"
+                        ctx.fillStyle = "#ff000e";
+                    }
+
+                    ctx.fillRect(game.units[q][r].sprite.x / kX, game.units[q][r].sprite.y / kY, hexagonWidth, hexagonHeight);
+                }
+            }
         }
 
         if (game.squad) {
@@ -132,8 +129,7 @@ function fastMove(e, canvas) {
     if (e.pageX || e.pageY) {
         x = e.pageX;
         y = e.pageY;
-    }
-    else {
+    } else {
         x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
         y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
     }

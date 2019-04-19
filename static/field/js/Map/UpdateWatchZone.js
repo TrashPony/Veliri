@@ -22,6 +22,7 @@ function UpdateWatchZone(watch) {
     }
 
     CreateAllFogOfWar();
+    CreateMiniMap();
 }
 
 function OpenCoordinate(q, r, hide) {
