@@ -33,6 +33,9 @@ function LoadGame(jsonMessage) {
             game.camera.scale.x = 1.5;
             game.camera.scale.y = 1.5;
 
+            game.floorSelectLineLayer.alpha = 0.9;
+            game.add.tween(game.floorSelectLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
+
             GameInfo();
             InitPlayer();
             LoadHoldUnits();

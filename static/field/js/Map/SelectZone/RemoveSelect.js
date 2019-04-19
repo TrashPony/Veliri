@@ -30,6 +30,11 @@ function RemoveSelectLine() {
         let lineSprite = game.SelectLineLayer.children.shift();
         lineSprite.destroy();
     }
+
+    while (game.floorSelectLineLayer && game.floorSelectLineLayer.children.length > 0) {
+        let lineSprite = game.floorSelectLineLayer.children.shift();
+        lineSprite.destroy();
+    }
 }
 
 function RemoveTargetLine() {
