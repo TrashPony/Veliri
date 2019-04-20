@@ -3,8 +3,10 @@ function StartMining(jsonData) {
     let q = jsonData.q;
     let r = jsonData.r;
 
-    let xy = GetXYCenterHex(q, r);
+    let attachPoint = GetSpriteEqip(jsonData.type_slot, jsonData.slot).attachPoint;
+    let equipSprite = GetSpriteEqip(jsonData.type_slot, jsonData.slot).sprite;
 
+    let xy = GetXYCenterHex(q, r);
     let laserOut = game.add.graphics(0, 0);
     laserOut.lineStyle(6, 0xFFEDFF, 1);
 
@@ -20,8 +22,8 @@ function StartMining(jsonData) {
     blurY.blur = 1;
     laserIn.filters = [blurX, blurY];
 
-    game.floorObjectLayer.add(laserOut);
-    game.floorObjectLayer.add(laserIn);
+    attachPoint.addChild(laserOut);
+    attachPoint.addChild(laserIn);
 
     setTimeout(function () {
         laserOut.destroy();
@@ -40,12 +42,18 @@ function StartMining(jsonData) {
             progressBar.style.animation = "reload " + jsonData.seconds + "s linear 1";
         }, 10);
 
+        console.log(game.squad.sprite.equipSprites[1].slot.number_slot);
+
+
         game.squad.miningLaser.push({
             out: laserOut,
             in: laserIn,
             xy: xy,
-            id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot
+            id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot,
+            attachPoint: attachPoint,
+            equipSprite: equipSprite,
         });
+
         let tween = game.add.tween(xy).to({
                 x: xy.x - 8 + 15,
                 y: xy.y - 8 + 15

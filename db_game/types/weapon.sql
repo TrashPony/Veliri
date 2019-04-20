@@ -13,7 +13,9 @@ CREATE TABLE weapon_type (
   size                  REAL,                /* занимаемый обьем в кубо метрах */
   initiative            INT,                 /* инициаива, определяет порядок действия в фазе атаки */
   equip_damage          INT,                 /* урон по эквипу */
-  equip_critical_damage INT                  /* шанс нанести критический урон по эквипу  */
+  equip_critical_damage INT,                 /* шанс нанести критический урон по эквипу  */
+  y_attach      INT,                          /* точка крепления оружия к точке крепления корпуса, по сути центр оружия */
+  x_attach      INT                          /* точка крепления оружия к точке крепления корпуса, по сути центр оружия */
 );
 
 CREATE TABLE ammunition_type (

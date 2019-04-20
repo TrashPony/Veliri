@@ -280,15 +280,16 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					squad.rectDebag.lineTo(-50, -25);
 			*/
 
-			height, width := float64(25), float64(40)
+			heightUserMove, widthUserMove := float64(moveUser.GetSquad().MatherShip.Body.Height), float64(moveUser.GetSquad().MatherShip.Body.Width)
+			heightUser, widthUser := float64(user.GetSquad().MatherShip.Body.Height), float64(user.GetSquad().MatherShip.Body.Width)
 
 			uX, uY := float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY)
 			mUserRect := rect{
 				sides: []sideRec{
-					{x1: mX - width, y1: mY - height, x2: mX - width, y2: mY + height},
-					{x1: mX - height, y1: mY + height, x2: mX + width, y2: mY + height},
-					{x1: mX + width, y1: mY + height, x2: mX + width, y2: mY - height},
-					{x1: mX + height, y1: mY - height, x2: mX - width, y2: mY - height},
+					{x1: mX - widthUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY + heightUserMove},
+					{x1: mX - heightUserMove, y1: mY + heightUserMove, x2: mX + widthUserMove, y2: mY + heightUserMove},
+					{x1: mX + widthUserMove, y1: mY + heightUserMove, x2: mX + widthUserMove, y2: mY - heightUserMove},
+					{x1: mX + heightUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY - heightUserMove},
 				},
 				centerX: float64(moveUser.GetSquad().GlobalX),
 				centerY: float64(moveUser.GetSquad().GlobalY),
@@ -296,10 +297,10 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 
 			userRect := rect{
 				sides: []sideRec{
-					{x1: uX - width, y1: uY - height, x2: uX - width, y2: uY + height},
-					{x1: uX - height, y1: uY + height, x2: uX + width, y2: uY + height},
-					{x1: uX + width, y1: uY + height, x2: uX + width, y2: uY - height},
-					{x1: uX + height, y1: uY - height, x2: uX - width, y2: uY - height},
+					{x1: uX - widthUser, y1: uY - heightUser, x2: uX - widthUser, y2: uY + heightUser},
+					{x1: uX - heightUser, y1: uY + heightUser, x2: uX + widthUser, y2: uY + heightUser},
+					{x1: uX + widthUser, y1: uY + heightUser, x2: uX + widthUser, y2: uY - heightUser},
+					{x1: uX + heightUser, y1: uY - heightUser, x2: uX - widthUser, y2: uY - heightUser},
 				},
 				centerX: float64(user.GetSquad().GlobalX),
 				centerY: float64(user.GetSquad().GlobalY),

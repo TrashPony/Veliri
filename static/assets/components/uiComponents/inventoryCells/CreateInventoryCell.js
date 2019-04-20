@@ -11,6 +11,11 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         cell.style.backgroundImage = "url(/assets/resource/detail/" + slotData.item.name + ".png)";
     } else if (slotData.type === "blueprints") {
         cell.style.backgroundImage = "url(/assets/blueprints/" + slotData.item.name + ".png)";
+    } else if (slotData.type === "body") {
+        cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)," +
+            " url(/assets/units/" + slotData.type + "/" + slotData.item.name + "_bottom.png)";
+    } else if (slotData.type === "equip"){
+        cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/icon/" + slotData.item.name + ".png)";
     } else {
         cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)";
     }

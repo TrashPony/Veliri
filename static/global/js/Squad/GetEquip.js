@@ -19,3 +19,12 @@ function GetEquip(typeSlot, numberSlot) {
         return game.squad.mather_ship.body.equippingV[numberSlot]
     }
 }
+
+function GetSpriteEqip(typeSlot, numberSlot) {
+    for (let i = 0; i < game.squad.sprite.equipSprites.length; i++) {
+        let slot = game.squad.sprite.equipSprites[i];
+        if (slot.slot.type_slot === typeSlot && slot.slot.number_slot === numberSlot) {
+            return slot
+        }
+    }
+}

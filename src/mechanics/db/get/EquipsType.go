@@ -22,7 +22,9 @@ func EquipsType() map[int]equip.Equip {
 		" max_hp," +
 		" steps_time," +
 		" size, " +
-		" initiative " +
+		" initiative," +
+		" x_attach," +
+		" y_attach " +
 		"" +
 		"FROM equipping_type ")
 	if err != nil {
@@ -38,7 +40,7 @@ func EquipsType() map[int]equip.Equip {
 		err := rows.Scan(&equipType.ID, &equipType.Name, &equipType.Active, &equipType.Specification,
 			&equipType.Applicable, &equipType.Region, &equipType.Radius, &equipType.TypeSlot, &equipType.Reload,
 			&equipType.Power, &equipType.UsePower, &equipType.MaxHP, &equipType.StepsTime, &equipType.Size,
-			&equipType.Initiative)
+			&equipType.Initiative, &equipType.XAttach, &equipType.YAttach)
 		if err != nil {
 			log.Fatal("get scan all type equip " + err.Error())
 		}

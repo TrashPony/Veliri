@@ -25,6 +25,8 @@ type Equip struct {
 	MiningChecker   bool             `json:"move_checker"`
 	MiningReservoir *resource.Map    `json:"mining_reservoir"`
 	miningExit      chan bool
+	XAttach         int `json:"x_attach"`
+	YAttach         int `json:"y_attach"`
 }
 
 func (e *Equip) CreateMining() {

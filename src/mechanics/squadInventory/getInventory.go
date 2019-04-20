@@ -9,6 +9,7 @@ import (
 )
 
 func GetInventory(client *player.Player) {
+
 	squads, err := get.UserSquads(client.GetID())
 	if err != nil {
 		println("error, get Squads")
@@ -26,38 +27,54 @@ func GetInventory(client *player.Player) {
 		}
 	} else {
 
+		if client.InBaseID == 0 {
+			return
+		}
+
 		storage, _ := storages.Storages.Get(client.GetID(), client.InBaseID)
 
 		findMS := false
 
 		// ищем тело в сторедже на базе
-		for _, slot := range storage.Slots {
-			if slot.Type == "body" {
-				body, _ := gameTypes.Bodies.GetByID(slot.ItemID) // MS
-				if body.MotherShip {
-					findMS = true
-					break
+		if storage != nil {
+			for _, slot := range storage.Slots {
+				if slot.Type == "body" {
+					body, _ := gameTypes.Bodies.GetByID(slot.ItemID) // MS
+					if body.MotherShip {
+						findMS = true
+						break
+					}
 				}
 			}
 		}
 
 		// если тела нет то надо выдать игроку стандартный набор снаряжения
 		if !findMS {
-			msBody, _ := gameTypes.Bodies.GetByID(2) // MS
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, msBody, "body",
-				msBody.ID, 1, msBody.MaxHP, msBody.CapacitySize*float32(1), msBody.MaxHP)
+			// ms ки
+			addBodyToStorage(5, client)
+			addBodyToStorage(6, client)
+			addBodyToStorage(7, client)
 
-			lightTank, _ := gameTypes.Bodies.GetByID(3) // L. tank
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, lightTank, "body",
-				lightTank.ID, 3, lightTank.MaxHP, lightTank.CapacitySize*float32(3), lightTank.MaxHP)
+			// юниты
+			addBodyToStorage(3, client)
+			addBodyToStorage(4, client)
+			addBodyToStorage(1, client)
 
-			miningLaser, _ := gameTypes.Equips.GetByID(6) // mining laser
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, miningLaser, "equip",
-				miningLaser.ID, 1, miningLaser.MaxHP, miningLaser.Size*float32(1), miningLaser.MaxHP)
+			addEquip(1, client)
+			addEquip(2, client)
+			addEquip(3, client)
+			addEquip(4, client)
+			addEquip(5, client)
+			addEquip(6, client)
+			addEquip(7, client)
+			addEquip(8, client)
 
-			smallMissile, _ := gameTypes.Weapons.GetByID(5) // weapon
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, smallMissile, "weapon",
-				smallMissile.ID, 3, smallMissile.MaxHP, smallMissile.Size*float32(3), smallMissile.MaxHP)
+			addWeapon(1, client)
+			addWeapon(2, client)
+			addWeapon(3, client)
+			addWeapon(4, client)
+			addWeapon(5, client)
+			addWeapon(6, client)
 
 			ammoMissile, _ := gameTypes.Ammo.GetByID(5) // weapon
 			storages.Storages.AddItem(client.GetID(), client.InBaseID, ammoMissile, "ammo",
@@ -68,4 +85,22 @@ func GetInventory(client *player.Player) {
 				enrichedThorium.TypeID, 500, 1, enrichedThorium.Size*float32(50), 1)
 		}
 	}
+}
+
+func addBodyToStorage(id int, client *player.Player) {
+	body, _ := gameTypes.Bodies.GetByID(id) // MS
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, body, "body",
+		body.ID, 1, body.MaxHP, body.CapacitySize*float32(1), body.MaxHP)
+}
+
+func addWeapon(id int, client *player.Player) {
+	smallMissile, _ := gameTypes.Weapons.GetByID(id) // weapon
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, smallMissile, "weapon",
+		smallMissile.ID, 1, smallMissile.MaxHP, smallMissile.Size*float32(3), smallMissile.MaxHP)
+}
+
+func addEquip(id int, client *player.Player) {
+	miningLaser, _ := gameTypes.Equips.GetByID(id) // mining laser
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, miningLaser, "equip",
+		miningLaser.ID, 1, miningLaser.MaxHP, miningLaser.Size*float32(1), miningLaser.MaxHP)
 }

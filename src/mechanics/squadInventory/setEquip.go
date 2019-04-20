@@ -28,6 +28,10 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 
 			equipSlot, ok := equipping[numEquipSlot]
 
+			if (newEquip.Applicable == "ore" || newEquip.Applicable == "digger") && !equipSlot.Mining {
+				return errors.New("wrong equip slot")
+			}
+
 			if ok && equipSlot.Type == typeEquipSlot {
 				// писос, но тут смотрить можно ли поставить из расчета свободной энергии, или в замену текущему эквипу
 				if (equipSlot.Equip != nil && body.MaxPower-body.GetUsePower()+equipSlot.Equip.Power >= newEquip.Power) ||

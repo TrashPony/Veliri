@@ -54,6 +54,9 @@ type Body struct {
 	RightBackAngle int `json:"right_back_angle"` /* градус отклонения для детектора колизий */
 
 	SideRadius int `json:"side_radius"` /* радиус боковой сферы мешины */
+
+	Height int `json:"height"`
+	Width  int `json:"width"`
 }
 
 func (body *Body) FindApplicableEquip(applicable string) *BodyEquipSlot {
@@ -225,6 +228,9 @@ type BodyEquipSlot struct {
 	HP             int                    `json:"hp"`
 	Target         *coordinate.Coordinate `json:"target"`
 	StandardSize   int                    `json:"standard_size"` /* определяет тип вмещаемого юнита если это ангар */
+	XAttach        int                    `json:"x_attach"`
+	YAttach        int                    `json:"y_attach"`
+	Mining         bool                   `json:"mining"`
 }
 
 type ThoriumSlot struct {
@@ -243,4 +249,6 @@ type BodyWeaponSlot struct {
 	AmmoQuantity int        `json:"ammo_quantity"`
 	InsertToDB   bool       `json:"insert_to_db"`
 	HP           int        `json:"hp"`
+	XAttach      int        `json:"x_attach"`
+	YAttach      int        `json:"y_attach"`
 }

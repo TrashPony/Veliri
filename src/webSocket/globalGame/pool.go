@@ -93,6 +93,19 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer = players.Users.Add(id, login)
 	}
 
+	if newPlayer.GetSquad() == nil {
+		// значит игрок оказался не там ибо на глобалке невозмоно быть без отряда
+		if newPlayer.LastBaseID > 0 {
+			// отправляем его на ближаюшую базу
+			IntoToBase(newPlayer, newPlayer.LastBaseID, ws)
+		} else {
+			// TODO иначе на респаун его фракции
+			IntoToBase(newPlayer, 1, ws)
+		}
+
+		return
+	}
+
 	globalGame.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
 
 	println("WS global Сессия: login: " + login + " id: " + strconv.Itoa(id))

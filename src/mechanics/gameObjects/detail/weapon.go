@@ -18,4 +18,6 @@ type Weapon struct {
 	Initiative          int     `json:"initiative"`
 	EquipDamage         int     `json:"equip_damage"`
 	EquipCriticalDamage int     `json:"equip_critical_damage"`
+	XAttach             int     `json:"x_attach"`
+	YAttach             int     `json:"y_attach"`
 }

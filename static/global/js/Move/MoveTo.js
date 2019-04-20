@@ -32,7 +32,6 @@ function MoveOther(jsonData) {
         if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
 
             if (!game.otherUsers[i].sprite) {
-                console.log("1")
                 CreateOtherUser(game.otherUsers[i]);
             }  else  {
                 game.add.tween(game.otherUsers[i].sprite).to({
@@ -48,14 +47,10 @@ function MoveOther(jsonData) {
 }
 
 function SetMSAngle(unit, angle, time) {
+    SetShadowAngle(unit, angle);
     if (angle > 180) {
         angle -= 360
     }
 
-    ShortDirectionRotateTween(unit.sprite.unitBody, Phaser.Math.degToRad(angle), time);
-    ShortDirectionRotateTween(unit.sprite.bodyShadow, Phaser.Math.degToRad(angle), time);
-    if (unit.sprite.weapon) {
-        ShortDirectionRotateTween(unit.sprite.weaponShadow, Phaser.Math.degToRad(angle), time);
-        ShortDirectionRotateTween(unit.sprite.weapon, Phaser.Math.degToRad(angle), time);
-    }
+    ShortDirectionRotateTween(unit.sprite, Phaser.Math.degToRad(angle), time);
 }

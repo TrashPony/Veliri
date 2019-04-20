@@ -23,6 +23,7 @@ function rotateUnitSprites(spriteRotate, needRotate, unit) {
         }
     }
 }
+
 // метод вычесления в какую сторону меньше поворачивать обьект
 function directionRotate(spriteAngle, rotate) {
     // true ++
@@ -50,11 +51,31 @@ function directionRotate(spriteAngle, rotate) {
 }
 
 function SetAngle(unit, angle) {
-    unit.sprite.unitBody.angle = angle;
-    unit.sprite.bodyShadow.angle = angle;
+    unit.sprite.angle = angle;
+    SetShadowAngle(unit, angle)
+}
+
+function SetShadowAngle(unit, angle) {
+    let shadowAngle = 45 - angle;
+    let connectPoints = PositionAttachSprite(shadowAngle, game.shadowXOffset);
+
+    unit.sprite.bodyShadow.x = connectPoints.x;
+    unit.sprite.bodyShadow.y = connectPoints.y;
+    unit.sprite.bodyBottomShadow.x = connectPoints.x;
+    unit.sprite.bodyBottomShadow.y = connectPoints.y;
 
     if (unit.sprite.weapon) {
-        unit.sprite.weaponShadow.angle = angle;
-        unit.sprite.weapon.angle = angle;
+        let connectWeapons = PositionAttachSprite(shadowAngle, game.shadowXOffset / 2);
+        unit.sprite.weaponShadow.x = connectWeapons.x + unit.sprite.weapon.xAttach;
+        unit.sprite.weaponShadow.y = connectWeapons.y + unit.sprite.weapon.yAttach;
+    }
+
+    for (let i = 0; i < unit.sprite.equipSprites.length; i++) {
+        let slot = unit.sprite.equipSprites[i];
+
+        let connectWeapons = PositionAttachSprite(shadowAngle, game.shadowXOffset / 4);
+        slot.shadow.x = connectWeapons.x + slot.xAttach;
+        slot.shadow.y = connectWeapons.y + slot.yAttach;
+        slot.shadow.angle = slot.sprite.angle;
     }
 }

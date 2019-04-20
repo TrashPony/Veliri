@@ -36,7 +36,9 @@ func BodiesType() map[int]detail.Body {
 		"body_back_radius, " +
 		"body_left_back_angle, " +
 		"body_right_back_angle, " +
-		"body_side_radius " +
+		"body_side_radius," +
+		"height," +
+		"width " +
 		"" +
 		"FROM body_type")
 	if err != nil {
@@ -79,6 +81,8 @@ func BodiesType() map[int]detail.Body {
 			&body.LeftBackAngle,
 			&body.RightBackAngle,
 			&body.SideRadius,
+			&body.Height,
+			&body.Width,
 		)
 		if err != nil {
 			log.Fatal("get scan all type body: " + err.Error())
@@ -117,7 +121,7 @@ func BodyThoriumSlots(body *detail.Body) {
 }
 
 func BodySlots(body *detail.Body) {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT type_slot, number_slot, weapon, weapon_type, standard_size "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT type_slot, number_slot, weapon, weapon_type, standard_size, x_attach, y_attach, mining "+
 		"FROM body_slots "+
 		"WHERE id_body = $1", body.ID)
 	if err != nil {
@@ -139,34 +143,36 @@ func BodySlots(body *detail.Body) {
 		var slotWeapon bool
 		var slotWeaponType string
 		var slotStandardSize int
+		var xAttach, yAttach int
+		var mining bool
 
-		err := rows.Scan(&slotType, &slotNumber, &slotWeapon, &slotWeaponType, &slotStandardSize)
+		err := rows.Scan(&slotType, &slotNumber, &slotWeapon, &slotWeaponType, &slotStandardSize, &xAttach, &yAttach, &mining)
 		if err != nil {
 			log.Fatal("get body slot " + err.Error())
 		}
 
 		if slotWeapon {
-			weaponSlot := detail.BodyWeaponSlot{Type: slotType, Number: slotNumber, WeaponType: slotWeaponType}
+			weaponSlot := detail.BodyWeaponSlot{Type: slotType, Number: slotNumber, WeaponType: slotWeaponType, XAttach: xAttach, YAttach: yAttach}
 			body.Weapons[slotNumber] = &weaponSlot
 		} else {
 			if slotType == 1 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, XAttach: xAttach, YAttach: yAttach, Mining: mining}
 				body.EquippingI[slotNumber] = &equipSlot
 			}
 			if slotType == 2 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, XAttach: xAttach, YAttach: yAttach, Mining: mining}
 				body.EquippingII[slotNumber] = &equipSlot
 			}
 			if slotType == 3 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, XAttach: xAttach, YAttach: yAttach, Mining: mining}
 				body.EquippingIII[slotNumber] = &equipSlot
 			}
 			if slotType == 4 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, StandardSize: slotStandardSize}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, StandardSize: slotStandardSize, XAttach: xAttach, YAttach: yAttach, Mining: mining}
 				body.EquippingIV[slotNumber] = &equipSlot
 			}
 			if slotType == 5 {
-				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber}
+				equipSlot := detail.BodyEquipSlot{Type: slotType, Number: slotNumber, XAttach: xAttach, YAttach: yAttach, Mining: mining}
 				body.EquippingV[slotNumber] = &equipSlot
 			}
 		}

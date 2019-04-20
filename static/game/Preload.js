@@ -24,14 +24,6 @@ function preload() {
     game.load.spritesheet('RepairKit', 'http://' + window.location.host + '/assets/equipAnimate/repair_kit_animate.png', 100, 100, 9);
     game.load.image('labelEffects', 'http://' + window.location.host + '/assets/effects/label_effects.png');
 
-    //MatherShips MotherTrucker
-    game.load.image('Mother', 'http://' + window.location.host + '/assets/units/body/Mother.png');
-
-    // Units
-    //body
-    game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');
-    game.load.image('medium_tank', 'http://' + window.location.host + '/assets/units/body/medium_tank.png');
-    game.load.image('light_tank', 'http://' + window.location.host + '/assets/units/body/light_tank.png');
     //weapon
     game.load.image('big_missile', 'http://' + window.location.host + '/assets/units/weapon/big_missile.png');
     game.load.image('artillery', 'http://' + window.location.host + '/assets/units/weapon/artillery.png');
@@ -51,6 +43,7 @@ function preload() {
 
     // equips
     game.load.image('digger', 'http://' + window.location.host + '/assets/units/equip/digger.png');
+    game.load.image('extracted', 'http://' + window.location.host + '/assets/units/equip/extracted.png');
 
     // Effects
     game.load.spritesheet('Smoke45Frames', 'http://' + window.location.host + '/assets/fire_effects/Smoke45Frames.png', 256, 256, 45);
@@ -226,5 +219,21 @@ function preload() {
     game.load.image('sectorOutIcon', 'http://' + window.location.host + '/assets/icons/sectorOutIcon.png');
     game.load.image('cancelIcon', 'http://' + window.location.host + '/assets/icons/cancelIcon.png');
     game.load.image('ammoCoordinate', 'http://' + window.location.host + '/assets/icons/ammoCoordinate.png');
+
+    //Bodies
+    game.load.image('MasherShip_1', 'http://' + window.location.host + '/assets/units/body/MasherShip_1.png');
+    game.load.image('MasherShip_1_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_bottom.png');
+
+    game.load.image('MasherShip_2', 'http://' + window.location.host + '/assets/units/body/MasherShip_2.png');
+    game.load.image('MasherShip_2_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_bottom.png');
+
+    game.load.image('MasherShip_3', 'http://' + window.location.host + '/assets/units/body/MasherShip_3.png');
+    game.load.image('MasherShip_3_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_bottom.png');
+
+    // Units
+    game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');
+    game.load.image('medium_tank', 'http://' + window.location.host + '/assets/units/body/medium_tank.png');
+    game.load.image('light_tank', 'http://' + window.location.host + '/assets/units/body/light_tank.png');
+
     autoPreload();
 }

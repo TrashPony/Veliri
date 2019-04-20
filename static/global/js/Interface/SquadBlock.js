@@ -154,7 +154,7 @@ function fillMiningBlock(unit) {
                     mining.style.visibility = "visible";
 
                     let equipBlock = document.createElement("div");
-                    equipBlock.style.background = "url(/assets/units/equip/" + equips[i].equip.name + ".png)" +
+                    equipBlock.style.background = "url(/assets/units/equip/icon/" + equips[i].equip.name + ".png)" +
                         " center center / contain no-repeat, rgba(76, 76, 76, 0.66)";
 
                     if (equips[i].equip.applicable === "ore") {

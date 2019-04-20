@@ -39,6 +39,11 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     cell.className = classPrefix + " active";
     cell.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
 
+    CreateEquipInBody(JSON.parse(cell.slotData));
+    if (JSON.parse(cell.slotData).mining) {
+        cell.style.boxShadow = "rgb(173, 177, 26) 0px 0px 4px 3px";
+    }
+
     $(cell).draggable({
         disabled: false,
         start: function () {
@@ -126,6 +131,11 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
 
         this.style.cursor = "auto";
         this.style.boxShadow = "0 0 10px rgba(0,0,0,1)";
+
+        if (JSON.parse(cell.slotData).mining) {
+            cell.style.boxShadow = "rgb(173, 177, 26) 0px 0px 4px 3px";
+        }
+
         let inventoryTip = document.getElementById("InventoryTipOver");
         if (inventoryTip) {
             inventoryTip.remove()
@@ -133,7 +143,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
     };
 
     if (JSON.parse(cell.slotData).equip !== null) {
-        cell.style.backgroundImage = "url(/assets/units/equip/" + JSON.parse(cell.slotData).equip.name + ".png)";
+        cell.style.backgroundImage = "url(/assets/units/equip/icon/" + JSON.parse(cell.slotData).equip.name + ".png)";
         cell.innerText = "";
         CreateHealBar(cell, "equip", true);
     } else {
@@ -156,6 +166,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
 function UpdateWeapon(cell, classPrefix) {
     cell.className = classPrefix + " active weapon";
     cell.style.boxShadow = "0 0 5px 3px rgb(255, 0, 0)";
+    cell.innerHTML = '';
 
     $(cell).draggable({
         disabled: false,

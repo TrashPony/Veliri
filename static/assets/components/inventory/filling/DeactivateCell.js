@@ -20,16 +20,19 @@ function NoActiveCell() {
     }
 
     let unitIcon = document.getElementById("MSIcon");
-    unitIcon.style.backgroundImage = null;
-    unitIcon.onclick = null;
-    unitIcon.shipBody = null;
 
-    unitIcon.innerHTML = "<span>Место для корпуса</span>";
+    if (unitIcon) {
+        unitIcon.style.backgroundImage = null;
+        unitIcon.onclick = null;
+        unitIcon.shipBody = null;
 
-    let powerPanel = document.getElementById("powerPanel");
-    powerPanel.innerHTML = "<span class='Value'> Энергия: <br>" + 0 + "/" + 0 + "</span>";
+        unitIcon.innerHTML = "<span>Место для корпуса</span>";
 
-    document.getElementById("MSWeaponPanel").innerHTML = "";
+        let powerPanel = document.getElementById("powerPanel");
+        powerPanel.innerHTML = "<span class='Value'> Энергия: <br>" + 0 + "/" + 0 + "</span>";
+
+        document.getElementById("MSWeaponPanel").innerHTML = "";
+    }
 }
 
 function NoActiveUnitCell(slotData) {

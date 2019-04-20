@@ -5,7 +5,7 @@ function SetEquip(equip, slot, source) {
             event: "SetMotherShipEquip",
             equip_id: Number(equip.id),
             inventory_slot: Number(slot),
-            equip_slot:  Number(slotData.number_slot),
+            equip_slot: Number(slotData.number_slot),
             equip_slot_type: Number(equip.type_slot),
             source: source,
         }));
@@ -13,7 +13,13 @@ function SetEquip(equip, slot, source) {
         DestroyInventoryClickEvent();
         DestroyInventoryTip();
     };
-    EquipSlotMark("inventoryEquip", "inventoryEquipping", equip.type_slot, 5, msFunc);
+
+    if (equip.applicable === "ore" || equip.applicable === "digger") {
+        EquipSlotMark("inventoryEquip", "inventoryEquipping", equip.type_slot, 5, msFunc, true);
+    } else {
+        EquipSlotMark("inventoryEquip", "inventoryEquipping", equip.type_slot, 5, msFunc, false);
+    }
+
 
     let constructorUnit = document.getElementById("ConstructorUnit");
     if (constructorUnit) {
@@ -24,7 +30,7 @@ function SetEquip(equip, slot, source) {
                 event: "SetUnitEquip",
                 equip_id: Number(equip.id),
                 inventory_slot: Number(slot),
-                equip_slot:  Number(slotData.number_slot),
+                equip_slot: Number(slotData.number_slot),
                 equip_slot_type: Number(equip.type_slot),
                 unit_slot: Number(unitSlot),
                 source: source,
@@ -33,15 +39,24 @@ function SetEquip(equip, slot, source) {
             DestroyInventoryClickEvent();
             DestroyInventoryTip();
         };
-        EquipSlotMark("UnitEquip", "UnitEquip", equip.type_slot, 3, unitFunc);
+
+        if (equip.applicable === "ore" || equip.applicable === "digger") {
+            EquipSlotMark("UnitEquip", "UnitEquip", equip.type_slot, 3, unitFunc, true);
+        } else {
+            EquipSlotMark("UnitEquip", "UnitEquip", equip.type_slot, 3, unitFunc, false);
+        }
     }
 }
 
-function EquipSlotMark(idPrefix, classPrefix, typeSlot, countSlots, func) {
+function EquipSlotMark(idPrefix, classPrefix, typeSlot, countSlots, func, mining) {
     for (let i = 1; i <= countSlots; i++) {
         let equipSlot = document.getElementById(idPrefix + Number(i) + typeSlot);
 
         if (equipSlot && $(equipSlot).hasClass("active") && !$(equipSlot).hasClass("weapon")) {
+
+            if (!JSON.parse(equipSlot.slotData).mining && mining) {
+                continue
+            }
 
             equipSlot.className = classPrefix + " active select";
             equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";

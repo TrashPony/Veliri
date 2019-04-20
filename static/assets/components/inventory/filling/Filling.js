@@ -1,6 +1,7 @@
 let size = 0;
 
 function FillingInventory(jsonData) {
+
     let event = JSON.parse(jsonData).event;
     let error = JSON.parse(jsonData).error;
 
@@ -10,6 +11,9 @@ function FillingInventory(jsonData) {
     }
 
     if (event === "openInventory" || event === "UpdateSquad") {
+
+        NoActiveCell();
+
         let squad = JSON.parse(jsonData).squad;
         fillSquadList(JSON.parse(jsonData).base_squads);
 

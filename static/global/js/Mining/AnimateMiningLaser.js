@@ -1,20 +1,35 @@
 function AnimateMiningLaser() {
 
     function animateLaser(squad, miningLaser) {
+
+        let targetX = (miningLaser.equipSprite.world.x / game.camera.scale.x - miningLaser.xy.x) * -1;
+        let targetY = (miningLaser.equipSprite.world.y / game.camera.scale.y - miningLaser.xy.y) * -1;
+
+        let angle = Phaser.Math.angleBetween(miningLaser.equipSprite.world.x / game.camera.scale.x, miningLaser.equipSprite.world.y / game.camera.scale.y, miningLaser.xy.x, miningLaser.xy.y) * Phaser.Math.RAD_TO_DEG;
+
+        miningLaser.attachPoint.angle = angle - squad.sprite.angle;
+        miningLaser.equipSprite.angle = angle - squad.sprite.angle;
+
+        miningLaser.out.angle = (360 - squad.sprite.angle) - miningLaser.attachPoint.angle;
+        miningLaser.in.angle = (360 - squad.sprite.angle) - miningLaser.attachPoint.angle;
+
         miningLaser.out.clear();
-        miningLaser.out.lineStyle(3, 0x10EDFF, 1);
-        miningLaser.out.moveTo(squad.sprite.x, squad.sprite.y);
-        miningLaser.out.lineTo(miningLaser.xy.x, miningLaser.xy.y);
+        miningLaser.out.lineStyle(9, 0x10EDFF, 1);
+        miningLaser.out.moveTo(0, 0);
+        miningLaser.out.lineTo(targetX * 4, targetY * 4);
 
         miningLaser.in.clear();
-        miningLaser.in.lineStyle(1, 0xFFFFFF, 1);
-        miningLaser.in.moveTo(squad.sprite.x, squad.sprite.y);
-        miningLaser.in.lineTo(miningLaser.xy.x, miningLaser.xy.y);
+        miningLaser.in.lineStyle(3, 0xFFFFFF, 1);
+        miningLaser.in.moveTo(0, 0);
+        miningLaser.in.lineTo(targetX * 4, targetY * 4);
     }
 
     if (game.squad && game.squad.miningLaser && game.squad.miningLaser.length > 0) {
         for (let i in game.squad.miningLaser) {
             if (game.squad.miningLaser[i]) {
+
+                //game.squad.miningLaser[i].equipSprite
+                //console.log(game.squad.miningLaser[i].equipSprite);
                 animateLaser(game.squad, game.squad.miningLaser[i])
             }
         }

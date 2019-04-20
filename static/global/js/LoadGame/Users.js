@@ -1,17 +1,17 @@
 function CreateUser(squad) {
     let x = squad.global_x;
     let y = squad.global_y;
-    let weaponName;
+    let weapon;
 
     for (let i in squad.mather_ship.body.weapons) {
         if (squad.mather_ship.body.weapons.hasOwnProperty(i) && squad.mather_ship.body.weapons[i].weapon) {
-            weaponName = squad.mather_ship.body.weapons[i].weapon.name
+            weapon = squad.mather_ship.body.weapons[i]
         }
     }
 
-    CreateSquad(squad, x, y, squad.mather_ship.body.name, weaponName, squad.mather_ship.rotate);
+    CreateSquad(squad, x, y, squad.mather_ship.body, weapon, squad.mather_ship.rotate);
     if (game && debug) {
-        // CreateMSGeo(squad);
+        CreateMSGeo(squad);
     }
     game.squad = squad;
 }
@@ -48,9 +48,16 @@ function CreateOtherUser(otherUser) {
         }
     }
 
+    let weapon;
+    for (let i in otherUser.body.weapons) {
+        if (otherUser.body.weapons.hasOwnProperty(i) && otherUser.body.weapons[i].weapon) {
+            weapon = otherUser.body.weapons[i]
+        }
+    }
+
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) {
-        CreateSquad(otherUser, x, y, otherUser.body_name, otherUser.weapon_name, otherUser.rotate);
+        CreateSquad(otherUser, x, y, otherUser.body.name, weapon, otherUser.rotate);
         if (game && debug) {
             CreateOtherMSGeo(otherUser);
         }

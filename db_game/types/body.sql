@@ -31,7 +31,9 @@ CREATE TABLE body_type (
   body_left_back_angle      INT,   /* градус отклонения для детектора колизий */
   body_right_back_angle     INT,   /* градус отклонения для детектора колизий */
 
-  body_side_radius          INT    /* радиус боковой сферы мешины */
+  body_side_radius          INT,   /* радиус боковой сферы мешины */
+  height                    int,   /* высота прямоуголника машинки */
+  width                     int    /* ширина прямоуголника машинки */
 );
 
 CREATE TABLE body_thorium_slots (
@@ -46,5 +48,8 @@ CREATE TABLE body_slots (
   number_slot   INT,                           /* номер слота в корпусе */
   weapon        BOOLEAN,                       /* труе если слот приналдлежит оружию */
   weapon_type   varchar(64),                   /* тип оружия например "artillery" */
-  standard_size INT                            /* определяет тип вмещаемого юнита если это ангар */
+  mining        BOOLEAN,                       /* если тру то сюда можно заталкать mining эквип это digger или ore */
+  standard_size INT,                           /* определяет тип вмещаемого юнита если это ангар */
+  x_attach      INT,                           /* точка крепления эквипа по х на корпус */
+  y_attach      INT                            /* точка крепления эквипа по у на корпус */
 );

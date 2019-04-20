@@ -6,7 +6,7 @@ function CreateCollision(graphics, body, angle, squad) {
     squad.rectDebag.clear();
     squad.rectDebag.lineStyle(1, 0xFF0000, 0.8);
 
-    let height = 25, width = 40;
+    let height = body.height, width =  body.width;
 
     squad.rectDebag.moveTo(-width, -height);
     squad.rectDebag.lineTo(-width, +height);

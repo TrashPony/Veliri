@@ -33,7 +33,7 @@ func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]squad.Pat
 
 	// копируем что бы не произошло вычетание топлива на расчетах
 	err := deepcopy.Copy(&fakeThoriumSlots, &user.GetSquad().MatherShip.Body.ThoriumSlots)
-	if err != nil {
+	if err != nil || len(fakeThoriumSlots) == 0 {
 		println(err.Error())
 		return nil, err
 	}

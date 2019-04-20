@@ -1,5 +1,7 @@
 function ConstructorTable(ms) {
 
+    UpdateShipIcon(ms);
+
     UpdateCells(1, "inventoryEquip", ms.body.equippingI, "inventoryEquipping");
     UpdateCells(2, "inventoryEquip", ms.body.equippingII, "inventoryEquipping");
     UpdateCells(3, "inventoryEquip", ms.body.equippingIII, "inventoryEquipping");
@@ -8,14 +10,14 @@ function ConstructorTable(ms) {
     UpdateCells(3, "inventoryEquip", ms.body.weapons, "inventoryEquipping");
     /* вепоны надо делать отдельно т.к. храняться отдельно*/
 
-    UpdateShipIcon(ms)
 }
 
 function UpdateShipIcon(ms) {
     let unitIcon = document.getElementById("MSIcon");
     unitIcon.innerHTML = "";
     unitIcon.shipBody = unitIcon;
-    unitIcon.style.backgroundImage = "url(/assets/units/body/" + ms.body.name + ".png)";
+    unitIcon.style.backgroundImage = "url(/assets/units/body/" + ms.body.name + ".png), url(/assets/units/body/" + ms.body.name + "_bottom.png)";
+
     unitIcon.slotData = JSON.stringify(ms);
 
     unitIcon.onclick = BodyMSMenu;
@@ -60,13 +62,25 @@ function CreateThoriumSlots(unitIcon, ms) {
     let div = document.createElement("div");
     div.id = "thorium";
 
+    let thoriumWrapper = document.createElement("div");
+    thoriumWrapper.id = "thoriumWrapper";
+    div.appendChild(thoriumWrapper);
+
+    let statWrapper = document.createElement("div");
+    statWrapper.id = "statWrapper";
+    thoriumWrapper.appendChild(statWrapper);
+
+    let thoriumSlotsWrapper = document.createElement("div");
+    thoriumSlotsWrapper.id = "thoriumSlotsWrapper";
+    thoriumWrapper.appendChild(thoriumSlotsWrapper);
+
     let speedEfficiency = document.createElement("div");
     speedEfficiency.id = "speedEfficiency";
-    div.appendChild(speedEfficiency);
+    statWrapper.appendChild(speedEfficiency);
 
     let thoriumEfficiency = document.createElement("div");
     thoriumEfficiency.id = "thoriumEfficiency";
-    div.appendChild(thoriumEfficiency);
+    statWrapper.appendChild(thoriumEfficiency);
 
     let countSlot = 0;
     let fullCount = 0;
@@ -128,7 +142,7 @@ function CreateThoriumSlots(unitIcon, ms) {
             }
         };
 
-        div.appendChild(thoriumSlots);
+        thoriumSlotsWrapper.appendChild(thoriumSlots);
     }
 
     let efficiencyCalc = 0;
@@ -148,8 +162,6 @@ function CreateThoriumSlots(unitIcon, ms) {
 
     thoriumEfficiency.innerHTML = (thoriumEfficiencyCalc).toFixed(0) + "%";
     speedEfficiency.innerHTML = efficiencyCalc.toFixed(0) + "%";
-
-    div.style.left = "calc(50% - " + (countSlot * 34) / 2 + "px)";
 
     unitIcon.appendChild(div);
 }
