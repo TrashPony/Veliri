@@ -128,7 +128,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 								res.MapID = mp.Id
 								mpCoordinate.Move = false
 
-								maps.AddResourceInMap(mp, res)
+								mp.AddResourceInMap(res)
 							}
 						}
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/TrashPony/Veliri/src/auth"
+	globalGameGenerators "github.com/TrashPony/Veliri/src/mechanics/globalGame/generators"
 	"github.com/TrashPony/Veliri/src/uploadFiles"
 	"github.com/TrashPony/Veliri/src/webSocket"
 	"github.com/TrashPony/Veliri/src/webSocket/chat"
@@ -41,6 +42,8 @@ func main() {
 	go field.Sender()
 
 	go globalGame.MoveSender()
+
+	go globalGameGenerators.GenerateObjectsMap()
 
 	go ai.AnomaliesLife()   // запускает работу аномалий на карте
 	go ai.SkyGenerator()    // запускает генерацию облаков на картах, небо тоже немножко аи)

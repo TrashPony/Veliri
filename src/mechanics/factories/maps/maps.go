@@ -37,10 +37,10 @@ func newMapStore() *mapStore {
 			}
 		}
 
-		if mp.Global { // если карта глобальная генерим на ней ресурсы
-			anomalyGenerator(mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
-			resourceGenerator(mp)
-		}
+		//if mp.Global { // если карта глобальная генерим на ней ресурсы
+		//	anomalyGenerator(mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
+		//	resourceGenerator(mp)
+		//}
 
 		mp.Respawns = respawns
 		m.maps[id] = mp
@@ -120,4 +120,33 @@ func (m *mapStore) GetRandomMap() *_map.Map {
 		count++
 	}
 	return nil
+}
+
+func (m *mapStore) GetAllMapAnomaly(mapID int) []*anomaly.Anomaly {
+	return Maps.anomaly[mapID]
+}
+
+func (m *mapStore) AddNewAnomaly(newAnomaly *anomaly.Anomaly, mapID int) {
+	if m.anomaly[mapID] == nil {
+		m.anomaly[mapID] = make([]*anomaly.Anomaly, 0)
+	}
+
+	m.anomaly[mapID] = append(m.anomaly[mapID], newAnomaly)
+}
+
+func (m *mapStore) GetMapAnomaly(mapID, q, r int) *anomaly.Anomaly {
+	for _, anomalyMap := range Maps.anomaly[mapID] {
+		if anomalyMap != nil && anomalyMap.GetQ() == q && anomalyMap.GetR() == r {
+			return anomalyMap
+		}
+	}
+	return nil
+}
+
+func (m *mapStore) RemoveMapAnomaly(mapID, q, r int) {
+	for i, anomalyMap := range Maps.anomaly[mapID] {
+		if anomalyMap != nil && anomalyMap.GetQ() == q && anomalyMap.GetR() == r {
+			Maps.anomaly[mapID][i] = nil
+		}
+	}
 }

@@ -57,7 +57,7 @@ function CreateOtherUser(otherUser) {
 
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) {
-        CreateSquad(otherUser, x, y, otherUser.body.name, weapon, otherUser.rotate);
+        CreateSquad(otherUser, x, y, otherUser.body, weapon, otherUser.rotate);
         if (game && debug) {
             CreateOtherMSGeo(otherUser);
         }

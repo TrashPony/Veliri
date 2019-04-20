@@ -170,3 +170,12 @@ func (mp *Map) GetMaxPriorityObject() int {
 
 	return max
 }
+
+func (mp *Map) AddResourceInMap(reservoir *resource.Map) {
+	if mp.Reservoir[reservoir.Q] != nil {
+		mp.Reservoir[reservoir.Q][reservoir.R] = reservoir
+	} else {
+		mp.Reservoir[reservoir.Q] = make(map[int]*resource.Map)
+		mp.Reservoir[reservoir.Q][reservoir.R] = reservoir
+	}
+}
