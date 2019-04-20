@@ -20,7 +20,6 @@ func GenerateObjectsMap() {
 }
 
 func resourceGenerator(mp *_map.Map) {
-	// TODO берем все карты
 
 	allTypeResource := gameTypes.Resource.GetAllTypeMapResource()
 
@@ -51,7 +50,9 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 			newRes.Rotate = rand.Intn(360)
 			newRes.MapID = mp.Id
 
-			mp.OneLayerMap[coordinate.Q][coordinate.R].Move = false // т.к. на координате ресурс то координата не проходима
+			if !newRes.Move() {
+				mp.OneLayerMap[coordinate.Q][coordinate.R].Move = false // т.к. на координате ресурс то координата не проходима
+			}
 
 			mp.AddResourceInMap(newRes)
 		}

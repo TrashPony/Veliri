@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-const RespBots = 1
+const RespBots = 2
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -29,7 +29,7 @@ func InitAI() {
 		for _, mapBase := range mapBases {
 			for i := 0; i < RespBots; i++ {
 				go respBot(mapBase, mp)
-				time.Sleep(15 * time.Second)
+				time.Sleep(5 * time.Second)
 			}
 		}
 	}
@@ -163,7 +163,10 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		// имитация бурной деятельности)
 
 		// сектор
-		//toSector = mp.GetRandomEntrySector()
+		//toSector := mp.GetEntryTySector(2)
+		//if toSector == nil {
+		//	return nil
+		//}
 		//toX, toY = globalGame.GetXYCenterHex(toSector.Q, toSector.R)
 
 		// база
@@ -209,11 +212,11 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
 	// проверка на то что х, у достижимы
 	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true)
-	//println("достижимость: ", possible)
 	if possible {
 		path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
 		return path
 	} else {
+		println("достижимость: ", possible, bot.GetSquad().MapID, toX, toY)
 		bot.GlobalPath = nil
 		return nil
 	}
@@ -221,7 +224,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
 func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
-	if scale < 10 {
+	if scale < 5 {
 		return nil
 	}
 
@@ -231,7 +234,7 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale)
 
 	if len(path) == 0 {
-		return aiSearchPath(toX, toY, startX, startY, scale-10, bot, mp)
+		return aiSearchPath(toX, toY, startX, startY, scale-5, bot, mp)
 	} else {
 		return path
 	}

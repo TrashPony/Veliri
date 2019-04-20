@@ -103,7 +103,10 @@ func ReservoirMapType() map[int]resource.Map {
 		"mtr.type, " +
 		"mtrc.id_base_resource, " +
 		"mtrc.max_count, " +
-		"mtrc.min_count " +
+		"mtrc.min_count, " +
+		"mtrc.full_move," +
+		"mtrc.middle_move," +
+		"mtrc.low_move " +
 		" " +
 		"FROM map_type_resource mtr, map_type_resource_count mtrc " +
 		"WHERE mtr.id = mtrc.id")
@@ -118,7 +121,7 @@ func ReservoirMapType() map[int]resource.Map {
 		var reservoirTypeMap resource.Map
 
 		err := rows.Scan(&reservoirTypeMap.TypeID, &reservoirTypeMap.Name, &reservoirTypeMap.Type, &reservoirTypeMap.ResourceID,
-			&reservoirTypeMap.MaxCount, &reservoirTypeMap.MinCount)
+			&reservoirTypeMap.MaxCount, &reservoirTypeMap.MinCount, &reservoirTypeMap.FullMove, &reservoirTypeMap.MiddleMove, &reservoirTypeMap.LowMove)
 		if err != nil {
 			log.Fatal("get all recycled resource type  " + err.Error())
 		}

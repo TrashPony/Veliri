@@ -68,7 +68,7 @@ function CreateMap() {
 function CreateAllFogOfWar() {
     game.bmdFogOfWar.clear();
     for (let i in game.mapPoints) {
-        if (game.mapPoints[i].fogOfWar) {
+        if (game.mapPoints[i].fogOfWar && game.typeService === "battle") {
             CreateFowOfWar(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
         }
     }

@@ -114,8 +114,6 @@ function CreateEquip(squadBody, squad) {
                 slot: slot,
                 attachPoint: attachPoint
             });
-
-            console.log(slot)
         }
     };
 

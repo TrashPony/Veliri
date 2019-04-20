@@ -19,13 +19,43 @@ function CreateReservoir(reservoir, q, r) {
         }
     }
 
-    if (reservoir.type === "oil") {
-        game.map.reservoir[q][r].sprite = gameObjectCreate(xy.x, xy.y, reservoir.name, 50, false, reservoir.rotate,
-            0, 0, game.floorOverObjectLayer)
+    let reservoirTexture = reservoir.name;
+    let shadow = false;
+    let shadowXOffset = 0;
+    let shadowYOffset = 0;
+    let group = game.floorObjectLayer;
+
+    let full = 100 / ((reservoir.max_count - reservoir.min_count) / (reservoir.count - reservoir.min_count));
+    if (full < 34) {
+
+        if (!reservoir.low_move) {
+            shadow = true;
+            group = game.floorOverObjectLayer;
+        }
+
+        reservoirTexture += "_low"
+    } else if (full < 67) {
+
+        if (!reservoir.middle_move) {
+            shadow = true;
+            group = game.floorOverObjectLayer;
+            shadowXOffset = -3;
+            shadowYOffset = -3;
+        }
+
+        reservoirTexture += "_middle"
     } else {
-        game.map.reservoir[q][r].sprite = gameObjectCreate(xy.x, xy.y, reservoir.name, 50, true, reservoir.rotate,
-            0, 0, game.floorOverObjectLayer);
+
+        if (!reservoir.full_move) {
+            shadow = true;
+            group = game.floorOverObjectLayer;
+        }
+
+        reservoirTexture += "_full"
     }
+
+    game.map.reservoir[q][r].sprite = gameObjectCreate(xy.x, xy.y, reservoirTexture, 20, shadow, reservoir.rotate,
+        0, 0, group, shadowXOffset, shadowYOffset, 40);
 
     game.map.reservoir[q][r].sprite.inputEnabled = true;
     game.map.reservoir[q][r].sprite.input.pixelPerfectOver = true;
@@ -35,9 +65,9 @@ function CreateReservoir(reservoir, q, r) {
     let reservoirLine;
 
     game.map.reservoir[q][r].sprite.events.onInputOver.add(function () {
-        reservoirLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, reservoir.name);
+        reservoirLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, reservoirTexture);
         reservoirLine.anchor.setTo(0.5);
-        reservoirLine.scale.set(0.55/2);
+        reservoirLine.scale.set(0.11);
         reservoirLine.tint = 0x00FF00;
         reservoirLine.angle = reservoir.rotate;
 

@@ -74,7 +74,7 @@ function ThoriumBar(thoriumSlots) {
         speedEfficiency.style.color = "#FF0000";
     } else if (efficiencyCalc <= 66) {
         speedEfficiency.style.color = "#FFF000";
-    } else if (efficiencyCalc === 100) {
+    } else if (efficiencyCalc <= 100) {
         speedEfficiency.style.color = "#00FF00";
     }
 

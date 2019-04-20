@@ -38,7 +38,12 @@ CREATE TABLE map_type_resource_count (/* немного ебана назван�
   id_map_resource_type INT REFERENCES map_type_resource (id),
   id_base_resource     INT REFERENCES resource_type (id),
   max_count            INT, /* количество в конкретной жиле выберает рандомом ПЕРЕД СОЗДАНИЕМ ё*/
-  min_count            INT
+  min_count            INT,
+
+  -- у ресурса есть 3 состояния это 0%-33%, 34%-66, 67-100% его заполнения. От этого может зависить его проходимость на карте
+  full_move       BOOLEAN,
+  middle_move     BOOLEAN,
+  low_move        BOOLEAN
 );
 
 -- CREATE TABLE map_resource (

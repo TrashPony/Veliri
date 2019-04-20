@@ -78,6 +78,11 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 	if fast {
 		for _, qLine := range mp.Reservoir {
 			for _, reservoir := range qLine {
+
+				if reservoir.Move() {
+					continue
+				}
+
 				reservoirX, reservoirY := GetXYCenterHex(reservoir.Q, reservoir.R)
 				dist := int(GetBetweenDist(x, y, reservoirX, reservoirY))
 				if dist < body.FrontRadius+reservoirRadius {
@@ -89,6 +94,11 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 	} else {
 		for _, qLine := range mp.Reservoir {
 			for _, reservoir := range qLine {
+
+				if reservoir.Move() {
+					continue
+				}
+
 				reservoirX, reservoirY := GetXYCenterHex(reservoir.Q, reservoir.R)
 
 				dist := int(GetBetweenDist(x, y, reservoirX, reservoirY))

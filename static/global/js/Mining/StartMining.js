@@ -42,9 +42,6 @@ function StartMining(jsonData) {
             progressBar.style.animation = "reload " + jsonData.seconds + "s linear 1";
         }, 10);
 
-        console.log(game.squad.sprite.equipSprites[1].slot.number_slot);
-
-
         game.squad.miningLaser.push({
             out: laserOut,
             in: laserIn,

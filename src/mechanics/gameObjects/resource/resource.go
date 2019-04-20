@@ -17,6 +17,28 @@ type Map struct {
 	DestroyTime time.Time `json:"destroy_time"`
 	MaxCount    int       `json:"max_count"`
 	MinCount    int       `json:"min_count"`
+	FullMove    bool      `json:"full_move"`
+	MiddleMove  bool      `json:"middle_move"`
+	LowMove     bool      `json:"low_move"`
+}
+
+func (r *Map) Move() bool {
+	full := 100 / ((r.MaxCount - r.MinCount) / ((r.Count + 1) - r.MinCount))
+	if full < 34 {
+		if !r.LowMove {
+			return false
+		}
+	} else if full < 67 {
+		if !r.MiddleMove {
+			return false
+		}
+	} else {
+		if !r.FullMove {
+			return false
+		}
+	}
+
+	return true
 }
 
 type Resource struct {

@@ -100,12 +100,27 @@ function preload() {
     game.load.image('buttonRotate', 'http://' + window.location.host + '/assets/buttons/rotate.png');
 
     // Reservoir
-    game.load.image('copper_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/copper_ore.png');
+    game.load.image('copper_ore_low', 'http://' + window.location.host + '/assets/resource/map_sprites/copper_ore/low.png');
+    game.load.image('copper_ore_middle', 'http://' + window.location.host + '/assets/resource/map_sprites/copper_ore/middle.png');
+    game.load.image('copper_ore_full', 'http://' + window.location.host + '/assets/resource/map_sprites/copper_ore/full.png');
+
     game.load.image('oil', 'http://' + window.location.host + '/assets/resource/map_sprites/oil.png');
-    game.load.image('silicon_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/silicon_ore.png');
-    game.load.image('iron_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/iron_ore.png');
-    game.load.image('thorium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore.png');
-    game.load.image('titanium_ore', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore.png');
+
+    game.load.image('silicon_ore_low', 'http://' + window.location.host + '/assets/resource/map_sprites/silicon_ore/low.png');
+    game.load.image('silicon_ore_middle', 'http://' + window.location.host + '/assets/resource/map_sprites/silicon_ore/middle.png');
+    game.load.image('silicon_ore_full', 'http://' + window.location.host + '/assets/resource/map_sprites/silicon_ore/full.png');
+
+    game.load.image('iron_ore_low', 'http://' + window.location.host + '/assets/resource/map_sprites/iron_ore/low.png');
+    game.load.image('iron_ore_middle', 'http://' + window.location.host + '/assets/resource/map_sprites/iron_ore/middle.png');
+    game.load.image('iron_ore_full', 'http://' + window.location.host + '/assets/resource/map_sprites/iron_ore/full.png');
+
+    game.load.image('thorium_ore_low', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore/low.png');
+    game.load.image('thorium_ore_middle', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore/middle.png');
+    game.load.image('thorium_ore_full', 'http://' + window.location.host + '/assets/resource/map_sprites/thorium_ore/full.png');
+
+    game.load.image('titanium_ore_low', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore/low.png');
+    game.load.image('titanium_ore_middle', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore/middle.png');
+    game.load.image('titanium_ore_full', 'http://' + window.location.host + '/assets/resource/map_sprites/titanium_ore/full.png');
 
     game.load.image('infoAnomaly', 'http://' + window.location.host + '/assets/info.png');
 
