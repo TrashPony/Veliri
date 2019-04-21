@@ -76,12 +76,8 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport
 }
 
 function destroyAllSelectedSprite() {
-    game.redactorButton.forEach(function (c) {
-        c.kill();
-    });
-    game.SelectLayer.forEach(function (c) {
-        c.kill();
-    });
+    clear(game.redactorButton);
+    clear(game.SelectLayer);
 }
 
 function stopRadiusAnimate(center, radius) {

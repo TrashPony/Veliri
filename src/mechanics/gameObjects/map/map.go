@@ -42,6 +42,18 @@ func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {
 	for {
 		// TODO возможны проблемы))
 		count := 0
+		entryCount := 0
+
+		for _, entry := range mp.HandlersCoordinates {
+			if entry.Handler == "base" {
+				entryCount++
+			}
+		}
+
+		if entryCount == 0 {
+			return nil
+		}
+
 		count2 := rand.Intn(len(mp.HandlersCoordinates))
 		for _, entry := range mp.HandlersCoordinates {
 			if count == count2 && entry.Handler == "base" {

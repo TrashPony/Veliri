@@ -45,6 +45,7 @@ function selectMap() {
 }
 
 function createGame(jsonMessage) {
+
     if (game) {
         UpdateMap(JSON.parse(jsonMessage).map, game, JSON.parse(jsonMessage).bases);
     } else {
@@ -59,8 +60,7 @@ function createGame(jsonMessage) {
             CreateAnomalies(JSON.parse(jsonMessage).map.anomalies)
         };
 
-        game = CreateGame(JSON.parse(jsonMessage).map, loadFunc);
-        game.typeService = "mapEditor";
+        game = CreateGame(JSON.parse(jsonMessage).map, loadFunc, "mapEditor");
         game.bases = JSON.parse(jsonMessage).bases;
     }
 }

@@ -193,7 +193,7 @@ function SelectWork(jsonData) {
 
     // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
     // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер
-    if (jsonData.count === 0){
+    if (jsonData.count === 0) {
         document.getElementById("bpName").innerHTML = "";
         document.getElementById("bpIcon").style.backgroundImage = "none";
         document.getElementById("bpCraftTime").innerHTML = "";
@@ -314,7 +314,7 @@ function SelectBP(jsonData) {
 
 function fillHeadWorkbench(jsonData, needMark) {
     document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
-    document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.name + ".png)";
+    document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.icon + ".png)";
 
     let itemPreview = document.getElementById("itemPreview");
 
@@ -326,6 +326,11 @@ function fillHeadWorkbench(jsonData, needMark) {
         itemPreview.style.backgroundImage = "url(/assets/resource/detail/" + jsonData.bp_item.name + ".png)";
     } else if (jsonData.blue_print.item_type === "blueprints") {
         itemPreview.style.backgroundImage = "url(/assets/blueprints/" + jsonData.bp_item.name + ".png)";
+    } else if (jsonData.blue_print.item_type === "body") {
+        itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)," +
+            " url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + "_bottom.png)";
+    } else if (jsonData.blue_print.item_type === "equip") {
+        itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/icon/" + jsonData.bp_item.name + ".png)";
     } else {
         itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)";
     }

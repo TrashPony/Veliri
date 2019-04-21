@@ -19,6 +19,11 @@ type Blueprint struct {
 	Steel           int    `json:"steel"`
 	Wire            int    `json:"wire"`
 	Electronics     int    `json:"electronics"`
+	Wires           int    `json:"wires"`
+	Gear            int    `json:"gear"`
+	TitaniumPlate   int    `json:"titanium_plate"`
+	Batteries       int    `json:"batteries"`
+	ArmorItems      int    `json:"armor_items"`
 }
 
 func (b *Blueprint) GetEnrichedThorium() int {
@@ -55,4 +60,24 @@ func (b *Blueprint) GetWire() int {
 
 func (b *Blueprint) GetElectronics() int {
 	return b.Electronics
+}
+
+func (b *Blueprint) GetWires() int {
+	return b.Wires
+}
+
+func (b *Blueprint) GetGear() int {
+	return b.Gear
+}
+
+func (b *Blueprint) GetTitaniumPlate() int {
+	return b.TitaniumPlate
+}
+
+func (b *Blueprint) GetBatteries() int {
+	return b.Batteries
+}
+
+func (b *Blueprint) GetArmorItems() int {
+	return b.ArmorItems
 }

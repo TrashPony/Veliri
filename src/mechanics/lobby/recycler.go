@@ -25,6 +25,11 @@ type Resourcer interface {
 	GetSteel() int
 	GetWire() int
 	GetElectronics() int
+	GetWires() int
+	GetGear() int
+	GetTitaniumPlate() int
+	GetBatteries() int
+	GetArmorItems() int
 }
 
 func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
@@ -177,5 +182,25 @@ func ParseItems(itemsPool *[]*inventory.Slot, percent int, resourcer Resourcer, 
 
 	if resourcer.GetElectronics() > 0 {
 		appendDetail(gameTypes.Resource.GetDetailByName("electronics"), resourcer.GetElectronics())
+	}
+
+	if resourcer.GetWires() > 0 {
+		appendDetail(gameTypes.Resource.GetDetailByName("wires"), resourcer.GetWires())
+	}
+
+	if resourcer.GetGear() > 0 {
+		appendDetail(gameTypes.Resource.GetDetailByName("gear"), resourcer.GetGear())
+	}
+
+	if resourcer.GetTitaniumPlate() > 0 {
+		appendDetail(gameTypes.Resource.GetDetailByName("titanium_plate"), resourcer.GetTitaniumPlate())
+	}
+
+	if resourcer.GetBatteries() > 0 {
+		appendDetail(gameTypes.Resource.GetDetailByName("batteries"), resourcer.GetBatteries())
+	}
+
+	if resourcer.GetArmorItems() > 0 {
+		appendDetail(gameTypes.Resource.GetDetailByName("armor_items"), resourcer.GetArmorItems())
 	}
 }

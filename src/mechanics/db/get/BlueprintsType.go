@@ -26,7 +26,12 @@ func BlueprintsType() map[int]blueprints.Blueprint {
 		" steel, " +
 		" wire," +
 		" count," +
-		" electronics " +
+		" electronics," +
+		" wires," +
+		" gear," +
+		" titanium_plate," +
+		" batteries," +
+		" armor_items " +
 		"" +
 		"FROM blueprints")
 	if err != nil {
@@ -43,7 +48,8 @@ func BlueprintsType() map[int]blueprints.Blueprint {
 			&blueprintType.Icon, &blueprintType.CraftTime, &blueprintType.Original, &blueprintType.Copies,
 			&blueprintType.EnrichedThorium, &blueprintType.Iron, &blueprintType.Copper, &blueprintType.Titanium,
 			&blueprintType.Silicon, &blueprintType.Plastic, &blueprintType.Steel, &blueprintType.Wire,
-			&blueprintType.Count, &blueprintType.Electronics)
+			&blueprintType.Count, &blueprintType.Electronics, &blueprintType.Wires, &blueprintType.Gear,
+			&blueprintType.TitaniumPlate, &blueprintType.Batteries, &blueprintType.ArmorItems)
 		if err != nil {
 			log.Fatal("get scan all blueprints type " + err.Error())
 		}

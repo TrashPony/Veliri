@@ -1,6 +1,7 @@
 function UpdateMap(newMap, game, bases) {
+
     removeSubMenus();
-    // TODO нехуя не работает
+
     let clear = function (group) {
         while (group && group.children.length > 0) {
             let sprite = group.children.shift();
@@ -35,6 +36,13 @@ function UpdateMap(newMap, game, bases) {
     CreateMiniMap();
     CreateMap();
     CreateGeoData(game.map.geo_data);
+}
+
+function clear(group) {
+    while (group && group.children.length > 0) {
+        let sprite = group.children.shift();
+        sprite.destroy();
+    }
 }
 
 function removeSubMenus() {

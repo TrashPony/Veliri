@@ -235,7 +235,6 @@ func Reader(ws *websocket.Conn) {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
 			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
 			mapEditor.PlaceTextures(coordinateMap, mapChange, msg.TextureName)
-			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeOverTexture" {

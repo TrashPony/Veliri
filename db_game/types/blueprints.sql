@@ -1,4 +1,5 @@
-CREATE TABLE blueprints (
+CREATE TABLE blueprints
+(
   id               SERIAL PRIMARY KEY,
   name             VARCHAR(64),
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
@@ -28,11 +29,17 @@ CREATE TABLE blueprints (
 
   ---- детали
   steel            int         not null default 0,
-  wire             int         not null default 0,
-  electronics      int         not null default 0
+  wire             int         not null default 0, -- провода
+  electronics      int         not null default 0,
+  wires            int         not null default 0, -- проволока
+  gear             int         not null default 0,
+  titanium_plate   int         not null default 0,
+  batteries        int         not null default 0,
+  armor_items      int         not null default 0
 );
 
-CREATE TABLE created_blueprint (
+CREATE TABLE created_blueprint
+(
   id                        SERIAL PRIMARY KEY,
   /* определяет итем который будет на выходе */
   id_blueprint              INT REFERENCES blueprints (id),

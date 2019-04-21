@@ -32,9 +32,11 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 	var noSortedPath []*SearchMap
 
 	for {
+
 		if len(openPoints) <= 0 {
 			return nil, nil
 		}
+
 		current := getOpenPoint(openPoints) // Берем точку с мин стоимостью пути
 		if current.ID == end.ID {           // если текущая точка и есть конец начинаем генерить путь
 			for !(current.ID == start.ID) {
@@ -58,7 +60,7 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 			if mp == nil && closePoints[mp.Id] == nil && openPoints[mp.Id] == nil {
 				continue
 			}
-
+			//TODO fatal error: out of memory когда есть сектор к оторый нет перехода
 			openPoints[mp.Id] = &SearchMap{
 				ID:     mp.Id,
 				Map:    mp,
@@ -80,6 +82,7 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 	for i := 0; i < len(path); i++ {
 		if i+1 < len(path) {
 			transitionPoint := path[i].Map.GetEntryTySector(path[i+1].ID)
+			transitionPoint.MapID = path[i].Map.Id
 			transitionPoints = append(transitionPoints, transitionPoint)
 		}
 	}

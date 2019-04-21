@@ -91,6 +91,26 @@ func (r *Resource) GetElectronics() int {
 	return 0
 }
 
+func (r *Resource) GetWires() int {
+	return 0
+}
+
+func (r *Resource) GetGear() int {
+	return 0
+}
+
+func (r *Resource) GetTitaniumPlate() int {
+	return 0
+}
+
+func (r *Resource) GetBatteries() int {
+	return 0
+}
+
+func (r *Resource) GetArmorItems() int {
+	return 0
+}
+
 type RecycledResource struct {
 	TypeID int     `json:"type_id"`
 	Name   string  `json:"name"`

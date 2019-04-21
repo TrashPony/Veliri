@@ -144,6 +144,7 @@ func Transport(bot *player.Player) {
 						// если у бота есть цель то она выросла на 1 пройденный сектор)
 						bot.CurrentPoint++
 						bot.GetSquad().ActualPath = nil
+						break
 					}
 
 					if !bot.GetSquad().MoveChecker {
@@ -176,6 +177,11 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		// база в другом секторе
 		randMap := maps.Maps.GetRandomMap()
 		randEntryBase := randMap.GetRandomEntryBase()
+
+		if randEntryBase == nil || randEntryBase.ID == 0 {
+			return nil
+		}
+
 		if randMap.Id == bot.GetSquad().MapID {
 			toX, toY = globalGame.GetXYCenterHex(randEntryBase.Q, randEntryBase.R)
 		} else {
@@ -200,7 +206,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		//toX, toY = rand.Intn(xSize), rand.Intn(ySize)
 
 	} else {
-		if len(bot.GlobalPath) > bot.CurrentPoint {
+		if len(bot.GlobalPath) > bot.CurrentPoint && bot.GlobalPath[bot.CurrentPoint].MapID == bot.GetSquad().MapID {
 			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
 		} else {
 			bot.GlobalPath = nil
@@ -224,7 +230,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
 func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 
-	if scale < 5 {
+	if scale < 10 {
 		return nil
 	}
 
@@ -234,7 +240,7 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale)
 
 	if len(path) == 0 {
-		return aiSearchPath(toX, toY, startX, startY, scale-5, bot, mp)
+		return aiSearchPath(toX, toY, startX, startY, scale-10, bot, mp)
 	} else {
 		return path
 	}

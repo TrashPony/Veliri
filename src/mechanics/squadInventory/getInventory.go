@@ -76,31 +76,69 @@ func GetInventory(client *player.Player) {
 			addWeapon(5, client)
 			addWeapon(6, client)
 
-			ammoMissile, _ := gameTypes.Ammo.GetByID(5) // weapon
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, ammoMissile, "ammo",
-				ammoMissile.ID, 50, 1, ammoMissile.Size*float32(50), 1)
+			getAmmo(1, client)
+			getAmmo(2, client)
+			getAmmo(3, client)
+			getAmmo(4, client)
+			getAmmo(5, client)
+			getAmmo(6, client)
 
-			enrichedThorium, _ := gameTypes.Resource.GetRecycledByID(1) // топляк
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, enrichedThorium, "recycle",
-				enrichedThorium.TypeID, 500, 1, enrichedThorium.Size*float32(50), 1)
+			getResource(1, client) // топливо
+			getResource(2, client)
+			getResource(3, client)
+			getResource(4, client)
+			getResource(5, client)
+			getResource(6, client)
+
+			getBox(1, client)
+			getBox(2, client)
+			getBox(3, client)
+
+			for i := 1; i < 36; i++ {
+				getBlueprints(i, client)
+			}
 		}
 	}
 }
 
 func addBodyToStorage(id int, client *player.Player) {
-	body, _ := gameTypes.Bodies.GetByID(id) // MS
+	body, _ := gameTypes.Bodies.GetByID(id)
 	storages.Storages.AddItem(client.GetID(), client.InBaseID, body, "body",
 		body.ID, 1, body.MaxHP, body.CapacitySize*float32(1), body.MaxHP)
 }
 
 func addWeapon(id int, client *player.Player) {
-	smallMissile, _ := gameTypes.Weapons.GetByID(id) // weapon
-	storages.Storages.AddItem(client.GetID(), client.InBaseID, smallMissile, "weapon",
-		smallMissile.ID, 1, smallMissile.MaxHP, smallMissile.Size*float32(3), smallMissile.MaxHP)
+	weapon, _ := gameTypes.Weapons.GetByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, weapon, "weapon",
+		weapon.ID, 1, weapon.MaxHP, weapon.Size*float32(1), weapon.MaxHP)
 }
 
 func addEquip(id int, client *player.Player) {
-	miningLaser, _ := gameTypes.Equips.GetByID(id) // mining laser
-	storages.Storages.AddItem(client.GetID(), client.InBaseID, miningLaser, "equip",
-		miningLaser.ID, 1, miningLaser.MaxHP, miningLaser.Size*float32(1), miningLaser.MaxHP)
+	equip, _ := gameTypes.Equips.GetByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, equip, "equip",
+		equip.ID, 1, equip.MaxHP, equip.Size*float32(1), equip.MaxHP)
+}
+
+func getAmmo(id int, client *player.Player) {
+	ammo, _ := gameTypes.Ammo.GetByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, ammo, "ammo",
+		ammo.ID, 50, 1, ammo.Size*float32(50), 1)
+}
+
+func getResource(id int, client *player.Player) {
+	res, _ := gameTypes.Resource.GetRecycledByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, res, "recycle",
+		res.TypeID, 500, 1, res.Size*float32(500), 1)
+}
+
+func getBox(id int, client *player.Player) {
+	box, _ := gameTypes.Boxes.GetByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, box, "recycle",
+		box.TypeID, 2, 1, box.FoldSize*float32(2), 1)
+}
+
+func getBlueprints(id int, client *player.Player) {
+	bp, _ := gameTypes.BluePrints.GetByID(id)
+	storages.Storages.AddItem(client.GetID(), client.InBaseID, bp, "blueprints",
+		bp.ID, 2, 1, 0, 1)
 }
