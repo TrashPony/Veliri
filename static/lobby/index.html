@@ -34,6 +34,9 @@
 
     <script src="../assets/components/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
+    <script src="../assets/components/chat/ViewGroups.js"></script>
+    <script src="../assets/components/chat/OpenChat.js"></script>
+    <script src="../assets/components/chat/Message.js"></script>
 
     <script src="../assets/components/inventory/Init.js"></script>
     <script src="../assets/components/MouseOver.js"></script>
@@ -66,12 +69,19 @@
     <div onclick="Logout()" style="background-image: url('./img/logOut.png')"></div>
 </div>
 <div id="chat">
-    <div class="tabs"></div>
+    <div class="tabs" id="chatTabs">
+        <div id="chatTabsLeftArrow" onclick="document.getElementById('tabsGroup').scrollLeft -= 20;"><</div>
+        <div id="tabsGroupWrapper">
+            <div id="tabsGroup"></div>
+        </div>
+        <div id="chatTabsRightArrow" onclick="document.getElementById('tabsGroup').scrollLeft += 20;">></div>
+    </div>
     <div class="topButton" onclick="HideChat()"> _</div>
     <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
+    <div class="topButton" onmousedown="ViewAllGroups()"> +</div>
     <div id="chatBox"></div>
     <div id="usersBox"></div>
-    <input type="text" placeholder="message" id="chatInput"
+    <input type="text" placeholder=" message..." id="chatInput"
            onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
     <script>ConnectChat()</script>
 </div>

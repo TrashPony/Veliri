@@ -51,23 +51,29 @@ type Player struct {
 	ToLeave      bool                     `json:"to_leave"`
 	LocalPact    int                      `json:"local_pact"`
 	Fraction     string                   `json:"fraction"`
+	AvatarIcon   string                   `json:"avatar_icon"` // путь к аватару
 }
 
 type ShortUserInfo struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	SquadID  string       `json:"squad_id"`
-	UserName string       `json:"user_name"`
-	X        int          `json:"x"`
-	Y        int          `json:"y"`
-	Q        int          `json:"q"`
-	R        int          `json:"r"`
-	Rotate   int          `json:"rotate"`
-	Body     *detail.Body `json:"body"`
+	SquadID    string       `json:"squad_id"`
+	UserName   string       `json:"user_name"`
+	X          int          `json:"x"`
+	Y          int          `json:"y"`
+	Q          int          `json:"q"`
+	R          int          `json:"r"`
+	Rotate     int          `json:"rotate"`
+	Body       *detail.Body `json:"body"`
+	AvatarIcon string       `json:"avatar_icon"` // путь к аватару
+	Fraction   string       `json:"fraction"`
 }
 
 func (client *Player) GetShortUserInfo() *ShortUserInfo {
 	var hostile ShortUserInfo
+
+	hostile.AvatarIcon = client.AvatarIcon
+	hostile.Fraction = client.Fraction
 
 	if client == nil || client.GetSquad() == nil || client.GetSquad().MatherShip == nil || client.GetSquad().MatherShip.Body == nil {
 		return nil

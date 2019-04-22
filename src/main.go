@@ -34,6 +34,8 @@ func main() {
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/"))) // раздача статичный файлов
 
+	globalGameGenerators.GenerateObjectsMap()
+
 	go lobby.ReposeSender()
 	go lobby.WorkerChecker()
 
@@ -42,8 +44,6 @@ func main() {
 	go field.Sender()
 
 	go globalGame.MoveSender()
-
-	go globalGameGenerators.GenerateObjectsMap()
 
 	go ai.AnomaliesLife()   // запускает работу аномалий на карте
 	go ai.SkyGenerator()    // запускает генерацию облаков на картах, небо тоже немножко аи)

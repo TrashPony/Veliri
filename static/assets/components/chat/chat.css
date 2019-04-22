@@ -12,17 +12,91 @@
     left: 15px;
 }
 
-#chat .topButton:nth-child(2){
+#chat .topButton:nth-child(2) {
     font-size: 22px;
     line-height: 0;
 }
 
 #chat .tabs {
     height: 15px;
-    width: 220px;
+    width: 200px;
     float: left;
     margin: 2px 0;
     user-select: none;
+    position: relative;
+}
+
+#chatTabsLeftArrow, #chatTabsRightArrow {
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    color: #f9ff00;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    font-size: 20px;
+    line-height: 15px;
+    font-weight: 900;
+    top: 0;
+}
+
+#chatTabsRightArrow {
+    right: 0;
+}
+
+#chatTabsLeftArrow:hover, #chatTabsRightArrow:hover {
+    color: #00ffdf;
+}
+
+#chatTabsLeftArrow:active, #chatTabsRightArrow:active {
+    transform: scale(0.95);
+}
+
+
+#tabsGroup {
+    height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 6px;
+    padding-bottom: 4px;
+    position: relative;
+    top: -2px;
+    margin-left: 16px;
+    text-align: left;
+}
+
+#tabsGroupWrapper {
+    height: 15px;
+    width: 184px;
+}
+
+#tabsGroup div {
+    height: 16px;
+    display: inline-block;
+    font-size: 12px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border: 1px solid rgb(58, 96, 134);
+    margin-left: -1px;
+    color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 -1px 0 black;
+    user-select: none;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding: 0 7px;
+    line-height: 17px;
+}
+
+.actionChatTab {
+    color: #00efff !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+}
+
+#tabsGroup div:hover {
+    color: #ffb60f;
+}
+
+#tabsGroup div:active {
+    transform: scale(0.95);
 }
 
 #chat input {
@@ -38,18 +112,19 @@
 }
 
 #chat input::placeholder {
-    color: rgba(255, 239, 15, 0.34);
+    color: rgb(126, 127, 149);
+    font-size: 15px;
 }
 
 #chatBox, #usersBox {
-    padding: 10px;
+    padding: 5px;
     word-wrap: break-word;
     overflow-y: scroll;
     border-radius: 5px 9px 9px 0;
     text-align: left;
     margin: auto auto 2px 3px;
     width: 195px;
-    height: 125px;
+    height: 135px;
     text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
     font-size: 9pt;
@@ -62,7 +137,9 @@
     border-top-left-radius: 0;
     float: right;
     margin: auto 3px 2px 0;
-    width: 57px;
+    width: 86px;
+    padding: 0;
+    height: 145px;
 }
 
 .ChatUserName {
@@ -71,4 +148,131 @@
 
 .ChatText {
     color: #ffef0f;
+}
+
+#chat .topButton {
+    margin-right: 3px;
+}
+
+#allGroupsWindow {
+    top: 20%;
+    left: calc(50% - 100px);
+    height: 300px;
+    width: 200px;
+    position: absolute;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    border: 1px solid #25a0e1;
+    border-radius: 5px;
+    padding: 0 5px 5px 5px;
+}
+
+#allGroupsWindow .topButton {
+    margin-top: 5px;
+}
+
+#allGroupsWindow h3 {
+    display: block;
+    height: 17px;
+    background: linear-gradient(0deg, red, yellow);
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    font-size: 15px;
+    margin: 3px 3px 0 3px;
+    font-weight: 100;
+    padding: 0 5px;
+}
+
+#allGroupsWindow input {
+    margin-top: 3px;
+    float: left;
+}
+
+#allGroupsWindow input:active {
+    transform: scale(0.95);
+}
+
+#ViewChatGroups {
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    width: 100%;
+    height: 255px;
+    float: left;
+    margin-top: 3px;
+}
+
+.chatGroup {
+    transition: 0.2s;
+    height: 25px;
+    border-radius: 5px;
+    width: 190px;
+    float: left;
+    padding: 2px 5px 2px;
+    color: #ff7800;
+    font-size: 15px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.chatGroup:hover {
+    background: linear-gradient(22deg, rgba(183, 195, 201, 0.29), rgba(183, 195, 201, 0.29));
+}
+
+.chatGroup:active {
+    transform: scale(0.95)
+}
+
+.chatGroup > div {
+    float: left;
+}
+
+.chatLogo {
+    height: 25px;
+    width: 25px;
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 5px;
+    background-size: contain;
+}
+
+.chatName {
+    width: 80px;
+    line-height: 25px;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.chatPlayerCount {
+    width: 60px;
+    line-height: 25px;
+    text-align: left;
+    color: #cfdede;
+}
+
+.chatUserLine {
+    white-space: nowrap;
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    height: 25px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.chatUserLine div {
+    display: inline-block;
+}
+
+
+.chatUserIcon {
+    height: 25px;
+    width: 25px;
+    background: rgba(0, 0, 0, 0.3);
+    float: left;
+    box-shadow: inset 0 0 5px black;
+}
+
+.chatUserName {
+    line-height: 35px;
+    margin-left: 2px;
 }
