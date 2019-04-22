@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/chatGroup"
 	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
+	"time"
 )
 
 var chatPipe = make(chan chatMessage)
@@ -34,7 +35,30 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	Reader(ws)
 }
 
-// TODO воркер который мониторить онлайн игроки или нет
+func UserOnlineChecker() {
+	for {
+		for _, group := range chats.Groups.GetAllGroups() {
+			update := false
+			for id := range group.Users {
+				chatUser := chat.Clients.GetByID(id)
+				if group.Users[id] && chatUser == nil {
+					group.Users[id] = false
+					update = true
+				}
+
+				if !group.Users[id] && chatUser != nil {
+					group.Users[id] = true
+					update = true
+				}
+			}
+			if update {
+				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group))
+			}
+		}
+
+		time.Sleep(1 * time.Second)
+	}
+}
 
 func Reader(ws *websocket.Conn) {
 	for {
@@ -60,16 +84,8 @@ func Reader(ws *websocket.Conn) {
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
 
 					group := chats.Groups.GetGroup(msg.GroupID)
-					users := make([]*player.ShortUserInfo, 0)
 
-					for id := range group.Users {
-						chatUser, ok := players.Users.Get(id)
-						if ok {
-							users = append(users, chatUser.GetShortUserInfo())
-						}
-					}
-
-					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, users)
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group))
 				}
 			}
 
@@ -81,12 +97,32 @@ func Reader(ws *websocket.Conn) {
 
 			if msg.Event == "NewChatMessage" {
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
-					// добавляем в историю, отправляем не сообщение текстом а обьект
-					SendMessage(msg.Event, msg.Message, 0, msg.GroupID, nil, nil, nil)
+					// добавляем в историю, отправляем не сообщение текстом а обьектом
+					group := chats.Groups.GetGroup(msg.GroupID)
+
+					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
+					group.History = append(group.History, &chatMessage)
+
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil)
 				}
 			}
 		}
 	}
+}
+
+func getUsersInChatGroup(group *chatGroup.Group) []*player.ShortUserInfo {
+	users := make([]*player.ShortUserInfo, 0)
+
+	for id := range group.Users {
+		chatUser := chat.Clients.GetByID(id)
+		if chatUser != nil {
+			users = append(users, chatUser.GetShortUserInfo(false))
+		} else {
+			group.Users[id] = false
+		}
+	}
+
+	return users
 }
 
 func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID int, group *chatGroup.Group, groups map[int]*chatGroup.Group, users []*player.ShortUserInfo) {

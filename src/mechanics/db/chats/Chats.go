@@ -33,6 +33,7 @@ func Chats() map[int]*chatGroup.Group {
 		}
 
 		getUsersChat(&gameChat)
+		gameChat.History = make([]*chatGroup.Message, 0)
 		allChats[gameChat.ID] = &gameChat
 	}
 
@@ -61,5 +62,13 @@ func getUsersChat(gameChat *chatGroup.Group) {
 		}
 
 		gameChat.Users[userID] = false // при поднятие сервера все игроки не онлайн
+	}
+}
+
+func AddUserInChat(idChat, idUser int) {
+	_, err := dbConnect.GetDBConnect().Exec("INSERT INTO users_in_chat (id_chat, id_user) VALUES ($1, $2)",
+		idChat, idUser)
+	if err != nil {
+		log.Fatal("add new user in chat" + err.Error())
 	}
 }

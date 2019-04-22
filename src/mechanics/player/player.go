@@ -69,11 +69,16 @@ type ShortUserInfo struct {
 	Fraction   string       `json:"fraction"`
 }
 
-func (client *Player) GetShortUserInfo() *ShortUserInfo {
+func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {
 	var hostile ShortUserInfo
 
 	hostile.AvatarIcon = client.AvatarIcon
 	hostile.Fraction = client.Fraction
+	hostile.UserName = client.GetLogin()
+
+	if !squad {
+		return &hostile
+	}
 
 	if client == nil || client.GetSquad() == nil || client.GetSquad().MatherShip == nil || client.GetSquad().MatherShip.Body == nil {
 		return nil
@@ -85,13 +90,11 @@ func (client *Player) GetShortUserInfo() *ShortUserInfo {
 		hostile.SquadID = strconv.Itoa(client.GetSquad().ID)
 	}
 
-	hostile.UserName = client.GetLogin()
 	hostile.X = client.GetSquad().GlobalX
 	hostile.Y = client.GetSquad().GlobalY
 	hostile.Q = client.GetSquad().Q
 	hostile.R = client.GetSquad().R
 	hostile.Rotate = client.GetSquad().MatherShip.Rotate
-
 	hostile.Body, _ = gameTypes.Bodies.GetByID(client.GetSquad().MatherShip.Body.ID)
 
 	if client.GetSquad().MatherShip.GetWeaponSlot() != nil && client.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {

@@ -259,6 +259,10 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
+.chatUserLine:hover{
+    background: rgba(0, 0, 0, 0.2);
+}
+
 .chatUserLine div {
     display: inline-block;
 }
@@ -275,4 +279,24 @@
 .chatUserName {
     line-height: 35px;
     margin-left: 2px;
+}
+
+.chatMessage {
+    margin-bottom: 3px;
+    clear: both;
+    min-height: 25px;
+}
+
+.chatMessage .chatUserIcon{
+    margin-right: 5px;
+}
+
+.alertChatTab {
+    animation: shadow  2s infinite ease-in-out;
+}
+
+@keyframes shadow {
+    from {color: #ff7800;}
+    50% {color: #ecffa7;}
+    to {color: #ff7800;}
 }

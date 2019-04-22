@@ -36,15 +36,24 @@ function ChangeCanal(id) {
 
 function OpenCanal(group, users) {
     //загрузка юзеров, загрузка истории сообщений
-    let usersBox = document.getElementById('usersBox');
-    usersBox.innerHTML = '';
-    for (let i in users) {
-        usersBox.innerHTML += `<div class="chatUserLine"><div class="chatUserIcon"></div><div class="chatUserName">${users[i].user_name}</div></div>`;
-    }
+
+    updateUsers(users);
 
     let chatBox = document.getElementById("chatBox");
     chatBox.innerHTML = '';
-    for (let i = 0; i < group.history.length; i++) {
+    for (let i = 0; group.history && i < group.history.length; i++) {
         NewChatMessage(group.history[i], group.id)
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function updateUsers(users) {
+    let usersBox = document.getElementById('usersBox');
+    usersBox.innerHTML = '';
+    for (let i in users) {
+        if (users.hasOwnProperty(i) && users[i]) {
+            usersBox.innerHTML += `<div class="chatUserLine"><div class="chatUserIcon"></div><div class="chatUserName">${users[i].user_name}</div></div>`;
+        }
     }
 }

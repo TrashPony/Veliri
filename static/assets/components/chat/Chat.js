@@ -40,4 +40,8 @@ function ChatReader(data) {
     if (data.event === 'NewChatMessage') {
         NewChatMessage(data.message, data.group_id)
     }
+
+    if (data.event === "UpdateUsers") {
+        updateUsers(data.users)
+    }
 }

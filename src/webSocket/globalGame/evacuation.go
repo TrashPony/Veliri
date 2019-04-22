@@ -53,7 +53,7 @@ func evacuationSquad(ws *websocket.Conn) {
 			return
 		}
 
-		go SendMessage(Message{Event: "startMoveEvacuation", OtherUser: user.GetShortUserInfo(),
+		go SendMessage(Message{Event: "startMoveEvacuation", OtherUser: user.GetShortUserInfo(true),
 			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию взлета)
 
@@ -73,7 +73,7 @@ func evacuationSquad(ws *websocket.Conn) {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		go SendMessage(Message{Event: "placeEvacuation", OtherUser: user.GetShortUserInfo(), BaseID: baseID,
+		go SendMessage(Message{Event: "placeEvacuation", OtherUser: user.GetShortUserInfo(true), BaseID: baseID,
 			TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
@@ -91,7 +91,7 @@ func evacuationSquad(ws *websocket.Conn) {
 				return
 			}
 
-			go SendMessage(Message{Event: "ReturnEvacuation", OtherUser: user.GetShortUserInfo(), PathUnit: pathUnit,
+			go SendMessage(Message{Event: "ReturnEvacuation", OtherUser: user.GetShortUserInfo(true), PathUnit: pathUnit,
 				BaseID: baseID, TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 
 			transport.X = pathUnit.X
@@ -102,7 +102,7 @@ func evacuationSquad(ws *websocket.Conn) {
 			time.Sleep(100 * time.Millisecond)
 		}
 
-		go SendMessage(Message{Event: "stopEvacuation", OtherUser: user.GetShortUserInfo(), BaseID: baseID,
+		go SendMessage(Message{Event: "stopEvacuation", OtherUser: user.GetShortUserInfo(true), BaseID: baseID,
 			TransportID: transport.ID, IDMap: user.GetSquad().MapID})
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 

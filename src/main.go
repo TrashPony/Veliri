@@ -40,6 +40,7 @@ func main() {
 	go lobby.WorkerChecker()
 
 	go chat.CommonChatSender()
+	go chat.UserOnlineChecker()
 
 	go field.Sender()
 

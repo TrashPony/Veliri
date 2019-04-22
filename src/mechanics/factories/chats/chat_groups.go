@@ -54,7 +54,7 @@ func (g *groups) SubscribeGroup(groupID int, user *player.Player, password strin
 	for _, group := range g.groups {
 		if group.ID == groupID && (group.Public || group.Password == password) {
 			group.Users[user.GetID()] = true // при подключение игрок онайн
-			// TODO обновление в бд
+			chats.AddUserInChat(group.ID, user.GetID())
 		}
 	}
 

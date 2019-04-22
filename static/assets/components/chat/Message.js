@@ -13,24 +13,22 @@ function chatMessage() {
 }
 
 function NewChatMessage(message, id) {
+
     if (id === currentChatID) {
-        // TODO добавляем сообющения в окно
-        // let event = JSON.parse(jsonMessage).event;
-        //
-        // if (event === "NewChatMessage") {
-        //     let chatBox = document.getElementById("chatBox");
-        //     let UserName = document.createElement("span");
-        //     UserName.className = "ChatUserName";
-        //     UserName.innerHTML = JSON.parse(jsonMessage).game_user + ":";
-        //     let TextMessage = document.createElement("span");
-        //     TextMessage.className = "ChatText";
-        //     TextMessage.innerHTML = JSON.parse(jsonMessage).message;
-        //     chatBox.appendChild(UserName);
-        //     chatBox.appendChild(TextMessage);
-        //     chatBox.appendChild(document.createElement("br"));
-        // }
+        let chatBox = document.getElementById("chatBox");
+
+        chatBox.innerHTML += `
+            <div class="chatMessage">
+            
+                <div class="chatUserIcon"></div>
+                <span class="ChatUserName">${message.user_name} > </span>
+                <span class="ChatText">${message.message}</span>
+            
+            </div>
+        `;
     } else {
-        // TODO делаем таб группы мигающим
+        let chatTab = document.getElementById('chat' + id);
+        if (chatTab) chatTab.className = 'alertChatTab';
     }
 }
 

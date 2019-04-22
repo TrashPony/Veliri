@@ -12,7 +12,7 @@ func DisconnectUser(user *player.Player, ws *websocket.Conn, onlyMessage bool) {
 	}
 
 	if user != nil && user.GetSquad() != nil {
-		go SendMessage(Message{Event: "DisconnectUser", OtherUser: user.GetShortUserInfo(),
+		go SendMessage(Message{Event: "DisconnectUser", OtherUser: user.GetShortUserInfo(true),
 			IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
 	}
 }

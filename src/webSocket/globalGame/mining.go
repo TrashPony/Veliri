@@ -35,7 +35,7 @@ func startMining(ws *websocket.Conn, msg Message) {
 		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
 		if int(dist) < miningEquip.Equip.Radius*100 && !miningEquip.Equip.MiningChecker {
 
-			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Equip.Reload,
+			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Equip.Reload,
 				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MapID})
 
 			miningEquip.Equip.MiningChecker = true
@@ -66,7 +66,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 			case exitNow := <-miningEquip.GetMining():
 				if exitNow {
 					// игрок сам отменить копание
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
 						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
@@ -74,7 +74,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 				if ws == nil || globalGame.Clients.GetByWs(ws) == nil {
 					// игрок вышел
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
 						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
@@ -84,7 +84,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 				if int(dist) > miningEquip.Radius*100 {
 					// игрок уехал слишком далеко
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
 						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 					exit = true
 				}
@@ -135,17 +135,17 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
-			go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+			go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
 				TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
 
 			maps.Maps.RemoveReservoirByQR(reservoir.Q, reservoir.R, reservoir.MapID)
-			go SendMessage(Message{Event: "destroyReservoir", OtherUser: user.GetShortUserInfo(), Q: reservoir.Q,
+			go SendMessage(Message{Event: "destroyReservoir", OtherUser: user.GetShortUserInfo(true), Q: reservoir.Q,
 				R: reservoir.R, IDMap: user.GetSquad().MapID})
 
 			miningEquip.MiningChecker = false
 			return
 		} else {
-			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(), Seconds: miningEquip.Reload,
+			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
 				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MapID})
 		}
 	}
