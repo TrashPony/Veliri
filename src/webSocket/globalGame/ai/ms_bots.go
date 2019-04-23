@@ -132,6 +132,7 @@ func Transport(bot *player.Player) {
 
 			for i := 0; path != nil && i < len(path); i++ {
 				if exit {
+					bot.GetSquad().ActualPath = nil
 					break
 				}
 				wsGlobal.Move(bot.GetFakeWS(), wsGlobal.Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
@@ -148,6 +149,7 @@ func Transport(bot *player.Player) {
 					}
 
 					if !bot.GetSquad().MoveChecker {
+						bot.GetSquad().ActualPath = nil
 						break
 					}
 				}

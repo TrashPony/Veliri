@@ -73,7 +73,7 @@ function preload() {
     game.load.image('MarkTarget', 'http://' + window.location.host + '/assets/select/aim.png');
 
     // Fonts
-    game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');
+    //game.load.bitmapFont('carrier_command', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.png', 'https://examples.phaser.io/assets/fonts/bitmapFonts/carrier_command.xml');
 
     //Bar
     game.load.image('healBar', 'http://' + window.location.host + '/assets/bar/healBar.png');
@@ -212,6 +212,12 @@ function preload() {
     game.load.image('road_2_5', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_5.png');
     game.load.image('road_2_6', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_6.png');
     game.load.image('road_2_7', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_7.png');
+
+    // bases
+    game.load.image('explores_base', 'http://' + window.location.host + '/assets/map/objects/bases/explores_base.png');
+    game.load.image('replics_base', 'http://' + window.location.host + '/assets/map/objects/bases/replics_base.png');
+    game.load.image('reverses_base', 'http://' + window.location.host + '/assets/map/objects/bases/reverses_base.png');
+    game.load.image('bottom_base', 'http://' + window.location.host + '/assets/map/objects/bases/bottom_base.png');
 
     //Clouds
     game.load.image('cloud0', 'http://' + window.location.host + '/assets/map/clouds/cloud13.png');

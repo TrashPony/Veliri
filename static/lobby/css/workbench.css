@@ -4,6 +4,11 @@
     padding: 23px 3px 3px 3px;
 }
 
+#Workbench .RecycleSection {
+    float: left;
+    width: 100%;
+}
+
 #Workbench #bluePrints, #Workbench #detailWork, #currentCrafts {
     box-shadow: inset 0 0 5px black;
     background: #8cb3c7;
@@ -84,7 +89,7 @@
     background-size: contain;
 }
 
-#itemPreview span{
+#itemPreview span {
     float: right;
     color: #ffffff;
     line-height: 114px;
