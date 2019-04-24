@@ -4,18 +4,15 @@ function OpenChat(data) {
     if (document.getElementById("allGroupsWindow")) document.getElementById("allGroupsWindow").remove();
 
     let tabs = document.getElementById('tabsGroup');
-    tabs.innerHTML = '';
+
+    // вкладка локального чата
+    tabs.innerHTML = `<div id="chat0" onclick="ChangeCanal(0)">Локальный</div>`;
 
     for (let i in data.groups) {
-
-        if (currentChatID === 0) {
-            currentChatID = data.groups[i].id;
-        }
-
         tabs.innerHTML += `<div id="chat${data.groups[i].id}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
     }
 
-    ChangeCanal(currentChatID);
+    ChangeCanal(0); // открываем по умолчанию локальный чат
 }
 
 function ChangeCanal(id) {
@@ -37,10 +34,14 @@ function ChangeCanal(id) {
 function OpenCanal(group, users) {
     //загрузка юзеров, загрузка истории сообщений
 
-    updateUsers(users);
+    updateUsers(group, users);
 
     let chatBox = document.getElementById("chatBox");
     chatBox.innerHTML = '';
+
+    if (currentChatID === 0)
+        systemMessage("Вы входите на территорию " + group.name);
+
     for (let i = 0; group.history && i < group.history.length; i++) {
         NewChatMessage(group.history[i], group.id)
     }
@@ -48,7 +49,10 @@ function OpenCanal(group, users) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function updateUsers(users) {
+function updateUsers(group, users) {
+
+    if (currentChatID !== group.id) return;
+
     let usersBox = document.getElementById('usersBox');
     usersBox.innerHTML = '';
     for (let i in users) {
@@ -56,4 +60,14 @@ function updateUsers(users) {
             usersBox.innerHTML += `<div class="chatUserLine"><div class="chatUserIcon"></div><div class="chatUserName">${users[i].user_name}</div></div>`;
         }
     }
+}
+
+function systemMessage(text) {
+    let chatBox = document.getElementById("chatBox");
+
+    chatBox.innerHTML += `
+            <div class="chatMessage">
+                <span class="chatSystem">${text}</span>
+            </div>
+        `;
 }

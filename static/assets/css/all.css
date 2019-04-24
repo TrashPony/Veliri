@@ -60,6 +60,19 @@ input:hover {
     filter: drop-shadow(0px 0px 2px #000000);
 }
 
+.ui-resizable-handle.ui-resizable-ne {
+    z-index: 90;
+    border-top: 2px solid #def4ff;
+    border-right: 2px solid #def4ff;
+    border-top-right-radius: 12px;
+    width: 30px;
+    height: 30px;
+    top: -3px;
+    right: -3px;
+    background-image: none;
+    filter: drop-shadow(0px 0px 2px #000000);
+}
+
 .ui-resizable-s {
     cursor: s-resize;
     height: 3px;

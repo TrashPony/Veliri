@@ -9,6 +9,7 @@ function ConnectChat() {
         chat.send(JSON.stringify({
             event: "OpenChat",
         }));
+        initChatInterface();
     };
 
     chat.onmessage = function (msg) {
@@ -22,6 +23,24 @@ function ConnectChat() {
     chat.onclose = function (msg) {
         console.log("Disconnected chat - status " + this.readyState);
     };
+}
+
+function initChatInterface() {
+    let chat = $('#chat');
+    chat.resizable({
+        minHeight: 200,
+        minWidth: 300,
+        handles: "se, ne",
+        resize: function (event, ui) {
+            $(this).find('#chatBox').css("height", $(this).height() - 65);
+            $(this).find('#usersBox').css("height", $(this).height() - 55);
+
+            $(this).find('#chatBox').css("width", $(this).width() - 140);
+            $(this).find('#chatInput').css("width", $(this).width() - 16);
+            $(this).find('#tabsGroupWrapper').css("width", $(this).width() - 116);
+            $(this).find('#chatTabs').css("width", $(this).width() - 100);
+        }
+    });
 }
 
 function ChatReader(data) {
@@ -42,6 +61,10 @@ function ChatReader(data) {
     }
 
     if (data.event === "UpdateUsers") {
-        updateUsers(data.users)
+        updateUsers(data.group, data.users)
+    }
+
+    if (data.event === "OpenLocalChat") {
+        //systemMessage("Вы входите на территорию" + data.group.name);
     }
 }

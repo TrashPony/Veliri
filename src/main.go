@@ -41,6 +41,7 @@ func main() {
 
 	go chat.CommonChatSender()
 	go chat.UserOnlineChecker()
+	go chat.LocalChatChecker()
 
 	go field.Sender()
 

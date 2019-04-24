@@ -123,7 +123,7 @@
     border-radius: 5px 9px 9px 0;
     text-align: left;
     margin: auto auto 2px 3px;
-    width: 195px;
+    width: 160px;
     height: 135px;
     text-shadow: #28a5e4 0 0 4px;
     font-family: sans-serif;
@@ -137,7 +137,7 @@
     border-top-left-radius: 0;
     float: right;
     margin: auto 3px 2px 0;
-    width: 86px;
+    width: 121px;
     padding: 0;
     height: 145px;
 }
@@ -285,6 +285,12 @@
     margin-bottom: 3px;
     clear: both;
     min-height: 25px;
+}
+
+.chatSystem {
+    color: #ff8100;
+    font-size: 10px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 .chatMessage .chatUserIcon{
