@@ -250,6 +250,7 @@
 }
 
 .chatUserLine {
+    position: relative;
     white-space: nowrap;
     overflow: hidden;
     border-top: 1px solid rgba(0, 0, 0, 0.3);
@@ -259,7 +260,7 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-.chatUserLine:hover{
+.chatUserLine:hover {
     background: rgba(0, 0, 0, 0.2);
 }
 
@@ -285,6 +286,7 @@
     margin-bottom: 3px;
     clear: both;
     min-height: 25px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 .chatSystem {
@@ -293,16 +295,42 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-.chatMessage .chatUserIcon{
+.chatMessage .chatUserIcon {
     margin-right: 5px;
 }
 
 .alertChatTab {
-    animation: shadow  2s infinite ease-in-out;
+    animation: shadow 2s infinite ease-in-out;
+}
+
+.exitChatButton {
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    right: 5px;
+    top: 6px;
+    text-align: center;
+    line-height: 12px;
+    color: red;
+    font-size: 15px;
+}
+
+.exitChatButton:hover {
+    color: yellow;
+}
+
+.exitChatButton:active {
+    transform: scale(0.9);
 }
 
 @keyframes shadow {
-    from {color: #ff7800;}
-    50% {color: #ecffa7;}
-    to {color: #ff7800;}
+    from {
+        color: #ff7800;
+    }
+    50% {
+        color: #ecffa7;
+    }
+    to {
+        color: #ff7800;
+    }
 }

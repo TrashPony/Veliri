@@ -105,6 +105,15 @@ func (g *groups) SubscribeGroup(groupID int, user *player.Player, password strin
 	return true
 }
 
+func (g *groups) Unsubscribe(groupID int, user *player.Player) {
+	for _, group := range g.groups {
+		if group.ID == groupID {
+			delete(group.Users, user.GetID())
+			chats.RemoveUserInChat(group.ID, user.GetID())
+		}
+	}
+}
+
 func (g *groups) CheckUserSubscribe(groupID int, user *player.Player) bool {
 
 	group, find := g.groups[groupID]

@@ -72,3 +72,11 @@ func AddUserInChat(idChat, idUser int) {
 		log.Fatal("add new user in chat" + err.Error())
 	}
 }
+
+func RemoveUserInChat(idChat, idUser int) {
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM users_in_chat WHERE id_chat = $1 AND id_user=$2",
+		idChat, idUser)
+	if err != nil {
+		log.Fatal("remove user in chat" + err.Error())
+	}
+}

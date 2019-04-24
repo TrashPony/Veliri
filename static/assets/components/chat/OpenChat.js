@@ -1,6 +1,12 @@
 let currentChatID = 0;
+let userName = ''; // текущей пользователь
 
 function OpenChat(data) {
+
+    if (data.user)
+        userName = data.user.user_name;
+
+
     if (document.getElementById("allGroupsWindow")) document.getElementById("allGroupsWindow").remove();
 
     let tabs = document.getElementById('tabsGroup');
@@ -57,7 +63,15 @@ function updateUsers(group, users) {
     usersBox.innerHTML = '';
     for (let i in users) {
         if (users.hasOwnProperty(i) && users[i]) {
-            usersBox.innerHTML += `<div class="chatUserLine"><div class="chatUserIcon"></div><div class="chatUserName">${users[i].user_name}</div></div>`;
+
+            usersBox.innerHTML += `<div class="chatUserLine" id="${users[i].user_name}">
+                                        <div class="chatUserIcon"></div>
+                                        <div class="chatUserName">${users[i].user_name}</div>
+                                   </div>`;
+
+            if (users[i].user_name === userName && group.id !== 0) {
+                $('#' + users[i].user_name).append('<div class="exitChatButton" onclick="Unsubscribe(' + group.id + ')">x</div>')
+            }
         }
     }
 }
@@ -70,4 +84,11 @@ function systemMessage(text) {
                 <span class="chatSystem">${text}</span>
             </div>
         `;
+}
+
+function Unsubscribe(groupID) {
+    chat.send(JSON.stringify({
+        event: "Unsubscribe",
+        group_id: Number(groupID),
+    }));
 }

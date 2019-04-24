@@ -24,6 +24,7 @@ type chatMessage struct {
 	Groups      map[int]*chatGroup.Group `json:"groups"`
 	Password    string                   `json:"password"`
 	Users       []*player.ShortUserInfo  `json:"users"`
+	User        *player.ShortUserInfo    `json:"user"`
 	Local       bool                     `json:"local"`
 }
 
@@ -65,7 +66,7 @@ func UserOnlineChecker() {
 			}
 
 			if update {
-				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, true), false)
+				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, true), false, nil)
 			}
 		}
 
@@ -85,7 +86,7 @@ func LocalChatChecker() {
 			}
 
 			if update {
-				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, false), true)
+				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, false), true, nil)
 			}
 		}
 
@@ -101,14 +102,14 @@ func LocalChatChecker() {
 				// если текущий локальный чат не совподает с прошлым, то удаляем игрока и обновляем у всех список юзеров
 				if id != localID && localGroup.CheckUserInGroup(client.GetID()) {
 					localGroup.Users[client.GetID()] = false
-					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true)
+					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
 				}
 
 				// если текущий пользователь не находится в группе или он там офлайн притом что это его группа то обновляем статус онлайн у всех
 				if id == localID && !localGroup.CheckUserInGroup(client.GetID()) {
 					localGroup.Users[client.GetID()] = true
-					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true)
-					SendMessage("OpenLocalChat", nil, client.GetID(), 0, localGroup, nil, nil, false)
+					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
+					SendMessage("OpenLocalChat", nil, client.GetID(), 0, localGroup, nil, nil, false, nil)
 				}
 			}
 		}
@@ -131,29 +132,42 @@ func Reader(ws *websocket.Conn) {
 		if client != nil {
 			if msg.Event == "OpenChat" {
 				group, _ := getLocalChat(client)
-				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client), nil, false)
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client), nil, false, client.GetShortUserInfo(false))
 			}
 
 			if msg.Event == "GetAllGroups" {
-				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllGroups(), nil, false)
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllGroups(), nil, false, nil)
 			}
 
 			if msg.Event == "ChangeGroup" {
 
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
 					group := chats.Groups.GetGroup(msg.GroupID)
-					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, true), false)
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, true), false, nil)
 				} else {
 					group, _ := getLocalChat(client)
-					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, false), false)
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, false), false, nil)
 				}
 
 			}
 
 			if msg.Event == "SubscribeGroup" {
 				if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
-					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false)
+					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil)
 				}
+			}
+
+			if msg.Event == "Unsubscribe" {
+				group := chats.Groups.GetGroup(msg.GroupID)
+				if group != nil {
+					chats.Groups.Unsubscribe(msg.GroupID, client)
+					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil, getUsersInChatGroup(group, true), false, nil)
+					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil)
+				}
+			}
+
+			if msg.Event == "CreateNewGroup" {
+
 			}
 
 			if msg.Event == "NewChatMessage" {
@@ -164,7 +178,7 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil)
 				} else {
 					// если msg.GroupID == 0 то это сообщение в локальный чат
 					group, _ := getLocalChat(client)
@@ -172,7 +186,7 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil)
 				}
 			}
 		}
@@ -213,7 +227,7 @@ func getUsersInChatGroup(group *chatGroup.Group, all bool) []*player.ShortUserIn
 }
 
 func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID int, group *chatGroup.Group,
-	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool) {
+	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool, user *player.ShortUserInfo) {
 
 	chatPipe <- chatMessage{
 		Event:   event,
@@ -224,6 +238,7 @@ func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID
 		Groups:  groups,
 		Users:   users,
 		Local:   local,
+		User:    user,
 	}
 }
 
