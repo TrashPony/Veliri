@@ -140,7 +140,6 @@ func Reader(ws *websocket.Conn) {
 			}
 
 			if msg.Event == "ChangeGroup" {
-
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
 					group := chats.Groups.GetGroup(msg.GroupID)
 					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, true), false, nil)
@@ -152,8 +151,10 @@ func Reader(ws *websocket.Conn) {
 			}
 
 			if msg.Event == "SubscribeGroup" {
+				group := chats.Groups.GetGroup(msg.GroupID)
 				if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
 					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil)
+					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil, getUsersInChatGroup(group, true), false, nil)
 				}
 			}
 
