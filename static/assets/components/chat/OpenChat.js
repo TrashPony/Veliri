@@ -13,7 +13,6 @@ function OpenChat(data) {
 
     // вкладка локального чата
     tabs.innerHTML = `<div id="chat0" onclick="ChangeCanal(0)">Локальный</div>`;
-
     for (let i in data.groups) {
         tabs.innerHTML += `<div id="chat${data.groups[i].id}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
     }
@@ -63,9 +62,8 @@ function updateUsers(group, users) {
     usersBox.innerHTML = '';
     for (let i in users) {
         if (users.hasOwnProperty(i) && users[i]) {
-
             usersBox.innerHTML += `<div class="chatUserLine" id="${users[i].user_name}">
-                                        <div class="chatUserIcon"></div>
+                                        <div class="chatUserIcon" style="background-image: url('${users[i].avatar_icon}')"></div>
                                         <div class="chatUserName">${users[i].user_name}</div>
                                    </div>`;
 

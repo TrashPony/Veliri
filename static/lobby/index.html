@@ -18,6 +18,7 @@
     <link href="css/lobby.css" rel="stylesheet">
     <link href="css/processor.css" rel="stylesheet">
     <link href="css/workbench.css" rel="stylesheet">
+    <link href="css/users_status.css" rel="stylesheet">
 
     <script src="js/WebSocket.js"></script>
     <script src="js/OutBase.js"></script>
@@ -31,6 +32,8 @@
     <script src="js/Recycler/Init.js"></script>
     <script src="js/Recycler/Fill.js"></script>
     <script src="js/ChoiceFraction.js"></script>
+
+    <script src="js/UsersStatus/UsersStatus.js"></script>
 
     <script src="../assets/components/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
@@ -64,7 +67,11 @@
     <div onclick="InitInventoryMenu(null, 'storage')" style="background-image: url('./img/storageIcon.png')"></div>
     <div onclick="Init()" style="background-image: url('./img/util.png')"></div>
     <div onclick="InitWorkbench()" style="background-image: url('./img/workbench.png')"></div>
-    <div onclick="Quest()"></div>
+    <div onclick="UsersStatus()"
+         style="background-image: url('https://img.icons8.com/material/48/000000/small-robot.png')"></div>
+    <div onclick="GlobalViewMap()"
+         style="background-image: url('https://img.icons8.com/windows/64/000000/map.png')"></div>
+    <div onclick="Quest()" style="background-image: url('https://img.icons8.com/ios/50/000000/department.png')"></div>
     <div onclick="OutBase()" style="background-image: url('./img/baseOut.svg')"></div>
     <div onclick="Logout()" style="background-image: url('./img/logOut.png')"></div>
 </div>

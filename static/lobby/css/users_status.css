@@ -1,0 +1,194 @@
+#UsersStatus {
+    top: 200px;
+    left: calc(50% - 200px);
+    height: 300px;
+    width: 400px;
+    border: 1px solid #25a0e1;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    position: absolute;
+    border-radius: 5px;
+    padding: 22px 5px 5px;
+}
+
+#userAvatarWrapper label {
+    display: block;
+    height: 20px;
+    width: 55px;
+    outline: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 18px;
+    box-shadow: inset 0 0 2px black;
+    border: 0;
+    font-size: 11px;
+    background: #79a0b4;
+    border-radius: 5px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    float: left;
+    margin-left: 26px;
+    margin-top: 4px;
+}
+
+#userAvatarWrapper label:hover {
+    background-color: rgba(0, 120, 211, 0.9);
+}
+
+#userAvatarWrapper label:active {
+    transform: scale(0.95);
+}
+
+#usersStatusTabs {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 210px;
+}
+
+#tabsWrapper {
+    height: 15px;
+    width: 194px;
+}
+
+#usersStatusTabsGroup {
+    height: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 6px;
+    padding-bottom: 4px;
+    position: relative;
+    top: -2px;
+    margin-left: 16px;
+    text-align: left;
+}
+
+#usersStatusTabsGroup div {
+    height: 16px;
+    display: inline-block;
+    font-size: 12px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border: 1px solid rgb(58, 96, 134);
+    margin-left: -5px;
+    color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 -1px 0 black;
+    user-select: none;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding: 0 7px;
+    line-height: 17px;
+}
+
+#usersStatusTabsGroup div:hover {
+    color: #ffb60f;
+}
+
+#usersStatusTabsGroup div:active {
+    transform: scale(0.95);
+}
+
+#TabsLeftArrow, #TabsRightArrow {
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    color: #f9ff00;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    font-size: 20px;
+    line-height: 15px;
+    font-weight: 900;
+    top: 0;
+}
+
+#TabsRightArrow {
+    right: 0;
+}
+
+#TabsLeftArrow:hover, #TabsRightArrow:hover {
+    color: #00ffdf;
+}
+
+#usersStatusWrapper {
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    height: 300px;
+    position: relative;
+}
+
+#userAvatar {
+    height: 75px;
+    width: 75px;
+    background: rgba(0, 0, 0, 0.3);
+    float: left;
+    box-shadow: inset 0 0 5px black;
+    margin-left: 22px;
+    margin-top: 7px;
+    background-size: cover;
+}
+
+#userAvatarWrapper {
+    float: left;
+    width: 100px;
+}
+
+#userAvatarWrapper input {
+    margin-top: 5px;
+    margin-left: 19px;
+}
+
+#userAvatarWrapper input:active {
+    transform: scale(0.95);
+}
+
+#userName, #biography h3 {
+    float: left;
+    text-align: left;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    line-height: 19px;
+    margin: 7px 0px 0px 14px;
+    width: 310px;
+    box-shadow: 0 0 5px black;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding: 2px 6px;
+}
+
+#UserStatusPanel {
+    height: 110px;
+    width: 290px;
+    float: left;
+}
+
+#biography {
+
+}
+
+#biography h3 {
+    margin: 2px 0px 0px 14px;
+}
+
+#biography textarea {
+    box-shadow: inset 0 0 5px black;
+    background: #79a0b4;
+    height: 80px;
+    width: 363px;
+    margin: 5px auto 0px;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: justify;
+    resize: none;
+    color: #ffef0f;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#biography input {
+    float: left;
+    margin-top: -1px;
+    margin-left: 26px;
+}

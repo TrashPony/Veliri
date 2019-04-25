@@ -16,11 +16,10 @@ function NewChatMessage(message, id) {
 
     if (id === currentChatID) {
         let chatBox = document.getElementById("chatBox");
-
         chatBox.innerHTML += `
             <div class="chatMessage">
             
-                <div class="chatUserIcon"></div>
+                <div class="chatUserIcon" style="background-image: url('${message.avatar_icon}')"></div>
                 <span class="ChatUserName">${message.user_name} > </span>
                 <span class="ChatText">${message.message}</span>
             

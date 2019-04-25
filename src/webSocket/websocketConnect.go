@@ -27,6 +27,8 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 		log.Fatal(err)
 	}
 
+	ws.SetReadLimit(10485760)
+
 	// TODO функция AddNewUser везде по сути одинаковая, возможно стоить вынести реализацию из всех соедений в общую функцию
 	if pool == "/wsLobby" {
 		lobby.AddNewUser(ws, login, id)

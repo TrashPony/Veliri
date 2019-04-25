@@ -73,7 +73,8 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+			println(err.Error())
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
 		}
@@ -138,6 +139,11 @@ func Reader(ws *websocket.Conn) {
 
 			if msg.Event == "CancelCraft" {
 				cancelCraft(user, msg)
+			}
+
+			if msg.Event == "LoadAvatar" {
+				user.AvatarIcon = msg.File
+				dbPlayer.UpdateUser(user)
 			}
 
 			if msg.Event == "OpenDialog" {

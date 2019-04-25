@@ -13,5 +13,6 @@ CREATE TABLE users
   /* этот инт показывает раздел обучения на котором остановился игрок, существует только ради обучения) */
   training         INT,
   --Replicas Explores Reverses, нация за кторую играет игрок
-  fraction         varchar(64)
+  fraction         varchar(64),
+  avatar           text -- todo надо переделать на bytea забирать и обновлять методами decode(string text, format text) и encode(data bytea, format text) но мне лень
 );

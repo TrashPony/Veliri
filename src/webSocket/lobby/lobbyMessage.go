@@ -42,4 +42,6 @@ type Message struct {
 	AskID        int          `json:"ask_id"`
 
 	Fraction string `json:"fraction"`
+
+	File string `json:"file"`
 }

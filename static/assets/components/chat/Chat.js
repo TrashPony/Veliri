@@ -44,7 +44,7 @@ function initChatInterface() {
 }
 
 function ChatReader(data) {
-    console.log(data)
+
     if (data.event === 'OpenChat') {
         OpenChat(data);
     }
