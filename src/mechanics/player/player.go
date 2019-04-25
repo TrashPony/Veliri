@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/getlantern/deepcopy"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -104,6 +105,30 @@ func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {
 			}
 		}
 	}
+
+	copyEquips := func(realEquips *map[int]*detail.BodyEquipSlot, copyEquips *map[int]*detail.BodyEquipSlot) {
+		for key, equipSlot := range *realEquips {
+
+			var fakeSlot detail.BodyEquipSlot
+			err := deepcopy.Copy(&fakeSlot, equipSlot)
+			if err != nil {
+				println(err.Error())
+			}
+
+			fakeSlot.HP = 0
+			fakeSlot.Used = false
+			fakeSlot.StepsForReload = 0
+			fakeSlot.Target = nil
+
+			(*copyEquips)[key] = &fakeSlot
+		}
+	}
+
+	copyEquips(&client.GetSquad().MatherShip.Body.EquippingI, &hostile.Body.EquippingI)
+	copyEquips(&client.GetSquad().MatherShip.Body.EquippingII, &hostile.Body.EquippingII)
+	copyEquips(&client.GetSquad().MatherShip.Body.EquippingIII, &hostile.Body.EquippingIII)
+	copyEquips(&client.GetSquad().MatherShip.Body.EquippingIV, &hostile.Body.EquippingIV)
+	copyEquips(&client.GetSquad().MatherShip.Body.EquippingV, &hostile.Body.EquippingV)
 
 	return &hostile
 }

@@ -21,7 +21,8 @@ func LoadGame(ws *websocket.Conn, msg Message) {
 
 			otherUsers := getOtherSquads(user, mp)
 
-			go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
+
 			go SendMessage(Message{
 				Event:      msg.Event,
 				Map:        mp,

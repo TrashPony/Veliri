@@ -79,7 +79,7 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate) {
 }
 
 function CreateEquip(squadBody, squad) {
-
+    console.log(squadBody)
     squad.sprite.equipSprites = [];
 
     let createSprite = function (slot) {

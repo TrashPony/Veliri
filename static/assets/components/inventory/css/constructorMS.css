@@ -73,21 +73,16 @@
 }
 
 #inventoryCloseButton {
+    text-align: center;
     width: 60px;
-    height: 15px;
-    display: inline-block;
-    top: 403px;
-    left: 35px;
+    bottom: 2px;
+    left: calc(50% - 30px);
     position: absolute;
-}
-
-#inventoryCloseButton:hover {
-    background: linear-gradient(0deg, red, yellow);
+    transition: 0.2s;
 }
 
 #inventoryCloseButton:active {
-    background: linear-gradient(180deg, red, yellow);
-    top: 405px;
+    transform: scale(0.95);
 }
 
 #Squad {

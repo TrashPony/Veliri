@@ -38,13 +38,17 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	Reader(ws)
 }
 
-func checkUserOnline(group *chatGroup.Group, id int) bool {
+func checkUserOnline(group *chatGroup.Group, id int, local bool) bool {
 
 	chatUser := chat.Clients.GetByID(id)
 
 	// если игрок онайн но игрок уже отключился от сети то говорим что он не онлайн и обновляем у всех список
 	if group.Users[id] && chatUser == nil {
-		group.Users[id] = false
+		if local {
+			delete(group.Users, id)
+		} else {
+			group.Users[id] = false
+		}
 		return true
 	}
 
@@ -62,7 +66,7 @@ func UserOnlineChecker() {
 		for _, group := range chats.Groups.GetAllGroups() {
 			update := false
 			for id := range group.Users {
-				update = checkUserOnline(group, id)
+				update = checkUserOnline(group, id, false)
 			}
 
 			if update {
@@ -79,29 +83,35 @@ func LocalChatChecker() {
 
 	for {
 
-		for _, group := range chats.Groups.GetAllLocalGroups() {
+		for _, localGroup := range chats.Groups.GetAllLocalGroups() {
 			update := false
-			for id := range group.Users {
-				update = checkUserOnline(group, id)
+			for id := range localGroup.Users {
+				update = checkUserOnline(localGroup, id, true)
 			}
 
 			if update {
-				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, false), true, nil)
+				SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
 			}
 		}
 
-		// TODO возможна ошибка конкаренси доступа
 		users, mx := chat.Clients.GetAllConnects()
+		
+		// делаем копию карты что бы не вызвать дедлок или рантайм ошибку конкурентного чтения записи.
+		fakeUsers := make(map[*websocket.Conn]*player.Player)
+		for key, value := range users {
+			fakeUsers[key] = value
+		}
+
 		mx.Unlock()
 
-		for _, client := range users {
+		for _, client := range fakeUsers {
 
 			_, id := getLocalChat(client)
 
 			for localID, localGroup := range chats.Groups.GetAllLocalGroups() {
 				// если текущий локальный чат не совподает с прошлым, то удаляем игрока и обновляем у всех список юзеров
 				if id != localID && localGroup.CheckUserInGroup(client.GetID()) {
-					localGroup.Users[client.GetID()] = false
+					delete(localGroup.Users, client.GetID())
 					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
 				}
 
@@ -109,7 +119,6 @@ func LocalChatChecker() {
 				if id == localID && !localGroup.CheckUserInGroup(client.GetID()) {
 					localGroup.Users[client.GetID()] = true
 					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
-					SendMessage("OpenLocalChat", nil, client.GetID(), 0, localGroup, nil, nil, false, nil)
 				}
 			}
 		}

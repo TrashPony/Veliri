@@ -81,10 +81,10 @@ function CreateInventoryMenu(closeFunc, option) {
     CreateSquadMenu();
     CreateSquadHead();
 
-    let closeButton = document.createElement("div");
+    let closeButton = document.createElement("input");
     closeButton.id = "inventoryCloseButton";
-    closeButton.className = "button";
-    closeButton.innerHTML = "Закрыть";
+    closeButton.type = "button";
+    closeButton.value = "Закрыть";
     closeButton.onclick = () => {
         InventoryClose();
         if (closeFunc) {
