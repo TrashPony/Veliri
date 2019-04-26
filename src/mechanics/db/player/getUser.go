@@ -7,7 +7,8 @@ import (
 )
 
 func User(id int, login string) *player.Player {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mail, credits, experience_point, training, last_base_id, fraction, avatar "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mail, credits, training, last_base_id,"+
+		" fraction, avatar, biography, scientific_points, attack_points, production_points, title "+
 		"FROM users "+
 		"WHERE id=$1 AND name=$2", id, login)
 	if err != nil {
@@ -19,10 +20,12 @@ func User(id int, login string) *player.Player {
 
 	for rows.Next() {
 
-		var id, credits, experiencePoint int
+		var id, credits int
 		var name, mail string
 
-		err := rows.Scan(&id, &name, &mail, &credits, &experiencePoint, &newUser.Training, &newUser.LastBaseID, &newUser.Fraction, &newUser.AvatarIcon)
+		err := rows.Scan(&id, &name, &mail, &credits, &newUser.Training, &newUser.LastBaseID,
+			&newUser.Fraction, &newUser.AvatarIcon, &newUser.Biography, &newUser.ScientificPoints, &newUser.AttackPoints,
+			&newUser.ProductionPoints, &newUser.Title)
 		if err != nil {
 			log.Fatal("get user " + err.Error())
 		}
@@ -31,7 +34,6 @@ func User(id int, login string) *player.Player {
 		newUser.SetLogin(name)
 		newUser.SetEmail(mail)
 		newUser.SetCredits(credits)
-		newUser.SetExperiencePoint(experiencePoint)
 
 		getUserSkills(&newUser)
 		getUserBase(&newUser)

@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
+	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 type Message struct {
@@ -36,6 +37,8 @@ type Message struct {
 	TimeSaving    int   `json:"time_saving"`
 	BluePrintID   int   `json:"blue_print_id"`
 
+	Player *player.Player `json:"player"`
+
 	DialogPage   *dialog.Page `json:"dialog_page"`
 	DialogAction string       `json:"dialog_action"`
 	ToPage       int          `json:"to_page"`
@@ -43,5 +46,6 @@ type Message struct {
 
 	Fraction string `json:"fraction"`
 
-	File string `json:"file"`
+	File      string `json:"file"`
+	Biography string `json:"biography"`
 }

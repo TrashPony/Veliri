@@ -33,7 +33,6 @@ func LoadGame(ws *websocket.Conn, msg Message) {
 				Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
 				IDUserSend: user.GetID(),
 				Credits:    user.GetCredits(),
-				Experience: user.GetExperiencePoint(),
 				IDMap:      user.GetSquad().MapID,
 				Bot:        user.Bot,
 			})

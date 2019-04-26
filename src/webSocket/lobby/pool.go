@@ -146,6 +146,15 @@ func Reader(ws *websocket.Conn) {
 				dbPlayer.UpdateUser(user)
 			}
 
+			if msg.Event == "SetBiography" {
+				user.Biography = msg.Biography
+				dbPlayer.UpdateUser(user)
+			}
+
+			if msg.Event == "OpenUserStat" {
+				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), Player: user}
+			}
+
 			if msg.Event == "OpenDialog" {
 
 			}

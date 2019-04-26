@@ -13,11 +13,15 @@ import (
 )
 
 type Player struct {
-	id              int
-	login           string
-	email           string
-	credits         int
-	experiencePoint int
+	id    int
+	Login string `json:"login"`
+	email string
+
+	credits int
+
+	ScientificPoints int `json:"scientific_points"`
+	AttackPoints     int `json:"attack_points"`
+	ProductionPoints int `json:"production_points"`
 
 	squad  *squad.Squad   // отряд игрока
 	squads []*squad.Squad // не активные отряды которые ждут игрока на безах
@@ -36,7 +40,6 @@ type Player struct {
 	openDialog *dialog.Dialog
 
 	LobbyReady bool
-	Respawn    *coordinate.Coordinate
 
 	InBaseID   int // ид базы в которой сидит игрок
 	LastBaseID int // последняя база которую посетил игрок
@@ -53,6 +56,8 @@ type Player struct {
 	LocalPact    int                      `json:"local_pact"`
 	Fraction     string                   `json:"fraction"`
 	AvatarIcon   string                   `json:"avatar_icon"` // путь к аватару
+	Biography    string                   `json:"biography"`
+	Title        string                   `json:"title"`
 }
 
 type ShortUserInfo struct {
@@ -149,20 +154,12 @@ func (client *Player) SetOpenDialog(newDialog *dialog.Dialog) {
 	client.openDialog = newDialog
 }
 
-func (client *Player) SetRespawn(respawn *coordinate.Coordinate) {
-	client.Respawn = respawn
-}
-
-func (client *Player) GetRespawn() (respawn *coordinate.Coordinate) {
-	return client.Respawn
-}
-
 func (client *Player) SetLogin(login string) {
-	client.login = login
+	client.Login = login
 }
 
 func (client *Player) GetLogin() (login string) {
-	return client.login
+	return client.Login
 }
 
 func (client *Player) SetID(id int) {
@@ -266,12 +263,4 @@ func (client *Player) SetCredits(credits int) {
 
 func (client *Player) GetCredits() int {
 	return client.credits
-}
-
-func (client *Player) SetExperiencePoint(experiencePoint int) {
-	client.experiencePoint = experiencePoint
-}
-
-func (client *Player) GetExperiencePoint() int {
-	return client.experiencePoint
 }

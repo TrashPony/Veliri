@@ -64,4 +64,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "choiceFraction") {
         choiceFraction()
     }
+
+    if (event === 'OpenUserStat') {
+        FillUserStatus(JSON.parse(jsonMessage).player);
+    }
 }
