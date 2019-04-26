@@ -299,5 +299,116 @@
 }
 
 #listSkills {
+    float: left;
+    box-shadow: inset 0 0 5px black;
+    background: #79a0b4;
+    height: 175px;
+    width: 100%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow-y: scroll;
+}
 
+#listSkills h4 {
+    float: left;
+    text-align: left;
+    height: 9px;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(74, 74, 74, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    line-height: 9px;
+    margin: 7px 100% 0 1px;
+    width: 160px;
+    box-shadow: 0 0 5px black;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding: 2px 6px;
+    font-size: 10px;
+}
+
+#listSkills h4 span {
+    float: right;
+}
+
+.skill {
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    display: inline-block;
+    border: 1px solid #959595;
+    background-color: #4c4c4c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    vertical-align: top;
+    margin: 1px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    float: left;
+    transition: 0.2s;
+    position: relative;
+}
+
+.skill:hover {
+    box-shadow: 0 0 5px rgb(255, 255, 255);
+}
+
+.skill:active {
+    transform: scale(0.95);
+}
+
+.skillLvl {
+    position: absolute;
+    bottom: 2px;
+    height: 10px;
+    padding-left: 1px;
+}
+
+.skillLvl div {
+    height: 8px;
+    width: 3px;
+    float: left;
+    margin-left: 2px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.skillPrice {
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    font-size: 9px;
+    text-align: right;
+    padding-right: 2px;
+    padding-top: 1px;
+}
+
+#skillLvl {
+    height: 17px;
+    margin-top: 9px;
+    width: 55px;
+    float: left;
+    margin-left: -3px;
+}
+
+#skillLvl div{
+    height: 17px;
+    width: 7px;
+    float: left;
+    margin-left: 2px;
+    border-radius: 6px;
+    border: 1px solid rgba(41, 41, 41, 0.51);
+}
+
+#upperSkill {
+    width: 13px;
+    height: 13px;
+    float: right;
+    border: 1px solid rgb(0, 0, 0);
+    margin-top: 11px;
+    margin-right: -4px;
+    border-radius: 8px;
+    background: #868686;
+    font-size: 16px;
+    line-height: 14px;
+    font-weight: 900;
 }

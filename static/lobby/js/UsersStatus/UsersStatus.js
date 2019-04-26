@@ -80,23 +80,66 @@ function OpenSkillsUserStat() {
     usersStatus.innerHTML = `
         <div id="skillTip">
             <div id="skillIcon">
-                <div id="skillUpdatePanel"></div>
+                <div id="skillUpdatePanel">
+                    <div id="skillLvl">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <div id="upperSkill">+</div>
+                </div>
             </div>
             <h3> SkillName </h3>
-            <div id="skillDescription"></div>
+            <div id="skillDescription"> Описание ...</div>
         </div>
+        
         <div id="listSkills">
-            <div class="skill">
-                <div class="miniSkillIcon">
-                <div class="skillLvl">
+            
+            <h4 style="color: cornflowerblue;"> Наука <span id="scientific_points_points">1000</span></h4>
+            <div class="ScySkills" style="float: left">
+                <div class="skill">
+                    <div class="miniSkillIcon"></div>
+                    <div class="skillPrice">500</div>
+                    <div class="skillLvl">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
-            <div class="skill">
-                <div class="miniSkillIcon">
-                <div class="skillLvl">
+            
+            <h4 style="color: crimson;" > Атака <span id="attack_points_points">1000</span></h4>
+            <div class="AttackSkills"  style="float: left">
+                <div class="skill">
+                    <div class="miniSkillIcon"></div>
+                    <div class="skillPrice">500</div>
+                    <div class="skillLvl">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
-            <div class="skill">
-                <div class="miniSkillIcon">
-                <div class="skillLvl">
+            
+            <h4 style="color: chartreuse;" > Производство <span id="production_points_points">1000</span></h4>
+            <div class="IndustrySkills" style="float: left">
+                <div class="skill">
+                    <div class="miniSkillIcon"></div>
+                    <div class="skillPrice">500</div>
+                    <div class="skillLvl">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
             </div>
         </div>`
 }
