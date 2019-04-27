@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/getlantern/deepcopy"
 	"log"
 )

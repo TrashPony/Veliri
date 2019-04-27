@@ -4,8 +4,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 type Message struct {
@@ -46,6 +47,7 @@ type Message struct {
 
 	Fraction string `json:"fraction"`
 
-	File      string `json:"file"`
-	Biography string `json:"biography"`
+	File      string      `json:"file"`
+	Biography string      `json:"biography"`
+	Skill     skill.Skill `json:"skill"`
 }

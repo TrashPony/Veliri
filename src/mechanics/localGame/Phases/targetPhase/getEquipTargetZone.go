@@ -3,10 +3,10 @@ package targetPhase
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func GetEquipAllTargetZone(gameUnit *unit.Unit, equip *equip.Equip, activeGame *localGame.Game) map[string]map[string]*coordinate.Coordinate {

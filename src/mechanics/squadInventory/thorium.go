@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 )
 
 func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source string) error {

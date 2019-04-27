@@ -6,8 +6,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func RemoveMSBody(user *player.Player) error {

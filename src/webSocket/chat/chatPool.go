@@ -5,7 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/chats"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/chatGroup"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/gorilla/websocket"
 	"strconv"
 	"time"
@@ -95,7 +95,7 @@ func LocalChatChecker() {
 		}
 
 		users, mx := chat.Clients.GetAllConnects()
-		
+
 		// делаем копию карты что бы не вызвать дедлок или рантайм ошибку конкурентного чтения записи.
 		fakeUsers := make(map[*websocket.Conn]*player.Player)
 		for key, value := range users {

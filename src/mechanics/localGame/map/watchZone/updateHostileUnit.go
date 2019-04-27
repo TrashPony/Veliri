@@ -1,8 +1,8 @@
 package watchZone
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 )
 

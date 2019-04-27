@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"log"
 )
 
@@ -77,10 +77,10 @@ func StartNewGame(gameName string, mapID int, users []*player.Player) (int, erro
 
 func AddCoordinateEffects(tx *sql.Tx, mapID, gameID int) error {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT " +
-		"mc.q, " +
-		"mc.r, " +
-		"cte.id_effect " +
+	rows, err := dbConnect.GetDBConnect().Query("SELECT "+
+		"mc.q, "+
+		"mc.r, "+
+		"cte.id_effect "+
 		""+
 		"FROM map_constructor mc, coordinate_type ct, coordinate_type_effect cte "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND ct.id = cte.id_type; ", mapID)

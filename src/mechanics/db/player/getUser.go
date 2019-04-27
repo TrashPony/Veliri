@@ -2,7 +2,9 @@ package player
 
 import (
 	"github.com/TrashPony/Veliri/src/dbConnect"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"log"
 )
 
@@ -63,5 +65,33 @@ func getUserBase(user *player.Player) {
 }
 
 func getUserSkills(user *player.Player) {
+	user.CurrentSkills = make(map[string]*skill.Skill)
 
+	rows, err := dbConnect.GetDBConnect().Query("SELECT lvl, id_skill FROM user_skills WHERE id_user=$1", user.GetID())
+	if err != nil {
+		log.Fatal("get base user " + err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id, lvl int
+		err := rows.Scan(&lvl, &id)
+		if err != nil {
+			println("get skills user " + err.Error())
+		}
+
+		currentSkill := gameTypes.Skills.GetByID(id)
+		currentSkill.Level = lvl
+
+		user.CurrentSkills[currentSkill.Name] = currentSkill
+	}
+
+	// докидываем скилы нулевчого лвла
+	for id, skillType := range gameTypes.Skills.GetAllSkillTypes() {
+		if _, ok := user.CurrentSkills[skillType.Name]; !ok {
+			currentSkill := gameTypes.Skills.GetByID(id)
+			currentSkill.Level = 0 // оно и так должно быть ноль но на всякий случай
+			user.CurrentSkills[currentSkill.Name] = currentSkill
+		}
+	}
 }

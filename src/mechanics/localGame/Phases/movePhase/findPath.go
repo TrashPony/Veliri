@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"math"
 )
 

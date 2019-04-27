@@ -1,8 +1,8 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func outBase(user *player.Player, msg Message) {

@@ -6,8 +6,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/TrashPony/Veliri/src/webSocket/storage"
 	"time"
 )

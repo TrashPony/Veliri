@@ -4,9 +4,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"time"
 )
 

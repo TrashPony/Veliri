@@ -3,8 +3,8 @@ package globalGame
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/gorilla/websocket"
 	"strconv"
 )

@@ -4,7 +4,7 @@ import (
 	"errors"
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 )
 
 func Ask(client *player.Player, gameDialog *dialog.Dialog, place string, toPage, askID int) (*dialog.Page, error, string) {

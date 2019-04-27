@@ -2,7 +2,7 @@ package players
 
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/squadInventory"
 	"sync"
 )

@@ -1,7 +1,7 @@
 package localGame
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/gorilla/websocket"
 	"sync"
 )

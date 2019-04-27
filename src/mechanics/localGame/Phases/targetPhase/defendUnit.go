@@ -4,9 +4,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
 	squadUpdate "github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/useEquip"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func DefendTarget(gameUnit *unit.Unit, client *player.Player) {

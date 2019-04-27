@@ -8,7 +8,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"math"
 	"math/rand"
 	"sync"

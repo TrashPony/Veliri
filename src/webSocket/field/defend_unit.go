@@ -2,8 +2,8 @@ package field
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/targetPhase"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 )
 
 func DefendTarget(msg Message, client *player.Player) {

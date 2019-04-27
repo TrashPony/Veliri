@@ -5,8 +5,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
@@ -73,7 +73,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			println(err.Error())
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
@@ -173,6 +173,16 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "training" {
 				user.Training = msg.Count
 				dbPlayer.UpdateUser(user)
+			}
+
+			if msg.Event == "upSkill" {
+				skill, ok := user.UpSkill(msg.ID)
+				if ok {
+					lobbyPipe <- Message{Event: "upSkill", UserID: user.GetID(), Player: user, Skill: *skill}
+					dbPlayer.UpdateUser(user)
+				} else {
+					lobbyPipe <- Message{Event: "upSkill", UserID: user.GetID(), Error: "no points"}
+				}
 			}
 		}
 	}

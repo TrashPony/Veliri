@@ -3,7 +3,7 @@ package squadInventory
 import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 )
 
 func ChangeSquad(user *player.Player, SquadID int) error {

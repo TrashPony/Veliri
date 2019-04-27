@@ -6,7 +6,7 @@ import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
 	"time"
 )

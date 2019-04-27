@@ -3,7 +3,7 @@ package movePhase
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 )
 
 func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, q int, r int, event string) (*coordinate.Coordinate, bool) {

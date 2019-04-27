@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/getlantern/deepcopy"
@@ -58,6 +59,9 @@ type Player struct {
 	AvatarIcon   string                   `json:"avatar_icon"` // путь к аватару
 	Biography    string                   `json:"biography"`
 	Title        string                   `json:"title"`
+
+	// [name]Skill
+	CurrentSkills map[string]*skill.Skill `json:"current_skills"`
 }
 
 type ShortUserInfo struct {
@@ -263,4 +267,64 @@ func (client *Player) SetCredits(credits int) {
 
 func (client *Player) GetCredits() int {
 	return client.credits
+}
+
+func (client *Player) UpSkill(id int) (*skill.Skill, bool) {
+	if skillType := gameTypes.Skills.GetByID(id); skillType != nil {
+		currentSkill := client.CurrentSkills[skillType.Name]
+		var needPoints int
+
+		//todo Я не очень умный :С
+		if currentSkill.Level == 0 {
+			needPoints = 100
+		}
+
+		if currentSkill.Level == 1 {
+			needPoints = 200
+		}
+
+		if currentSkill.Level == 2 {
+			needPoints = 400
+		}
+
+		if currentSkill.Level == 3 {
+			needPoints = 800
+		}
+
+		if currentSkill.Level == 4 {
+			needPoints = 1600
+		}
+
+		if currentSkill.Level > 4 {
+			return nil, false
+		}
+
+		if currentSkill.Type == "scientific" {
+			if client.ScientificPoints >= needPoints {
+
+				client.ScientificPoints -= needPoints
+				client.CurrentSkills[skillType.Name].Level++
+				return client.CurrentSkills[skillType.Name], true
+			}
+		}
+
+		if currentSkill.Type == "attack" {
+			if client.AttackPoints >= needPoints {
+
+				client.AttackPoints -= needPoints
+				client.CurrentSkills[skillType.Name].Level++
+				return client.CurrentSkills[skillType.Name], true
+			}
+		}
+
+		if currentSkill.Type == "production" {
+			if client.ProductionPoints >= needPoints {
+
+				client.ProductionPoints -= needPoints
+				client.CurrentSkills[skillType.Name].Level++
+				return client.CurrentSkills[skillType.Name], true
+			}
+		}
+	}
+	return nil, false
 }

@@ -266,6 +266,7 @@
 }
 
 #skillDescription {
+    overflow-y: scroll;
     float: left;
     box-shadow: inset 0 0 5px black;
     background: #79a0b4;
@@ -411,4 +412,32 @@
     font-size: 16px;
     line-height: 14px;
     font-weight: 900;
+    transition: 0.2s;
+}
+
+#upperSkill:hover {
+    background: #b4e5ff;
+}
+
+#upperSkill:active {
+    transform: scale(0.95);
+}
+
+.miniSkillIcon {
+    background-size: cover;
+}
+
+@keyframes alert {
+    0% {
+        -moz-box-shadow: 0 0 15px 0 rgb(255, 0, 19);
+        box-shadow: 0 0 15px 0 rgb(255, 2, 0);
+    }
+    95% {
+        -moz-box-shadow: inset 0 0 30px 15px rgba(204, 169, 44, 0);
+        box-shadow: 0 0 30px 15px rgba(204, 169, 44, 0);
+    }
+    100% {
+        -moz-box-shadow: inset 0 0 20px 0 rgba(204, 169, 44, 0);
+        box-shadow: 0 0 0 20px rgba(204, 169, 44, 0);
+    }
 }

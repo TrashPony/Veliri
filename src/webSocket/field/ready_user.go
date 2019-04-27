@@ -2,10 +2,10 @@ package field
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/games"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/userReady"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
 	"strconv"
 	"time"
 )

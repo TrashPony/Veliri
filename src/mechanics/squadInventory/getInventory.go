@@ -4,7 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/get"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"log"
 )
 

@@ -68,4 +68,17 @@ function ReaderLobby(jsonMessage) {
     if (event === 'OpenUserStat') {
         FillUserStatus(JSON.parse(jsonMessage).player);
     }
+
+    if (event === "upSkill") {
+        if (JSON.parse(jsonMessage).error) {
+            if (document.getElementById('skillUpdatePanel')) {
+                document.getElementById('skillUpdatePanel').style.animation = 'alert 500ms 1 ease-in-out';
+                setTimeout(function () {
+                    document.getElementById('skillUpdatePanel').style.animation = 'none';
+                }, 500)
+            }
+        } else {
+            FillUserStatus(JSON.parse(jsonMessage).player, JSON.parse(jsonMessage).skill)
+        }
+    }
 }

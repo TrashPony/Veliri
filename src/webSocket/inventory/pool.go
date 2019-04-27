@@ -2,7 +2,7 @@ package inventory
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
-	"github.com/TrashPony/Veliri/src/mechanics/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/webSocket/storage"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
