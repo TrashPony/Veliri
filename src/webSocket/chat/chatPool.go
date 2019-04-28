@@ -141,7 +141,7 @@ func Reader(ws *websocket.Conn) {
 		if client != nil {
 			if msg.Event == "OpenChat" {
 				group, _ := getLocalChat(client)
-				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client), nil, false, client.GetShortUserInfo(false))
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client), nil, false, client.GetShortUserInfo(false, true))
 			}
 
 			if msg.Event == "GetAllGroups" {
@@ -226,7 +226,7 @@ func getUsersInChatGroup(group *chatGroup.Group, all bool) []*player.ShortUserIn
 
 		if chatUser != nil {
 			if all || group.Users[id] {
-				users = append(users, chatUser.GetShortUserInfo(false))
+				users = append(users, chatUser.GetShortUserInfo(false, true))
 			}
 		} else {
 			group.Users[id] = false

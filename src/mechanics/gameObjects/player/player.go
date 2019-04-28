@@ -79,10 +79,13 @@ type ShortUserInfo struct {
 	Fraction   string       `json:"fraction"`
 }
 
-func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {
+func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {
 	var hostile ShortUserInfo
 
-	hostile.AvatarIcon = client.AvatarIcon
+	if avatar {
+		hostile.AvatarIcon = client.AvatarIcon
+	}
+
 	hostile.Fraction = client.Fraction
 	hostile.UserName = client.GetLogin()
 

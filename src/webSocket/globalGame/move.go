@@ -133,7 +133,7 @@ func MoveUserMS(ws *websocket.Conn, msg Message, user *player.Player, path *[]sq
 			ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MapID, Bot: user.Bot})
 
 		// оповещаем мир как двигается отряд
-		go SendMessage(Message{Event: "MoveTo", OtherUser: user.GetShortUserInfo(true), PathUnit: pathUnit, IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "MoveTo", OtherUser: user.GetShortUserInfo(true, false), PathUnit: pathUnit, IDMap: user.GetSquad().MapID})
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
 			time.Sleep(100 * time.Millisecond)
@@ -263,7 +263,7 @@ func playerToPlayerCollisionReaction(user, toUser *player.Player) {
 		Speed:       speed2,
 	}
 
-	go SendMessage(Message{Event: "MoveTo", OtherUser: user.GetShortUserInfo(true), PathUnit: userPath, IDMap: user.GetSquad().MapID})
-	go SendMessage(Message{Event: "MoveTo", OtherUser: toUser.GetShortUserInfo(true), PathUnit: toUserPath, IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "MoveTo", OtherUser: user.GetShortUserInfo(true, false), PathUnit: userPath, IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "MoveTo", OtherUser: toUser.GetShortUserInfo(true, false), PathUnit: toUserPath, IDMap: user.GetSquad().MapID})
 	time.Sleep(200 * time.Millisecond)
 }
