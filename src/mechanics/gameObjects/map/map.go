@@ -31,6 +31,9 @@ type Map struct {
 	// показывает позицию на карте мира, пока используется ради меню карты на фронте
 	XGlobal int `json:"x_global"`
 	YGlobal int `json:"y_global"`
+
+	Fraction       string `json:"fraction"`
+	PossibleBattle bool   `json:"possible_battle"`
 }
 
 type ShortInfoMap struct {
@@ -43,6 +46,8 @@ type ShortInfoMap struct {
 	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
 	XGlobal             int                      `json:"x_global"`
 	YGlobal             int                      `json:"y_global"`
+	Fraction            string                   `json:"fraction"`
+	PossibleBattle      bool                     `json:"possible_battle"`
 }
 
 type Anomalies struct {
@@ -65,6 +70,8 @@ func (mp *Map) GetShortInfoMap() *ShortInfoMap {
 		HandlersCoordinates: mp.HandlersCoordinates,
 		XGlobal:             mp.XGlobal,
 		YGlobal:             mp.YGlobal,
+		Fraction:            mp.Fraction,
+		PossibleBattle:      mp.PossibleBattle,
 	}
 }
 

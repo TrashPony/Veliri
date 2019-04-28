@@ -77,6 +77,7 @@ func parseNeighbours(current *SearchMap, openPoints, closePoints map[int]*Search
 
 	// надо взять все переходы и это будут соседи
 	entrySectors := current.Map.GetAllEntrySectors()
+
 	for _, entry := range entrySectors {
 		mp, _ := m.GetByID(entry.ToMapID)
 		// проверяем что карта существует, и что мы ее уже не обработали

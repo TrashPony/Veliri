@@ -1,5 +1,6 @@
 let allMaps;
 let SectorID;
+let gridSize = 100;
 
 function FillGlobalMap(maps, userSectorID) {
     SectorID = userSectorID;
@@ -10,23 +11,25 @@ function FillGlobalMap(maps, userSectorID) {
 
     initCanvasMap('GlobalMapCanvas');
 
+
     for (let i in maps) {
 
-        let xCell = 10 + (maps[i].x_global * 60);
-        let yCell = 10 + (maps[i].y_global * 60);
+        let fractionIcon = '../assets/logo/' + maps[i].fraction + '.png';
+        if (maps[i].fraction === '')
+            fractionIcon = 'https://img.icons8.com/color/48/000000/storage.png';
+
+        let xCell = 10 + (maps[i].x_global * gridSize);
+        let yCell = 10 + (maps[i].y_global * gridSize);
 
         let cell = document.createElement('div');
         cell.className = 'MapPoint';
-        cell.innerHTML = '<div></div>';
+        cell.innerHTML = `
+                <div class="animateAura" onmouseover="previewPath('${maps[i].id}')"></div>
+                <div class="fractionIcon" style="background-image: url(' ${fractionIcon} ')"></div>
+                <div class="endPoint"></div>
+                <div class="sectorName">${maps[i].Name}</div>`;
         cell.style.left = xCell + 'px';
         cell.style.top = yCell + 'px';
-
-        cell.onmouseover = function () {
-            lobby.send(JSON.stringify({
-                event: "previewPath",
-                id: Number(maps[i].id)
-            }));
-        };
 
         cell.onmouseout = function () {
             initCanvasMap('GlobalMapPathCanvas');
@@ -39,8 +42,8 @@ function FillGlobalMap(maps, userSectorID) {
         for (let j in maps[i].handlers_coordinates) {
             if (maps[i].handlers_coordinates[j].handler === 'sector') {
 
-                let toX = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).x_global * 60;
-                let toY = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).y_global * 60;
+                let toX = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).x_global * gridSize;
+                let toY = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).y_global * gridSize;
 
                 CanvasGlobalLineXY_To_XY(xCell + 20, yCell + 20, toX + 20, toY + 20);
             }
@@ -49,17 +52,24 @@ function FillGlobalMap(maps, userSectorID) {
 
     // нельзя делать в цикле который сверху иначе пути будут перекривать стрелки
     for (let i in maps) {
-        let xCell = 10 + (maps[i].x_global * 60);
-        let yCell = 10 + (maps[i].y_global * 60);
+        let xCell = 10 + (maps[i].x_global * gridSize);
+        let yCell = 10 + (maps[i].y_global * gridSize);
 
         for (let j in maps[i].handlers_coordinates) {
             if (maps[i].handlers_coordinates[j].handler === 'sector') {
-                let toX = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).x_global * 60;
-                let toY = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).y_global * 60;
+                let toX = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).x_global * gridSize;
+                let toY = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).y_global * gridSize;
                 CanvasArrowPath(xCell + 20, yCell + 20, toX + 20, toY + 20);
             }
         }
     }
+}
+
+function previewPath(id) {
+    lobby.send(JSON.stringify({
+        event: "previewPath",
+        id: Number(id)
+    }));
 }
 
 function getMapByID(maps, id) {
@@ -89,7 +99,7 @@ function CanvasArrowPath(startX, startY, endX, endY, headLength = 7) {
     let centerPathX = points[pointNumber].x;
     let centerPathY = points[pointNumber].y;
 
-    ctx.strokeStyle = "#ff8100";
+    ctx.strokeStyle = "#02ff0e";
     ctx.lineWidth = 3;
     ctx.shadowColor = 'black';
     ctx.shadowBlur = 2;
@@ -111,6 +121,10 @@ function CanvasArrowPath(startX, startY, endX, endY, headLength = 7) {
     let y135 = centerPathY + headLength * Math.sin(angle + degreesInRadians135);
 
     ctx.beginPath();
+
+    ctx.moveTo(points[pointNumber + 1].x, points[pointNumber + 1].y);
+    ctx.lineTo(centerPathX, centerPathY);
+
     ctx.moveTo(centerPathX, centerPathY);
     ctx.lineTo(x225, y225);
     // draw partial arrowhead at 135 degrees

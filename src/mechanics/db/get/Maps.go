@@ -22,7 +22,9 @@ func Maps() map[int]*_map.Map {
 		"global, " +
 		"in_game, " +
 		"x_global, " +
-		"y_global " +
+		"y_global," +
+		"fraction," +
+		"possible_battle " +
 		"" +
 		"FROM maps")
 	if err != nil {
@@ -37,7 +39,7 @@ func Maps() map[int]*_map.Map {
 		mp := &_map.Map{}
 
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
-			&mp.Global, &mp.InGame, &mp.XGlobal, &mp.YGlobal)
+			&mp.Global, &mp.InGame, &mp.XGlobal, &mp.YGlobal, &mp.Fraction, &mp.PossibleBattle)
 		if err != nil {
 			log.Fatal(err)
 		}

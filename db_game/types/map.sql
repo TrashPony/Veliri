@@ -1,24 +1,29 @@
 CREATE TABLE maps
 (
-  id            SERIAL PRIMARY KEY,
-  name          VARCHAR(64),
-  q_size        INT, /* размер карты по Х */
-  r_size        INT, /* размер карты по Y */
-  id_type       INT REFERENCES coordinate_type (id), /* определяет основной тип тесктур если они явно не указаны в конструкторе */
-  level         INT, /* определяет основной уровень координат на карте еще он не перепределен конструктором */
-  specification VARCHAR(255), /* описание карты */
+  id              SERIAL PRIMARY KEY,
+  name            VARCHAR(64),
+  q_size          INT, /* размер карты по Х */
+  r_size          INT, /* размер карты по Y */
+  id_type         INT REFERENCES coordinate_type (id), /* определяет основной тип тесктур если они явно не указаны в конструкторе */
+  level           INT, /* определяет основной уровень координат на карте еще он не перепределен конструктором */
+  specification   VARCHAR(255), /* описание карты */
 
   /* если параметр global true то это карта является глобальной тоесть неимзенной картой мира */
   /* если false то это локальная карта */
-  global        BOOLEAN,
+  global          BOOLEAN,
 
   /* параметр in_game, может быть только у лоалькой карты, если он true - значит карта принадлежит какой то активной игре */
   /* иначе это шаблон локальной карты например для быстрых боев. */
-  in_game       BOOLEAN,
+  in_game         BOOLEAN,
 
   -- координаты отображения в меню глобальной карты
-  x_global int,
-  y_global int
+  x_global        int,
+  y_global        int,
+
+  --Replics Explores Reverses
+  fraction        text,
+  -- переменная отвечает можно захватить этот сектор или нет
+  possible_battle boolean
 );
 
 CREATE TABLE map_constructor

@@ -20,7 +20,7 @@ function GlobalViewMap() {
         FillGlobalMap(allMaps, SectorID)
     }
 
-    let buttons = CreateControlButtons("2px", "31px", "-3px", "29px", "", "145px");
+    let buttons = CreateControlButtons("2px", "31px", "-3px", "29px", "Карта мира", "105px");
     $(buttons.move).mousedown(function (event) {
         moveWindow(event, 'GlobalViewMap')
     });
@@ -29,6 +29,7 @@ function GlobalViewMap() {
     });
     GlobalViewMap.appendChild(buttons.move);
     GlobalViewMap.appendChild(buttons.close);
+    GlobalViewMap.appendChild(buttons.head);
 }
 
 function initCanvasMap(id) {
