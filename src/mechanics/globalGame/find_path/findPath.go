@@ -33,17 +33,6 @@ func FindPath(client *player.Player, gameMap *_map.Map, start, end *coordinate.C
 		return errors.New("no path"), nil
 	}
 
-	//matrix := make([][]coordinate.Coordinate, xSize, xSize*ySize) //создаем матрицу для всех точек на карте
-	//for i := 0; i < len(matrix); i++ {
-	//	matrix[i] = make([]coordinate.Coordinate, ySize)
-	//}
-	//
-	//for x := 0; x < xSize; x++ { //заполняем матрицу координатами
-	//	for y := 0; y < ySize; y++ {
-	//		matrix[x][y] = coordinate.Coordinate{X: x, Y: y, State: FREE}
-	//	}
-	//}
-
 	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[start.Key()] = start               // кладем в карту посещенных точек стартовую точку
 
@@ -89,6 +78,7 @@ func parseNeighbours(client *player.Player, curr *coordinate.Coordinate, open, c
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {
+
 			if c.X < xSize && c.Y < ySize && c.X > 0 && c.Y > 0 {
 				if (*close)[c.Key()] != nil || (*open)[c.Key()] != nil {
 					continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
@@ -113,7 +103,7 @@ func GetH(a, b *coordinate.Coordinate) int { // эвристическое пр�
 }
 
 func MinF(points Points, xSize, ySize int) (min *coordinate.Coordinate) { // берет точку с минимальной стоимостью пути из масива не посещеных
-	min = &coordinate.Coordinate{F: xSize*ySize*10 + 1}
+	min = &coordinate.Coordinate{F: xSize*ySize + 1}
 
 	for _, p := range points {
 		if p.F < min.F {

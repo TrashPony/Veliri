@@ -20,6 +20,7 @@
     width: 100%;
     background: url("../../assets/logo/mapBackground.jpg");
     background-size: cover;
+    overflow: hidden;
 }
 
 .MapPoint {
@@ -129,4 +130,10 @@
     background-size: cover;
     pointer-events: none;
     filter: drop-shadow(0 0 2px rgba(255, 255, 255, 1));
+}
+
+.GridBox {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    position: absolute;
+    pointer-events: none;
 }

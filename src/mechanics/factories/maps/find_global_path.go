@@ -3,12 +3,13 @@ package maps
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"math"
 )
 
 type SearchMap struct {
 	ID     int
 	Map    *_map.ShortInfoMap
-	F      int
+	F      float64
 	Parent *SearchMap
 }
 
@@ -31,12 +32,15 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 	var path []*SearchMap
 	var noSortedPath []*SearchMap
 
+	// перменная добавляет в цену номер волны
+	wall := 0
+
 	for {
 
-		if len(openPoints) <= 0 {
+		if len(openPoints) == 0 {
 			return nil, nil
 		}
-
+		wall++
 		current := getOpenPoint(openPoints) // Берем точку с мин стоимостью пути
 		if current.ID == end.ID {           // если текущая точка и есть конец начинаем генерить путь
 			for !(current.ID == start.ID) {
@@ -48,7 +52,7 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 			}
 			break
 		}
-		parseNeighbours(current, openPoints, closePoints, m)
+		parseNeighbours(current, openPoints, closePoints, m, end, wall)
 	}
 
 	// сразу добавим в путь стартовую точку т.к. нам с нее нужен будет переход
@@ -70,7 +74,7 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 	return path, transitionPoints
 }
 
-func parseNeighbours(current *SearchMap, openPoints, closePoints map[int]*SearchMap, m *mapStore) {
+func parseNeighbours(current *SearchMap, openPoints, closePoints map[int]*SearchMap, m *mapStore, end *SearchMap, wall int) {
 
 	delete(openPoints, current.ID)    // удаляем ячейку из не посещенных
 	closePoints[current.ID] = current // добавляем в массив посещенные
@@ -88,15 +92,25 @@ func parseNeighbours(current *SearchMap, openPoints, closePoints map[int]*Search
 		openPoints[mp.Id] = &SearchMap{
 			ID:     mp.Id,
 			Map:    mp.GetShortInfoMap(),
-			F:      current.F + 1, // т.к. все равноценно то цена пути всегда 1.
 			Parent: current,
 		}
+		// добавяем номер волны что бы все последующие волны имели большую цену
+		openPoints[mp.Id].F = getF(openPoints[mp.Id], end) + float64(wall)
 	}
 }
 
+func getF(curr, end *SearchMap) float64 {
+	tmp := math.Abs(float64(curr.Map.XGlobal - end.Map.XGlobal)) // вычисляем разницу между точкой и концом пути по Х
+	tmp += math.Abs(float64(curr.Map.YGlobal - end.Map.YGlobal)) // вычисляем разницу между точкой и концом пути по Y и сумируем с раницой по X
+	return tmp
+}
+
 func getOpenPoint(openMaps map[int]*SearchMap) *SearchMap {
-	maxF := 0
+	maxF := 0.0
+
 	var minMap *SearchMap
+	var safeMinMap *SearchMap
+
 	for _, p := range openMaps {
 		if p.F > maxF {
 			maxF = p.F
@@ -104,9 +118,18 @@ func getOpenPoint(openMaps map[int]*SearchMap) *SearchMap {
 	}
 
 	for _, p := range openMaps {
-		if p.F <= maxF {
+		if p.F < maxF {
 			minMap = p
 		}
+		if p.F == maxF {
+			safeMinMap = p
+		}
 	}
-	return minMap
+
+	// иногда может не быть карты с меньшей стоимостью пути
+	if minMap != nil {
+		return minMap
+	} else {
+		return safeMinMap
+	}
 }

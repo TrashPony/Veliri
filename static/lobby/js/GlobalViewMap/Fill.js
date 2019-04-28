@@ -11,12 +11,16 @@ function FillGlobalMap(maps, userSectorID) {
 
     initCanvasMap('GlobalMapCanvas');
 
+    let xGridMax = 0, yGridMax = 0;
 
     for (let i in maps) {
 
         let fractionIcon = '../assets/logo/' + maps[i].fraction + '.png';
         if (maps[i].fraction === '')
             fractionIcon = 'https://img.icons8.com/color/48/000000/storage.png';
+
+        if (xGridMax < maps[i].x_global) xGridMax = maps[i].x_global;
+        if (yGridMax < maps[i].y_global) yGridMax = maps[i].y_global;
 
         let xCell = 10 + (maps[i].x_global * gridSize);
         let yCell = 10 + (maps[i].y_global * gridSize);
@@ -61,6 +65,22 @@ function FillGlobalMap(maps, userSectorID) {
                 let toY = 10 + getMapByID(maps, maps[i].handlers_coordinates[j].to_map_id).y_global * gridSize;
                 CanvasArrowPath(xCell + 20, yCell + 20, toX + 20, toY + 20);
             }
+        }
+    }
+
+    for (let i = 0; i <= xGridMax; i++) {
+        for (let j = 0; j <= yGridMax; j++) {
+
+            let xCell = (i * gridSize) - 20;
+            let yCell = (j * gridSize) - 20;
+
+            let cell = document.createElement('div');
+            cell.className = 'GridBox';
+            cell.style.left = xCell + 'px';
+            cell.style.top = yCell + 'px';
+            cell.style.height = gridSize + 'px';
+            cell.style.width = gridSize + 'px';
+            mapWrapper.appendChild(cell);
         }
     }
 }
