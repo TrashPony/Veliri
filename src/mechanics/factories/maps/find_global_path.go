@@ -7,7 +7,7 @@ import (
 
 type SearchMap struct {
 	ID     int
-	Map    *_map.Map
+	Map    *_map.ShortInfoMap
 	F      int
 	Parent *SearchMap
 }
@@ -22,8 +22,8 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 		return nil, nil
 	}
 
-	start := &SearchMap{ID: startSector.Id, Map: startSector}
-	end := &SearchMap{ID: endSector.Id, Map: endSector}
+	start := &SearchMap{ID: startSector.Id, Map: startSector.GetShortInfoMap()}
+	end := &SearchMap{ID: endSector.Id, Map: endSector.GetShortInfoMap()}
 
 	openPoints, closePoints := make(map[int]*SearchMap), make(map[int]*SearchMap) // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[start.ID] = start                                                  // кладем в карту посещенных точек стартовую точку
@@ -48,26 +48,7 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 			}
 			break
 		}
-
-		delete(openPoints, current.ID)    // удаляем ячейку из не посещенных
-		closePoints[current.ID] = current // добавляем в массив посещенные
-
-		// надо взять все переходы и это будут соседи
-		entrySectors := current.Map.GetAllEntrySectors()
-		for _, entry := range entrySectors {
-			mp, _ := m.GetByID(entry.ToMapID)
-			// проверяем что карта существует, и что мы ее уже не обработали
-			if mp == nil && closePoints[mp.Id] == nil && openPoints[mp.Id] == nil {
-				continue
-			}
-			//TODO fatal error: out of memory когда есть сектор к оторый нет перехода
-			openPoints[mp.Id] = &SearchMap{
-				ID:     mp.Id,
-				Map:    mp,
-				F:      current.F + 1, // т.к. все равноценно то цена пути всегда 1.
-				Parent: current,
-			}
-		}
+		parseNeighbours(current, openPoints, closePoints, m)
 	}
 
 	// сразу добавим в путь стартовую точку т.к. нам с нее нужен будет переход
@@ -87,6 +68,29 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 		}
 	}
 	return path, transitionPoints
+}
+
+func parseNeighbours(current *SearchMap, openPoints, closePoints map[int]*SearchMap, m *mapStore) {
+
+	delete(openPoints, current.ID)    // удаляем ячейку из не посещенных
+	closePoints[current.ID] = current // добавляем в массив посещенные
+
+	// надо взять все переходы и это будут соседи
+	entrySectors := current.Map.GetAllEntrySectors()
+	for _, entry := range entrySectors {
+		mp, _ := m.GetByID(entry.ToMapID)
+		// проверяем что карта существует, и что мы ее уже не обработали
+		if mp == nil || closePoints[mp.Id] != nil || openPoints[mp.Id] != nil {
+			continue
+		}
+
+		openPoints[mp.Id] = &SearchMap{
+			ID:     mp.Id,
+			Map:    mp.GetShortInfoMap(),
+			F:      current.F + 1, // т.к. все равноценно то цена пути всегда 1.
+			Parent: current,
+		}
+	}
 }
 
 func getOpenPoint(openMaps map[int]*SearchMap) *SearchMap {

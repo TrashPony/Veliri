@@ -1,9 +1,11 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
@@ -50,4 +52,7 @@ type Message struct {
 	File      string      `json:"file"`
 	Biography string      `json:"biography"`
 	Skill     skill.Skill `json:"skill"`
+
+	Maps       map[int]*_map.ShortInfoMap `json:"maps"`
+	SearchMaps []*maps.SearchMap          `json:"search_maps"`
 }

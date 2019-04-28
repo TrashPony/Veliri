@@ -3,7 +3,9 @@ package lobby
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
@@ -95,7 +97,7 @@ func Reader(ws *websocket.Conn) {
 			}
 		}
 
-		if user != nil && user.Fraction == "Replics" || user.Fraction == "Explores" || user.Fraction == "Reverses" {
+		if user != nil && user.InBaseID > 0 && (user.Fraction == "Replics" || user.Fraction == "Explores" || user.Fraction == "Reverses") {
 
 			if msg.Event == "Logout" {
 				ws.Close()
@@ -182,6 +184,19 @@ func Reader(ws *websocket.Conn) {
 					dbPlayer.UpdateUser(user)
 				} else {
 					lobbyPipe <- Message{Event: "upSkill", UserID: user.GetID(), Error: "no points"}
+				}
+			}
+
+			if msg.Event == "openMapMenu" {
+				userBase, _ := bases.Bases.Get(user.InBaseID)
+				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), Maps: maps.Maps.GetAllShortInfoMap(), ID: userBase.MapID}
+			}
+
+			if msg.Event == "previewPath" {
+				userBase, _ := bases.Bases.Get(user.InBaseID)
+				if userBase.MapID != msg.ID {
+					searchMaps, _ := maps.Maps.FindGlobalPath(userBase.MapID, msg.ID)
+					lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), SearchMaps: searchMaps}
 				}
 			}
 		}

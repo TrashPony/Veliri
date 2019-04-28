@@ -14,7 +14,11 @@ CREATE TABLE maps
 
   /* параметр in_game, может быть только у лоалькой карты, если он true - значит карта принадлежит какой то активной игре */
   /* иначе это шаблон локальной карты например для быстрых боев. */
-  in_game       BOOLEAN
+  in_game       BOOLEAN,
+
+  -- координаты отображения в меню глобальной карты
+  x_global int,
+  y_global int
 );
 
 CREATE TABLE map_constructor

@@ -81,4 +81,12 @@ function ReaderLobby(jsonMessage) {
             FillUserStatus(JSON.parse(jsonMessage).player, JSON.parse(jsonMessage).skill)
         }
     }
+
+    if (event === "openMapMenu") {
+        FillGlobalMap(JSON.parse(jsonMessage).maps, JSON.parse(jsonMessage).id)
+    }
+
+    if (event === "previewPath") {
+        PreviewPath(JSON.parse(jsonMessage).search_maps)
+    }
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Map struct {
-	Id                  int
+	Id                  int `json:"id"`
 	Name                string
 	QSize               int
 	RSize               int
@@ -27,6 +27,22 @@ type Map struct {
 
 	// тут хранятся просчитанные шаблоны координат, что бы не проверять координаты при каждом поиске пути
 	GeoDataMaps map[int]map[int]map[int]coordinate.Coordinate `json:"-"`
+
+	// показывает позицию на карте мира, пока используется ради меню карты на фронте
+	XGlobal int `json:"x_global"`
+	YGlobal int `json:"y_global"`
+}
+
+type ShortInfoMap struct {
+	Id                  int `json:"id"`
+	Name                string
+	QSize               int
+	RSize               int
+	Specification       string
+	Global              bool                     `json:"global"`
+	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
+	XGlobal             int                      `json:"x_global"`
+	YGlobal             int                      `json:"y_global"`
 }
 
 type Anomalies struct {
@@ -36,6 +52,20 @@ type Anomalies struct {
 	Radius int    `json:"radius"`
 	Type   string `json:"type"`
 	Power  int    `json:"power"`
+}
+
+func (mp *Map) GetShortInfoMap() *ShortInfoMap {
+	return &ShortInfoMap{
+		Id:                  mp.Id,
+		Name:                mp.Name,
+		QSize:               mp.QSize,
+		RSize:               mp.RSize,
+		Specification:       mp.Specification,
+		Global:              mp.Global,
+		HandlersCoordinates: mp.HandlersCoordinates,
+		XGlobal:             mp.XGlobal,
+		YGlobal:             mp.YGlobal,
+	}
 }
 
 func (mp *Map) GetRandomEntryBase() *coordinate.Coordinate {
@@ -82,6 +112,7 @@ func (mp *Map) GetRandomEntrySector() *coordinate.Coordinate {
 	return nil
 }
 
+// TODO надо переписать на интерфейсы
 func (mp *Map) GetEntryTySector(sectorID int) *coordinate.Coordinate {
 	for _, entry := range mp.HandlersCoordinates {
 		if entry.Handler == "sector" && entry.ToMapID == sectorID {
@@ -91,7 +122,27 @@ func (mp *Map) GetEntryTySector(sectorID int) *coordinate.Coordinate {
 	return nil
 }
 
+func (mp *ShortInfoMap) GetEntryTySector(sectorID int) *coordinate.Coordinate {
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "sector" && entry.ToMapID == sectorID {
+			return entry
+		}
+	}
+	return nil
+}
+
 func (mp *Map) GetAllEntrySectors() []*coordinate.Coordinate {
+	entrySectors := make([]*coordinate.Coordinate, 0)
+	for _, entry := range mp.HandlersCoordinates {
+		if entry.Handler == "sector" {
+			entrySectors = append(entrySectors, entry)
+		}
+	}
+
+	return entrySectors
+}
+
+func (mp *ShortInfoMap) GetAllEntrySectors() []*coordinate.Coordinate {
 	entrySectors := make([]*coordinate.Coordinate, 0)
 	for _, entry := range mp.HandlersCoordinates {
 		if entry.Handler == "sector" {

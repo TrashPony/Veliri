@@ -71,6 +71,14 @@ func (m *mapStore) GetAllMap() map[int]*_map.Map {
 	return m.maps
 }
 
+func (m *mapStore) GetAllShortInfoMap() map[int]*_map.ShortInfoMap {
+	shortMap := make(map[int]*_map.ShortInfoMap)
+	for _, mp := range m.maps {
+		shortMap[mp.Id] = mp.GetShortInfoMap()
+	}
+	return shortMap
+}
+
 func (m *mapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	newMap, _ := m.maps[id]
 	var respawns = make(map[int]*coordinate.Coordinate)

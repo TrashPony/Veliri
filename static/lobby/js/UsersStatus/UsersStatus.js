@@ -16,7 +16,7 @@ function UsersStatus() {
                 <div id="usersStatusTabsGroup">
                     <div id="commonUserStat" class="actionChatTab" onclick="OpenCommonUserStat()">Общие</div>
                     <div id="skillUserStat" onclick="OpenSkillsUserStat()">Навыки</div>
-                    <div id="StatUserStat">Статистика</div>
+                    <div id="StatUserStat">Задания</div>
                 </div>
             </div>
             <div id="TabsRightArrow" onclick="document.getElementById('usersStatusTabsGroup').scrollLeft += 20;">></div>
