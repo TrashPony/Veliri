@@ -29,3 +29,5 @@ CREATE TABLE user_current_mission
   id_mission INT REFERENCES missions (id),
   data       json -- тут текущее состояние квеста ¯\_(ツ)_/¯
 )
+
+-- todo линия выполнения заданий что бы старые задания оставались и не выдавались пока не пройдет весь цикл

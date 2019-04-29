@@ -13,6 +13,8 @@ type Mission struct {
 	RewardItems     *inventory.Inventory `json:"reward_items"`
 	EndDialogID     int                  `json:"end_dialog_id"`
 	EndBaseIDDialog int                  `json:"end_base_id_dialog"`
+	Fraction        string               `json:"fraction"`
+	StartBaseID     int                  `json:"start_base_id"`
 }
 
 type Action struct {

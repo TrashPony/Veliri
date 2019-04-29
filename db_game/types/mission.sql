@@ -5,8 +5,15 @@ CREATE TABLE missions
   start_dialog_id    INT         not null default 0,
   reward_cr          INT         not null default 0,
   end_dialog_id      INT         not null default 0,
-  end_base_id_dialog INT         not null default 0
+  end_base_id_dialog INT         not null default 0,
+  fraction           text        not null default '',
+  start_base_id      INT         not null default 0
 );
+
+alter table missions
+  add column fraction text not null default '';
+alter table missions
+  add column start_base_id INT not null default 0;
 
 -- таблица наград в виде предметов за квест
 CREATE TABLE reward_items
