@@ -2,6 +2,7 @@ package player
 
 import (
 	"database/sql"
+	"encoding/json"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"log"
@@ -22,6 +23,7 @@ func UpdateUser(user *player.Player) {
 	}
 
 	UpdateUserSkills(user, tx)
+	UpdateUserMission(user, tx)
 	tx.Commit()
 }
 
@@ -36,6 +38,24 @@ func UpdateUserSkills(user *player.Player, tx *sql.Tx) {
 			currentSkill.Level, currentSkill.ID, user.GetID())
 		if err != nil {
 			log.Fatal("add new skills to user" + err.Error())
+		}
+	}
+}
+
+func UpdateUserMission(user *player.Player, tx *sql.Tx) {
+	_, err := tx.Exec("DELETE FROM user_current_mission WHERE id_user = $1", user.GetID())
+	if err != nil {
+		log.Fatal("delete all mission" + err.Error())
+	}
+
+	for _, mission := range user.Missions {
+
+		jsonMission, _ := json.Marshal(mission)
+
+		_, err := tx.Exec("INSERT INTO user_current_mission (id_user, id_mission, data) VALUES ($1, $2, $3)",
+			user.GetID(), mission.ID, string(jsonMission))
+		if err != nil {
+			log.Fatal("add new missions to user" + err.Error())
 		}
 	}
 }

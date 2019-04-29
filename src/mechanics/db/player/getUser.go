@@ -1,8 +1,10 @@
 package player
 
 import (
+	"encoding/json"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"log"
@@ -39,6 +41,7 @@ func User(id int, login string) *player.Player {
 
 		getUserSkills(&newUser)
 		getUserBase(&newUser)
+		getUserMission(&newUser)
 	}
 
 	return &newUser
@@ -93,5 +96,33 @@ func getUserSkills(user *player.Player) {
 			currentSkill.Level = 0 // оно и так должно быть ноль но на всякий случай
 			user.CurrentSkills[currentSkill.Name] = currentSkill
 		}
+	}
+}
+
+func getUserMission(user *player.Player) {
+	user.Missions = make(map[int]*mission.Mission)
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT data FROM user_current_mission WHERE id_user=$1", user.GetID())
+	if err != nil {
+		log.Fatal("get user mission " + err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var userMission mission.Mission
+		var data string
+
+		err := rows.Scan(&data)
+		if err != nil {
+			println("scan user mission" + err.Error())
+		}
+
+		err = json.Unmarshal([]byte(data), &userMission)
+		if err != nil {
+			println("json unmarshal user mission" + err.Error())
+		}
+
+		user.Missions[userMission.ID] = &userMission
 	}
 }

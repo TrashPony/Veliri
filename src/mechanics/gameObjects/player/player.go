@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -61,7 +62,8 @@ type Player struct {
 	Title        string                   `json:"title"`
 
 	// [name]Skill
-	CurrentSkills map[string]*skill.Skill `json:"current_skills"`
+	CurrentSkills map[string]*skill.Skill  `json:"current_skills"`
+	Missions      map[int]*mission.Mission `json:"missions"`
 }
 
 type ShortUserInfo struct {

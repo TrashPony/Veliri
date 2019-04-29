@@ -25,10 +25,10 @@ CREATE TABLE base_storage ( /* инвнтерь конкретной базы к
   id        SERIAL PRIMARY KEY,
   base_id   INT REFERENCES bases (id),
   user_id   INT REFERENCES users (id),
-  slot      INT,            /* какой слот занимает итем */
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
    переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints) */
   item_type VARCHAR(64),
+  slot      INT,            /* какой слот занимает итем */
   item_id   INT,            /* ид итема определяет конкретный итем тип + ид*/
   quantity  INT,            /* количество предметов в слоте */
   hp        INT             /* сколько осталось хп у эквипа, до поломки*/

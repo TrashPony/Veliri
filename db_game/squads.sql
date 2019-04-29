@@ -74,12 +74,11 @@ CREATE TABLE squad_inventory
 (/* инвентарь отряда не боевой параметр */
   id        SERIAL PRIMARY KEY,
   id_squad  INT REFERENCES squads (id), /* какому отряду принаджелит */
-  slot      INT, /* какой слот занимает итем */
 
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
    переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints) */
   item_type VARCHAR(64),
-
+  slot      INT, /* какой слот занимает итем */
   item_id   INT, /* ид итема определяет конкретный итем тип + ид*/
   quantity  INT, /* количество предметов в слоте */
   hp        INT /* сколько осталось хп у эквипа, до поломки*/

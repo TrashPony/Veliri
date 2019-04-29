@@ -21,3 +21,11 @@ CREATE TABLE users
   biography         text,
   title             text
 );
+
+CREATE TABLE user_current_mission
+(
+  id         SERIAL PRIMARY KEY,
+  id_user    INT REFERENCES users (id),
+  id_mission INT REFERENCES missions (id),
+  data       json -- тут текущее состояние квеста ¯\_(ツ)_/¯
+)
