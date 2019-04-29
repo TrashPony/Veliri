@@ -23,7 +23,7 @@
 
 #rewardBlock {
     float: left;
-    height: 100%;
+    height: 244px;
 }
 
 #missionFace {
@@ -85,7 +85,8 @@
     font-family: sans-serif;
     float: left;
     box-shadow: inset 0 0 5px black;
-    background: #8cb3c7;
+    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background-size: 10px 3px;
     color: #ff8100;
     font-size: 18px;
 }
@@ -104,11 +105,23 @@
     font-size: 9pt;
     float: left;
     box-shadow: inset 0 0 5px black;
-    background: #8cb3c7;
+    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background-size: 10px 3px;
 }
 
-#missionAsc .wrapperAsk{
-    text-align: center;
+#missionAsc .wrapperAsk {
+    text-align: left;
+    box-shadow: none;
+    background: none;
+}
+
+#missionAsc .asks {
+    border: 0 solid #25a0e1;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.3), rgba(37, 160, 225, 0.3) 6px);
+}
+
+#missionAsc .asks:hover {
+    background-image: linear-gradient(1deg, rgba(255, 224, 0, 0.3), rgba(219, 225, 0, 0.3) 6px);
 }
 
 #rewardsCredits {

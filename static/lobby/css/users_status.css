@@ -214,7 +214,8 @@
 
 #biography textarea {
     box-shadow: inset 0 0 5px black;
-    background: #79a0b4;
+    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background-size: 10px 3px;
     height: 80px;
     width: 363px;
     margin: 5px auto 0px;
@@ -269,7 +270,8 @@
     overflow-y: scroll;
     float: left;
     box-shadow: inset 0 0 5px black;
-    background: #79a0b4;
+    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background-size: 10px 3px;
     height: 65px;
     width: 250px;
     margin: 5px 15px;
@@ -391,7 +393,7 @@
     margin-left: -3px;
 }
 
-#skillLvl div{
+#skillLvl div {
     height: 17px;
     width: 7px;
     float: left;
