@@ -1,19 +1,16 @@
 CREATE TABLE missions
 (
-  id                 SERIAL PRIMARY KEY,
-  name               VARCHAR(64) not null default '',
-  start_dialog_id    INT         not null default 0,
-  reward_cr          INT         not null default 0,
-  end_dialog_id      INT         not null default 0,
-  end_base_id_dialog INT         not null default 0,
-  fraction           text        not null default '',
-  start_base_id      INT         not null default 0
+  id               SERIAL PRIMARY KEY,
+  name             VARCHAR(64) not null default '',
+  start_dialog_id  INT         not null default 0,
+  reward_cr        INT         not null default 0,
+  end_dialog_id    INT         not null default 0,
+  end_base_id      INT         not null default 0,
+  fraction         text        not null default '',
+  start_base_id    INT         not null default 0,
+  -- предмет которые выдается при взятие задания, обычно его надо доставить, не является игровым предметом пока для них нет таблицы
+  delivery_item_id INT         not null default 0
 );
-
-alter table missions
-  add column fraction text not null default '';
-alter table missions
-  add column start_base_id INT not null default 0;
 
 -- таблица наград в виде предметов за квест
 CREATE TABLE reward_items

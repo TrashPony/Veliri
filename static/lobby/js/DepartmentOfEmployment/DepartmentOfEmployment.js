@@ -1,7 +1,7 @@
-function InitDepartmentOfEmployment() {
+function InitDepartmentOfEmployment(dialogPage, action, mission) {
 
     if (document.getElementById('DepartmentOfEmployment')) {
-        document.getElementById('DepartmentOfEmployment').remove()
+        document.getElementById('DepartmentOfEmployment').remove();
         return
     }
 
@@ -12,20 +12,19 @@ function InitDepartmentOfEmployment() {
     departmentOfEmployment.innerHTML = (`
             <h3 id="missionHead">MissionName</h3>
             <div id="infoBlock">
-                <div id="missionText"> Text text text text text text text text text</div>
-                <div id="missionAsc">
-                    <div class="asks"><div class='wrapperAsk'>Понятно</div></div>
-                    <div class="asks"><div class='wrapperAsk'>Не Понятно</div></div>
-                </div>
+                <div id="missionText"></div>
+                <div id="missionAsc"></div>
             </div>
             
             <div id="rewardBlock">
                 <div id="missionFace" style="background-image: url('../assets/replics_logo.png')"></div>
-               
-                <h3>Награда:</h3>
-                <div id="rewards">
-                   <div id="rewardsCredits">Крудиты: <span id="countRewardCredits">250</span></div>
-                   <div id="rewardsItems"></div>
+                
+                <div id="rewardBlock2">
+                    <h3>Награда:</h3>
+                    <div id="rewards">
+                       <div id="rewardsCredits">Крудиты: <span id="countRewardCredits">250</span></div>
+                       <div id="rewardsItems"></div>
+                    </div>
                 </div>
             </div>   
     `);
@@ -48,4 +47,12 @@ function InitDepartmentOfEmployment() {
 
         }
     });
+
+    if (!dialogPage) {
+        lobby.send(JSON.stringify({
+            event: "openDepartmentOfEmployment",
+        }));
+    } else {
+        FillDepartment(dialogPage, action, mission)
+    }
 }

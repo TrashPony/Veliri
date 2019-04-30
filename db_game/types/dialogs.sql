@@ -6,7 +6,10 @@ CREATE TABLE dialogs
   доступ диалога, base - можно вызвать на базе, object - привязан к какому либо обьекту и только рядом с ним можно
   его вызвать, world - можно вызвать везде и всегда
   */
-  access_type text not null default ''
+  access_type text not null default '',
+
+  -- фракция которой доступен диалог если '' то всем, Replics Explores Reverses
+  fraction    text not null default ''
 );
 
 CREATE TABLE dialog_pages

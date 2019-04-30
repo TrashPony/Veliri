@@ -3,6 +3,7 @@ package bases
 import (
 	dbBase "github.com/TrashPony/Veliri/src/mechanics/db/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"math/rand"
 	"sync"
 )
 
@@ -43,4 +44,20 @@ func (b *store) GetBasesByMap(mapID int) map[int]*base.Base {
 	}
 
 	return bases
+}
+
+func (b *store) GetRandomBase() *base.Base {
+	for {
+		// TODO возможны проблемы))
+		count := 0
+		count2 := rand.Intn(len(b.bases))
+
+		for id := range b.bases {
+			if count == count2 {
+				gameBase, _ := b.Get(id)
+				return gameBase
+			}
+			count++
+		}
+	}
 }

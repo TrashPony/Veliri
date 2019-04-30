@@ -49,7 +49,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
 				trainingDialog := gameTypes.Dialogs.GetByID(1)
 				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
-				newPlayer.SetOpenDialog(&trainingDialog)
+				newPlayer.SetOpenDialog(trainingDialog)
 			} else {
 				if newPlayer.Training < 999 {
 					lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
@@ -75,7 +75,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			println(err.Error())
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
@@ -93,7 +93,7 @@ func Reader(ws *websocket.Conn) {
 
 				trainingDialog := gameTypes.Dialogs.GetByID(1)
 				lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: trainingDialog.Pages[1]}
-				user.SetOpenDialog(&trainingDialog)
+				user.SetOpenDialog(trainingDialog)
 			}
 		}
 
@@ -162,11 +162,9 @@ func Reader(ws *websocket.Conn) {
 			}
 
 			if msg.Event == "Ask" {
-
-				page, err, action := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
-
+				page, err, action, mission := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
 				if usersLobbyWs[ws].InBaseID > 0 && err == nil {
-					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action}
+					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action, Mission: mission	}
 				} else {
 					lobbyPipe <- Message{Event: "Error", UserID: user.GetID(), Error: err.Error()}
 				}
@@ -198,6 +196,12 @@ func Reader(ws *websocket.Conn) {
 					searchMaps, _ := maps.Maps.FindGlobalPath(userBase.MapID, msg.ID)
 					lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), SearchMaps: searchMaps}
 				}
+			}
+
+			if msg.Event == "openDepartmentOfEmployment" {
+				userBase, _ := bases.Bases.Get(user.InBaseID)
+				page, _ := dialog.GetBaseGreeting(user, userBase)
+				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), DialogPage: page}
 			}
 		}
 	}

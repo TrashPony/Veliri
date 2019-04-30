@@ -1,4 +1,4 @@
-function CreatePageDialog(id, page, action, full, needPicture, credits, items) {
+function CreatePageDialog(id, page, action, full, needPicture, credits, items, noCreate) {
 
     DialogAction(action);
 
@@ -29,7 +29,7 @@ function CreatePageDialog(id, page, action, full, needPicture, credits, items) {
         });
         dialogBlock.appendChild(buttons.move);
 
-        CreateAsk(dialogBlock, page);
+        CreateAsk(dialogBlock, page, true);
     }
 
     if (credits || items) {
@@ -90,11 +90,11 @@ function CreateItems(dialogBlock, items, credits) {
     }
 }
 
-function CreateAsk(dialogBlock, page) {
+function CreateAsk(dialogBlock, page, deletePage) {
     for (let i in page.asc) {
         let ask = document.createElement("div");
         ask.className = "asks";
-        ask.innerHTML = "<div class='wrapperAsk'>" + page.asc[i].text + "</div>";
+        ask.innerHTML = "<div class='wrapperAsk' id='ask" + page.asc[i].id + "'>" + page.asc[i].text + "</div>";
 
         $(ask).click(function () {
             lobby.send(JSON.stringify({
@@ -102,7 +102,7 @@ function CreateAsk(dialogBlock, page) {
                 to_page: page.asc[i].to_page,
                 ask_id: page.asc[i].id,
             }));
-            if (page.asc[i].to_page === 0) {
+            if (page.asc[i].to_page === 0 && deletePage) {
                 dialogBlock.remove();
             }
         });

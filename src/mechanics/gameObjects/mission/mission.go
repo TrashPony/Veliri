@@ -1,20 +1,27 @@
 package mission
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 )
 
 type Mission struct {
-	ID              int                  `json:"id"`
-	StartDialogID   int                  `json:"start_dialog_id"`
-	Name            string               `json:"name"`
-	Actions         []*Action            `json:"actions"`
-	RewardCr        int                  `json:"reward_cr"`
-	RewardItems     *inventory.Inventory `json:"reward_items"`
-	EndDialogID     int                  `json:"end_dialog_id"`
-	EndBaseIDDialog int                  `json:"end_base_id_dialog"`
-	Fraction        string               `json:"fraction"`
-	StartBaseID     int                  `json:"start_base_id"`
+	ID             int                  `json:"id"`
+	StartDialogID  int                  `json:"start_dialog_id"`
+	Name           string               `json:"name"`
+	Actions        []*Action            `json:"actions"`
+	RewardCr       int                  `json:"reward_cr"`
+	RewardItems    *inventory.Inventory `json:"reward_items"`
+	EndDialogID    int                  `json:"end_dialog_id"`
+	EndBaseID      int                  `json:"end_base_id"`
+	Fraction       string               `json:"fraction"`
+	StartBaseID    int                  `json:"start_base_id"`
+	DeliveryItemId int                  `json:"delivery_item_id"`
+
+	StartDialog *dialog.Dialog `json:"start_dialog"`
+	EndDialog   *dialog.Dialog `json:"end_dialog_id"`
+	ToBase      *base.Base     `json:"to_base"`
 }
 
 type Action struct {

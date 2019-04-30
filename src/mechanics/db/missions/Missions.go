@@ -15,11 +15,12 @@ func Missions() map[int]*mission.Mission {
 		" start_dialog_id," +
 		" reward_cr," +
 		" end_dialog_id," +
-		" end_base_id_dialog," +
+		" end_base_id," +
 		" fraction," +
-		" start_base_id " +
+		" start_base_id," +
+		" delivery_item_id " +
 		" " +
-		"FROM chats")
+		"FROM missions")
 	if err != nil {
 		log.Fatal("get all missions " + err.Error())
 	}
@@ -32,7 +33,8 @@ func Missions() map[int]*mission.Mission {
 		var gameMission mission.Mission
 
 		err := rows.Scan(&gameMission.ID, &gameMission.Name, &gameMission.StartDialogID, &gameMission.RewardCr,
-			&gameMission.EndDialogID, &gameMission.EndBaseIDDialog, &gameMission.Fraction, &gameMission.StartBaseID)
+			&gameMission.EndDialogID, &gameMission.EndBaseID, &gameMission.Fraction, &gameMission.StartBaseID,
+			&gameMission.DeliveryItemId)
 		if err != nil {
 			log.Fatal("scan all missions " + err.Error())
 		}

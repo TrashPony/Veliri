@@ -50,7 +50,8 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "dialog") {
-        CreatePageDialog("dialogBlock", JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, true, true)
+        FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission)
+        //CreatePageDialog("dialogBlock", JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, true, true)
     }
 
     if (event === "training") {
@@ -88,5 +89,9 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "previewPath") {
         PreviewPath(JSON.parse(jsonMessage).search_maps)
+    }
+
+    if (event === "openDepartmentOfEmployment") {
+        FillDepartment(JSON.parse(jsonMessage).dialog_page)
     }
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
@@ -55,4 +56,5 @@ type Message struct {
 
 	Maps       map[int]*_map.ShortInfoMap `json:"maps"`
 	SearchMaps []*maps.SearchMap          `json:"search_maps"`
+	Mission    *mission.Mission            `json:"mission"`
 }

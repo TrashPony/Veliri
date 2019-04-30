@@ -12,8 +12,9 @@ func Dialogs() map[int]dialog.Dialog {
 	rows, err := dbConnect.GetDBConnect().Query("" +
 		"SELECT " +
 		" id," +
-		" name, " +
-		" access_type" +
+		" name," +
+		" access_type," +
+		" fraction " +
 		" " +
 		"FROM dialogs ")
 	if err != nil {
@@ -23,7 +24,7 @@ func Dialogs() map[int]dialog.Dialog {
 
 	for rows.Next() {
 		dialogType := dialog.Dialog{}
-		err := rows.Scan(&dialogType.ID, &dialogType.Name, &dialogType.AccessType)
+		err := rows.Scan(&dialogType.ID, &dialogType.Name, &dialogType.AccessType, &dialogType.Fraction)
 		if err != nil {
 			log.Fatal("get scan dialogs " + err.Error())
 		}
@@ -86,14 +87,12 @@ func getPageAsk(page *dialog.Page) {
 
 	for rows.Next() {
 		ask := dialog.Ask{}
-		action := ""
 
-		err := rows.Scan(&ask.ID, &ask.ToPage, &ask.Name, &ask.Text, &action)
+		err := rows.Scan(&ask.ID, &ask.ToPage, &ask.Name, &ask.Text, &ask.TypeAction)
 		if err != nil {
 			log.Fatal("get scan all page ask " + err.Error())
 		}
 
-		ask.SetAction(action)
 		page.Asc = append(page.Asc, ask)
 	}
 }
