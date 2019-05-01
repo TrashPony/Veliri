@@ -100,7 +100,7 @@ func getUserSkills(user *player.Player) {
 }
 
 func getUserMission(user *player.Player) {
-	user.Missions = make(map[int]*mission.Mission)
+	user.Missions = make(map[string]*mission.Mission)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT data FROM user_current_mission WHERE id_user=$1", user.GetID())
 	if err != nil {
@@ -123,6 +123,6 @@ func getUserMission(user *player.Player) {
 			println("json unmarshal user mission" + err.Error())
 		}
 
-		user.Missions[userMission.ID] = &userMission
+		user.Missions[userMission.UUID] = &userMission
 	}
 }

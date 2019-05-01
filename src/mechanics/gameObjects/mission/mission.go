@@ -4,24 +4,26 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 )
 
 type Mission struct {
 	ID             int                  `json:"id"`
+	UUID           string               `json:"uuid"`
 	StartDialogID  int                  `json:"start_dialog_id"`
 	Name           string               `json:"name"`
 	Actions        []*Action            `json:"actions"`
 	RewardCr       int                  `json:"reward_cr"`
 	RewardItems    *inventory.Inventory `json:"reward_items"`
-	EndDialogID    int                  `json:"end_dialog_id"`
-	EndBaseID      int                  `json:"end_base_id"`
 	Fraction       string               `json:"fraction"`
 	StartBaseID    int                  `json:"start_base_id"`
 	DeliveryItemId int                  `json:"delivery_item_id"`
+	Type           string               `json:"type"`
 
-	StartDialog *dialog.Dialog `json:"start_dialog"`
-	EndDialog   *dialog.Dialog `json:"end_dialog_id"`
-	ToBase      *base.Base     `json:"to_base"`
+	// методанные необходмые для правильной работы квеста
+	StartDialog *dialog.Dialog     `json:"start_dialog"`
+	StartBase   *base.Base         `json:"start_base"`
+	StartMap    *_map.ShortInfoMap `json:"start_map"`
 }
 
 type Action struct {
@@ -41,4 +43,5 @@ type Action struct {
 	NeedItems        *inventory.Inventory `json:"need_items"`
 	Number           int                  `json:"number"`
 	Async            bool                 `json:"async"`
+	Dialog           *dialog.Dialog       `json:"dialog"`
 }

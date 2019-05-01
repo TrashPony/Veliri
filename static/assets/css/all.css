@@ -48,7 +48,7 @@ input:hover {
 }
 
 .ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
-    z-index: 90;
+    z-index: -1 !important;
     border-bottom: 2px solid #def4ff;
     border-right: 2px solid #def4ff;
     border-bottom-right-radius: 12px;
@@ -61,7 +61,7 @@ input:hover {
 }
 
 .ui-resizable-handle.ui-resizable-ne {
-    z-index: 90;
+    z-index: -1 !important;
     border-top: 2px solid #def4ff;
     border-right: 2px solid #def4ff;
     border-top-right-radius: 12px;
@@ -211,13 +211,13 @@ body ::-webkit-scrollbar:horizontal {
 }
 
 body ::-webkit-scrollbar {
-    background: #a5d5ef;
+    background: rgba(165, 213, 239, 0.31);
     box-shadow: inset 0 0 5px black;
 }
 
 /* DISABLED STATES */
 body ::-webkit-scrollbar:disabled {
-    background: #a5d5ef;
+    background: rgba(165, 213, 239, 0.31);
     box-shadow: inset 0 0 5px black;
 }
 
@@ -227,18 +227,11 @@ body ::-webkit-scrollbar-thumb:window-inactive,
 body ::-webkit-scrollbar-thumb:disabled {
     box-shadow: inset 0 0 5px black;
     background-size: 5px 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background: rgba(1, 77, 93, 0.5);
 }
 
 /*--------*/
-
-::-webkit-scrollbar-corner {
-    background-color: transparent;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    text-shadow: none !important;
+body ::-webkit-scrollbar{
+    width: 12px;
+    height: 12px;
 }

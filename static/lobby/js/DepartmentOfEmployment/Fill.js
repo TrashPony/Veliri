@@ -1,7 +1,8 @@
 function FillDepartment(dialogPage, action, mission) {
-    console.log(dialogPage, action);
+    console.log(dialogPage)
+    DialogAction(action);
 
-    if (action === "close" && document.getElementById('DepartmentOfEmployment')) {
+    if ((action === "close" || action === "start_training" || action === "miss_training") && document.getElementById('DepartmentOfEmployment')) {
         document.getElementById('DepartmentOfEmployment').remove();
         return;
     }
@@ -10,8 +11,6 @@ function FillDepartment(dialogPage, action, mission) {
         InitDepartmentOfEmployment(dialogPage, action, mission);
         return
     }
-
-    DialogAction(action);
 
     document.getElementById('missionText').innerHTML = dialogPage.text;
     document.getElementById('missionHead').innerHTML = dialogPage.name;

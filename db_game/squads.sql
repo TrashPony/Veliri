@@ -76,7 +76,7 @@ CREATE TABLE squad_inventory
   id_squad  INT REFERENCES squads (id), /* какому отряду принаджелит */
 
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
-   переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints) */
+   переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints), (trash) */
   item_type VARCHAR(64),
   slot      INT, /* какой слот занимает итем */
   item_id   INT, /* ид итема определяет конкретный итем тип + ид*/

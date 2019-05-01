@@ -46,6 +46,7 @@ function initChatInterface() {
 function ChatReader(data) {
 
     if (data.event === 'OpenChat') {
+        FillNotifyBlock(data);
         OpenChat(data);
     }
 

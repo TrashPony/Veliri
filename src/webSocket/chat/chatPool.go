@@ -5,27 +5,28 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/chats"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/chatGroup"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/gorilla/websocket"
-	"strconv"
 	"time"
 )
 
 var chatPipe = make(chan chatMessage)
 
 type chatMessage struct {
-	Event       string                   `json:"event"`
-	UserName    string                   `json:"user_name"`
-	MessageText string                   `json:"message_text"`
-	Message     *chatGroup.Message       `json:"message"`
-	GroupID     int                      `json:"group_id"`
-	UserID      int                      `json:"user_id"`
-	Group       *chatGroup.Group         `json:"group"`
-	Groups      map[int]*chatGroup.Group `json:"groups"`
-	Password    string                   `json:"password"`
-	Users       []*player.ShortUserInfo  `json:"users"`
-	User        *player.ShortUserInfo    `json:"user"`
-	Local       bool                     `json:"local"`
+	Event       string                      `json:"event"`
+	UserName    string                      `json:"user_name"`
+	MessageText string                      `json:"message_text"`
+	Message     *chatGroup.Message          `json:"message"`
+	GroupID     int                         `json:"group_id"`
+	UserID      int                         `json:"user_id"`
+	Group       *chatGroup.Group            `json:"group"`
+	Groups      map[int]*chatGroup.Group    `json:"groups"`
+	Password    string                      `json:"password"`
+	Users       []*player.ShortUserInfo     `json:"users"`
+	User        *player.ShortUserInfo       `json:"user"`
+	Local       bool                        `json:"local"`
+	Missions    map[string]*mission.Mission `json:"missions"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -36,95 +37,6 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	chat.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
 	Reader(ws)
-}
-
-func checkUserOnline(group *chatGroup.Group, id int, local bool) bool {
-
-	chatUser := chat.Clients.GetByID(id)
-
-	// если игрок онайн но игрок уже отключился от сети то говорим что он не онлайн и обновляем у всех список
-	if group.Users[id] && chatUser == nil {
-		if local {
-			delete(group.Users, id)
-		} else {
-			group.Users[id] = false
-		}
-		return true
-	}
-
-	// если игрока был офлайн и стал онлайн то обновляем у всех список пользователей
-	if !group.Users[id] && chatUser != nil {
-		group.Users[id] = true
-		return true
-	}
-
-	return false
-}
-
-func UserOnlineChecker() {
-	for {
-		for _, group := range chats.Groups.GetAllGroups() {
-			update := false
-			for id := range group.Users {
-				update = checkUserOnline(group, id, false)
-			}
-
-			if update {
-				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil, getUsersInChatGroup(group, true), false, nil)
-			}
-		}
-
-		time.Sleep(100 * time.Millisecond)
-	}
-}
-
-func LocalChatChecker() {
-	// воркет сделит что бы у игроков был открыть нужный локальный чат, и обновляет в нем игроков
-
-	for {
-
-		for _, localGroup := range chats.Groups.GetAllLocalGroups() {
-			update := false
-			for id := range localGroup.Users {
-				update = checkUserOnline(localGroup, id, true)
-			}
-
-			if update {
-				SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
-			}
-		}
-
-		users, mx := chat.Clients.GetAllConnects()
-
-		// делаем копию карты что бы не вызвать дедлок или рантайм ошибку конкурентного чтения записи.
-		fakeUsers := make(map[*websocket.Conn]*player.Player)
-		for key, value := range users {
-			fakeUsers[key] = value
-		}
-
-		mx.Unlock()
-
-		for _, client := range fakeUsers {
-
-			_, id := getLocalChat(client)
-
-			for localID, localGroup := range chats.Groups.GetAllLocalGroups() {
-				// если текущий локальный чат не совподает с прошлым, то удаляем игрока и обновляем у всех список юзеров
-				if id != localID && localGroup.CheckUserInGroup(client.GetID()) {
-					delete(localGroup.Users, client.GetID())
-					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
-				}
-
-				// если текущий пользователь не находится в группе или он там офлайн притом что это его группа то обновляем статус онлайн у всех
-				if id == localID && !localGroup.CheckUserInGroup(client.GetID()) {
-					localGroup.Users[client.GetID()] = true
-					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil, getUsersInChatGroup(localGroup, false), true, nil)
-				}
-			}
-		}
-
-		time.Sleep(100 * time.Millisecond)
-	}
 }
 
 func Reader(ws *websocket.Conn) {
@@ -141,20 +53,24 @@ func Reader(ws *websocket.Conn) {
 		if client != nil {
 			if msg.Event == "OpenChat" {
 				group, _ := getLocalChat(client)
-				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client), nil, false, client.GetShortUserInfo(false, true))
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client),
+					nil, false, client.GetShortUserInfo(false, true), client.Missions)
 			}
 
 			if msg.Event == "GetAllGroups" {
-				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllGroups(), nil, false, nil)
+				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
+					chats.Groups.GetAllGroups(), nil, false, nil, nil)
 			}
 
 			if msg.Event == "ChangeGroup" {
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
 					group := chats.Groups.GetGroup(msg.GroupID)
-					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, true), false, nil)
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil,
+						getUsersInChatGroup(group, true), false, nil, nil)
 				} else {
 					group, _ := getLocalChat(client)
-					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil, getUsersInChatGroup(group, false), false, nil)
+					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil,
+						getUsersInChatGroup(group, false), false, nil, nil)
 				}
 
 			}
@@ -162,8 +78,10 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "SubscribeGroup" {
 				group := chats.Groups.GetGroup(msg.GroupID)
 				if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
-					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil)
-					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil, getUsersInChatGroup(group, true), false, nil)
+					SendMessage("OpenChat", msg.Message, client.GetID(), 0,
+						chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil, nil)
+					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
+						getUsersInChatGroup(group, true), false, nil, nil)
 				}
 			}
 
@@ -171,8 +89,10 @@ func Reader(ws *websocket.Conn) {
 				group := chats.Groups.GetGroup(msg.GroupID)
 				if group != nil {
 					chats.Groups.Unsubscribe(msg.GroupID, client)
-					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil, getUsersInChatGroup(group, true), false, nil)
-					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil)
+					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
+						getUsersInChatGroup(group, true), false, nil, nil)
+					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
+						chats.Groups.GetAllUserGroups(client), nil, false, nil, nil)
 				}
 			}
 
@@ -188,7 +108,7 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil)
 				} else {
 					// если msg.GroupID == 0 то это сообщение в локальный чат
 					group, _ := getLocalChat(client)
@@ -196,59 +116,27 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil)
 				}
 			}
 		}
 	}
 }
 
-func getLocalChat(client *player.Player) (*chatGroup.Group, string) {
-	if client.InBaseID > 0 {
-		// игрок на базе
-		return chats.Groups.GetLocalGroup("base:" + strconv.Itoa(client.InBaseID)), "base:" + strconv.Itoa(client.InBaseID)
-	}
-
-	if client.GetSquad().InGame {
-		// игрок в игре
-		return chats.Groups.GetLocalGroup("game:" + strconv.Itoa(client.GetGameID())), "game:" + strconv.Itoa(client.GetGameID())
-	}
-
-	// игрок на глобальной карте
-	return chats.Groups.GetLocalGroup("map:" + strconv.Itoa(client.GetSquad().MapID)), "map:" + strconv.Itoa(client.GetSquad().MapID)
-}
-
-func getUsersInChatGroup(group *chatGroup.Group, all bool) []*player.ShortUserInfo {
-	users := make([]*player.ShortUserInfo, 0)
-
-	for id := range group.Users {
-		chatUser := chat.Clients.GetByID(id)
-
-		if chatUser != nil {
-			if all || group.Users[id] {
-				users = append(users, chatUser.GetShortUserInfo(false, true))
-			}
-		} else {
-			group.Users[id] = false
-		}
-	}
-
-	return users
-}
-
 func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID int, group *chatGroup.Group,
-	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool, user *player.ShortUserInfo) {
+	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool, user *player.ShortUserInfo, missions map[string]*mission.Mission) {
 
 	chatPipe <- chatMessage{
-		Event:   event,
-		Message: senderMessage,
-		GroupID: GroupID,
-		UserID:  userID,
-		Group:   group,
-		Groups:  groups,
-		Users:   users,
-		Local:   local,
-		User:    user,
+		Event:    event,
+		Message:  senderMessage,
+		GroupID:  GroupID,
+		UserID:   userID,
+		Group:    group,
+		Groups:   groups,
+		Users:    users,
+		Local:    local,
+		User:     user,
+		Missions: missions,
 	}
 }
 

@@ -15,23 +15,19 @@ function CreateMapList(jsonMessage) {
     let maps = JSON.parse(jsonMessage).maps;
 
     let mapSelect = document.getElementById("mapSelector");
-
+    mapSelect.innerHTML = '';
     for (let i in maps) {
-        if (maps.hasOwnProperty(i)) {
-            if (document.getElementById(maps[i].Id)) {
-                continue;
-            }
 
-            let option = document.createElement("option");
-            option.id = maps[i].Id;
-            option.value = maps[i].Id;
-            if (maps[i].global) {
-                option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
-            } else {
-                option.innerHTML = maps[i].Name;
-            }
-            mapSelect.appendChild(option);
+        let option = document.createElement("option");
+        option.id = maps[i].id;
+        option.value = maps[i].id;
+
+        if (maps[i].global) {
+            option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
+        } else {
+            option.innerHTML = maps[i].Name;
         }
+        mapSelect.appendChild(option);
     }
 }
 

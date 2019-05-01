@@ -14,11 +14,10 @@ func Missions() map[int]*mission.Mission {
 		" name," +
 		" start_dialog_id," +
 		" reward_cr," +
-		" end_dialog_id," +
-		" end_base_id," +
 		" fraction," +
 		" start_base_id," +
-		" delivery_item_id " +
+		" delivery_item_id," +
+		" type " +
 		" " +
 		"FROM missions")
 	if err != nil {
@@ -33,8 +32,7 @@ func Missions() map[int]*mission.Mission {
 		var gameMission mission.Mission
 
 		err := rows.Scan(&gameMission.ID, &gameMission.Name, &gameMission.StartDialogID, &gameMission.RewardCr,
-			&gameMission.EndDialogID, &gameMission.EndBaseID, &gameMission.Fraction, &gameMission.StartBaseID,
-			&gameMission.DeliveryItemId)
+			&gameMission.Fraction, &gameMission.StartBaseID, &gameMission.DeliveryItemId, &gameMission.Type)
 		if err != nil {
 			log.Fatal("scan all missions " + err.Error())
 		}
@@ -115,7 +113,7 @@ func needActionItems(action *mission.Action) {
 	action.NeedItems.SetSlotsSize(999)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
-		"FROM reward_items "+
+		"FROM need_action_items "+
 		"WHERE id_actions = $1", action.ID)
 	if err != nil {
 		log.Fatal("need items in action" + err.Error())

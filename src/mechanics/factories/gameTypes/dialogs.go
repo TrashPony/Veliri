@@ -24,9 +24,9 @@ func (d *dialogStore) GetByID(id int) *dialog.Dialog {
 	return &newDialog
 }
 
-func (d *dialogStore) GetBaseGreeting(fraction string) *dialog.Dialog {
+func (d *dialogStore) GetTypeGreeting(fraction, typeDialog string) *dialog.Dialog {
 	for _, gameDialog := range d.dialogs {
-		if gameDialog.Fraction == fraction && gameDialog.AccessType == "base" && gameDialog.Name == "Приветствие" {
+		if gameDialog.Fraction == fraction && gameDialog.AccessType == "base" && gameDialog.Type == typeDialog {
 			return d.GetByID(gameDialog.ID)
 		}
 	}

@@ -2,6 +2,7 @@ CREATE TABLE dialogs
 (
   id          SERIAL PRIMARY KEY,
   name        text not null default '',
+  type        text not null default '',
   /*
   доступ диалога, base - можно вызвать на базе, object - привязан к какому либо обьекту и только рядом с ним можно
   его вызвать, world - можно вызвать везде и всегда
@@ -16,6 +17,7 @@ CREATE TABLE dialog_pages
 (
   id        SERIAL PRIMARY KEY,
   id_dialog INT REFERENCES dialogs (id),
+  type      text not null default '',
   /* номер страницы */
   number    INT  not null default 0,
   name      text not null default '',

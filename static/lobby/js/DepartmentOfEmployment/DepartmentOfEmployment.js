@@ -17,7 +17,7 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
             </div>
             
             <div id="rewardBlock">
-                <div id="missionFace" style="background-image: url('../assets/replics_logo.png')"></div>
+                <div id="missionFace" style="background-image: url('../assets/dialogPictures/replics_logo.png')"></div>
                 
                 <div id="rewardBlock2">
                     <h3>Награда:</h3>

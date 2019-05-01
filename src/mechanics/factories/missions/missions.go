@@ -2,9 +2,14 @@ package missions
 
 import (
 	missionsDB "github.com/TrashPony/Veliri/src/mechanics/db/missions"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/getlantern/deepcopy"
 	"github.com/satori/go.uuid"
 	"math/rand"
@@ -48,36 +53,67 @@ func (m *missions) GetRandomMission() *mission.Mission {
 	}
 }
 
-func (m *missions) GenerateMissionForUser() *mission.Mission {
+func (m *missions) GenerateMissionForUser(client *player.Player) *mission.Mission {
 
 	missionType := m.GetRandomMission()
 
-	if missionType.Name == "Доставка" {
-		//в доставке нам нужен в основном только пункт назначения
+	startBase, _ := bases.Bases.Get(client.InBaseID)
+	startMap, _ := maps.Maps.GetByID(startBase.MapID)
 
-		uuidNMission := uuid.Must(uuid.NewV4(), nil).String()
+	if missionType.Type == "delivery" {
+		//в доставке нам нужен в основном только пункт назначения
+		// и там только 1 экшон это соотвественно начать диалог на базе назначения
 
 		var newMission mission.Mission
 		deepcopy.Copy(&newMission, &missionType)
 
-		// назначаем место назначения
-		toBase := bases.Bases.GetRandomBase()
-		newMission.EndBaseID = toBase.ID
-		newMission.ToBase = toBase
+		newMission.StartBase = startBase
+		newMission.StartMap = startMap.GetShortInfoMap()
+
+		newMission.UUID = uuid.Must(uuid.NewV4(), nil).String()
+
+		// назначаем место назначения, ищем пока не найдет базу которая не база игрока где он берет квест)
+		var toBase *base.Base
+		for toBase == nil || toBase.ID == startBase.ID {
+			toBase = bases.Bases.GetRandomBase()
+		}
+
+		toMap, _ := maps.Maps.GetByID(toBase.MapID)
 
 		// назначаем и парсим диалоги
 		startDialog := gameTypes.Dialogs.GetByID(missionType.StartDialogID)
-		startDialog.Mission = uuidNMission
+		startDialog.Mission = newMission.UUID
+		startDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name)
 		newMission.StartDialog = startDialog
 
-		endDialog := gameTypes.Dialogs.GetByID(missionType.EndDialogID)
-		startDialog.Mission = uuidNMission
-		newMission.EndDialog = endDialog
+		for _, action := range newMission.Actions {
+			endDialog := gameTypes.Dialogs.GetByID(action.DialogID)
+			endDialog.Mission = newMission.UUID
 
-		m.missions[uuidNMission] = &newMission
+			endDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name)
+			action.Dialog = endDialog
+			action.BaseID = toBase.ID
+		}
 
+		m.missions[newMission.UUID] = &newMission
 		return &newMission
 	}
+	return nil
+}
 
+func (m *missions) AcceptMission(client *player.Player, uuid string) *mission.Mission {
+
+	acceptMission, ok := m.missions[uuid]
+	if ok {
+		if acceptMission.Type == "delivery" {
+			// даем игроку предмет который надо доставить
+			deliveryItem := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
+			storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID, 1, 1, deliveryItem.Size, 1)
+			client.Missions[acceptMission.UUID] = acceptMission
+		}
+		return acceptMission
+	}
+
+	dbPlayer.UpdateUser(client)
 	return nil
 }

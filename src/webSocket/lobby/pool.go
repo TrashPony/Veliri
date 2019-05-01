@@ -48,6 +48,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 			if newPlayer.Training == 0 {
 				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
 				trainingDialog := gameTypes.Dialogs.GetByID(1)
+				trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "")
 				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
 				newPlayer.SetOpenDialog(trainingDialog)
 			} else {
@@ -75,7 +76,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			println(err.Error())
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
@@ -164,7 +165,7 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "Ask" {
 				page, err, action, mission := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
 				if usersLobbyWs[ws].InBaseID > 0 && err == nil {
-					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action, Mission: mission	}
+					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action, Mission: mission}
 				} else {
 					lobbyPipe <- Message{Event: "Error", UserID: user.GetID(), Error: err.Error()}
 				}

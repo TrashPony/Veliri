@@ -214,7 +214,7 @@
 
 #biography textarea {
     box-shadow: inset 0 0 5px black;
-    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
     background-size: 10px 3px;
     height: 80px;
     width: 363px;

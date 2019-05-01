@@ -35,18 +35,16 @@ func Ask(client *player.Player, gameDialog *dialog.Dialog, place string, toPage,
 
 			if ask.TypeAction != "" {
 				var err error
-				var newDialog *dialog.Dialog
+				var newPage *dialog.Page
 				var newMission *mission.Mission
 
-				actionInfo, err, newDialog, newMission = actionDialog(client, ask)
-
+				actionInfo, err, newPage, newMission = actionDialog(client, ask)
 				if err != nil {
 					// TODO влияние ошибки на диалог, например обмен предметов но нет нужного количества
 				}
 
-				if newDialog != nil {
-					client.SetOpenDialog(newDialog)
-					return newDialog.Pages[1], nil, actionInfo, newMission
+				if newPage != nil {
+					return newPage, nil, actionInfo, newMission
 				}
 			}
 

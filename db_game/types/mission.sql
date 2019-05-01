@@ -2,10 +2,11 @@ CREATE TABLE missions
 (
   id               SERIAL PRIMARY KEY,
   name             VARCHAR(64) not null default '',
+  type             text        not null default '', -- delivery
   start_dialog_id  INT         not null default 0,
   reward_cr        INT         not null default 0,
-  end_dialog_id    INT         not null default 0,
-  end_base_id      INT         not null default 0,
+  -- end_dialog_id    INT         not null default 0, определяет последний экшен
+  -- end_base_id      INT         not null default 0, определяет последний экшен
   fraction         text        not null default '',
   start_base_id    INT         not null default 0,
   -- предмет которые выдается при взятие задания, обычно его надо доставить, не является игровым предметом пока для них нет таблицы

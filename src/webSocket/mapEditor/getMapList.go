@@ -8,7 +8,7 @@ import (
 
 func getMapList(msg Message, ws *websocket.Conn) {
 
-	resp := Response{Event: "MapList", Maps: maps.Maps.GetAllMap()}
+	resp := Response{Event: "MapList", Maps: maps.Maps.GetAllShortInfoMap()}
 
 	ws.WriteJSON(resp)
 }

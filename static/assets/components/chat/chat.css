@@ -108,7 +108,7 @@
     background: rgba(91, 98, 104, 0.9);
     color: #ffef0f;
     box-shadow: inset 0 0 5px black;
-    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
     background-size: 10px 3px;
 }
 
@@ -121,7 +121,7 @@
     padding: 5px;
     word-wrap: break-word;
     overflow-y: scroll;
-    border-radius: 5px 9px 9px 0;
+    border-radius: 5px 0 0 0;
     text-align: left;
     margin: auto auto 2px 3px;
     width: 160px;
@@ -131,7 +131,7 @@
     font-size: 9pt;
     float: left;
     box-shadow: inset 0 0 5px black;
-    background: linear-gradient(1deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
     background-size: 10px 3px;
 }
 
@@ -340,4 +340,89 @@
     to {
         color: #ff7800;
     }
+}
+
+#notifyBlock {
+    position: absolute;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgb(33, 176, 255), rgb(37, 160, 225));
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 50px 20px 0px 0px;
+    width: 259px;
+    height: 12px;
+    left: 4px;
+    top: -16px;
+    box-shadow: inset 0 0 7px 3px rgba(0, 0, 0, 0.5);
+    padding-left: 3px;
+    padding-top: 1px;
+}
+
+#notifyBlock > div {
+    position: relative;
+    height: 9px;
+    width: 9px;
+    border-radius: 50%;
+    background: rgb(255, 240, 0);
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(0, 0, 0, 0.25);
+    border: 1px solid;
+    float: left;
+    margin-left: 3px;
+}
+
+
+#notifyBlock > div:hover {
+    box-shadow: 0 0 1px 1px rgba(236, 255, 167, 0.5);
+}
+
+.missionNotify {
+    visibility: hidden;
+    position: absolute;
+    bottom: 9px;
+    left: 0;
+    background-size: 10px 4px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6) 87%, rgba(0, 62, 95, 0.5) 30%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    height: 200px;
+    width: 260px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    overflow-y: scroll;
+}
+
+.missionNotify h3 {
+    margin: 0;
+    text-align: left;
+    padding-left: 5px;
+    color: yellow;
+}
+
+.missionNotify h4 {
+    margin: 0;
+    color: #78ff00;
+    font-size: 11px;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.missionNotify p {
+    text-align: justify;
+    padding: 5px;
+    color: #ff8100;
+    margin-top: 5px;
+    text-indent: 1.5em;
+}
+
+.missionNotify a:link, .importantly {
+    text-decoration: none;
+    color: aqua;
+}
+
+.missionNotify a:visited {
+    text-decoration: none;
+    color: aqua;
+}
+
+.missionNotify a:hover {
+    text-decoration: none;
+    color: #0093ff;
 }

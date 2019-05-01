@@ -51,6 +51,7 @@
     <script src="../assets/components/chat/ViewGroups.js"></script>
     <script src="../assets/components/chat/OpenChat.js"></script>
     <script src="../assets/components/chat/Message.js"></script>
+    <script src="../assets/components/chat/NotifyBlock.js"></script>
 
     <script src="../assets/components/inventory/Init.js"></script>
     <script src="../assets/components/MouseOver.js"></script>
@@ -95,6 +96,7 @@
 </div>
 
 <div id="chat">
+    <div id="notifyBlock"></div>
     <div class="tabs" id="chatTabs">
         <div id="chatTabsLeftArrow" onclick="document.getElementById('tabsGroup').scrollLeft -= 20;"><</div>
         <div id="tabsGroupWrapper">
@@ -102,7 +104,7 @@
         </div>
         <div id="chatTabsRightArrow" onclick="document.getElementById('tabsGroup').scrollLeft += 20;">></div>
     </div>
-    <div class="topButton" onclick="HideChat()"> _</div>
+    <div class="topButton" onclick="HideChat()" style="line-height: 0px;"> _</div>
     <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
     <div class="topButton" onmousedown="ViewAllGroups()"> +</div>
     <div id="chatBox"></div>

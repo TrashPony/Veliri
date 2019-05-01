@@ -35,10 +35,8 @@ func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
 		return false
 	}
 
-	ok := inv.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity,
+	return inv.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity,
 		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
-
-	return ok
 }
 
 func (inv *Inventory) GetSize() float32 {
@@ -92,6 +90,7 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, qua
 func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int) error {
 	// надо убедиться что необходимое количество есть и его можно удалить
 	if inv.ViewItems(itemID, itemType, quantityRemove) {
+
 		for _, slot := range inv.Slots {
 			if slot.ItemID == itemID && slot.Type == itemType {
 				if slot.Quantity > quantityRemove {
@@ -104,11 +103,13 @@ func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int
 			}
 		}
 		return nil
+
 	} else {
 		return errors.New("few items")
 	}
 }
 
+// метод делает сравнение инвентарей слот к слоту
 func (inv *Inventory) ViewItemsBySlots(slots map[int]*Slot) bool {
 	checkItems := true
 	for number, slot := range slots {
@@ -120,6 +121,31 @@ func (inv *Inventory) ViewItemsBySlots(slots map[int]*Slot) bool {
 	return checkItems
 }
 
+// метод смотрит все предметы inv2 что бы они были в inv на наличие
+func (inv *Inventory) SearchItemsByOtherInventory(inv2 *Inventory) bool {
+	for _, slot := range inv2.Slots {
+		if !inv.ViewItems(slot.ItemID, slot.Type, slot.Quantity) {
+			return false
+		}
+	}
+	return true
+}
+
+// метод удаляем все итемы из inv которые есть в inv2 если они все в наличие
+func (inv *Inventory) RemoveItemsByOtherInventory(inv2 *Inventory) bool {
+	for _, slot := range inv2.Slots {
+		if !inv.ViewItems(slot.ItemID, slot.Type, slot.Quantity) {
+			return false
+		}
+	}
+
+	for _, slot := range inv2.Slots {
+		inv.RemoveItem(slot.ItemID, slot.Type, slot.Quantity)
+	}
+	return true
+}
+
+// метод смотрим естли необходимое количество предметов в инвентаре
 func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) bool {
 	countRealItems := 0
 	for _, slot := range inv.Slots {
@@ -247,6 +273,16 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 			inventorySlot.Item = blueprint
 			inventorySlot.Size = 0  // чертежи не занимают места
 			inventorySlot.MaxHP = 1 // у чертежов нет хп
+
+			inv.Slots[slot] = &inventorySlot
+		}
+
+		if inventorySlot.Type == "trash" {
+			trashItem := gameTypes.TrashItems.GetByID(inventorySlot.ItemID)
+
+			inventorySlot.Item = trashItem
+			inventorySlot.Size = trashItem.Size * float32(inventorySlot.Quantity)
+			inventorySlot.MaxHP = 1 // у мусора нет хп
 
 			inv.Slots[slot] = &inventorySlot
 		}

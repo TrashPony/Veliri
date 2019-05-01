@@ -7,14 +7,15 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	mission2 "github.com/TrashPony/Veliri/src/mechanics/mission"
 )
 
-func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialog.Dialog, *mission.Mission) {
+func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialog.Page, *mission.Mission) {
 
 	if ask.TypeAction == "get_base_mission" {
-		newMission := missions.Missions.GenerateMissionForUser()
-		newMission.StartDialog.ProcessingDialogText(client.GetLogin(), "", newMission.ToBase.Name)
-		return "new_dialog", nil, newMission.StartDialog, newMission
+		newMission := missions.Missions.GenerateMissionForUser(client)
+		client.SetOpenDialog(newMission.StartDialog)
+		return "new_dialog", nil, newMission.StartDialog.Pages[1], newMission
 	}
 
 	if ask.TypeAction == "start_training" {
@@ -33,17 +34,20 @@ func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialo
 	}
 
 	if ask.TypeAction == "accept_mission" {
-
+		missions.Missions.AcceptMission(client, client.GetOpenDialog().Mission)
 	}
 
 	if ask.TypeAction == "get_reward" {
-
+		// завершение мисии
+		_, page := mission2.Complete(client, client.GetOpenDialog().Mission)
+		return "", nil, page, nil
 	}
 
 	if ask.TypeAction == "get_base_greeting" {
 		userBase, _ := bases.Bases.Get(client.InBaseID)
 		_, greeting := GetBaseGreeting(client, userBase)
-		return "get_base_greeting", nil, greeting, nil
+		client.SetOpenDialog(greeting)
+		return "get_base_greeting", nil, greeting.Pages[1], nil
 	}
 
 	dbPlayer.UpdateUser(client)
