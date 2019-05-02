@@ -27,6 +27,8 @@ type chatMessage struct {
 	User        *player.ShortUserInfo       `json:"user"`
 	Local       bool                        `json:"local"`
 	Missions    map[string]*mission.Mission `json:"missions"`
+	Notify      *player.Notify              `json:"notify"`
+	Notifys     map[string]*player.Notify   `json:"notifys"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -54,23 +56,23 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "OpenChat" {
 				group, _ := getLocalChat(client)
 				SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client),
-					nil, false, client.GetShortUserInfo(false, true), client.Missions)
+					nil, false, client.GetShortUserInfo(false, true), client.Missions, nil, client.NotifyQueue)
 			}
 
 			if msg.Event == "GetAllGroups" {
 				SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
-					chats.Groups.GetAllGroups(), nil, false, nil, nil)
+					chats.Groups.GetAllGroups(), nil, false, nil, nil, nil, nil)
 			}
 
 			if msg.Event == "ChangeGroup" {
 				if chats.Groups.CheckUserSubscribe(msg.GroupID, client) {
 					group := chats.Groups.GetGroup(msg.GroupID)
 					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil,
-						getUsersInChatGroup(group, true), false, nil, nil)
+						getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
 				} else {
 					group, _ := getLocalChat(client)
 					SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, nil,
-						getUsersInChatGroup(group, false), false, nil, nil)
+						getUsersInChatGroup(group, false), false, nil, nil, nil, nil)
 				}
 
 			}
@@ -78,10 +80,10 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "SubscribeGroup" {
 				group := chats.Groups.GetGroup(msg.GroupID)
 				if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
-					SendMessage("OpenChat", msg.Message, client.GetID(), 0,
-						chats.Groups.GetGroup(msg.GroupID), chats.Groups.GetAllUserGroups(client), nil, false, nil, nil)
+					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
+						chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
 					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
-						getUsersInChatGroup(group, true), false, nil, nil)
+						getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
 				}
 			}
 
@@ -90,9 +92,9 @@ func Reader(ws *websocket.Conn) {
 				if group != nil {
 					chats.Groups.Unsubscribe(msg.GroupID, client)
 					SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
-						getUsersInChatGroup(group, true), false, nil, nil)
+						getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
 					SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
-						chats.Groups.GetAllUserGroups(client), nil, false, nil, nil)
+						chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
 				}
 			}
 
@@ -108,7 +110,7 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil, nil, nil)
 				} else {
 					// если msg.GroupID == 0 то это сообщение в локальный чат
 					group, _ := getLocalChat(client)
@@ -116,15 +118,17 @@ func Reader(ws *websocket.Conn) {
 					chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
 					group.History = append(group.History, &chatMessage)
 
-					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil, nil, nil)
 				}
 			}
 		}
 	}
 }
 
+//todo рефакторинг....
 func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID int, group *chatGroup.Group,
-	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool, user *player.ShortUserInfo, missions map[string]*mission.Mission) {
+	groups map[int]*chatGroup.Group, users []*player.ShortUserInfo, local bool, user *player.ShortUserInfo,
+	missions map[string]*mission.Mission, notify *player.Notify, notifys map[string]*player.Notify) {
 
 	chatPipe <- chatMessage{
 		Event:    event,
@@ -137,6 +141,8 @@ func SendMessage(event string, senderMessage *chatGroup.Message, userID, GroupID
 		Local:    local,
 		User:     user,
 		Missions: missions,
+		Notify:   notify,
+		Notifys:  notifys,
 	}
 }
 

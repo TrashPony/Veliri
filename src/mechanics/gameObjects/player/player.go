@@ -64,6 +64,8 @@ type Player struct {
 	// [name]Skill
 	CurrentSkills map[string]*skill.Skill     `json:"current_skills"`
 	Missions      map[string]*mission.Mission `json:"missions"`
+
+	NotifyQueue map[string]*Notify `json:"notify_queue"`
 }
 
 type ShortUserInfo struct {
@@ -82,6 +84,12 @@ type ShortUserInfo struct {
 }
 
 type Notify struct {
+	Name    string      `json:"name"`
+	UUID    string      `json:"uuid"`
+	Event   string      `json:"event"`
+	Send    bool        `json:"send"`
+	Data    interface{} `json:"data"`
+	Destroy bool        `json:"destroy"`
 }
 
 func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {

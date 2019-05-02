@@ -41,7 +41,7 @@ func UserOnlineChecker() {
 
 			if update {
 				SendMessage("UpdateUsers", nil, 0, group.ID, group, nil,
-					getUsersInChatGroup(group, true), false, nil, nil)
+					getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
 			}
 		}
 

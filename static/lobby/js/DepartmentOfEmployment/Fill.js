@@ -1,5 +1,8 @@
 function FillDepartment(dialogPage, action, mission) {
     console.log(dialogPage)
+    console.log(action)
+    console.log(mission);
+
     DialogAction(action);
 
     if ((action === "close" || action === "start_training" || action === "miss_training") && document.getElementById('DepartmentOfEmployment')) {

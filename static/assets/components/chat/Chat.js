@@ -66,6 +66,10 @@ function ChatReader(data) {
         updateUsers(data.group, data.users)
     }
 
+    if (data.event === "newNotify") {
+        newNotify(data.notify)
+    }
+
     if (data.event === "OpenLocalChat") {
         //systemMessage("Вы входите на территорию" + data.group.name);
     }

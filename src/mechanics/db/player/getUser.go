@@ -34,6 +34,8 @@ func User(id int, login string) *player.Player {
 			log.Fatal("get user " + err.Error())
 		}
 
+		newUser.NotifyQueue = make(map[string]*player.Notify, 0)
+
 		newUser.SetID(id)
 		newUser.SetLogin(name)
 		newUser.SetEmail(mail)

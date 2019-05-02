@@ -16,6 +16,9 @@ function CreateInventoryMenu(closeFunc, option) {
         document.getElementById("Inventory").remove();
     }
 
+    if (document.getElementById('wrapperInventoryAndStorage'))
+        document.getElementById('wrapperInventoryAndStorage').remove();
+
     if (option === 'inventory') {
         let inventory = document.createElement("div");
         inventory.id = "Inventory";

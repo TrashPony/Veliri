@@ -14,8 +14,10 @@ func deliveryComplete(client *player.Player, endMission *mission.Mission) (error
 		if client.GetSquad().Inventory.RemoveItemsByOtherInventory(endMission.Actions[0].NeedItems) {
 			client.SetCredits(client.GetCredits() + endMission.RewardCr)
 			// TODO выдать награду итемами
-			// TODO добавить нотификацию
+
 			delete(client.Missions, endMission.UUID)
+			client.NotifyQueue[endMission.UUID] = &player.Notify{Name: "mission", Event: "complete", UUID: endMission.UUID}
+
 			return nil, endMission.Actions[0].Dialog.GetPageByType("success")
 		} else {
 			return errors.New("few items"), endMission.Actions[0].Dialog.GetPageByType("failure")

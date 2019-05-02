@@ -110,6 +110,8 @@ func (m *missions) AcceptMission(client *player.Player, uuid string) *mission.Mi
 			deliveryItem := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
 			storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID, 1, 1, deliveryItem.Size, 1)
 			client.Missions[acceptMission.UUID] = acceptMission
+
+			client.NotifyQueue[acceptMission.UUID] = &player.Notify{Name: "mission", UUID: acceptMission.UUID, Event: "new", Data: acceptMission}
 		}
 		return acceptMission
 	}

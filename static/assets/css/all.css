@@ -49,8 +49,8 @@ input:hover {
 
 .ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {
     z-index: -1 !important;
-    border-bottom: 2px solid #def4ff;
-    border-right: 2px solid #def4ff;
+    border-bottom: 3px solid #def4ff;
+    border-right: 3px solid #def4ff;
     border-bottom-right-radius: 12px;
     width: 30px;
     height: 30px;
@@ -58,6 +58,7 @@ input:hover {
     right: -3px;
     background-image: none;
     filter: drop-shadow(0px 0px 2px #000000);
+    pointer-events: auto;
 }
 
 .ui-resizable-handle.ui-resizable-ne {

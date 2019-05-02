@@ -23,7 +23,7 @@ func LocalChatChecker() {
 
 			if update {
 				SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil,
-					getUsersInChatGroup(localGroup, false), true, nil, nil)
+					getUsersInChatGroup(localGroup, false), true, nil, nil, nil, nil)
 			}
 		}
 
@@ -46,14 +46,14 @@ func LocalChatChecker() {
 				if id != localID && localGroup.CheckUserInGroup(client.GetID()) {
 					delete(localGroup.Users, client.GetID())
 					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil,
-						getUsersInChatGroup(localGroup, false), true, nil, nil)
+						getUsersInChatGroup(localGroup, false), true, nil, nil, nil, nil)
 				}
 
 				// если текущий пользователь не находится в группе или он там офлайн притом что это его группа то обновляем статус онлайн у всех
 				if id == localID && !localGroup.CheckUserInGroup(client.GetID()) {
 					localGroup.Users[client.GetID()] = true
 					SendMessage("UpdateUsers", nil, 0, localGroup.ID, localGroup, nil,
-						getUsersInChatGroup(localGroup, false), true, nil, nil)
+						getUsersInChatGroup(localGroup, false), true, nil, nil, nil, nil)
 				}
 			}
 		}

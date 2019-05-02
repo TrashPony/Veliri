@@ -9,12 +9,13 @@ import (
 
 func Complete(client *player.Player, uuid string) (error, *dialog.Page) {
 	endMission, ok := client.Missions[uuid]
+	defer dbPlayer.UpdateUser(client)
+
 	if ok {
 		if endMission.Type == "delivery" {
 			return deliveryComplete(client, endMission)
 		}
 	}
 
-	dbPlayer.UpdateUser(client)
 	return errors.New("wrong mission"), nil
 }

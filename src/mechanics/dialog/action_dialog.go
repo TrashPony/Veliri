@@ -40,7 +40,7 @@ func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialo
 	if ask.TypeAction == "get_reward" {
 		// завершение мисии
 		_, page := mission2.Complete(client, client.GetOpenDialog().Mission)
-		return "", nil, page, nil
+		return "get_reward", nil, page, nil
 	}
 
 	if ask.TypeAction == "get_base_greeting" {
