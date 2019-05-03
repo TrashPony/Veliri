@@ -25,6 +25,10 @@ function ReaderLobby(jsonMessage) {
         FillSquadBlock(jsonMessage)
     }
 
+    if (event === "StartOutBase") {
+        document.getElementById('OutDialog').style.visibility = "visible";
+    }
+
     if (event === "OutBase") {
         location.href = "http://" + window.location.host + "/global";
     }

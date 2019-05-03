@@ -8,7 +8,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
-	"time"
 )
 
 func OutBase(user *player.Player) error {
@@ -22,13 +21,10 @@ func OutBase(user *player.Player) error {
 			return errors.New("no base")
 		}
 
-		for globalGame.CheckTransportCoordinate(gameBase.RespQ, gameBase.RespR, 10, 95, gameBase.MapID) {
-			// запускаем механизм проверки и эвакуации игрока с респауна))))
-			time.Sleep(time.Millisecond * 100)
-		}
+		respCoordinate := globalGame.OutBase(gameBase)
 
-		user.GetSquad().Q = gameBase.RespQ
-		user.GetSquad().R = gameBase.RespR
+		user.GetSquad().Q = respCoordinate.Q
+		user.GetSquad().R = respCoordinate.R
 		user.GetSquad().MapID = gameBase.MapID
 		user.LastBaseID = user.InBaseID
 		base.UserOutBase(user.GetID())

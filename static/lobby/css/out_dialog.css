@@ -1,0 +1,76 @@
+#OutDialog {
+    position: absolute;
+    top: 50px;
+    left: calc(50% - 150px);
+    display: block;
+    border-radius: 24px 24px 84px 84px;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #25a0e1;
+    z-index: 999;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    visibility: hidden;
+}
+
+#OutDialog h3 {
+    color: #ff8100;
+    font-size: 15px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    margin: 8px 4px;
+    padding: 5px 0px;
+    background: #89969c;
+    box-shadow: inset 0 0 5px 1px black, 0 0 1px 1px black;
+    border-radius: 9px;
+}
+
+#OutDialog > div {
+    height: 52px;
+    width: 197px;
+    margin: 0 auto;
+    background: #89969c;
+    box-shadow: inset 0 0 5px 1px black, 0 0 1px 1px black;
+    border-radius: 10px;
+}
+
+.arrow {
+    width: 60px;
+    height: 32px;
+    margin-left: 14px;
+    padding-top: 6px;
+    transform: rotate(270deg) scale(0.9);
+}
+
+.arrow span {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-bottom: 5px solid rgb(222, 156, 0);
+    border-right: 5px solid rgb(255, 204, 0);
+    transform: rotate(45deg);
+    margin: 5px;
+    animation: animate 2s infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 250, 0, 1));
+}
+
+.arrow span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+.arrow span:nth-child(3) {
+    animation-delay: -0.4s;
+}
+
+@keyframes animate {
+    0% {
+        opacity: 0;
+        transform: rotate(45deg) translate(-20px, -20px);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(45deg) translate(20px, 20px);
+    }
+}

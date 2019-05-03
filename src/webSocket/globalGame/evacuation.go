@@ -34,7 +34,9 @@ func evacuationSquad(ws *websocket.Conn) {
 				user.GetSquad().Evacuation = false
 				user.GetSquad().InSky = false
 			}
-			transport.Job = false
+			if transport != nil {
+				transport.Job = false
+			}
 		}()
 
 		if err != nil {

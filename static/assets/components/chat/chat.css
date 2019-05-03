@@ -367,6 +367,11 @@
     border: 1px solid;
     float: left;
     margin-left: 3px;
+    transition: 0.1s;
+}
+
+#notifyBlock > div:active {
+    transform: scale(0.95);
 }
 
 @keyframes new {

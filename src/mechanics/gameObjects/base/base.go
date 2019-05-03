@@ -1,16 +1,21 @@
 package base
 
+import (
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"sync"
+)
+
 type Base struct {
-	ID            int                `json:"id"`
-	Name          string             `json:"name"`
-	Q             int                `json:"q"`
-	R             int                `json:"r"`
-	MapID         int                `json:"map_id"`
-	RespQ         int                `json:"resp_q"`
-	RespR         int                `json:"resp_r"`
-	Transports    map[int]*Transport `json:"transports"`
-	Defenders     map[int]*Transport `json:"defenders"`
-	GravityRadius int                `json:"gravity_radius"`
+	ID            int                      `json:"id"`
+	Name          string                   `json:"name"`
+	Q             int                      `json:"q"`
+	R             int                      `json:"r"`
+	MapID         int                      `json:"map_id"`
+	Transports    map[int]*Transport       `json:"transports"`
+	Defenders     map[int]*Transport       `json:"defenders"`
+	GravityRadius int                      `json:"gravity_radius"`
+	Respawns      []*coordinate.Coordinate `json:"respawns"`
+	RespawnLock   sync.Mutex               `json:"-"`
 }
 
 type Transport struct {

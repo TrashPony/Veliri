@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-const RespBots = 2
+const RespBots = 3
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()
@@ -29,7 +29,7 @@ func InitAI() {
 		for _, mapBase := range mapBases {
 			for i := 0; i < RespBots; i++ {
 				go respBot(mapBase, mp)
-				time.Sleep(5 * time.Second)
+				//time.Sleep(1 * time.Second)
 			}
 		}
 	}
@@ -85,15 +85,13 @@ func respBot(base *base.Base, mp *_map.Map) {
 }
 
 func outBase(bot *player.Player, base *base.Base) {
-	for wsGlobal.CheckTransportCoordinate(base.RespQ, base.RespR, 10, 95, base.MapID) {
-		// запускаем механизм проверки и эвакуации игрока с респауна))))
-		time.Sleep(time.Millisecond * 100)
-	}
 
-	x, y := globalGame.GetXYCenterHex(base.RespQ, base.RespR)
+	respCoordinate := wsGlobal.OutBase(base)
 
-	bot.GetSquad().Q = base.RespQ
-	bot.GetSquad().R = base.RespR
+	x, y := globalGame.GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
+
+	bot.GetSquad().Q = respCoordinate.Q
+	bot.GetSquad().R = respCoordinate.R
 	bot.GetSquad().MapID = base.MapID
 	bot.GetSquad().GlobalX = x
 	bot.GetSquad().GlobalY = y

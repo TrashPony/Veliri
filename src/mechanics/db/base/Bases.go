@@ -3,6 +3,7 @@ package base
 import (
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"log"
 )
 
@@ -16,8 +17,6 @@ func Bases() map[int]*base.Base {
 		" q," +
 		" r," +
 		" id_map," +
-		" resp_q," +
-		" resp_r," +
 		" transport_count," +
 		" defender_count," +
 		" gravity_radius" +
@@ -33,12 +32,13 @@ func Bases() map[int]*base.Base {
 		var transports int
 		var defenders int
 
-		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &gameBase.RespQ,
-			&gameBase.RespR, &transports, &defenders, &gameBase.GravityRadius)
+		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &transports,
+			&defenders, &gameBase.GravityRadius)
 		if err != nil {
 			log.Fatal("get scan all base " + err.Error())
 		}
 
+		respawnBases(&gameBase)
 		gameBase.CreateTransports(transports)
 		gameBase.CreateDefenders(defenders)
 
@@ -46,4 +46,30 @@ func Bases() map[int]*base.Base {
 	}
 
 	return bases
+}
+
+func respawnBases(gameBase *base.Base) {
+	gameBase.Respawns = make([]*coordinate.Coordinate, 0)
+
+	rows, err := dbConnect.GetDBConnect().Query(""+
+		"SELECT "+
+		" q,"+
+		" r"+
+		" "+
+		" FROM bases_respawns WHERE base_id = $1", gameBase.ID)
+	if err != nil {
+		log.Fatal("get all respawn in base " + err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var respawn coordinate.Coordinate
+
+		err := rows.Scan(&respawn.Q, &respawn.R)
+		if err != nil {
+			log.Fatal("scan all respawn in base " + err.Error())
+		}
+
+		gameBase.Respawns = append(gameBase.Respawns, &respawn)
+	}
 }

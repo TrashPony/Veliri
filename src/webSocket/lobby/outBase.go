@@ -7,6 +7,7 @@ import (
 
 func outBase(user *player.Player, msg Message) {
 
+	lobbyPipe <- Message{Event: "StartOutBase", UserID: user.GetID()}
 	err := lobby.OutBase(user)
 
 	// todo запускать метод в отдельной горутине

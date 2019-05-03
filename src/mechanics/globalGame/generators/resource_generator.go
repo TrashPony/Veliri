@@ -66,7 +66,7 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	// респанов баз
 	// хендлеров
 
-	minDist := 450.0
+	minDist := 550.0
 
 	globalGame.GetXYCenterHex(q, r)
 
@@ -78,10 +78,10 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 			return false
 		}
 
-		baseX, baseY = globalGame.GetXYCenterHex(base.RespQ, base.RespR)
-		if globalGame.GetBetweenDist(x, y, baseX, baseY) < minDist {
-			return false
-		}
+		//baseX, baseY = globalGame.GetXYCenterHex(base.RespQ, base.RespR)
+		//if globalGame.GetBetweenDist(x, y, baseX, baseY) < minDist {
+		//	return false
+		//}
 	}
 
 	for _, handler := range mp.HandlersCoordinates {

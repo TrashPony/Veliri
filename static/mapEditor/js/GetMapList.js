@@ -16,6 +16,8 @@ function CreateMapList(jsonMessage) {
 
     let mapSelect = document.getElementById("mapSelector");
     mapSelect.innerHTML = '';
+
+    mapSelect.innerHTML = `<option value="0">-</option>`;
     for (let i in maps) {
 
         let option = document.createElement("option");
@@ -71,8 +73,9 @@ function CreateLabelBase(bases) {
             base.anchor.setTo(0.5);
             base.scale.setTo(0.1);
 
-            if (game.map.OneLayerMap.hasOwnProperty(bases[i].resp_q) && game.map.OneLayerMap.hasOwnProperty(bases[i].resp_r)) {
-                let xy = GetXYCenterHex(bases[i].resp_q, bases[i].resp_r);
+            for (let j in bases[i].respawns) {
+                let respPount = bases[i].respawns[j];
+                let xy = GetXYCenterHex(respPount.q, respPount.r);
                 let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
                 baseResp.anchor.setTo(0.5);
                 baseResp.scale.setTo(0.05);
