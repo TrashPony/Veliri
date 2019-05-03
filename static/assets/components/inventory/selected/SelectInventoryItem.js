@@ -3,10 +3,10 @@ function SelectInventoryItem(e) {
     DestroyInventoryTip();
     DestroyInventoryClickEvent();
 
-    if (this.inventoryType === 'storage') {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, false, false, this.number, true);
+    if (this.source === 'storage') {
+        InventorySelectTip(JSON.parse(this.slotData),false, false, this.number, true);
     } else {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, false, true, this.number);
+        InventorySelectTip(JSON.parse(this.slotData),false, true, this.number);
 
         if (JSON.parse(this.slotData).type === "body") {
             SetBody(JSON.parse(this.slotData).item, this.number, this.source);

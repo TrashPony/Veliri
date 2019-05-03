@@ -7,7 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
+	"github.com/TrashPony/Veliri/src/webSocket/global"
 )
 
 func OutBase(user *player.Player) error {
@@ -21,7 +21,7 @@ func OutBase(user *player.Player) error {
 			return errors.New("no base")
 		}
 
-		respCoordinate := globalGame.OutBase(gameBase)
+		respCoordinate := global.OutBase(gameBase)
 
 		user.GetSquad().Q = respCoordinate.Q
 		user.GetSquad().R = respCoordinate.R

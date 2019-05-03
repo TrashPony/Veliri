@@ -49,43 +49,39 @@ function InventoryTable(inventoryItems) {
         }
     });
 
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    let inventoryStorage = document.getElementById('inventoryStorageInventory');
 
+    inventoryStorage.innerHTML = '';
+    for (let i in inventoryItems.slots) {
         if (inventoryItems.slots.hasOwnProperty(i) && inventoryItems.slots[i].item !== null) {
 
+            let cell = document.createElement("div");
+            cell.className = "InventoryCell active";
             CreateInventoryCell(cell, inventoryItems.slots[i], i, "squadInventory");
             cell.onclick = SelectInventoryItem;
             cell.onmousemove = InventoryOverTip;
             cell.onmouseout = OffTip;
             cell.source = 'squadInventory';
 
-        } else {
+            cell.style.height = cellSize + "px";
+            cell.style.width = cellSize + "px";
 
-            cell.slotData = null;
-            cell.style.backgroundImage = null;
-            cell.innerHTML = "";
-            cell.className = "InventoryCell";
-
-            $(cell).removeData("slotData");
-            $(cell).draggable({
-                disabled: true
-            });
-
-            cell.onclick = function () {
-                DestroyInventoryClickEvent();
-                DestroyInventoryTip();
-            };
+            if (categories) {
+                let section = CheckRecycleSection(inventoryItems.slots[i], document.getElementById('inventoryStorageInventory'));
+                section.appendChild(cell);
+            } else {
+                inventoryStorage.append(cell);
+            }
         }
     }
-}
 
-function InventoryOverTip(e) {
-    let inventoryTip = document.getElementById("InventoryTipOver");
-    if (inventoryTip) {
-        inventoryTip.style.top = stylePositionParams.top + "px";
-        inventoryTip.style.left = stylePositionParams.left + "px";
-    } else {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true, true);
+    function InventoryOverTip(e) {
+        let inventoryTip = document.getElementById("InventoryTipOver");
+        if (inventoryTip) {
+            inventoryTip.style.top = stylePositionParams.top + "px";
+            inventoryTip.style.left = stylePositionParams.left + "px";
+        } else {
+            InventorySelectTip(JSON.parse(this.slotData), true, true);
+        }
     }
 }

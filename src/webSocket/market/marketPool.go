@@ -6,7 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/market"
-	"github.com/TrashPony/Veliri/src/webSocket/storage"
+	wsInventory "github.com/TrashPony/Veliri/src/webSocket/inventory"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
 	"log"
@@ -91,7 +91,7 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
-				storage.Updater(usersMarketWs[ws].GetID())
+				wsInventory.UpdateStorage(usersMarketWs[ws].GetID())
 				OrderSender()
 			}
 		}
@@ -101,7 +101,7 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
-				storage.Updater(usersMarketWs[ws].GetID())
+				wsInventory.UpdateStorage(usersMarketWs[ws].GetID())
 				OrderSender()
 			}
 		}
@@ -111,7 +111,7 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
-				storage.Updater(usersMarketWs[ws].GetID())
+				wsInventory.UpdateStorage(usersMarketWs[ws].GetID())
 				OrderSender()
 				ws.WriteJSON(Message{Event: "getMyOrders", Orders: market.Orders.GetUserOrders(usersMarketWs[ws].GetID())})
 			}
@@ -122,7 +122,7 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
-				storage.Updater(usersMarketWs[ws].GetID())
+				wsInventory.UpdateStorage(usersMarketWs[ws].GetID())
 				OrderSender()
 			}
 		}
@@ -132,7 +132,7 @@ func Reader(ws *websocket.Conn) {
 			if err != nil {
 				ws.WriteJSON(Message{Event: msg.Event, Error: err.Error()})
 			} else {
-				storage.Updater(usersMarketWs[ws].GetID())
+				wsInventory.UpdateStorage(usersMarketWs[ws].GetID())
 				OrderSender()
 			}
 		}

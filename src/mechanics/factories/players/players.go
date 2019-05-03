@@ -3,7 +3,7 @@ package players
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/mechanics/squadInventory"
+	"github.com/TrashPony/Veliri/src/mechanics/squad_inventory"
 	"sync"
 )
 
@@ -33,7 +33,7 @@ func (usersStore *usersStore) Add(id int, login string) *player.Player {
 
 	newUser := dbPlayer.User(id, login)
 
-	squadInventory.GetInventory(newUser)
+	squad_inventory.GetInventory(newUser)
 	usersStore.users[id] = newUser
 
 	return newUser

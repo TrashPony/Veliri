@@ -1,5 +1,4 @@
 let inventorySocket;
-let storageSocket;
 let marketSocket;
 
 let webSocketInit = true;
@@ -16,7 +15,11 @@ function ConnectInventory() {
     };
 
     inventorySocket.onmessage = function (msg) {
-        FillingInventory(msg.data);
+        if (JSON.parse(msg.data).event === "UpdateStorage") {
+            UpdateStorage(JSON.parse(msg.data).inventory);
+        } else {
+            FillingInventory(msg.data);
+        }
     };
 
     inventorySocket.onerror = function (msg) {
@@ -25,30 +28,6 @@ function ConnectInventory() {
 
     inventorySocket.onclose = function (msg) {
         console.log("Disconnected inventory - status " + this.readyState);
-    };
-}
-
-function ConnectStorage() {
-    storageSocket = new WebSocket("ws://" + window.location.host + "/wsStorage");
-    console.log("Storage - status: " + storageSocket.readyState);
-
-    storageSocket.onopen = function () {
-        console.log("Connection storage opened..." + this.readyState);
-        this.send(JSON.stringify({
-            event: "openStorage"
-        }));
-    };
-
-    storageSocket.onmessage = function (msg) {
-        UpdateStorage(JSON.parse(msg.data));
-    };
-
-    storageSocket.onerror = function (msg) {
-        console.log("Error storage occured sending..." + msg.data);
-    };
-
-    storageSocket.onclose = function (msg) {
-        console.log("Disconnected storage - status " + this.readyState);
     };
 }
 

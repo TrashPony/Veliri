@@ -1,14 +1,13 @@
 package webSocket
 
 import (
-	"github.com/TrashPony/Veliri/src/webSocket/chat"
 	"github.com/TrashPony/Veliri/src/webSocket/field"
-	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
+	"github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/TrashPony/Veliri/src/webSocket/inventory"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
 	"github.com/TrashPony/Veliri/src/webSocket/mapEditor"
 	"github.com/TrashPony/Veliri/src/webSocket/market"
-	"github.com/TrashPony/Veliri/src/webSocket/storage"
+	"github.com/TrashPony/Veliri/src/webSocket/other"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -39,7 +38,7 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	}
 
 	if pool == "/wsChat" {
-		chat.AddNewUser(ws, login, id)
+		other.AddNewUser(ws, login, id)
 	}
 
 	if pool == "/wsInventory" {
@@ -54,11 +53,7 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 		market.AddNewUser(ws, login, id)
 	}
 
-	if pool == "/wsStorage" {
-		storage.AddNewUser(ws, login, id)
-	}
-
 	if pool == "/wsGlobal" {
-		globalGame.AddNewUser(ws, login, id)
+		global.AddNewUser(ws, login, id)
 	}
 }

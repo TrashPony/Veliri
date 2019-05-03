@@ -5,11 +5,11 @@ import (
 	globalGameGenerators "github.com/TrashPony/Veliri/src/mechanics/globalGame/generators"
 	"github.com/TrashPony/Veliri/src/uploadFiles"
 	"github.com/TrashPony/Veliri/src/webSocket"
-	"github.com/TrashPony/Veliri/src/webSocket/chat"
 	"github.com/TrashPony/Veliri/src/webSocket/field"
-	"github.com/TrashPony/Veliri/src/webSocket/globalGame"
-	"github.com/TrashPony/Veliri/src/webSocket/globalGame/ai"
+	"github.com/TrashPony/Veliri/src/webSocket/global"
+	"github.com/TrashPony/Veliri/src/webSocket/global/ai"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
+	"github.com/TrashPony/Veliri/src/webSocket/other"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -39,14 +39,14 @@ func main() {
 	go lobby.ReposeSender()
 	go lobby.WorkerChecker()
 
-	go chat.CommonChatSender()
-	go chat.UserOnlineChecker()
-	go chat.LocalChatChecker()
-	go chat.NotifyWorker()
+	go other.CommonChatSender()
+	go other.UserOnlineChecker()
+	go other.LocalChatChecker()
+	go other.NotifyWorker()
 
 	go field.Sender()
 
-	go globalGame.MoveSender()
+	go global.MoveSender()
 
 	go ai.AnomaliesLife()   // запускает работу аномалий на карте
 	go ai.SkyGenerator()    // запускает генерацию облаков на картах, небо тоже немножко аи)

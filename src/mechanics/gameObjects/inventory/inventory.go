@@ -36,7 +36,7 @@ func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
 	}
 
 	return inv.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity,
-		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP)
+		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP, false)
 }
 
 func (inv *Inventory) GetSize() float32 {
@@ -64,13 +64,16 @@ func round(x float64, prec int) float64 {
 	return rounder / pow
 }
 
-func (inv *Inventory) AddItem(item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
+func (inv *Inventory) AddItem(item interface{}, itemType string, itemID, quantity, hp int, itemSize float32, maxHP int, newSlot bool) bool {
 
-	for _, slot := range inv.Slots { // ищем стопку с такими же элементами
-		if slot.ItemID == itemID && slot.Type == itemType && slot.HP == hp && slot.Item != nil {
-			slot.Quantity = slot.Quantity + quantity
-			slot.Size = slot.Size + (itemSize * float32(quantity))
-			return true
+	//newSlot говорит о том что этот айтем надо положить в строго новый слот
+	if !newSlot {
+		for _, slot := range inv.Slots { // ищем стопку с такими же элементами
+			if slot.ItemID == itemID && slot.Type == itemType && slot.HP == hp && slot.Item != nil {
+				slot.Quantity = slot.Quantity + quantity
+				slot.Size = slot.Size + (itemSize * float32(quantity))
+				return true
+			}
 		}
 	}
 
@@ -158,6 +161,14 @@ func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) b
 	} else {
 		return false
 	}
+}
+
+func (slot *Slot) AddItemBySlot(quantity int) {
+	// определяем вес 1 вещи
+	sizeOneItem := slot.Size / float32(slot.Quantity)
+	slot.Quantity += quantity
+	// находим новый вес для всей стопки
+	slot.Size = sizeOneItem * float32(slot.Quantity)
 }
 
 /* когда slot.Item = nil он удалиться из бд при обновление данных */

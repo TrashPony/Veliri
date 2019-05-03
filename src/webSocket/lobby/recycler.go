@@ -4,7 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/webSocket/storage"
+	wsInventory "github.com/TrashPony/Veliri/src/webSocket/inventory"
 )
 
 func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
@@ -64,5 +64,5 @@ func recycle(user *player.Player, msg Message, recycleItems *map[int]*lobby.Recy
 	lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
 		PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
 
-	storage.Updater(user.GetID())
+	wsInventory.UpdateStorage(user.GetID())
 }

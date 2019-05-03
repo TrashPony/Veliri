@@ -8,7 +8,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
-	"github.com/TrashPony/Veliri/src/webSocket/storage"
+	wsInventory "github.com/TrashPony/Veliri/src/webSocket/inventory"
 	"time"
 )
 
@@ -87,7 +87,7 @@ func craft(user *player.Player, msg Message) {
 			storages.Storages.RemoveItem(user.GetID(), user.InBaseID, slot.ItemID, slot.Type, slot.Quantity)
 		}
 
-		storage.Updater(user.GetID())
+		wsInventory.UpdateStorage(user.GetID())
 	}
 }
 
@@ -187,5 +187,5 @@ func cancelCraft(user *player.Player, msg Message) {
 		msg.Count = len(works)
 		selectWork(user, msg)
 	}
-	storage.Updater(user.GetID())
+	wsInventory.UpdateStorage(user.GetID())
 }

@@ -1,5 +1,7 @@
-function UpdateStorage(inventory) {
+let categories = false;
+let cellSize = 25;
 
+function UpdateStorage(inventory) {
     $('#storage').droppable({
         drop: function (event, ui) {
 
@@ -33,16 +35,28 @@ function UpdateStorage(inventory) {
 
     let inventoryStorage = $('#inventoryStorage');
     inventoryStorage.empty();
+
     for (let i in inventory.slots) {
         if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
+
             let cell = document.createElement("div");
             cell.className = "InventoryCell active";
+
             CreateInventoryCell(cell, inventory.slots[i], i, "storage");
             cell.onclick = SelectInventoryItem;
             cell.onmousemove = StorageOverTip;
             cell.onmouseout = OffTip;
             cell.source = 'storage';
-            inventoryStorage.append(cell);
+
+            cell.style.height = cellSize + "px";
+            cell.style.width = cellSize + "px";
+
+            if (categories) {
+                let section = CheckRecycleSection(inventory.slots[i], document.getElementById('inventoryStorage'));
+                section.appendChild(cell);
+            } else {
+                inventoryStorage.append(cell);
+            }
         }
     }
 }
@@ -54,6 +68,6 @@ function StorageOverTip(e) {
         inventoryTip.style.top = e.clientY + "px";
         inventoryTip.style.left = e.clientX + "px";
     } else {
-        InventorySelectTip(JSON.parse(this.slotData), e.clientX, e.clientY, true, false);
+        InventorySelectTip(JSON.parse(this.slotData), true, false);
     }
 }

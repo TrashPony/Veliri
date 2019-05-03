@@ -46,7 +46,7 @@ func (p *pool) Get(userId, baseId int) (*inv.Inventory, bool) {
 	}
 }
 
-func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID int, quantity int, hp int, itemSize float32, maxHP int) bool {
+func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, itemID, quantity, hp int, itemSize float32, maxHP int, newSlot bool) bool {
 	p.mx.Lock()
 	// sync.Mutex не рекурсивен, поэтому возможно это не безопасно, и закрывается не через defer :\
 
@@ -55,7 +55,7 @@ func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 		baseStorage, baseOk := userStorages[baseId]
 		if baseOk {
 
-			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize, maxHP)
+			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize, maxHP, newSlot)
 			if ok {
 				storage.Inventory(baseStorage, userId, baseId)
 			}
@@ -65,12 +65,12 @@ func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 		} else {
 			p.storages[userId][baseId] = storage.UserStorage(userId, baseId)
 			p.mx.Unlock()
-			return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP)
+			return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP, newSlot)
 		}
 	} else {
 		p.storages[userId] = make(map[int]*inv.Inventory)
 		p.mx.Unlock()
-		return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP)
+		return p.AddItem(userId, baseId, item, itemType, itemID, quantity, hp, itemSize, maxHP, newSlot)
 	}
 }
 
@@ -101,6 +101,27 @@ func (p *pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
 		p.mx.Unlock()
 		return p.AddSlot(userId, baseId, slot)
 	}
+}
+
+func (p *pool) AddItemBySlot(userId, baseId, numberSlot, quantity int) bool {
+
+	p.mx.Lock()
+	defer p.mx.Unlock()
+
+	userStorages, userOk := p.storages[userId]
+	if userOk {
+		baseStorage, baseOk := userStorages[baseId]
+		if baseOk {
+			slot, ok := baseStorage.Slots[numberSlot]
+			if ok {
+				slot.AddItemBySlot(quantity)
+				storage.Inventory(baseStorage, userId, baseId)
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func (p *pool) RemoveItemBySlot(userId, baseId, numberSlot, quantityRemove int) (bool, int) {

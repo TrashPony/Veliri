@@ -9,7 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/localGame"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/Phases/movePhase"
 	"github.com/TrashPony/Veliri/src/mechanics/localGame/map/watchZone"
-	"github.com/TrashPony/Veliri/src/mechanics/squadInventory"
+	"github.com/TrashPony/Veliri/src/mechanics/squad_inventory"
 	"strconv"
 )
 
@@ -31,7 +31,7 @@ func AttackPhase(game *localGame.Game) (resultBattle []*ResultBattle) {
 
 				for _, reloadUnit := range qLine {
 					if reloadUnit.Reload != nil {
-						err := squadInventory.SetAmmo(
+						err := squad_inventory.SetAmmo(
 							player,
 							reloadUnit.Reload.AmmoID,
 							reloadUnit.Reload.InventorySlot,

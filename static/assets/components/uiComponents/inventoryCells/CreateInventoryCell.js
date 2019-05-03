@@ -3,22 +3,8 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     cell.slotData = JSON.stringify(slotData);
     cell.number = slotNumber;
 
-    if (slotData.type === "resource" || slotData.type === "recycle") {
-        cell.style.backgroundImage = "url(/assets/resource/" + slotData.item.name + ".png)";
-    } else if (slotData.type === "boxes") {
-        cell.style.backgroundImage = "url(/assets/" + slotData.type + "/" + slotData.item.name + ".png)";
-    } else if (slotData.type === "detail") {
-        cell.style.backgroundImage = "url(/assets/resource/detail/" + slotData.item.name + ".png)";
-    } else if (slotData.type === "blueprints") {
-        cell.style.backgroundImage = "url(/assets/blueprints/" + slotData.item.icon + ".png)";
-    } else if (slotData.type === "body") {
-        cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)," +
-            " url(/assets/units/" + slotData.type + "/" + slotData.item.name + "_bottom.png)";
-    } else if (slotData.type === "equip"){
-        cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/icon/" + slotData.item.name + ".png)";
-    } else {
-        cell.style.backgroundImage = "url(/assets/units/" + slotData.type + "/" + slotData.item.name + ".png)";
-    }
+
+    cell.style.backgroundImage = getBackgroundUrlByItem(slotData);
 
     cell.innerHTML = "<span class='QuantityItems'>" + slotData.quantity + "</span>";
 
@@ -61,6 +47,67 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         helper: 'clone',
         appendTo: "body",
     });
+
+    $(cell).droppable({
+        greedy: true,
+        over: function (event, ui) {
+            let draggable = ui.draggable;
+
+            let src = draggable.data("slotData");
+            let dst = $(this).data("slotData");
+
+            if (draggable.data("selectedItems") !== undefined) {
+                // если в рукаве много айтемов то это нельзя комбинировать
+                $(this).droppable("option", "greedy", false);
+                return
+            }
+
+            if (src && dst && src.data && dst.data && dst.data.item_id === src.data.item_id && dst.data.type === src.data.type) {
+                $(this).droppable("option", "greedy", true);
+            } else {
+                $(this).droppable("option", "greedy", false);
+            }
+        },
+        drop: function (event, ui) {
+            $('.ui-selected').removeClass('ui-selected');
+            let draggable = ui.draggable;
+
+            let src = draggable.data("slotData");
+            let dst = $(this).data("slotData");
+
+            if (draggable.data("selectedItems") !== undefined) {
+                return
+            }
+
+            if (src && dst && src.data && dst.data && dst.data.item_id === src.data.item_id && dst.data.type === src.data.type) {
+                inventorySocket.send(JSON.stringify({
+                    event: "combineItems",
+                    source: src.parent,
+                    src_slot: Number(src.number),
+                    destination: dst.parent,
+                    dst_slot: Number(dst.number),
+                }));
+            }
+        }
+    });
+}
+
+function getBackgroundUrlByItem(slot) {
+    if (slot.type === "resource" || slot.type === "recycle") {
+        return "url(/assets/resource/" + slot.item.name + ".png)";
+    } else if (slot.type === "boxes") {
+        return "url(/assets/" + slot.type + "/" + slot.item.name + ".png)";
+    } else if (slot.type === "detail") {
+        return "url(/assets/resource/detail/" + slot.item.name + ".png)";
+    } else if (slot.type === "blueprints") {
+        return "url(/assets/blueprints/" + slot.item.icon + ".png)";
+    } else if (slot.type === "body") {
+        return "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png), url(/assets/units/" + slot.type + "/" + slot.item.name + "_bottom.png)";
+    } else if (slot.type === "equip") {
+        return "url(/assets/units/" + slot.type + "/icon/" + slot.item.name + ".png)";
+    } else {
+        return "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png)";
+    }
 }
 
 function unMarkConstructorEquip() {
@@ -107,7 +154,7 @@ function CreateHealBar(cell, type, append) {
 
     if (cellData.type !== "ammo" && cellData.type !== "resource" && cellData.type !== "recycle"
         && cellData.type !== "boxes" && cellData.type !== "detail" && cellData.type !== "blueprint" &&
-        cellData.type !== "blueprints") {
+        cellData.type !== "blueprints" && cellData.type !== "trash") {
 
         let backHealBar = document.createElement("div");
 

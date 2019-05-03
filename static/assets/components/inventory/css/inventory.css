@@ -1,14 +1,14 @@
 #Inventory {
     border: 1px solid #25a0e1;
     border-radius: 5px;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     display: inline-block;
     vertical-align: top;
     width: 163px;
     height: 133px;
     margin: 0 10px 0;
-    background-image:linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.14) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.14) 6px);
     background-size: 10px 2px;
     position: relative;
     user-select: none;
@@ -20,7 +20,7 @@
 .inventoryStorage {
     margin: 8px auto 0;
     overflow-y: scroll;
-    height: 58px;
+    height: 79px;
     width: 100% !important;
     border-radius: 5px;
     box-shadow: inset 0 0 5px black;
@@ -35,13 +35,13 @@
     margin: 3px auto;
     border: 1px solid #4c4c4c;
     background-color: #959595;
-    box-shadow: 0 0 5px rgba(0,0,0,1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     border-radius: 5px;
     -moz-user-select: none;
     user-select: none;
 }
 
-.sortPanel:before  {
+.sortPanel:before {
     content: "Сортировка:";
     font-size: 11px;
     line-height: 15px;
@@ -50,18 +50,27 @@
 }
 
 .sortPanel div {
+    font-weight: 900;
+    line-height: 11px;
+    font-size: 13px;
+    float: right;
     width: 15px;
     height: 11px;
     border: 1px solid #4c4c4c;
-    display: inline-block;
-    margin:1px 4px 0 0;
+    margin: 1px 4px 0 0;
     border-radius: 3px;
-    box-shadow: 0 0 1px rgba(0,0,0,1);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 1);
     background: linear-gradient(-45deg, #28a5e4, #25e1a4);
+    color: #f9ff00;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-.sortPanel div:first-child {
-    margin-left: 10px;
+#sortButton1 {
+    font-size: 10px;
+}
+
+#sortButton3 {
+    line-height: 10px;
 }
 
 .sortPanel div:hover {
@@ -79,7 +88,7 @@
     text-align: left;
     display: block;
     margin: 8px 0 -4px 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     border-radius: 10px;
     background-size: 12%;
     overflow: hidden;
@@ -106,7 +115,7 @@
     line-height: 16px;
     width: 139px;
     text-align: center;
-    text-shadow: 1px 1px 1px rgba(0,0,0,1);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
     font-weight: bold;
     background-image: url(../img/cube.png);
     background-repeat: no-repeat;
@@ -117,7 +126,7 @@
 .utilButton, .destroyButton {
     height: 23px;
     width: 23px;
-    box-shadow: 0 0 5px rgba(0,0,0,1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     background: linear-gradient(-45deg, #28a5e4, #25e1a4);
     border-radius: 3px;
     border: 1px solid #4c4c4c;
@@ -129,7 +138,7 @@
 .utilButtonActive {
     height: 23px;
     width: 23px;
-    box-shadow: 0 0 5px rgba(0,0,0,1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     background: linear-gradient(0deg, red, yellow);
     border-radius: 3px;
     border: 1px solid #4c4c4c;
@@ -141,7 +150,7 @@
 .throwButtonActive {
     height: 23px;
     width: 23px;
-    box-shadow: 0 0 5px rgba(0,0,0,1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     background: linear-gradient(0deg, red, yellow);
     border-radius: 3px;
     border: 1px solid #4c4c4c;
@@ -170,7 +179,7 @@
     border-radius: 3px;
 }
 
-.destroyButton div, .throwButtonActive div{
+.destroyButton div, .throwButtonActive div {
     background: url(../img/throw.png) no-repeat 0 1px;
     background-size: 87%;
 }
@@ -182,7 +191,7 @@
     margin-left: -1px;
     top: -30px;
     border-radius: 20px;
-    background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
     background-size: 10px 2px;
     position: absolute;
 }
@@ -196,7 +205,7 @@
     border-radius: 20px;
     background: linear-gradient(-45deg, #28a5e4, #25e1a4);
     font-size: 11px;
-    box-shadow: 0 0 10px rgba(0,0,0,1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
     user-select: none;
     /* font-size: 11px; */
 }
@@ -206,6 +215,6 @@
 }
 
 .ConfirmInventoryMenu div:active {
-    box-shadow: 0 0 0 rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
     background: linear-gradient(180deg, red, yellow);
 }

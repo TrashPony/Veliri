@@ -115,9 +115,21 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
 
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
+        
+        // TODO РЕФАКТОРИНГ
+        for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+            let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
 
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
+            if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
+                cell.className = "InventoryCell hover";
+            } else if (cell.slotData && JSON.parse(cell.slotData).item.type_slot !== typeSlot) {
+                cell.className = "InventoryCell notAllow";
+            }
+        }
+
+        for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
+            let cell = document.getElementById('inventoryStorage').childNodes[i];
+
             if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
                 cell.className = "InventoryCell hover";
             } else if (cell.slotData && JSON.parse(cell.slotData).item.type_slot !== typeSlot) {
@@ -236,9 +248,48 @@ function UpdateWeapon(cell, classPrefix) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
 
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
+        // TODO РЕФАКТОРИНГ
+        for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+            let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
+            let slotData = JSON.parse(cell.slotData);
 
+            if (slotData && slotData.type === "weapon") {
+
+                let bodyData;
+                if (classPrefix === "inventoryEquipping") {
+                    bodyData = JSON.parse(document.getElementById("MSIcon").slotData).body;
+                } else {
+                    bodyData = document.getElementById("UnitIcon").unitBody;
+                }
+
+                if (bodyData) {
+                    if (bodyData.standard_size_big && slotData.item.standard_size === 3) {
+                        cell.className = "InventoryCell hover";
+                        continue
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+
+                    if (bodyData.standard_size_medium && slotData.item.standard_size === 2) {
+                        cell.className = "InventoryCell hover";
+                        continue
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+
+                    if (bodyData.standard_size_small && slotData.item.standard_size === 1) {
+                        cell.className = "InventoryCell hover";
+                    } else {
+                        cell.className = "InventoryCell notAllow";
+                    }
+                }
+            } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
+                cell.className = "InventoryCell notAllow";
+            }
+        }
+
+        for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
+            let cell = document.getElementById('inventoryStorage').childNodes[i];
             let slotData = JSON.parse(cell.slotData);
 
             if (slotData && slotData.type === "weapon") {
@@ -401,8 +452,19 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
         if (weapon) {
-            for (let i = 1; i <= 40; i++) {
-                let cell = document.getElementById("inventory " + i + 6);
+            // TODO РЕФАКТОРИНГ
+            for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+                let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
+                let slotData = JSON.parse(cell.slotData);
+                if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
+                    cell.className = "InventoryCell hover";
+                } else if (slotData) {
+                    cell.className = "InventoryCell notAllow";
+                }
+            }
+
+            for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
+                let cell = document.getElementById('inventoryStorage').childNodes[i];
                 let slotData = JSON.parse(cell.slotData);
                 if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
                     cell.className = "InventoryCell hover";

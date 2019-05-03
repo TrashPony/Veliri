@@ -29,6 +29,10 @@
     float: left;
 }
 
+.hover {
+    box-shadow: 0 0 5px 1px rgb(255, 246, 0);
+}
+
 .noAllowCell {
     height: 100%;
     width: 100%;

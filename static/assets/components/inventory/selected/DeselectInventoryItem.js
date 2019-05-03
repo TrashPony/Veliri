@@ -81,21 +81,21 @@ function cellEquipDestroySelect(typeSlot, count, idPrefix, classPrefix) {
                 equipSlot.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
                 equipSlot.style.cursor = "auto";
 
-                if (JSON.parse(equipSlot.slotData).mining){
+                if (JSON.parse(equipSlot.slotData).mining) {
                     equipSlot.style.boxShadow = "rgb(173, 177, 26) 0px 0px 4px 3px";
                 }
 
                 equipSlot.onmouseout = function () {
 
-                    for (let i = 1; i <= 40; i++) {
-                        let cell = document.getElementById("inventory " + i + 6);
+                    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+                        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
                         cell.className = "InventoryCell";
                     }
 
                     this.style.boxShadow = "0 0 0px 0px rgb(0, 0, 0)";
                     this.style.cursor = "auto";
 
-                    if (JSON.parse(equipSlot.slotData).mining){
+                    if (JSON.parse(equipSlot.slotData).mining) {
                         equipSlot.style.boxShadow = "rgb(173, 177, 26) 0px 0px 4px 3px";
                     }
                 };

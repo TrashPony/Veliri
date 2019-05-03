@@ -111,6 +111,7 @@
 }
 
 .nameSection {
+    clear: both;
     width: 50%;
     height: 14px;
     font-size: 12px;

@@ -26,7 +26,7 @@ func (o *OrdersPool) Cancel(orderID int, user *player.Player) error {
 				// возвращаем итемы что не куплены
 				storages.Storages.AddItem(userOrder.IdUser, userOrder.PlaceID, userOrder.Item, userOrder.TypeItem,
 					userOrder.IdItem, userOrder.Count, userOrder.ItemHP, userOrder.ItemSize*float32(userOrder.Count),
-					userOrder.ItemHP)
+					userOrder.ItemHP, false)
 				// удаляем заказ
 				market.RemoveOrder(userOrder)
 				delete(o.orders, userOrder.Id) // удаляем из фабрики т.к. мьютекс тут работает, это безопасно

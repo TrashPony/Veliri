@@ -39,7 +39,7 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 
 			// добавляем покупателю итемы в склад базы
 			storages.Storages.AddItem(sellOrder.IdUser, sellOrder.PlaceID, sellOrder.Item, sellOrder.TypeItem,
-				sellOrder.IdItem, count, sellOrder.ItemHP, sellOrder.ItemSize*float32(count), sellOrder.ItemHP)
+				sellOrder.IdItem, count, sellOrder.ItemHP, sellOrder.ItemSize*float32(count), sellOrder.ItemHP, false)
 		} else {
 			if sellOrder.Count < count || count%sellOrder.MinBuyOut != 0 {
 				return errors.New("wrong count")

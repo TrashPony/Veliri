@@ -172,6 +172,6 @@ function ItemOverTip(e, slot) {
         inventoryTip.style.top = e.clientY + "px";
         inventoryTip.style.left = e.clientX + "px";
     } else {
-        InventorySelectTip(slot, e.clientX, e.clientY, true, false);
+        InventorySelectTip(slot, true, false);
     }
 }

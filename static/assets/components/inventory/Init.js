@@ -19,6 +19,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/create/SquadHead.js");
             includeJS("../assets/components/inventory/create/Storage.js");
             includeJS("../assets/components/inventory/create/OnlyStorage.js");
+            includeJS("../assets/components/inventory/create/SortPanel.js");
 
             includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
             includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
@@ -56,7 +57,6 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/repair/EquipsRepair.js");
 
             includeJS("../assets/components/inventory/inventory/RecycleItems.js");
-            includeJS("../assets/components/inventory/inventory/SortingItems.js");
             includeJS("../assets/components/inventory/inventory/ThrowItems.js");
             includeJS("../assets/components/inventory/inventory/checkConfirmMenu.js");
             includeJS("../assets/components/inventory/inventory/SelectItems.js");

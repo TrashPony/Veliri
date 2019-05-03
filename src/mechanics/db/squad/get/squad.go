@@ -217,7 +217,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	}
 }
 
-func SquadInventory(squadID int) (inventory inv.Inventory) {
+func SquadInventory(squadID int) *inv.Inventory {
+	var inventory inv.Inventory
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+
@@ -235,10 +236,10 @@ func SquadInventory(squadID int) (inventory inv.Inventory) {
 	defer rows.Close()
 
 	inventory.Slots = make(map[int]*inv.Slot)
-	inventory.SetSlotsSize(40)
+	inventory.SetSlotsSize(999)
 	inventory.FillInventory(rows)
 
-	return
+	return &inventory
 }
 
 func ParseTarget(targetKey string) *coordinate.Coordinate {

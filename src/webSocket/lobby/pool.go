@@ -37,25 +37,28 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		newPlayer.LastBaseID = newPlayer.InBaseID
 
 		if newPlayer.Fraction == "" {
+			//новый игрок без фракции должен сделать выбор
 			lobbyPipe <- Message{Event: "choiceFraction", UserID: newPlayer.GetID()}
 		} else {
-			// убираем у него скорость)
-			if newPlayer.GetSquad() != nil {
-				newPlayer.GetSquad().GlobalX = 0
-				newPlayer.GetSquad().GlobalY = 0
-			}
-
 			if newPlayer.Training == 0 {
-				// если игрок не прогшел обучение то кидаем ему первую страницу диалога введения
+
+				// если игрок не прошел обучение то кидаем ему первую страницу диалога введения
 				trainingDialog := gameTypes.Dialogs.GetByID(1)
 				trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "")
 				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
 				newPlayer.SetOpenDialog(trainingDialog)
+
 			} else {
 				if newPlayer.Training < 999 {
 					lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
 				}
 			}
+		}
+
+		// убираем скорость у игрока если у него есть отряд
+		if newPlayer.GetSquad() != nil {
+			newPlayer.GetSquad().GlobalX = 0
+			newPlayer.GetSquad().GlobalY = 0
 		}
 	}
 
@@ -144,6 +147,7 @@ func Reader(ws *websocket.Conn) {
 				cancelCraft(user, msg)
 			}
 
+			//todo от сюда перенести все в раздел other
 			if msg.Event == "LoadAvatar" {
 				user.AvatarIcon = msg.File
 				dbPlayer.UpdateUser(user)

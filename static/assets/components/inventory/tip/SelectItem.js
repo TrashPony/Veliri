@@ -1,15 +1,15 @@
-function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
+function InventorySelectTip(slot, first, size, numberSlot, storage) {
 
     if (!slot || !slot.item) {
         return
     }
 
-    let tip = document.createElement("div");
-    tip.style.top = stylePositionParams.top + "px";
-    tip.style.left = stylePositionParams.left + "px";
+    let x = stylePositionParams.top;
+    let y = stylePositionParams.left;
 
-    x = stylePositionParams.top;
-    y = stylePositionParams.left;
+    let tip = document.createElement("div");
+    tip.style.top = x + "px";
+    tip.style.left = y + "px";
 
     if (size) {
         notificationInventorySize(slot.size);
@@ -24,14 +24,20 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
 
             let tipDetail = document.createElement("div");
             tipDetail.id = "InventoryTip";
-            tipDetail.style.top = stylePositionParams.top + "px";
-            tipDetail.style.left = stylePositionParams.left + "px";
+            tipDetail.style.top = x + "px";
+            tipDetail.style.left = y + "px";
 
             CreateParamsTable(slot, tipDetail);
             document.body.appendChild(tipDetail);
         };
 
-        if (typeof(global) !== 'undefined') {
+        let divideButton = createInput("Разделить", tip);
+        divideButton.onclick = function () {
+            tip.remove();
+            divideItems(slot, x, y, storage, numberSlot)
+        };
+
+        if (typeof (global) !== 'undefined') {
             let throwButton = createInput("Выбросить", tip);
             throwButton.onclick = function () {
                 let throwItems = [];
@@ -46,7 +52,7 @@ function InventorySelectTip(slot, x, y, first, size, numberSlot, storage) {
             };
         }
 
-        if (typeof(global) !== 'undefined' && slot.type === "boxes") {
+        if (typeof (global) !== 'undefined' && slot.type === "boxes") {
             let placeButton = createInput("Установить", tip);
             placeButton.onclick = function () {
                 if (global) {
@@ -304,4 +310,38 @@ function notificationInventorySize(loadSize) {
 
         realSize.appendChild(itemSize);
     }
+}
+
+function divideItems(slot, x, y, storage, numberSlot) {
+
+    let quantityRange = document.createElement('div');
+    quantityRange.id = "QuantityRange";
+    quantityRange.style.top = x + "px";
+    quantityRange.style.left = y + "px";
+
+    console.log(slot)
+    quantityRange.innerHTML += `
+        <form name="quantityForm"  oninput="quantityOut.value = quantity.value">
+            <div class="iconItem" style='background-image: ${getBackgroundUrlByItem(slot)}'></div>
+            <input name="quantity" id="quantityRangeValue" type="range" min="0" max="${slot.quantity}" value="0"> 
+            <output name="quantityOut" >0</output>
+        </form>
+        <input type="button" id="divideButton" value="Разделить" style="width: 75px; float: left; margin-left: 20px; margin-top: 2px;">
+        <input type="button" id="divideCancelButton" value="Отмена" style="width: 75px; float: right; margin-right: 20px; margin-top: 2px;">
+    `;
+    document.body.appendChild(quantityRange);
+
+    $('#divideButton').click(function () {
+        inventorySocket.send(JSON.stringify({
+            event: "divideItems",
+            inventory_slot: Number(numberSlot),
+            storage: storage,
+            count: Number(document.getElementById('quantityRangeValue').value)
+        }));
+        if (document.getElementById("QuantityRange")) document.getElementById("QuantityRange").remove();
+    });
+
+    $('#divideCancelButton').click(function () {
+        if (document.getElementById("QuantityRange")) document.getElementById("QuantityRange").remove();
+    })
 }
