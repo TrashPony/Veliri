@@ -1,4 +1,4 @@
-function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate) {
+function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color, wColor, w2Color) {
     let unit;
 
     if (!game.unitLayer) return;
@@ -25,33 +25,62 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate) {
     bodyShadow.alpha = 0.2;
 
     let body = game.make.sprite(0, 0, squadBody.name);
+    let bodyMask = game.make.sprite(0, 0, squadBody.name + '_mask');
+    let bodyMask2 = game.make.sprite(0, 0, squadBody.name + '_mask2');
+
     body.scale.setTo(0.25);
     body.inputEnabled = true;             // включаем ивенты на спрайт
-    body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
+    body.anchor.setTo(0.5);          // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
+    bodyMask.anchor.setTo(0.5);          // устанавливаем центр спрайта
+    bodyMask.tint = bColor;
+
+    bodyMask2.anchor.setTo(0.5);          // устанавливаем центр спрайта
+    bodyMask2.tint = b2Color;
+    bodyMask2.alpha = 0.3;
+
+    // накладываем цветовые маски на спрайт
+    body.addChild(bodyMask2);
+    body.addChild(bodyMask);
+
     let weapon;
     let weaponShadow;
+    let weaponColorMask;
+    let weaponColorMask2;
 
     if (weaponSlot && weaponSlot.weapon) {
-
+        // todo рефакторинг...
         let xAttach = ((weaponSlot.x_attach) / 4) - 50;
         let yAttach = ((weaponSlot.y_attach) / 4) - 50;
 
         weapon = game.make.sprite(xAttach, yAttach, weaponSlot.weapon.name);
+        weaponColorMask = game.make.sprite(0, 0, weaponSlot.weapon.name + '_mask');
+        weaponColorMask2 = game.make.sprite(0, 0, weaponSlot.weapon.name + '_mask2');
+
         weaponShadow = game.make.sprite(xAttach + game.shadowXOffset / 2, yAttach + game.shadowYOffset / 2, weaponSlot.weapon.name);
 
         weapon.xAttach = xAttach;
         weapon.yAttach = yAttach;
-
         weapon.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
         weapon.scale.setTo(0.25);
+
+        weaponColorMask.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
+        weaponColorMask.tint = wColor;
+
+        weaponColorMask2.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
+        weaponColorMask2.tint = w2Color;
+        weaponColorMask2.alpha = 0.3;
 
         weaponShadow.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
         weaponShadow.scale.setTo(0.25);
         weaponShadow.tint = 0x000000;
-        weaponShadow.alpha = 0.3;
+        weaponShadow.alpha = 0.5;
+
+        // накладываем цветовые маски на спрайт
+        weapon.addChild(weaponColorMask2);
+        weapon.addChild(weaponColorMask);
     }
 
     squad.sprite = unit;
@@ -79,7 +108,6 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate) {
 }
 
 function CreateEquip(squadBody, squad) {
-    console.log(squadBody)
     squad.sprite.equipSprites = [];
 
     let createSprite = function (slot) {

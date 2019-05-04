@@ -36,6 +36,11 @@ type Message struct {
 	Storage    bool             `json:"storage"`
 	Count      int              `json:"count"`
 	ThrowItems []inventory.Slot `json:"throw_items"`
+
+	BodyColor1   string `json:"body_color_1"`
+	BodyColor2   string `json:"body_color_2"`
+	WeaponColor1 string `json:"weapon_color_1"`
+	WeaponColor2 string `json:"weapon_color_2"`
 }
 
 type Response struct {

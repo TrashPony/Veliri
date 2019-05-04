@@ -69,7 +69,13 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"action_point, "+
 			"on_map, "+
 			"defend, "+
-			"move "+
+			"move,"+
+			"body_color_1,"+
+			"body_color_2,"+
+			"weapon_color_1,"+
+			"weapon_color_2,"+
+			"body_texture,"+
+			"weapon_texture "+
 			""+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
@@ -99,6 +105,12 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			&ship.OnMap,
 			&ship.Defend,
 			&ship.Move,
+			&ship.BodyColor1,
+			&ship.BodyColor2,
+			&ship.WeaponColor1,
+			&ship.WeaponColor2,
+			&ship.BodyTexture,
+			&ship.WeaponTexture,
 		)
 
 		if err != nil {
@@ -169,7 +181,13 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"action_point, "+
 			"defend, "+
 			"move, "+
-			"id_game "+
+			"id_game, "+
+			"body_color_1,"+
+			"body_color_2,"+
+			"weapon_color_1,"+
+			"weapon_color_2,"+
+			"body_texture,"+
+			"weapon_texture "+
 			" "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
@@ -198,6 +216,12 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			&squadUnit.Defend,
 			&squadUnit.Move,
 			&squadUnit.GameID,
+			&squadUnit.BodyColor1,
+			&squadUnit.BodyColor2,
+			&squadUnit.WeaponColor1,
+			&squadUnit.WeaponColor2,
+			&squadUnit.BodyTexture,
+			&squadUnit.WeaponTexture,
 		)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())

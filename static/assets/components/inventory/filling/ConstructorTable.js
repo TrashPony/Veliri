@@ -14,12 +14,27 @@ function ConstructorTable(ms) {
 
 function UpdateShipIcon(ms) {
     let unitIcon = document.getElementById("MSIcon");
-    unitIcon.innerHTML = "";
+    unitIcon.innerHTML = '';
     unitIcon.shipBody = unitIcon;
     unitIcon.style.backgroundImage = "url(/assets/units/body/" + ms.body.name + ".png), url(/assets/units/body/" + ms.body.name + "_bottom.png)";
 
-    unitIcon.slotData = JSON.stringify(ms);
+    let mask1 = document.createElement('div');
+    mask1.className = 'mask body';
+    mask1.id = 'msBodyMask1';
+    mask1.style.background = "#" + ms.body_color_1.split('x')[1];
+    $(mask1).css("-webkit-mask-image", "url(/assets/units/body/" + ms.body.name + "_mask.png)");
 
+    let mask2 = document.createElement('div');
+    mask2.style.opacity = '0.3';
+    mask2.className = 'mask body';
+    mask2.id = 'msBodyMask2';
+    mask2.style.background = "#" + ms.body_color_2.split('x')[1];
+    $(mask2).css("-webkit-mask-image", "url(/assets/units/body/" + ms.body.name + "_mask2.png)");
+
+    unitIcon.appendChild(mask2);
+    unitIcon.appendChild(mask1);
+
+    unitIcon.slotData = JSON.stringify(ms);
     unitIcon.onclick = BodyMSMenu;
 
     unitIcon.onmousemove = function (e) {
@@ -52,6 +67,7 @@ function UpdateShipIcon(ms) {
     let slotData = {};
     slotData.unit = ms;
 
+    CreateColorInputs(unitIcon, ms, 0, 'ms');
     CreateThoriumSlots(unitIcon, ms);
     UpdateWeaponIcon(unitIcon, "weaponIcon", slotData);
     CreateHealBar(unitIcon, "body", true);
@@ -129,7 +145,6 @@ function CreateThoriumSlots(unitIcon, ms) {
 
         thoriumSlots.onmousemove = function () {
             event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
-
         };
 
         thoriumSlots.onclick = function () {

@@ -21,10 +21,12 @@
     background-repeat: no-repeat;
     margin: 15px;
     margin-left: 35px;
+    margin-right: 5px;
     vertical-align: middle;
     color: #00FFFD;
     line-height: 30px;
     position: relative;
+    transform: scale(1.1);
 }
 
 .weaponUnitInnerIcon {
@@ -32,6 +34,7 @@
     width: 100px;
     background-size: 100%;
     position: absolute;
+    transform: scale(0.8);
 }
 
 .weaponUnitIcon {

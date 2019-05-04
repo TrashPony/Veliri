@@ -25,33 +25,43 @@ CREATE TABLE squad_thorium_slots
 
 CREATE TABLE squad_units
 (
-  id           SERIAL PRIMARY KEY,
-  id_squad     INT REFERENCES squads (id), /* ид отряда к которому принадлежит юнит */
+  id             SERIAL PRIMARY KEY,
+  id_squad       INT REFERENCES squads (id), /* ид отряда к которому принадлежит юнит */
 
   /* из чего состоит юнит */
-  id_body      INT REFERENCES body_type (id), /* ид тела юнита */
-  slot         INT, /* номер слота который занимает юнит в материнской машине */
+  id_body        INT REFERENCES body_type (id), /* ид тела юнита */
+  slot           INT, /* номер слота который занимает юнит в материнской машине */
 
   /* Позиция */
-  q            INT, /* q - колона на которой стоит юнит */
-  r            INT, /* r - строка на которой стоит юнит */
-  rotate       INT,
+  q              INT, /* q - колона на которой стоит юнит */
+  r              INT, /* r - строка на которой стоит юнит */
+  rotate         INT,
 
   /* игрок в бою */
-  on_map       BOOLEAN,
+  on_map         BOOLEAN,
   -- ид боя в котором забыли юнита, удалится как бой закончится, актуально ток для ботов, мс нельзя забыть в бою
-  id_game      INT,
+  id_game        INT,
 
   /* Игровая статистика */
-  target       VARCHAR(64),
-  defend       BOOLEAN, /* означат что пользователь защищается юнитов в фазе атаки */
-  mother_ship  BOOLEAN, /* является ли этот юнит мазршипом */
-  move         BOOLEAN, /* говорит что сейчас ходит именно этот юнит */
+  target         VARCHAR(64),
+  defend         BOOLEAN, /* означат что пользователь защищается юнитов в фазе атаки */
+  mother_ship    BOOLEAN, /* является ли этот юнит мазршипом */
+  move           BOOLEAN, /* говорит что сейчас ходит именно этот юнит */
 
   /* Характиристики */
-  hp           INT,
-  power        INT,
-  action_point INT /* очки передвижения юнита */
+  hp             INT,
+  power          INT,
+  action_point   INT, /* очки передвижения юнита */
+
+  /* покраска юнитов */
+  body_color_1   text not null default '0x15ccff',
+  body_color_2   text not null default '0x000000',
+  weapon_color_1 text not null default '0x15ccff',
+  weapon_color_2 text not null default '0x000000',
+
+  /* путь к файлу готовой покраске, пока не реализовано */
+  body_texture   text not null default '',
+  weapon_texture text not null default ''
 );
 
 CREATE TABLE squad_units_equipping

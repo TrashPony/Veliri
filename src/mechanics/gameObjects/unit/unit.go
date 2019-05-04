@@ -52,12 +52,21 @@ type Unit struct {
 	Units   map[int]*Slot    `json:"units"` // в роли ключей карты выступают
 
 	Reload *ReloadAction `json:"reload"`
+
+	/* покраска юнитов */
+	BodyColor1   string `json:"body_color_1"`
+	BodyColor2   string `json:"body_color_2"`
+	WeaponColor1 string `json:"weapon_color_1"`
+	WeaponColor2 string `json:"weapon_color_2"`
+
+	/* путь к файлу готовой покраске, пока не реализовано */
+	BodyTexture   string `json:"body_texture"`
+	WeaponTexture string `json:"weapon_texture"`
 }
 
 type ReloadAction struct {
-	AmmoID int
+	AmmoID        int
 	InventorySlot int
-
 }
 
 type Slot struct {

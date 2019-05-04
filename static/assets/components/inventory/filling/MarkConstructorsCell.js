@@ -119,8 +119,10 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
         let tipFunc = function (id) {
             for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
 
-                let slotData = JSON.parse(document.getElementById(id).childNodes[i].slotData);
                 let inventoryCell = document.getElementById(id).childNodes[i];
+                if (!inventoryCell.slotData) continue;
+
+                let slotData = JSON.parse(inventoryCell.slotData);
 
                 if (slotData && slotData.item.type_slot === typeSlot) {
                     if (JSON.parse(cell.slotData).mining && (slotData.item.applicable === 'ore' || slotData.item.applicable === 'digger')) {
@@ -253,6 +255,8 @@ function UpdateWeapon(cell, classPrefix) {
         let tipFunc = function (id) {
             for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
                 let cell = document.getElementById(id).childNodes[i];
+                if (!cell.slotData) continue;
+
                 let slotData = JSON.parse(cell.slotData);
 
                 if (slotData && slotData.type === "weapon") {
@@ -422,7 +426,11 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
             let tipFunc = function (id) {
                 for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
                     let cell = document.getElementById(id).childNodes[i];
+
+                    if (!cell.slotData) continue;
+
                     let slotData = JSON.parse(cell.slotData);
+
                     if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
                         cell.className = "InventoryCell hover";
                     } else if (slotData) {

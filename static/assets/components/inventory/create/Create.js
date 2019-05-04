@@ -43,6 +43,15 @@ function CreateInventoryMenu(closeFunc, option) {
     let inventoryBox = document.createElement("div");
     inventoryBox.id = "inventoryBox";
 
+    let colorPicker = document.createElement('div');
+    colorPicker.className = 'colorpicker';
+    colorPicker.style.display = 'none';
+    colorPicker.innerHTML = `
+        <input id="brightnessColorPicker" type="range" value="100" max="100" min="1">
+        <canvas id="colorUnitPicker" width="140" height="140"></canvas>
+`;
+    inventoryBox.appendChild(colorPicker);
+
     let userStatus = document.createElement("div");
     userStatus.id = "SquadHead";
     inventoryBox.appendChild(userStatus);

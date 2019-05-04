@@ -1,6 +1,17 @@
 function chatMessage() {
     let chatInput = document.getElementById("chatInput");
     let text = chatInput.value;
+
+    if (text.indexOf("/color squad:") >= 0) {
+        if (game.squad.sprite.weaponColorMask) {
+            //game.squad.sprite.weaponColorMask.tint = Phaser.WHITE;
+            //game.squad.sprite.weaponColorMask.tint = '0x' + text.split(':')[1];
+        }
+
+        game.squad.sprite.bodyMask2.tint = Phaser.WHITE;
+        game.squad.sprite.bodyMask2.tint = '0x' + text.split(':')[1];
+    }
+
     if (text !== "") {
         chatInput.value = null;
 

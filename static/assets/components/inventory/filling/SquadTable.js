@@ -11,9 +11,24 @@ function SquadTable(squad) {
             }
 
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
+                let unit = squad.mather_ship.units[slot].unit;
                 cell.innerHTML = "";
-                cell.style.background = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png) center center / 100% no-repeat," +
-                    "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + "_bottom.png) center center / 100% no-repeat, #4c4c4c";
+                cell.style.background = "url(/assets/units/body/" + unit.body.name + ".png) center center / 100% no-repeat," +
+                    "url(/assets/units/body/" + unit.body.name + "_bottom.png) center center / 100% no-repeat, #4c4c4c";
+
+                let mask1 = document.createElement('div');
+                mask1.className = 'mask unit';
+                mask1.style.background = "#" + unit.body_color_1.split('x')[1];
+                $(mask1).css("-webkit-mask-image", "url(/assets/units/body/" + unit.body.name + "_mask.png)");
+
+                let mask2 = document.createElement('div');
+                mask2.style.opacity = '0.3';
+                mask2.className = 'mask unit';
+                mask2.style.background = "#" + unit.body_color_2.split('x')[1];
+                $(mask2).css("-webkit-mask-image", "url(/assets/units/body/" + unit.body.name + "_mask2.png)");
+
+                cell.appendChild(mask2);
+                cell.appendChild(mask1);
                 UpdateWeaponIcon(cell, "weaponUnitIcon", squad.mather_ship.units[slot], true);
 
                 let constructorUnit = document.getElementById("ConstructorUnit");
@@ -168,12 +183,31 @@ function FillingSquadConstructor(unitData) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.innerHTML = "";
 
-    unitIcon.style.background = "url(/assets/units/body/" + unitData.unit.body.name + ".png) center center / contain no-repeat," +
-        "url(/assets/units/body/" + unitData.unit.body.name + "_bottom.png) center center / contain no-repeat, #4c4c4c";
+    let mask1 = document.createElement('div');
+    mask1.className = 'mask unit inner';
+    mask1.id = 'unitMaskBody1';
+    mask1.style.background = "#" + unitData.unit.body_color_1.split('x')[1];
+    $(mask1).css("-webkit-mask-image", "url(/assets/units/body/" + unitData.unit.body.name + "_mask.png)");
+
+    let mask2 = document.createElement('div');
+    mask2.id = 'unitMaskBody2';
+    mask2.style.opacity = '0.3';
+    mask2.className = 'mask unit inner';
+    mask2.style.background = "#" + unitData.unit.body_color_2.split('x')[1];
+    $(mask2).css("-webkit-mask-image", "url(/assets/units/body/" + unitData.unit.body.name + "_mask2.png)");
+
+    unitIcon.appendChild(mask2);
+    unitIcon.appendChild(mask1);
+
+    unitIcon.style.background = "url(/assets/units/body/" + unitData.unit.body.name + ".png) center center / 80px no-repeat," +
+        "url(/assets/units/body/" + unitData.unit.body.name + "_bottom.png) center center / 80px no-repeat, #4c4c4c";
 
     unitIcon.slotData = JSON.stringify(unitData);
     unitIcon.unitBody = unitData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
+
+
+    CreateColorInputs(unitIcon, unitData.unit, unitData.number_slot, 'unit');
 
     UpdateWeaponIcon(unitIcon, "weaponUnitInnerIcon", unitData);
     FillPowerPanel(unitData.unit.body, "unitPowerPanel");

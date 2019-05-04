@@ -126,6 +126,10 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "combineItems" {
 				combineItems(ws, msg)
 			}
+
+			if msg.Event == "changeColor" {
+				changeColor(ws, msg)
+			}
 		}
 	}
 }

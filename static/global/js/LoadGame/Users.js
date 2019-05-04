@@ -9,7 +9,10 @@ function CreateUser(squad) {
         }
     }
 
-    CreateSquad(squad, x, y, squad.mather_ship.body, weapon, squad.mather_ship.rotate);
+    CreateSquad(squad, x, y, squad.mather_ship.body, weapon, squad.mather_ship.rotate,
+        squad.mather_ship.body_color_1, squad.mather_ship.body_color_2,
+        squad.mather_ship.weapon_color_1, squad.mather_ship.weapon_color_2);
+
     if (game && debug) {
         CreateMSGeo(squad);
     }
@@ -57,7 +60,9 @@ function CreateOtherUser(otherUser) {
 
     if (!find) game.otherUsers.push(otherUser);
     if (!sprite) {
-        CreateSquad(otherUser, x, y, otherUser.body, weapon, otherUser.rotate);
+        CreateSquad(otherUser, x, y, otherUser.body, weapon, otherUser.rotate,
+            otherUser.body_color_1, otherUser.body_color_2,
+            otherUser.weapon_color_1, otherUser.weapon_color_2);
         if (game && debug) {
             CreateOtherMSGeo(otherUser);
         }

@@ -81,6 +81,16 @@ type ShortUserInfo struct {
 	Body       *detail.Body `json:"body"`
 	AvatarIcon string       `json:"avatar_icon"` // путь к аватару
 	Fraction   string       `json:"fraction"`
+
+	/* покраска юнитов */
+	BodyColor1   string `json:"body_color_1"`
+	BodyColor2   string `json:"body_color_2"`
+	WeaponColor1 string `json:"weapon_color_1"`
+	WeaponColor2 string `json:"weapon_color_2"`
+
+	/* путь к файлу готовой покраске, пока не реализовано */
+	BodyTexture   string `json:"body_texture"`
+	WeaponTexture string `json:"weapon_texture"`
 }
 
 type Notify struct {
@@ -122,6 +132,14 @@ func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {
 	hostile.R = client.GetSquad().R
 	hostile.Rotate = client.GetSquad().MatherShip.Rotate
 	hostile.Body, _ = gameTypes.Bodies.GetByID(client.GetSquad().MatherShip.Body.ID)
+
+	hostile.BodyColor1 = client.GetSquad().MatherShip.BodyColor1
+	hostile.BodyColor2 = client.GetSquad().MatherShip.BodyColor2
+	hostile.BodyTexture = client.GetSquad().MatherShip.BodyTexture
+
+	hostile.WeaponColor1 = client.GetSquad().MatherShip.WeaponColor1
+	hostile.WeaponColor2 = client.GetSquad().MatherShip.WeaponColor2
+	hostile.WeaponTexture = client.GetSquad().MatherShip.WeaponTexture
 
 	if client.GetSquad().MatherShip.GetWeaponSlot() != nil && client.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
 		for _, weaponSlot := range hostile.Body.Weapons {
