@@ -24,18 +24,21 @@
     vertical-align: middle;
     color: #00FFFD;
     line-height: 30px;
+    position: relative;
 }
 
 .weaponUnitInnerIcon {
     height: 100px;
     width: 100px;
-    background-size: contain;
+    background-size: 100%;
+    position: absolute;
 }
 
 .weaponUnitIcon {
     height: 50px;
     width: 50px;
-    background-size: contain;
+    background-size: 100%;
+    position: absolute;
 }
 
 #UnitIcon span {

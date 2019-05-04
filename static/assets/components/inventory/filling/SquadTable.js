@@ -12,9 +12,9 @@ function SquadTable(squad) {
 
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
                 cell.innerHTML = "";
-                cell.style.background = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png) center center / contain no-repeat," +
-                    "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + "_bottom.png) center center / contain no-repeat, #4c4c4c";
-                UpdateWeaponIcon(cell, "weaponUnitIcon", squad.mather_ship.units[slot]);
+                cell.style.background = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png) center center / 100% no-repeat," +
+                    "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + "_bottom.png) center center / 100% no-repeat, #4c4c4c";
+                UpdateWeaponIcon(cell, "weaponUnitIcon", squad.mather_ship.units[slot], true);
 
                 let constructorUnit = document.getElementById("ConstructorUnit");
                 if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
