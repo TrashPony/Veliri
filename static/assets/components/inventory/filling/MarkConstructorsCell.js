@@ -115,27 +115,29 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
 
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
-        
-        // TODO РЕФАКТОРИНГ
-        for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
-            let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
 
-            if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
-                cell.className = "InventoryCell hover";
-            } else if (cell.slotData && JSON.parse(cell.slotData).item.type_slot !== typeSlot) {
-                cell.className = "InventoryCell notAllow";
+        let tipFunc = function (id) {
+            for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+
+                let slotData = JSON.parse(document.getElementById(id).childNodes[i].slotData);
+                let inventoryCell = document.getElementById(id).childNodes[i];
+
+                if (slotData && slotData.item.type_slot === typeSlot) {
+                    if (JSON.parse(cell.slotData).mining && (slotData.item.applicable === 'ore' || slotData.item.applicable === 'digger')) {
+                        inventoryCell.className = "InventoryCell hover";
+                    } else if (!JSON.parse(cell.slotData).mining && !(slotData.item.applicable === 'ore' || slotData.item.applicable === 'digger')) {
+                        inventoryCell.className = "InventoryCell hover";
+                    } else {
+                        inventoryCell.className = "InventoryCell notAllow";
+                    }
+                } else {
+                    inventoryCell.className = "InventoryCell notAllow";
+                }
             }
-        }
+        };
 
-        for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
-            let cell = document.getElementById('inventoryStorage').childNodes[i];
-
-            if (cell.slotData && JSON.parse(cell.slotData).item.type_slot === typeSlot) {
-                cell.className = "InventoryCell hover";
-            } else if (cell.slotData && JSON.parse(cell.slotData).item.type_slot !== typeSlot) {
-                cell.className = "InventoryCell notAllow";
-            }
-        }
+        tipFunc('inventoryStorageInventory');
+        tipFunc('inventoryStorage');
     };
 
     cell.onmouseout = function () {
@@ -248,84 +250,48 @@ function UpdateWeapon(cell, classPrefix) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
 
-        // TODO РЕФАКТОРИНГ
-        for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
-            let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
-            let slotData = JSON.parse(cell.slotData);
+        let tipFunc = function (id) {
+            for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+                let cell = document.getElementById(id).childNodes[i];
+                let slotData = JSON.parse(cell.slotData);
 
-            if (slotData && slotData.type === "weapon") {
+                if (slotData && slotData.type === "weapon") {
 
-                let bodyData;
-                if (classPrefix === "inventoryEquipping") {
-                    bodyData = JSON.parse(document.getElementById("MSIcon").slotData).body;
-                } else {
-                    bodyData = document.getElementById("UnitIcon").unitBody;
+                    let bodyData;
+                    if (classPrefix === "inventoryEquipping") {
+                        bodyData = JSON.parse(document.getElementById("MSIcon").slotData).body;
+                    } else {
+                        bodyData = document.getElementById("UnitIcon").unitBody;
+                    }
+
+                    if (bodyData) {
+                        if (bodyData.standard_size_big && slotData.item.standard_size === 3) {
+                            cell.className = "InventoryCell hover";
+                            continue
+                        } else {
+                            cell.className = "InventoryCell notAllow";
+                        }
+
+                        if (bodyData.standard_size_medium && slotData.item.standard_size === 2) {
+                            cell.className = "InventoryCell hover";
+                            continue
+                        } else {
+                            cell.className = "InventoryCell notAllow";
+                        }
+
+                        if (bodyData.standard_size_small && slotData.item.standard_size === 1) {
+                            cell.className = "InventoryCell hover";
+                        } else {
+                            cell.className = "InventoryCell notAllow";
+                        }
+                    }
+                } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
+                    cell.className = "InventoryCell notAllow";
                 }
-
-                if (bodyData) {
-                    if (bodyData.standard_size_big && slotData.item.standard_size === 3) {
-                        cell.className = "InventoryCell hover";
-                        continue
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-
-                    if (bodyData.standard_size_medium && slotData.item.standard_size === 2) {
-                        cell.className = "InventoryCell hover";
-                        continue
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-
-                    if (bodyData.standard_size_small && slotData.item.standard_size === 1) {
-                        cell.className = "InventoryCell hover";
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-                }
-            } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
-                cell.className = "InventoryCell notAllow";
             }
-        }
-
-        for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
-            let cell = document.getElementById('inventoryStorage').childNodes[i];
-            let slotData = JSON.parse(cell.slotData);
-
-            if (slotData && slotData.type === "weapon") {
-
-                let bodyData;
-                if (classPrefix === "inventoryEquipping") {
-                    bodyData = JSON.parse(document.getElementById("MSIcon").slotData).body;
-                } else {
-                    bodyData = document.getElementById("UnitIcon").unitBody;
-                }
-
-                if (bodyData) {
-                    if (bodyData.standard_size_big && slotData.item.standard_size === 3) {
-                        cell.className = "InventoryCell hover";
-                        continue
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-
-                    if (bodyData.standard_size_medium && slotData.item.standard_size === 2) {
-                        cell.className = "InventoryCell hover";
-                        continue
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-
-                    if (bodyData.standard_size_small && slotData.item.standard_size === 1) {
-                        cell.className = "InventoryCell hover";
-                    } else {
-                        cell.className = "InventoryCell notAllow";
-                    }
-                }
-            } else if (cell.slotData && JSON.parse(cell.slotData).type !== "weapon") {
-                cell.className = "InventoryCell notAllow";
-            }
-        }
+        };
+        tipFunc('inventoryStorageInventory');
+        tipFunc('inventoryStorage');
     };
 
     cell.onmouseout = function () {
@@ -452,26 +418,21 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
         this.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
         this.style.cursor = "pointer";
         if (weapon) {
-            // TODO РЕФАКТОРИНГ
-            for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
-                let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
-                let slotData = JSON.parse(cell.slotData);
-                if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
-                    cell.className = "InventoryCell hover";
-                } else if (slotData) {
-                    cell.className = "InventoryCell notAllow";
-                }
-            }
 
-            for (let i = 0; i < document.getElementById('inventoryStorage').childNodes.length; i++) {
-                let cell = document.getElementById('inventoryStorage').childNodes[i];
-                let slotData = JSON.parse(cell.slotData);
-                if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
-                    cell.className = "InventoryCell hover";
-                } else if (slotData) {
-                    cell.className = "InventoryCell notAllow";
+            let tipFunc = function (id) {
+                for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+                    let cell = document.getElementById(id).childNodes[i];
+                    let slotData = JSON.parse(cell.slotData);
+                    if (slotData && slotData.type === "ammo" && weapon.type === slotData.item.type && weapon.standard_size === slotData.item.standard_size) {
+                        cell.className = "InventoryCell hover";
+                    } else if (slotData) {
+                        cell.className = "InventoryCell notAllow";
+                    }
                 }
-            }
+            };
+
+            tipFunc('inventoryStorageInventory');
+            tipFunc('inventoryStorage');
         }
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     };

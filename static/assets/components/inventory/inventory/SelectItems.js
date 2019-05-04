@@ -6,8 +6,8 @@ function SelectInventoryMod(Items, typeAction, acceptText, acceptFunc, cancelFun
     OffTip();
     RemoveActionConstructorMenu();
 
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
         if (cell.slotData) {
             cell.onclick = function () {
                 SelectItems(cell, Items, i);
@@ -44,7 +44,7 @@ function SelectItems(cell, items, slot) {
     cell.onclick = function () {
         items[slot] = null;
         cell.className = "InventoryCell";
-        this.onclick = function() {
+        this.onclick = function () {
             SelectItems(cell, items, slot);
         }
     };

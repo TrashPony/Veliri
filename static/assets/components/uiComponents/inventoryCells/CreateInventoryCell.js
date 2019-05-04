@@ -46,6 +46,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         zIndex: 999,
         helper: 'clone',
         appendTo: "body",
+        delay: 200,
     });
 
     $(cell).droppable({

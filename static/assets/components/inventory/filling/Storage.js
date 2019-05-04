@@ -44,7 +44,7 @@ function UpdateStorage(inventory) {
 
             CreateInventoryCell(cell, inventory.slots[i], i, "storage");
             cell.onclick = SelectInventoryItem;
-            cell.onmousemove = StorageOverTip;
+            cell.onmousemove = InventoryOverTip;
             cell.onmouseout = OffTip;
             cell.source = 'storage';
 
@@ -58,16 +58,5 @@ function UpdateStorage(inventory) {
                 inventoryStorage.append(cell);
             }
         }
-    }
-}
-
-
-function StorageOverTip(e) {
-    let inventoryTip = document.getElementById("InventoryTipOver");
-    if (inventoryTip) {
-        inventoryTip.style.top = e.clientY + "px";
-        inventoryTip.style.left = e.clientX + "px";
-    } else {
-        InventorySelectTip(JSON.parse(this.slotData), true, false);
     }
 }

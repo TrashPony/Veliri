@@ -62,8 +62,8 @@ function EquipSlotMark(idPrefix, classPrefix, typeSlot, countSlots, func, mining
             equipSlot.style.boxShadow = "0 0 5px 3px rgb(255, 149, 32)";
             equipSlot.style.cursor = "pointer";
             equipSlot.onmouseout = function () {
-                for (let i = 1; i <= 40; i++) {
-                    let cell = document.getElementById("inventory " + i + 6);
+                for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+                    let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
                     cell.className = "InventoryCell";
                 }
             };

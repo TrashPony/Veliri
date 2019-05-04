@@ -74,14 +74,14 @@ function InventoryTable(inventoryItems) {
             }
         }
     }
+}
 
-    function InventoryOverTip(e) {
-        let inventoryTip = document.getElementById("InventoryTipOver");
-        if (inventoryTip) {
-            inventoryTip.style.top = stylePositionParams.top + "px";
-            inventoryTip.style.left = stylePositionParams.left + "px";
-        } else {
-            InventorySelectTip(JSON.parse(this.slotData), true, true);
-        }
+function InventoryOverTip(e) {
+    let inventoryTip = document.getElementById("InventoryTipOver");
+    if (inventoryTip) {
+        inventoryTip.style.top = stylePositionParams.top + "px";
+        inventoryTip.style.left = stylePositionParams.left + "px";
+    } else {
+        InventorySelectTip(JSON.parse(this.slotData), true, true);
     }
 }

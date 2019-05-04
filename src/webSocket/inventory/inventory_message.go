@@ -32,9 +32,10 @@ type Message struct {
 	SrcSlot     int    `json:"src_slot"`
 	DstSlot     int    `json:"dst_slot"`
 
-	Name    string `json:"name"`
-	Storage bool   `json:"storage"`
-	Count   int    `json:"count"`
+	Name       string           `json:"name"`
+	Storage    bool             `json:"storage"`
+	Count      int              `json:"count"`
+	ThrowItems []inventory.Slot `json:"throw_items"`
 }
 
 type Response struct {

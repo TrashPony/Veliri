@@ -19,8 +19,8 @@ function cancelRecycle() {
     document.getElementsByClassName("utilButtonActive")[0].className = "utilButton";
     document.getElementsByClassName("utilButton")[0].onclick = RecycleItems;
 
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
         cell.onclick = SelectInventoryItem;
         cell.onmousemove = InventoryOverTip;
         cell.className = "InventoryCell";

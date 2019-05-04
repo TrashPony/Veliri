@@ -3,13 +3,17 @@ function ThrowItems() {
     let throwItems = [];
 
     let acceptFunc = function () {
-        if (global){
+        if (typeof (global) !== 'undefined') {
             global.send(JSON.stringify({
                 event: "ThrowItems",
                 throw_items: throwItems
             }))
+        } else {
+            inventorySocket.send(JSON.stringify({
+                event: "destroyItems",
+                throw_items: throwItems,
+            }));
         }
-        console.log(throwItems, "Выбросить");
         cancelThrow();
     };
 
@@ -24,8 +28,8 @@ function cancelThrow() {
     document.getElementsByClassName("throwButtonActive")[0].className = "destroyButton";
     document.getElementsByClassName("destroyButton")[0].onclick = ThrowItems;
 
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
         cell.onclick = SelectInventoryItem;
         cell.onmousemove = InventoryOverTip;
         cell.className = "InventoryCell";

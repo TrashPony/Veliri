@@ -5,8 +5,8 @@ function InventoryRepair() {
 }
 
 function overInventoryButton() {
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
         if (cell.slotData) {
             let percentHP = CreateHealBar(cell, "inventory", false);
             if (percentHP < 100) {
@@ -17,8 +17,8 @@ function overInventoryButton() {
 }
 
 function outInventoryButton() {
-    for (let i = 1; i <= 40; i++) {
-        let cell = document.getElementById("inventory " + i + 6);
+    for (let i = 0; i < document.getElementById('inventoryStorageInventory').childNodes.length; i++) {
+        let cell = document.getElementById('inventoryStorageInventory').childNodes[i];
         cell.className = "InventoryCell";
     }
 }

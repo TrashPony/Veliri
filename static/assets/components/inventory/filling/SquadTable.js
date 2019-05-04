@@ -12,8 +12,8 @@ function SquadTable(squad) {
 
             if (squad.mather_ship.units[slot].unit !== null && squad.mather_ship.units[slot].unit !== undefined) {
                 cell.innerHTML = "";
-                cell.style.backgroundImage = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png)";
-
+                cell.style.background = "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + ".png) center center / contain no-repeat," +
+                    "url(/assets/units/body/" + squad.mather_ship.units[slot].unit.body.name + "_bottom.png) center center / contain no-repeat, #4c4c4c";
                 UpdateWeaponIcon(cell, "weaponUnitIcon", squad.mather_ship.units[slot]);
 
                 let constructorUnit = document.getElementById("ConstructorUnit");
@@ -22,7 +22,7 @@ function SquadTable(squad) {
                 }
             } else {
                 NoActiveUnitCell(unitSlot);
-                cell.style.backgroundImage = null;
+                cell.style.background = null;
                 cell.innerHTML = "<span> Ангар </span>"
             }
 
@@ -167,7 +167,10 @@ function CreateUnitEquipSlots(constructorUnit) {
 function FillingSquadConstructor(unitData) {
     let unitIcon = document.getElementById("UnitIcon");
     unitIcon.innerHTML = "";
-    unitIcon.style.backgroundImage = "url(/assets/units/body/" + unitData.unit.body.name + ".png)";
+
+    unitIcon.style.background = "url(/assets/units/body/" + unitData.unit.body.name + ".png) center center / contain no-repeat," +
+        "url(/assets/units/body/" + unitData.unit.body.name + "_bottom.png) center center / contain no-repeat, #4c4c4c";
+
     unitIcon.slotData = JSON.stringify(unitData);
     unitIcon.unitBody = unitData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
