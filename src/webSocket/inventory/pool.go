@@ -143,7 +143,7 @@ func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Con
 	}
 
 	if err != nil {
-		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})
+		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error(), UnitSlot: msg.UnitSlot})
 	} else {
 		if user.GetSquad() != nil {
 			err = ws.WriteJSON(Response{Event: event, Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),

@@ -1,6 +1,7 @@
 function InitWorkbench() {
     if (document.getElementById("Workbench")) {
         document.getElementById("Workbench").remove()
+        return
     }
 
     let workbench = document.createElement("div");

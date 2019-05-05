@@ -1,7 +1,6 @@
 package inventory
 
 import (
-	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/squad_inventory"
 	"github.com/gorilla/websocket"
 )

@@ -1,6 +1,7 @@
 function Init() {
     if (document.getElementById("processorRoot")) {
         document.getElementById("processorRoot").remove()
+        return
     }
 
     lobby.send(JSON.stringify({

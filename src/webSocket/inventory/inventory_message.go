@@ -51,4 +51,5 @@ type Response struct {
 	InBase        bool                 `json:"in_base"`
 	Error         string               `json:"error"`
 	Storage       *inventory.Inventory `json:"inventory"`
+	UnitSlot      int                  `json:"unit_slot"`
 }

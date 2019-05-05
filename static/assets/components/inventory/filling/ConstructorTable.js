@@ -38,16 +38,23 @@ function UpdateShipIcon(ms) {
     unitIcon.onclick = BodyMSMenu;
 
     unitIcon.onmousemove = function (e) {
-        for (let i = 1; i <= 40; i++) {
-            let cell = document.getElementById("inventory " + i + 6);
-            if (cell) {
-                if (cell.slotData && JSON.parse(cell.slotData).type === "body" && JSON.parse(cell.slotData).item.mother_ship) {
-                    cell.className = "InventoryCell hover";
-                } else if (cell.slotData && (JSON.parse(cell.slotData).type !== "body" || !JSON.parse(cell.slotData).item.mother_ship)) {
-                    cell.className = "InventoryCell notAllow";
+
+        let tipFunc = function (id) {
+            for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
+                let inventoryCell = document.getElementById(id).childNodes[i];
+                if (!inventoryCell.slotData) continue;
+                let slotData = JSON.parse(inventoryCell.slotData);
+
+                if (slotData.type === "body" && slotData.item.mother_ship) {
+                    inventoryCell.className = "InventoryCell hover";
+                } else if (slotData.type !== "body" || !slotData.item.mother_ship) {
+                    inventoryCell.className = "InventoryCell notAllow";
                 }
             }
-        }
+        };
+
+        tipFunc('inventoryStorageInventory');
+        tipFunc('inventoryStorage');
 
         if (unitIcon.shipBody) {
             let slot = {};

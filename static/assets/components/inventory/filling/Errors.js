@@ -19,7 +19,7 @@ function alertError(jsonData) {
         }
 
         if (error === 'wrong type slot') {
-            //todo
+            animateError(document.getElementById("standardSizeUnitBlock" + JSON.parse(jsonData).unit_slot))
         }
     }
 

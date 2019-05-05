@@ -9,6 +9,7 @@
     background-image: linear-gradient(0deg, rgba(33, 176, 255, 0.5), rgba(37, 160, 225, 0.6));
     border-radius: 5px;
     padding: 3px;
+    z-index: 11;
 }
 
 #ConstructorMS {

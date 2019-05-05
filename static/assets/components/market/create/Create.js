@@ -5,6 +5,7 @@ function CreateMarketMenu(noMask) {
 
     if (document.getElementById("marketBox")) {
         document.getElementById("marketBox").remove();
+        return
     }
 
     if (!noMask) {
@@ -58,7 +59,7 @@ function createMarketBox() {
 
     $(marketBox).resizable({
         minHeight: 280,
-        minWidth: 608,
+        minWidth: 622,
         maxWidth: 1000,
         handles: "se",
         resize: function (event, ui) {

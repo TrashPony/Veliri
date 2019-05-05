@@ -1,5 +1,5 @@
 #UsersStatus {
-    top: 200px;
+    top: 50px;
     left: calc(50% - 200px);
     height: 300px;
     width: 400px;
@@ -9,6 +9,7 @@
     position: absolute;
     border-radius: 5px;
     padding: 22px 5px 5px;
+    z-index: 11;
 }
 
 #userAvatarWrapper label {

@@ -72,7 +72,36 @@
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
 
-    <script> ConnectLobby() </script>
+    <script>
+
+        let idModales = [
+            'chat', 'inventoryBox', 'marketBox', 'wrapperInventoryAndStorage', 'processorRoot',
+            'Workbench', 'UsersStatus', 'GlobalViewMap', 'DepartmentOfEmployment'
+        ];
+
+        $(document).ready(function () {
+            ConnectLobby();
+            document.addEventListener('mousedown', function () {
+                let elements = document.querySelectorAll(':hover');
+
+                for (let i = 0; i < elements.length; i++) {
+                    if (idModales.indexOf(elements[i].id) !== -1) {
+                        modalUpper(elements[i].id);
+                        break
+                    }
+                }
+            });
+        });
+
+        function modalUpper(id) {
+            document.getElementById(id).style.zIndex = '10';
+            idModales.forEach(function (item) {
+                if (item !== id && document.getElementById(item)) {
+                    document.getElementById(item).style.zIndex = '0';
+                }
+            });
+        }
+    </script>
 </head>
 <body onmousemove="moveMouse(event)">
 <div id="ServiceTable">

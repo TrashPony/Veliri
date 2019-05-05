@@ -6,6 +6,8 @@ function SquadTable(squad) {
         if (squad && squad.mather_ship != null && squad.mather_ship.body != null && squad.mather_ship.units && squad.mather_ship.units.hasOwnProperty(slot)) {
 
             let unitSlot = squad.mather_ship.units[slot];
+            unitSlot.standardSize = squad.mather_ship.body.equippingIV[slot].standard_size;
+
             if (cell.className !== "inventoryUnit select") {
                 cell.className = "inventoryUnit active";
             }
@@ -43,6 +45,7 @@ function SquadTable(squad) {
 
             let standardSizeBlock = document.createElement("div");
             standardSizeBlock.className = "standardSizeBlock";
+            standardSizeBlock.id = 'standardSizeUnitBlock' + slot;
 
             if (squad.mather_ship.body.equippingIV[slot].standard_size === 1) {
                 standardSizeBlock.innerHTML = "S";
@@ -115,7 +118,8 @@ function OpenUnitEditor() {
         unitIcon.innerHTML = "<span>Место для корпуса</span>";
     }
 
-    $('#UnitIcon').droppable({
+    let unitIcon = $('#UnitIcon');
+    unitIcon.droppable({
         drop: function (event, ui) {
             $('.ui-selected').removeClass('ui-selected');
             let draggable = ui.draggable;
@@ -132,6 +136,29 @@ function OpenUnitEditor() {
                 DestroyInventoryTip();
             }
         }
+    });
+
+    unitIcon.mouseover(function () {
+        let tipFunc = function (id) {
+            for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
+                let inventoryCell = document.getElementById(id).childNodes[i];
+                if (!inventoryCell.slotData) continue;
+                let slotData = JSON.parse(inventoryCell.slotData);
+
+                if (slotData.type === "body" && !slotData.item.mother_ship && unitData.standardSize >= slotData.item.standard_size) {
+                    inventoryCell.className = "InventoryCell hover";
+                } else {
+                    inventoryCell.className = "InventoryCell notAllow";
+                }
+            }
+        };
+
+        tipFunc('inventoryStorageInventory');
+        tipFunc('inventoryStorage');
+    });
+
+    unitIcon.mouseout(function () {
+        InventoryCellsReset();
     });
 }
 
