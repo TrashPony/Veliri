@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -136,6 +137,10 @@ func Reader(ws *websocket.Conn) {
 
 func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Conn, msg Message) {
 	mutex.Lock()
+
+	if user.GetSquad() != nil {
+		go update.Squad(user.GetSquad(), true)
+	}
 
 	if err != nil {
 		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error()})

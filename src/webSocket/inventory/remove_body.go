@@ -21,7 +21,7 @@ func RemoveBody(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Event == "RemoveUnitBody" {
-		squad_inventory.RemoveUnitBody(user, msg.UnitSlot, true)
+		squad_inventory.RemoveUnitBody(user, msg.UnitSlot)
 	}
 
 	UpdateSquad("UpdateSquad", user, err, ws, msg)

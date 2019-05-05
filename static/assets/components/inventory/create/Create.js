@@ -1,23 +1,19 @@
 function CreateInventoryMenu(closeFunc, option) {
 
-    if (document.getElementById("storage")) {
-        document.getElementById("storage").remove();
-    }
-
-    if (document.getElementById("mask")) {
-        document.getElementById("mask").remove();
-    }
-
-    if (document.getElementById("inventoryBox")) {
+    if (document.getElementById("inventoryBox") && option === 'constructor') {
         document.getElementById("inventoryBox").remove();
+        return
     }
 
-    if (document.getElementById("Inventory")) {
+    if (document.getElementById("Inventory") && option === 'inventory') {
         document.getElementById("Inventory").remove();
+        return
     }
 
-    if (document.getElementById('wrapperInventoryAndStorage'))
+    if (document.getElementById('wrapperInventoryAndStorage') && option === 'storage') {
         document.getElementById('wrapperInventoryAndStorage').remove();
+        return
+    }
 
     if (option === 'inventory') {
         let inventory = document.createElement("div");
@@ -35,75 +31,9 @@ function CreateInventoryMenu(closeFunc, option) {
         return
     }
 
-    let mask = document.createElement("div");
-    mask.id = "mask";
-    mask.style.display = "block";
-    document.body.appendChild(mask);
-
-    let inventoryBox = document.createElement("div");
-    inventoryBox.id = "inventoryBox";
-
-    let colorPicker = document.createElement('div');
-    colorPicker.className = 'colorpicker';
-    colorPicker.style.display = 'none';
-    colorPicker.innerHTML = `
-        <input id="brightnessColorPicker" type="range" value="100" max="100" min="1">
-        <canvas id="colorUnitPicker" width="140" height="140"></canvas>
-`;
-    inventoryBox.appendChild(colorPicker);
-
-    let userStatus = document.createElement("div");
-    userStatus.id = "SquadHead";
-    inventoryBox.appendChild(userStatus);
-
-    let motherShipParams = document.createElement("div");
-    motherShipParams.id = "MotherShipParams";
-    inventoryBox.appendChild(motherShipParams);
-
-    let headSquadList = document.createElement("span");
-    headSquadList.className = "InventoryHead";
-    headSquadList.innerText = "АНГАР";
-    motherShipParams.appendChild(headSquadList);
-
-    let squadsList = document.createElement("div");
-    squadsList.id = "SquadsList";
-    motherShipParams.appendChild(squadsList);
-
-    let constructorBackGround = document.createElement("div");
-    constructorBackGround.id = "ConstructorBackGround";
-    inventoryBox.appendChild(constructorBackGround);
-
-    let inventory = document.createElement("div");
-    inventory.id = "Inventory";
-    inventoryBox.appendChild(inventory);
-
-    let storage = document.createElement("div");
-    storage.id = "storage";
-    inventoryBox.appendChild(storage);
-
-    let squad = document.createElement("div");
-    squad.id = "Squad";
-    inventoryBox.appendChild(squad);
-
-    document.body.appendChild(inventoryBox);
-
-    CreateMotherShipParamsMenu();
-    CreateConstructorMenu();
-    CreateInventory();
-    CreateSquadMenu();
-    CreateSquadHead();
-
-    let closeButton = document.createElement("input");
-    closeButton.id = "inventoryCloseButton";
-    closeButton.type = "button";
-    closeButton.value = "Закрыть";
-    closeButton.onclick = () => {
-        InventoryClose();
-        if (closeFunc) {
-            closeFunc()
-        }
-    };
-    motherShipParams.appendChild(closeButton);
+    if (option === 'constructor') {
+        OnlyConstructor();
+    }
 }
 
 function InventoryClose() {

@@ -76,7 +76,8 @@
 </head>
 <body onmousemove="moveMouse(event)">
 <div id="ServiceTable">
-    <div id="hangarButton" onclick="InitInventoryMenu()" style="background-image: url('./img/hangar.svg')"></div>
+    <div id="hangarButton" onclick="InitInventoryMenu(null,'constructor')"
+         style="background-image: url('./img/hangar.svg')"></div>
     <div onclick="InitMarketMenu(true)" style="background-image: url('./img/market.png')"></div>
     <div onclick="InitInventoryMenu(null, 'storage')" style="background-image: url('./img/storageIcon.png')"></div>
     <div onclick="Init()" style="background-image: url('./img/util.png')"></div>

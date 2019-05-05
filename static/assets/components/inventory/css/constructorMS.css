@@ -1,26 +1,30 @@
 #inventoryBox {
     position: absolute;
     top: 5px;
-    z-index: 900;
-    width: 710px;
-    left: 50%; /* выравниваем по центру */
-    margin-left: -355px; /* выравниваем по центру */
+    width: 489px;
+    left: 50%;
+    margin-left: -355px;
+    border: 1px solid #25a0e1;
+    background-size: 10px 2px;
+    background-image: linear-gradient(0deg, rgba(33, 176, 255, 0.5), rgba(37, 160, 225, 0.6));
+    border-radius: 5px;
+    padding: 3px;
 }
 
 #ConstructorMS {
     border-radius: 300px;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     display: inline-block;
     padding: 5px;
     vertical-align: middle;
-    width: 320px;
-    height: 320px;
+    width: 318px;
+    height: 318px;
     margin: auto;
     position: absolute;
     left: 0;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    background-size: 10px 2px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 1);
+    background-size: 10px 4px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6) 87%, rgba(0, 62, 95, 0.5) 30%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 #powerPanel {
@@ -30,46 +34,48 @@
     display: inline-block;
     width: 60px;
     height: 25px;
-    border: 1px solid #25a0e1;
+    border: 1px solid #064161;
     border-radius: 20px;
     font-size: 8pt;
-    margin: 4px;
+    margin: 5px 7px 5px;
     padding-top: 2px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 1), inset 0 0 5px 1px rgba(0, 0, 0, 1);
     background-color: rgba(0, 255, 253, 0.2);
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    line-height: 12px;
+    transform: scale(1.1);
 }
 
 #powerPanel span {
-    color: rgb(130, 245, 4);
+    color: rgb(4, 232, 245);
 }
 
 #ConstructorBackGround {
     border-radius: 20px;
     display: inline-block;
-    width: 331px;
-    height: 331px;
-    border: 1px solid #25a0e1;
+    width: 333px;
+    height: 333px;
     background-color: #4c4c4c;
     position: relative;
-    margin-left: 15px;
+    margin-left: -3px;
     float: left;
+    box-shadow: inset 0 0 5px 1px black;
 }
 
 #MotherShipParams {
-    border: 1px solid #25a0e1;
     border-radius: 10px;
-    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     display: inline-block;
     vertical-align: top;
     width: 150px;
-    height: 421px;
+    height: 395px;
     padding-top: 5px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    background-size: 10px 2px;
     position: relative;
     float: left;
     margin-right: 7px;
+    background-size: 10px 4px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6) 87%, rgba(0, 62, 95, 0.5) 30%);
+    border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 #inventoryCloseButton {
@@ -86,17 +92,15 @@
 }
 
 #Squad {
-    border: 1px solid #25a0e1;
-    border-radius: 50px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
-    width: 327px;
-    height: 60px;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px 1px black;
+    width: 330px;
+    height: 59px;
     padding-top: 5px;
     display: block;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    background-size: 10px 2px;
     float: left;
-    margin: -68px 0 0 177px;
+    margin: -65px 0 0 157px;
+    background: #4c4c4c;
 }
 
 #MSIcon {
@@ -157,7 +161,7 @@
 #MSIcon #thorium {
     width: 100%;
     position: absolute;
-    bottom: 16px;
+    bottom: -5px;
 }
 
 #thoriumWrapper {
@@ -277,7 +281,6 @@
 }
 
 .infoParams {
-    height: 83px;
     width: 141px;
     padding-left: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
@@ -285,6 +288,7 @@
     background: rgba(183, 195, 201, 0.29);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    height: 75px;
 }
 
 .Value.params:hover {

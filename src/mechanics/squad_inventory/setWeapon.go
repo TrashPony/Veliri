@@ -72,11 +72,11 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 
 func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot, hp int, unit *unit.Unit, source string) {
 	if weaponSlot.Weapon != nil {
-		RemoveWeapon(user, weaponSlot.Number, unit, "storage", true)
+		RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 	}
 
 	if weaponSlot.Ammo != nil {
-		RemoveAmmo(user, weaponSlot.Number, unit, "storage", true)
+		RemoveAmmo(user, weaponSlot.Number, unit, "storage")
 	}
 
 	update.Squad(user.GetSquad(), true) // без этого если в слоте есть снаряжение то оно не заменяется, а добавляется в бд

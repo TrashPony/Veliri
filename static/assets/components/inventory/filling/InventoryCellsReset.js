@@ -1,6 +1,6 @@
 function InventoryCellsReset() {
     let resetFunc = function (id) {
-        for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+        for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
             let cell = document.getElementById(id).childNodes[i];
 
             if (!cell.slotData) continue;

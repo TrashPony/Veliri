@@ -33,7 +33,7 @@ func SetThorium(user *player.Player, inventorySlot, numThoriumSlot int, source s
 	}
 }
 
-func RemoveThorium(user *player.Player, numThoriumSlot int, updateDB bool) error {
+func RemoveThorium(user *player.Player, numThoriumSlot int) error {
 
 	thoriumSlot, _ := user.GetSquad().MatherShip.Body.ThoriumSlots[numThoriumSlot]
 
@@ -45,11 +45,6 @@ func RemoveThorium(user *player.Player, numThoriumSlot int, updateDB bool) error
 			item.Size/float32(thoriumSlot.Count), 1, false)
 
 		thoriumSlot.Count = 0
-
-		if updateDB {
-			go update.Squad(user.GetSquad(), true)
-		}
-
 		return nil
 	} else {
 		return errors.New("no thorium")

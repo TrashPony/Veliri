@@ -117,7 +117,7 @@ function UpdateEquips(cell, classPrefix, typeSlot) {
         this.style.cursor = "pointer";
 
         let tipFunc = function (id) {
-            for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+            for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
 
                 let inventoryCell = document.getElementById(id).childNodes[i];
                 if (!inventoryCell.slotData) continue;
@@ -253,7 +253,7 @@ function UpdateWeapon(cell, classPrefix) {
         this.style.cursor = "pointer";
 
         let tipFunc = function (id) {
-            for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+            for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
                 let cell = document.getElementById(id).childNodes[i];
                 if (!cell.slotData) continue;
 
@@ -424,7 +424,7 @@ function CreateAmmoCell(cell, classPrefix, weapon) {
         if (weapon) {
 
             let tipFunc = function (id) {
-                for (let i = 0; i < document.getElementById(id).childNodes.length; i++) {
+                for (let i = 0; document.getElementById(id) && i < document.getElementById(id).childNodes.length; i++) {
                     let cell = document.getElementById(id).childNodes[i];
 
                     if (!cell.slotData) continue;

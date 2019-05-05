@@ -5,6 +5,7 @@ function OnlyStorage() {
     storage.style.padding = '0px 3px 0 0px';
     storage.style.margin = '4px 0px 0px';
     storage.style.float = 'left';
+    storage.style.height = '107px';
 
     let inventory = document.createElement("div");
     inventory.id = "Inventory";
@@ -34,21 +35,19 @@ function OnlyStorage() {
         }
     });
 
-    let buttons = CreateControlButtons("1px", "32px", "-3px", "29px");
 
     document.getElementById('utilButton').remove();
     document.getElementById('destroyButton').remove();
     document.getElementById('inventoryStorage').style.height = '58px';
+    document.getElementById('inventoryStorageInventory').style.height = '58px';
     document.getElementById('sizeInventoryInfo').style.margin = '8px 0 -4px 1px';
-
-
-    storage.style.height = '107px';
 
     $('#storage .InventoryHead').css("margin", "1px 0px 3px");
     $('#Inventory .InventoryHead').css("margin", "1px 0px 3px");
     $('#Inventory .sortPanel').css("display", "none");
 
 
+    let buttons = CreateControlButtons("1px", "32px", "-3px", "29px");
     $(buttons.move).mousedown(function (event) {
         moveWindow(event, 'wrapperInventoryAndStorage')
     });

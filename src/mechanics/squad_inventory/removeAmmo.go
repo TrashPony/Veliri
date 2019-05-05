@@ -2,13 +2,12 @@ package squad_inventory
 
 import (
 	"errors"
-	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 )
 
-func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string, updateDB bool) error {
+func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string) error {
 	if user.InBaseID == 0 {
 		// если мы на улице то можем скинуть аммо только в инвентарь
 		dst = "squadInventory"
@@ -22,11 +21,6 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 			okAddItem := user.GetSquad().Inventory.AddItem(slot.Ammo, "ammo", slot.Ammo.ID, slot.AmmoQuantity, 1, slot.Ammo.Size, 1, false)
 			if okAddItem {
 				slot.Ammo = nil
-
-				if updateDB {
-					go update.Squad(user.GetSquad(), true)
-				}
-
 				return nil
 			} else {
 				return errors.New("add item in inventory error")
@@ -39,11 +33,6 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 
 			if okAddItem {
 				slot.Ammo = nil
-
-				if updateDB {
-					go update.Squad(user.GetSquad(), true)
-				}
-
 				return nil
 			} else {
 				return errors.New("add item error")
@@ -58,7 +47,7 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 func RemoveUnitAmmo(user *player.Player, numEquipSlot, numberUnitSlot int, dst string) error {
 	unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 	if ok && unitSlot.Unit != nil {
-		return RemoveAmmo(user, numEquipSlot, unitSlot.Unit, dst, true)
+		return RemoveAmmo(user, numEquipSlot, unitSlot.Unit, dst)
 	} else {
 		return errors.New("no unit")
 	}

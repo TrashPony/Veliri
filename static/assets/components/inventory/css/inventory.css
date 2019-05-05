@@ -27,6 +27,7 @@
     border: 1px solid #4c4c4c;
     background: #89969c;
     text-align: left;
+    pointer-events: auto;
 }
 
 .sortPanel {
@@ -39,6 +40,7 @@
     border-radius: 5px;
     -moz-user-select: none;
     user-select: none;
+    pointer-events: auto;
 }
 
 .sortPanel:before {

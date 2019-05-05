@@ -5,7 +5,7 @@ function alertError(jsonData) {
     console.log(event);
     console.log(error);
 
-    if (event === 'SetUnitEquip' || event === 'SetUnitWeapon') {
+    if (event === 'SetUnitEquip' || event === 'SetUnitWeapon' || event === 'SetUnitBody') {
         if (error === 'lacking size') {
             animateError(document.getElementById("unitCubePanel"))
         }
@@ -16,6 +16,10 @@ function alertError(jsonData) {
 
         if (error === 'wrong standard size') {
             animateError(document.getElementById("weaponTypePanel"))
+        }
+
+        if (error === 'wrong type slot') {
+            //todo
         }
     }
 

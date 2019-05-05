@@ -18,29 +18,30 @@ function FillingInventory(jsonData) {
         fillSquadList(JSON.parse(jsonData).base_squads);
 
         if (squad) {
+
             if (document.getElementById("Inventory")) {
                 InventoryTable(squad.inventory);
-
                 document.getElementById("inventoryStorageInventory").style.opacity = "1";
-                $("#squadName span").last().text(squad.name).css('color', '#00FFFD');
-                $("#renameSquadButton").removeClass("noActive");
-                $("#deleteSquadButton").removeClass("noActive");
+            }
 
-                if (squad.mather_ship != null && squad.mather_ship.body != null) {
+            $("#squadName span").last().text(squad.name).css('color', '#00FFFD');
+            $("#renameSquadButton").removeClass("noActive");
+            $("#deleteSquadButton").removeClass("noActive");
 
-                    size = squad.mather_ship.body.capacity_size;
-                    inventoryMetaInfo(JSON.parse(jsonData));
+            if (squad.mather_ship != null && squad.mather_ship.body != null) {
 
-                    if (document.getElementById("inventoryBox")) {
-                        SquadTable(squad);
-                        ConstructorTable(squad.mather_ship);
-                        FillPowerPanel(squad.mather_ship.body, "powerPanel");
-                        FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
-                    }
-                } else {
-                    NoActiveCell();
+                size = squad.mather_ship.body.capacity_size;
+                inventoryMetaInfo(JSON.parse(jsonData));
+
+                if (document.getElementById("inventoryBox")) {
                     SquadTable(squad);
+                    ConstructorTable(squad.mather_ship);
+                    FillPowerPanel(squad.mather_ship.body, "powerPanel");
+                    FillMSWeaponTypePanel(squad.mather_ship.body, "MSWeaponPanel");
                 }
+            } else {
+                NoActiveCell();
+                SquadTable(squad);
             }
         } else {
             if (document.getElementById("Inventory")) {
@@ -58,7 +59,6 @@ function FillingInventory(jsonData) {
         if (event === "openInventory") {
             // склад и магазин поднимаются только тогда когда игрок на базе
             if (JSON.parse(jsonData).in_base && !document.getElementById("inventoryStorage")) {
-                CreateStorage();
                 ConnectMarket();
             }
         }
@@ -88,19 +88,21 @@ function inventoryMetaInfo(data) {
     let percentFill = 100 / (data.squad.mather_ship.body.capacity_size / data.inventory_size);
 
     let sizeBlock = document.getElementById("sizeInventoryInfo");
-    let textColor = "";
-    if (data.inventory_size > data.squad.mather_ship.body.capacity_size) {
-        textColor = "#b9281d"
-    } else {
-        textColor = "#decbcb"
-    }
+    if (sizeBlock) {
+        let textColor = "";
+        if (data.inventory_size > data.squad.mather_ship.body.capacity_size) {
+            textColor = "#b9281d"
+        } else {
+            textColor = "#decbcb"
+        }
 
-    sizeBlock.innerHTML = "<div id='realSize' style='width:" + percentFill + "%'>" +
-        "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>" +
-        "</div>";
-    sizeBlock.style.color = textColor;
+        sizeBlock.innerHTML = "<div id='realSize' style='width:" + percentFill + "%'>" +
+            "<span>" + data.inventory_size + " / " + data.squad.mather_ship.body.capacity_size + "</span>" +
+            "</div>";
+        sizeBlock.style.color = textColor;
 
-    if (document.getElementById("InventoryTip")) {
-        document.getElementById("InventoryTip").remove();
+        if (document.getElementById("InventoryTip")) {
+            document.getElementById("InventoryTip").remove();
+        }
     }
 }

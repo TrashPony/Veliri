@@ -3,7 +3,6 @@ package squad_inventory
 import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/remove"
-	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -17,11 +16,11 @@ func RemoveMSBody(user *player.Player) error {
 		if user.GetSquad() != nil && user.GetSquad().MatherShip.Body != nil {
 
 			for i, unitSlot := range user.GetSquad().MatherShip.Units {
-				RemoveUnitBody(user, unitSlot.NumberSlot, false)
+				RemoveUnitBody(user, unitSlot.NumberSlot)
 				delete(user.GetSquad().MatherShip.Units, i)
 			}
 
-			BodyRemove(user, user.GetSquad().MatherShip, false)
+			BodyRemove(user, user.GetSquad().MatherShip)
 
 			for _, inventorySlot := range user.GetSquad().Inventory.Slots {
 				storages.Storages.AddSlot(user.GetID(), user.InBaseID, inventorySlot)
@@ -40,17 +39,13 @@ func RemoveMSBody(user *player.Player) error {
 	}
 }
 
-func RemoveUnitBody(user *player.Player, unitSlot int, updateDB bool) error {
+func RemoveUnitBody(user *player.Player, unitSlot int) error {
 	if user.InBaseID > 0 {
 		if user.GetSquad().MatherShip.Body != nil && user.GetSquad().MatherShip.Units[unitSlot].Unit != nil {
 			if user.GetSquad().MatherShip.Units[unitSlot].Unit.Body != nil {
 
-				BodyRemove(user, user.GetSquad().MatherShip.Units[unitSlot].Unit, updateDB)
+				BodyRemove(user, user.GetSquad().MatherShip.Units[unitSlot].Unit)
 				user.GetSquad().MatherShip.Units[unitSlot].Unit = nil // если юниту убрали тело то юнит перестает существовать
-
-				if updateDB {
-					update.Squad(user.GetSquad(), true)
-				}
 				return nil
 			} else {
 				return errors.New("unit no body")
@@ -63,26 +58,26 @@ func RemoveUnitBody(user *player.Player, unitSlot int, updateDB bool) error {
 	}
 }
 
-func BodyRemove(user *player.Player, unit *unit.Unit, updateDB bool) {
+func BodyRemove(user *player.Player, unit *unit.Unit) {
 
-	removeAllEquippingBody(user, unit, 1, unit.Body.EquippingI, updateDB)
-	removeAllEquippingBody(user, unit, 2, unit.Body.EquippingII, updateDB)
-	removeAllEquippingBody(user, unit, 3, unit.Body.EquippingIII, updateDB)
-	removeAllEquippingBody(user, unit, 4, unit.Body.EquippingIV, updateDB)
-	removeAllEquippingBody(user, unit, 5, unit.Body.EquippingV, updateDB)
+	removeAllEquippingBody(user, unit, 1, unit.Body.EquippingI)
+	removeAllEquippingBody(user, unit, 2, unit.Body.EquippingII)
+	removeAllEquippingBody(user, unit, 3, unit.Body.EquippingIII)
+	removeAllEquippingBody(user, unit, 4, unit.Body.EquippingIV)
+	removeAllEquippingBody(user, unit, 5, unit.Body.EquippingV)
 
 	for _, weaponSlot := range unit.Body.Weapons {
 		if weaponSlot.Weapon != nil {
-			RemoveWeapon(user, weaponSlot.Number, unit, "storage", updateDB)
+			RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 		}
 		if weaponSlot.Ammo != nil {
-			RemoveAmmo(user, weaponSlot.Number, unit, "storage", updateDB)
+			RemoveAmmo(user, weaponSlot.Number, unit, "storage")
 		}
 	}
 
 	for _, thoriumSlot := range unit.Body.ThoriumSlots {
 		if thoriumSlot.Count != 0 {
-			RemoveThorium(user, thoriumSlot.Number, updateDB)
+			RemoveThorium(user, thoriumSlot.Number)
 		}
 	}
 
@@ -90,10 +85,10 @@ func BodyRemove(user *player.Player, unit *unit.Unit, updateDB bool) {
 		unit.Body.CapacitySize, unit.Body.MaxHP, false) // кидает боди в инвентарь
 }
 
-func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot, updateDB bool) {
+func removeAllEquippingBody(user *player.Player, unit *unit.Unit, typeSlot int, equipping map[int]*detail.BodyEquipSlot) {
 	for _, equipSlot := range equipping {
 		if equipSlot.Equip != nil {
-			RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage", updateDB)
+			RemoveEquip(user, equipSlot.Number, typeSlot, unit, "storage")
 		}
 	}
 }

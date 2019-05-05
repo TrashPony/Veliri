@@ -95,7 +95,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int,
 					if unitSlot.Unit == nil {
 						unitSlot.Unit = &unit.Unit{}
 					} else {
-						RemoveUnitBody(user, numberUnitSlot, true)
+						RemoveUnitBody(user, numberUnitSlot)
 						unitSlot.Unit = &unit.Unit{}
 					}
 

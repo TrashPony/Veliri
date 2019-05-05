@@ -20,6 +20,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/create/Storage.js");
             includeJS("../assets/components/inventory/create/OnlyStorage.js");
             includeJS("../assets/components/inventory/create/SortPanel.js");
+            includeJS("../assets/components/inventory/create/OnlyConstructor.js");
 
             includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
             includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");

@@ -1,7 +1,6 @@
 package inventory
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/gorilla/websocket"
@@ -68,6 +67,5 @@ func combineItems(ws *websocket.Conn, msg Message) {
 			storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, msg.SrcSlot, srcSlot.Quantity)
 		}
 	}
-	go update.Squad(user.GetSquad(), true)
 	UpdateSquad("UpdateSquad", user, nil, ws, msg)
 }

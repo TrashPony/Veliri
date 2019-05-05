@@ -22,6 +22,6 @@ func removeThoriumThorium(ws *websocket.Conn, msg Message) {
 		UpdateSquad("UpdateSquad", user, errors.New("no select squad"), ws, msg)
 		return
 	}
-	err := squad_inventory.RemoveThorium(user, msg.ThoriumSlot, true)
+	err := squad_inventory.RemoveThorium(user, msg.ThoriumSlot)
 	UpdateSquad("UpdateSquad", user, err, ws, msg)
 }

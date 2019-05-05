@@ -28,7 +28,7 @@ func removeThorium(ws *websocket.Conn, msg Message) {
 	user := globalGame.Clients.GetByWs(ws)
 	if user != nil {
 
-		squad_inventory.RemoveThorium(user, msg.ThoriumSlot, true)
+		squad_inventory.RemoveThorium(user, msg.ThoriumSlot)
 
 		msg.ToX = user.GetSquad().ToX
 		msg.ToY = user.GetSquad().ToY
