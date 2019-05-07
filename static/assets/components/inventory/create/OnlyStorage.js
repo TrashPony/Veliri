@@ -31,7 +31,19 @@ function OnlyStorage() {
         minWidth: 162,
         handles: "se",
         resize() {
-            $('#Inventory').css("width", $(this).width() - 5);
+            let storage = $('#storage');
+            let inventoryStorage = $('#inventoryStorage');
+            let inventory = $('#Inventory');
+            let inventoryStorageInventory = $('#inventoryStorageInventory');
+
+            if (storage.height() <= 51) {
+                inventory.css("height", $(this).height() - 58);
+                inventoryStorageInventory.css("height", $(this).height() - 110);
+                storage.css("height", 50);
+                inventoryStorage.css("height", 0);
+            }
+
+            inventory.css("width", $(this).width() - 5);
         }
     });
 

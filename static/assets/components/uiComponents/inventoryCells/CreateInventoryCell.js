@@ -3,7 +3,6 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     cell.slotData = JSON.stringify(slotData);
     cell.number = slotNumber;
 
-
     cell.style.backgroundImage = getBackgroundUrlByItem(slotData);
 
     cell.innerHTML = "<span class='QuantityItems'>" + slotData.quantity + "</span>";

@@ -82,7 +82,6 @@ func setEquip(equipSlot *detail.BodyEquipSlot, user *player.Player, newEquip *eq
 
 	equipSlot.Equip = newEquip
 	equipSlot.InsertToDB = true
-	go update.Squad(user.GetSquad(), true)
 }
 
 func SelectType(typeEquipSlot int, body *detail.Body) map[int]*detail.BodyEquipSlot {

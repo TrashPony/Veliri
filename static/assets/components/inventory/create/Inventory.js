@@ -8,6 +8,9 @@ function CreateInventory() {
         maxWidth: 163,
         minWidth: 163,
         handles: "s",
+        resize() {
+            $(this).resizable("option", "maxHeight", ($(this).height() + $('#storage').height()) - 50);
+        }
     });
 
     let spanInventory = document.createElement("span");

@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/squad_inventory"
 	"github.com/gorilla/websocket"
 )
@@ -13,11 +14,15 @@ func SetBody(ws *websocket.Conn, msg Message) {
 	if msg.Event == "SetMotherShipBody" {
 		// установить тело без отряда можно, и тогда создастся отряд
 		err = squad_inventory.SetMSBody(user, msg.BodyID, msg.InventorySlot, msg.Source)
+		return
 	}
 
 	if user.GetSquad() == nil {
 		UpdateSquad("UpdateSquad", user, errors.New("no select squad"), ws, msg)
 		return
+	} else {
+		user.GetSquad().UpdateLock()
+		defer user.GetSquad().UpdateUnlock()
 	}
 
 	if msg.Event == "SetUnitBody" {

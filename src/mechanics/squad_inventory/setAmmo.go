@@ -2,7 +2,6 @@ package squad_inventory
 
 import (
 	"errors"
-	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -43,8 +42,6 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 
 			ammoSlot.Ammo = newAmmo
 			ammoSlot.AmmoQuantity = RemoveSlotBySource(user, inventorySlot, source, ammoSlot.Weapon.AmmoCapacity)
-
-			go update.Squad(user.GetSquad(), true)
 
 			return nil
 

@@ -136,7 +136,6 @@ func Reader(ws *websocket.Conn) {
 }
 
 func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Conn, msg Message) {
-	mutex.Lock()
 
 	if user.GetSquad() != nil {
 		go update.Squad(user.GetSquad(), true)
@@ -159,7 +158,6 @@ func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Con
 			}
 		}
 	}
-	mutex.Unlock()
 
 	UpdateStorage(user.GetID())
 }

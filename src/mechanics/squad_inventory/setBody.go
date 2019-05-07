@@ -11,6 +11,7 @@ import (
 )
 
 func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) error {
+
 	if user.InBaseID > 0 {
 
 		slot := getSlotBySource(user, inventorySlot, source)
@@ -57,7 +58,6 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 
 			user.GetSquad().MatherShip.CalculateParams()
 
-			go update.Squad(user.GetSquad(), true)
 			return nil
 		} else {
 			return errors.New("wrong inventory slot")
@@ -89,6 +89,7 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int,
 			}
 
 			if newBody.StandardSize <= unitSlot.StandardSize {
+
 				unitSlot, ok := user.GetSquad().MatherShip.Units[numberUnitSlot]
 
 				if ok {
@@ -104,11 +105,10 @@ func SetUnitBody(user *player.Player, idBody, inventorySlot, numberUnitSlot int,
 					unitSlot.Unit.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 
 					RemoveSlotBySource(user, inventorySlot, source, 1)
-					unitSlot.Unit.Body = newBody
 
+					unitSlot.Unit.Body = newBody
 					unitSlot.Unit.CalculateParams()
 
-					go update.Squad(user.GetSquad(), true)
 					return nil
 				} else {
 					return errors.New("wrong slot")
