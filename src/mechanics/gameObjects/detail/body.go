@@ -20,7 +20,6 @@ type Body struct {
 	VulToKinetics  int `json:"vul_to_kinetics"`
 	VulToThermo    int `json:"vul_to_thermo"`
 	VulToExplosion int `json:"vul_to_explosion"`
-	VulToEM        int `json:"vul_to_em"`
 
 	RangeView     int  `json:"range_view"`
 	Accuracy      int  `json:"accuracy"`
@@ -251,4 +250,16 @@ type BodyWeaponSlot struct {
 	HP           int        `json:"hp"`
 	XAttach      int        `json:"x_attach"`
 	YAttach      int        `json:"y_attach"`
+
+	//-- боевые характиристики оружия после расчета со снаряжением
+	MinAttackRange      int    `json:"min_attack_range"`
+	MaxAttackRange      int    `json:"max_attack_range"`
+	MinDamage           int    `json:"min_damage"`
+	MaxDamage           int    `json:"max_damage"`
+	AreaCovers          int    `json:"area_covers"`
+	Artillery           bool   `json:"artillery"`
+	TypeAttack          string `json:"type_attack"`
+	EquipDamage         int    `json:"equip_damage"`
+	EquipCriticalDamage int    `json:"equip_critical_damage"`
+	Initiative          int    `json:"initiative"`
 }

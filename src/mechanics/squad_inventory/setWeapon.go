@@ -71,6 +71,9 @@ func SetUnitWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot, n
 }
 
 func setWeapon(weaponSlot *detail.BodyWeaponSlot, user *player.Player, newWeapon *detail.Weapon, inventorySlot, hp int, unit *unit.Unit, source string) {
+
+	defer unit.CalculateParams()
+
 	if weaponSlot.Weapon != nil {
 		RemoveWeapon(user, weaponSlot.Number, unit, "storage")
 	}

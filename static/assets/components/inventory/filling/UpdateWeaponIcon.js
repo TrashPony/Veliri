@@ -28,10 +28,12 @@ function UpdateWeaponIcon(parent, className, slotData, scale) {
     weaponIcon.appendChild(weaponIconMask2);
     weaponIcon.appendChild(weaponIconMask);
 
-    for (let i in slotData.unit.body.weapons) {
+    let find = false;
 
+    for (let i in slotData.unit.body.weapons) {
         if (slotData.unit.body.weapons.hasOwnProperty(i) && slotData.unit.body.weapons[i].weapon) {
 
+            find = true;
             $(weaponIconMask).css("-webkit-mask-image", "url(/assets/units/weapon/" + slotData.unit.body.weapons[i].weapon.name + "_mask.png)");
             weaponIconMask.style.background = "#" + slotData.unit.weapon_color_1.split('x')[1];
 
@@ -44,5 +46,16 @@ function UpdateWeaponIcon(parent, className, slotData, scale) {
             weaponIcon.style.left = (slotData.unit.body.weapons[i].x_attach - slotData.unit.body.weapons[i].weapon.x_attach) / (2 * scaleSize) + "px";
         }
     }
+
+    if (slotData.unit.body.mother_ship) {
+        if (!find) {
+            if (document.getElementById('msweaponColor1')) document.getElementById('msweaponColor1').style.visibility = "hidden";
+            if (document.getElementById('msweaponColor2')) document.getElementById('msweaponColor2').style.visibility = "hidden";
+        } else {
+            if (document.getElementById('msweaponColor1')) document.getElementById('msweaponColor1').style.visibility = "visible";
+            if (document.getElementById('msweaponColor2')) document.getElementById('msweaponColor2').style.visibility = "visible";
+        }
+    }
+
     parent.appendChild(weaponIcon);
 }

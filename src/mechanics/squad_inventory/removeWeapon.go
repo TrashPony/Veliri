@@ -9,6 +9,9 @@ import (
 
 func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst string) error {
 	if user.InBaseID > 0 {
+
+		defer unit.CalculateParams()
+
 		slot, ok := unit.Body.Weapons[numEquipSlot]
 
 		if ok && slot != nil && slot.Weapon != nil {

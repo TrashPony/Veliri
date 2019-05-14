@@ -13,6 +13,8 @@ func RemoveAmmo(user *player.Player, numEquipSlot int, unit *unit.Unit, dst stri
 		dst = "squadInventory"
 	}
 
+	defer unit.CalculateParams()
+
 	slot, ok := unit.Body.Weapons[numEquipSlot]
 
 	if ok && slot != nil && slot.Ammo != nil {

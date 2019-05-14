@@ -31,6 +31,7 @@ type Unit struct {
 	Move         bool `json:"move"`
 	FindHostile  bool `json:"find_hostile"`
 
+	//-- боевые характиристики живучести/нацигации
 	Speed           int  `json:"speed"`
 	Initiative      int  `json:"initiative"`
 	MaxHP           int  `json:"max_hp"`
@@ -38,7 +39,6 @@ type Unit struct {
 	EvasionCritical int  `json:"evasion_critical"`
 	VulToKinetics   int  `json:"vul_to_kinetics"`
 	VulToThermo     int  `json:"vul_to_thermo"`
-	VulToEM         int  `json:"vul_to_em"`
 	VulToExplosion  int  `json:"vul_to_explosion"`
 	RangeView       int  `json:"range_view"`
 	Accuracy        int  `json:"accuracy"`
@@ -187,7 +187,6 @@ func (unit *Unit) CalculateParams() {
 		unit.EvasionCritical = 0
 		unit.VulToKinetics = 0
 		unit.VulToThermo = 0
-		unit.VulToEM = 0
 		unit.VulToExplosion = 0
 		unit.RangeView = 0
 		unit.Accuracy = 0
@@ -197,6 +196,45 @@ func (unit *Unit) CalculateParams() {
 		unit.WallHack = false
 
 		return
+	}
+
+	// начальные параметры оружия
+	if unit.GetWeaponSlot() != nil && unit.GetWeaponSlot().Weapon != nil {
+
+		unit.GetWeaponSlot().MinAttackRange = unit.GetWeaponSlot().Weapon.MinAttackRange
+		unit.GetWeaponSlot().MaxAttackRange = unit.GetWeaponSlot().Weapon.Range
+		unit.GetWeaponSlot().Artillery = unit.GetWeaponSlot().Weapon.Artillery
+		unit.GetWeaponSlot().EquipDamage = unit.GetWeaponSlot().Weapon.EquipDamage
+		unit.GetWeaponSlot().EquipCriticalDamage = unit.GetWeaponSlot().Weapon.EquipCriticalDamage
+		unit.GetWeaponSlot().Initiative = unit.GetWeaponSlot().Weapon.Initiative
+
+		if unit.GetWeaponSlot().Ammo != nil {
+			unit.GetWeaponSlot().MinDamage = unit.GetWeaponSlot().Ammo.MinDamage
+			unit.GetWeaponSlot().MaxDamage = unit.GetWeaponSlot().Ammo.MaxDamage
+			unit.GetWeaponSlot().AreaCovers = unit.GetWeaponSlot().Ammo.AreaCovers
+			unit.GetWeaponSlot().TypeAttack = unit.GetWeaponSlot().Ammo.TypeAttack
+			unit.GetWeaponSlot().EquipDamage = unit.GetWeaponSlot().Weapon.EquipDamage + unit.GetWeaponSlot().Ammo.EquipDamage
+			unit.GetWeaponSlot().EquipCriticalDamage = unit.GetWeaponSlot().Weapon.EquipCriticalDamage + unit.GetWeaponSlot().Ammo.EquipCriticalDamage
+		} else {
+			unit.GetWeaponSlot().MinDamage = 0
+			unit.GetWeaponSlot().MaxDamage = 0
+			unit.GetWeaponSlot().AreaCovers = 0
+			unit.GetWeaponSlot().TypeAttack = ""
+		}
+
+	} else {
+		if unit.GetWeaponSlot() != nil {
+			unit.GetWeaponSlot().MinAttackRange = 0
+			unit.GetWeaponSlot().MaxAttackRange = 0
+			unit.GetWeaponSlot().MinDamage = 0
+			unit.GetWeaponSlot().MaxDamage = 0
+			unit.GetWeaponSlot().AreaCovers = 0
+			unit.GetWeaponSlot().Artillery = false
+			unit.GetWeaponSlot().TypeAttack = ""
+			unit.GetWeaponSlot().EquipDamage = 0
+			unit.GetWeaponSlot().EquipCriticalDamage = 0
+			unit.GetWeaponSlot().Initiative = 0
+		}
 	}
 
 	// начальные параметры тела
@@ -263,10 +301,6 @@ func (unit *Unit) CalculateParams() {
 			checkEffect(equipEffect, &unit.VulToThermo)
 		}
 
-		if equipEffect.Parameter == "vulnerability_to_em" {
-			checkEffect(equipEffect, &unit.VulToEM)
-		}
-
 		if equipEffect.Parameter == "vulnerability_to_explosion" {
 			checkEffect(equipEffect, &unit.VulToExplosion)
 		}
@@ -316,5 +350,5 @@ func (unit *Unit) CalculateParams() {
 	// высчитывает повер рековери
 	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
 	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
-	// штраф так же должен зависеть от скила пользвотеля
+	// todo штраф так же должен зависеть от скила пользвотеля
 }

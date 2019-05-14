@@ -74,6 +74,9 @@ function UpdateShipIcon(ms) {
     let slotData = {};
     slotData.unit = ms;
 
+    FillAttackPanel(ms);
+    FillDefendPanel(ms);
+
     CreateColorInputs(unitIcon, ms, 0, 'ms');
     CreateThoriumSlots(unitIcon, ms);
     UpdateWeaponIcon(unitIcon, "weaponIcon", slotData);

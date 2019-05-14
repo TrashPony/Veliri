@@ -10,6 +10,8 @@ import (
 func RemoveEquip(user *player.Player, numEquipSlot int, typeSlot int, unit *unit.Unit, dst string) error {
 	if user.InBaseID > 0 {
 
+		defer unit.CalculateParams()
+
 		equipping := SelectType(typeSlot, unit.Body)
 		slot, ok := equipping[numEquipSlot]
 

@@ -64,7 +64,7 @@
 }
 
 #MotherShipParams {
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
     display: inline-block;
     vertical-align: top;
@@ -282,6 +282,9 @@
 }
 
 .infoParams {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     width: 141px;
     padding-left: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
@@ -290,6 +293,8 @@
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     height: 75px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 .Value.params:hover {
@@ -389,4 +394,25 @@
 #unitweaponColor2 {
     top: 2px;
     left: 35px;
+}
+
+.infoParams > div {
+    height: 100%;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.iconParams {
+    height: 20px;
+    width: 15px;
+    float: left;
+    background: #79a0b4;
+    margin-top: 2px;
+}
+
+.valueParams {
+    font-size: 11px;
+    line-height: 23px;
 }

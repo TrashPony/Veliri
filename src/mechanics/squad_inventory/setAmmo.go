@@ -13,6 +13,7 @@ func SetAmmo(user *player.Player, idAmmo, inventorySlot, numEquipSlot int, unit 
 		source = "squadInventory"
 	}
 
+	defer unit.CalculateParams()
 	slot := getSlotBySource(user, inventorySlot, source)
 
 	if slot != nil && slot.Item != nil && slot.ItemID == idAmmo && slot.Type == "ammo" {

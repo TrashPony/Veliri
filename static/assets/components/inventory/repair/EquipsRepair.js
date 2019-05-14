@@ -1,9 +1,3 @@
-function EquipsRepair() {
-    inventorySocket.send(JSON.stringify({
-        event: "EquipsRepair"
-    }));
-}
-
 function overEquipButton() {
 
     let msData = JSON.parse(document.getElementById("MSIcon").slotData);

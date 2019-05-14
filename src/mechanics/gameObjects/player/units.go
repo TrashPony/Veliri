@@ -140,7 +140,6 @@ func shortHostileUnit(gameUnit *unit.Unit) *unit.Unit {
 	shortInfoUnit.EvasionCritical = shortInfoUnit.Body.EvasionCritical
 	shortInfoUnit.VulToKinetics = shortInfoUnit.Body.VulToKinetics
 	shortInfoUnit.VulToThermo = shortInfoUnit.Body.VulToThermo
-	shortInfoUnit.VulToEM = shortInfoUnit.Body.VulToEM
 	shortInfoUnit.VulToExplosion = shortInfoUnit.Body.VulToExplosion
 	shortInfoUnit.RangeView = shortInfoUnit.Body.RangeView
 	shortInfoUnit.Accuracy = shortInfoUnit.Body.Accuracy

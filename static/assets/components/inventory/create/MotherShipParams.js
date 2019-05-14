@@ -29,7 +29,7 @@ function CreateMotherShipParamsMenu() {
 
 function openAttack() {
     this.innerHTML = "▼ Атака";
-    document.getElementById("infoParamsAttack").style.display = "block";
+    document.getElementById("infoParamsAttack").style.display = "grid";
     this.onclick = function () {
         document.getElementById("infoParamsAttack").style.display = "none";
         this.innerHTML = "▶ Атака";
@@ -39,7 +39,7 @@ function openAttack() {
 
 function openDef() {
     this.innerHTML = "▼ Защита";
-    document.getElementById("infoParamsDefend").style.display = "block";
+    document.getElementById("infoParamsDefend").style.display = "grid";
     this.onclick = function () {
         document.getElementById("infoParamsDefend").style.display = "none";
         this.innerHTML = "▶ Защита";
@@ -49,7 +49,7 @@ function openDef() {
 
 function openNav() {
     this.innerHTML = "▼ Навигация";
-    document.getElementById("infoParamsNav").style.display = "block";
+    document.getElementById("infoParamsNav").style.display = "grid";
     this.onclick = function () {
         document.getElementById("infoParamsNav").style.display = "none";
         this.innerHTML = "▶ Навигация";

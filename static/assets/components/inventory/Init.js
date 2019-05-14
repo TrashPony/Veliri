@@ -43,6 +43,7 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/filling/Errors.js");
             includeJS("../assets/components/inventory/filling/CreateEquipsInBody.js");
             includeJS("../assets/components/inventory/filling/ColorSquad.js");
+            includeJS("../assets/components/inventory/filling/MotherShipParams.js");
 
             includeJS("../assets/components/inventory/tip/ClickTip.js");
             includeJS("../assets/components/inventory/tip/SelectItem.js");
