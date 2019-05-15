@@ -164,9 +164,7 @@ func (unit *Unit) GetAmmoCount() int { // по диз доку оружие в �
 
 func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз доку оружие в юните может быть только одно
 	for _, weaponSlot := range unit.Body.Weapons {
-		if weaponSlot.Weapon != nil {
-			return weaponSlot
-		}
+		return weaponSlot
 	}
 	return nil
 }
@@ -200,7 +198,6 @@ func (unit *Unit) CalculateParams() {
 
 	// начальные параметры оружия
 	if unit.GetWeaponSlot() != nil && unit.GetWeaponSlot().Weapon != nil {
-
 		unit.GetWeaponSlot().MinAttackRange = unit.GetWeaponSlot().Weapon.MinAttackRange
 		unit.GetWeaponSlot().MaxAttackRange = unit.GetWeaponSlot().Weapon.Range
 		unit.GetWeaponSlot().Artillery = unit.GetWeaponSlot().Weapon.Artillery

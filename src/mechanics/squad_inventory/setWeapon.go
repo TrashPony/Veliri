@@ -32,17 +32,14 @@ func SetWeapon(user *player.Player, idWeapon, inventorySlot, numEquipSlot int, u
 
 					if newWeapon.StandardSize == 1 && body.StandardSizeSmall {
 						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
-						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 2 && body.StandardSizeMedium {
 						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
-						unit.CalculateParams()
 						return nil
 					}
 					if newWeapon.StandardSize == 3 && body.StandardSizeBig {
 						setWeapon(weaponSlot, user, newWeapon, inventorySlot, slot.HP, unit, source)
-						unit.CalculateParams()
 						return nil
 					}
 

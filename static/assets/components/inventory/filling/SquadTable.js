@@ -86,7 +86,11 @@ function OpenUnitEditor() {
 
     if (constructorUnit) {
         if (JSON.parse(constructorUnit.slotData).number_slot === unitData.number_slot) {
+
             constructorUnit.remove();
+            document.getElementById('ConstructorBackGround').style.filter = 'unset';
+            FillParams(JSON.parse(document.getElementById("MSIcon").slotData));
+
             return;
         } else {
             constructorUnit.remove();
@@ -97,13 +101,11 @@ function OpenUnitEditor() {
 
     constructorUnit = document.createElement("div");
     constructorUnit.id = "ConstructorUnit";
-    constructorUnit.style.left = Number(this.getBoundingClientRect().left - 75) + "px";
-    constructorUnit.style.top = Number(this.getBoundingClientRect().top - 220) + "px";
-
     constructorUnit.slotData = this.slotData;
 
     CreateUnitEquipSlots(constructorUnit);
-    document.body.appendChild(constructorUnit);
+    document.getElementById('ConstructorBackGround').style.filter = 'grayscale(100%) blur(5px)';
+    document.getElementById('inventoryBox').appendChild(constructorUnit);
 
     if (unitData.unit !== null && unitData.unit !== undefined) {
         FillingSquadConstructor(unitData);
@@ -116,6 +118,8 @@ function OpenUnitEditor() {
 
         let unitIcon = document.getElementById("UnitIcon");
         unitIcon.innerHTML = "<span>Место для корпуса</span>";
+
+        FillParams(null);
     }
 
     let unitIcon = $('#UnitIcon');
@@ -233,7 +237,7 @@ function FillingSquadConstructor(unitData) {
     unitIcon.unitBody = unitData.unit.body;
     unitIcon.onclick = BodyUnitMenu;
 
-
+    FillParams(unitData.unit);
     CreateColorInputs(unitIcon, unitData.unit, unitData.number_slot, 'unit');
 
     UpdateWeaponIcon(unitIcon, "weaponUnitInnerIcon", unitData);

@@ -55,6 +55,14 @@ function UpdateWeaponIcon(parent, className, slotData, scale) {
             if (document.getElementById('msweaponColor1')) document.getElementById('msweaponColor1').style.visibility = "visible";
             if (document.getElementById('msweaponColor2')) document.getElementById('msweaponColor2').style.visibility = "visible";
         }
+    } else {
+        if (!find) {
+            if (document.getElementById('unitweaponColor1')) document.getElementById('unitweaponColor1').style.visibility = "hidden";
+            if (document.getElementById('unitweaponColor2')) document.getElementById('unitweaponColor2').style.visibility = "hidden";
+        } else {
+            if (document.getElementById('unitweaponColor1')) document.getElementById('unitweaponColor1').style.visibility = "visible";
+            if (document.getElementById('unitweaponColor2')) document.getElementById('unitweaponColor2').style.visibility = "visible";
+        }
     }
 
     parent.appendChild(weaponIcon);

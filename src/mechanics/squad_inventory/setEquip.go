@@ -38,10 +38,7 @@ func SetEquip(user *player.Player, idEquip, inventorySlot, numEquipSlot, typeEqu
 					(equipSlot.Equip == nil && body.MaxPower-body.GetUsePower() >= newEquip.Power) {
 
 					if (unit.Body.GetUseCapacitySize()+newEquip.Size <= unit.Body.CapacitySize) || unit.Body.MotherShip {
-
 						setEquip(equipSlot, user, newEquip, inventorySlot, slot.HP, unit, typeEquipSlot, source)
-						unit.CalculateParams()
-
 						return nil
 					} else {
 						return errors.New("lacking size")

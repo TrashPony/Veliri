@@ -54,8 +54,6 @@ function OnlyConstructor(closeFunc) {
     let buttons = CreateControlButtons("1px", "32px", "-3px", "29px");
     $(buttons.move).mousedown(function (event) {
         moveWindow(event, 'inventoryBox');
-        DestroyInventoryClickEvent();
-        if (document.getElementById('ConstructorUnit')) document.getElementById('ConstructorUnit').remove();
     });
 
     $(buttons.close).mousedown(function () {

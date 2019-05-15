@@ -30,8 +30,6 @@ func RemoveWeapon(user *player.Player, numEquipSlot int, unit *unit.Unit, dst st
 
 				if okAddItem {
 					slot.Weapon = nil
-					unit.CalculateParams()
-
 					return nil
 				} else {
 					return errors.New("add item error")

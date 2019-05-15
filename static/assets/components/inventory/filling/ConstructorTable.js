@@ -74,8 +74,8 @@ function UpdateShipIcon(ms) {
     let slotData = {};
     slotData.unit = ms;
 
-    FillAttackPanel(ms);
-    FillDefendPanel(ms);
+    if (!document.getElementById('ConstructorUnit'))
+        FillParams(ms);
 
     CreateColorInputs(unitIcon, ms, 0, 'ms');
     CreateThoriumSlots(unitIcon, ms);
