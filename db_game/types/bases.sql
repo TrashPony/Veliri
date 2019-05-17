@@ -1,17 +1,23 @@
 CREATE TABLE bases
 (
-  id              SERIAL PRIMARY KEY,
-  base_name       varchar(64),
+  id                           SERIAL PRIMARY KEY,
+  base_name                    varchar(64),
   /* id сектора то есть карты где находиться база */
-  id_map          INT REFERENCES maps (id),
+  id_map                       INT REFERENCES maps (id),
   /* позиция базы, на иговой карте берется обьект на этой координате и накладывается событие при нажатии */
-  q               int,
-  r               int,
-  transport_count int, /* количество эвакуатор у базы */
-  defender_count  int, /* количество защитников */
-  gravity_radius  int, /* радиус стабильной гравитации вокруг баз */
+  q                            int,
+  r                            int,
+  transport_count              int, /* количество эвакуатор у базы */
+  defender_count               int, /* количество защитников */
+  gravity_radius               int, /* радиус стабильной гравитации вокруг баз */
   --Replicas Explores Reverses, нация за кторую играет игрок
-  fraction        varchar(64)
+  fraction                     varchar(64),
+
+  -- количество ресурсов ниже которого будет снижатся налоги на переработку (на каждый ресурс индивидуально)
+  boundary_amount_of_resources int not null default 1000,
+
+  -- количество ресурсов(сумарное для всех) ниже которого помвышаются налоги на услуги базы (1% недостатка = 1% налога)
+  sum_work_resources           int not null default 10000
 );
 
 -- таблица в себе содержит точки респаунов на

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
@@ -32,7 +33,7 @@ type Resourcer interface {
 	GetArmorItems() int
 }
 
-func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
+func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem, gameBase *base.Base) error {
 
 	storage, ok := storages.Storages.Get(user.GetID(), user.InBaseID)
 	if !ok {
@@ -48,9 +49,18 @@ func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
 			recycleItem := make(map[int]*RecycleItem)
 			recycleItem[i] = &RecycleItem{Slot: slot}
 
-			possibleRecycleItems := GetRecycleItems(&recycleItem)
+			possibleRecycleItems, baseTaxItems := GetRecycleItems(&recycleItem, user, gameBase)
+
+			// отдаем игроку его итемы
 			for _, slot := range possibleRecycleItems {
 				storages.Storages.AddSlot(user.GetID(), user.InBaseID, slot)
+			}
+
+			// отдаем налог базе
+			for _, slot := range baseTaxItems {
+				if gameBase.CurrentResources[slot.ItemID] != nil && slot.Type == "recycle" && slot.ItemID == gameBase.CurrentResources[slot.ItemID].ItemID {
+					gameBase.CurrentResources[slot.ItemID].Quantity += slot.Quantity
+				}
 			}
 
 			delete(*recycleItems, i)
@@ -61,19 +71,22 @@ func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem) error {
 	return nil
 }
 
-func GetRecycleItems(recycleItems *map[int]*RecycleItem) []*inventory.Slot {
-
-	// TODO вычеслять процент переработки, уровень базы + скил игрока
-
+func GetRecycleItems(recycleItems *map[int]*RecycleItem, client *player.Player, gameBase *base.Base) ([]*inventory.Slot, []*inventory.Slot) {
 	recyclerItems := make([]*inventory.Slot, 0)
+	inBaseItems := make([]*inventory.Slot, 0)
 
 	for _, item := range *recycleItems {
 		// обычные ресурсы имеют прямое преобразование в recycle ресурсы
 		if item.Slot.Type == "resource" {
+
+			// потери при переработки из за недостатка скила
+			percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
+
 			res, ok := gameTypes.Resource.GetBaseByID(item.Slot.ItemID)
 			if ok {
 				item.Recycled = true
-				ParseItems(&recyclerItems, 50, res, item.Slot.Quantity)
+				ParseItems(&recyclerItems, percentUserSkills+gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
+				ParseItems(&inBaseItems, gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
 			}
 		}
 
@@ -90,14 +103,17 @@ func GetRecycleItems(recycleItems *map[int]*RecycleItem) []*inventory.Slot {
 		// для всех остальных сущьностей, надо брать рецепт и смотреть ресурсы в нем
 		if item.Slot.Type == "body" || item.Slot.Type == "ammo" || item.Slot.Type == "equip" ||
 			item.Slot.Type == "weapon" || item.Slot.Type == "boxes" || item.Slot.Type == "detail" {
+
+			percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
+
 			bluePrint := gameTypes.BluePrints.GetByItemTypeAndID(item.Slot.ItemID, item.Slot.Type)
 			if bluePrint != nil {
 				item.Recycled = true
-				ParseItems(&recyclerItems, 50, bluePrint, item.Slot.Quantity)
+				ParseItems(&recyclerItems, percentUserSkills*gameBase.GetSumEfficiency(), bluePrint, item.Slot.Quantity)
 			}
 		}
 	}
-	return recyclerItems
+	return recyclerItems, inBaseItems
 }
 
 func ParseItems(itemsPool *[]*inventory.Slot, percent int, resourcer Resourcer, countItems int) {

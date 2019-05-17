@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
@@ -10,8 +11,9 @@ import (
 func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
 
 	baseStorage, find := storages.Storages.Get(user.GetID(), user.InBaseID)
+	userBase, findBase := bases.Bases.Get(user.InBaseID)
 
-	if find {
+	if find && findBase {
 		if *recycleItems == nil {
 			*recycleItems = make(map[int]*lobby.RecycleItem)
 		}
@@ -32,12 +34,16 @@ func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[in
 			}
 		}
 
+		resultItems, _ := lobby.GetRecycleItems(recycleItems, user, userBase)
+
 		lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
-			PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
+			PreviewRecycleSlots: resultItems}
 	}
 }
 
 func removeItemToProcessor(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
+
+	userBase, _ := bases.Bases.Get(user.InBaseID)
 
 	if msg.Event == "RemoveItemFromProcessor" {
 		delete(*recycleItems, msg.RecyclerSlot)
@@ -49,20 +55,27 @@ func removeItemToProcessor(user *player.Player, msg Message, recycleItems *map[i
 		}
 	}
 
+	resultItems, _ := lobby.GetRecycleItems(recycleItems, user, userBase)
+
 	lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
-		PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
+		PreviewRecycleSlots: resultItems}
 }
 
 func recycle(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
-	err := lobby.Recycle(user, recycleItems)
+
+	userBase, _ := bases.Bases.Get(user.InBaseID)
+
+	err := lobby.Recycle(user, recycleItems, userBase)
 
 	if err != nil {
 		lobbyPipe <- Message{Event: msg.Event, Error: err.Error()}
 		return
 	}
 
+	resultItems, _ := lobby.GetRecycleItems(recycleItems, user, userBase)
+
 	lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
-		PreviewRecycleSlots: lobby.GetRecycleItems(recycleItems)}
+		PreviewRecycleSlots: resultItems}
 
 	wsInventory.UpdateStorage(user.GetID())
 }

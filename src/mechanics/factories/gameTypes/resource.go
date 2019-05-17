@@ -30,6 +30,10 @@ func (r *resourceStore) GetBaseByID(id int) (*resource.Resource, bool) {
 	return &newResource, ok
 }
 
+func (r *resourceStore) GetAllRecycled() map[int]resource.RecycledResource {
+	return r.recycled
+}
+
 func (r *resourceStore) GetRecycledByID(id int) (*resource.RecycledResource, bool) {
 	var newResource resource.RecycledResource
 	newResource, ok := r.recycled[id]

@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -15,6 +16,27 @@ func GenerateObjectsMap() {
 		if mp.Global {
 			resourceGenerator(mp)
 			AnomalyGenerator(mp)
+			baseInit(mp)
+		}
+	}
+}
+
+func baseInit(mp *_map.Map) {
+	// инитим все базы на количество ресурсов в них и расход
+
+	for _, gameBase := range bases.Bases.GetBasesByMap(mp.Id) {
+
+		gameBase.CurrentResources = make(map[int]*inventory.Slot)
+
+		go gameBase.ConsumptionBaseResource()
+
+		for _, recycled := range gameTypes.Resource.GetAllRecycled() {
+			gameBase.CurrentResources[recycled.TypeID] = &inventory.Slot{
+				Item:     recycled,
+				Quantity: 0,
+				Type:     "recycle",
+				ItemID:   recycled.TypeID,
+			}
 		}
 	}
 }
@@ -61,7 +83,7 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 
 func checkPlace(mp *_map.Map, q, r int) bool {
 
-	// ресурсы должны быть дальше на 450 пх от
+	// ресурсы должны быть дальше на 550 px от
 	// баз
 	// респанов баз
 	// хендлеров
@@ -77,11 +99,6 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 		if globalGame.GetBetweenDist(x, y, baseX, baseY) < minDist {
 			return false
 		}
-
-		//baseX, baseY = globalGame.GetXYCenterHex(base.RespQ, base.RespR)
-		//if globalGame.GetBetweenDist(x, y, baseX, baseY) < minDist {
-		//	return false
-		//}
 	}
 
 	for _, handler := range mp.HandlersCoordinates {
