@@ -21,6 +21,8 @@ type Base struct {
 	BoundaryAmountOfResources int                      `json:"boundary_amount_of_resources"`
 	SumWorkResources          int                      `json:"sum_work_resources"`
 	CurrentResources          map[int]*inventory.Slot  `json:"current_resources"` // [id_recycled_type]count
+	Efficiency                int                      `json:"efficiency"`
+	Fraction                  string                   `json:"fraction"`
 }
 
 type Transport struct {
@@ -63,30 +65,41 @@ func (b *Base) GetRecyclePercent(resource int) int {
 
 	resourceSlot := b.CurrentResources[resource]
 
+	if resourceSlot == nil {
+		return 0
+	}
+
+	resourceSlot.Tax = 0
+
 	// при полном достатке ресурса на базе налог будет 50%
 	if resourceSlot.Quantity >= b.BoundaryAmountOfResources {
-		return 50
+		resourceSlot.Tax = 50
 	} else {
 		// если ресурса нехватает или его вообще нет то налог понижается
 		if resourceSlot.Quantity > 0 {
-			return resourceSlot.Quantity * 100 / b.BoundaryAmountOfResources
-		} else {
-			return 0
+			resourceSlot.Tax = resourceSlot.Quantity * 100 / b.BoundaryAmountOfResources
 		}
 	}
+
+	// минимальный налог 10%
+	if resourceSlot.Tax < 10 {
+		resourceSlot.Tax = 10
+	}
+
+	return resourceSlot.Tax
 }
 
 func (b *Base) GetSumEfficiency() int {
 	// 0 максимально эффективная база
 	// 100 база не функционирует
 
-	percent := 0
+	b.Efficiency = 0
 	countAllResource := 0
 
 	// если какойто 1 ресурс будет на нуле это дополнительно дает штраф на 10%
 	for _, currentResource := range b.CurrentResources {
 		if currentResource.Quantity == 0 {
-			percent += 10
+			b.Efficiency += 10
 		} else {
 			countAllResource += currentResource.Quantity
 		}
@@ -95,15 +108,20 @@ func (b *Base) GetSumEfficiency() int {
 	// Если на базе средний показатель по ресурсам выше b.SumWorkResources то налог на обслуживание не добавляется
 	if countAllResource < b.SumWorkResources {
 		//иначе каждый % нехвата будут добавлять % неэфективности
-		percent += countAllResource * 100 / b.SumWorkResources
+		b.Efficiency += 100 - (countAllResource * 100 / b.SumWorkResources)
+
+		// если все по нулям то база не функционирует
+		if countAllResource == 0 {
+			b.Efficiency = 100
+		}
 	}
 
 	// макс размер штрафа 100%
-	if percent > 100 {
-		percent = 100
+	if b.Efficiency > 100 {
+		b.Efficiency = 100
 	}
 
-	return percent
+	return b.Efficiency
 }
 
 func (b *Base) ConsumptionBaseResource() {

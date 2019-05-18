@@ -37,7 +37,7 @@ func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[in
 		resultItems, _ := lobby.GetRecycleItems(recycleItems, user, userBase)
 
 		lobbyPipe <- Message{Event: "updateRecycler", UserID: user.GetID(), RecycleSlots: *recycleItems,
-			PreviewRecycleSlots: resultItems}
+			PreviewRecycleSlots: resultItems, UserRecycleSkill: 25 - user.CurrentSkills["processing"].Level*5}
 	}
 }
 

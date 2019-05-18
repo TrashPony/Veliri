@@ -36,6 +36,9 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	} else {
 		newPlayer.LastBaseID = newPlayer.InBaseID
 
+		// отправляем текущие состояние базы
+		BaseStatus(newPlayer)
+
 		if newPlayer.Fraction == "" {
 			//новый игрок без фракции должен сделать выбор
 			lobbyPipe <- Message{Event: "choiceFraction", UserID: newPlayer.GetID()}

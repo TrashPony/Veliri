@@ -12,6 +12,7 @@ func WorkerChecker() {
 	for {
 		workers := blueWorks.BlueWorks.GetAll()
 
+		//todo возможна проблема конкуретного дотупа
 		for _, user := range usersLobbyWs {
 			// просто обновляет всем юзера таймер крафта
 			baseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)

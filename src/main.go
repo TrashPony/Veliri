@@ -38,6 +38,7 @@ func main() {
 
 	go lobby.ReposeSender()
 	go lobby.WorkerChecker()
+	go lobby.BaseStatusSender()
 
 	go other.CommonChatSender()
 	go other.UserOnlineChecker()

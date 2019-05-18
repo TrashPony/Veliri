@@ -2,6 +2,7 @@ package lobby
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
@@ -25,8 +26,8 @@ type Message struct {
 
 	RecycleSlots        map[int]*lobby.RecycleItem `json:"recycle_slots"`
 	PreviewRecycleSlots []*inv.Slot                `json:"preview_recycle_slots"`
-
-	Storage *inv.Inventory `json:"storage"`
+	UserRecycleSkill    int                        `json:"user_recycle_skill"`
+	Storage             *inv.Inventory             `json:"storage"`
 
 	BluePrint *blueprints.Blueprint        `json:"blue_print"`
 	BlueWorks map[int]*blueprints.BlueWork `json:"blue_works"`
@@ -56,5 +57,7 @@ type Message struct {
 
 	Maps       map[int]*_map.ShortInfoMap `json:"maps"`
 	SearchMaps []*maps.SearchMap          `json:"search_maps"`
-	Mission    *mission.Mission            `json:"mission"`
+	Mission    *mission.Mission           `json:"mission"`
+
+	Base *base.Base `json:"base"`
 }

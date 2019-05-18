@@ -50,7 +50,7 @@ func (b *blueWorks) GetByUserAndBase(userID, baseID int) map[int]*blueprints.Blu
 	return works
 }
 
-func (b *blueWorks) GetSameWorks(bpID, MineralSaving, TimeSaving, userID, baseID int, toTime, startTime int64) map[int]*blueprints.BlueWork {
+func (b *blueWorks) GetSameWorks(bpID, MineralTax, TimeTax, userID, baseID int, toTime, startTime int64) map[int]*blueprints.BlueWork {
 
 	// startTime - от какого времени брать
 	// toTime - до какого времени брать
@@ -59,7 +59,7 @@ func (b *blueWorks) GetSameWorks(bpID, MineralSaving, TimeSaving, userID, baseID
 
 	for _, work := range b.blueWorks {
 		if work.UserID == userID && work.BaseID == baseID && work.BlueprintID == bpID &&
-			work.MineralSavingPercentage == MineralSaving && work.TimeSavingPercentage == TimeSaving && work.GetDonePercent() < 0 &&
+			work.MineralTaxPercentage == MineralTax && work.TimeTaxPercentage == TimeTax && work.GetDonePercent() < 0 &&
 			work.FinishTime.UTC().Unix() <= toTime && work.FinishTime.UTC().Unix() >= startTime {
 
 			works[work.ID] = work
@@ -94,7 +94,7 @@ func (b *blueWorks) Remove(removeWork *blueprints.BlueWork) {
 	if removeWork.GetDonePercent() > 0 {
 		deffTime = removeWork.FinishTime.Unix() - time.Now().Unix()
 	} else {
-		deffTime = time.Unix(int64(removeWork.Blueprint.CraftTime-(removeWork.Blueprint.CraftTime*removeWork.TimeSavingPercentage/100)), 0).Unix()
+		deffTime = time.Unix(int64(removeWork.Blueprint.CraftTime+(removeWork.Blueprint.CraftTime*removeWork.TimeTaxPercentage/100)), 0).Unix()
 	}
 
 	for _, work := range b.blueWorks {

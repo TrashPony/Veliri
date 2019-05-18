@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/blueWorks"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
@@ -28,13 +29,13 @@ func selectBP(user *player.Player, msg Message) {
 
 	baseStorage, findStorage := storages.Storages.Get(user.GetID(), user.InBaseID)
 	slot, findSlot := baseStorage.Slots[msg.StorageSlot]
+	userBase, _ := bases.Bases.Get(user.InBaseID)
 
 	if findStorage && findSlot && slot.Type == "blueprints" {
 
 		bluePrint, _ := gameTypes.BluePrints.GetByID(slot.ItemID)
-
 		recyclerItems := make([]*inventory.Slot, 0)
-		lobby.ParseItems(&recyclerItems, 100, bluePrint, msg.Count)
+		lobby.ParseItems(&recyclerItems, 100+(userBase.GetSumEfficiency()-(user.CurrentSkills["materials_production"].Level*5)), bluePrint, msg.Count)
 
 		for _, slot := range recyclerItems {
 			slot.Find = baseStorage.ViewItems(slot.ItemID, slot.Type, slot.Quantity)
@@ -50,12 +51,13 @@ func craft(user *player.Player, msg Message) {
 
 	baseStorage, findStorage := storages.Storages.Get(user.GetID(), user.InBaseID)
 	slot, findSlot := baseStorage.Slots[msg.StorageSlot]
+	userBase, _ := bases.Bases.Get(user.InBaseID)
 
 	if findStorage && findSlot && slot.Type == "blueprints" && slot.Quantity >= msg.Count {
 		bluePrint, _ := gameTypes.BluePrints.GetByID(slot.ItemID)
 
 		recyclerItems := make([]*inventory.Slot, 0)
-		lobby.ParseItems(&recyclerItems, 100, bluePrint, msg.Count)
+		lobby.ParseItems(&recyclerItems, 100+(userBase.GetSumEfficiency()-(user.CurrentSkills["materials_production"].Level*5)), bluePrint, msg.Count)
 
 		for _, slot := range recyclerItems {
 			if !baseStorage.ViewItems(slot.ItemID, slot.Type, slot.Quantity) {
@@ -71,12 +73,12 @@ func craft(user *player.Player, msg Message) {
 			finishTime := time.Unix(nowSecond, 0)
 
 			newWork := blueprints.BlueWork{
-				BlueprintID:             bluePrint.ID,
-				BaseID:                  user.InBaseID,
-				UserID:                  user.GetID(),
-				FinishTime:              finishTime,
-				TimeSavingPercentage:    0,
-				MineralSavingPercentage: 0,
+				BlueprintID:          bluePrint.ID,
+				BaseID:               user.InBaseID,
+				UserID:               user.GetID(),
+				FinishTime:           finishTime,
+				TimeTaxPercentage:    0,
+				MineralTaxPercentage: 0,
 			}
 
 			blueWorks.BlueWorks.Add(&newWork)
@@ -97,7 +99,7 @@ func selectWork(user *player.Player, msg Message) {
 		if work != nil && work.UserID == user.GetID() {
 
 			bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
-			percentRemainResource := 100 - (work.GetDonePercent() + work.MineralSavingPercentage)
+			percentRemainResource := (100 + work.MineralTaxPercentage) - work.GetDonePercent()
 
 			returnItems := make([]*inventory.Slot, 0)
 			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
@@ -123,7 +125,7 @@ func selectWork(user *player.Player, msg Message) {
 		count := 0
 		for _, work := range works {
 			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
-				percentRemainResource := 100 - work.MineralSavingPercentage
+				percentRemainResource := 100 + work.MineralTaxPercentage
 				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 				msg.Count--
 				count++
@@ -145,7 +147,7 @@ func cancelCraft(user *player.Player, msg Message) {
 		if work != nil && work.UserID == user.GetID() {
 
 			bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
-			percentRemainResource := 100 - (work.GetDonePercent() + work.MineralSavingPercentage)
+			percentRemainResource := 100 + (work.GetDonePercent() + work.MineralTaxPercentage)
 
 			returnItems := make([]*inventory.Slot, 0)
 			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
@@ -173,7 +175,7 @@ func cancelCraft(user *player.Player, msg Message) {
 
 		for _, work := range works {
 			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
-				percentRemainResource := 100 - work.MineralSavingPercentage
+				percentRemainResource := 100 + work.MineralTaxPercentage
 				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 				blueWorks.BlueWorks.Remove(work)
 				msg.Count--

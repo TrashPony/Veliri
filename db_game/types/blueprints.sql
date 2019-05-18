@@ -49,8 +49,8 @@ CREATE TABLE created_blueprint
   id_user                   INT REFERENCES users (id),
   /* время окончания */
   finish_time               timestamp,
-  /* процент экономии миниралов */
-  mineral_saving_percentage INT,
-  /* процент экономии времени */
-  time_saving_percentage    INT
+  /* процент налога миниралов */
+  mineral_tax_percentage INT,
+  /* процент налога времени */
+  time_tax_percentage    INT
 );

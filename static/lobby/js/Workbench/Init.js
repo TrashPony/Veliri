@@ -69,7 +69,9 @@ function InitWorkbench() {
     info.id = "bpName";
 
     let workStatus = document.createElement("div");
-    workStatus.innerHTML = "<div style='background-image: url(../../lobby/img/mineral.png)'><span>0%</span></div><div style='background-image: url(../../lobby/img/timeIcon.png)'><span>0%</span></div>";
+    workStatus.innerHTML = "" +
+        "<div id='mineralTax' style='background-image: url(../../lobby/img/mineral.png)'><span>0%</span></div>" +
+        "<div id='timeTax' style='background-image: url(../../lobby/img/timeIcon.png)'><span>0%</span></div>";
     workStatus.id = "workStatus";
 
     let itemPreview = document.createElement("div");

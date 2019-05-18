@@ -76,8 +76,8 @@ function FillCurrentWorks(works) {
         } else {
             idRow = "blueRow" +
                 works[i].blueprint.id +
-                "" + works[i].mineral_saving_percentage +
-                "" + works[i].time_saving_percentage +
+                "" + works[i].mineral_tax_percentage +
+                "" + works[i].time_tax_percentage +
                 "" + row;
         }
 
@@ -123,8 +123,8 @@ function FillCurrentWorks(works) {
                     start_time: $(this).data("time").startTime,
                     to_time: $(this).data("time").finishTime,
                     blue_print_id: works[i].blueprint.id,
-                    mineral_saving: works[i].mineral_saving_percentage,
-                    time_saving: works[i].time_saving_percentage,
+                    mineral_saving: works[i].mineral_tax_percentage,
+                    time_saving: works[i].time_tax_percentage,
                     count: $(this).data("count").count,
                 }));
             }
@@ -148,7 +148,7 @@ function innerDate(work) {
     let finishTime = new Date(work.finish_time);
     data.setTime(finishTime.getTime() - new Date().getTime());
 
-    let realTimeCraft = work.blueprint.craft_time - (work.blueprint.craft_time * work.time_saving_percentage / 100);
+    let realTimeCraft = work.blueprint.craft_time - (work.blueprint.craft_time * work.time_tax_percentage / 100);
     let startTime = new Date().setTime(finishTime.getTime() - realTimeCraft * 1000);
     let diffTime = (new Date() - startTime) / 1000;
 

@@ -14,8 +14,8 @@ func BlueWorks() map[int]*blueprints.BlueWork {
 		" id_base," +
 		" id_user," +
 		" finish_time, " +
-		" mineral_saving_percentage," +
-		" time_saving_percentage" +
+		" mineral_tax_percentage," +
+		" time_tax_percentage" +
 		" " +
 		"FROM created_blueprint")
 	if err != nil {
@@ -33,8 +33,8 @@ func BlueWorks() map[int]*blueprints.BlueWork {
 			&blueWork.BaseID,
 			&blueWork.UserID,
 			&blueWork.FinishTime,
-			&blueWork.MineralSavingPercentage,
-			&blueWork.TimeSavingPercentage,
+			&blueWork.MineralTaxPercentage,
+			&blueWork.TimeTaxPercentage,
 		)
 
 		if err != nil {

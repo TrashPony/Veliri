@@ -98,4 +98,8 @@ function ReaderLobby(jsonMessage) {
     if (event === "openDepartmentOfEmployment") {
         FillDepartment(JSON.parse(jsonMessage).dialog_page)
     }
+
+    if (event === "BaseStatus") {
+        UpdateBaseStatus(JSON.parse(jsonMessage).base)
+    }
 }

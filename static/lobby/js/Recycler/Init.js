@@ -44,7 +44,7 @@ function Init() {
         "<div class='pollHead'>" +
         "<h3>Input materials</h3>" +
         "<div>" +
-        "<div id='RecyclePercent'><div class='fillBackPercent'></div><span>50%</span></div>" +
+        "<div id='RecyclePercent'><div id='fillBackPercent'></div><span id='UserRecyclePercent'></span></div>" +
         "<div class='util'></div>" +
         "</div>" +
         "</div>";

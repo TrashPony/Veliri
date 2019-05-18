@@ -159,7 +159,9 @@ func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Con
 		}
 	}
 
-	UpdateStorage(user.GetID())
+	if user.InBaseID > 0 {
+		UpdateStorage(user.GetID())
+	}
 }
 
 func UpdateStorage(userID int) {

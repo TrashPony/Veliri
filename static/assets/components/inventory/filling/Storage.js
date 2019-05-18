@@ -2,6 +2,8 @@ let categories = false;
 let cellSize = 25;
 
 function UpdateStorage(inventory) {
+    if (!inventory) return;
+
     $('#storage').droppable({
         drop: function (event, ui) {
 

@@ -3,6 +3,9 @@ function FillRecycler(jsonData) {
     let previewPool = document.getElementById("previewPool");
     if (!itemsPool) return;
 
+    document.getElementById('UserRecyclePercent').innerHTML = 'Потери: ' + jsonData.user_recycle_skill + '%';
+    document.getElementById('fillBackPercent').style.width = jsonData.user_recycle_skill + '%';
+
     $("#itemsPool .InventoryCell").remove();
     $("#itemsPool .RecycleSection").remove();
     $("#previewPool .InventoryCell").remove();
@@ -46,6 +49,15 @@ function FillRecycler(jsonData) {
                 recycler_slot: Number(i),
             }));
         };
+
+        let tax = document.createElement('div');
+        tax.className = 'itemTax';
+        tax.innerHTML = `
+            <span style="float: left">Налог:</span><br>
+            <span style="float: right">${jsonData.recycle_slots[i].tax_percent}%</span>
+        `;
+
+        if (jsonData.recycle_slots[i].tax_percent > 0) cell.appendChild(tax);
 
         let section = CheckRecycleSection(jsonData.recycle_slots[i].slot, itemsPool);
         section.appendChild(cell);

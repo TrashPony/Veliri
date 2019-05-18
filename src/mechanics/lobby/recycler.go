@@ -11,8 +11,9 @@ import (
 )
 
 type RecycleItem struct {
-	Slot     *inventory.Slot `json:"slot"`
-	Recycled bool            `json:"recycled"` // если false то итем не плавится
+	Slot       *inventory.Slot `json:"slot"`
+	Recycled   bool            `json:"recycled"` // если false то итем не плавится
+	TaxPercent int             `json:"tax_percent"`
 }
 
 // я хз как еще это нормально назвать)
@@ -85,7 +86,10 @@ func GetRecycleItems(recycleItems *map[int]*RecycleItem, client *player.Player, 
 			res, ok := gameTypes.Resource.GetBaseByID(item.Slot.ItemID)
 			if ok {
 				item.Recycled = true
-				ParseItems(&recyclerItems, percentUserSkills+gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
+				item.Slot.Tax = (item.Slot.Quantity / 100) * gameBase.GetRecyclePercent(item.Slot.ItemID)
+				item.TaxPercent = gameBase.GetRecyclePercent(item.Slot.ItemID)
+
+				ParseItems(&recyclerItems, 100-(percentUserSkills+gameBase.GetRecyclePercent(item.Slot.ItemID)), res, item.Slot.Quantity)
 				ParseItems(&inBaseItems, gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
 			}
 		}
@@ -108,8 +112,11 @@ func GetRecycleItems(recycleItems *map[int]*RecycleItem, client *player.Player, 
 
 			bluePrint := gameTypes.BluePrints.GetByItemTypeAndID(item.Slot.ItemID, item.Slot.Type)
 			if bluePrint != nil {
+
 				item.Recycled = true
-				ParseItems(&recyclerItems, percentUserSkills*gameBase.GetSumEfficiency(), bluePrint, item.Slot.Quantity)
+				//item.ProductionLossPercent = percentUserSkills + gameBase.GetRecyclePercent(item.Slot.ItemID)
+
+				ParseItems(&recyclerItems, 100-percentUserSkills, bluePrint, item.Slot.Quantity)
 			}
 		}
 	}

@@ -10,7 +10,7 @@ CREATE TABLE bases
   transport_count              int, /* количество эвакуатор у базы */
   defender_count               int, /* количество защитников */
   gravity_radius               int, /* радиус стабильной гравитации вокруг баз */
-  --Replicas Explores Reverses, нация за кторую играет игрок
+  --Replics Explores Reverses, нация за кторую играет игрок
   fraction                     varchar(64),
 
   -- количество ресурсов ниже которого будет снижатся налоги на переработку (на каждый ресурс индивидуально)

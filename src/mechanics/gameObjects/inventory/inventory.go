@@ -22,7 +22,9 @@ type Slot struct {
 	HP         int         `json:"hp"`
 	MaxHP      int         `json:"max_hp"`
 	Size       float32     `json:"size"`
-	Find       bool        `json:"find"` // поле для верстака, обозначающие естли такое количество итемов на складе или нет
+
+	Tax  int  `json:"tax"`  // поле для налогов
+	Find bool `json:"find"` // поле для верстака, обозначающие естли такое количество итемов на складе или нет
 }
 
 func (inv *Inventory) SetSlotsSize(size int) {
