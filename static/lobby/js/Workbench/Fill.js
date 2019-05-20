@@ -334,7 +334,8 @@ function fillHeadWorkbench(jsonData, needMark) {
     } else {
         itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)";
     }
-    itemPreview.innerHTML = "<span>x" + jsonData.count + "</span>";
+
+    itemPreview.innerHTML = "<span>x" + jsonData.blue_print.count + "</span>";
 
     fillNeedItems(jsonData.preview_recycle_slots, needMark);
 }

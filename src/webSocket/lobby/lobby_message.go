@@ -59,5 +59,8 @@ type Message struct {
 	SearchMaps []*maps.SearchMap          `json:"search_maps"`
 	Mission    *mission.Mission           `json:"mission"`
 
+	UserWorkSkillDetailPercent int `json:"user_work_skill_detail_percent"`
+	UserWorkSkillTimePercent   int `json:"user_work_skill_time_percent"`
+
 	Base *base.Base `json:"base"`
 }

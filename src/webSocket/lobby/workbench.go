@@ -43,7 +43,11 @@ func selectBP(user *player.Player, msg Message) {
 
 		lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: recyclerItems,
 			BluePrint: bluePrint, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(slot.ItemID), Count: msg.Count,
-			MaxCount: slot.Quantity, StorageSlot: msg.StorageSlot}
+			MaxCount: slot.Quantity, StorageSlot: msg.StorageSlot,
+			UserWorkSkillDetailPercent: user.CurrentSkills["materials_production"].Level * 5,
+			UserWorkSkillTimePercent:   user.CurrentSkills["production_time"].Level * 5,
+			Base:                       userBase,
+		}
 	}
 }
 
@@ -105,7 +109,7 @@ func selectWork(user *player.Player, msg Message) {
 			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 
 			lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: returnItems,
-				BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: bp.Count,
+				BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: 1,
 				StorageSlot: msg.StorageSlot, ID: msg.ID, BlueWork: work}
 		}
 	} else {
@@ -134,7 +138,7 @@ func selectWork(user *player.Player, msg Message) {
 		}
 
 		lobbyPipe <- Message{Event: "SelectWork", UserID: user.GetID(), PreviewRecycleSlots: returnItems,
-			BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: bp.Count * count,
+			BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: count,
 			StorageSlot: msg.StorageSlot, ID: msg.ID, BluePrintID: msg.BluePrintID, MineralSaving: msg.MineralSaving,
 			TimeSaving: msg.TimeSaving, ToTime: msg.ToTime, StartTime: msg.StartTime, MaxCount: len(works)}
 	}
