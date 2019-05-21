@@ -2,16 +2,12 @@ package lobby
 
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
-	"github.com/TrashPony/Veliri/src/mechanics/dialog"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
-	"log"
 	"strconv"
 	"sync"
 )
@@ -34,29 +30,13 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		ws.WriteJSON(Message{Event: "OutBase"})
 		return
 	} else {
+
+		usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента
 		newPlayer.LastBaseID = newPlayer.InBaseID
 
 		// отправляем текущие состояние базы
 		BaseStatus(newPlayer)
-
-		if newPlayer.Fraction == "" {
-			//новый игрок без фракции должен сделать выбор
-			lobbyPipe <- Message{Event: "choiceFraction", UserID: newPlayer.GetID()}
-		} else {
-			if newPlayer.Training == 0 {
-
-				// если игрок не прошел обучение то кидаем ему первую страницу диалога введения
-				trainingDialog := gameTypes.Dialogs.GetByID(1)
-				trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "")
-				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
-				newPlayer.SetOpenDialog(trainingDialog)
-
-			} else {
-				if newPlayer.Training < 999 {
-					lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
-				}
-			}
-		}
+		checkNoobs(newPlayer)
 
 		// убираем скорость у игрока если у него есть отряд
 		if newPlayer.GetSquad() != nil {
@@ -65,13 +45,32 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		}
 	}
 
-	usersLobbyWs[ws] = newPlayer // Регистрируем нового Клиента
-
 	print("WS lobby Сессия: ") // просто смотрим новое подключение
 	println(" login: " + login + " id: " + strconv.Itoa(id))
 	defer ws.Close() // Убедитесь, что мы закрываем соединение, когда функция возвращается (с) гугол мужик
 
 	Reader(ws)
+}
+
+func checkNoobs(newPlayer *player.Player) {
+	if newPlayer.Fraction == "" {
+		//новый игрок без фракции должен сделать выбор
+		lobbyPipe <- Message{Event: "choiceFraction", UserID: newPlayer.GetID()}
+	} else {
+		if newPlayer.Training == 0 {
+
+			// если игрок не прошел обучение то кидаем ему первую страницу диалога введения
+			trainingDialog := gameTypes.Dialogs.GetByID(1)
+			trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "")
+			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
+			newPlayer.SetOpenDialog(trainingDialog)
+
+		} else {
+			if newPlayer.Training < 999 {
+				lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
+			}
+		}
+	}
 }
 
 func Reader(ws *websocket.Conn) {
@@ -82,7 +81,7 @@ func Reader(ws *websocket.Conn) {
 		var msg Message
 
 		err := ws.ReadJSON(&msg) // Читает новое сообщении как JSON и сопоставляет его с объектом Message
-		if err != nil {          // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
+		if err != nil { // Если есть ошибка при чтение из сокета вероятно клиент отключился, удаляем его сессию
 			println(err.Error())
 			utils.DelConn(ws, &usersLobbyWs, err)
 			break
@@ -149,68 +148,6 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "CancelCraft" {
 				cancelCraft(user, msg)
 			}
-
-			//todo от сюда перенести все в раздел other
-			if msg.Event == "LoadAvatar" {
-				user.AvatarIcon = msg.File
-				dbPlayer.UpdateUser(user)
-			}
-
-			if msg.Event == "SetBiography" {
-				user.Biography = msg.Biography
-				dbPlayer.UpdateUser(user)
-			}
-
-			if msg.Event == "OpenUserStat" {
-				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), Player: user}
-			}
-
-			if msg.Event == "OpenDialog" {
-
-			}
-
-			if msg.Event == "Ask" {
-				page, err, action, mission := dialog.Ask(user, user.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
-				if usersLobbyWs[ws].InBaseID > 0 && err == nil {
-					lobbyPipe <- Message{Event: "dialog", UserID: user.GetID(), DialogPage: page, DialogAction: action, Mission: mission}
-				} else {
-					lobbyPipe <- Message{Event: "Error", UserID: user.GetID(), Error: err.Error()}
-				}
-			}
-
-			if msg.Event == "training" {
-				user.Training = msg.Count
-				dbPlayer.UpdateUser(user)
-			}
-
-			if msg.Event == "upSkill" {
-				skill, ok := user.UpSkill(msg.ID)
-				if ok {
-					lobbyPipe <- Message{Event: "upSkill", UserID: user.GetID(), Player: user, Skill: *skill}
-					dbPlayer.UpdateUser(user)
-				} else {
-					lobbyPipe <- Message{Event: "upSkill", UserID: user.GetID(), Error: "no points"}
-				}
-			}
-
-			if msg.Event == "openMapMenu" {
-				userBase, _ := bases.Bases.Get(user.InBaseID)
-				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), Maps: maps.Maps.GetAllShortInfoMap(), ID: userBase.MapID}
-			}
-
-			if msg.Event == "previewPath" {
-				userBase, _ := bases.Bases.Get(user.InBaseID)
-				if userBase.MapID != msg.ID {
-					searchMaps, _ := maps.Maps.FindGlobalPath(userBase.MapID, msg.ID)
-					lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), SearchMaps: searchMaps}
-				}
-			}
-
-			if msg.Event == "openDepartmentOfEmployment" {
-				userBase, _ := bases.Bases.Get(user.InBaseID)
-				page, _ := dialog.GetBaseGreeting(user, userBase)
-				lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), DialogPage: page}
-			}
 		}
 	}
 }
@@ -223,7 +160,6 @@ func ReposeSender() {
 			if client.GetID() == resp.UserID {
 				err := ws.WriteJSON(resp)
 				if err != nil {
-					log.Fatal("lobby sender " + err.Error())
 					utils.DelConn(ws, &usersLobbyWs, err)
 				}
 			}

@@ -40,7 +40,7 @@ func main() {
 	go lobby.WorkerChecker()
 	go lobby.BaseStatusSender()
 
-	go other.CommonChatSender()
+	go other.ReposeSender()
 	go other.UserOnlineChecker()
 	go other.LocalChatChecker()
 	go other.NotifyWorker()
@@ -55,8 +55,9 @@ func main() {
 	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	go ai.InitAI()          // запускает ботов
 
-	log.Println("http server started on :8080")
-	err := http.ListenAndServe(":8080", router) // запускает веб сервер на 8080 порту
+	port := "8080"
+	log.Println("http server started on :"+ port)
+	err := http.ListenAndServe(":" + port, router) // запускает веб сервер на 8080 порту
 	if err != nil {
 		log.Panic(err)
 	}

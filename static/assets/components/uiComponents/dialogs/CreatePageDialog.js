@@ -97,7 +97,7 @@ function CreateAsk(dialogBlock, page, deletePage) {
         ask.innerHTML = "<div class='wrapperAsk' id='ask" + page.asc[i].id + "'>" + page.asc[i].text + "</div>";
 
         $(ask).click(function () {
-            lobby.send(JSON.stringify({
+            chat.send(JSON.stringify({
                 event: "Ask",
                 to_page: page.asc[i].to_page,
                 ask_id: page.asc[i].id,

@@ -66,7 +66,7 @@ function OpenCommonUserStat() {
             </div>
     `;
 
-    lobby.send(JSON.stringify({
+    chat.send(JSON.stringify({
         event: "OpenUserStat",
     }));
 }
@@ -113,7 +113,7 @@ function OpenSkillsUserStat() {
             </div>
         </div>`;
 
-    lobby.send(JSON.stringify({
+    chat.send(JSON.stringify({
         event: "OpenUserStat",
     }));
 }
@@ -122,7 +122,7 @@ function SelectAvatarFile(e) {
     let file_reader = new FileReader(e.target.files[0]);
     file_reader.readAsDataURL(e.target.files[0]);
     file_reader.onload = function (evt) {
-        lobby.send(JSON.stringify({
+        chat.send(JSON.stringify({
             event: "LoadAvatar",
             file: evt.target.result
         }));
@@ -130,7 +130,7 @@ function SelectAvatarFile(e) {
 }
 
 function SetBiography() {
-    lobby.send(JSON.stringify({
+    chat.send(JSON.stringify({
         event: "SetBiography",
         biography: document.getElementById("userBiography").value,
     }));

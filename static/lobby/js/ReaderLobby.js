@@ -1,4 +1,5 @@
 function ReaderLobby(jsonMessage) {
+    console.log(JSON.parse(jsonMessage).event)
     let event = JSON.parse(jsonMessage).event;
     if (event === "InitLobby") {
         let login = document.getElementById('login');
@@ -63,40 +64,11 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === 'choiceFractionComplete') {
-        if (document.getElementById("mask")) document.getElementById("mask").remove();
+        if (document.getElementById("fullMask")) document.getElementById("fullMask").remove();
         if (document.getElementById("choiceBlock")) document.getElementById("choiceBlock").remove();
     }
     if (event === "choiceFraction") {
         choiceFraction()
-    }
-
-    if (event === 'OpenUserStat') {
-        FillUserStatus(JSON.parse(jsonMessage).player);
-    }
-
-    if (event === "upSkill") {
-        if (JSON.parse(jsonMessage).error) {
-            if (document.getElementById('skillUpdatePanel')) {
-                document.getElementById('skillUpdatePanel').style.animation = 'alert 500ms 1 ease-in-out';
-                setTimeout(function () {
-                    document.getElementById('skillUpdatePanel').style.animation = 'none';
-                }, 500)
-            }
-        } else {
-            FillUserStatus(JSON.parse(jsonMessage).player, JSON.parse(jsonMessage).skill)
-        }
-    }
-
-    if (event === "openMapMenu") {
-        FillGlobalMap(JSON.parse(jsonMessage).maps, JSON.parse(jsonMessage).id)
-    }
-
-    if (event === "previewPath") {
-        PreviewPath(JSON.parse(jsonMessage).search_maps)
-    }
-
-    if (event === "openDepartmentOfEmployment") {
-        FillDepartment(JSON.parse(jsonMessage).dialog_page)
     }
 
     if (event === "BaseStatus") {

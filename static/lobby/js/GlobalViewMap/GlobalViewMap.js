@@ -13,7 +13,7 @@ function GlobalViewMap() {
     `;
 
     if (!allMaps) {
-        lobby.send(JSON.stringify({
+        chat.send(JSON.stringify({
             event: "openMapMenu",
         }));
     } else {

@@ -26,6 +26,10 @@ func (d *Dialog) GetPageByType(typePage string) *Page {
 func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorName string) {
 	// %UserName% %BaseName% %ToBaseName%
 
+	if d == nil {
+		return
+	}
+
 	for _, page := range d.Pages {
 		page.Text = strings.Replace(page.Text, "%UserName%", userName, -1)
 		page.Text = strings.Replace(page.Text, "%BaseName%", BaseName, -1)

@@ -1,15 +1,10 @@
 package lobby
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/blueprints"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/lobby"
 )
 
@@ -42,22 +37,9 @@ type Message struct {
 	TimeSaving    int   `json:"time_saving"`
 	BluePrintID   int   `json:"blue_print_id"`
 
-	Player *player.Player `json:"player"`
-
-	DialogPage   *dialog.Page `json:"dialog_page"`
-	DialogAction string       `json:"dialog_action"`
-	ToPage       int          `json:"to_page"`
-	AskID        int          `json:"ask_id"`
-
 	Fraction string `json:"fraction"`
 
-	File      string      `json:"file"`
-	Biography string      `json:"biography"`
-	Skill     skill.Skill `json:"skill"`
-
-	Maps       map[int]*_map.ShortInfoMap `json:"maps"`
-	SearchMaps []*maps.SearchMap          `json:"search_maps"`
-	Mission    *mission.Mission           `json:"mission"`
+	DialogPage *dialog.Page `json:"dialog_page"`
 
 	UserWorkSkillDetailPercent int `json:"user_work_skill_detail_percent"`
 	UserWorkSkillTimePercent   int `json:"user_work_skill_time_percent"`

@@ -73,4 +73,42 @@ function ChatReader(data) {
     if (data.event === "OpenLocalChat") {
         //systemMessage("Вы входите на территорию" + data.group.name);
     }
+
+    // other reader
+    if (data.event === "openMapMenu") {
+        FillGlobalMap(data.maps, data.id)
+    }
+
+    if (data.event === "previewPath") {
+        PreviewPath(data.search_maps)
+    }
+
+    if (data.event === 'OpenUserStat') {
+        FillUserStatus(data.player);
+    }
+
+    if (data.event === "upSkill") {
+        if (data.error) {
+            if (document.getElementById('skillUpdatePanel')) {
+                document.getElementById('skillUpdatePanel').style.animation = 'alert 500ms 1 ease-in-out';
+                setTimeout(function () {
+                    document.getElementById('skillUpdatePanel').style.animation = 'none';
+                }, 500)
+            }
+        } else {
+            FillUserStatus(data.player, data.skill)
+        }
+    }
+
+    if (data.event === "openDepartmentOfEmployment") {
+        FillDepartment(data.dialog_page)
+    }
+
+    if (data.event === "dialog") {
+        FillDepartment(data.dialog_page, data.dialog_action, data.mission)
+    }
+
+    if (data.event === "training") {
+        Training(data.count)
+    }
 }

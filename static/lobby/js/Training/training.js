@@ -379,7 +379,7 @@ function createInfoText(toInfoBlock, id, offsetY, offsetX, width, widthText, tex
 
 function progressTraining(lvl) {
     lvl++;
-    lobby.send(JSON.stringify({
+    chat.send(JSON.stringify({
         event: "training",
         count: lvl,
     }));

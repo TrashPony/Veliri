@@ -86,7 +86,7 @@ function FillGlobalMap(maps, userSectorID) {
 }
 
 function previewPath(id) {
-    lobby.send(JSON.stringify({
+    chat.send(JSON.stringify({
         event: "previewPath",
         id: Number(id)
     }));

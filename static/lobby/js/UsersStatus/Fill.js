@@ -133,7 +133,7 @@ function SelectSkill(id, level, name, specification, icon, needPrice, type) {
          <div style="background: ` + back5 + `"></div>`);
 
     document.getElementById('upperSkill').onclick = function () {
-        lobby.send(JSON.stringify({
+        chat.send(JSON.stringify({
             event: "upSkill",
             id: Number(id),
         }));

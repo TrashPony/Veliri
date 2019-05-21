@@ -110,6 +110,16 @@ input:hover {
     z-index: 999;
 }
 
+#fullMask {
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    position: fixed;
+}
+
 .h {
     font-weight: bold;
     text-shadow: #28a5e4 0 0 4px;

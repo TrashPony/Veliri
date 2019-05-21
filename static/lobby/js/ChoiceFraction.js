@@ -1,6 +1,7 @@
 function choiceFraction() {
+    console.log(1)
     let mask = document.createElement("div");
-    mask.id = "mask";
+    mask.id = "fullMask";
     mask.style.display = "block";
     document.body.appendChild(mask);
 

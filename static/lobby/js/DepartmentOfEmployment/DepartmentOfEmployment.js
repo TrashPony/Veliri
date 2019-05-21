@@ -49,7 +49,7 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
     });
 
     if (!dialogPage) {
-        lobby.send(JSON.stringify({
+        chat.send(JSON.stringify({
             event: "openDepartmentOfEmployment",
         }));
     } else {
