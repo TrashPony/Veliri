@@ -34,11 +34,19 @@ function UpdateBaseStatus(base) {
         baseEfficiency.style.color = styleEfficiency;
     }
 
-    UpdateDetailStatus(base)
+    UpdateDetailStatus(base);
 
     if (document.getElementById('processorRoot')) {
         lobby.send(JSON.stringify({
             event: "PlaceItemToProcessor",
+        }));
+    }
+
+    if (document.getElementById('Workbench') && workBenchState === "selectBP"){
+        lobby.send(JSON.stringify({
+            event: "SelectBP",
+            storage_slot: bpSlot,
+            count: bpCount
         }));
     }
 }

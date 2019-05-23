@@ -34,6 +34,7 @@ function InitWorkbench() {
         moveWindow(event, 'Workbench')
     });
     $(buttons.close).mousedown(function () {
+        workBenchState = null;
         workbench.remove();
     });
     workbench.appendChild(buttons.move);
@@ -70,8 +71,8 @@ function InitWorkbench() {
 
     let workStatus = document.createElement("div");
     workStatus.innerHTML = "" +
-        "<div id='mineralTax' style='background-image: url(../../lobby/img/mineral.png)'><span>0%</span></div>" +
-        "<div id='timeTax' style='background-image: url(../../lobby/img/timeIcon.png)'><span>0%</span></div>";
+        "<div id='mineralTax' style='background-image: url(../../lobby/img/mineral.png)'><span id='mineralTaxSpan'>0%</span></div>" +
+        "<div id='timeTax' style='background-image: url(../../lobby/img/timeIcon.png)'><span id='timeTaxSpan'>0%</span></div>";
     workStatus.id = "workStatus";
 
     let itemPreview = document.createElement("div");
@@ -121,6 +122,7 @@ function InitWorkbench() {
 
     let cancel = createInput("Закрыть", buttonWrapper);
     $(cancel).click(function () {
+        workBenchState = null;
         workbench.remove();
     });
 

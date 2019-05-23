@@ -59,9 +59,10 @@ func craft(user *player.Player, msg Message) {
 
 	if findStorage && findSlot && slot.Type == "blueprints" && slot.Quantity >= msg.Count {
 		bluePrint, _ := gameTypes.BluePrints.GetByID(slot.ItemID)
+		mineralTaxPercentage := 100 + (userBase.GetSumEfficiency() - (user.CurrentSkills["materials_production"].Level * 5))
 
 		recyclerItems := make([]*inventory.Slot, 0)
-		lobby.ParseItems(&recyclerItems, 100+(userBase.GetSumEfficiency()-(user.CurrentSkills["materials_production"].Level*5)), bluePrint, msg.Count)
+		lobby.ParseItems(&recyclerItems, mineralTaxPercentage, bluePrint, msg.Count)
 
 		for _, slot := range recyclerItems {
 			if !baseStorage.ViewItems(slot.ItemID, slot.Type, slot.Quantity) {
@@ -74,15 +75,15 @@ func craft(user *player.Player, msg Message) {
 
 			nowSecond := blueWorks.BlueWorks.GetWorkTime(user.GetID(), user.InBaseID)
 			nowSecond += int64(bluePrint.CraftTime)
-			finishTime := time.Unix(nowSecond, 0)
+			finishTime := time.Unix(nowSecond, 0) // TODO user.CurrentSkills["production_time"].Level * 5
 
 			newWork := blueprints.BlueWork{
 				BlueprintID:          bluePrint.ID,
 				BaseID:               user.InBaseID,
 				UserID:               user.GetID(),
 				FinishTime:           finishTime,
-				TimeTaxPercentage:    0,
-				MineralTaxPercentage: 0,
+				TimeTaxPercentage:    user.CurrentSkills["production_time"].Level * 5,
+				MineralTaxPercentage: mineralTaxPercentage,
 			}
 
 			blueWorks.BlueWorks.Add(&newWork)
@@ -129,6 +130,7 @@ func selectWork(user *player.Player, msg Message) {
 		count := 0
 		for _, work := range works {
 			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
+
 				percentRemainResource := 100 + work.MineralTaxPercentage
 				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 				msg.Count--

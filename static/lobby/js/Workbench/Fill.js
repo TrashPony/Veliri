@@ -1,5 +1,10 @@
 let refreshSelectActiveWork;
 
+// перменная отвечает за состояние обьекта, выбран чертеж или текущая работа
+let workBenchState = null;
+let bpSlot = null;
+let bpCount = null;
+
 function FillWorkbench(jsonData) {
     let bpBlock = document.getElementById("bluePrints");
     if (!bpBlock) return;
@@ -54,6 +59,7 @@ function FillWorkbench(jsonData) {
 
 function FillCurrentWorks(works) {
     let workBlock = document.getElementById("currentCrafts");
+
     if (!workBlock) return;
 
     // эти переменные определяют порядок крафта по бд, и т.к. крафты идут попорядку это делит крафты на пачки по времени
@@ -147,7 +153,7 @@ function innerDate(work) {
     let data = new Date();
     let finishTime = new Date(work.finish_time);
     data.setTime(finishTime.getTime() - new Date().getTime());
-
+    // todo неправильно отнимается время крафта
     let realTimeCraft = work.blueprint.craft_time - (work.blueprint.craft_time * work.time_tax_percentage / 100);
     let startTime = new Date().setTime(finishTime.getTime() - realTimeCraft * 1000);
     let diffTime = (new Date() - startTime) / 1000;
@@ -189,6 +195,8 @@ function innerDate(work) {
 }
 
 function SelectWork(jsonData) {
+    console.log(jsonData)
+    workBenchState = 'selectWork';
     fillHeadWorkbench(jsonData, false);
 
     // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
@@ -281,6 +289,21 @@ function getTimeWork(craftTime, full) {
 }
 
 function SelectBP(jsonData) {
+    workBenchState = 'selectBP';
+
+    bpSlot = Number(jsonData.storage_slot);
+    bpCount = Number(jsonData.count);
+
+    let mineralEfficiency = 100 + (jsonData.base.efficiency - jsonData.user_work_skill_detail_percent);
+    document.getElementById('mineralTaxSpan').innerHTML = mineralEfficiency + '%';
+    if (mineralEfficiency < 0) {
+        document.getElementById('mineralTaxSpan').style.color='#00ff2d';
+    } else if (mineralEfficiency === 0){
+        document.getElementById('mineralTaxSpan').style.color='#00c2ff';
+    }
+
+    document.getElementById('timeTaxSpan').innerHTML = -jsonData.user_work_skill_time_percent + '%';
+    document.getElementById('timeTaxSpan').style.color='#00ff2d';
 
     fillHeadWorkbench(jsonData, true);
     clearInterval(refreshSelectActiveWork);
@@ -302,7 +325,6 @@ function SelectBP(jsonData) {
 
     let processButton = document.getElementById("processButton");
     processButton.value = "Создать";
-
     processButton.onclick = function () {
         lobby.send(JSON.stringify({
             event: "Craft",
