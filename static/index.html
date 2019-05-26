@@ -1,14 +1,407 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8"/>
     <title>Veliri</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<header></header>
-<div id="main">
-    <div id="news"></div>
-</div>
-<footer></footer>
+
+<header>
+    <ul>
+        <li><a href="./lobby">Играть</a></li>
+        <li><a href="#aboutGame">О Игре</a></li>
+        <li><a href="#gallery">Галерея</a></li>
+        <li><a href="#prehistory">Предыстория</a></li>
+        <li><a href="#">Wiki</a></li>
+        <li><a href="#">Форум</a></li>
+    </ul>
+
+    <script>
+
+        let currentSlide = 0;
+        let slides = [
+            './assets/indexImg/slide1.jpg',
+            './assets/indexImg/slide2.jpg',
+            './assets/indexImg/slide3.jpg',
+            './assets/indexImg/slide4.jpg',
+            './assets/indexImg/slide5.jpg',
+            './assets/indexImg/slide6.jpg',
+            './assets/indexImg/slide7.jpg',
+        ];
+
+        function slide(side) {
+            let screenShot = document.getElementById('screenShot');
+            let imageOpen = document.getElementById('imageOpen');
+
+            if (side) {
+                currentSlide--;
+            } else {
+                currentSlide++;
+            }
+            if (slides.length < currentSlide + 1) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = slides.length - 1;
+
+            imageOpen.href = slides[currentSlide];
+            screenShot.style.backgroundImage = 'url("' + slides[currentSlide] + '")';
+        }
+    </script>
+
+</header>
+
+<main>
+    <section id="main">
+        <div id="logo"></div>
+        <a id="play-button" href="./lobby" target="_blank">Play</a>
+    </section>
+
+    <div id="mainWrapper">
+        <section id="aboutGame">
+            <div class="wrapperSection">
+                <h3 class="headSection">О игре</h3>
+                <p> Veliri - игра которую я делаю джва года в которой можно грабить корованы и набигать на базы
+                    игроков </p>
+            </div>
+        </section>
+        <section id="features">
+            <div id="features-container">
+                <div class="feature">
+                    <div class="features-icon"></div>
+                    <span>Тупая механика</span>
+                </div>
+                <div class="feature">
+                    <div class="features-icon"></div>
+                    <span>Говяный сюжет</span>
+                </div>
+                <div class="feature">
+                    <div class="features-icon"></div>
+                    <span>Дерьмовый графоний</span>
+                </div>
+                <div class="feature">
+                    <div class="features-icon"></div>
+                    <span>Бессмысленные квесты</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery">
+            <div class="wrapperSection">
+                <h3 class="headSection">Галерея</h3>
+
+                <div id="galleryBlock">
+                    <div id="leftArrow" onclick="slide(true)"></div>
+                    <a id="imageOpen" target="_blank" href="./assets/indexImg/slide1.jpg">
+                        <div id="screenShot" style="background-image: url('./assets/indexImg/slide1.jpg')"></div>
+                    </a>
+                    <div id="rightArrow" onclick="slide(false)"></div>
+                </div>
+            </div>
+        </section>
+        <section id="prehistory">
+            <div class="wrapperSection" style="padding-bottom: 20px;">
+                <h3 class="headSection">Предыстория</h3>
+
+                <div class="historySection">
+                    <h4 class="headSection">Роковое открытие</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history1Back.jpg')">
+                        <!--1 (картинка с землей будущего, но прошлого по лору игры)-->
+                        <div id="imgHistory1Animate1"></div>
+                        <div class="imgHistory1Animate2"></div>
+                        <div class="imgHistory1Animate3"></div>
+                        <div class="imgHistory1Animate2" style="top: 30px; left: 230px;"></div>
+                        <div class="imgHistory1Animate3" style="top: 27px; left: 130px;"></div>
+                        <div class="imgHistory1Animate2" style="top: 45px; left: 160px;"></div>
+                        <div class="imgHistory1Animate3" style="top: 45px; left: 450px;"></div>
+                    </div>
+
+                    <p>
+                        Когда-то была малэнкая, но гордая планета под названием земля. Земля была сильно технологически
+                        развита, но освоить космос за пределами солнечной системы так и не удалось. Поэтому люди изучали
+                        космос с помощью телескопов и однажды было сделано открытие которое заставило людей сжать свои
+                        пуканы >_<.
+                    </p>
+                    <p>
+                        На расстояние 5.5455 световых года были обнаружены 2 нейтронный звезды слияние которых
+                        произойдет
+                        в
+                        ближайшие десятилетия. По расчетом ученых при слияние звезд будет создан гамма всплеск силы
+                        которого
+                        уничтожат все жизнь на 66% земли мгновенно, разрушит озоновый слой земли уцелевшая часть земли
+                        перестанет быть пригодна для жизни.
+                    </p>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Борьба за выживание</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history2Back.jpg')">
+                        <!--1 2 Картинка с учеными и касмадромами -->
+                        <div id="imgHistory2Animate1">
+                            <div class="imgHistory2AnimateBurn">W</div>
+                        </div>
+                        <div id="imgHistory2Animate2">
+                            <div class="imgHistory2AnimateBurn">W</div>
+                        </div>
+                        <div id="imgHistory2Animate3">
+                            <div class="imgHistory2AnimateBurn">W</div>
+                        </div>
+                        <div id="imgHistory2Animate4">
+                            <div class="imgHistory2AnimateBurn" style="top: 50px; box-shadow: none;">o</div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 50px; box-shadow: none; left: 106px; transform: scale(0.3) rotate(240deg);">
+                                o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 79px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 15px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 92px; box-shadow: none; left: 70px; transform: scale(0.3, 1) rotate(271deg);">
+                                o
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <p>
+                        До уничтожения солнечной системы оставались еще десятилетия и было принято решение для
+                        предотвращения
+                        вымирания людей как вида запустить проект Ковчег. Гигантские космические мега-структуры,
+                        снабженные
+                        собственными производственными и добывательскими мощностями под управлением ИИ. Но самое ценное
+                        в
+                        них -
+                        ключ к новой жизни. ДНК людей, всей флоры и фауны земли, а так же отсеки с криокапсулами для
+                        людей
+                        хранились в самом сердце такого Ковчега. Задача такого ковчега найти новый пригодный для жизни
+                        мир,
+                        пробудить экипаж и попытаться возродить жизнь.
+                    </p>
+
+                    <p>
+                        Параллельно проекту Ковчег были разработаны проекты
+                        для
+                        изучения природы самого пространства для проектирование и создания прыжковых двигателей и
+                        глубинное
+                        сканирование космоса на наличие пригодных для жизни планет.
+                    </p>
+                    <p>Все ресурсы и умы планеты были брошены на преодоление вымирания.</p>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Исход</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history3Back.jpg')">
+                        <!--3 Картинка с улетающими в ибиня кораблями -->
+                        <div class="asteroids1" style="top: 50px; left: 150px;"></div>
+                        <div class="asteroids2" style="top: 260px; left: 340px;"></div>
+                        <div class="asteroids3" style="top: 140px; left: 60px;"></div>
+                        <div class="asteroids4" style="top: 200px; left: 300px;"></div>
+                        <div class="asteroids1" style="top: 150px; left: 120px;"></div>
+                        <div class="asteroids2" style="top: 240px; left: 470px;"></div>
+                        <div class="asteroids3" style="top: 170px; left: 460px;"></div>
+                        <div class="asteroids4" style="top: 80px; left: 220px;"></div>
+
+                        <div class="spaceShip3" style="animation: imgHistory3Animate1 10s infinite ease-in-out;">
+                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
+                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                        </div>
+
+                        <div class="spaceShip3" style="animation: imgHistory3Animate2 10s infinite ease-in-out;">
+                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
+                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                        </div>
+
+                        <div class="spaceShip3" style="animation: imgHistory3Animate3 10s infinite ease-in-out;">
+                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
+                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>
+                        Каждый год с космодромов срывались десятки ковчегов. Каждое нового поколение ковчегов были
+                        совершенней
+                        предыдущих, их алгоритмы менялись, а технологии развивались. Помимо ковчегов улетали и обычные
+                        корабли с
+                        людьми надеясь укрыться от всплеска за крупными небесными телами. Остальные же строили убежища
+                        на
+                        обратной стороне от всплеска планете. (типо не дорасказаная история типо пиздата)
+                    </p>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Новый дом</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history4Back.jpg')">
+                        <!-- 4 картинка с планетой Veliri и рядом кораблем ковчегом-->
+                        <div id="scannerPlanet">
+                            <div class="scannerLine"></div>
+                            <div class="scannerLine" style="animation-delay: 300ms"></div>
+                            <div class="scannerLine" style="animation-delay: 600ms"></div>
+                            <div class="scannerLine" style="animation-delay: 900ms"></div>
+                            <div class="scannerLine" style="animation-delay: 1200ms"></div>
+                            <div class="scannerLine" style="animation-delay: 1500ms"></div>
+                            <div class="scannerLine" style="animation-delay: 1800ms"></div>
+                            <div class="scannerLine2"></div>
+                            <div class="scannerLine2" style="animation-delay: 300ms"></div>
+                            <div class="scannerLine2" style="animation-delay: 600ms"></div>
+                            <div class="scannerLine2" style="animation-delay: 900ms"></div>
+                            <div class="scannerLine2" style="animation-delay: 1200ms"></div>
+                            <div class="scannerLine2" style="animation-delay: 1500ms"></div>
+                            <div class="scannerLine2" style="animation-delay: 1800ms"></div>
+                        </div>
+                        <div class="spaceShip4">
+                            <div class="imgHistory2AnimateBurn" style="top: 48px; left: 39px; box-shadow: none;">o</div>
+                            <div class="imgHistory2AnimateBurn" style="top: 55px; box-shadow: none; left: 119px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 75px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 67px;">o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 70px; box-shadow: none; left: 88px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                            <div class="imgHistory2AnimateBurn"
+                                 style="top: 83px; box-shadow: none; left: 110px; transform: scale(1.3) rotate(271deg);">
+                                o
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>Года сменялись десятилетиями, затем веками. Ковчег ES-15 выходит на орбиту планеты VEL-31.</p>
+                    <div class="consoleLog">
+                        <span class="consoleRoot">root@ES-15:#</span> сканирование поверхности планеты … <br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        температурный диапазон -80 - +50 <br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        соотношение газов в атмосфере пригодны для дыхания человека <br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        обнаружена вода в жидком состояние <br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        в атмосфере обнаружен метан <br>
+                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> гравитация выше земной в
+                        6 раз <br>
+                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> 87% поверхности планеты
+                        имеет радиационный фон выше нормы <br>
+                        <br>
+                        <span class="consoleRoot">root@ES-15:#</span> орбитального геол-сканирование… <br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>
+                        сканирование не возможно<br>
+                        <br>
+                        <span class="consoleRoot">root@ES-15:#</span> проверка работоспособности криокапсул...<br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        Криокапусала_01: online, все системы работают в штатном режиме.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
+                        пасажира: нет признаков жизни.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Криокапусала_02:
+                        online, не исправна.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
+                        пасажира: нет данных.<br>
+                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span>Криокапусала_03: offline,
+                        нет данных.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
+                        пасажира: нет данных.<br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>Криокапусала_04:
+                        online, все системы работают в штатном режиме.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
+                        пасажира: нет признаков жизни.<br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>Криокапусала_05:
+                        online, все системы работают в штатном режиме.<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
+                        пасажира: нет признаков жизни.<br>
+                        &nbsp;&nbsp;&nbsp;____<br>
+                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span><span
+                                style="color: red">Выживших
+                           не обнаружено.</span><br>
+                        <br>
+                        <span class="consoleRoot">root@ES-15:#</span> проверка генного банка...<br>
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        Генный банк: online, все системы работают в штатном режиме.<br>
+                        <br>
+                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> Планета удовлетворительна
+                        для зарождения жизни.<br><br>
+                        <span style="color: #00ff21">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Начаты процедуры подготовки к высадке на поверхность.<br></span>
+                    </div>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Новый разум</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history5Back.jpg')">
+                        <!-- 5 Поверхность планеты пецзажем и развернутая база -->
+                    </div>
+
+                    <p>Ковчег ES-15 успешно приземлился в зоне меньшего количества радиации. Всего за несколько часов
+                        космический корабль трансформировался в хорошо укрепленный бункер наполовину закопавшийся под
+                        землю.</p>
+
+                    <div class="consoleLog">
+                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
+                        Трансформирование корабля завершено успешно.<br><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #00ff21">Активация колонизационного ИИ для дальнейшей деятельности</span>
+                    </div>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Старые проблемы</h4>
+                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history6Back.jpg')">
+                        <!--6 Встреча картинка с ботами и они такие О_О-->
+                    </div>
+
+                    <p>
+                        4й разведывательный отряд докладывает о ранее неизвестной искусственной форме жизни в секторе
+                        17-ть.
+                        Не удалось выйти с ними на связь.
+                        (хуй знает что тут яще накатать)
+                        обоснование почему всем не управляет единый разум. Сильные помехи и радиации, не дает удаленно
+                        управлять
+                        ботами, а боевые алгоритмы не достаточно самостоятельны для поставленных задач.
+
+                        Почаму ии не обьяденяются потому что каждый алгоритм заложен что он главный
+                        почаму они воюют потому что ресурсы ограничены
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <div id="about">
+        <span style="font-size: 14px;text-align: center;width: 100%;color: #a0a0a0;">TrashPony13@gmail.com 2019</span>
+    </div>
+</footer>
 </body>
 </html>

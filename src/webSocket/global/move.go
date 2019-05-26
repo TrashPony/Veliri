@@ -32,6 +32,7 @@ func Move(ws *websocket.Conn, msg Message) {
 			path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
 			user.GetSquad().ActualPath = &path
 
+			// todo паника когда игрок умер но его цикл движения не прекратился, из за чего происходят проверки тела которого уже нет
 			go MoveUserMS(ws, msg, user, &path)
 
 			if len(path) > 1 {
