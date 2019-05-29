@@ -61,7 +61,7 @@ function FillWorkbench(jsonData) {
         }
     }
 
-    FillCurrentWorks(jsonData.blue_works, jsonData.user_work_skill_time_percent);
+    FillCurrentWorks(jsonData.blue_works);
 
     // удаляем всех кого не обновили
     blueRows.each(function () {
@@ -73,7 +73,7 @@ function FillWorkbench(jsonData) {
     })
 }
 
-function FillCurrentWorks(works, tax) {
+function FillCurrentWorks(works) {
     let workBlock = document.getElementById("currentCrafts");
 
     if (!workBlock) return;
@@ -84,7 +84,7 @@ function FillCurrentWorks(works, tax) {
 
     for (let i in works) {
 
-        let dataRow = innerDate(works[i], tax);
+        let dataRow = innerDate(works[i]);
         if (!dataRow) continue;
 
         // сложный ид для того что бы групировать одинаковые итемы а не добавлять каждый раз новый
@@ -171,29 +171,28 @@ function FillCurrentWorks(works, tax) {
     }
 }
 
-function innerDate(work, tax) {
+function innerDate(work) {
 
     let data = new Date();
+
     let finishTime = new Date(work.finish_time);
+    let startTime = new Date(work.start_time);
+
     data.setTime(finishTime.getTime() - new Date().getTime());
 
-    let realTimeCraft = work.blueprint.craft_time - (work.blueprint.craft_time * work.time_tax_percentage / 100);
-    let startTime = new Date().setTime(finishTime.getTime() - realTimeCraft * 1000);
-    let diffTime = (new Date() - startTime) / 1000;
-
-    let percent = (diffTime * 100) / realTimeCraft;
+    let percent = ((new Date() - startTime.getTime()) * 100) / (finishTime.getTime() - startTime.getTime());
     let widthTimeLine = 0;
 
     let days, hours, minutes, seconds;
     if (percent > 0) {
         widthTimeLine = Math.round(percent);
-        
+
         days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
         hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
         minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
         seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
     } else {
-        let craftTime = work.blueprint.craft_time - ((work.blueprint.craft_time * tax) / 100);
+        let craftTime = (finishTime.getTime() - startTime.getTime())/1000;
         data.setTime(craftTime * 1000);
 
         days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
@@ -230,7 +229,12 @@ function SelectWork(jsonData) {
 
     workBenchState = 'selectWork';
     fillHeadWorkbench(jsonData, false);
-    fillEfficiencyPanel(jsonData.blue_work.mineral_tax_percentage, jsonData.blue_work.time_tax_percentage);
+
+    if (jsonData.blue_work) {
+        fillEfficiencyPanel(jsonData.blue_work.mineral_tax_percentage, jsonData.blue_work.time_tax_percentage);
+    } else {
+        fillEfficiencyPanel(jsonData.mineral_saving, jsonData.time_saving);
+    }
 
     // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
     // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер + сколько вернется ресурсов
@@ -337,6 +341,8 @@ function fillEfficiencyPanel(mineralEfficiency, timeEfficiency) {
 }
 
 function SelectBP(jsonData) {
+    console.log(jsonData);
+
     workBenchState = 'selectBP';
 
     bpSlot = Number(jsonData.storage_slot);
@@ -371,41 +377,72 @@ function SelectBP(jsonData) {
         lobby.send(JSON.stringify({
             event: "Craft",
             storage_slot: Number(jsonData.storage_slot),
-            count: Number(bpCountWork.value)
+            count: Number(bpCountWork.value),
+            user_work_skill_detail_percent: jsonData.user_work_skill_detail_percent,
+            user_work_skill_time_percent: jsonData.user_work_skill_time_percent,
+            efficiency: jsonData.base.efficiency,
         }));
     };
 }
 
 function fillHeadWorkbench(jsonData, needMark) {
-    document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
-    document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.icon + ".png)";
 
-    let itemPreview = document.getElementById("itemPreview");
-    itemPreview.innerHTML = `
+    if ($('#bpName').text() !== jsonData.blue_print.name) {
+        document.getElementById("bpName").innerHTML = jsonData.blue_print.name;
+        document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.icon + ".png)";
+
+        let itemPreview = document.getElementById("itemPreview");
+        itemPreview.innerHTML = `
         ${getBackgroundUrlByItem({type: jsonData.blue_print.item_type, item: {name: jsonData.bp_item.name}})}
-        <span style="z-index: 1">x${jsonData.blue_print.count}</span>
-    `;
+            <span style="z-index: 1">x${jsonData.blue_print.count}</span>
+        `;
+    }
 
     fillNeedItems(jsonData.preview_recycle_slots, needMark);
 }
 
 function fillNeedItems(items, needMark) {
-    let needItems = document.getElementById("needItems");
-    $(needItems).empty();
+    let needItemsBlock = document.getElementById("needItems");
 
     for (let i in items) {
-        let cell = document.createElement("div");
 
         let item = Object.assign({}, items[i]);
+        let cell = document.getElementById("workbenchNeedItem" + items[i].type + items[i].item.id);
 
-        CreateInventoryCell(cell, item, i, "", onclick);
-        let section = CheckRecycleSection(item, needItems);
+        if (!cell) {
+
+            cell = document.createElement("div");
+            cell.id = "workbenchNeedItem" + items[i].type + items[i].item.id;
+            CreateInventoryCell(cell, item, i, "", onclick);
+
+            let section = CheckRecycleSection(item, needItemsBlock);
+            section.appendChild(cell);
+
+        } else {
+            $(cell).find('.QuantityItems')[0].innerHTML = item.quantity;
+        }
 
         if (!item.find && needMark) {
             cell.style.border = "1px solid red";
-            cell.innerHTML += "<div class='noAllowCell'></div>"
+            if ($(cell).find('.noAllowCell').length === 0) cell.innerHTML += "<div class='noAllowCell'></div>"
+        } else {
+            if ($(cell).find('.noAllowCell').length > 0) $(cell).find('.noAllowCell')[0].remove()
         }
 
-        section.appendChild(cell);
+        $(cell).data("update", {update: true, type: item.type});
     }
+
+    let needItems = $(needItemsBlock).find('.InventoryCell');
+    needItems.each(function () {
+        if ($(this).data("update").update) {
+            $(this).data("update").update = false;
+        } else {
+            $(this).remove()
+        }
+    });
+
+    let recycleSections = $(needItemsBlock).find('.RecycleSection');
+    recycleSections.each(function () {
+        if (this.childElementCount === 1) $(this).remove()
+    });
 }

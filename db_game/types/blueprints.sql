@@ -40,15 +40,17 @@ CREATE TABLE blueprints
 
 CREATE TABLE created_blueprint
 (
-  id                        SERIAL PRIMARY KEY,
+  id                     SERIAL PRIMARY KEY,
   /* определяет итем который будет на выходе */
-  id_blueprint              INT REFERENCES blueprints (id),
+  id_blueprint           INT REFERENCES blueprints (id),
   /* база где происходит крафт и куда упасть на склад */
-  id_base                   INT REFERENCES bases (id),
+  id_base                INT REFERENCES bases (id),
   /* какому игроку */
-  id_user                   INT REFERENCES users (id),
+  id_user                INT REFERENCES users (id),
+  /*время начала*/
+  start_time             timestamp,
   /* время окончания */
-  finish_time               timestamp,
+  finish_time            timestamp,
   /* процент налога миниралов */
   mineral_tax_percentage INT,
   /* процент налога времени */

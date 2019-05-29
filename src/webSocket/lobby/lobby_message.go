@@ -44,5 +44,6 @@ type Message struct {
 	UserWorkSkillDetailPercent int `json:"user_work_skill_detail_percent"`
 	UserWorkSkillTimePercent   int `json:"user_work_skill_time_percent"`
 
-	Base *base.Base `json:"base"`
+	Base       *base.Base `json:"base"`
+	Efficiency int        `json:"efficiency"`
 }

@@ -57,6 +57,11 @@ func craft(user *player.Player, msg Message) {
 	slot, findSlot := baseStorage.Slots[msg.StorageSlot]
 	userBase, _ := bases.Bases.Get(user.InBaseID)
 
+	// TODO проверка
+	//msg.UserWorkSkillTimePercent
+	//msg.UserWorkSkillDetailPercent
+	//msg.Efficiency
+
 	if findStorage && findSlot && slot.Type == "blueprints" && slot.Quantity >= msg.Count {
 		bluePrint, _ := gameTypes.BluePrints.GetByID(slot.ItemID)
 		mineralTaxPercentage := 100 + (userBase.GetSumEfficiency() - (user.CurrentSkills["materials_production"].Level * 5))
@@ -77,6 +82,7 @@ func craft(user *player.Player, msg Message) {
 			craftSecondsTime := bluePrint.CraftTime - ((bluePrint.CraftTime * user.CurrentSkills["production_time"].Level * 5) / 100)
 
 			craftStartTime := blueWorks.BlueWorks.GetWorkTime(user.GetID(), user.InBaseID)
+			startTime := time.Unix(craftStartTime, 0)
 			craftStartTime += int64(craftSecondsTime)
 			finishTime := time.Unix(craftStartTime, 0)
 
@@ -84,8 +90,9 @@ func craft(user *player.Player, msg Message) {
 				BlueprintID:          bluePrint.ID,
 				BaseID:               user.InBaseID,
 				UserID:               user.GetID(),
+				StartTime:            startTime,
 				FinishTime:           finishTime,
-				TimeTaxPercentage:    user.CurrentSkills["production_time"].Level * 5,
+				TimeTaxPercentage:    -user.CurrentSkills["production_time"].Level * 5,
 				MineralTaxPercentage: mineralTaxPercentage,
 			}
 
@@ -107,7 +114,7 @@ func selectWork(user *player.Player, msg Message) {
 		if work != nil && work.UserID == user.GetID() {
 
 			bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
-			percentRemainResource := (100 + work.MineralTaxPercentage) - work.GetDonePercent()
+			percentRemainResource := work.MineralTaxPercentage - ((work.MineralTaxPercentage * work.GetDonePercent()) / 100)
 
 			returnItems := make([]*inventory.Slot, 0)
 			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
@@ -134,7 +141,7 @@ func selectWork(user *player.Player, msg Message) {
 		for _, work := range works {
 			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
 
-				percentRemainResource := 100 + work.MineralTaxPercentage
+				percentRemainResource := work.MineralTaxPercentage
 				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 				msg.Count--
 				count++

@@ -13,6 +13,7 @@ func BlueWorks() map[int]*blueprints.BlueWork {
 		" id_blueprint," +
 		" id_base," +
 		" id_user," +
+		" start_time," +
 		" finish_time, " +
 		" mineral_tax_percentage," +
 		" time_tax_percentage" +
@@ -32,6 +33,7 @@ func BlueWorks() map[int]*blueprints.BlueWork {
 			&blueWork.BlueprintID,
 			&blueWork.BaseID,
 			&blueWork.UserID,
+			&blueWork.StartTime,
 			&blueWork.FinishTime,
 			&blueWork.MineralTaxPercentage,
 			&blueWork.TimeTaxPercentage,
