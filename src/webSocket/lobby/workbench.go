@@ -73,9 +73,12 @@ func craft(user *player.Player, msg Message) {
 
 		for i := 0; i < msg.Count; i++ { // для каждого итема новая работа
 
-			nowSecond := blueWorks.BlueWorks.GetWorkTime(user.GetID(), user.InBaseID)
-			nowSecond += int64(bluePrint.CraftTime)
-			finishTime := time.Unix(nowSecond, 0) // TODO user.CurrentSkills["production_time"].Level * 5
+			// влияние скила на скорость крафта user.CurrentSkills["production_time"].Level * 5
+			craftSecondsTime := bluePrint.CraftTime - ((bluePrint.CraftTime * user.CurrentSkills["production_time"].Level * 5) / 100)
+
+			craftStartTime := blueWorks.BlueWorks.GetWorkTime(user.GetID(), user.InBaseID)
+			craftStartTime += int64(craftSecondsTime)
+			finishTime := time.Unix(craftStartTime, 0)
 
 			newWork := blueprints.BlueWork{
 				BlueprintID:          bluePrint.ID,

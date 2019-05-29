@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/blueWorks"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
@@ -13,15 +14,19 @@ func WorkerChecker() {
 		workers := blueWorks.BlueWorks.GetAll()
 
 		//todo возможна проблема конкуретного дотупа
+		//todo и вообще это не оптимально в планет трафика
 		for _, user := range usersLobbyWs {
 			// просто обновляет всем юзера таймер крафта
+			userBase, _ := bases.Bases.Get(user.InBaseID)
 			baseStorage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
 
 			lobbyPipe <- Message{
-				Event:     "WorkbenchStorage",
-				UserID:    user.GetID(),
-				Storage:   baseStorage,
-				BlueWorks: blueWorks.BlueWorks.GetByUserAndBase(user.GetID(), user.InBaseID),
+				Event:                    "WorkbenchStorage",
+				UserID:                   user.GetID(),
+				Storage:                  baseStorage,
+				BlueWorks:                blueWorks.BlueWorks.GetByUserAndBase(user.GetID(), user.InBaseID),
+				UserWorkSkillTimePercent: user.CurrentSkills["production_time"].Level * 5,
+				Base:                     userBase,
 			}
 		}
 
@@ -60,6 +65,6 @@ func WorkerChecker() {
 				wsInventory.UpdateStorage(work.UserID)
 			}
 		}
-		time.Sleep(time.Second) // проверяем каждую секунду
+		time.Sleep(time.Second * 1) // проверяем каждую секунду
 	}
 }

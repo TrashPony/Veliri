@@ -5,6 +5,7 @@ let workBenchState = null;
 let bpSlot = null;
 let bpCount = null;
 
+//todo оптимизировать обновление выбранной работы
 function FillWorkbench(jsonData) {
     let bpBlock = document.getElementById("bluePrints");
     if (!bpBlock) return;
@@ -19,19 +20,34 @@ function FillWorkbench(jsonData) {
     for (let i in jsonData.storage.slots) {
         if (jsonData.storage.slots[i].type === "blueprints") {
 
-            let blueRow = document.getElementById("blueRowBP" + i);
+            let bpSlot = jsonData.storage.slots[i];
+            let time = getTimeWork(bpSlot.item.craft_time, true, jsonData.user_work_skill_time_percent);
+
+            let blueRow = document.getElementById("blueRowBP" + i + bpSlot.item.id);
             if (!blueRow) {
                 blueRow = document.createElement("div");
                 blueRow.className = "blueRow";
-                blueRow.id = "blueRowBP" + i;
+                blueRow.id = "blueRowBP" + i + bpSlot.item.id;
                 bpBlock.appendChild(blueRow);
+                blueRow.innerHTML = `
+                    <div class="bpIconItem">
+                        ${getBackgroundUrlByItem(bpSlot)}
+                    </div>
+                    <div class='nameBP'>${bpSlot.item.name}</div>
+                    <div class='countBP'>x${bpSlot.quantity}</div>
+                    <div class='timerWork'>
+                        <span> ${time.days}${time.hours} : ${time.minutes} : ${time.seconds} </span>
+                        <div class='workTimeLine' style='width: 0'></div>
+                    </div>           
+                `;
             }
 
             $(blueRow).data("update", {update: true});
-
-            blueRow.innerHTML = "" +
-                "<div class='nameBP'>" + jsonData.storage.slots[i].item.name + "</div>" +
-                "<div class='countBP'>x" + jsonData.storage.slots[i].quantity + "</div>";
+            $(blueRow).find(".countBP")[0].innerHTML = `x${bpSlot.quantity}`;
+            $(blueRow).find(".timerWork")[0].innerHTML = `
+                <span> ${time.days}${time.hours} : ${time.minutes} : ${time.seconds} </span>
+                <div class='workTimeLine' style='width: 0'></div>
+            `;
 
             blueRow.onclick = function () {
                 clearInterval(refreshSelectActiveWork);
@@ -45,7 +61,7 @@ function FillWorkbench(jsonData) {
         }
     }
 
-    FillCurrentWorks(jsonData.blue_works);
+    FillCurrentWorks(jsonData.blue_works, jsonData.user_work_skill_time_percent);
 
     // удаляем всех кого не обновили
     blueRows.each(function () {
@@ -57,7 +73,7 @@ function FillWorkbench(jsonData) {
     })
 }
 
-function FillCurrentWorks(works) {
+function FillCurrentWorks(works, tax) {
     let workBlock = document.getElementById("currentCrafts");
 
     if (!workBlock) return;
@@ -67,7 +83,9 @@ function FillCurrentWorks(works) {
     let row = 0;
 
     for (let i in works) {
-        let dataRow = innerDate(works[i]);
+
+        let dataRow = innerDate(works[i], tax);
+        if (!dataRow) continue;
 
         // сложный ид для того что бы групировать одинаковые итемы а не добавлять каждый раз новый
         let idRow;
@@ -89,6 +107,7 @@ function FillCurrentWorks(works) {
 
         let blueRow = document.getElementById(idRow);
         if (!blueRow) {
+
             blueRow = document.createElement("div");
             blueRow.className = "blueRow";
             blueRow.id = idRow;
@@ -101,9 +120,14 @@ function FillCurrentWorks(works) {
 
             $(blueRow).data("count", {count: 0});
             $(blueRow).data("time", {finishTime: 0, startTime: Infinity});
+            blueRow.innerHTML = dataRow.html;
         }
 
-        blueRow.innerHTML = dataRow.html;
+        $(blueRow).find(".timerWork")[0].innerHTML = `
+                <span> ${dataRow.days}${dataRow.hours} : ${dataRow.minutes} : ${dataRow.seconds}</span>
+                <div class='workTimeLine' style='width: ${dataRow.widthTimeLine}%'></div>
+         `;
+
         $(blueRow).data("update", {update: true});
 
         if (!dataRow.active) {
@@ -117,8 +141,7 @@ function FillCurrentWorks(works) {
                 $(blueRow).data("time").startTime = new Date(works[i].finish_time).getTime()
             }
 
-            blueRow.innerHTML = dataRow.html;
-            blueRow.innerHTML += "<div class='countBP' style='margin-right: 4px'>x" + $(blueRow).data("count").count + "</div>";
+            $(blueRow).find(".countBP")[0].innerHTML = `x${$(blueRow).data("count").count}`;
 
             blueRow.onclick = function () {
                 clearInterval(refreshSelectActiveWork);
@@ -148,12 +171,12 @@ function FillCurrentWorks(works) {
     }
 }
 
-function innerDate(work) {
+function innerDate(work, tax) {
 
     let data = new Date();
     let finishTime = new Date(work.finish_time);
     data.setTime(finishTime.getTime() - new Date().getTime());
-    // todo неправильно отнимается время крафта
+
     let realTimeCraft = work.blueprint.craft_time - (work.blueprint.craft_time * work.time_tax_percentage / 100);
     let startTime = new Date().setTime(finishTime.getTime() - realTimeCraft * 1000);
     let diffTime = (new Date() - startTime) / 1000;
@@ -164,14 +187,14 @@ function innerDate(work) {
     let days, hours, minutes, seconds;
     if (percent > 0) {
         widthTimeLine = Math.round(percent);
-
+        
         days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
         hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
         minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
         seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
     } else {
-
-        data.setTime(work.blueprint.craft_time * 1000);
+        let craftTime = work.blueprint.craft_time - ((work.blueprint.craft_time * tax) / 100);
+        data.setTime(craftTime * 1000);
 
         days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
         hours = (data.getUTCHours() > 9) ? data.getUTCHours() : "0" + data.getUTCHours();
@@ -179,28 +202,38 @@ function innerDate(work) {
         seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
     }
 
+    if (widthTimeLine > 100 || data.getUTCDate() > 20) {
+        return null
+    }
+
     return {
-        html: "" +
-            "<div class='nameBP'>" + work.item.name + "</div>" +
-            "<div class='timerWork'><span>"
-            + days
-            + hours
-            + " : "
-            + minutes
-            + " : "
-            + seconds
-            + "</span>" +
-            "<div class='workTimeLine' style='width: " + widthTimeLine + "%'></div></div>", active: percent > 0
+        html: `
+            <div class="bpIconItem">
+                ${getBackgroundUrlByItem({type: work.blueprint.item_type, item: {name: work.item.name}})}
+            </div>
+            <div class='nameBP'>${work.item.name}</div>
+            <div class='countBP'></div>
+            <div class='timerWork'>
+                <span>${days} ${hours} : ${minutes} : ${seconds}</span>
+            <div class='workTimeLine' style='width: ${widthTimeLine}%'></div>
+            </div>`,
+        active: percent > 0,
+        days: days,
+        hours: hours,
+        minutes: minutes,
+        seconds: seconds,
+        widthTimeLine: widthTimeLine,
     }
 }
 
 function SelectWork(jsonData) {
-    console.log(jsonData)
+
     workBenchState = 'selectWork';
     fillHeadWorkbench(jsonData, false);
+    fillEfficiencyPanel(jsonData.blue_work.mineral_tax_percentage, jsonData.blue_work.time_tax_percentage);
 
     // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
-    // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер
+    // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер + сколько вернется ресурсов
     if (jsonData.count === 0) {
         document.getElementById("bpName").innerHTML = "";
         document.getElementById("bpIcon").style.backgroundImage = "none";
@@ -272,8 +305,11 @@ function SelectWork(jsonData) {
     };
 }
 
-function getTimeWork(craftTime, full) {
+function getTimeWork(craftTime, full, tax) {
     let data = new Date();
+
+    if (!tax) tax = 0;
+    craftTime = craftTime - ((craftTime * tax) / 100);
 
     if (full) {
         data.setTime(craftTime * 1000);
@@ -288,6 +324,18 @@ function getTimeWork(craftTime, full) {
     return {days: days, hours: hours, minutes: minutes, seconds: seconds}
 }
 
+function fillEfficiencyPanel(mineralEfficiency, timeEfficiency) {
+    document.getElementById('mineralTaxSpan').innerHTML = mineralEfficiency + '%';
+    if (mineralEfficiency < 0) {
+        document.getElementById('mineralTaxSpan').style.color = '#00ff2d';
+    } else if (mineralEfficiency === 0) {
+        document.getElementById('mineralTaxSpan').style.color = '#00c2ff';
+    }
+
+    document.getElementById('timeTaxSpan').innerHTML = -timeEfficiency + '%';
+    document.getElementById('timeTaxSpan').style.color = '#00ff2d';
+}
+
 function SelectBP(jsonData) {
     workBenchState = 'selectBP';
 
@@ -295,21 +343,13 @@ function SelectBP(jsonData) {
     bpCount = Number(jsonData.count);
 
     let mineralEfficiency = 100 + (jsonData.base.efficiency - jsonData.user_work_skill_detail_percent);
-    document.getElementById('mineralTaxSpan').innerHTML = mineralEfficiency + '%';
-    if (mineralEfficiency < 0) {
-        document.getElementById('mineralTaxSpan').style.color='#00ff2d';
-    } else if (mineralEfficiency === 0){
-        document.getElementById('mineralTaxSpan').style.color='#00c2ff';
-    }
-
-    document.getElementById('timeTaxSpan').innerHTML = -jsonData.user_work_skill_time_percent + '%';
-    document.getElementById('timeTaxSpan').style.color='#00ff2d';
+    fillEfficiencyPanel(mineralEfficiency, jsonData.user_work_skill_time_percent);
 
     fillHeadWorkbench(jsonData, true);
     clearInterval(refreshSelectActiveWork);
     refreshSelectActiveWork = null;
 
-    let time = getTimeWork(jsonData.blue_print.craft_time * jsonData.count, true);
+    let time = getTimeWork(jsonData.blue_print.craft_time * jsonData.count, true, jsonData.user_work_skill_time_percent);
     document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
 
     let bpCountWork = document.getElementById("bpCountWork");
@@ -326,6 +366,8 @@ function SelectBP(jsonData) {
     let processButton = document.getElementById("processButton");
     processButton.value = "Создать";
     processButton.onclick = function () {
+        //todo диалоговое окно с указанием процентов налога и отправлять их на бек, на беке проверять если проценты
+        // совпадают то крафтим если нет то выплевывается алерт что налог извенился в виде диалога
         lobby.send(JSON.stringify({
             event: "Craft",
             storage_slot: Number(jsonData.storage_slot),
@@ -339,25 +381,10 @@ function fillHeadWorkbench(jsonData, needMark) {
     document.getElementById("bpIcon").style.backgroundImage = "url(/assets/blueprints/" + jsonData.blue_print.icon + ".png)";
 
     let itemPreview = document.getElementById("itemPreview");
-
-    if (jsonData.blue_print.item_type === "resource" || jsonData.blue_print.item_type === "recycle") {
-        itemPreview.style.backgroundImage = "url(/assets/resource/" + jsonData.bp_item.name + ".png)";
-    } else if (jsonData.blue_print.item_type === "boxes") {
-        itemPreview.style.backgroundImage = "url(/assets/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)";
-    } else if (jsonData.blue_print.item_type === "detail") {
-        itemPreview.style.backgroundImage = "url(/assets/resource/detail/" + jsonData.bp_item.name + ".png)";
-    } else if (jsonData.blue_print.item_type === "blueprints") {
-        itemPreview.style.backgroundImage = "url(/assets/blueprints/" + jsonData.bp_item.name + ".png)";
-    } else if (jsonData.blue_print.item_type === "body") {
-        itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)," +
-            " url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + "_bottom.png)";
-    } else if (jsonData.blue_print.item_type === "equip") {
-        itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/icon/" + jsonData.bp_item.name + ".png)";
-    } else {
-        itemPreview.style.backgroundImage = "url(/assets/units/" + jsonData.blue_print.item_type + "/" + jsonData.bp_item.name + ".png)";
-    }
-
-    itemPreview.innerHTML = "<span>x" + jsonData.blue_print.count + "</span>";
+    itemPreview.innerHTML = `
+        ${getBackgroundUrlByItem({type: jsonData.blue_print.item_type, item: {name: jsonData.bp_item.name}})}
+        <span style="z-index: 1">x${jsonData.blue_print.count}</span>
+    `;
 
     fillNeedItems(jsonData.preview_recycle_slots, needMark);
 }

@@ -322,12 +322,14 @@ function divideItems(slot, x, y, storage, numberSlot) {
     console.log(slot)
     quantityRange.innerHTML += `
         <form name="quantityForm"  oninput="quantityOut.value = quantity.value">
-            <div class="iconItem" style='background-image: ${getBackgroundUrlByItem(slot)}'></div>
+            <div class="iconItem">
+                ${getBackgroundUrlByItem(slot)}
+            </div>
             <input name="quantity" id="quantityRangeValue" type="range" min="0" max="${slot.quantity}" value="0"> 
             <output name="quantityOut" >0</output>
         </form>
-        <input type="button" id="divideButton" value="Разделить" style="width: 75px; float: left; margin-left: 20px; margin-top: 2px;">
-        <input type="button" id="divideCancelButton" value="Отмена" style="width: 75px; float: right; margin-right: 20px; margin-top: 2px;">
+        <input type="button" id="divideButton" value="Разделить" style="width: 65px; float: left; margin-left: 0; margin-top: 2px;">
+        <input type="button" id="divideCancelButton" value="Отмена" style="width: 65px; float: right; margin-right: 10px; margin-top: 2px;">
     `;
     document.body.appendChild(quantityRange);
 

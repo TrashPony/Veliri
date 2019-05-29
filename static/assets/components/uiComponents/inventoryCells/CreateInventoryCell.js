@@ -3,9 +3,10 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     cell.slotData = JSON.stringify(slotData);
     cell.number = slotNumber;
 
-    cell.style.backgroundImage = getBackgroundUrlByItem(slotData);
-
-    cell.innerHTML = "<span class='QuantityItems'>" + slotData.quantity + "</span>";
+    cell.innerHTML = `
+        <span class='QuantityItems'>${slotData.quantity}</span>
+        ${getBackgroundUrlByItem(slotData)}
+    `;
 
     CreateHealBar(cell, "inventory", true);
 
@@ -93,21 +94,24 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
 }
 
 function getBackgroundUrlByItem(slot) {
+    let background = '';
     if (slot.type === "resource" || slot.type === "recycle") {
-        return "url(/assets/resource/" + slot.item.name + ".png)";
+        background = "url(/assets/resource/" + slot.item.name + ".png)";
     } else if (slot.type === "boxes") {
-        return "url(/assets/" + slot.type + "/" + slot.item.name + ".png)";
+        background = "url(/assets/" + slot.type + "/" + slot.item.name + ".png)";
     } else if (slot.type === "detail") {
-        return "url(/assets/resource/detail/" + slot.item.name + ".png)";
+        background = "url(/assets/resource/detail/" + slot.item.name + ".png)";
     } else if (slot.type === "blueprints") {
-        return "url(/assets/blueprints/" + slot.item.icon + ".png)";
+        background = "url(/assets/blueprints/" + slot.item.icon + ".png)";
     } else if (slot.type === "body") {
-        return "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png), url(/assets/units/" + slot.type + "/" + slot.item.name + "_bottom.png)";
+        background = "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png), url(/assets/units/" + slot.type + "/" + slot.item.name + "_bottom.png)";
     } else if (slot.type === "equip") {
-        return "url(/assets/units/" + slot.type + "/icon/" + slot.item.name + ".png)";
+        background = "url(/assets/units/" + slot.type + "/icon/" + slot.item.name + ".png)";
     } else {
-        return "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png)";
+        background = "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png)";
     }
+
+    return `<div class='itemIconInventoryCell' style="background-image: ${background}"></div>`
 }
 
 function unMarkConstructorEquip() {

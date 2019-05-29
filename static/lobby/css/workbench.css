@@ -1,6 +1,6 @@
 #Workbench {
-    width: 480px;
-    height: 280px;
+    width: 512px;
+    height: 338px;
     padding: 23px 3px 3px 3px;
 }
 
@@ -11,8 +11,8 @@
 
 #Workbench #bluePrints, #Workbench #detailWork, #currentCrafts {
     box-shadow: inset 0 0 5px black;
-    background: #8cb3c7;
-    height: 260px;
+    background: #89969c;
+    height: 318px;
     width: 180px;
     border-radius: 5px;
     padding: 10px;
@@ -21,19 +21,21 @@
 }
 
 #Workbench #bluePrints {
-    height: 145px;
+    height: 174px;
+    width: 232px;
     overflow-y: scroll;
     padding: 0;
-    width: 200px;
+    box-sizing: border-box;
 }
 
 #currentCrafts {
-    height: 128px;
+    height: 157px;
+    width: 232px;
     float: left;
     margin: 6px 3px 3px 0;
     overflow-y: scroll;
     padding: 0;
-    width: 200px;
+    box-sizing: border-box;
 }
 
 #Workbench #detailWork {
@@ -42,10 +44,10 @@
 }
 
 #Workbench .blueHead {
-    width: 173px;
     padding-left: 10px;
     font-size: 12px;
     line-height: 17px;
+    width: 100%;
 }
 
 #bpName, #workStatus div {
@@ -83,6 +85,7 @@
 }
 
 #itemPreview {
+    position: relative;
     margin-top: 10px;
     float: right;
     background-position: center;
@@ -91,16 +94,20 @@
 }
 
 #itemPreview span {
-    float: right;
     color: #ffffff;
-    line-height: 114px;
+    z-index: 1;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    height: 20px;
+    line-height: 27px;
 }
 
 #needItems {
-    height: 210px;
-    width: 175px;
+    height: 268px;
+    width: 180px;
     box-shadow: inset 0 0 5px black;
-    background: #79a0b4;
+    background: rgba(0, 0, 0, 0.2);;
     position: relative;
     margin-top: 7px;
     border-radius: 5px;
@@ -132,7 +139,7 @@
 #Workbench input[type="number"], #countHead, #bpCraftTime {
     text-align: center;
     float: left;
-    width: 70px;
+    width: 65px;
     line-height: 18px;
     padding-right: 5px;
     box-shadow: inset 0 0 2px black;
@@ -160,30 +167,31 @@
 
 #Workbench .ui-resizable-s {
     position: absolute;
-    bottom: 0;
+    bottom: -6px;
+    height: 4px;
 }
 
 #ButtonWrapper {
     float: left;
-    width: 70px;
+    width: 66px;
     margin: 7px 2px 2px 5px;
     position: relative;
-    height: 155px;
+    height: 213px;
 }
 
 #Workbench .blueRow {
     padding: 0 10px;
-    margin: 2px 0;
     text-align: center;
     box-shadow: inset 0 0 2px black;
     border: 0;
-    font-size: 11px;
+    font-size: 15px;
     color: #9bc9f1;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
-    height: 16px;
-    line-height: 14px;
+    height: 50px;
+    line-height: 26px;
     transition: 0.1s;
     min-width: 170px;
+    position: relative;
 }
 
 #Workbench .blueRow:hover {
@@ -193,31 +201,30 @@
 }
 
 #Workbench .blueRow .nameBP {
-    float: left;
+    /*float: left;*/
 }
 
 #Workbench .blueRow .countBP {
-    float: right;
     color: #d6caca;
     line-height: 17px;
+    position: absolute;
+    right: 10px;
+    top: 11px;
 }
 
 #Workbench .blueRow .timerWork {
-    float: right;
     color: #e6e6e6;
-    line-height: 14px;
-    font-size: 10px;
-    width: 80px;
+    line-height: 17px;
+    font-size: 12px;
     text-align: center;
-    background: #ecd4b7;
-    height: 12px;
-    margin-top: 2px;
-    border-radius: 5px;
+    background: rgba(8, 8, 8, 0.04);
+    height: 15px;
     box-shadow: inset 0 0 5px black;
     font-weight: 500;
     position: relative;
     overflow: hidden;
     z-index: 1;
+    margin-top: 1px;
 }
 
 .workTimeLine {
@@ -229,4 +236,20 @@
     background: #ff9d07;
     z-index: -1;
     box-shadow: inset 0 0 5px black;
+}
+
+.bpIconItem {
+    height: 37px;
+    width: 37px;
+    background: rgba(0, 0, 0, 0.5);
+    float: left;
+    margin: 6px;
+    border-radius: 5px;
+    background-size: contain;
+    position: relative;
+}
+
+#Workbench .InventoryCell {
+    width: 36px;
+    height: 36px;
 }

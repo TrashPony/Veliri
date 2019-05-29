@@ -8,8 +8,8 @@ function InitWorkbench() {
     workbench.id = "Workbench";
 
     $(workbench).resizable({
-        minHeight: 237,
-        minWidth: 420,
+        minHeight: 338,
+        minWidth: 512,
         handles: "se",
         resize: function (event, ui) {
 
@@ -17,6 +17,7 @@ function InitWorkbench() {
             $(this).find('#needItems').css("height", $(this).height() - 70);
             $(this).find('#ButtonWrapper').css("height", $(this).height() - 125);
 
+            $(this).find('#wrapperBP').css("height", $(this).height() / 2 + 5);
             $(this).find('#bluePrints').css("height", $(this).height() / 2 + 5);
             $(this).find('#currentCrafts').css("height", $(this).height() / 2 - 12);
 
@@ -45,6 +46,9 @@ function InitWorkbench() {
     let wrapperBP = document.createElement("div");
     wrapperBP.style.cssFloat = "left";
 
+    let wrapper2BP = document.createElement("div");
+    wrapper2BP.id = "wrapperBP";
+
     let bluePrints = document.createElement("div");
     bluePrints.id = "bluePrints";
     bluePrints.innerHTML = "<div class='blueHead'>Доступные чертежи:</div>";
@@ -53,10 +57,11 @@ function InitWorkbench() {
     currentCrafts.id = "currentCrafts";
     currentCrafts.innerHTML = "<div class='blueHead' id='queueProduction'>Очередь производаства:</div>";
 
-    $(bluePrints).resizable({
+    $(wrapper2BP).resizable({
+        alsoResize: "#bluePrints",
         alsoResizeReverse: "#currentCrafts",
         minHeight: 20,
-        maxHeight: 215,
+        maxHeight: 310,
         handles: "s",
     });
 
@@ -109,7 +114,8 @@ function InitWorkbench() {
     detailWork.appendChild(needItems);
     detailWork.appendChild(buttonWrapper);
 
-    wrapperBP.appendChild(bluePrints);
+    wrapperBP.appendChild(wrapper2BP);
+    wrapper2BP.appendChild(bluePrints);
     wrapperBP.appendChild(currentCrafts);
 
     workbench.appendChild(wrapperBP);

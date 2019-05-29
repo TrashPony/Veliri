@@ -1,15 +1,15 @@
 function OnlyStorage() {
     let storage = document.createElement("div");
     storage.id = "storage";
-    storage.style.width = "157px";
+    storage.style.width = "167px";
     storage.style.padding = '0px 3px 0 0px';
     storage.style.margin = '4px 0px 0px';
     storage.style.float = 'left';
-    storage.style.height = '107px';
+    storage.style.height = '109px';
 
     let inventory = document.createElement("div");
     inventory.id = "Inventory";
-    inventory.style.width = "157px";
+    inventory.style.width = "167px";
     inventory.style.padding = '0px 3px 0 0px';
     inventory.style.margin = '0';
     inventory.style.float = 'left';
@@ -28,7 +28,7 @@ function OnlyStorage() {
     $(wrapper).resizable({
         alsoResize: "#inventoryStorage, #storage",
         minHeight: 225,
-        minWidth: 162,
+        minWidth: 172,
         handles: "se",
         resize() {
             let storage = $('#storage');

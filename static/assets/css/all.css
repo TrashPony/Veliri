@@ -250,7 +250,6 @@ body ::-webkit-scrollbar{
     position: absolute;
     left: calc(50% - 100px);
     top: 27px;
-    z-index: 3;
     width: 200px;
     height: 55px;
     display: block;
@@ -258,35 +257,37 @@ body ::-webkit-scrollbar{
     background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6), rgba(0, 62, 95, 0.5));
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 5px;
+    z-index: 12;
 }
 
 #QuantityRange input[type=range] {
     float: left;
-    margin-top: 6px;
+    margin-top: 10px;
     margin-left: 2px;
     width: 100px;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     padding: 0;
 }
 
 #QuantityRange output {
     float: right;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-right: 15px;
     color: #ff7800;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 #QuantityRange .iconItem {
+    position: relative;
     border-radius: 5px;
-    width: 25px;
-    height: 25px;
+    width: 36px;
+    height: 36px;
     border: 1px solid #959595;
     background-color: #4c4c4c;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     vertical-align: top;
-    margin: 3px 5px 0px;
+    margin: 9px 5px 0;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     float: left;
 }

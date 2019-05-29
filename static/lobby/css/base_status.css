@@ -75,15 +75,13 @@
 }
 
 .baseDetailStatusIcon {
-    background-image: url(/assets/resource/enriched_thorium.png);
     float: left;
     height: 23px;
     width: 23px;
-    background-repeat: no-repeat;
-    background-size: contain;
     background-color: rgba(128, 128, 128, 0.5);
     border-radius: 5px;
     border: 1px solid rgba(255, 253, 248, 0.5);
+    position: relative;
 }
 
 .baseDetailStatusWrapperCount {

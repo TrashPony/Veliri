@@ -60,7 +60,9 @@ function UpdateDetailStatus(base) {
         let percentFull = base.current_resources[i].quantity * 100 / base.boundary_amount_of_resources;
         detailStatusBase.innerHTML += `
             <div class="baseDetailStatusRow" id="baseDetailStatusRow${base.current_resources[i].item.name}">
-                <div class="baseDetailStatusIcon" style="background-image: ${getBackgroundUrlByItem(base.current_resources[i])}"></div>
+                <div class="baseDetailStatusIcon">
+                    ${getBackgroundUrlByItem(base.current_resources[i])}
+                </div>
                 <div class="baseDetailStatusWrapperCount">
                     <span class="currentCount"> ${base.current_resources[i].quantity}</span>
                     <span class="currentTax"> налог: ${base.current_resources[i].tax} %</span>

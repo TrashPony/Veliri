@@ -1,5 +1,5 @@
 function ReaderLobby(jsonMessage) {
-    console.log(JSON.parse(jsonMessage).event)
+
     let event = JSON.parse(jsonMessage).event;
     if (event === "InitLobby") {
         let login = document.getElementById('login');
@@ -56,7 +56,6 @@ function ReaderLobby(jsonMessage) {
 
     if (event === "dialog") {
         FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission)
-        //CreatePageDialog("dialogBlock", JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, true, true)
     }
 
     if (event === "training") {
@@ -72,6 +71,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "BaseStatus") {
+        console.log(jsonMessage);
         UpdateBaseStatus(JSON.parse(jsonMessage).base)
     }
 }

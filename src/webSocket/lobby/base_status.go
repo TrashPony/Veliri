@@ -11,9 +11,12 @@ func BaseStatusSender() {
 	for {
 
 		// todo возможна проблема конкуретного дотупа
-		// todo не спамить а сравнивать предыдущие и текущие состояние, если есть различия то отсылать
+		// сравнивать предыдущие и текущие состояние базы, если есть различия то отсылать статус базы
 		for _, user := range usersLobbyWs {
-			BaseStatus(user)
+			userBase, _ := bases.Bases.Get(user.InBaseID)
+			if user.LastBaseEfficiency != userBase.Efficiency {
+				BaseStatus(user)
+			}
 		}
 
 		time.Sleep(time.Second) // проверяем каждую секунду
@@ -26,6 +29,8 @@ func BaseStatus(user *player.Player) {
 	for _, resource := range userBase.CurrentResources {
 		userBase.GetRecyclePercent(resource.ItemID)
 	}
+
+	user.LastBaseEfficiency = userBase.Efficiency
 
 	lobbyPipe <- Message{
 		Event:  "BaseStatus",

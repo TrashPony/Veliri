@@ -14,6 +14,7 @@ func SetBody(ws *websocket.Conn, msg Message) {
 	if msg.Event == "SetMotherShipBody" {
 		// установить тело без отряда можно, и тогда создастся отряд
 		err = squad_inventory.SetMSBody(user, msg.BodyID, msg.InventorySlot, msg.Source)
+		UpdateSquad("UpdateSquad", user, err, ws, msg)
 		return
 	}
 

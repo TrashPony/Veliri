@@ -1,5 +1,5 @@
 let categories = false;
-let cellSize = 25;
+let cellSize = 34;
 
 function UpdateStorage(inventory) {
     if (!inventory) return;
