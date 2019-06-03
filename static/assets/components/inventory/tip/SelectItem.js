@@ -114,12 +114,20 @@ function InventorySelectTip(slot, first, size, numberSlot, storage) {
 function CreateSellDialog(x, y, numberSlot, slot) {
     let sellBlock = document.createElement("div");
     sellBlock.id = "sellDialog";
-    sellBlock.style.top = y + "px";
-    sellBlock.style.left = x + "px";
+    sellBlock.style.top = x + "px";
+    sellBlock.style.left = y + "px";
 
-    sellBlock.innerHTML = "<h2>Быстрая продажа</h2>" +
-        "<div><span>Кол-во</span><input id='sellQuantity' type='number' min='0' value='" + slot.quantity + "' max='" + slot.quantity + "'></div><br>" +
-        "<div><span>Цена за шт.</span><input id='sellPrice' min='0' type='number'></div><br>";
+    sellBlock.innerHTML = `
+        <div>
+            <div class="sellIconItem"> ${getBackgroundUrlByItem(slot)}</div>
+            <div class="sellNameItem"> ${slot.item.name} </div> 
+        </div>
+        <form oninput="result.value=(count.value*price.value)">
+            <div style="clear: both;"><span>Кол-во</span><input id='sellQuantity' name='count' type='number' min='0' value='0' max='${slot.quantity}'></div>
+            <div><span>Цена за шт.</span><input id='sellPrice'  value="0" name='price' min='0' type='number'></div>
+            <div style="margin-top: 7px;"><span>Всего выручки: </span> <output name="result">0</output></div>
+        </form>
+        `;
 
     let closeButton = createInput("Отменить", sellBlock);
     closeButton.onclick = function () {
@@ -238,6 +246,8 @@ function CreateParamsTable(slot, tip) {
 
     tip.appendChild(description);
     tip.appendChild(table);
+
+    tip.innerHTML += `<input type="button" onclick="document.getElementById('InventoryTip').remove()" value="ok">`;
     return table;
 }
 
@@ -328,8 +338,8 @@ function divideItems(slot, x, y, storage, numberSlot) {
             <input name="quantity" id="quantityRangeValue" type="range" min="0" max="${slot.quantity}" value="0"> 
             <output name="quantityOut" >0</output>
         </form>
-        <input type="button" id="divideButton" value="Разделить" style="width: 65px; float: left; margin-left: 0; margin-top: 2px;">
-        <input type="button" id="divideCancelButton" value="Отмена" style="width: 65px; float: right; margin-right: 10px; margin-top: 2px;">
+        <input type="button" id="divideCancelButton" value="Отмена" style="width: 65px; float: left; margin-top: 2px;">
+        <input type="button" id="divideButton" value="Разделить" style="width: 65px; float: right; margin-right: 10px; margin-top: 2px;">
     `;
     document.body.appendChild(quantityRange);
 

@@ -1,39 +1,52 @@
 #sellDialog {
     position: absolute;
     display: inline-block;
-    background-size: 10px 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 1), rgba(37, 160, 225, 0.1411764705882353) 6px);
-    border: 1px solid #25a0e1;
-    border-radius: 10px;
+    background-size: 100% 2px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.8), rgba(0, 62, 95, 0.8));
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
     min-height: 20px;
     min-width: 80px;
     padding: 5px;
     z-index: 950;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-#sellDialog h2{
-    display: block;
-    width: 185px;
-    height: 17px;
-    margin: 0 auto 5px;
-    background: linear-gradient(0deg, red, yellow);
-    border: 1px solid black;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
-    font-size: 15px;
-    font-weight: 100;
+#sellDialog .sellIconItem {
+    height: 35px;
+    width: 35px;
+    position: relative;
+    margin: 4px;
+    float: left;
+}
+
+#sellDialog .sellNameItem {
+    color: yellow;
+    float: left;
+    margin-left: 5px;
+}
+
+#sellDialog input[type="button"] {
+    margin: 6px 9px 0;
 }
 
 #sellDialog span {
     display: inline-block;
     width: 80px;
     text-align: left;
+    font-size: 12px;
+    color: bisque;
+    margin-left: 6px;
 }
 
 #sellDialog input[type=number] {
-    width: 100px;
+    width: 60px;
 }
 
-#sellDialog input[type=button]:last-child {
-    margin-left: 10px;
+#sellDialog output {
+    width: 60px;
+    color: #ff7800;
+    display: inline-block;
+    padding-left: 5px;
+    padding-right: 5px;
 }

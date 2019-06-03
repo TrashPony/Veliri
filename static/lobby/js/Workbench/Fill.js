@@ -5,7 +5,6 @@ let workBenchState = null;
 let bpSlot = null;
 let bpCount = null;
 
-//todo оптимизировать обновление выбранной работы
 function FillWorkbench(jsonData) {
     let bpBlock = document.getElementById("bluePrints");
     if (!bpBlock) return;
@@ -129,44 +128,33 @@ function FillCurrentWorks(works) {
          `;
 
         $(blueRow).data("update", {update: true});
+        $(blueRow).data("count").count++;
+        $(blueRow).find(".countBP")[0].innerHTML = `x${$(blueRow).data("count").count}`;
 
-        if (!dataRow.active) {
-            $(blueRow).data("count").count++;
+        // формирование интервала времени для это строки
+        // например в этой старке находятся 5 работ по интервалу от 05 до 15 минут
+        if ($(blueRow).data("time").finishTime < new Date(works[i].finish_time).getTime()) {
+            $(blueRow).data("time").finishTime = new Date(works[i].finish_time).getTime()
+        }
 
-            if ($(blueRow).data("time").finishTime < new Date(works[i].finish_time).getTime()) {
-                $(blueRow).data("time").finishTime = new Date(works[i].finish_time).getTime()
-            }
+        if ($(blueRow).data("time").startTime > new Date(works[i].finish_time).getTime()) {
+            $(blueRow).data("time").startTime = new Date(works[i].finish_time).getTime()
+        }
 
-            if ($(blueRow).data("time").startTime > new Date(works[i].finish_time).getTime()) {
-                $(blueRow).data("time").startTime = new Date(works[i].finish_time).getTime()
-            }
+        blueRow.onclick = function () {
+            clearInterval(refreshSelectActiveWork);
+            refreshSelectActiveWork = null;
 
-            $(blueRow).find(".countBP")[0].innerHTML = `x${$(blueRow).data("count").count}`;
-
-            blueRow.onclick = function () {
-                clearInterval(refreshSelectActiveWork);
-                refreshSelectActiveWork = null;
-
-                lobby.send(JSON.stringify({
-                    event: "SelectWork",
-                    start_time: $(this).data("time").startTime,
-                    to_time: $(this).data("time").finishTime,
-                    blue_print_id: works[i].blueprint.id,
-                    mineral_saving: works[i].mineral_tax_percentage,
-                    time_saving: works[i].time_tax_percentage,
-                    count: $(this).data("count").count,
-                }));
-            }
-        } else {
-            blueRow.onclick = function () {
-                clearInterval(refreshSelectActiveWork);
-                refreshSelectActiveWork = null;
-
-                lobby.send(JSON.stringify({
-                    event: "SelectWork",
-                    id: works[i].id,
-                }));
-            }
+            lobby.send(JSON.stringify({
+                event: "SelectWork",
+                start_time: $(this).data("time").startTime,
+                to_time: $(this).data("time").finishTime,
+                blue_print_id: works[i].blueprint.id,
+                mineral_saving: works[i].mineral_tax_percentage,
+                time_saving: works[i].time_tax_percentage,
+                count: $(this).data("count").count,
+                id: works[i].id,
+            }));
         }
     }
 }
@@ -192,7 +180,7 @@ function innerDate(work) {
         minutes = (data.getUTCMinutes() > 9) ? data.getUTCMinutes() : "0" + data.getUTCMinutes();
         seconds = (data.getUTCSeconds() > 9) ? data.getUTCSeconds() : "0" + data.getUTCSeconds();
     } else {
-        let craftTime = (finishTime.getTime() - startTime.getTime())/1000;
+        let craftTime = (finishTime.getTime() - startTime.getTime()) / 1000;
         data.setTime(craftTime * 1000);
 
         days = (data.getUTCDate() - 1 > 0) ? data.getUTCDate() - 1 + "d: " : '';
@@ -227,6 +215,11 @@ function innerDate(work) {
 
 function SelectWork(jsonData) {
 
+    if (jsonData.count === 0) {
+        clearPreview();
+        return
+    }
+
     workBenchState = 'selectWork';
     fillHeadWorkbench(jsonData, false);
 
@@ -236,77 +229,59 @@ function SelectWork(jsonData) {
         fillEfficiencyPanel(jsonData.mineral_saving, jsonData.time_saving);
     }
 
-    // если jsonData.id > 0 то значит игрок выбрал активный крафт, и он модет быть только 1 и работаем по ид
-    // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер + сколько вернется ресурсов
-    if (jsonData.count === 0) {
-        document.getElementById("bpName").innerHTML = "";
-        document.getElementById("bpIcon").style.backgroundImage = "none";
-        document.getElementById("bpCraftTime").innerHTML = "";
-        document.getElementById("processButton").value = "";
-        document.getElementById("processButton").onclick = null;
-        document.getElementById("itemPreview").style.backgroundImage = "none";
-        document.getElementById("itemPreview").innerHTML = "";
-        document.getElementById("bpCountWork").value = "";
-        return
-    }
-
     let bpCountWork = document.getElementById("bpCountWork");
     bpCountWork.value = jsonData.count;
-    if (jsonData.id > 0) {
+    bpCountWork.max = jsonData.max_count;
+    bpCountWork.oninput = function () {
+        lobby.send(JSON.stringify({
+            event: "SelectWork",
+            id: jsonData.blue_work.id,
+            count: Number(bpCountWork.value),
+            start_time: jsonData.start_time,
+            to_time: jsonData.to_time,
+        }));
+    };
 
-        bpCountWork.max = 1;
-        let time = getTimeWork(new Date(jsonData.blue_work.finish_time).getTime(), false);
-        document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
+    let time = getTimeWork(new Date(jsonData.blue_work.finish_time).getTime(), false);
+    document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
 
-        if (!refreshSelectActiveWork) {
-            refreshSelectActiveWork = setInterval(function () {
-                lobby.send(JSON.stringify({
-                    event: "SelectWork",
-                    id: jsonData.blue_work.id,
-                }));
-            }, 1000);
-        }
-    } else {
-        clearInterval(refreshSelectActiveWork);
-        refreshSelectActiveWork = null;
-
-        let time = getTimeWork(jsonData.blue_print.craft_time * jsonData.count, true);
-        document.getElementById("bpCraftTime").innerHTML = time.days + time.hours + ":" + time.minutes + ":" + time.seconds + "s";
-
-        bpCountWork.max = jsonData.max_count;
-        bpCountWork.oninput = function () {
+    if (!refreshSelectActiveWork) {
+        refreshSelectActiveWork = setInterval(function () {
             lobby.send(JSON.stringify({
                 event: "SelectWork",
+                id: jsonData.blue_work.id,
+                count: Number(bpCountWork.value),
                 start_time: jsonData.start_time,
                 to_time: jsonData.to_time,
-                blue_print_id: jsonData.blue_print_id,
-                mineral_saving: jsonData.mineral_saving,
-                time_saving: jsonData.time_saving,
-                count: Number(bpCountWork.value),
             }));
-        };
+        }, 1000);
     }
+
 
     let processButton = document.getElementById("processButton");
     processButton.value = "Отменить";
     processButton.onclick = function () {
-        if (jsonData.id > 0) {
-            lobby.send(JSON.stringify({
-                event: "CancelCraft",
-                id: jsonData.id,
-            }));
-        } else {
-            lobby.send(JSON.stringify({
-                event: "CancelCraft",
-                start_time: jsonData.start_time,
-                to_time: jsonData.to_time,
-                blue_print_id: jsonData.blue_print_id,
-                mineral_saving: jsonData.mineral_saving,
-                time_saving: jsonData.time_saving,
-                count: Number(bpCountWork.value),
-            }));
-        }
+        // TODO диалоговое окно подтверждения отмены работы с выводом инфы о том сколько хочет отменить работ юзер + сколько вернется ресурсов
+        lobby.send(JSON.stringify({
+            event: "CancelCraft",
+            id: jsonData.id,
+            count: Number(bpCountWork.value),
+            start_time: jsonData.start_time,
+            to_time: jsonData.to_time,
+        }));
     };
+}
+
+function clearPreview() {
+    document.getElementById("bpName").innerHTML = "";
+    document.getElementById("bpIcon").style.backgroundImage = "none";
+    document.getElementById("bpCraftTime").innerHTML = "";
+    document.getElementById("processButton").value = "";
+    document.getElementById("processButton").onclick = null;
+    document.getElementById("itemPreview").style.backgroundImage = "none";
+    document.getElementById("itemPreview").innerHTML = "";
+    document.getElementById("bpCountWork").value = "";
+    document.getElementById("needItems").innerHTML = "";
 }
 
 function getTimeWork(craftTime, full, tax) {
@@ -341,7 +316,10 @@ function fillEfficiencyPanel(mineralEfficiency, timeEfficiency) {
 }
 
 function SelectBP(jsonData) {
-    console.log(jsonData);
+    if (!jsonData.blue_print) {
+        clearPreview();
+        return
+    }
 
     workBenchState = 'selectBP';
 
@@ -350,7 +328,6 @@ function SelectBP(jsonData) {
 
     let mineralEfficiency = 100 + (jsonData.base.efficiency - jsonData.user_work_skill_detail_percent);
     fillEfficiencyPanel(mineralEfficiency, jsonData.user_work_skill_time_percent);
-
     fillHeadWorkbench(jsonData, true);
     clearInterval(refreshSelectActiveWork);
     refreshSelectActiveWork = null;
@@ -372,6 +349,19 @@ function SelectBP(jsonData) {
     let processButton = document.getElementById("processButton");
     processButton.value = "Создать";
     processButton.onclick = function () {
+
+        // let dialog = document.createElement("div");
+        // dialog.className = "veliriDialog";
+        // dialog.innerHTML = `
+        // <p>
+        //     Произвести ${jsonData.bp_item.name} в кол-ве ${bpCountWork.value} <br>
+        //     С налогом на минералы ${mineralEfficiency}?
+        // </p>
+        // <input type="button" value="Создать">
+        // <input type="button" value="Отмена">
+        // `;
+        //document.body.appendChild(dialog)
+
         //todo диалоговое окно с указанием процентов налога и отправлять их на бек, на беке проверять если проценты
         // совпадают то крафтим если нет то выплевывается алерт что налог извенился в виде диалога
         lobby.send(JSON.stringify({
@@ -423,9 +413,10 @@ function fillNeedItems(items, needMark) {
         }
 
         if (!item.find && needMark) {
-            cell.style.border = "1px solid red";
+            cell.style.outline = "1px solid red";
             if ($(cell).find('.noAllowCell').length === 0) cell.innerHTML += "<div class='noAllowCell'></div>"
         } else {
+            cell.style.outline = "unset";
             if ($(cell).find('.noAllowCell').length > 0) $(cell).find('.noAllowCell')[0].remove()
         }
 

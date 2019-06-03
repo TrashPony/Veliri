@@ -5,7 +5,7 @@
     width: 300px;
     height: 200px;
     border: 1px solid #25a0e1;
-    background-size: 10px 2px;
+    background-size: 100% 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     bottom: 15px;
     left: 15px;
@@ -108,7 +108,7 @@
     color: #ffef0f;
     box-shadow: inset 0 0 5px black;
     background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
-    background-size: 10px 3px;
+    background-size: 100% 3px;
 }
 
 #chat input::placeholder {
@@ -131,7 +131,7 @@
     float: left;
     box-shadow: inset 0 0 5px black;
     background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
-    background-size: 10px 3px;
+    background-size: 100% 3px;
 }
 
 #usersBox {
@@ -165,7 +165,7 @@
     height: 300px;
     width: 200px;
     position: absolute;
-    background-size: 10px 2px;
+    background-size: 100% 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     border: 1px solid #25a0e1;
     border-radius: 5px;
@@ -343,7 +343,7 @@
 
 #notifyBlock {
     position: absolute;
-    background-size: 10px 2px;
+    background-size: 100% 2px;
     background-image: linear-gradient(1deg, rgb(33, 176, 255), rgb(37, 160, 225));
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 50px 20px 0px 0px;
@@ -394,7 +394,7 @@
     position: absolute;
     bottom: 9px;
     left: 0;
-    background-size: 10px 4px;
+    background-size: 100% 3px;
     background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6) 87%, rgba(0, 62, 95, 0.5) 30%);
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 5px;

@@ -41,13 +41,15 @@ func selectBP(user *player.Player, msg Message) {
 			slot.Find = baseStorage.ViewItems(slot.ItemID, slot.Type, slot.Quantity)
 		}
 
-		lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: recyclerItems,
+		lobbyPipe <- Message{Event: "SelectBP", UserID: user.GetID(), PreviewRecycleSlots: recyclerItems,
 			BluePrint: bluePrint, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(slot.ItemID), Count: msg.Count,
 			MaxCount: slot.Quantity, StorageSlot: msg.StorageSlot,
 			UserWorkSkillDetailPercent: user.CurrentSkills["materials_production"].Level * 5,
 			UserWorkSkillTimePercent:   user.CurrentSkills["production_time"].Level * 5,
 			Base:                       userBase,
 		}
+	} else {
+		lobbyPipe <- Message{Event: "SelectBP", UserID: user.GetID(), BluePrint: nil}
 	}
 }
 
@@ -105,105 +107,90 @@ func craft(user *player.Player, msg Message) {
 		}
 
 		wsInventory.UpdateStorage(user.GetID())
+		selectBP(user, msg)
 	}
 }
 
 func selectWork(user *player.Player, msg Message) {
-	if msg.ID > 0 {
-		work := blueWorks.BlueWorks.GetByID(msg.ID)
-		if work != nil && work.UserID == user.GetID() {
+	work := blueWorks.BlueWorks.GetByID(msg.ID)
+	if work != nil && work.UserID == user.GetID() {
 
-			bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
-			percentRemainResource := work.MineralTaxPercentage - ((work.MineralTaxPercentage * work.GetDonePercent()) / 100)
+		bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
 
-			returnItems := make([]*inventory.Slot, 0)
-			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
+		percentRemainResource := 0
+		maxCount := 0
 
-			lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: returnItems,
-				BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: 1,
-				StorageSlot: msg.StorageSlot, ID: msg.ID, BlueWork: work}
+		if work.GetDonePercent() > 0 {
+			maxCount = 1
+			percentRemainResource = work.MineralTaxPercentage - ((work.MineralTaxPercentage * work.GetDonePercent()) / 100)
+		} else {
+
+			works := blueWorks.BlueWorks.GetSameWorks(
+				work.BlueprintID,
+				work.MineralTaxPercentage,
+				work.TimeTaxPercentage,
+				user.GetID(),
+				user.InBaseID,
+				msg.ToTime/1000,    // промежуток выбраного времени, это гарантирует что выбраные работы удалятся по порядку времени
+				msg.StartTime/1000, // промежуток выбраного времени
+			)
+			maxCount = len(works)
+			percentRemainResource = work.MineralTaxPercentage
+			percentRemainResource *= msg.Count
 		}
-	} else {
-		works := blueWorks.BlueWorks.GetSameWorks(
-			msg.BluePrintID,
-			msg.MineralSaving,
-			msg.TimeSaving,
-			user.GetID(),
-			user.InBaseID,
-			msg.ToTime/1000,
-			msg.StartTime/1000,
-		)
 
 		returnItems := make([]*inventory.Slot, 0)
-		bp, _ := gameTypes.BluePrints.GetByID(msg.BluePrintID)
+		lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 
-		count := 0
-		for _, work := range works {
-			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
-
-				percentRemainResource := work.MineralTaxPercentage
-				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
-				msg.Count--
-				count++
-				//я очень хочу спать и очень не хочу думать Х(
-			}
-		}
-
-		lobbyPipe <- Message{Event: "SelectWork", UserID: user.GetID(), PreviewRecycleSlots: returnItems,
-			BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: count,
-			StorageSlot: msg.StorageSlot, ID: msg.ID, BluePrintID: msg.BluePrintID, MineralSaving: msg.MineralSaving,
-			TimeSaving: msg.TimeSaving, ToTime: msg.ToTime, StartTime: msg.StartTime, MaxCount: len(works)}
+		lobbyPipe <- Message{Event: msg.Event, UserID: user.GetID(), PreviewRecycleSlots: returnItems,
+			BluePrint: bp, BPItem: gameTypes.BluePrints.GetItemsByBluePrintID(bp.ID), Count: msg.Count,
+			StorageSlot: msg.StorageSlot, ID: msg.ID, BlueWork: work, MaxCount: maxCount, StartTime: msg.StartTime,
+			ToTime: msg.ToTime}
 	}
 }
 
 func cancelCraft(user *player.Player, msg Message) {
 
-	if msg.ID > 0 {
-		work := blueWorks.BlueWorks.GetByID(msg.ID)
-		if work != nil && work.UserID == user.GetID() {
+	work := blueWorks.BlueWorks.GetByID(msg.ID)
+	if work != nil && work.UserID == user.GetID() {
 
-			bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
-			percentRemainResource := 100 + (work.GetDonePercent() + work.MineralTaxPercentage)
+		bp, _ := gameTypes.BluePrints.GetByID(work.BlueprintID)
 
-			returnItems := make([]*inventory.Slot, 0)
-			lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
+		percentRemainResource := 0
 
-			for _, item := range returnItems {
-				storages.Storages.AddSlot(user.GetID(), user.InBaseID, item)
-			}
-
+		if work.GetDonePercent() > 0 {
+			percentRemainResource = work.MineralTaxPercentage - ((work.MineralTaxPercentage * work.GetDonePercent()) / 100)
 			blueWorks.BlueWorks.Remove(work)
-		}
-	} else {
+		} else {
 
-		works := blueWorks.BlueWorks.GetSameWorks(
-			msg.BluePrintID,
-			msg.MineralSaving,
-			msg.TimeSaving,
-			user.GetID(),
-			user.InBaseID,
-			msg.ToTime/1000,
-			msg.StartTime/1000,
-		)
+			// проверить что действительно есть количество работ равное Count, удалить эти работы
+			works := blueWorks.BlueWorks.GetSameWorks(
+				work.BlueprintID,
+				work.MineralTaxPercentage,
+				work.TimeTaxPercentage,
+				user.GetID(),
+				user.InBaseID,
+				msg.ToTime/1000,    // промежуток выбраного времени, это гарантирует что выбраные работы удалятся по порядку времени
+				msg.StartTime/1000, // промежуток выбраного времени
+			)
+			if len(works) >= msg.Count {
+				percentRemainResource = work.MineralTaxPercentage
+				percentRemainResource *= msg.Count
+
+				for _, work := range works {
+					blueWorks.BlueWorks.Remove(work)
+				}
+			} else {
+				return
+			}
+		}
 
 		returnItems := make([]*inventory.Slot, 0)
-		bp, _ := gameTypes.BluePrints.GetByID(msg.BluePrintID)
-
-		for _, work := range works {
-			if work != nil && work.UserID == user.GetID() && msg.Count > 0 {
-				percentRemainResource := 100 + work.MineralTaxPercentage
-				lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
-				blueWorks.BlueWorks.Remove(work)
-				msg.Count--
-			}
-		}
+		lobby.ParseItems(&returnItems, percentRemainResource, bp, 1)
 
 		for _, item := range returnItems {
 			storages.Storages.AddSlot(user.GetID(), user.InBaseID, item)
 		}
-
-		msg.Count = len(works)
-		selectWork(user, msg)
 	}
 	wsInventory.UpdateStorage(user.GetID())
 }

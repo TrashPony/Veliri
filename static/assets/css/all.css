@@ -144,7 +144,7 @@ input:hover {
     border-radius: 10px;
     text-shadow: #28a5e4 0 0 4px;
     color: #a5d5ef;
-    background-size: 10px 2px;
+    background-size: 100% 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
 }
 
@@ -155,7 +155,7 @@ input:hover {
     text-shadow: #28a5e4 0 0 4px;
     color: #a5d5ef;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
-    background-size: 10px 2px;
+    background-size: 100% 2px;
 }
 
 .Failed {
@@ -253,7 +253,7 @@ body ::-webkit-scrollbar{
     width: 200px;
     height: 55px;
     display: block;
-    background-size: 10px 4px;
+    background-size: 100% 2px;
     background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6), rgba(0, 62, 95, 0.5));
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 5px;
@@ -290,4 +290,25 @@ body ::-webkit-scrollbar{
     margin: 9px 5px 0;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     float: left;
+}
+
+.veliriDialog {
+    position: absolute;
+    left: calc(50% - 100px);
+    top: 50%;
+    width: 200px;
+    height: 75px;
+    background-size: 100% 2px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6), rgba(0, 62, 95, 0.5));
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    z-index: 12;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    color: white;
+    font-size: 12px;
+    padding-bottom: 3px;
+}
+
+.veliriDialog input {
+    margin: 0 17px 0px;
 }

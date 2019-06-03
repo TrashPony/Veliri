@@ -8,6 +8,16 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         ${getBackgroundUrlByItem(slotData)}
     `;
 
+    $(cell).mouseover(() => {
+        $('body').append(`<div class="nameItemInCell" style="left: ${cell.getBoundingClientRect().left}px; top: ${cell.getBoundingClientRect().top - 40}px">
+            ${slotData.item.name}
+        </div>`)
+    });
+
+    $(cell).mouseout(() => {
+        $('.nameItemInCell').remove();
+    });
+    
     CreateHealBar(cell, "inventory", true);
 
     $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber});

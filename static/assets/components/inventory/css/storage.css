@@ -7,7 +7,7 @@
     width: 163px;
     height: 276px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
-    background-size: 10px 2px;
+    background-size: 100% 2px;
     position: relative;
     float: right;
     padding: 5px 3px 0 2px;
@@ -20,6 +20,6 @@
     left: 661px;
     pointer-events: none;
     z-index: 11;
-    width: 172px;
-    height: 227px;
+    width: 177px;
+    height: 226px;
 }

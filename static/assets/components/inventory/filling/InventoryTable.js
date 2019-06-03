@@ -59,8 +59,6 @@ function InventoryTable(inventoryItems) {
             cell.className = "InventoryCell active";
             CreateInventoryCell(cell, inventoryItems.slots[i], i, "squadInventory");
             cell.onclick = SelectInventoryItem;
-            cell.onmousemove = InventoryOverTip;
-            cell.onmouseout = OffTip;
             cell.source = 'squadInventory';
 
             cell.style.height = cellSize + "px";

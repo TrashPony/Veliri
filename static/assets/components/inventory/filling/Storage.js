@@ -46,8 +46,6 @@ function UpdateStorage(inventory) {
 
             CreateInventoryCell(cell, inventory.slots[i], i, "storage");
             cell.onclick = SelectInventoryItem;
-            cell.onmousemove = InventoryOverTip;
-            cell.onmouseout = OffTip;
             cell.source = 'storage';
 
             cell.style.height = cellSize + "px";
