@@ -20,6 +20,9 @@ function Filling(data) {
             }
         }
     }
+
+    filterOrders();
+    FillMyOrders(data.my_orders);
 }
 
 function deleteOldRows() {

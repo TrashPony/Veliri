@@ -23,14 +23,19 @@ func (m *mapStore) FindGlobalPath(startSectorID, endSectorID int) ([]*SearchMap,
 		return nil, nil
 	}
 
+	var path []*SearchMap
+	var noSortedPath []*SearchMap
+
 	start := &SearchMap{ID: startSector.Id, Map: startSector.GetShortInfoMap()}
 	end := &SearchMap{ID: endSector.Id, Map: endSector.GetShortInfoMap()}
 
+	if startSectorID == endSectorID {
+		path = append(path, end)
+		return path, nil
+	}
+
 	openPoints, closePoints := make(map[int]*SearchMap), make(map[int]*SearchMap) // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[start.ID] = start                                                  // кладем в карту посещенных точек стартовую точку
-
-	var path []*SearchMap
-	var noSortedPath []*SearchMap
 
 	// перменная добавляет в цену номер волны
 	wall := 0

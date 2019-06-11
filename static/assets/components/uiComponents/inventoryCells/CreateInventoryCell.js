@@ -17,7 +17,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     $(cell).mouseout(() => {
         $('.nameItemInCell').remove();
     });
-    
+
     CreateHealBar(cell, "inventory", true);
 
     $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber});
@@ -117,9 +117,12 @@ function getBackgroundUrlByItem(slot) {
         background = "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png), url(/assets/units/" + slot.type + "/" + slot.item.name + "_bottom.png)";
     } else if (slot.type === "equip") {
         background = "url(/assets/units/" + slot.type + "/icon/" + slot.item.name + ".png)";
+    } else if (slot.type === "trash") {
+        background = "url(/assets/trashItems/" + slot.item.name + ".png)";
     } else {
         background = "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png)";
     }
+
 
     return `<div class='itemIconInventoryCell' style="background-image: ${background}"></div>`
 }

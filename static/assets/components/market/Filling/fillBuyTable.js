@@ -1,18 +1,15 @@
-
-function fillBuyTable(order, baseName) {
+function fillBuyTable(order) {
     let table = document.getElementById("marketBuyTable");
     let tr = document.createElement("tr");
+    tr.id = order.Type + order.Id;
     tr.className = "marketRow";
     tr.order = order;
 
-    if (!(order.IdItem === filterKey.id && order.TypeItem === filterKey.type)) {
-        if (filterKey.type !== '') {
-            tr.style.display = "none";
-        }
-    }
-
     let td1 = document.createElement("td");
-    td1.innerHTML = "0"; // todo захардкожаное растояние
+    td1.innerHTML = order.path_jump;
+    if (order.path_jump < 0) {
+        td1.innerHTML = "<span>База</span>"
+    }
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");
@@ -20,7 +17,8 @@ function fillBuyTable(order, baseName) {
     tr.appendChild(td2);
 
     let td3 = document.createElement("td");
-    td3.innerHTML = order.Price + " cr.";
+    td3.className = "creditsTD";
+    td3.innerHTML = order.Price;
     tr.appendChild(td3);
 
     let td4 = document.createElement("td");
@@ -51,9 +49,13 @@ function fillBuyTable(order, baseName) {
 }
 
 function sellDialog(order, e) {
+
+    if (document.getElementById("subMenu")) {
+        document.getElementById("subMenu").remove();
+    }
+
     let subMenu = document.createElement("div");
     subMenu.id = "subMenu";
-
     subMenu.style.top = e.clientY + "px";
     subMenu.style.left = e.clientX + "px";
 

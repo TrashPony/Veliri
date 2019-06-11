@@ -32,6 +32,7 @@ function openEquipScroll() {
     this.onclick = function () {
         this.innerHTML = " ▶ Оборудование";
         this.onclick = openEquipScroll;
+        clearFilter();
     }
 }
 
@@ -39,6 +40,7 @@ function openDeepEquip(numberTypeSlot, parent) {
     parent.innerText = " ▼ " + numberTypeSlot;
 
     parent.onclick = function () {
+        clearFilter();
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         parent.innerHTML = " ▶ " + numberTypeSlot;
         parent.onclick = function (){

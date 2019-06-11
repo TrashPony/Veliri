@@ -5,37 +5,16 @@ function CreateBuyTable(BuyOrdersBlock) {
 
     let headRow = document.createElement("tr");
 
-    let td1 = document.createElement("td");
-    td1.innerHTML = "Растояние";
-    headRow.appendChild(td1);
-
-    let td2 = document.createElement("td");
-    td2.innerHTML = "Количество";
-    headRow.appendChild(td2);
-
-    let td3 = document.createElement("td");
-    td3.innerHTML = "Цена";
-    headRow.appendChild(td3);
-
-    let td4 = document.createElement("td");
-    td4.innerHTML = "Тип";
-    headRow.appendChild(td4);
-
-    let td5 = document.createElement("td");
-    td5.innerHTML = "Название";
-    headRow.appendChild(td5);
-
-    let td6 = document.createElement("td");
-    td6.innerHTML = "Место";
-    headRow.appendChild(td6);
-
-    let td7 = document.createElement("td");
-    td7.innerHTML = "Мин. выкуп";
-    headRow.appendChild(td7);
-
-    let td8 = document.createElement("td");
-    td8.innerHTML = "Истекает через";
-    headRow.appendChild(td8);
+    headRow.innerHTML = `
+        <th onclick="sortingTableByColumn(0, 'buy', 'number', this)">Растояние <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(1, 'buy', 'number', this)">Количество <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(2, 'buy', 'number', this)">Цена <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(3, 'buy', 'text', this)">Тип <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(4, 'buy', 'text', this)">Название <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(5, 'buy', 'text', this)">Место <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(6, 'buy', 'number', this)">Мин. выкуп <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(7, 'buy', 'date', this)">Истекает через <span class="sortArrow">&#x21D5;</span></th>
+    `;
 
     buyTable.appendChild(headRow);
     BuyOrdersBlock.appendChild(buyTable);
@@ -48,34 +27,48 @@ function CreateSellTable(SellOrdersBlock) {
 
     let headRow = document.createElement("tr");
 
-    let td1 = document.createElement("td");
-    td1.innerHTML = "Растояние";
-    headRow.appendChild(td1);
-
-    let td2 = document.createElement("td");
-    td2.innerHTML = "Количество";
-    headRow.appendChild(td2);
-
-    let td3 = document.createElement("td");
-    td3.innerHTML = "Цена";
-    headRow.appendChild(td3);
-
-    let td4 = document.createElement("td");
-    td4.innerHTML = "Тип";
-    headRow.appendChild(td4);
-
-    let td5 = document.createElement("td");
-    td5.innerHTML = "Название";
-    headRow.appendChild(td5);
-
-    let td6 = document.createElement("td");
-    td6.innerHTML = "Место";
-    headRow.appendChild(td6);
-
-    let td7 = document.createElement("td");
-    td7.innerHTML = "Истекает через";
-    headRow.appendChild(td7);
+    headRow.innerHTML = `
+        <th onclick="sortingTableByColumn(0, 'sell', 'number', this)">Растояние <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(1, 'sell', 'number', this)">Количество <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(2, 'sell', 'number', this)">Цена <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(3, 'sell', 'text', this)">Тип <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(4, 'sell', 'text', this)">Название <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(5, 'sell', 'text', this)">Место <span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(6, 'sell', 'date', this)">Истекает через <span class="sortArrow">&#x21D5;</span></th>
+    `;
 
     sellTable.appendChild(headRow);
     SellOrdersBlock.appendChild(sellTable);
+}
+
+function sortingTableByColumn(tdNumber, table, typeData, td) {
+
+    const setParams = function (filter) {
+
+        if (filter.columnNumber === tdNumber) {
+            filter.sorting === 'ASC' ? filter.sorting = 'DESC' : filter.sorting = 'ASC'
+        } else {
+            filter = {columnNumber: tdNumber, sorting: "ASC", type: typeData}
+        }
+
+        if (filter.sorting === 'ASC') {
+            $(td).find('span').html('&#x25B2;');
+        } else if (filter.sorting === 'DESC') {
+            $(td).find('span').html('&#x25BC;');
+        }
+
+        return filter;
+    };
+
+    $('.ordersTable th').each(function (i, th) {
+        $(th).find('span').html('&#x21D5;');
+    });
+
+    if (table === "sell") {
+        sellSortingRules = setParams(sellSortingRules)
+    } else {
+        buySortingRules = setParams(buySortingRules)
+    }
+
+    filterOrders();
 }

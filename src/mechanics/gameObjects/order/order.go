@@ -6,7 +6,7 @@ import (
 
 type Order struct {
 	Id        int
-	IdUser    int
+	IdUser    int    `json:"-"`
 	Price     int    /* цена за еденицу */
 	Count     int    /* количество итемов */
 	Type      string /* buy/sell */
@@ -16,6 +16,7 @@ type Order struct {
 	Expires   time.Time
 	PlaceName string /* место продажи */
 	PlaceID   int    /* ид места продажи */
+	PathJump  int    `json:"path_jump"`
 	Item      interface{}
 
 	ItemSize float32 /* сколько весит 1 итем нужен что бы класть его в склад */

@@ -23,6 +23,10 @@ function InitMarketMenu(noMask) {
             includeJS("../assets/components/market/Assortment/fillWeapon.js");
             includeJS("../assets/components/market/Assortment/fillAmmo.js");
             includeJS("../assets/components/market/Assortment/fillRes.js");
+            includeJS("../assets/components/market/Assortment/fillBlueprint.js");
+            includeJS("../assets/components/market/Assortment/fillBoxes.js");
+            includeJS("../assets/components/market/Assortment/fillTrash.js");
+
             includeJS("../assets/components/market/Assortment/CreateFilter.js");
             includeJS("../assets/components/uiComponents/Button.js");
 
@@ -39,6 +43,14 @@ function InitMarketMenu(noMask) {
         () => {
             initMarket = true;
             setTimeout(function () {
+
+                // обнуляем прошлый фильтр поиска
+                filterKey = {type: '', id: 0};
+                radiusFilter = 2;
+                buySortingRules = {columnNumber: "", sorting: "", type: ""};
+                sellSortingRules = {columnNumber: "", sorting: "", type: ""};
+                searchFilter = '';
+
                 ConnectMarket();
                 CreateMarketMenu(noMask);
             }, 400);

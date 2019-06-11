@@ -291,7 +291,7 @@ func (inv *Inventory) FillInventory(rows *sql.Rows) {
 		}
 
 		if inventorySlot.Type == "trash" {
-			trashItem := gameTypes.TrashItems.GetByID(inventorySlot.ItemID)
+			trashItem, _ := gameTypes.TrashItems.GetByID(inventorySlot.ItemID)
 
 			inventorySlot.Item = trashItem
 			inventorySlot.Size = trashItem.Size * float32(inventorySlot.Quantity)

@@ -66,4 +66,8 @@ function AllOrdersTab(myMarket, allMarket) {
 
     allMarket.className = "activePin";
     myMarket.className ="";
+
+    marketSocket.send(JSON.stringify({
+        event: "getMyOrders"
+    }));
 }

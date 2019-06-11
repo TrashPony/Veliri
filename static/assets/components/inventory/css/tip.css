@@ -18,6 +18,10 @@
     width: 100%;
 }
 
+#InventoryTip input:active {
+    transform: scale(0.95);
+}
+
 #InventoryTipSelect {
     min-height: 20px;
     width: 90px;

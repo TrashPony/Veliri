@@ -18,11 +18,12 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 
 	base, findBase := bases.Bases.Get(user.InBaseID)
 
-	if user.GetCredits() >= price*quantity && (minBuyOut == 0 || quantity%minBuyOut == 0) && findBase {
+	if user.GetCredits() >= price*quantity && (minBuyOut == 0 || quantity%minBuyOut == 0) && findBase && quantity > 0 {
 
 		var item interface{}
 		var ok bool
 
+		//todo надо бы уже сделать метод взятия айтема по типу и ид...
 		if itemType == "weapon" {
 			item, ok = gameTypes.Weapons.GetByID(itemId)
 		}
@@ -37,6 +38,30 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 
 		if itemType == "body" {
 			item, ok = gameTypes.Bodies.GetByID(itemId)
+		}
+
+		if itemType == "resource" {
+			item, ok = gameTypes.Resource.GetBaseByID(itemId)
+		}
+
+		if itemType == "recycle" {
+			item, ok = gameTypes.Resource.GetRecycledByID(itemId)
+		}
+
+		if itemType == "detail" {
+			item, ok = gameTypes.Resource.GetDetailByID(itemId)
+		}
+
+		if itemType == "boxes" {
+			item, ok = gameTypes.Boxes.GetByID(itemId)
+		}
+
+		if itemType == "blueprints" {
+			item, ok = gameTypes.BluePrints.GetByID(itemId)
+		}
+
+		if itemType == "trash" {
+			item, ok = gameTypes.TrashItems.GetByID(itemId)
 		}
 
 		if ok {
@@ -100,6 +125,9 @@ func (o *OrdersPool) PlaceNewBuyOrder(itemId, price, quantity, minBuyOut, expire
 		}
 		if !findBase {
 			return errors.New("wrong base")
+		}
+		if quantity < 1 {
+			return errors.New("wrong count items")
 		}
 	}
 

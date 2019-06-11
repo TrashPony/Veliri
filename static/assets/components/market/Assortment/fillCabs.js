@@ -34,6 +34,7 @@ function openCabsScroll() {
     this.onclick = function () {
         this.innerHTML = " ▶ Корпуса";
         this.onclick = openCabsScroll;
+        clearFilter();
     }
 }
 
@@ -41,6 +42,7 @@ function openDeepCabs(nameType, parent) {
     parent.innerText = " ▼ " + nameType;
 
     parent.onclick = function () {
+        clearFilter();
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         parent.innerHTML = " ▶ " + nameType;
         parent.onclick = function () {

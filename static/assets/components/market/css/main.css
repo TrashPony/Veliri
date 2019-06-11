@@ -1,6 +1,4 @@
 #marketBox {
-    height: 600px;
-    width: 1000px;
     position: absolute;
     top: 15px;
     left: 50%;
@@ -11,16 +9,19 @@
     background-image: linear-gradient(1deg,rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     background-size: 100% 2px;
     z-index: 11;
+
+    height: 400px;
+    width: 860px;
 }
 
 #ordersBlock {
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     background: rgba(183, 195, 201, 0.29);
     border-radius: 4px;
-    height: 590px;
-    width: 780px;
     margin: 5px;
     float: right;
+    height: 390px;
+    width: 640px;
 }
 
 #selectItemIcon {
@@ -32,6 +33,7 @@
     margin-left: 15px;
     border-radius: 5px;
     float: left;
+    position: relative;
 }
 
 #selectItemName {
@@ -44,18 +46,18 @@
 }
 
 #sellOrdersBlock, #BuyOrdersBlock, #MyOrdersBlock {
-    height: 212px;
-    width: 770px;
     margin: 0 5px 5px 5px;
     overflow-y: scroll;
     border-radius: 5px;
     box-shadow: inset 0 0 5px black;
     background: #8cb3c7;
+    height: 112px;
+    width: 630px;
 }
 
 #MyOrdersBlock {
     margin-top: 50px;
-    height: 515px;
+    height: 315px;
 }
 
 .ordersHead {

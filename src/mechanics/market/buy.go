@@ -10,11 +10,11 @@ import (
 )
 
 func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
-	// 3тий ретурн это мх, его надо вызрывать только после всех изменений с ордером
+
 	find, buyOrder, mx := o.GetOrder(orderID)
 	defer mx.Unlock()
 
-	if find && buyOrder.Type == "sell" {
+	if find && buyOrder.Type == "sell" && count > 0 && user.GetID() != buyOrder.IdUser {
 		if user.GetCredits() >= buyOrder.Price*count && buyOrder.Count >= count {
 
 			user.SetCredits(user.GetCredits() - buyOrder.Price*count) // отнимаем деньги :)
@@ -30,7 +30,7 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 			}
 
 			storages.Storages.AddItem(user.GetID(), buyOrder.PlaceID, buyOrder.Item, buyOrder.TypeItem,
-				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize*float32(count), buyOrder.ItemHP, false)
+				buyOrder.IdItem, count, buyOrder.ItemHP, buyOrder.ItemSize, buyOrder.ItemHP, false)
 
 			players.Users.AddCash(buyOrder.IdUser, buyOrder.Price*count) // пополням баланс продавца
 		} else {
@@ -48,6 +48,14 @@ func (o *OrdersPool) Buy(orderID, count int, user *player.Player) error {
 
 		if buyOrder.Type != "sell" {
 			return errors.New("wrong order type")
+		}
+
+		if count < 1 {
+			return errors.New("wrong count items")
+		}
+
+		if user.GetID() == buyOrder.IdUser {
+			return errors.New("it's you order")
 		}
 	}
 

@@ -27,7 +27,7 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 		base, findBase := bases.Bases.Get(user.InBaseID)
 
-		if slot.MaxHP == slot.HP && quantity <= slot.Quantity && findBase {
+		if slot.MaxHP == slot.HP && quantity <= slot.Quantity && findBase && quantity > 0 {
 
 			if minBuyOut == 0 {
 				minBuyOut = 1
@@ -83,6 +83,10 @@ func (o *OrdersPool) PlaceNewSellOrder(storageSlot, price, quantity, minBuyOut, 
 
 			if !findBase {
 				return errors.New("wrong base")
+			}
+
+			if quantity < 1 {
+				return errors.New("wrong count items")
 			}
 		}
 

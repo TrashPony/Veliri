@@ -30,6 +30,14 @@ func (r *resourceStore) GetBaseByID(id int) (*resource.Resource, bool) {
 	return &newResource, ok
 }
 
+func (r *resourceStore) GetAllDetails() map[int]resource.CraftDetail {
+	return r.detail
+}
+
+func (r *resourceStore) GetAllBaseResource() map[int]resource.Resource {
+	return r.base
+}
+
 func (r *resourceStore) GetAllRecycled() map[int]resource.RecycledResource {
 	return r.recycled
 }

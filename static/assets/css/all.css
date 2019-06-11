@@ -19,6 +19,7 @@ input {
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
+
 input[type="number"] {
     background: #7e919a;
 }
@@ -40,6 +41,14 @@ select {
 
 input:hover {
     background-color: rgba(0, 120, 211, 0.9);
+}
+
+input[type=button]:active {
+    transform: scale(0.95);
+}
+
+input[type=submit]:active {
+    transform: scale(0.95);
 }
 
 .ui-selectable-helper {
@@ -240,7 +249,7 @@ body ::-webkit-scrollbar-thumb:disabled {
 }
 
 /*--------*/
-body ::-webkit-scrollbar{
+body ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
 }

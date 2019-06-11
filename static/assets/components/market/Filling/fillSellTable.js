@@ -1,18 +1,18 @@
-function fillSellTable(order, baseName) {
+function fillSellTable(order) {
 
     let table = document.getElementById("marketSellTable");
     let tr = document.createElement("tr");
+    tr.id = order.Type + order.Id;
     tr.className = "marketRow";
     tr.order = order;
 
-    if (!(order.IdItem === filterKey.id && order.TypeItem === filterKey.type)) {
-        if (filterKey.type !== '') {
-            tr.style.display = "none";
-        }
-    }
-
     let td1 = document.createElement("td");
-    td1.innerHTML = "0"; // todo захардкожаное растояние
+    td1.innerHTML = order.path_jump;
+    if (order.path_jump < 0) {
+        td1.style.color = "transparent";
+        td1.style.textShadow = "none";
+        td1.innerHTML += "<span class='basePath'>База</span>"
+    }
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");
@@ -20,7 +20,8 @@ function fillSellTable(order, baseName) {
     tr.appendChild(td2);
 
     let td3 = document.createElement("td");
-    td3.innerHTML = order.Price + " cr.";
+    td3.className = "creditsTD";
+    td3.innerHTML = order.Price;
     tr.appendChild(td3);
 
     let td4 = document.createElement("td");
@@ -47,29 +48,29 @@ function fillSellTable(order, baseName) {
 }
 
 function buyDialog(order, e) {
+
+    if (document.getElementById("subMenu")) {
+        document.getElementById("subMenu").remove();
+    }
+
     let subMenu = document.createElement("div");
     subMenu.id = "subMenu";
-
     subMenu.style.top = e.clientY + "px";
     subMenu.style.left = e.clientX + "px";
 
-    let head = document.createElement("h2");
-    head.innerHTML = "Покупака " + order.Item.name;
-    subMenu.appendChild(head);
-
-    let div = createNumberInput(0, order.Count, order.Count, "штук");
-    subMenu.appendChild(div);
-
-    let resultSpan = document.createElement("span");
-    resultSpan.id = "dialogResultSpan";
-    resultSpan.innerHTML = "за <span style='color: chartreuse'>" + order.Count * order.Price + "</span> кредитов";
-    subMenu.appendChild(resultSpan);
-
-    subMenu.appendChild(document.createElement("br"));
-
-    div.inputBlock.oninput = function () {
-        resultSpan.innerHTML = "за <span style='color: chartreuse'>" + this.value * order.Price + " </span> кредитов";
-    };
+    subMenu.innerHTML = `
+        <h2>Покупака ${order.Item.name}</h2>
+        <div class="marketDialogItemIcon">
+            ${getBackgroundUrlByItem({
+        type: order.TypeItem,
+        item: {name: order.Item.name, icon: "blueprint"}
+    })}
+        </div>
+        <form oninput="result.value = count.value * ${order.Price}">
+            <span style="float: left"> Количество: </span> <input id="buyCount" style="float: right" name="count" type="number" min="1" max="${order.Count}" value="${order.Count}"> <br>
+            <span style="float: left"> Всего:  </span> <output style="float: right" name="result" style='color: chartreuse'>${order.Count * order.Price}</output>
+        </form>
+    `;
 
     let closeButton = createInput("Отменить", subMenu);
     closeButton.onclick = function () {
@@ -78,16 +79,12 @@ function buyDialog(order, e) {
 
     let sellButton = createInput("Купить", subMenu);
     sellButton.onclick = function () {
-        if (div.inputBlock.value > 0) {
-            marketSocket.send(JSON.stringify({
-                event: 'buy',
-                order_id: Number(order.Id),
-                quantity: Number(div.inputBlock.value)
-            }));
-            subMenu.remove();
-        } else {
-            alert("нельзя купить 0 предметов")
-        }
+        marketSocket.send(JSON.stringify({
+            event: 'buy',
+            order_id: Number(order.Id),
+            quantity: Number(document.getElementById('buyCount').value)
+        }));
+        subMenu.remove();
     };
 
     document.body.appendChild(subMenu);

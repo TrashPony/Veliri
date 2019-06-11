@@ -41,7 +41,7 @@ func GetInventory(client *player.Player) {
 				if slot.Type == "body" {
 					body, _ := gameTypes.Bodies.GetByID(slot.ItemID) // MS
 					if body.MotherShip {
-						findMS = true
+						findMS = false
 						break
 					}
 				}

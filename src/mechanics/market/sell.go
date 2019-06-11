@@ -16,7 +16,7 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 
 	base, findBase := bases.Bases.Get(user.InBaseID)
 
-	if find && sellOrder.Type == "buy" && findBase {
+	if find && sellOrder.Type == "buy" && findBase && count > 0 && user.GetID() != sellOrder.IdUser {
 		if sellOrder.Count >= count && count%sellOrder.MinBuyOut == 0 && base.ID == sellOrder.PlaceID {
 
 			// пытаемся удалить итемы у продовца
@@ -55,6 +55,14 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 
 		if sellOrder.Type != "buy" {
 			return errors.New("wrong order type")
+		}
+
+		if count < 1 {
+			return errors.New("wrong count items")
+		}
+
+		if user.GetID() == sellOrder.IdUser {
+			return errors.New("it's you order")
 		}
 	}
 	return nil

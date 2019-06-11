@@ -3,6 +3,7 @@ package market
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/market"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
+	"github.com/getlantern/deepcopy"
 	"sync"
 )
 
@@ -20,6 +21,9 @@ func NewOrdersPool() *OrdersPool {
 }
 
 func (o *OrdersPool) GetUserOrders(userID int) map[int]*order.Order {
+	o.mx.Lock()
+	defer o.mx.Unlock()
+
 	userOrders := make(map[int]*order.Order)
 
 	for _, poolOrder := range o.orders {
@@ -34,7 +38,15 @@ func (o *OrdersPool) GetUserOrders(userID int) map[int]*order.Order {
 func (o *OrdersPool) GetOrders() map[int]*order.Order {
 	o.mx.Lock()
 	defer o.mx.Unlock()
-	return o.orders
+
+	// копируем мапу что бы ненарватся на конкурентный доступ
+	var newMapOrders map[int]*order.Order
+	err := deepcopy.Copy(&newMapOrders, &o.orders)
+	if err != nil {
+		println(err.Error())
+	}
+
+	return newMapOrders
 }
 
 func (o *OrdersPool) GetOrder(id int) (bool, *order.Order, *sync.Mutex) {

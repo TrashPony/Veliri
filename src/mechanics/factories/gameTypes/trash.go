@@ -15,7 +15,11 @@ func newTrashStore() *trashStore {
 	return &trashStore{trashItems: get.TrashItems()}
 }
 
-func (t *trashStore) GetByID(id int) *trashItem.TrashItem {
-	trashItem := t.trashItems[id]
-	return &trashItem
+func (t *trashStore) GetAllType() map[int]trashItem.TrashItem {
+	return t.trashItems
+}
+
+func (t *trashStore) GetByID(id int) (*trashItem.TrashItem, bool) {
+	trashItem, ok := t.trashItems[id]
+	return &trashItem, ok
 }

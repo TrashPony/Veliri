@@ -1,4 +1,4 @@
-function FillMyOrders(orders, baseName) {
+function FillMyOrders(orders) {
 
     let table = document.getElementById("marketMyTable");
     let ordersBlock = document.getElementById("MyOrdersBlock");
@@ -6,19 +6,32 @@ function FillMyOrders(orders, baseName) {
     if (!table) {
         table = createMyTable()
     }
-    if (!ordersBlock) {
+
+    if (!ordersBlock || document.getElementById("MyOrdersBlock").style.display === "none") {
+        // подкрашиваем ордера владельца, и убираем ивент что бы игрок не мог слить сам себе что либо
+        for (let i in orders) {
+
+            let row = document.getElementById(orders[i].Type + orders[i].Id);
+            row.onclick = null;
+
+            if (row) {
+                row.style.background = "#0085f9"
+            }
+        }
+
         return
     }
+
     ordersBlock.appendChild(table);
 
     for (let i in orders) {
         if (orders.hasOwnProperty(i)) {
-            addMyOrder(orders[i], baseName)
+            addMyOrder(orders[i])
         }
     }
 }
 
-function addMyOrder(order, baseName) {
+function addMyOrder(order) {
     let table = document.getElementById("marketMyTable");
 
     let tr = document.createElement("tr");
@@ -34,7 +47,8 @@ function addMyOrder(order, baseName) {
     tr.appendChild(td2);
 
     let td3 = document.createElement("td");
-    td3.innerHTML = order.Price + " cr.";
+    td3.className = "creditsTD";
+    td3.innerHTML = order.Price;
     tr.appendChild(td3);
 
     let td4 = document.createElement("td");
@@ -66,7 +80,8 @@ function addMyOrder(order, baseName) {
     tr.appendChild(td9);
 
     let td10 = document.createElement("td");
-    td10.innerHTML = order.Price * order.Count + " cr.";
+    td10.className = "creditsTD";
+    td10.innerHTML = order.Price * order.Count;
     tr.appendChild(td10);
 
     let td11 = document.createElement("td");
@@ -76,7 +91,7 @@ function addMyOrder(order, baseName) {
     cancelButton.type = "button";
     cancelButton.value = "Отменить";
     cancelButton.className = "button cancel order";
-    cancelButton.onclick = function(){
+    cancelButton.onclick = function () {
         marketSocket.send(JSON.stringify({
             event: "cancelOrder",
             order_id: order.Id
@@ -94,49 +109,20 @@ function createMyTable() {
 
     let headRow = document.createElement("tr");
 
-    let td1 = document.createElement("td");
-    td1.innerHTML = "Растояние";
-    headRow.appendChild(td1);
+    headRow.innerHTML = `
+        <th>Растояние</th>
+        <th>Количество</th>
+        <th>Цена</th>
+        <th>Тип</th>
+        <th>Название</th>
+        <th>Место</th>
+        <th>Мин. выкуп</th>
+        <th>Истекает через</th>
+        <th>Тип сделки</th>
+        <th>Общая стоимость</th>
+        <th></th>
 
-    let td2 = document.createElement("td");
-    td2.innerHTML = "Количество";
-    headRow.appendChild(td2);
-
-    let td3 = document.createElement("td");
-    td3.innerHTML = "Цена";
-    headRow.appendChild(td3);
-
-    let td4 = document.createElement("td");
-    td4.innerHTML = "Тип";
-    headRow.appendChild(td4);
-
-    let td5 = document.createElement("td");
-    td5.innerHTML = "Название";
-    headRow.appendChild(td5);
-
-    let td6 = document.createElement("td");
-    td6.innerHTML = "Место";
-    headRow.appendChild(td6);
-
-    let td7 = document.createElement("td");
-    td7.innerHTML = "Мин. выкуп";
-    headRow.appendChild(td7);
-
-    let td8 = document.createElement("td");
-    td8.innerHTML = "Истекает через";
-    headRow.appendChild(td8);
-
-    let td9 = document.createElement("td");
-    td9.innerHTML = "Тип";
-    headRow.appendChild(td9);
-
-    let td10 = document.createElement("td");
-    td10.innerHTML = "Общая стоимость";
-    headRow.appendChild(td10);
-
-    let td11 = document.createElement("td");
-    td11.innerHTML = "";
-    headRow.appendChild(td11);
+    `;
 
     sellTable.appendChild(headRow);
 

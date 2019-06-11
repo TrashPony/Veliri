@@ -33,6 +33,7 @@ function openAmmoOneScroll(type, parent) {
     }
 
     parent.onclick = function () {
+        clearFilter();
         parent.innerHTML = " ▶ " + type;
         parent.onclick = function (){
             openAmmoOneScroll(type, parent);
@@ -65,6 +66,7 @@ function openAmmoTwoScroll(type, name, parent) {
     }
 
     parent.onclick = function () {
+        clearFilter();
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         parent.innerHTML = " ▶ " + name;
         parent.onclick = function () {
@@ -77,6 +79,7 @@ function openAmmoTwoScroll(type, name, parent) {
 function openDeepAmmo(type, nameType, sizeType, parent) {
     parent.innerText = " ▼ " + sizeType;
     parent.onclick = function () {
+        clearFilter();
         event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
         parent.innerHTML = " ▶ " + sizeType;
         parent.onclick = function () {

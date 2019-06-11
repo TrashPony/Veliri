@@ -59,11 +59,10 @@ function createMarketBox() {
 
     $(marketBox).resizable({
         minHeight: 280,
-        minWidth: 622,
-        maxWidth: 1000,
+        minWidth: 700,
         handles: "se",
         resize: function (event, ui) {
-            $(this).find('#listItem').css("height", $(this).height() - 157);
+            $(this).find('#listItem').css("height", $(this).height() - 173);
             $(this).find('#ordersBlock').css("height", $(this).height() - 10);
 
             $(this).find('#sellOrdersBlock').css("height", $(this).height() / 2 - 88);
@@ -93,11 +92,33 @@ function headUI(headMarket) {
     balance.id = "balance";
     headMarket.appendChild(balance);
 
+    let radiusForm = document.createElement('form');
+    radiusForm.innerHTML += `
+        <h4>Область рынка</h4>
+        <input type="radio" name="radius" value="0">
+        <label>База</label>
+    
+        <input type="radio" name="radius" value="1">
+        <label>Сектор</label>
+    
+        <input type="radio" name="radius" value="2" checked>
+        <label>Все</label>
+    `;
+    $(radiusForm).on('change', function () {
+        radiusFilter = Number($('input:checked', radiusForm).val());
+        filterOrders();
+    });
+    headMarket.appendChild(radiusForm);
+
     let searchInput = document.createElement("input");
     searchInput.innerHTML = "Поиск";
     searchInput.className = "searchInput";
     searchInput.type = "text";
-    searchInput.placeholder = "поиск";
+    searchInput.placeholder = "поиск по имени";
+    searchInput.oninput = function () {
+        searchFilter = this.value;
+        filterOrders();
+    };
     headMarket.appendChild(searchInput);
 }
 
@@ -131,6 +152,24 @@ function createListItemUI(listItem) {
     res.id = "resCategoryItem";
     res.innerHTML = " ▶ Ресурсы";
     listItem.appendChild(res);
+
+    let bp = document.createElement("div");
+    bp.className = "categoryItem";
+    bp.id = "bpCategoryItem";
+    bp.innerHTML = " ▶ Чертежи";
+    listItem.appendChild(bp);
+
+    let boxes = document.createElement("div");
+    boxes.className = "categoryItem";
+    boxes.id = "boxCategoryItem";
+    boxes.innerHTML = " ▶ Ящики";
+    listItem.appendChild(boxes);
+
+    let trash = document.createElement("div");
+    trash.className = "categoryItem";
+    trash.id = "trashCategoryItem";
+    trash.innerHTML = " ▶ Хлам";
+    listItem.appendChild(trash);
 }
 
 function ordersBlockUI(ordersBlock) {

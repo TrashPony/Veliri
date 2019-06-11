@@ -9,7 +9,7 @@
     border-radius: 5px;
 }
 
-.ordersTable tr:first-child td{
+.ordersTable tr:first-child th {
     background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
     color: rgba(255, 255, 255, 0.65);
     font-size: 12px;
@@ -22,11 +22,11 @@
     top: 0;
 }
 
-.ordersTable tr:first-child td:first-child{
+.ordersTable tr:first-child th:first-child {
     border-radius: 5px 0 0 0;
 }
 
-.ordersTable tr:first-child td:last-child{
+.ordersTable tr:first-child th:last-child {
     border-radius: 0 5px 0 0;
 }
 
@@ -35,11 +35,11 @@
     font-size: 12px;
 }
 
-.ordersTable td{
+.ordersTable td {
 
 }
 
-#marketBuyTable td{
+#marketBuyTable td {
     width: 12%;
 }
 
@@ -51,10 +51,28 @@
     width: 9%;
 }
 
-.button.cancel.order{
+.button.cancel.order {
     outline: none;
     border: transparent;
     border-radius: 0;
     padding: 2px 10px 2px;
     z-index: 11;
+}
+
+.creditsTD:after {
+    content: " cr.";
+    color: rgba(128, 255, 130, 0.85);
+}
+
+.sortArrow {
+    float: right;
+    font-size: 10px;
+    font-weight: 100;
+    line-height: 15px;
+}
+
+.basePath {
+    margin-left: -10px;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
