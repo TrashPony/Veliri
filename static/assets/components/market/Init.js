@@ -49,6 +49,7 @@ function InitMarketMenu(noMask) {
                 radiusFilter = 2;
                 buySortingRules = {columnNumber: "", sorting: "", type: ""};
                 sellSortingRules = {columnNumber: "", sorting: "", type: ""};
+                userSortingTable = {columnNumber: "", sorting: "", type: ""};
                 searchFilter = '';
 
                 ConnectMarket();

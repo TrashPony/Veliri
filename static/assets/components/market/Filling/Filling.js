@@ -1,5 +1,11 @@
 function Filling(data) {
 
+    if (data.event === 'getItemsInStorage') {
+        if (document.getElementById('sellCountInStorage'))
+            document.getElementById('sellCountInStorage').innerHTML = data.count;
+        return
+    }
+
     if (data.assortment) {
         FillAssortment(data.assortment)
     }

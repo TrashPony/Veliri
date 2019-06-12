@@ -4,12 +4,13 @@ let radiusFilter = 2;
 
 let buySortingRules = {columnNumber: "", sorting: "", type: ""}; // ASC - по возрастанию, DESC - по убыванию
 let sellSortingRules = {columnNumber: "", sorting: "", type: ""}; // ASC - по возрастанию, DESC - по убыванию
+let userSortingTable = {columnNumber: "", sorting: "", type: ""}; // ASC - по возрастанию, DESC - по убыванию
 
 function clearFilter() {
     document.getElementById("selectItemName").innerHTML = '';
     document.getElementById("selectItemIcon").innerHTML = '';
     filterKey = {type: '', id: 0};
-    filterOrders()
+    filterOrders();
 }
 
 function filterOrders() {
@@ -17,6 +18,7 @@ function filterOrders() {
 
     sortingTable('#marketSellTable', sellSortingRules);
     sortingTable('#marketBuyTable', buySortingRules);
+    sortingTable('#marketMyTable', userSortingTable);
 
     for (let j = 0; j < marketRows.length; j++) {
 

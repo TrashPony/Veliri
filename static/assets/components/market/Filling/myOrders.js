@@ -15,7 +15,7 @@ function FillMyOrders(orders) {
             row.onclick = null;
 
             if (row) {
-                row.style.background = "#0085f9"
+                row.style.background = "rgb(28, 109, 179)"
             }
         }
 
@@ -39,7 +39,16 @@ function addMyOrder(order) {
     tr.order = order;
 
     let td1 = document.createElement("td");
-    td1.innerHTML = "0"; // todo захардкожаное растояние
+    td1.innerHTML = order.path_jump;
+    if (order.path_jump <= 0) {
+        td1.style.color = "transparent";
+        td1.style.textShadow = "none";
+        if (order.path_jump === -1) {
+            td1.innerHTML += "<span class='basePath'>База</span>"
+        } else if (order.path_jump === 0) {
+            td1.innerHTML += "<span class='basePath'>Сектор</span>"
+        }
+    }
     tr.appendChild(td1);
 
     let td2 = document.createElement("td");
@@ -110,18 +119,17 @@ function createMyTable() {
     let headRow = document.createElement("tr");
 
     headRow.innerHTML = `
-        <th>Растояние</th>
-        <th>Количество</th>
-        <th>Цена</th>
-        <th>Тип</th>
-        <th>Название</th>
-        <th>Место</th>
-        <th>Мин. выкуп</th>
-        <th>Истекает через</th>
-        <th>Тип сделки</th>
-        <th>Общая стоимость</th>
+        <th onclick="sortingTableByColumn(0, 'my', 'number', this)">Растояние<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(1, 'my', 'number', this)">Количество<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(2, 'my', 'number', this)">Цена<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(3, 'my', 'text', this)">Тип<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(4, 'my', 'text', this)">Название<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(5, 'my', 'text', this)">Место<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(6, 'my', 'number', this)">Мин. выкуп<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(7, 'my', 'date', this)">Истекает через<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(8, 'my', 'text', this)">Тип сделки<span class="sortArrow">&#x21D5;</span></th>
+        <th onclick="sortingTableByColumn(9, 'my', 'number', this)">Общая стоимость<span class="sortArrow">&#x21D5;</span></th>
         <th></th>
-
     `;
 
     sellTable.appendChild(headRow);

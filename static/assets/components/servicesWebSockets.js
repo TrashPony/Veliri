@@ -47,7 +47,6 @@ function ConnectMarket() {
             alert(JSON.parse(msg.data).error);
         } else if (document.getElementById("marketBox")) {
             Filling(JSON.parse(msg.data));
-
         }
     };
 

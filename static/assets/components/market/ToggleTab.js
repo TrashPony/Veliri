@@ -22,12 +22,17 @@ function MyOrdersTab(myMarket, allMarket) {
     }
 
     myMarket.className = "activePin";
-    allMarket.className ="";
+    allMarket.className = "";
 
     if (!document.getElementById("MyOrdersBlock")) {
         let myOrdersBlock = document.createElement("div");
         myOrdersBlock.id = "MyOrdersBlock";
         document.getElementById("ordersBlock").appendChild(myOrdersBlock);
+
+        let marketBox = $('#marketBox');
+        $(myOrdersBlock).css("height", $(marketBox).height() - 85);
+        $(myOrdersBlock).css("width", $(marketBox).width() - 230);
+
     } else {
         document.getElementById("MyOrdersBlock").style.display = "block"
     }
@@ -65,7 +70,7 @@ function AllOrdersTab(myMarket, allMarket) {
     }
 
     allMarket.className = "activePin";
-    myMarket.className ="";
+    myMarket.className = "";
 
     marketSocket.send(JSON.stringify({
         event: "getMyOrders"

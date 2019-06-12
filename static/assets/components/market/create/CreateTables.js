@@ -66,8 +66,10 @@ function sortingTableByColumn(tdNumber, table, typeData, td) {
 
     if (table === "sell") {
         sellSortingRules = setParams(sellSortingRules)
-    } else {
+    } else if (table === "buy") {
         buySortingRules = setParams(buySortingRules)
+    } else {
+        userSortingTable = setParams(userSortingTable)
     }
 
     filterOrders();

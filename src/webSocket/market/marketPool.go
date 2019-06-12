@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/order"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/market"
@@ -36,6 +37,7 @@ type Message struct {
 	ItemType    string               `json:"item_type"`
 	UserID      int                  `json:"user_id"`
 	BaseName    string               `json:"base_name"`
+	Count       int                  `json:"count"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -74,7 +76,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			break
 		}
 
-		if msg.Event == "openMarket" {
+		if msg.Event == "openMarket" || msg.Event == "getMyOrders" {
 			OrderSender()
 		}
 
@@ -128,8 +130,25 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			}
 		}
 
-		if msg.Event == "getMyOrders" {
-			OrderSender()
+		if msg.Event == "getItemsInStorage" {
+			// запрашивает все айтемы на складе которые можно продать (полностью починеные), на базе где размещен ордер
+			count := 0
+
+			find, marketOrder, mx := market.Orders.GetOrder(msg.OrderID)
+			mx.Unlock()
+
+			if find {
+				storage, _ := storages.Storages.Get(user.GetID(), marketOrder.PlaceID)
+				for _, slot := range storage.Slots {
+					if slot.ItemID == msg.ItemID && slot.Type == msg.ItemType && slot.HP == slot.MaxHP {
+						count++
+					}
+				}
+
+				ws.WriteJSON(Message{Event: msg.Event, Count: count})
+			} else {
+				ws.WriteJSON(Message{Event: msg.Event, Error: "no find order"})
+			}
 		}
 	}
 }

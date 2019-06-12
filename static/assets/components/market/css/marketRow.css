@@ -49,7 +49,13 @@
 
 #subMenu form {
     text-align: left;
-    width: 210px;
+    width: 235px;
+    margin-top: 10px;
+}
+
+#subMenu form div {
+    float: left;
+    width: 100%;
 }
 
 #subMenu form:after {
@@ -59,15 +65,16 @@
 }
 
 #subMenu span, #subMenu input[type=number] {
-    width: 60px;
+    min-width: 60px;
     line-height: 22px;
+    position: relative;
 }
 
 #subMenu input[type=number] {
     text-align: center;
 }
 
-#subMenu output {
+#subMenu output, #subMenu .holdInput {
     width: 60px;
     margin-right: 8px;
     line-height: 22px;
@@ -81,12 +88,16 @@
     position: relative;
 }
 
-#subMenu output:after {
+#subMenu output:after, #subMenu .holdInput.cr:after, #subMenu .holdInput.count:after {
     content: 'cr.';
     text-align: right;
     color: #7e919a;
     position: absolute;
     right: 3px;
+}
+
+#subMenu .holdInput.count:after{
+    content: 'шт.';
 }
 
 #subMenu input[type=number] {
@@ -105,9 +116,9 @@
 
 #subMenu .marketDialogItemIcon {
     clear: both;
-    height: 35px;
-    width: 35px;
+    width: 90px;
     position: relative;
-    margin: 4px 10px 4px 4px;
     float: left;
+    margin-right: 10px;
+    height: 75px;
 }

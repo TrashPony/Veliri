@@ -7,8 +7,14 @@ function fillBuyTable(order) {
 
     let td1 = document.createElement("td");
     td1.innerHTML = order.path_jump;
-    if (order.path_jump < 0) {
-        td1.innerHTML = "<span>База</span>"
+    if (order.path_jump <= 0) {
+        td1.style.color = "transparent";
+        td1.style.textShadow = "none";
+        if (order.path_jump === -1) {
+            td1.innerHTML += "<span class='basePath'>База</span>"
+        } else if (order.path_jump === 0) {
+            td1.innerHTML += "<span class='basePath'>Сектор</span>"
+        }
     }
     tr.appendChild(td1);
 
@@ -58,23 +64,37 @@ function sellDialog(order, e) {
     subMenu.id = "subMenu";
     subMenu.style.top = e.clientY + "px";
     subMenu.style.left = e.clientX + "px";
+    subMenu.style.width = "335px";
+    subMenu.style.minWidth = "unset";
 
-    let head = document.createElement("h2");
-    head.innerHTML = "Продажа    " + order.Item.name;
-    subMenu.appendChild(head);
-
-    // todo имеется на складе
-
-    let div = createNumberInput(0, order.Count, order.Count, "штук");
-    subMenu.appendChild(div);
-
-    let resultSpan = document.createElement("div");
-    resultSpan.innerHTML = "за <span style='color: chartreuse'>" + order.Count * order.Price + "</span> кредитов";
-    subMenu.appendChild(resultSpan);
-
-    div.inputBlock.oninput = function () {
-        resultSpan.innerHTML = "за <span style='color: chartreuse'>" + this.value * order.Price + " </span> кредитов";
-    };
+    subMenu.innerHTML = `
+     <h2>Продажа ${order.Item.name}</h2>
+        <div class="marketDialogItemIcon">
+            ${getBackgroundUrlByItem({type: order.TypeItem, item: {name: order.Item.name, icon: "blueprint"}})}
+        </div>
+        
+        <form oninput="result.value = count.value * ${order.Price}" style="float: right;">
+            <div>
+                <span style="float: left"> Имеется на складе: </span>
+                <span class="holdInput count" id="sellCountInStorage" style="float: right">0</span>
+            </div>
+            
+            <div>
+                <span style="float: left"> Цена за шт.:</span>  
+                <span class="holdInput cr" style="float: right">${order.Price}</span>
+            </div>
+            
+            <div> 
+                <span style="float: left"> Продать: </span>
+                <input id="buyCount" style="float: right" name="count" type="number" min="1" max="${order.Count}" value="1">
+            </div>
+            
+            <div>
+                <span style="float: left"> Всего кредитов:  </span>
+                <output style="float: right" name="result" style='color: chartreuse'>${order.Price}</output>
+            </div>
+        </form>
+    `;
 
     let closeButton = createInput("Отменить", subMenu);
     closeButton.onclick = function () {
@@ -83,17 +103,21 @@ function sellDialog(order, e) {
 
     let sellButton = createInput("Продать", subMenu);
     sellButton.onclick = function () {
-        if (div.inputBlock.value > 0) {
-            marketSocket.send(JSON.stringify({
-                event: 'sell',
-                order_id: Number(order.Id),
-                quantity: Number(div.inputBlock.value)
-            }));
-            subMenu.remove();
-        } else {
-            alert("нельзя продать 0 предметов")
-        }
+        marketSocket.send(JSON.stringify({
+            event: 'sell',
+            order_id: Number(order.Id),
+            quantity: Number(div.inputBlock.value)
+        }));
+        subMenu.remove();
     };
 
     document.body.appendChild(subMenu);
+
+    // запрос сколько имеется на складе айтемов соотвествующие этому ордеру, на базе где размещен ордер
+    marketSocket.send(JSON.stringify({
+        event: 'getItemsInStorage',
+        item_id: order.Item.id,
+        item_type: order.TypeItem,
+        order_id: order.Id,
+    }));
 }

@@ -8,10 +8,14 @@ function fillSellTable(order) {
 
     let td1 = document.createElement("td");
     td1.innerHTML = order.path_jump;
-    if (order.path_jump < 0) {
+    if (order.path_jump <= 0) {
         td1.style.color = "transparent";
         td1.style.textShadow = "none";
-        td1.innerHTML += "<span class='basePath'>База</span>"
+        if (order.path_jump === -1) {
+            td1.innerHTML += "<span class='basePath'>База</span>"
+        } else if (order.path_jump === 0) {
+            td1.innerHTML += "<span class='basePath'>Сектор</span>"
+        }
     }
     tr.appendChild(td1);
 
@@ -57,27 +61,41 @@ function buyDialog(order, e) {
     subMenu.id = "subMenu";
     subMenu.style.top = e.clientY + "px";
     subMenu.style.left = e.clientX + "px";
+    subMenu.style.width = "335px";
+    subMenu.style.minWidth = "unset";
 
     subMenu.innerHTML = `
         <h2>Покупака ${order.Item.name}</h2>
         <div class="marketDialogItemIcon">
-            ${getBackgroundUrlByItem({
-        type: order.TypeItem,
-        item: {name: order.Item.name, icon: "blueprint"}
-    })}
+            ${getBackgroundUrlByItem({type: order.TypeItem, item: {name: order.Item.name, icon: "blueprint"}})}
         </div>
-        <form oninput="result.value = count.value * ${order.Price}">
-            <span style="float: left"> Количество: </span> <input id="buyCount" style="float: right" name="count" type="number" min="1" max="${order.Count}" value="${order.Count}"> <br>
-            <span style="float: left"> Всего:  </span> <output style="float: right" name="result" style='color: chartreuse'>${order.Count * order.Price}</output>
+        <form oninput="result.value = count.value * ${order.Price}" style="float: right;">
+        
+            <div>
+                <span style="float: left"> Цена за шт.:</span>  
+                <span class="holdInput cr" style="float: right">${order.Price}</span>
+            </div>
+            
+            <div>
+                <span style="float: left"> Купить: </span> 
+                <input id="buyCount" style="float: right" name="count" type="number" min="1" max="${order.Count}" value="${order.Count}">
+            </div>
+            
+            <div>
+                <span style="float: left"> Всего кредитов:  </span> 
+                <output style="float: right" name="result" style='color: chartreuse'>${order.Count * order.Price}</output>
+            </div>
         </form>
     `;
 
     let closeButton = createInput("Отменить", subMenu);
+    closeButton.style.margin = "5px 7% 0";
     closeButton.onclick = function () {
         subMenu.remove();
     };
 
     let sellButton = createInput("Купить", subMenu);
+    sellButton.style.margin = "5px 7% 0";
     sellButton.onclick = function () {
         marketSocket.send(JSON.stringify({
             event: 'buy',
