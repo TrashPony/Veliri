@@ -18,6 +18,9 @@ function preload() {
     // path
     game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
 
+    //Tunel
+    game.load.spritesheet('tunel', 'http://' + window.location.host + '/assets/map/animate/tunel.png', 512, 768, 3);
+
     //Equip_Animate
     game.load.spritesheet('ReloadEquip', 'http://' + window.location.host + '/assets/reload.png', 256, 256, 30);
     game.load.spritesheet('EnergyShield', 'http://' + window.location.host + '/assets/equipAnimate/energy_shield_animate.png', 100, 100, 20);
@@ -220,10 +223,15 @@ function preload() {
     game.load.image('road_2_6', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_6.png');
     game.load.image('road_2_7', 'http://' + window.location.host + '/assets/map/objects/roads/road_2_7.png');
 
+    game.load.image('road_trap', 'http://' + window.location.host + '/assets/map/objects/roads/road_trap.png');
+
     // bases
     game.load.image('explores_base', 'http://' + window.location.host + '/assets/map/objects/bases/explores_base.png');
     game.load.image('replics_base', 'http://' + window.location.host + '/assets/map/objects/bases/replics_base.png');
     game.load.image('reverses_base', 'http://' + window.location.host + '/assets/map/objects/bases/reverses_base.png');
+    game.load.image('neutral_base_1', 'http://' + window.location.host + '/assets/map/objects/bases/neutral_base_1.png');
+    game.load.image('neutral_base_2', 'http://' + window.location.host + '/assets/map/objects/bases/neutral_base_2.png');
+    game.load.image('neutral_base_3', 'http://' + window.location.host + '/assets/map/objects/bases/neutral_base_3.png');
     game.load.image('bottom_base', 'http://' + window.location.host + '/assets/map/objects/bases/bottom_base.png');
 
     //Clouds
