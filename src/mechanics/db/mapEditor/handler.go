@@ -10,8 +10,9 @@ func PlaceHandler(coordinate *coordinate.Coordinate, mp *_map.Map, toQ, toR, toB
 	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
 
 	coordinate.Handler = typeHandler
-	coordinate.ToQ = toQ
-	coordinate.ToR = toR
+	// TODO
+	//coordinate.ToQ = toQ
+	//coordinate.ToR = toR
 	coordinate.ToBaseID = toBaseId
 	coordinate.ToMapID = toMapId
 

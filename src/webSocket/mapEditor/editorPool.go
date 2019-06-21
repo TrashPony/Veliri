@@ -102,6 +102,7 @@ type Response struct {
 	Success         bool                          `json:"success"`
 	Bases           map[int]*base.Base            `json:"bases"`
 	Error           string                        `json:"error"`
+	EntryToSector   []*coordinate.Coordinate      `json:"entry_to_sector"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -140,8 +141,16 @@ func Reader(ws *websocket.Conn) {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
 			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
 
-			coordinateMap.ObjectPriority = mapChange.GetMaxPriorityTexture()
-			coordinateMap.ObjectPriority++
+			if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" {
+				coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
+				coordinateMap.TexturePriority++
+			}
+
+			if msg.Event == "placeCoordinate" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
+				coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
+				coordinateMap.ObjectPriority++
+				println(coordinateMap.ObjectPriority)
+			}
 
 			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
 			selectMap(msg, ws)

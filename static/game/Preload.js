@@ -20,6 +20,7 @@ function preload() {
 
     //Tunel
     game.load.spritesheet('tunel', 'http://' + window.location.host + '/assets/map/animate/tunel.png', 512, 768, 3);
+    game.load.spritesheet('tunel_out', 'http://' + window.location.host + '/assets/map/animate/tunel_out.png', 512, 512, 1);
 
     //Equip_Animate
     game.load.spritesheet('ReloadEquip', 'http://' + window.location.host + '/assets/reload.png', 256, 256, 30);

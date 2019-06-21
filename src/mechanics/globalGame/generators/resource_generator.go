@@ -28,8 +28,6 @@ func baseInit(mp *_map.Map) {
 
 		gameBase.CurrentResources = make(map[int]*inventory.Slot)
 
-		go gameBase.ConsumptionBaseResource()
-
 		for _, recycled := range gameTypes.Resource.GetAllRecycled() {
 			gameBase.CurrentResources[recycled.TypeID] = &inventory.Slot{
 				Item:     recycled,
@@ -38,6 +36,8 @@ func baseInit(mp *_map.Map) {
 				ItemID:   recycled.TypeID,
 			}
 		}
+
+		go gameBase.ConsumptionBaseResource()
 	}
 }
 
@@ -102,16 +102,19 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	}
 
 	for _, handler := range mp.HandlersCoordinates {
+
 		handlerX, handlerY := globalGame.GetXYCenterHex(handler.Q, handler.R)
 		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
 			return false
 		}
 
-		if handler.Handler == "sector" {
-			handlerX, handlerY = globalGame.GetXYCenterHex(handler.ToQ, handler.ToR)
-			if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
-				return false
-			}
+	}
+
+	entryPoints := maps.Maps.GetEntryPointsByMapID(mp.Id)
+	for _, exit := range entryPoints {
+		handlerX, handlerY := globalGame.GetXYCenterHex(exit.Q, exit.R)
+		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+			return false
 		}
 	}
 

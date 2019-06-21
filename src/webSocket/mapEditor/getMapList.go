@@ -16,7 +16,7 @@ func getMapList(msg Message, ws *websocket.Conn) {
 func selectMap(msg Message, ws *websocket.Conn) {
 	selectMap, _ := maps.Maps.GetByID(msg.ID)
 
-	resp := Response{Event: "MapSelect", Map: *selectMap, Bases: bases.Bases.GetBasesByMap(selectMap.Id)}
+	resp := Response{Event: "MapSelect", Map: *selectMap, Bases: bases.Bases.GetBasesByMap(selectMap.Id), EntryToSector: maps.Maps.GetEntryPointsByMapID(selectMap.Id)}
 
 	ws.WriteJSON(resp)
 }

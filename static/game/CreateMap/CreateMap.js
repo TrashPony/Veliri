@@ -26,10 +26,6 @@ function CreateMap() {
 
                 CreateTerrain(coordinate, startX, startY, q, r);
 
-                if (coordinate.animate_sprite_sheets !== "") {
-                    CreateAnimate(coordinate, startX, startY);
-                }
-
                 if (coordinate.dynamic_object) {
                     CreateDynamicObjects(coordinate.dynamic_object, q, r, true, coordinate);
                 }
@@ -83,6 +79,10 @@ function CreateObjects() {
     for (let i in game.mapPoints) {
         if (game.mapPoints[i].coordinate.texture_object !== '') {
             CreateObject(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
+        }
+
+        if (game.mapPoints[i].coordinate.animate_sprite_sheets !== '') {
+            CreateAnimate(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
         }
     }
 }

@@ -158,3 +158,17 @@ func (m *mapStore) RemoveMapAnomaly(mapID, q, r int) {
 		}
 	}
 }
+
+func (m *mapStore) GetEntryPointsByMapID(id int) []*coordinate.Coordinate {
+	entryPoints := make([]*coordinate.Coordinate, 0)
+
+	for _, mp := range m.maps {
+		for _, handler := range mp.HandlersCoordinates {
+			if handler.Handler == "sector" && handler.ToMapID == id {
+				entryPoints = append(entryPoints, handler)
+			}
+		}
+	}
+
+	return entryPoints
+}

@@ -55,11 +55,26 @@ function createGame(jsonMessage) {
             CreateMiniMap();
             CreateGeoData(JSON.parse(jsonMessage).map.geo_data);
             CreateEmittersZone(JSON.parse(jsonMessage).map.emitters);
-            CreateAnomalies(JSON.parse(jsonMessage).map.anomalies)
+            CreateAnomalies(JSON.parse(jsonMessage).map.anomalies);
+            CreateLabelEntry(JSON.parse(jsonMessage).entry_to_sector);
         };
 
         game = CreateGame(JSON.parse(jsonMessage).map, loadFunc, "mapEditor");
         game.bases = JSON.parse(jsonMessage).bases;
+    }
+}
+
+function CreateLabelEntry(entryPoints) {
+    for (let i of entryPoints) {
+        if (game.map.OneLayerMap.hasOwnProperty(i.q) && game.map.OneLayerMap.hasOwnProperty(i.r)) {
+            for (let position of i.positions) {
+                let xy = GetXYCenterHex(position.q, position.r);
+
+                let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
+                baseResp.anchor.setTo(0.5);
+                baseResp.scale.setTo(0.05);
+            }
+        }
     }
 }
 

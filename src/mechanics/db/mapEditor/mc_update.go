@@ -8,6 +8,8 @@ import (
 )
 
 func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
+	//todo positions
+
 	_, err := dbConnect.GetDBConnect().Exec(""+
 		"UPDATE map_constructor "+
 		"SET "+
@@ -25,12 +27,10 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"shadow = $15, "+
 		"transport = $16, "+
 		"handler = $17, "+
-		"to_q = $18, "+
-		"to_r = $19, "+
-		"to_base_id = $20, "+
-		"to_map_id = $21,"+
-		"id_type = $22, "+
-		"object_priority = $23 "+
+		"to_base_id = $18, "+
+		"to_map_id = $19,"+
+		"id_type = $20, "+
+		"object_priority = $21 "+
 		""+
 		"WHERE id_map = $1 AND q=$2 AND r = $3",
 		mp.Id,
@@ -50,8 +50,6 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.Shadow,
 		coordinate.Transport,
 		coordinate.Handler,
-		coordinate.ToQ,
-		coordinate.ToR,
 		coordinate.ToBaseID,
 		coordinate.ToMapID,
 		coordinate.ID,

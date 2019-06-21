@@ -25,7 +25,7 @@ func HandlersLife() {
 
 func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 	for {
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(300 * time.Millisecond)
 
 		xEntry, yEntry := globalGame.GetXYCenterHex(coor.Q, coor.R)
 		checkTransitionUser(xEntry, yEntry, mp.Id, coor)
@@ -34,16 +34,21 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 			continue
 		}
 
-		xOut, yOut := globalGame.GetXYCenterHex(coor.ToQ, coor.ToR)
-		if checkHandlerCoordinate(xOut, yOut, coor.ToMapID) {
+		users, rLock := globalGame.Clients.GetAll()
+
+		if globalGame.CheckHandlerCoordinate(coor, users) == nil {
 			// отключение телепорта
 			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerClose", IDMap: mp.Id, Q: coor.Q, R: coor.R})
 			coor.HandlerOpen = false
 		} else {
 			// включение телепорт
-			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerOpen", IDMap: mp.Id, Q: coor.Q, R: coor.R})
-			coor.HandlerOpen = true
+			if !coor.HandlerOpen {
+				go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerOpen", IDMap: mp.Id, Q: coor.Q, R: coor.R})
+				coor.HandlerOpen = true
+			}
 		}
+
+		rLock.Unlock()
 	}
 }
 
@@ -78,7 +83,7 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, 
 				go wsGlobal.IntoToBase(user, coor.ToBaseID, ws)
 			}
 			if coor.Handler == "sector" {
-				go wsGlobal.ChangeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
+				go wsGlobal.ChangeSector(user, coor.ToMapID, ws, coor)
 			}
 			return
 		} else {
@@ -89,21 +94,4 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, 
 		}
 		countTime++
 	}
-}
-
-func checkHandlerCoordinate(x, y, mapID int) bool {
-	// true занята
-	// false свободна
-	users, rLock := globalGame.Clients.GetAll()
-	defer rLock.Unlock()
-
-	for _, user := range users {
-		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
-			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
-			if dist < 135 {
-				return true
-			}
-		}
-	}
-	return false
 }

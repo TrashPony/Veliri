@@ -5,7 +5,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
+	"time"
 )
 
 func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coordinate) {
@@ -14,7 +16,7 @@ func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coor
 	}
 
 	if coor.Handler == "sector" {
-		ChangeSector(user, coor.ToMapID, coor.ToQ, coor.ToR, ws)
+		ChangeSector(user, coor.ToMapID, ws, coor)
 	}
 
 	if !user.Bot {
@@ -22,15 +24,31 @@ func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coor
 	}
 }
 
-func ChangeSector(user *player.Player, mapID, q, r int, ws *websocket.Conn) {
+func ChangeSector(user *player.Player, mapID int, ws *websocket.Conn, coor *coordinate.Coordinate) {
+
+	var toPosition *coordinate.Coordinate
+	for {
+
+		users, rLock := globalGame.Clients.GetAll()
+		toPosition = globalGame.CheckHandlerCoordinate(coor, users)
+		rLock.Unlock()
+
+		// ждем пока не получит свободную позицию
+		if toPosition != nil {
+			break
+		}
+
+		time.Sleep(300 * time.Millisecond)
+	}
+
 	stopMove(user, true)
 
 	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 	DisconnectUser(user, ws, true) // если только сообщение то можно не горутиной
 
 	user.GetSquad().MapID = mapID
-	user.GetSquad().Q = q
-	user.GetSquad().R = r
+	user.GetSquad().Q = toPosition.Q
+	user.GetSquad().R = toPosition.R
 
 	user.GetSquad().GlobalX = 0
 	user.GetSquad().GlobalY = 0

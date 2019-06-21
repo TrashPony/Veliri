@@ -8,6 +8,7 @@ import (
 )
 
 func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
+	//todo positions
 	_, err := dbConnect.GetDBConnect().Exec(""+
 		"INSERT INTO map_constructor ("+
 		"id_map, "+
@@ -27,15 +28,13 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"shadow, "+
 		"transport, "+
 		"handler, "+
-		"to_q, "+
-		"to_r, "+
 		"to_base_id, "+
 		"to_map_id,"+
 		"id_type, "+
 		"object_priority "+
 		""+
 		") "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)",
+		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)",
 		mp.Id,
 		coordinate.Q,
 		coordinate.R,
@@ -53,8 +52,6 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.Shadow,
 		coordinate.Transport,
 		coordinate.Handler,
-		coordinate.ToQ,
-		coordinate.ToR,
 		coordinate.ToBaseID,
 		coordinate.ToMapID,
 		coordinate.ID,

@@ -55,10 +55,9 @@ type Coordinate struct {
 	HandlerOpen bool `json:"handler_open"`
 
 	/* соотвественно место куда попадает игрок после ивента */
-	ToQ      int `json:"to_q"`
-	ToR      int `json:"to_r"`
-	ToBaseID int `json:"to_base_id"`
-	ToMapID  int `json:"to_map_id"`
+	Positions []*Coordinate `json:"positions"`
+	ToBaseID  int           `json:"to_base_id"`
+	ToMapID   int           `json:"to_map_id"`
 }
 
 func (coor *Coordinate) GetZ() int {

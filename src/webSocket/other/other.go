@@ -131,6 +131,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 
 			if msg.Event == "previewPath" {
 				userBase, _ := bases.Bases.Get(client.InBaseID)
+
 				if userBase.MapID != msg.ID {
 					searchMaps, _ := maps.Maps.FindGlobalPath(userBase.MapID, msg.ID)
 					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), SearchMaps: searchMaps})
@@ -157,8 +158,6 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 			}
 
 			if msg.Event == "setWindowState" {
-
-				println(msg.Name, msg.Left, msg.Top)
 
 				if client.UserInterface == nil {
 					// resolution, window_id, state

@@ -147,6 +147,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "handlerClose") {
+        console.log(jsonData);
         CloseTunnel(jsonData)
     }
 
