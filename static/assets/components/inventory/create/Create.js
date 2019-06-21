@@ -1,17 +1,20 @@
 function CreateInventoryMenu(closeFunc, option) {
 
     if (document.getElementById("inventoryBox") && option === 'constructor') {
-        document.getElementById("inventoryBox").remove();
+        let jBox = $('#inventoryBox');
+        setState('inventoryBox', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
     if (document.getElementById("Inventory") && option === 'inventory') {
-        document.getElementById("Inventory").remove();
+        let jBox = $('#Inventory');
+        setState('Inventory', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
     if (document.getElementById('wrapperInventoryAndStorage') && option === 'storage') {
-        document.getElementById('wrapperInventoryAndStorage').remove();
+        let jBox = $('#wrapperInventoryAndStorage');
+        setState('wrapperInventoryAndStorage', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 

@@ -1,5 +1,6 @@
 let chat;
 
+// тут уже не только чат, такие дела..
 function ConnectChat() {
     chat = new WebSocket("ws://" + window.location.host + "/wsChat");
     console.log("Websocket chat - status: " + chat.readyState);
@@ -27,18 +28,27 @@ function ConnectChat() {
 
 function initChatInterface() {
     let chat = $('#chat');
+
+    chat.data({
+        resize: function (event, ui, el) {
+            el.find('#chatBox').css("height", el.height() - 65);
+            el.find('#usersBox').css("height", el.height() - 55);
+            el.find('#chatBox').css("width", el.width() - 140);
+            el.find('#chatInput').css("width", el.width() - 16);
+            el.find('#tabsGroupWrapper').css("width", el.width() - 116);
+            el.find('#chatTabs').css("width", el.width() - 100);
+        }
+    });
+
     chat.resizable({
         minHeight: 200,
         minWidth: 300,
         handles: "se, ne",
         resize: function (event, ui) {
-            $(this).find('#chatBox').css("height", $(this).height() - 65);
-            $(this).find('#usersBox').css("height", $(this).height() - 55);
-
-            $(this).find('#chatBox').css("width", $(this).width() - 140);
-            $(this).find('#chatInput').css("width", $(this).width() - 16);
-            $(this).find('#tabsGroupWrapper').css("width", $(this).width() - 116);
-            $(this).find('#chatTabs').css("width", $(this).width() - 100);
+            $(this).data("resize")(event, ui, $(this))
+        },
+        stop: function (e, ui) {
+            setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
         }
     });
 }
@@ -110,5 +120,9 @@ function ChatReader(data) {
 
     if (data.event === "training") {
         Training(data.count)
+    }
+
+    if (data.event === "setWindowsState") {
+        SetWindowsState(data.user_interface)
     }
 }

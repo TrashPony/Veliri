@@ -6,7 +6,8 @@ function FillDepartment(dialogPage, action, mission) {
     DialogAction(action);
 
     if ((action === "close" || action === "start_training" || action === "miss_training") && document.getElementById('DepartmentOfEmployment')) {
-        document.getElementById('DepartmentOfEmployment').remove();
+        let doe = document.getElementById('DepartmentOfEmployment');
+        setState(doe.id, $(doe).position().left, $(doe).position().top, $(doe).height(), $(doe).width(), false);
         return;
     }
 

@@ -1,32 +1,42 @@
 function InitWorkbench() {
     if (document.getElementById("Workbench")) {
-        document.getElementById("Workbench").remove()
+        let jBox = $('#Workbench');
+        setState('Workbench', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
     let workbench = document.createElement("div");
     workbench.id = "Workbench";
+    document.body.appendChild(workbench);
+
+    $(workbench).data({
+        resize: function (event, ui, el) {
+            el.find('#detailWork').css("height", el.height() - 20);
+            el.find('#needItems').css("height", el.height() - 70);
+            el.find('#ButtonWrapper').css("height", el.height() - 125);
+
+            el.find('#wrapperBP').css("height", el.height() / 2 + 5);
+            el.find('#bluePrints').css("height", el.height() / 2 + 5);
+            el.find('#currentCrafts').css("height", el.height() / 2 - 12);
+
+            el.find('#bluePrints').css("width", el.width() - 280);
+            el.find('#currentCrafts').css("width", el.width() - 280);
+
+            $('#bluePrints').resizable({
+                maxHeight: $(this).height() - 70,
+            });
+        }
+    });
 
     $(workbench).resizable({
         minHeight: 338,
         minWidth: 512,
         handles: "se",
         resize: function (event, ui) {
-
-            $(this).find('#detailWork').css("height", $(this).height() - 20);
-            $(this).find('#needItems').css("height", $(this).height() - 70);
-            $(this).find('#ButtonWrapper').css("height", $(this).height() - 125);
-
-            $(this).find('#wrapperBP').css("height", $(this).height() / 2 + 5);
-            $(this).find('#bluePrints').css("height", $(this).height() / 2 + 5);
-            $(this).find('#currentCrafts').css("height", $(this).height() / 2 - 12);
-
-            $(this).find('#bluePrints').css("width", $(this).width() - 280);
-            $(this).find('#currentCrafts').css("width", $(this).width() - 280);
-
-            $('#bluePrints').resizable({
-                maxHeight: $(this).height() - 70,
-            });
+            $(this).data("resize")(event, ui, $(this))
+        },
+        stop: function (e, ui) {
+            setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
         }
     });
 
@@ -36,7 +46,7 @@ function InitWorkbench() {
     });
     $(buttons.close).mousedown(function () {
         workBenchState = null;
-        workbench.remove();
+        setState(workbench.id, $(workbench).position().left, $(workbench).position().top, $(workbench).height(), $(workbench).width(), false);
     });
     workbench.appendChild(buttons.move);
     workbench.appendChild(buttons.hide);
@@ -121,7 +131,6 @@ function InitWorkbench() {
     workbench.appendChild(wrapperBP);
     workbench.appendChild(detailWork);
 
-
     let process = createInput("", buttonWrapper);
     process.style.bottom = "20px";
     process.id = "processButton";
@@ -129,12 +138,15 @@ function InitWorkbench() {
     let cancel = createInput("Закрыть", buttonWrapper);
     $(cancel).click(function () {
         workBenchState = null;
-        workbench.remove();
+        setState(workbench.id, $(workbench).position().left, $(workbench).position().top, $(workbench).height(), $(workbench).width(), false);
     });
 
-    document.body.appendChild(workbench);
+    setTimeout(function () {
+        lobby.send(JSON.stringify({
+            event: "OpenWorkbench",
+        }));
+    }, 100);
 
-    lobby.send(JSON.stringify({
-        event: "OpenWorkbench",
-    }));
+    openWindow(workbench.id, workbench);
+
 }

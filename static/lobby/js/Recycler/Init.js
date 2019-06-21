@@ -1,24 +1,38 @@
-function Init() {
+function InitProcessorRoot() {
     if (document.getElementById("processorRoot")) {
-        document.getElementById("processorRoot").remove()
+        let jBox = $('#processorRoot');
+        setState('processorRoot', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
-    lobby.send(JSON.stringify({
-        event: "ClearProcessor",
-    }));
+    setTimeout(function () {
+        lobby.send(JSON.stringify({
+            event: "ClearProcessor",
+        }));
+    }, 100);
 
     let processor = document.createElement("div");
     processor.id = "processorRoot";
+    document.body.appendChild(processor);
+
+
+    $(processor).data({
+        resize: function (event, ui, el) {
+            el.find('.itemsPools').css("width", el.width() / 2 - 14);
+            el.find('.itemsPools').css("height", el.height() - 60);
+            el.find('.pollHead').css("width", el.width() / 2 - 18);
+        }
+    });
 
     $(processor).resizable({
         minHeight: 128,
         minWidth: 461,
         handles: "se",
         resize: function (event, ui) {
-            $(this).find('.itemsPools').css("width", $(this).width() / 2 - 14);
-            $(this).find('.itemsPools').css("height", $(this).height() - 60);
-            $(this).find('.pollHead').css("width", $(this).width() / 2 - 18);
+            $(this).data("resize")(event, ui, $(this))
+        },
+        stop: function (e, ui) {
+            setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
         }
     });
 
@@ -30,7 +44,7 @@ function Init() {
         lobby.send(JSON.stringify({
             event: "ClearProcessor",
         }));
-        processor.remove();
+        setState(processor.id, $(processor).position().left, $(processor).position().top, $(processor).height(), $(processor).width(), false);
     });
     processor.appendChild(buttons.move);
     processor.appendChild(buttons.hide);
@@ -88,14 +102,13 @@ function Init() {
 
     processor.appendChild(items);
     processor.appendChild(preview);
-    document.body.appendChild(processor);
 
     let cancel = createInput("Отмена", processor);
     $(cancel).click(function () {
         lobby.send(JSON.stringify({
             event: "ClearProcessor",
         }));
-        processor.remove();
+        setState(processor.id, $(processor).position().left, $(processor).position().top, $(processor).height(), $(processor).width(), false);
     });
 
     let process = createInput("Переработать", processor);
@@ -104,4 +117,6 @@ function Init() {
             event: "recycle",
         }));
     });
+
+    openWindow(processor.id, processor)
 }

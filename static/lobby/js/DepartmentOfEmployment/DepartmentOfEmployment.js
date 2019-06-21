@@ -1,7 +1,8 @@
 function InitDepartmentOfEmployment(dialogPage, action, mission) {
 
     if (document.getElementById('DepartmentOfEmployment')) {
-        document.getElementById('DepartmentOfEmployment').remove();
+        let jBox = $('#DepartmentOfEmployment');
+        setState('DepartmentOfEmployment', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
@@ -34,7 +35,7 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
         moveWindow(event, 'DepartmentOfEmployment')
     });
     $(buttons.close).mousedown(function () {
-        departmentOfEmployment.remove();
+        setState(departmentOfEmployment.id, $(departmentOfEmployment).position().left, $(departmentOfEmployment).position().top, $(departmentOfEmployment).height(), $(departmentOfEmployment).width(), false);
     });
     departmentOfEmployment.appendChild(buttons.move);
     departmentOfEmployment.appendChild(buttons.close);
@@ -55,4 +56,6 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
     } else {
         FillDepartment(dialogPage, action, mission)
     }
+
+    openWindow(departmentOfEmployment.id, departmentOfEmployment)
 }

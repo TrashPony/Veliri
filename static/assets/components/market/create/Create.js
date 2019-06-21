@@ -4,7 +4,8 @@ function CreateMarketMenu(noMask) {
     }
 
     if (document.getElementById("marketBox")) {
-        document.getElementById("marketBox").remove();
+        let jBox = $('#marketBox');
+        setState('marketBox', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
@@ -52,32 +53,38 @@ function createMarketBox() {
         moveWindow(event, 'marketBox');
     };
     buttons.close.onmousedown = function (event) {
-        marketBox.remove();
+        setState(marketBox.id, $(marketBox).position().left, $(marketBox).position().top, $(marketBox).height(), $(marketBox).width(), false);
     };
     marketBox.appendChild(buttons.move);
     marketBox.appendChild(buttons.close);
+
+    $(marketBox).data({
+        resize: function (event, ui, el) {
+            el.find('#listItem').css("height", el.height() - 173);
+            el.find('#ordersBlock').css("height", el.height() - 10);
+            el.find('#sellOrdersBlock').css("height", el.height() / 2 - 88);
+            el.find('#BuyOrdersBlock').css("height", el.height() / 2 - 88);
+            el.find('#MyOrdersBlock').css("height", el.height() - 85);
+            el.find('#ordersBlock').css("width", el.width() - 220);
+            el.find('#sellOrdersBlock').css("width", el.width() - 230);
+            el.find('#BuyOrdersBlock').css("width", el.width() - 230);
+            el.find('#MyOrdersBlock').css("width", el.width() - 230);
+        }
+    });
 
     $(marketBox).resizable({
         minHeight: 280,
         minWidth: 700,
         handles: "se",
         resize: function (event, ui) {
-            $(this).find('#listItem').css("height", $(this).height() - 173);
-            $(this).find('#ordersBlock').css("height", $(this).height() - 10);
-
-            $(this).find('#sellOrdersBlock').css("height", $(this).height() / 2 - 88);
-            $(this).find('#BuyOrdersBlock').css("height", $(this).height() / 2 - 88);
-            $(this).find('#MyOrdersBlock').css("height", $(this).height() - 85);
-
-
-            $(this).find('#ordersBlock').css("width", $(this).width() - 220);
-
-            $(this).find('#sellOrdersBlock').css("width", $(this).width() - 230);
-            $(this).find('#BuyOrdersBlock').css("width", $(this).width() - 230);
-            $(this).find('#MyOrdersBlock').css("width", $(this).width() - 230);
+            $(this).data("resize")(event, ui, $(this))
+        },
+        stop: function (e, ui) {
+            setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
         }
     });
 
+    openWindow(marketBox.id, marketBox);
     return marketBox
 }
 

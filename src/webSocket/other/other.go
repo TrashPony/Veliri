@@ -50,6 +50,16 @@ type Message struct {
 	ToPage       int                        `json:"to_page"`
 	AskID        int                        `json:"ask_id"`
 	Mission      *mission.Mission           `json:"mission"`
+
+	// resolution, window_id, state
+	UserInterface map[string]map[string]*player.Window `json:"user_interface"`
+	Resolution    string                               `json:"resolution"`
+	Name          string                               `json:"name"`
+	Left          int                                  `json:"left"`
+	Top           int                                  `json:"top"`
+	Height        int                                  `json:"height"`
+	Width         int                                  `json:"width"`
+	Open          bool                                 `json:"open"`
 }
 
 func AddNewUser(ws *websocket.Conn, login string, id int) {
@@ -59,10 +69,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	}
 
 	chat.Clients.AddNewClient(ws, newPlayer) // Регистрируем нового Клиента
-	Reader(ws)
+	Reader(ws, newPlayer)
 }
 
-func Reader(ws *websocket.Conn) {
+func Reader(ws *websocket.Conn, client *player.Player) {
+
+	//как только игрок подключился отправляем ему текущее состояние окошек
+	sendOtherMessage(Message{Event: "setWindowsState", UserID: client.GetID(), UserInterface: client.UserInterface})
+
 	for {
 
 		var msg Message
@@ -71,8 +85,6 @@ func Reader(ws *websocket.Conn) {
 			chat.Clients.DelClientByWS(ws)
 			break
 		}
-
-		client := chat.Clients.GetByWs(ws)
 
 		// все что связано с чатом выплюнул сюда :\
 		if msg.Event == "OpenChat" || msg.Event == "GetAllGroups" || msg.Event == "ChangeGroup" || msg.Event == "SubscribeGroup" ||
@@ -130,9 +142,9 @@ func Reader(ws *websocket.Conn) {
 			}
 
 			if msg.Event == "Ask" {
-				page, err, action, mission := dialog.Ask(client, client.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
+				page, err, action, currentMission := dialog.Ask(client, client.GetOpenDialog(), "base", msg.ToPage, msg.AskID)
 				if client.InBaseID > 0 && err == nil {
-					sendOtherMessage(Message{Event: "dialog", UserID: client.GetID(), DialogPage: page, DialogAction: action, Mission: mission})
+					sendOtherMessage(Message{Event: "dialog", UserID: client.GetID(), DialogPage: page, DialogAction: action, Mission: currentMission})
 				} else {
 					sendOtherMessage(Message{Event: "Error", UserID: client.GetID(), Error: err.Error()})
 				}
@@ -142,6 +154,41 @@ func Reader(ws *websocket.Conn) {
 				userBase, _ := bases.Bases.Get(client.InBaseID)
 				page, _ := dialog.GetBaseGreeting(client, userBase)
 				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), DialogPage: page})
+			}
+
+			if msg.Event == "setWindowState" {
+
+				println(msg.Name, msg.Left, msg.Top)
+
+				if client.UserInterface == nil {
+					// resolution, window_id, state
+					client.UserInterface = make(map[string]map[string]*player.Window)
+				}
+
+				setState := func(window *player.Window) {
+					window.Height = msg.Height
+					window.Width = msg.Width
+					window.Left = msg.Left
+					window.Top = msg.Top
+					window.Open = msg.Open
+				}
+
+				resolution, ok := client.UserInterface[msg.Resolution]
+				if ok {
+
+					_, ok := resolution[msg.Name]
+					if !ok {
+						resolution[msg.Name] = &player.Window{}
+					}
+					setState(resolution[msg.Name])
+
+				} else {
+					client.UserInterface[msg.Resolution] = make(map[string]*player.Window)
+					client.UserInterface[msg.Resolution][msg.Name] = &player.Window{}
+					setState(client.UserInterface[msg.Resolution][msg.Name])
+				}
+
+				dbPlayer.UpdateUser(client)
 			}
 		}
 	}

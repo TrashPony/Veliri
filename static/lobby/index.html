@@ -8,7 +8,6 @@
     <link href="../assets/lib/css/jquery-ui.css" rel="stylesheet">
     <link href="../assets/lib/css/jquery-ui.theme.css" rel="stylesheet">
     <link href="../assets/lib/css/jquery-ui.structure.css" rel="stylesheet">
-    <link href="../assets/lib/css/watable.css" rel="stylesheet">
 
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="../assets/css/range.css" rel="stylesheet">
@@ -57,6 +56,7 @@
     <script src="../assets/components/chat/OpenChat.js"></script>
     <script src="../assets/components/chat/Message.js"></script>
     <script src="../assets/components/chat/NotifyBlock.js"></script>
+    <script src="../assets/components/chat/SetWindowsState.js"></script>
 
     <script src="../assets/components/inventory/Init.js"></script>
     <script src="../assets/components/MouseOver.js"></script>
@@ -74,7 +74,6 @@
     <script src="../assets/lib/jquery-ui.js"></script>
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
-    <script src="../assets/lib/jquery.watable.js"></script>
 
     <script>
 
@@ -113,7 +112,7 @@
          style="background-image: url('./img/hangar.svg')"></div>
     <div onclick="InitMarketMenu(true)" style="background-image: url('./img/market.png')"></div>
     <div onclick="InitInventoryMenu(null, 'storage')" style="background-image: url('./img/storageIcon.png')"></div>
-    <div onclick="Init()" style="background-image: url('./img/util.png')"></div>
+    <div onclick="InitProcessorRoot()" style="background-image: url('./img/util.png')"></div>
     <div onclick="InitWorkbench()" style="background-image: url('./img/workbench.png')"></div>
     <div onclick="UsersStatus()"
          style="background-image: url('https://img.icons8.com/material/48/000000/small-robot.png')"></div>
@@ -147,9 +146,8 @@
         </div>
         <div id="chatTabsRightArrow" onclick="document.getElementById('tabsGroup').scrollLeft += 20;">></div>
     </div>
-    <div class="topButton" onclick="HideChat()" style="line-height: 0px;"> _</div>
-    <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
-    <div class="topButton" onmousedown="ViewAllGroups()"> +</div>
+    <div class="topButton" onmousedown="moveWindow(event,'chat')">⇿</div>
+    <div class="topButton" onmousedown="ViewAllGroups()">+</div>
     <div id="chatBox"></div>
     <div id="usersBox"></div>
     <input type="text" placeholder=" message..." id="chatInput"

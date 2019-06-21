@@ -24,7 +24,23 @@ func UpdateUser(user *player.Player) {
 
 	UpdateUserSkills(user, tx)
 	UpdateUserMission(user, tx)
+	UpdateUI(user, tx)
+
 	tx.Commit()
+}
+
+func UpdateUI(user *player.Player, tx *sql.Tx) {
+	_, err := tx.Exec("DELETE FROM user_interface WHERE id_user = $1", user.GetID())
+	if err != nil {
+		log.Fatal("delete ui" + err.Error())
+	}
+
+	jsonString, err := json.Marshal(user.UserInterface)
+	_, err = tx.Exec("INSERT INTO user_interface (data, id_user) VALUES ($1, $2)",
+		jsonString, user.GetID())
+	if err != nil {
+		log.Fatal("add new ui" + err.Error())
+	}
 }
 
 func UpdateUserSkills(user *player.Player, tx *sql.Tx) {

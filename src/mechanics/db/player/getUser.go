@@ -44,9 +44,34 @@ func User(id int, login string) *player.Player {
 		getUserSkills(&newUser)
 		getUserBase(&newUser)
 		getUserMission(&newUser)
+		getUI(&newUser)
 	}
 
 	return &newUser
+}
+
+func getUI(user *player.Player) {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT data "+
+		"FROM user_interface "+
+		"WHERE id_user=$1", user.GetID())
+	if err != nil {
+		log.Fatal("get ui " + err.Error())
+	}
+	defer rows.Close()
+
+	var uiJson []byte
+
+	for rows.Next() {
+		err := rows.Scan(&uiJson)
+		if err != nil {
+			println("get scan ui " + err.Error())
+		}
+
+		err = json.Unmarshal(uiJson, &user.UserInterface)
+		if err != nil {
+			println("unmarshal ui " + err.Error())
+		}
+	}
 }
 
 func getUserBase(user *player.Player) {

@@ -67,6 +67,8 @@ type Player struct {
 	Missions      map[string]*mission.Mission `json:"missions"`
 
 	NotifyQueue map[string]*Notify `json:"notify_queue"`
+
+	UserInterface map[string]map[string]*Window `json:"user_interface"` // resolution, window_id, state
 }
 
 type ShortUserInfo struct {
@@ -101,6 +103,15 @@ type Notify struct {
 	Send    bool        `json:"send"`
 	Data    interface{} `json:"data"`
 	Destroy bool        `json:"destroy"`
+}
+
+// текущие положение интерфейса пользователя
+type Window struct {
+	Left   int  `json:"left"`
+	Top    int  `json:"top"`
+	Height int  `json:"height"`
+	Width  int  `json:"width"`
+	Open   bool `json:"open"`
 }
 
 func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {

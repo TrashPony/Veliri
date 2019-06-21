@@ -25,25 +25,34 @@ function OnlyStorage() {
     CreateStorage();
     ConnectMarket();
 
-    $(wrapper).resizable({
-        alsoResize: "#inventoryStorage, #storage",
-        minHeight: 225,
-        minWidth: 177,
-        handles: "se",
-        resize() {
+    $(wrapper).data({
+        resize: function (event, ui, el) {
             let storage = $('#storage');
             let inventoryStorage = $('#inventoryStorage');
+
             let inventory = $('#Inventory');
             let inventoryStorageInventory = $('#inventoryStorageInventory');
 
-            if (storage.height() <= 51) {
-                inventory.css("height", $(this).height() - 58);
-                inventoryStorageInventory.css("height", $(this).height() - 110);
-                storage.css("height", 50);
-                inventoryStorage.css("height", 0);
-            }
+            inventory.css("height", el.height() / 2 - 4);
+            storage.css("height", el.height() / 2 - 4);
 
-            inventory.css("width", $(this).width() - 5);
+            inventoryStorageInventory.css("height", inventory.height() - 51);
+            inventoryStorage.css("height", storage.height() - 51);
+
+            inventory.css("width", el.width() - 5);
+            storage.css("width", el.width() - 5);
+        }
+    });
+
+    $(wrapper).resizable({
+        minHeight: 225,
+        minWidth: 177,
+        handles: "se",
+        resize: function (e, ui) {
+            $(this).data("resize")(event, ui, $(this))
+        },
+        stop: function (e, ui) {
+            setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
         }
     });
 
@@ -65,9 +74,11 @@ function OnlyStorage() {
     });
 
     $(buttons.close).mousedown(function () {
-        wrapper.remove();
+        setState(wrapper.id, $(wrapper).position().left, $(wrapper).position().top, $(wrapper).height(), $(wrapper).width(), false);
     });
 
     inventory.appendChild(buttons.move);
     inventory.appendChild(buttons.close);
+
+    openWindow(wrapper.id, wrapper);
 }

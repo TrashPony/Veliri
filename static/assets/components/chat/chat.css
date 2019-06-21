@@ -9,6 +9,7 @@
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     bottom: 15px;
     left: 15px;
+    z-index: 11;
 }
 
 #chat .topButton:nth-child(2) {
@@ -156,7 +157,7 @@
 }
 
 #chat .topButton {
-    margin-right: 3px;
+    margin-right: 14px;
 }
 
 #allGroupsWindow {

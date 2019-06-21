@@ -57,8 +57,11 @@ function OnlyConstructor(closeFunc) {
     });
 
     $(buttons.close).mousedown(function () {
-        inventoryBox.remove();
+        setState(inventoryBox.id, $(inventoryBox).position().left, $(inventoryBox).position().top, $(inventoryBox).height(), $(inventoryBox).width(), false);
     });
+
     inventoryBox.appendChild(buttons.move);
     inventoryBox.appendChild(buttons.close);
+
+    openWindow(inventoryBox.id, inventoryBox)
 }

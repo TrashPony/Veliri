@@ -1,6 +1,7 @@
 function GlobalViewMap() {
     if (document.getElementById('GlobalViewMap')) {
-        document.getElementById('GlobalViewMap').remove();
+        let jBox = $('#GlobalViewMap');
+        setState('GlobalViewMap', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return;
     }
 
@@ -25,11 +26,13 @@ function GlobalViewMap() {
         moveWindow(event, 'GlobalViewMap')
     });
     $(buttons.close).mousedown(function () {
-        GlobalViewMap.remove();
+        setState(GlobalViewMap.id, $(GlobalViewMap).position().left, $(GlobalViewMap).position().top, $(GlobalViewMap).height(), $(GlobalViewMap).width(), false);
     });
     GlobalViewMap.appendChild(buttons.move);
     GlobalViewMap.appendChild(buttons.close);
     GlobalViewMap.appendChild(buttons.head);
+
+    openWindow(GlobalViewMap.id, GlobalViewMap)
 }
 
 function initCanvasMap(id) {

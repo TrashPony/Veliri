@@ -2,12 +2,14 @@ let userStat = {};
 
 function UsersStatus() {
     if (document.getElementById("UsersStatus")) {
-        document.getElementById("UsersStatus").remove();
+        let jBox = $('#UsersStatus');
+        setState('UsersStatus', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
         return
     }
 
     let usersStatus = document.createElement("div");
     document.body.appendChild(usersStatus);
+
     usersStatus.id = "UsersStatus";
     usersStatus.innerHTML = `
         <div id="usersStatusTabs">
@@ -30,12 +32,13 @@ function UsersStatus() {
         moveWindow(event, 'UsersStatus')
     });
     $(buttons.close).mousedown(function () {
-        usersStatus.remove();
+        setState(usersStatus.id, $(usersStatus).position().left, $(usersStatus).position().top, $(usersStatus).height(), $(usersStatus).width(), false);
     });
     usersStatus.appendChild(buttons.move);
     usersStatus.appendChild(buttons.close);
 
     OpenCommonUserStat();
+    openWindow(usersStatus.id, usersStatus)
 }
 
 function OpenCommonUserStat() {
