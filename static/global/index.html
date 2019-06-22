@@ -13,6 +13,8 @@
     <link href="../assets/css/all.css" rel="stylesheet">
     <link href="../assets/components/uiComponents/miniMap/miniMap.css" rel="stylesheet">
     <link href="../assets/components/uiComponents/passwordProtectBox/passBlock.css" rel="stylesheet">
+    <link href="../assets/components/GlobalViewMap/global_view_map.css" rel="stylesheet">
+    <link href="../assets/components/UsersStatus/users_status.css" rel="stylesheet">
 
     <link href="./css/bottomBar.css" rel="stylesheet">
     <link href="./css/openBox.css" rel="stylesheet">
@@ -29,7 +31,6 @@
     <script src="js/WebSocket/OpenSockets.js"></script>
     <script src="js/WebSocket/ReadResponse.js"></script>
 
-    <script src="js/Services.js"></script>
     <script src="js/Squad/CreateSquad.js"></script>
     <script src="js/Squad/DeadSquad.js"></script>
     <script src="js/DisconnectUser.js"></script>
@@ -122,11 +123,19 @@
 
     <script src="../assets/components/MoveWindow.js"></script>
 
+    <script src="../assets/components/GlobalViewMap/GlobalViewMap.js"></script>
+    <script src="../assets/components/GlobalViewMap/Fill.js"></script>
+    <script src="../assets/components/GlobalViewMap/PreviewPath.js"></script>
+
+    <script src="../assets/components/UsersStatus/UsersStatus.js"></script>
+    <script src="../assets/components/UsersStatus/Fill.js"></script>
+
     <script src="../assets/components/chat/Chat.js"></script>
     <script src="../assets/components/chat/ViewGroups.js"></script>
     <script src="../assets/components/chat/OpenChat.js"></script>
     <script src="../assets/components/chat/Message.js"></script>
     <script src="../assets/components/chat/NotifyBlock.js"></script>
+    <script src="../assets/components/chat/SetWindowsState.js"></script>
 
     <script src="../assets/components/inventory/Init.js"></script>
     <script src="../assets/components/MouseOver.js"></script>
@@ -140,6 +149,8 @@
     <script src="../assets/lib/jquery-ui.js"></script>
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
+
+    <script src="../assets/components/FlamingWindow.js"></script>
 </head>
 
 <body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
@@ -179,7 +190,6 @@
                 </div>
                 <div id="chatTabsRightArrow" onclick="document.getElementById('tabsGroup').scrollLeft += 20;">></div>
             </div>
-            <div class="topButton" onclick="HideChat()"> _</div>
             <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
             <div class="topButton" onmousedown="ViewAllGroups()"> +</div>
             <div id="chatBox"></div>
@@ -190,15 +200,13 @@
         </div>
 
         <div id="globalMenu">
-            <div><img src="https://img.icons8.com/color/30/000000/development-skill.png"></div> <!-- скилы -->
-            <div onclick="OpenInventory()"><img src="https://img.icons8.com/color/80/000000/move-by-trolley.png"></div>
-            <div><img src="https://img.icons8.com/office/30/000000/tank.png"></div> <!-- меню оснащения отряда -->
-            <div><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div> <!-- карта мира -->
-            <div><img src="https://img.icons8.com/office/50/000000/survey.png"></div> <!-- невыполненые задания -->
-            <div onclick="OpenMarket()"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
+            <div onclick="UsersStatus()"><img src="https://img.icons8.com/color/30/000000/development-skill.png"></div>
+            <div onclick="InitInventoryMenu(null, 'inventory')"><img src="https://img.icons8.com/color/80/000000/move-by-trolley.png"></div>
+            <div onclick="InitInventoryMenu(null,'constructor')"><img src="https://img.icons8.com/office/30/000000/tank.png"></div> <!-- меню оснащения отряда -->
+            <div onclick="GlobalViewMap()"><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div>
+            <div onclick="InitMarketMenu(true)"><img src="https://img.icons8.com/office/32/000000/us-dollar.png"></div>
             <div onclick="Evacuation()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
             <!-- эвакуация, возможно надо перместить на минимапу -->
-            <div><img src="https://img.icons8.com/office/40/000000/support.png"></div> <!-- настройки -->
         </div>
 
         <div id="statusBar">

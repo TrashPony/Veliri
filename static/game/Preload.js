@@ -31,16 +31,27 @@ function preload() {
     //weapon
     game.load.image('big_missile', 'http://' + window.location.host + '/assets/units/weapon/big_missile.png');
     game.load.image('big_missile_mask', 'http://' + window.location.host + '/assets/units/weapon/big_missile_mask.png');
+    game.load.image('big_missile_mask2', 'http://' + window.location.host + '/assets/units/weapon/big_missile_mask2.png');
+
     game.load.image('artillery', 'http://' + window.location.host + '/assets/units/weapon/artillery.png');
     game.load.image('artillery_mask', 'http://' + window.location.host + '/assets/units/weapon/artillery_mask.png');
+    game.load.image('artillery_mask2', 'http://' + window.location.host + '/assets/units/weapon/artillery_mask2.png');
+
     game.load.image('big_laser', 'http://' + window.location.host + '/assets/units/weapon/big_laser.png');
     game.load.image('big_laser_mask', 'http://' + window.location.host + '/assets/units/weapon/big_laser_mask.png');
+    game.load.image('big_laser_mask2', 'http://' + window.location.host + '/assets/units/weapon/big_laser_mask2.png');
+
     game.load.image('small_laser', 'http://' + window.location.host + '/assets/units/weapon/small_laser.png');
     game.load.image('small_laser_mask', 'http://' + window.location.host + '/assets/units/weapon/small_laser_mask.png');
+    game.load.image('small_laser_mask2', 'http://' + window.location.host + '/assets/units/weapon/small_laser_mask2.png');
+
     game.load.image('small_missile', 'http://' + window.location.host + '/assets/units/weapon/small_missile.png');
     game.load.image('small_missile_mask', 'http://' + window.location.host + '/assets/units/weapon/small_missile_mask.png');
+    game.load.image('small_missile_mask2', 'http://' + window.location.host + '/assets/units/weapon/small_missile_mask2.png');
+
     game.load.image('tank_gun', 'http://' + window.location.host + '/assets/units/weapon/tank_gun.png');
     game.load.image('tank_gun_mask', 'http://' + window.location.host + '/assets/units/weapon/tank_gun_mask.png');
+    game.load.image('tank_gun_mask2', 'http://' + window.location.host + '/assets/units/weapon/tank_gun_mask2.png');
 
     // bullets
     game.load.spritesheet('missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/rocket.png', 128, 128, 40);
@@ -261,10 +272,12 @@ function preload() {
     game.load.image('MasherShip_1', 'http://' + window.location.host + '/assets/units/body/MasherShip_1.png');
     game.load.image('MasherShip_1_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_bottom.png');
     game.load.image('MasherShip_1_mask', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_mask.png');
+    game.load.image('MasherShip_1_mask2', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_mask2.png');
 
     game.load.image('MasherShip_2', 'http://' + window.location.host + '/assets/units/body/MasherShip_2.png');
     game.load.image('MasherShip_2_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_bottom.png');
     game.load.image('MasherShip_2_mask', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_mask.png');
+    game.load.image('MasherShip_2_mask2', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_mask2.png');
 
     game.load.image('MasherShip_3', 'http://' + window.location.host + '/assets/units/body/MasherShip_3.png');
     game.load.image('MasherShip_3_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_bottom.png');

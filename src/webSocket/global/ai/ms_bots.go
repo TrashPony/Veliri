@@ -1,6 +1,7 @@
 package ai
 
 import (
+	"github.com/AvraamMavridis/randomcolor"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
@@ -17,6 +18,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -35,9 +37,9 @@ func InitAI() {
 	}
 }
 
+// создаем бота как игрока с отрядом и эквипом
 func respBot(base *base.Base, mp *_map.Map) {
-	// собираем их тела с рандомным эквипом
-	newBot := player.Player{InBaseID: base.ID, Bot: true, UUID: uuid.Must(uuid.NewV4(), nil).String()}
+	newBot := player.Player{Login: "Bot", InBaseID: base.ID, Bot: true, UUID: uuid.Must(uuid.NewV4(), nil).String()}
 
 	body := gameTypes.Bodies.GetRandom()
 
@@ -48,10 +50,14 @@ func respBot(base *base.Base, mp *_map.Map) {
 
 	botSquad := squad.Squad{
 		MatherShip: &unit.Unit{
-			Body:  body,
-			MS:    true,
-			HP:    body.MaxHP,
-			Power: body.MaxPower,
+			Body:         body,
+			MS:           true,
+			HP:           body.MaxHP,
+			Power:        body.MaxPower,
+			BodyColor1:   "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
+			BodyColor2:   "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
+			WeaponColor1: "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
+			WeaponColor2: "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
 		},
 		MapID: mp.Id,
 	}
@@ -77,6 +83,7 @@ func respBot(base *base.Base, mp *_map.Map) {
 
 	newBot.SetFakeWS(&websocket.Conn{})
 	globalGame.Clients.AddNewClient(newBot.GetFakeWS(), &newBot)
+
 	outBase(&newBot, base)
 
 	if newBot.Behavior == 1 || newBot.Behavior == 0 {
@@ -104,7 +111,6 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
 	wsGlobal.LoadGame(bot.GetFakeWS(), wsGlobal.Message{})
-	// todo после выхода из базы сваливать по прямой быстро а не стоять на токе и распа и строить путь
 
 	// следим что бы у ботов осталавалось топливо
 	for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {

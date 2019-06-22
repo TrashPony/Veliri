@@ -71,7 +71,10 @@ function SetWindowsState(state) {
                     }
 
                     // могут быть открыты только на глобалке, впрочем отруливается бекендом, но надо избежать ошибки
-
+                    if (id === "Inventory") {
+                        InitInventoryMenu(null, 'inventory');
+                        awaitReady(id, currentState);
+                    }
                 }
             }
         }

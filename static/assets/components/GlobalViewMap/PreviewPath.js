@@ -1,4 +1,4 @@
-function PreviewPath(path) {
+function PreviewMapPath(path) {
 
     initCanvasMap('GlobalMapPathCanvas');
 

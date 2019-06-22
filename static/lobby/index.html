@@ -15,12 +15,12 @@
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
     <link href="../assets/components/uiComponents/inventoryCells/inventoryCells.css" rel="stylesheet">
     <link href="../assets/components/uiComponents/dialogs/dialogs.css" rel="stylesheet">
+    <link href="../assets/components/GlobalViewMap/global_view_map.css" rel="stylesheet">
+    <link href="../assets/components/UsersStatus/users_status.css" rel="stylesheet">
 
     <link href="css/lobby.css" rel="stylesheet">
     <link href="css/processor.css" rel="stylesheet">
     <link href="css/workbench.css" rel="stylesheet">
-    <link href="css/users_status.css" rel="stylesheet">
-    <link href="css/global_view_map.css" rel="stylesheet">
     <link href="css/department_of_employment.css" rel="stylesheet">
     <link href="css/out_dialog.css" rel="stylesheet">
     <link href="css/base_status.css" rel="stylesheet">
@@ -43,12 +43,12 @@
     <script src="js/DepartmentOfEmployment/DepartmentOfEmployment.js"></script>
     <script src="js/DepartmentOfEmployment/Fill.js"></script>
 
-    <script src="js/UsersStatus/UsersStatus.js"></script>
-    <script src="js/UsersStatus/Fill.js"></script>
+    <script src="../assets/components/UsersStatus/UsersStatus.js"></script>
+    <script src="../assets/components/UsersStatus/Fill.js"></script>
 
-    <script src="js/GlobalViewMap/GlobalViewMap.js"></script>
-    <script src="js/GlobalViewMap/Fill.js"></script>
-    <script src="js/GlobalViewMap/PreviewPath.js"></script>
+    <script src="../assets/components/GlobalViewMap/GlobalViewMap.js"></script>
+    <script src="../assets/components/GlobalViewMap/Fill.js"></script>
+    <script src="../assets/components/GlobalViewMap/PreviewPath.js"></script>
 
     <script src="../assets/components/MoveWindow.js"></script>
     <script src="../assets/components/chat/Chat.js"></script>
@@ -75,36 +75,8 @@
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
 
-    <script>
-
-        let idModales = [
-            'chat', 'inventoryBox', 'marketBox', 'wrapperInventoryAndStorage', 'processorRoot',
-            'Workbench', 'UsersStatus', 'GlobalViewMap', 'DepartmentOfEmployment'
-        ];
-
-        $(document).ready(function () {
-            ConnectLobby();
-            document.addEventListener('mousedown', function () {
-                let elements = document.querySelectorAll(':hover');
-
-                for (let i = 0; i < elements.length; i++) {
-                    if (idModales.indexOf(elements[i].id) !== -1) {
-                        modalUpper(elements[i].id);
-                        break
-                    }
-                }
-            });
-        });
-
-        function modalUpper(id) {
-            document.getElementById(id).style.zIndex = '10';
-            idModales.forEach(function (item) {
-                if (item !== id && document.getElementById(item)) {
-                    document.getElementById(item).style.zIndex = '0';
-                }
-            });
-        }
-    </script>
+    <script src="../assets/components/FlamingWindow.js"></script>
+    <script>ConnectLobby();</script>
 </head>
 <body onmousemove="moveMouse(event)">
 <div id="ServiceTable">
@@ -154,6 +126,5 @@
            onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
     <script>ConnectChat()</script>
 </div>
-
 </body>
 </html>

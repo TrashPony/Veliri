@@ -56,7 +56,6 @@ function OnlyStorage() {
         }
     });
 
-
     document.getElementById('utilButton').remove();
     document.getElementById('destroyButton').remove();
     document.getElementById('inventoryStorage').style.height = '58px';

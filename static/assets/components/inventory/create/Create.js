@@ -19,13 +19,7 @@ function CreateInventoryMenu(closeFunc, option) {
     }
 
     if (option === 'inventory') {
-        let inventory = document.createElement("div");
-        inventory.id = "Inventory";
-        inventory.style.position = "absolute";
-        inventory.style.bottom = "70px";
-        inventory.style.right = "15px";
-        document.body.appendChild(inventory);
-        CreateInventory();
+        OnlyInventory();
         return
     }
 

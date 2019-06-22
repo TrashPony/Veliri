@@ -42,12 +42,15 @@ function CreateMarketMenu(noMask) {
     createListItemUI(listItem);
     ordersBlockUI(ordersBlock);
     footUI(foot);
+
+    openWindow(marketBox.id, marketBox);
 }
 
 function createMarketBox() {
     let marketBox = document.createElement("div");
     marketBox.id = "marketBox";
     document.body.appendChild(marketBox);
+
     let buttons = CreateControlButtons("5px", "35px", "0px", "-3px");
     buttons.move.onmousedown = function (event) {
         moveWindow(event, 'marketBox');
@@ -84,7 +87,6 @@ function createMarketBox() {
         }
     });
 
-    openWindow(marketBox.id, marketBox);
     return marketBox
 }
 

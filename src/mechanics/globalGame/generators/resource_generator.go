@@ -102,7 +102,6 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	}
 
 	for _, handler := range mp.HandlersCoordinates {
-
 		handlerX, handlerY := globalGame.GetXYCenterHex(handler.Q, handler.R)
 		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
 			return false
@@ -114,6 +113,12 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	for _, exit := range entryPoints {
 		handlerX, handlerY := globalGame.GetXYCenterHex(exit.Q, exit.R)
 		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+			return false
+		}
+	}
+
+	for _, geoPoint := range mp.GeoData {
+		if globalGame.GetBetweenDist(x, y, geoPoint.X, geoPoint.Y) < float64(100+geoPoint.Radius) {
 			return false
 		}
 	}

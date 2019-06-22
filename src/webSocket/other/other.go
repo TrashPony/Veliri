@@ -125,15 +125,34 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 			}
 
 			if msg.Event == "openMapMenu" {
+
+				userMapID := 0
+
 				userBase, _ := bases.Bases.Get(client.InBaseID)
-				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), Maps: maps.Maps.GetAllShortInfoMap(), ID: userBase.MapID})
+
+				if userBase == nil {
+					userMapID = client.GetSquad().MapID
+				} else {
+					userMapID = userBase.MapID
+				}
+
+				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), Maps: maps.Maps.GetAllShortInfoMap(), ID: userMapID})
 			}
 
 			if msg.Event == "previewPath" {
+
+				userMapID := 0
+
 				userBase, _ := bases.Bases.Get(client.InBaseID)
 
-				if userBase.MapID != msg.ID {
-					searchMaps, _ := maps.Maps.FindGlobalPath(userBase.MapID, msg.ID)
+				if userBase == nil {
+					userMapID = client.GetSquad().MapID
+				} else {
+					userMapID = userBase.MapID
+				}
+
+				if userMapID != msg.ID {
+					searchMaps, _ := maps.Maps.FindGlobalPath(userMapID, msg.ID)
 					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), SearchMaps: searchMaps})
 				}
 			}

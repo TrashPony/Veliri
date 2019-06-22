@@ -32,48 +32,49 @@ function CreateTerrain(coordinate, x, y, q, r) {
                 coordinate.coordinateText.attack = game.add.text(x - 5, y - 15, 'a', noAllow, game.redactorMetaText);
             }
         }
-    }
 
-    if (coordinate.transport) {
-        let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'transportIcon');
-        transportIcon.anchor.setTo(0.5);
-        transportIcon.scale.set(0.5);
-    }
 
-    if (coordinate.handler === 'sector') {
-        let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'sectorOutIcon');
-        transportIcon.anchor.setTo(0.5);
-        transportIcon.scale.set(0.5);
-    }
+        if (coordinate.transport) {
+            let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'transportIcon');
+            transportIcon.anchor.setTo(0.5);
+            transportIcon.scale.set(0.5);
+        }
 
-    if (coordinate.handler === 'base') {
-        let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'baseInIcon');
-        transportIcon.anchor.setTo(0.5);
-        transportIcon.scale.set(0.3);
-    }
+        if (coordinate.handler === 'sector') {
+            let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'sectorOutIcon');
+            transportIcon.anchor.setTo(0.5);
+            transportIcon.scale.set(0.5);
+        }
 
-    if (coordinate.level === 0) {
-        let style = {font: "36px Arial", fill: "#bbfff1", align: "center"};
-        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
-    }
+        if (coordinate.handler === 'base') {
+            let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'baseInIcon');
+            transportIcon.anchor.setTo(0.5);
+            transportIcon.scale.set(0.3);
+        }
 
-    if (coordinate.level === 1) {
-        let style = {font: "36px Arial", fill: "#35daff", align: "center"};
-        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
-    }
+        if (coordinate.level === 0) {
+            let style = {font: "36px Arial", fill: "#bbfff1", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        }
 
-    if (coordinate.level === 3) {
-        let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
-        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
-    }
+        if (coordinate.level === 1) {
+            let style = {font: "36px Arial", fill: "#35daff", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        }
 
-    if (coordinate.level === 4) {
-        let style = {font: "36px Arial", fill: "#fff523", align: "center"};
-        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
-    }
+        if (coordinate.level === 3) {
+            let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        }
 
-    if (coordinate.level === 5) {
-        let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
-        coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        if (coordinate.level === 4) {
+            let style = {font: "36px Arial", fill: "#fff523", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        }
+
+        if (coordinate.level === 5) {
+            let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        }
     }
 }

@@ -24,7 +24,6 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ConnectNewUser") {
-        console.log(jsonData.other_user)
         CreateOtherUser(jsonData.other_user);
     }
 
@@ -147,7 +146,6 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "handlerClose") {
-        console.log(jsonData);
         CloseTunnel(jsonData)
     }
 

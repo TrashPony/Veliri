@@ -90,7 +90,7 @@ function ChatReader(data) {
     }
 
     if (data.event === "previewPath") {
-        PreviewPath(data.search_maps)
+        PreviewMapPath(data.search_maps)
     }
 
     if (data.event === 'OpenUserStat') {

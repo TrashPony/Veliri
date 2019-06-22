@@ -19,7 +19,7 @@
     height: 370px;
     position: relative;
     width: 100%;
-    background: url("../../assets/logo/mapBackground.jpg");
+    background: url("../../../assets/logo/mapBackground.jpg");
     background-size: cover;
     overflow: hidden;
 }
