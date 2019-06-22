@@ -9,10 +9,14 @@ function Game(jsonData) {
 }
 
 function LoadGame() {
+
     game.input.onDown.add(initMove, game);
 
     game.camera.scale.x = 1.5;
     game.camera.scale.y = 1.5;
+
+    Data.squad.user_name = Data.user.login;
+    Data.squad.squad_id = Data.squad.id;
 
     CreateUser(Data.squad);
     CreateOtherUsers(Data.other_users);

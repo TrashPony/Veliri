@@ -76,6 +76,18 @@ func (c *wsUsers) GetById(id int) *player.Player {
 	return nil
 }
 
+func (c *wsUsers) GetBotByUUID(uuid string) *player.Player {
+	c.mx.Lock()
+	defer c.mx.Unlock()
+
+	for _, client := range c.users {
+		if client.Bot && client.UUID == uuid {
+			return client
+		}
+	}
+	return nil
+}
+
 func (c *wsUsers) GetAllConnects() (map[*websocket.Conn]gameConnect, *sync.RWMutex) {
 	c.connectMX.Lock()
 	return c.connects, &c.connectMX

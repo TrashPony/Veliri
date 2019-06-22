@@ -56,7 +56,7 @@ function OpenCommonUserStat() {
             </div>
             
             <div id="UserStatusPanel">
-                <div id="userTitle">Срущий мимо ванной</div>
+                <div id="userTitle"></div>
                 <div id="scientific_points">очки науки <span id="scientific_points_points">1000</span></div>
                 <div id="attack_points">очки атаки <span id="attack_points_points">1000</span></div>
                 <div id="production_points">очки произвосдва <span id="production_points_points">1000</span></div>
@@ -136,5 +136,69 @@ function SetBiography() {
     chat.send(JSON.stringify({
         event: "SetBiography",
         biography: document.getElementById("userBiography").value,
+    }));
+}
+
+function OtherUserStatus(userName, id) {
+    // создание минималистичного статут юзера из 1й страницы, добавить кнопки типо добавить во френды, отправить сообщение, начать чат;
+    // TODO почти повторяющийся код с функцией UsersStatus(), но я решил не трогать ту функцию а создать новую
+    if (document.getElementById("UsersStatus")) {
+        document.getElementById("UsersStatus").remove();
+    }
+
+    let usersStatus = document.createElement("div");
+    usersStatus.id = "UsersStatus";
+    document.body.appendChild(usersStatus);
+
+    usersStatus.innerHTML = `
+        <div id="usersStatusTabs">
+            <div id="TabsLeftArrow" onclick="document.getElementById('usersStatusTabsGroup').scrollLeft -= 20;"><</div>
+            <div id="tabsWrapper">
+                <div id="usersStatusTabsGroup">
+                    <div id="commonUserStat" class="actionChatTab" onclick="OpenCommonUserStat()">Общие</div>
+                </div>
+            </div>
+            <div id="TabsRightArrow" onclick="document.getElementById('usersStatusTabsGroup').scrollLeft += 20;">></div>
+        </div>
+        <div id="usersStatusWrapper">
+        </div>
+    `;
+
+    let buttons = CreateControlButtons("2px", "31px", "-3px", "29px", "", "145px");
+    $(buttons.move).mousedown(function (event) {
+        moveWindow(event, 'UsersStatus')
+    });
+    $(buttons.close).mousedown(function () {
+        setState(usersStatus.id, $(usersStatus).position().left, $(usersStatus).position().top, $(usersStatus).height(), $(usersStatus).width(), false);
+    });
+    usersStatus.appendChild(buttons.move);
+    usersStatus.appendChild(buttons.close);
+    openWindow(usersStatus.id, usersStatus);
+
+    let usersStatusWrap = document.getElementById("usersStatusWrapper");
+    usersStatusWrap.innerHTML = `
+            <h3 id="userName"> ${userName} </h3>
+                <div id="userAvatarWrapper">
+                <div id="userAvatar"></div> 
+            </div>
+            
+            <div id="UserStatusPanel">
+                <div id="userTitle"></div>
+                <div id="actionPanel">
+                    <input type="button" value="Отправить сообщение">
+                    <input type="button" value="Предложить дружбу">
+                    <input type="button" value="что то еще">
+                </div>
+            </div>
+             
+            <div id="biography">
+                <h3>Биография:</h3>
+                <textarea id="userBiography" disabled></textarea>
+            </div>
+    `;
+
+    chat.send(JSON.stringify({
+        event: "OpenOtherUserStat",
+        user_name: id,
     }));
 }

@@ -30,9 +30,11 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
 
     body.scale.setTo(0.25);
     body.inputEnabled = true;             // включаем ивенты на спрайт
-    body.anchor.setTo(0.5);          // устанавливаем центр спрайта
+    body.anchor.setTo(0.5);               // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
+
+    mouseBodyOver(body, squad, unit);
 
     bodyMask.anchor.setTo(0.5);          // устанавливаем центр спрайта
     bodyMask.tint = bColor;
@@ -51,7 +53,7 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
     let weaponColorMask2;
 
     if (weaponSlot && weaponSlot.weapon) {
-        // todo рефакторинг...
+
         let xAttach = ((weaponSlot.x_attach) / 4) - 50;
         let yAttach = ((weaponSlot.y_attach) / 4) - 50;
 
@@ -156,4 +158,56 @@ function CreateEquip(squadBody, squad) {
     createSlots(squadBody.equippingIII);
     createSlots(squadBody.equippingIV);
     createSlots(squadBody.equippingV);
+}
+
+function mouseBodyOver(body, squad, unit) {
+    let positionInterval = null;
+    let checkTimeOut = null;
+
+    body.events.onInputOver.add(function () {
+
+        clearTimeout(checkTimeOut);
+
+        if (document.getElementById("UserLabel" + squad.user_name)) {
+            return;
+        }
+
+        //todo загрузка аватарки
+
+        let userLabel = document.createElement('div');
+        userLabel.id = "UserLabel" + squad.user_name;
+        userLabel.className = "UserLabel";
+        document.body.appendChild(userLabel);
+        userLabel.innerHTML = `
+            <div>
+                <div>
+                    <div class="logo"></div>
+                    <h4>${squad.user_name}</h4>
+                    <div class="detailUser" onmousedown="informationFunc('${squad.user_name}', '${squad.squad_id}')">i</div>
+                </div>
+            </div>
+        `;
+
+        positionInterval = setInterval(function () {
+            userLabel.style.left = unit.worldPosition.x - 50 + "px";
+            userLabel.style.top = unit.worldPosition.y - 70 + "px";
+            userLabel.style.display = "block";
+        }, 10);
+    }, this);
+
+    body.events.onInputOut.add(function () {
+        checkTimeOut = setTimeout(function () {
+            if (document.getElementById("UserLabel" + squad.user_name)) document.getElementById("UserLabel" + squad.user_name).remove();
+            clearInterval(positionInterval);
+            clearTimeout(checkTimeOut);
+        }, 2000);
+    }, this);
+}
+
+function informationFunc(userName, id) {
+    if (userName === Data.user.login) {
+        UsersStatus()
+    } else {
+        OtherUserStatus(userName, id)
+    }
 }

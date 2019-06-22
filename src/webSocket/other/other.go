@@ -13,7 +13,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
+	"strconv"
 )
 
 var respPipe = make(chan Message)
@@ -50,6 +52,7 @@ type Message struct {
 	ToPage       int                        `json:"to_page"`
 	AskID        int                        `json:"ask_id"`
 	Mission      *mission.Mission           `json:"mission"`
+	Bot          bool                       `json:"bot"`
 
 	// resolution, window_id, state
 	UserInterface map[string]map[string]*player.Window `json:"user_interface"`
@@ -112,6 +115,22 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 
 			if msg.Event == "OpenUserStat" {
 				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), Player: client})
+			}
+
+			if msg.Event == "OpenOtherUserStat" {
+				// в user_name прилетает либо id отряда игрока либо uuid отряда бота.
+				var user *player.Player
+				id, err := strconv.Atoi(msg.UserName)
+
+				if err != nil {
+					user = globalGame.Clients.GetBotByUUID(msg.UserName)
+				} else {
+					user = globalGame.Clients.GetById(id)
+				}
+
+				if user != nil {
+					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), User: user.GetShortUserInfo(false, true)})
+				}
 			}
 
 			if msg.Event == "upSkill" {

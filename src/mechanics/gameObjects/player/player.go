@@ -83,6 +83,8 @@ type ShortUserInfo struct {
 	Rotate     int          `json:"rotate"`
 	Body       *detail.Body `json:"body"`
 	AvatarIcon string       `json:"avatar_icon"` // путь к аватару
+	Biography  string       `json:"biography"`
+	Title      string       `json:"title"`
 	Fraction   string       `json:"fraction"`
 
 	/* покраска юнитов */
@@ -123,6 +125,8 @@ func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {
 
 	hostile.Fraction = client.Fraction
 	hostile.UserName = client.GetLogin()
+	hostile.Biography = client.Biography
+	hostile.Title = client.Title
 
 	if !squad {
 		return &hostile

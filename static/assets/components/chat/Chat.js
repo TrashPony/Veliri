@@ -97,6 +97,10 @@ function ChatReader(data) {
         FillUserStatus(data.player);
     }
 
+    if (data.event === 'OpenOtherUserStat') {
+        FillOtherUserStat(data.user);
+    }
+
     if (data.event === "upSkill") {
         if (data.error) {
             if (document.getElementById('skillUpdatePanel')) {

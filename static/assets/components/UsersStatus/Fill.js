@@ -139,3 +139,17 @@ function SelectSkill(id, level, name, specification, icon, needPrice, type) {
         }));
     }
 }
+
+function FillOtherUserStat(stat) {
+    if (document.getElementById("userName"))
+        document.getElementById('userName').innerHTML = stat.user_name;
+
+    if (document.getElementById("userAvatar"))
+        document.getElementById('userAvatar').style.backgroundImage = "url(" + stat.avatar_icon + ")";
+
+    if (document.getElementById("userBiography"))
+        document.getElementById('userBiography').innerHTML = stat.biography;
+
+    if (document.getElementById('userTitle'))
+        document.getElementById('userTitle').innerHTML = stat.title;
+}
