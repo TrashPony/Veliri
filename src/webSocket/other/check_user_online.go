@@ -57,7 +57,7 @@ func getUsersInChatGroup(group *chatGroup.Group, all bool) []*player.ShortUserIn
 
 		if chatUser != nil {
 			if all || group.Users[id] {
-				users = append(users, chatUser.GetShortUserInfo(false, true))
+				users = append(users, chatUser.GetShortUserInfo(false))
 			}
 		} else {
 			group.Users[id] = false

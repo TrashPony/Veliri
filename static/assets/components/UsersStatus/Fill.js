@@ -1,9 +1,12 @@
-function FillUserStatus(player, skill) {
+function FillUserStatus(player, skill, userID) {
 
     userStat = player;
 
-    if (document.getElementById("userAvatar"))
-        document.getElementById('userAvatar').style.backgroundImage = "url(" + player.avatar_icon + ")";
+    if (document.getElementById("userAvatar")) {
+        GetUserAvatar(userID).then(function (response) {
+            document.getElementById('userAvatar').style.backgroundImage = "url('" + response.data.avatar + "')";
+        });
+    }
 
     if (document.getElementById("userBiography"))
         document.getElementById('userBiography').innerHTML = player.biography;
@@ -144,8 +147,11 @@ function FillOtherUserStat(stat) {
     if (document.getElementById("userName"))
         document.getElementById('userName').innerHTML = stat.user_name;
 
-    if (document.getElementById("userAvatar"))
-        document.getElementById('userAvatar').style.backgroundImage = "url(" + stat.avatar_icon + ")";
+    if (document.getElementById("userAvatar")) {
+        GetUserAvatar(stat.user_id).then(function (response) {
+            document.getElementById('userAvatar').style.backgroundImage = "url('" + response.data.avatar + "')";
+        });
+    }
 
     if (document.getElementById("userBiography"))
         document.getElementById('userBiography').innerHTML = stat.biography;

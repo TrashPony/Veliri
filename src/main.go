@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/TrashPony/Veliri/src/auth"
+	"github.com/TrashPony/Veliri/src/end_points"
 	globalGameGenerators "github.com/TrashPony/Veliri/src/mechanics/globalGame/generators"
-	"github.com/TrashPony/Veliri/src/uploadFiles"
 	"github.com/TrashPony/Veliri/src/webSocket"
 	"github.com/TrashPony/Veliri/src/webSocket/field"
 	"github.com/TrashPony/Veliri/src/webSocket/global"
@@ -20,7 +20,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 
-	router.HandleFunc("/upload", uploadFiles.Upload) // метод для загрузки файлов на сервер
+	router.HandleFunc("/upload", end_points.Upload)    // метод для загрузки файлов на сервер
+	router.HandleFunc("/avatar", end_points.GetAvatar) // метод для взятия аватарок
 
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections)
@@ -56,8 +57,8 @@ func main() {
 	go ai.InitAI()          // запускает ботов
 
 	port := "8080"
-	log.Println("http server started on :"+ port)
-	err := http.ListenAndServe(":" + port, router) // запускает веб сервер на 8080 порту
+	log.Println("http server started on :" + port)
+	err := http.ListenAndServe(":"+port, router) // запускает веб сервер на 8080 порту
 	if err != nil {
 		log.Panic(err)
 	}

@@ -21,7 +21,7 @@ func LoadGame(ws *websocket.Conn, msg Message) {
 
 			otherUsers := getOtherSquads(user, mp)
 
-			go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true, false), IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
 
 			go SendMessage(Message{
 				Event:      msg.Event,
@@ -62,7 +62,7 @@ func getOtherSquads(user *player.Player, mp *_map.Map) []*player.ShortUserInfo {
 			user.GetSquad().MapID == otherUser.GetSquad().MapID &&
 			otherUser.InBaseID == 0 {
 
-			otherUsers = append(otherUsers, otherUser.GetShortUserInfo(true, false))
+			otherUsers = append(otherUsers, otherUser.GetShortUserInfo(true))
 		}
 	}
 

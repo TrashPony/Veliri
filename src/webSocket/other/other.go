@@ -104,7 +104,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 			}
 
 			if msg.Event == "LoadAvatar" {
-				client.AvatarIcon = msg.File
+				client.SetAvatar(msg.File)
 				dbPlayer.UpdateUser(client)
 			}
 
@@ -129,7 +129,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 				}
 
 				if user != nil {
-					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), User: user.GetShortUserInfo(false, true)})
+					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), User: user.GetShortUserInfo(false)})
 				}
 			}
 

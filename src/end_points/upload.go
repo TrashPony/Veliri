@@ -1,4 +1,4 @@
-package uploadFiles
+package end_points
 
 import (
 	"io"

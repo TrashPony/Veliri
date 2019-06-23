@@ -58,7 +58,7 @@ type Player struct {
 	ToLeave      bool                     `json:"to_leave"`
 	LocalPact    int                      `json:"local_pact"`
 	Fraction     string                   `json:"fraction"`
-	AvatarIcon   string                   `json:"avatar_icon"` // путь к аватару
+	avatarIcon   string                   // ава в base64
 	Biography    string                   `json:"biography"`
 	Title        string                   `json:"title"`
 
@@ -74,18 +74,18 @@ type Player struct {
 type ShortUserInfo struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	SquadID    string       `json:"squad_id"`
-	UserName   string       `json:"user_name"`
-	X          int          `json:"x"`
-	Y          int          `json:"y"`
-	Q          int          `json:"q"`
-	R          int          `json:"r"`
-	Rotate     int          `json:"rotate"`
-	Body       *detail.Body `json:"body"`
-	AvatarIcon string       `json:"avatar_icon"` // путь к аватару
-	Biography  string       `json:"biography"`
-	Title      string       `json:"title"`
-	Fraction   string       `json:"fraction"`
+	UserID    string       `json:"user_id"`
+	SquadID   string       `json:"squad_id"`
+	UserName  string       `json:"user_name"`
+	X         int          `json:"x"`
+	Y         int          `json:"y"`
+	Q         int          `json:"q"`
+	R         int          `json:"r"`
+	Rotate    int          `json:"rotate"`
+	Body      *detail.Body `json:"body"`
+	Biography string       `json:"biography"`
+	Title     string       `json:"title"`
+	Fraction  string       `json:"fraction"`
 
 	/* покраска юнитов */
 	BodyColor1   string `json:"body_color_1"`
@@ -116,11 +116,13 @@ type Window struct {
 	Open   bool `json:"open"`
 }
 
-func (client *Player) GetShortUserInfo(squad, avatar bool) *ShortUserInfo {
+func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {
 	var hostile ShortUserInfo
 
-	if avatar {
-		hostile.AvatarIcon = client.AvatarIcon
+	if client.Bot {
+		hostile.UserID = client.UUID
+	} else {
+		hostile.UserID = strconv.Itoa(client.GetID())
 	}
 
 	hostile.Fraction = client.Fraction
@@ -377,4 +379,12 @@ func (client *Player) UpSkill(id int) (*skill.Skill, bool) {
 		}
 	}
 	return nil, false
+}
+
+func (client *Player) GetAvatar() string {
+	return client.avatarIcon
+}
+
+func (client *Player) SetAvatar(avatar string) {
+	client.avatarIcon = avatar
 }

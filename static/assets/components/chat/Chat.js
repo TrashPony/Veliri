@@ -94,7 +94,7 @@ function ChatReader(data) {
     }
 
     if (data.event === 'OpenUserStat') {
-        FillUserStatus(data.player);
+        FillUserStatus(data.player, null, data.user_id);
     }
 
     if (data.event === 'OpenOtherUserStat') {
@@ -110,7 +110,7 @@ function ChatReader(data) {
                 }, 500)
             }
         } else {
-            FillUserStatus(data.player, data.skill)
+            FillUserStatus(data.player, data.skill, data.user_id)
         }
     }
 

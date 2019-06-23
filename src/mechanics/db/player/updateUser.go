@@ -17,7 +17,7 @@ func UpdateUser(user *player.Player) {
 		" scientific_points = $9, attack_points = $10, production_points = $11, title = $12 "+
 		"WHERE id = $1",
 		user.GetID(), user.GetEmail(), user.GetCredits(), user.Training, user.LastBaseID, user.Fraction,
-		user.AvatarIcon, user.Biography, user.ScientificPoints, user.AttackPoints, user.ProductionPoints, user.Title)
+		user.GetAvatar(), user.Biography, user.ScientificPoints, user.AttackPoints, user.ProductionPoints, user.Title)
 	if err != nil {
 		log.Fatal("update user " + err.Error())
 	}

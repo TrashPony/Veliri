@@ -62,10 +62,19 @@ function updateUsers(group, users) {
     usersBox.innerHTML = '';
     for (let i in users) {
         if (users.hasOwnProperty(i) && users[i]) {
-            usersBox.innerHTML += `<div class="chatUserLine" id="${users[i].user_name}">
-                                        <div class="chatUserIcon" style="background-image: url('${users[i].avatar_icon}')"></div>
-                                        <div class="chatUserName">${users[i].user_name}</div>
-                                   </div>`;
+
+            let chatUserLine = document.createElement("div");
+            chatUserLine.className = "chatUserLine";
+            chatUserLine.id = users[i].user_name;
+            chatUserLine.innerHTML = `<div class="chatUserName">${users[i].user_name}</div>`;
+
+            let userAvatar = document.createElement("div");
+            userAvatar.className = "chatUserIcon";
+            $(chatUserLine).prepend(userAvatar);
+            GetUserAvatar(users[i].user_id).then(function (response) {
+                userAvatar.style.backgroundImage = "url('" + response.data.avatar + "')";
+            });
+            usersBox.appendChild(chatUserLine);
 
             if (users[i].user_name === userName && group.id !== 0) {
                 $('#' + users[i].user_name).append('<div class="exitChatButton" onclick="Unsubscribe(' + group.id + ')">x</div>')

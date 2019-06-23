@@ -183,7 +183,7 @@ function mouseBodyOver(body, squad, unit) {
                 <div>
                     <div class="logo"></div>
                     <h4>${squad.user_name}</h4>
-                    <div class="detailUser" onmousedown="informationFunc('${squad.user_name}', '${squad.squad_id}')">i</div>
+                    <div class="detailUser" onmousedown="informationFunc('${squad.user_name}', '${squad.user_id}')">i</div>
                 </div>
             </div>
         `;
@@ -204,10 +204,10 @@ function mouseBodyOver(body, squad, unit) {
     }, this);
 }
 
-function informationFunc(userName, id) {
+function informationFunc(userName, userId) {
     if (userName === Data.user.login) {
         UsersStatus()
     } else {
-        OtherUserStatus(userName, id)
+        OtherUserStatus(userName, userId)
     }
 }

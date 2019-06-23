@@ -149,7 +149,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 
 						mpCoordinate.DynamicObject = &dynamicObject
 
-						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true, false), Q: msg.Q, R: msg.R,
+						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
 							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
 
@@ -166,7 +166,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 						}
 					} else {
 						mpCoordinate.DynamicObject = &dynamicObject
-						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true, false), Q: msg.Q, R: msg.R,
+						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
 							Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
 					}

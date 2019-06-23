@@ -51,7 +51,7 @@ func startLocalGame(ws *websocket.Conn, msg Message) {
 
 				gameShortPlayers := make([]*player.ShortUserInfo, 0)
 				for _, gamePlayer := range gamePlayers {
-					gameShortPlayers = append(gameShortPlayers, gamePlayer.GetShortUserInfo(true, false))
+					gameShortPlayers = append(gameShortPlayers, gamePlayer.GetShortUserInfo(true))
 				}
 
 				SendMessage(Message{Event: "LocalGame", IDMap: user.GetSquad().MapID, Bot: user.Bot, OtherUsers: gameShortPlayers})

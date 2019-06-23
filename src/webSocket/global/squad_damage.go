@@ -26,7 +26,7 @@ func SquadDamage(user *player.Player, damage int, ws *websocket.Conn) {
 	if user.GetSquad().MatherShip.HP <= 0 {
 		// останавливаем движение, Обязательно! иначае в методе move, приложение упадет на всех возможных проверках
 		stopMove(user, true)
-		go SendMessage(Message{Event: "DeadSquad", OtherUser: user.GetShortUserInfo(true, false), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "DeadSquad", OtherUser: user.GetShortUserInfo(true), IDMap: user.GetSquad().MapID})
 		// время для проигрыша анимации например
 		time.Sleep(2 * time.Second)
 		// удаляем отряд из игры

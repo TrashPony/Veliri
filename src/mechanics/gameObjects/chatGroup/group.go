@@ -23,8 +23,8 @@ func (group *Group) CheckUserInGroup(userID int) bool {
 }
 
 type Message struct {
-	UserName   string    `json:"user_name"`
-	AvatarIcon string    `json:"avatar_icon"`
-	Message    string    `json:"message"`
-	Time       time.Time `json:"time"`
+	UserName string    `json:"user_name"`
+	UserID   string    `json:"user_id"`
+	Message  string    `json:"message"`
+	Time     time.Time `json:"time"`
 }

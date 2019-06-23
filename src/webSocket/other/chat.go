@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/chatGroup"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"strconv"
 	"time"
 )
 
@@ -14,7 +15,7 @@ func chatReader(client *player.Player, msg Message) {
 		if msg.Event == "OpenChat" {
 			group, _ := getLocalChat(client)
 			SendMessage(msg.Event, msg.Message, client.GetID(), 0, group, chats.Groups.GetAllUserGroups(client),
-				nil, false, client.GetShortUserInfo(false, true), client.Missions, nil, client.NotifyQueue)
+				nil, false, client.GetShortUserInfo(false), client.Missions, nil, client.NotifyQueue)
 		}
 
 		if msg.Event == "GetAllGroups" {
@@ -65,7 +66,7 @@ func chatReader(client *player.Player, msg Message) {
 				// добавляем в историю, отправляем не сообщение текстом а обьектом
 				group := chats.Groups.GetGroup(msg.GroupID)
 
-				chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
+				chatMessage := chatGroup.Message{UserName: client.GetLogin(), UserID: strconv.Itoa(client.GetID()), Message: msg.MessageText, Time: time.Now().UTC()}
 				group.History = append(group.History, &chatMessage)
 
 				SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil, nil, nil)
@@ -73,7 +74,7 @@ func chatReader(client *player.Player, msg Message) {
 				// если msg.GroupID == 0 то это сообщение в локальный чат
 				group, _ := getLocalChat(client)
 
-				chatMessage := chatGroup.Message{UserName: client.GetLogin(), AvatarIcon: client.AvatarIcon, Message: msg.MessageText, Time: time.Now().UTC()}
+				chatMessage := chatGroup.Message{UserName: client.GetLogin(), UserID: strconv.Itoa(client.GetID()), Message: msg.MessageText, Time: time.Now().UTC()}
 				group.History = append(group.History, &chatMessage)
 
 				SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil, nil, nil)

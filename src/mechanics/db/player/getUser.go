@@ -25,10 +25,10 @@ func User(id int, login string) *player.Player {
 	for rows.Next() {
 
 		var id, credits int
-		var name, mail string
+		var name, mail, avatar string
 
 		err := rows.Scan(&id, &name, &mail, &credits, &newUser.Training, &newUser.LastBaseID,
-			&newUser.Fraction, &newUser.AvatarIcon, &newUser.Biography, &newUser.ScientificPoints, &newUser.AttackPoints,
+			&newUser.Fraction, &avatar, &newUser.Biography, &newUser.ScientificPoints, &newUser.AttackPoints,
 			&newUser.ProductionPoints, &newUser.Title)
 		if err != nil {
 			log.Fatal("get user " + err.Error())
@@ -36,6 +36,7 @@ func User(id int, login string) *player.Player {
 
 		newUser.NotifyQueue = make(map[string]*player.Notify, 0)
 
+		newUser.SetAvatar(avatar)
 		newUser.SetID(id)
 		newUser.SetLogin(name)
 		newUser.SetEmail(mail)

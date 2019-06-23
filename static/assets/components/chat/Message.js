@@ -24,18 +24,23 @@ function chatMessage() {
 }
 
 function NewChatMessage(message, id) {
-
     if (id === currentChatID) {
         let chatBox = document.getElementById("chatBox");
-        chatBox.innerHTML += `
-            <div class="chatMessage">
-            
-                <div class="chatUserIcon" style="background-image: url('${message.avatar_icon}')"></div>
+
+        let chatMessage = document.createElement("div");
+        chatMessage.className = "chatMessage";
+        chatMessage.innerHTML += `
                 <span class="ChatUserName">${message.user_name} > </span>
                 <span class="ChatText">${message.message}</span>
-            
-            </div>
         `;
+        chatBox.appendChild(chatMessage);
+
+        let userAvatar = document.createElement("div");
+        userAvatar.className = "chatUserIcon";
+        $(chatMessage).prepend(userAvatar);
+        GetUserAvatar(message.user_id).then(function (response) {
+            userAvatar.style.backgroundImage = "url('" + response.data.avatar + "')";
+        });
     } else {
         let chatTab = document.getElementById('chat' + id);
         if (chatTab) chatTab.className = 'alertChatTab';

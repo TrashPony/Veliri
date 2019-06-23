@@ -44,7 +44,7 @@ section {
 }
 
 a {
-    color: #e2f6ff;
+    color: #0cfdff;
     text-decoration: none;
 }
 
@@ -905,4 +905,13 @@ footer #about {
     #main #logo {
         width: 320px;
     }
+}
+
+#authors {
+    margin-top: 20px;
+    padding: 0 75px;
+}
+
+#authorsTable {
+
 }
