@@ -2,6 +2,7 @@ package other
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/chat"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/gorilla/websocket"
 	"time"
@@ -25,16 +26,32 @@ func NotifyWorker() {
 		for _, user := range fakeUsers {
 			for _, notify := range user.NotifyQueue {
 				if notify != nil && !notify.Send {
+
 					SendMessage("newNotify", nil, user.GetID(), 0, nil, nil,
 						nil, false, nil, nil, notify, nil)
 					notify.Send = true
 
 					if notify.Name == "mission" && notify.Event == "complete" {
-						delete(user.NotifyQueue, notify.UUID)
+						//delete(user.NotifyQueue, notify.UUID)
 					}
 				}
 			}
 		}
 		time.Sleep(time.Second)
 	}
+}
+
+func DeleteNotify(user *player.Player, uuid string) bool {
+	notify, ok := user.NotifyQueue[uuid]
+	if ok && notify != nil {
+		if notify.Name == "mission" && notify.Event != "complete" {
+			// незавершенные миссии нельзя удалить с панели
+		} else {
+			delete(user.NotifyQueue, notify.UUID)
+			dbPlayer.UpdateUser(user)
+			return true
+		}
+	}
+
+	return false
 }

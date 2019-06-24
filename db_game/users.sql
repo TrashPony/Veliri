@@ -28,12 +28,17 @@ CREATE TABLE user_current_mission
   id_user    INT REFERENCES users (id),
   id_mission INT REFERENCES missions (id),
   data       json -- тут текущее состояние квеста ¯\_(ツ)_/¯
+  -- todo линия выполнения заданий что бы старые задания оставались и не выдавались пока не пройдет весь цикл
 );
 
 CREATE TABLE user_interface
 (
   id_user INT REFERENCES users (id),
   data    json -- тут текущее состояние окон ¯\_(ツ)_/¯
-)
+);
 
--- todo линия выполнения заданий что бы старые задания оставались и не выдавались пока не пройдет весь цикл
+CREATE TABLE user_notify
+(
+  id_user INT REFERENCES users (id),
+  data    json -- тут текущее состояние оповещений ¯\_(ツ)_/¯
+)

@@ -106,7 +106,7 @@ function sellDialog(order, e) {
         marketSocket.send(JSON.stringify({
             event: 'sell',
             order_id: Number(order.Id),
-            quantity: Number(div.inputBlock.value)
+            quantity: Number(document.getElementById("buyCount").value),
         }));
         subMenu.remove();
     };

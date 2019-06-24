@@ -53,6 +53,7 @@ type Message struct {
 	AskID        int                        `json:"ask_id"`
 	Mission      *mission.Mission           `json:"mission"`
 	Bot          bool                       `json:"bot"`
+	UUID         string                     `json:"uuid"`
 
 	// resolution, window_id, state
 	UserInterface map[string]map[string]*player.Window `json:"user_interface"`
@@ -79,6 +80,8 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 
 	//как только игрок подключился отправляем ему текущее состояние окошек
 	sendOtherMessage(Message{Event: "setWindowsState", UserID: client.GetID(), UserInterface: client.UserInterface})
+	//и перезагрузим оповещения который игрок не закрл
+	client.ReloadNotify()
 
 	for {
 
@@ -226,6 +229,12 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 				}
 
 				dbPlayer.UpdateUser(client)
+			}
+
+			if msg.Event == "DeleteNotify" {
+				if DeleteNotify(client, msg.UUID) {
+					sendOtherMessage(Message{Event: "DeleteNotify", UserID: client.GetID(), UUID: msg.UUID})
+				}
 			}
 		}
 	}

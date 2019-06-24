@@ -22,11 +22,26 @@ func UpdateUser(user *player.Player) {
 		log.Fatal("update user " + err.Error())
 	}
 
+	UpdateNotify(user, tx)
 	UpdateUserSkills(user, tx)
 	UpdateUserMission(user, tx)
 	UpdateUI(user, tx)
 
 	tx.Commit()
+}
+
+func UpdateNotify(user *player.Player, tx *sql.Tx) {
+	_, err := tx.Exec("DELETE FROM user_notify WHERE id_user = $1", user.GetID())
+	if err != nil {
+		log.Fatal("delete ui" + err.Error())
+	}
+
+	jsonString, err := json.Marshal(user.NotifyQueue)
+	_, err = tx.Exec("INSERT INTO user_notify (data, id_user) VALUES ($1, $2)",
+		jsonString, user.GetID())
+	if err != nil {
+		log.Fatal("add new ui" + err.Error())
+	}
 }
 
 func UpdateUI(user *player.Player, tx *sql.Tx) {

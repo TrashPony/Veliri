@@ -8,16 +8,6 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         ${getBackgroundUrlByItem(slotData)}
     `;
 
-    $(cell).mouseover(() => {
-        $('body').append(`<div class="nameItemInCell" style="left: ${cell.getBoundingClientRect().left}px; top: ${cell.getBoundingClientRect().top - 40}px">
-            ${slotData.item.name}
-        </div>`)
-    });
-
-    $(cell).mouseout(() => {
-        $('.nameItemInCell').remove();
-    });
-
     CreateHealBar(cell, "inventory", true);
 
     $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber});
@@ -123,8 +113,18 @@ function getBackgroundUrlByItem(slot) {
         background = "url(/assets/units/" + slot.type + "/" + slot.item.name + ".png)";
     }
 
+    return `<div class='itemIconInventoryCell' style="background-image: ${background}" onmouseover="showName(this, '${slot.item.name}')"></div>`;
+}
 
-    return `<div class='itemIconInventoryCell' style="background-image: ${background}"></div>`
+function showName(e, name) {
+    $('body').append(
+        `<div class="nameItemInCell" style="left: ${e.getBoundingClientRect().left-10}px; top: ${e.getBoundingClientRect().top - 35}px">
+            ${name}
+        </div>`
+    );
+    $(this).mouseout(() => {
+        $('.nameItemInCell').remove();
+    });
 }
 
 function unMarkConstructorEquip() {

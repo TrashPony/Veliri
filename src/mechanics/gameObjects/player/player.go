@@ -2,9 +2,12 @@ package player
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
@@ -99,12 +102,23 @@ type ShortUserInfo struct {
 }
 
 type Notify struct {
-	Name    string      `json:"name"`
-	UUID    string      `json:"uuid"`
-	Event   string      `json:"event"`
-	Send    bool        `json:"send"`
-	Data    interface{} `json:"data"`
-	Destroy bool        `json:"destroy"`
+	Name    string             `json:"name"`
+	UUID    string             `json:"uuid"`
+	Event   string             `json:"event"`
+	Send    bool               `json:"send"`
+	Data    interface{}        `json:"data"`
+	Destroy bool               `json:"destroy"`
+	Count   int                `json:"count"`
+	Price   int                `json:"price"`
+	Item    *inventory.Slot    `json:"item"`
+	Base    *base.Base         `json:"base"`
+	Map     *_map.ShortInfoMap `json:"map"`
+}
+
+func (client *Player) ReloadNotify() {
+	for _, notify := range client.NotifyQueue {
+		notify.Send = false
+	}
 }
 
 // текущие положение интерфейса пользователя

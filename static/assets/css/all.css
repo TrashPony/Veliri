@@ -321,3 +321,7 @@ body ::-webkit-scrollbar {
 .veliriDialog input {
     margin: 0 17px 0px;
 }
+
+.cr {
+    color: rgba(128, 255, 130);
+}

@@ -42,6 +42,7 @@ func User(id int, login string) *player.Player {
 		newUser.SetEmail(mail)
 		newUser.SetCredits(credits)
 
+		getUserNotify(&newUser)
 		getUserSkills(&newUser)
 		getUserBase(&newUser)
 		getUserMission(&newUser)
@@ -49,6 +50,30 @@ func User(id int, login string) *player.Player {
 	}
 
 	return &newUser
+}
+
+func getUserNotify(user *player.Player) {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT data "+
+		"FROM user_notify "+
+		"WHERE id_user=$1", user.GetID())
+	if err != nil {
+		log.Fatal("get notify " + err.Error())
+	}
+	defer rows.Close()
+
+	var notifyJson []byte
+
+	for rows.Next() {
+		err := rows.Scan(&notifyJson)
+		if err != nil {
+			println("get scan notify " + err.Error())
+		}
+
+		err = json.Unmarshal(notifyJson, &user.NotifyQueue)
+		if err != nil {
+			println("unmarshal notify " + err.Error())
+		}
+	}
 }
 
 func getUI(user *player.Player) {

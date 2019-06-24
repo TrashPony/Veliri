@@ -3,10 +3,14 @@ package market
 import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/market"
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/satori/go.uuid"
 )
 
 func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
@@ -40,6 +44,25 @@ func (o *OrdersPool) Sell(orderID, count int, user *player.Player) error {
 			// добавляем покупателю итемы в склад базы
 			storages.Storages.AddItem(sellOrder.IdUser, sellOrder.PlaceID, sellOrder.Item, sellOrder.TypeItem,
 				sellOrder.IdItem, count, sellOrder.ItemHP, sellOrder.ItemSize*float32(count), sellOrder.ItemHP, false)
+
+			// создаем покупателю нотификацию
+			// из за этой махинации с нотификация метод AddCash почти не имеет смысла, но трогать не буду)
+			ownerDeal, _ := players.Users.Get(sellOrder.IdUser)
+			notifyUUID := uuid.Must(uuid.NewV4(), nil).String()
+			base, _ := bases.Bases.Get(sellOrder.PlaceID)
+			mp, _ := maps.Maps.GetByID(base.MapID)
+
+			// для пользователя который разместил ордер это покупка, поэтому нотификация о покупке
+			ownerDeal.NotifyQueue[notifyUUID] = &player.Notify{
+				Name:  "buy",
+				UUID:  notifyUUID,
+				Event: "complete",
+				Item:  &inventory.Slot{Item: sellOrder.Item, Quantity: count, Type: sellOrder.TypeItem},
+				Base:  base,
+				Map:   mp.GetShortInfoMap(),
+				Price: sellOrder.Price,
+			}
+			dbPlayer.UpdateUser(ownerDeal)
 		} else {
 			if sellOrder.Count < count || count%sellOrder.MinBuyOut != 0 {
 				return errors.New("wrong count")

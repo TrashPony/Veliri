@@ -129,4 +129,8 @@ function ChatReader(data) {
     if (data.event === "setWindowsState") {
         SetWindowsState(data.user_interface)
     }
+
+    if (data.event === "DeleteNotify") {
+        if (document.getElementById(data.uuid)) document.getElementById(data.uuid).remove();
+    }
 }
