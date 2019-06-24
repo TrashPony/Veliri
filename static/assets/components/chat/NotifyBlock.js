@@ -95,6 +95,7 @@ function addCompleteCraft(notifyTip, notify) {
             что в секторе <span class="importantly">${notify.map.Name}</span>
             завершено производство <div class="notifyIconItem">${getBackgroundUrlByItem(notify.item)}</div><span class="importantly">${notify.item.item.name}</span>
             в количестве <span class="importantly">${notify.item.quantity}</span> единиц.
+            <p> Созданные вещи ожидают вас на складе базы <span class="importantly">${notify.base.name}</span> </p>
         </div>
     `
 }
@@ -115,7 +116,7 @@ function addDeal(notifyTip, notify) {
             На базе <span class="importantly">${notify.base.name}</span> 
             что в секторе <span class="importantly">${notify.map.Name}</span>
             было ${type[1]} <div class="notifyIconItem">${getBackgroundUrlByItem(notify.item)}</div><span class="importantly">${notify.item.item.name}</span>
-            в количестве <span class="importantly">${notify.item.quantity}</span> единиц, по цене <span class="importantly">${notify.price}</span> <span class="cr">cr</span> за шт. 
+            в количестве <span class="importantly">${notify.item.quantity}</span> единиц, по цене <span class="importantly">${notify.price}</span><span class="cr">cr</span> за шт. 
             <p>Общая стоимость сделки составила  <span class="importantly">${notify.item.quantity * notify.price}</span> <span class="cr">cr</span>.</p>
             <p>${type[2]}</p>  
         </div>

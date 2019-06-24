@@ -1,6 +1,7 @@
 package lobby
 
 import (
+	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/blueWorks"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
@@ -86,6 +87,8 @@ func WorkerChecker() {
 					Base:  base,
 					Map:   mp.GetShortInfoMap(),
 				}
+
+				dbPlayer.UpdateUser(user)
 
 				blueWorks.BlueWorks.Remove(work)
 				wsInventory.UpdateStorage(work.UserID)

@@ -2,6 +2,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     cell.className = "InventoryCell active";
     cell.slotData = JSON.stringify(slotData);
     cell.number = slotNumber;
+    cell.id = parent + slotNumber;
 
     cell.innerHTML = `
         <span class='QuantityItems'>${slotData.quantity}</span>
@@ -10,7 +11,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
 
     CreateHealBar(cell, "inventory", true);
 
-    $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber});
+    $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber, update: true});
     $(cell).draggable({
         disabled: false,
         start: function () {
@@ -93,6 +94,30 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     });
 }
 
+function UpdateCell(cell, newData) {
+    $(cell).data("slotData").update = true;
+
+    if ($(cell).data("slotData").data.type !== newData.type || $(cell).data("slotData").data.item_id !== newData.item_id) {
+        // TODO update, хотя этот вариант маловероятен
+    }
+
+    $(cell).find(".QuantityItems").text(newData.quantity);
+    $(cell).find(".healBar").remove();
+    CreateHealBar(cell, "inventory", true);
+
+    $(cell).data("slotData").data = newData;
+}
+
+function DeleteNotUpdateSlots(parent) {
+    $('.InventoryCell').each(function (i, item) {
+        if (parent === $(item).data("slotData").parent && !$(item).data("slotData").update) {
+            item.remove();
+        } else {
+            $(item).data("slotData").update = false;
+        }
+    })
+}
+
 function getBackgroundUrlByItem(slot) {
     let background = '';
     if (slot.type === "resource" || slot.type === "recycle") {
@@ -118,7 +143,7 @@ function getBackgroundUrlByItem(slot) {
 
 function showName(e, name) {
     $('body').append(
-        `<div class="nameItemInCell" style="left: ${e.getBoundingClientRect().left-10}px; top: ${e.getBoundingClientRect().top - 35}px">
+        `<div class="nameItemInCell" style="left: ${e.getBoundingClientRect().left - 10}px; top: ${e.getBoundingClientRect().top - 35}px">
             ${name}
         </div>`
     );

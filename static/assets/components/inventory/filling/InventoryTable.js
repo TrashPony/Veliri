@@ -49,18 +49,26 @@ function InventoryTable(inventoryItems) {
         }
     });
 
-    let inventoryStorage = document.getElementById('inventoryStorageInventory');
+    let inventoryStorage = $('#inventoryStorageInventory');
+    let parent = "squadInventory";
+    inventoryStorage.find(".nameSection").remove();
 
-    inventoryStorage.innerHTML = '';
     for (let i in inventoryItems.slots) {
         if (inventoryItems.slots.hasOwnProperty(i) && inventoryItems.slots[i].item !== null) {
 
-            let cell = document.createElement("div");
-            cell.className = "InventoryCell active";
-            CreateInventoryCell(cell, inventoryItems.slots[i], i, "squadInventory");
-            cell.onclick = SelectInventoryItem;
-            cell.source = 'squadInventory';
+            let cell = document.getElementById(parent + i);
+            if (!cell) {
 
+                cell = document.createElement("div");
+                cell.className = "InventoryCell active";
+
+                CreateInventoryCell(cell, inventoryItems.slots[i], i, parent);
+            } else {
+                UpdateCell(cell, inventoryItems.slots[i]);
+            }
+
+            cell.onclick = SelectInventoryItem;
+            cell.source = parent;
             cell.style.height = cellSize + "px";
             cell.style.width = cellSize + "px";
 
@@ -72,6 +80,8 @@ function InventoryTable(inventoryItems) {
             }
         }
     }
+
+    DeleteNotUpdateSlots(parent)
 }
 
 function InventoryOverTip(e) {

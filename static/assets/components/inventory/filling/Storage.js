@@ -36,18 +36,25 @@ function UpdateStorage(inventory) {
     });
 
     let inventoryStorage = $('#inventoryStorage');
-    inventoryStorage.empty();
+    let parent = "storage";
+    inventoryStorage.find(".nameSection").remove();
 
     for (let i in inventory.slots) {
         if (inventory.slots.hasOwnProperty(i) && inventory.slots[i].item !== null) {
 
-            let cell = document.createElement("div");
-            cell.className = "InventoryCell active";
+            let cell = document.getElementById(parent + i);
+            if (!cell) {
 
-            CreateInventoryCell(cell, inventory.slots[i], i, "storage");
+                cell = document.createElement("div");
+                cell.className = "InventoryCell active";
+
+                CreateInventoryCell(cell, inventory.slots[i], i, parent);
+            } else {
+                UpdateCell(cell, inventory.slots[i]);
+            }
+
             cell.onclick = SelectInventoryItem;
-            cell.source = 'storage';
-
+            cell.source = parent;
             cell.style.height = cellSize + "px";
             cell.style.width = cellSize + "px";
 
@@ -59,4 +66,6 @@ function UpdateStorage(inventory) {
             }
         }
     }
+
+    DeleteNotUpdateSlots(parent)
 }
