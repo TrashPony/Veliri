@@ -1,4 +1,7 @@
 function SelectDigger(coordinates, slot, typeSlot) {
+
+    //game.input.onDown.remove(initMove, game);
+
     for (let i in coordinates) {
         if (coordinates.hasOwnProperty(i) && coordinates[i]) {
             let xy = GetXYCenterHex(coordinates[i].q, coordinates[i].r);
@@ -9,6 +12,7 @@ function SelectDigger(coordinates, slot, typeSlot) {
 
             select.inputEnabled = true;
             select.events.onInputDown.add(function () {
+                //game.input.onDown.add(initMove, game);
                 global.send(JSON.stringify({
                     event: "useDigger",
                     q: coordinates[i].q,

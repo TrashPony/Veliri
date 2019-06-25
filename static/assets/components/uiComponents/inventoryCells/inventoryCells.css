@@ -312,14 +312,13 @@
     width: 20px;
     height: 3px;
     border: 1px solid black;
-    margin-left: 1px;
-    margin-top: 1px;
+    position: absolute;
+    bottom: 5px;
+    left: calc(50% - 10px);
 }
 
 .backEquipHealBar {
-    width: 22px;
-    margin-left: 5px;
-    margin-top: 25px;
+
 }
 
 .backWeaponHealBar {

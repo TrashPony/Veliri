@@ -15,6 +15,7 @@ type Equip struct {
 	Radius          int              `json:"radius"`
 	TypeSlot        int              `json:"type_slot"`
 	Reload          int              `json:"reload"`
+	CurrentReload   int              `json:"current_reload"`
 	Power           int              `json:"power"`
 	UsePower        int              `json:"use_power"`
 	Effects         []*effect.Effect `json:"effects"`

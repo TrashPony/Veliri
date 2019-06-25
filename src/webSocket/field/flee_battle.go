@@ -32,7 +32,7 @@ func initFlee(msg Message, client *player.Player) {
 				SendMessage(Message{Event: "softLeave"}, client.GetID(), activeGame.Id)
 
 			} else {
-				// иначе он может ливнуть только в фазе таргетинга с потерей всех юнитов
+				// иначе он может ливнуть только в фазе таргетинга с потерей всех юнитов, который не в трюме
 				if activeGame.Phase == "targeting" {
 					SendMessage(Message{Event: "leave"}, client.GetID(), activeGame.Id)
 				} else {

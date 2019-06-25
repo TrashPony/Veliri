@@ -61,7 +61,7 @@ func useDigger(ws *websocket.Conn, msg Message) {
 		stopMove(user, true)
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
-		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
+		if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {
 			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
@@ -94,6 +94,15 @@ func useDigger(ws *websocket.Conn, msg Message) {
 			if resultCoordinate != nil && msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
 				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
 				if ok && diggerCoordinate.Move {
+
+					// перезаряджка
+					diggerSlot.Equip.CurrentReload = diggerSlot.Equip.Reload
+					go func() {
+						for diggerSlot.Equip.CurrentReload > 0 {
+							time.Sleep(1 * time.Second)
+							diggerSlot.Equip.CurrentReload--
+						}
+					}()
 
 					mpCoordinate, _ := mp.GetCoordinate(msg.Q, msg.R)
 					var dynamicObject dynamicMapObject.DynamicObject

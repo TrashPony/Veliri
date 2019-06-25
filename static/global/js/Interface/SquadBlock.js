@@ -171,8 +171,9 @@ function fillMiningBlock(unit) {
 
                     let progressBar = document.createElement("div");
                     progressBar.id = "miningEquip" + equips[i].type_slot + i;
-                    equipBlock.appendChild(progressBar);
+                    progressBar.style.animation = "reload " + equips[i].equip.current_reload + "s linear 1";
 
+                    equipBlock.appendChild(progressBar);
                     mining.appendChild(equipBlock);
                 }
             }

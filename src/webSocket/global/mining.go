@@ -57,11 +57,13 @@ func startMining(ws *websocket.Conn, msg Message) {
 
 func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, reservoir *resource.Map, msg Message) {
 	exit := false
+
+	// переменная для проверки времени цикла
+	miningEquip.CurrentReload = miningEquip.Reload
+
 	for {
 
-		timeCount := 0 // переменная для проверки времени цикла
-
-		for miningEquip.Reload > timeCount {
+		for miningEquip.CurrentReload > 0 {
 			select {
 			case exitNow := <-miningEquip.GetMining():
 				if exitNow {
@@ -89,7 +91,7 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 					exit = true
 				}
 
-				timeCount++
+				miningEquip.CurrentReload--
 				time.Sleep(time.Second)
 			}
 		}

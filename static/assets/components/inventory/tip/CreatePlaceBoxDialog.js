@@ -3,7 +3,7 @@ function CreatePlaceBoxDialog(x, y, numberSlot, slot) {
         let func = function () {
             global.send(JSON.stringify({
                 event: "placeNewBox",
-                slot: numberSlot,
+                slot: Number(numberSlot),
                 box_password: Number(document.getElementById("passPlaceBox").value),
             }));
         };
@@ -11,7 +11,7 @@ function CreatePlaceBoxDialog(x, y, numberSlot, slot) {
     } else {
         global.send(JSON.stringify({
             event: "placeNewBox",
-            slot: numberSlot,
+            slot: Number(numberSlot),
         }));
     }
 }

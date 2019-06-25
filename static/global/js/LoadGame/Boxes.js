@@ -12,21 +12,25 @@ function CreateBox(mapBox) {
     if (game.map.OneLayerMap.hasOwnProperty(mapBox.q) && game.map.OneLayerMap.hasOwnProperty(mapBox.r)) {
 
         let xy = GetXYCenterHex(mapBox.q, mapBox.r);
+        let boxShadow;
+        if (!mapBox.underground) {
+            boxShadow = game.floorObjectLayer.create(xy.x + game.shadowXOffset, xy.y + game.shadowYOffset, mapBox.type);
+            boxShadow.anchor.setTo(0.5);
+            boxShadow.scale.set(0.1);
+            boxShadow.tint = 0x000000;
+            boxShadow.alpha = 0.4;
+            boxShadow.angle = mapBox.rotate;
+            mapBox.shadow = boxShadow;
+        }
+
         let box = game.floorObjectLayer.create(xy.x, xy.y, mapBox.type);
         box.anchor.setTo(0.5);
         box.scale.set(0.1);
         box.angle = mapBox.rotate;
         mapBox.sprite = box;
 
-        if (!mapBox.underground) {
-            let boxShadow = game.floorObjectLayer.create(xy.x + game.shadowXOffset, xy.y + game.shadowYOffset, mapBox.type);
-            boxShadow.anchor.setTo(0.5);
-            boxShadow.scale.set(0.1);
-            boxShadow.tint = 0x000000;
-            boxShadow.alpha = 0.4;
-            boxShadow.angle = mapBox.rotate;
+        if (boxShadow) {
             box.shadow = boxShadow;
-            mapBox.shadow = boxShadow;
         }
 
         box.inputEnabled = true;

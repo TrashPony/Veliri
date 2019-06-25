@@ -14,7 +14,7 @@ func BaseStatusSender() {
 		// сравнивать предыдущие и текущие состояние базы, если есть различия то отсылать статус базы
 		for _, user := range usersLobbyWs {
 			userBase, _ := bases.Bases.Get(user.InBaseID)
-			if user.LastBaseEfficiency != userBase.Efficiency {
+			if userBase != nil && user.LastBaseEfficiency != userBase.Efficiency {
 				BaseStatus(user)
 			}
 		}
