@@ -41,7 +41,7 @@ function RemoveGeoData() {
     for (let i = 0; i < game.map.geo_data.length; i++) {
         let deleteButton = game.icon.create(game.map.geo_data[i].x, game.map.geo_data[i].y, 'cancelIcon');
         deleteButton.anchor.setTo(0.5);
-        deleteButton.scale.set(0.05)
+        deleteButton.scale.set(0.05);
 
         deleteButton.inputEnabled = true; // включаем ивенты на спрайт
         deleteButton.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
@@ -49,10 +49,10 @@ function RemoveGeoData() {
 
         let overSprite = game.icon.create(game.map.geo_data[i].x, game.map.geo_data[i].y, 'cancelIcon');
         overSprite.anchor.setTo(0.5);
-        overSprite.scale.set(0.07);
+        overSprite.scale.set(0.1);
         overSprite.alpha = 0;
 
-        deleteButton.events.onInputDown.add(function () {
+        deleteButton.events.onInputOver.add(function () {
             response.push(JSON.stringify({
                 event: "removeGeoData",
                 id: game.map.geo_data[i].id,
@@ -61,10 +61,6 @@ function RemoveGeoData() {
             CreateGeoData(game.map.geo_data);
             deleteButton.destroy();
             overSprite.destroy();
-        });
-
-        deleteButton.events.onInputOver.add(function () {
-            overSprite.alpha = 1;
         });
 
         deleteButton.events.onInputOut.add(function () {

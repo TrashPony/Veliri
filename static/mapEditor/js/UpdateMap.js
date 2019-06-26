@@ -9,6 +9,8 @@ function UpdateMap(newMap, game, bases) {
         }
     };
 
+    game.map = newMap;
+
     clear(game.floorLayer);
     clear(game.SelectLayer);
     clear(game.floorObjectSelectLineLayer);
@@ -33,6 +35,7 @@ function UpdateMap(newMap, game, bases) {
     if (bases) {
         CreateLabelBase(bases);
     }
+
     CreateMiniMap();
     CreateMap();
     CreateGeoData(game.map.geo_data);

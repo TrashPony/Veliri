@@ -1,4 +1,4 @@
-function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport) {
+function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport, notDestroyOnClick) {
     if (game && game.map && game.map.OneLayerMap) {
         let map = game.map.OneLayerMap;
 
@@ -48,10 +48,17 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport
                             if (game.input.activePointer.leftButton.isDown) {
                                 callBack(q, r);
                             }
-                            destroyAllSelectedSprite();
+                            if (!notDestroyOnClick || game.input.activePointer.rightButton.isDown) {
+                                destroyAllSelectedSprite();
+                            }
                         });
 
                         selectedSprite.events.onInputOver.add(function () {
+
+                            if (game.input.activePointer.leftButton.isDown) {
+                                callBack(q, r);
+                            }
+
                             if (radius > 0) {
                                 radiusAnimate(map[q][r], radius)
                             } else {

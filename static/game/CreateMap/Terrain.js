@@ -1,13 +1,18 @@
 function CreateTerrain(coordinate, x, y, q, r) {
-
-    coordinate.coordinateText = {};
+    if (coordinate.coordinateText) {
+        for (let text in coordinate.coordinateText) {
+            coordinate.coordinateText[text].destroy();
+        }
+    } else {
+        coordinate.coordinateText = {};
+    }
 
     if (game && game.typeService === "mapEditor") {
         let style = {font: "12px Arial", fill: "#ffed00", align: "center"};
-        coordinate.coordinateText.qr = game.add.text(x - 10, y - 15, q + "," + r, style, game.redactorMetaText);
 
         if (metaAlpha && metaAlpha === 0) {
             coordinate.coordinateText.qr.alpha = metaAlpha;
+            coordinate.coordinateText.qr = game.add.text(x - 10, y - 15, q + "," + r, style, game.redactorMetaText);
         }
 
         let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
@@ -53,28 +58,28 @@ function CreateTerrain(coordinate, x, y, q, r) {
         }
 
         if (coordinate.level === 0) {
-            let style = {font: "36px Arial", fill: "#bbfff1", align: "center"};
-            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+            let style = {font: "24px Arial", fill: "#bbfff1", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
         }
 
         if (coordinate.level === 1) {
-            let style = {font: "36px Arial", fill: "#35daff", align: "center"};
-            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+            let style = {font: "24px Arial", fill: "#35daff", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
         }
 
-        if (coordinate.level === 3) {
-            let style = {font: "36px Arial", fill: "#68ff59", align: "center"};
-            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+        if (coordinate.level === 2) {
+            let style = {font: "24px Arial", fill: "#68ff59", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
         }
 
         if (coordinate.level === 4) {
-            let style = {font: "36px Arial", fill: "#fff523", align: "center"};
-            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+            let style = {font: "24px Arial", fill: "#fff523", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
         }
 
         if (coordinate.level === 5) {
-            let style = {font: "36px Arial", fill: "#ff2821", align: "center"};
-            coordinate.coordinateText.height = game.add.text(x - 50, y - 15, coordinate.level, style, game.redactorMetaText);
+            let style = {font: "24px Arial", fill: "#ff2821", align: "center"};
+            coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
         }
     }
 }

@@ -20,6 +20,7 @@ function CreateObject(coordinate, x, y) {
 
 function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOffset, group, xShadowOffset, yShadowOffset, shadowIntensity) {
     let shadow;
+
     if (needShadow) {
         shadow = group.create(x + xOffset + game.shadowXOffset + xShadowOffset, y + yOffset + game.shadowYOffset + yShadowOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);

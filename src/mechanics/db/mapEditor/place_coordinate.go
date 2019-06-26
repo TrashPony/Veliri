@@ -24,13 +24,13 @@ func PlaceCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, newIDType 
 	coordinate.Attack = newType.Attack
 
 	coordinate.Scale = 100
-	coordinate.Shadow = true
+	coordinate.Shadow = false
 	coordinate.XShadowOffset = 10
 	coordinate.YShadowOffset = 10
 
 	if oldType != nil {
-		UpdateMapCoordinate(coordinate, mp)
-	} else {
-		InsertMapCoordinate(coordinate, mp)
+		DeleteCooordinateByQR(coordinate.Q, coordinate.R, mp.Id)
 	}
+
+	InsertMapCoordinate(coordinate, mp)
 }

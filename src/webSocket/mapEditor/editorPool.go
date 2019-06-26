@@ -149,11 +149,9 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "placeCoordinate" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
 				coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
 				coordinateMap.ObjectPriority++
-				println(coordinateMap.ObjectPriority)
 			}
 
 			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
-			selectMap(msg, ws)
 		}
 
 		if msg.Event == "loadNewTypeTerrain" {
@@ -195,7 +193,6 @@ func Reader(ws *websocket.Conn) {
 			coordinateMap.Shadow = msg.Shadow
 
 			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
-			selectMap(msg, ws)
 		}
 
 		// TODO ---------------------------- //
@@ -295,6 +292,30 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "removeBeam" {
 
+		}
+
+		if msg.Event == "toBack" {
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+
+			coordinateMap.TexturePriority = 0
+			coordinateMap.ObjectPriority = 0
+
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
+			selectMap(msg, ws)
+		}
+
+		if msg.Event == "toFront" {
+			mapChange, _ := maps.Maps.GetByID(msg.ID)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+
+			coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
+			coordinateMap.TexturePriority++
+
+			coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
+			coordinateMap.ObjectPriority++
+
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
 		}
 	}
 }

@@ -40,12 +40,48 @@ function ChangeOptionSprite(q, r) {
             <input id="scaleRange" value="${coordinate.scale}" type="range" min="0" max="200" step="1">
             
             <div><span> Тень: </span> <input type="checkbox" id="needShadow"></div>
+            
+            <input type="submit" value="Вперед" id="frontSprite">
+            <input type="submit" value="Назад" id="backSprite">
+            
+            <br>
             <input type="submit" value="Применить" id="applyRotate">
-            <input type="submit" value="Отменить" id="cancelRotate">`;
+            <input type="submit" value="Отменить" id="cancelRotate">
+
+`;
 
     // TODO включение и отключение теней при изменение состояние чекбокса для теней
 
     let xy = GetXYCenterHex(q, r);
+
+    // отправить спрайт на задний план
+    $('#backSprite').click(function () {
+        mapEditor.send(JSON.stringify({
+            event: "toBack",
+            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+            q: Number(coordinate.q),
+            r: Number(coordinate.r),
+        }));
+
+        rotate.remove();
+    });
+
+    $('#frontSprite').click(function () {
+        mapEditor.send(JSON.stringify({
+            event: "toFront",
+            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+            q: Number(coordinate.q),
+            r: Number(coordinate.r),
+        }));
+
+        for (let i in game.mapPoints) {
+            if (game.mapPoints[i].q === Number(coordinate.q) && game.mapPoints[i].r === Number(coordinate.r)) {
+                ReloadCoordinate(game.mapPoints[i]);
+            }
+        }
+
+        rotate.remove();
+    });
 
     // Угол поворота
     $('#rotateRange').on('input', function () {
@@ -121,7 +157,7 @@ function ChangeOptionSprite(q, r) {
             speed = Number(document.getElementById("speedRange").value);
         }
 
-        responseChangeOption.push({
+        mapEditor.send(JSON.stringify({
             event: "rotateObject",
             id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
             q: Number(coordinate.q),
@@ -135,7 +171,24 @@ function ChangeOptionSprite(q, r) {
             shadow_intensity: Number(document.getElementById("rangeShadowIntensity").value),
             scale: Number(document.getElementById("scaleRange").value),
             shadow: $('#needShadow').prop('checked'),
-        });
+        }));
+
+        for (let i in game.mapPoints) {
+            if (game.mapPoints[i].q === Number(coordinate.q) && game.mapPoints[i].r === Number(coordinate.r)) {
+
+                game.mapPoints[i].coordinate.obj_rotate = Number(document.getElementById("rotateRange").value);
+                game.mapPoints[i].coordinate.animation_speed = speed;
+                game.mapPoints[i].coordinate.x_offset = Number(document.getElementById("rangeXOffset").value);
+                game.mapPoints[i].coordinate.y_offset = Number(document.getElementById("rangeYOffset").value);
+                game.mapPoints[i].coordinate.x_shadow_offset = Number(document.getElementById("rangeShadowXOffset").value);
+                game.mapPoints[i].coordinate.y_shadow_offset = Number(document.getElementById("rangeShadowYOffset").value);
+                game.mapPoints[i].coordinate.shadow_intensity = Number(document.getElementById("rangeShadowIntensity").value);
+                game.mapPoints[i].coordinate.scale = Number(document.getElementById("scaleRange").value);
+                game.mapPoints[i].coordinate.shadow = $('#needShadow').prop('checked');
+
+                ReloadCoordinate(game.mapPoints[i]);
+            }
+        }
 
         rotate.remove();
     });

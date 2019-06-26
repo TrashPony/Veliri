@@ -35,5 +35,6 @@ func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dia
 	greeting := gameTypes.Dialogs.GetTypeGreeting(client.Fraction, "greeting")
 	greeting.ProcessingDialogText(client.Login, base.Name, "", "")
 	client.SetOpenDialog(greeting)
+	// todo invalid memory address or nil pointer dereference т.к. нет диалога для другой фракции
 	return greeting.Pages[1], greeting
 }

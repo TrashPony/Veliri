@@ -10,5 +10,4 @@ func heightCoordinate(msg Message, ws *websocket.Conn, height int) {
 	mapChange, _ := maps.Maps.GetByID(msg.ID)
 	coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
 	mapEditor.ChangeHeightCoordinate(coordinateMap, mapChange, height)
-	selectMap(msg, ws)
 }

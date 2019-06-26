@@ -13,3 +13,7 @@ function CreateGeoData(geoData) {
         }
     }
 }
+
+function RemoveGeoDataLabel() {
+    game.geoData.clear();
+}
