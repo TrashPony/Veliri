@@ -25,6 +25,10 @@ function update() {
         AnimateMiningLaser();
         AnimateDigger();
 
+        AnimationMove(game.squad);
+        for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
+            AnimationMove(game.otherUsers[i]);
+        }
 
         /* DEBAG COLLISION */
         if (game.squad && game.squad.colision) {
@@ -39,7 +43,7 @@ function update() {
             for (let q in game.map.reservoir) {
                 for (let r in game.map.reservoir[q]) {
                     let reservoir = game.map.reservoir[q][r];
-                    if(reservoir && reservoir.sprite){
+                    if (reservoir && reservoir.sprite) {
                         game.squad.colision.drawCircle(reservoir.sprite.x, reservoir.sprite.y, 30);
                     }
                 }

@@ -63,8 +63,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === 'choiceFractionComplete') {
-        if (document.getElementById("fullMask")) document.getElementById("fullMask").remove();
-        if (document.getElementById("choiceBlock")) document.getElementById("choiceBlock").remove();
+        document.location.reload(true);
     }
     if (event === "choiceFraction") {
         choiceFraction()

@@ -125,3 +125,27 @@
         filter: drop-shadow(0px -1px 5px red);
     }
 }
+
+@keyframes baseLogoExplores {
+    0% {
+        filter: drop-shadow(0px -1px 5px green);
+    }
+    50% {
+        filter: drop-shadow(0px -1px 10px green);
+    }
+    100% {
+        filter: drop-shadow(0px -1px 5px green);
+    }
+}
+
+@keyframes baseLogoReverses {
+    0% {
+        filter: drop-shadow(0px -1px 5px blue);
+    }
+    50% {
+        filter: drop-shadow(0px -1px 10px blue);
+    }
+    100% {
+        filter: drop-shadow(0px -1px 5px blue);
+    }
+}

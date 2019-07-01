@@ -11,7 +11,6 @@ function CreateTerrain(coordinate, x, y, q, r) {
         let style = {font: "12px Arial", fill: "#ffed00", align: "center"};
 
         if (metaAlpha && metaAlpha === 0) {
-            coordinate.coordinateText.qr.alpha = metaAlpha;
             coordinate.coordinateText.qr = game.add.text(x - 10, y - 15, q + "," + r, style, game.redactorMetaText);
         }
 

@@ -9,6 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"math/rand"
+	"strings"
 )
 
 func GenerateObjectsMap() {
@@ -83,12 +84,12 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 
 func checkPlace(mp *_map.Map, q, r int) bool {
 
-	// ресурсы должны быть дальше на 550 px от
+	// ресурсы должны быть дальше на 150 px от
 	// баз
 	// респанов баз
 	// хендлеров
 
-	minDist := 550.0
+	minDist := 150.0
 
 	globalGame.GetXYCenterHex(q, r)
 
@@ -96,7 +97,7 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 
 	for _, base := range bases.Bases.GetBasesByMap(mp.Id) {
 		baseX, baseY := globalGame.GetXYCenterHex(base.Q, base.R)
-		if globalGame.GetBetweenDist(x, y, baseX, baseY) < minDist {
+		if globalGame.GetBetweenDist(x, y, baseX, baseY) < 350 {
 			return false
 		}
 	}
@@ -118,8 +119,19 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	}
 
 	for _, geoPoint := range mp.GeoData {
-		if globalGame.GetBetweenDist(x, y, geoPoint.X, geoPoint.Y) < float64(100+geoPoint.Radius) {
+		if globalGame.GetBetweenDist(x, y, geoPoint.X, geoPoint.Y) < float64(30+geoPoint.Radius) {
 			return false
+		}
+	}
+
+	for _, xLine := range mp.OneLayerMap {
+		for _, coordinate := range xLine {
+			if strings.Contains(coordinate.TextureObject, "road") {
+				coordinateX, coordinateY := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
+				if globalGame.GetBetweenDist(x, y, coordinateX, coordinateY) < minDist {
+					return false
+				}
+			}
 		}
 	}
 

@@ -31,6 +31,7 @@ func InitAI() {
 		for _, mapBase := range mapBases {
 			for i := 0; i < RespBots; i++ {
 				go respBot(mapBase, mp)
+				time.Sleep(1 * time.Second)
 			}
 		}
 	}
@@ -120,16 +121,36 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
 	wsGlobal.LoadGame(bot.GetFakeWS(), wsGlobal.Message{})
-
-	// следим что бы у ботов осталавалось топливо
-	for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
-		slot.Count = slot.MaxCount
-	}
 }
 
 func Transport(bot *player.Player) {
+
+	//-- монитор зависаний
+	extraExit := false
+	go func() {
+		for {
+			oldX, oldY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
+			time.Sleep(15 * time.Second)
+			if oldX == bot.GetSquad().GlobalX && oldY == bot.GetSquad().GlobalY && bot.InBaseID == 0 {
+				extraExit = true
+			}
+		}
+	}()
+
+	//-- монитор топлива
+	// следим что бы у ботов всегда осталавалось топливо
+	go func() {
+		for {
+			for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
+				slot.Count = slot.MaxCount
+			}
+			time.Sleep(60 * time.Second)
+		}
+	}()
+
 	//-- транспортник, поиску пути
 	for {
+
 		if bot.InBaseID > 0 {
 			time.Sleep(15000 * time.Millisecond)
 			botBase, _ := bases.Bases.Get(bot.InBaseID)
@@ -137,10 +158,10 @@ func Transport(bot *player.Player) {
 		}
 
 		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
+
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)
 
-			//countPossible := 1
 			exit := false
 
 			for i := 0; path != nil && i < len(path); i++ {
@@ -168,6 +189,14 @@ func Transport(bot *player.Player) {
 				}
 			}
 		}
+
+		if extraExit {
+			extraExit = false
+			bot.GetSquad().ActualPath = nil
+			println("бот завис 2")
+			break
+		}
+
 		time.Sleep(100 * time.Millisecond)
 	}
 }

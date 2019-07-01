@@ -62,14 +62,17 @@ function SquadTable(squad) {
             cell.slotData = JSON.stringify(unitSlot);
             cell.onclick = OpenUnitEditor
         } else {
-            cell.slotData = null;
-            cell.onclick = null;
-            cell.style.backgroundImage = null;
-            cell.className = "inventoryUnit noActive";
-            cell.innerHTML = "";
-            let constructorUnit = document.getElementById("ConstructorUnit");
-            if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
-                constructorUnit.remove();
+
+            if (document.getElementById('inventoryBox')) {
+                cell.slotData = null;
+                cell.onclick = null;
+                cell.style.backgroundImage = null;
+                cell.className = "inventoryUnit noActive";
+                cell.innerHTML = "";
+                let constructorUnit = document.getElementById("ConstructorUnit");
+                if (constructorUnit && JSON.parse(constructorUnit.slotData).number_slot === slot) {
+                    constructorUnit.remove();
+                }
             }
         }
     }

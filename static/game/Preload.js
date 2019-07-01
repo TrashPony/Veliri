@@ -272,16 +272,19 @@ function preload() {
     game.load.image('MasherShip_1_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_bottom.png');
     game.load.image('MasherShip_1_mask', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_mask.png');
     game.load.image('MasherShip_1_mask2', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_mask2.png');
+    game.load.spritesheet('MasherShip_1_bottom_animate', 'http://' + window.location.host + '/assets/units/body/MasherShip_1_bottom_animate.png', 300, 300, 10);
 
     game.load.image('MasherShip_2', 'http://' + window.location.host + '/assets/units/body/MasherShip_2.png');
     game.load.image('MasherShip_2_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_bottom.png');
     game.load.image('MasherShip_2_mask', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_mask.png');
     game.load.image('MasherShip_2_mask2', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_mask2.png');
+    game.load.spritesheet('MasherShip_2_bottom_animate', 'http://' + window.location.host + '/assets/units/body/MasherShip_2_bottom_animate.png', 300, 300, 11);
 
     game.load.image('MasherShip_3', 'http://' + window.location.host + '/assets/units/body/MasherShip_3.png');
     game.load.image('MasherShip_3_bottom', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_bottom.png');
     game.load.image('MasherShip_3_mask', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_mask.png');
     game.load.image('MasherShip_3_mask2', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_mask2.png');
+    game.load.spritesheet('MasherShip_3_bottom_animate', 'http://' + window.location.host + '/assets/units/body/MasherShip_3_bottom_animate.png', 300, 300, 10);
 
     // Units
     game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');

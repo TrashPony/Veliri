@@ -14,11 +14,17 @@ function UpdateBaseStatus(base) {
     } else if (100 - base.efficiency <= 25) {
         styleEfficiency = '#ff0000';
     }
+    let logoStyle;
+    if (base.fraction === 'Explores') {
+        logoStyle = 'animation: baseLogoExplores 5s infinite ease-in-out;';
+    } else if (base.fraction === 'Reverses') {
+        logoStyle = 'animation: baseLogoReverses 5s infinite ease-in-out;';
+    }
 
     if (!baseEfficiency) {
         baseLogoWrapper.innerHTML = `
             <div id="logoWrapper">
-                <div id="BaseLogo" style="background-image: url('../assets/logo/${base.fraction}.png')"></div>
+                <div id="BaseLogo" style="${logoStyle} background-image: url('../assets/logo/${base.fraction}.png')"></div>
             </div>
 
             <div id="baseEfficiency">
@@ -42,7 +48,7 @@ function UpdateBaseStatus(base) {
         }));
     }
 
-    if (document.getElementById('Workbench') && workBenchState === "selectBP"){
+    if (document.getElementById('Workbench') && workBenchState === "selectBP") {
         lobby.send(JSON.stringify({
             event: "SelectBP",
             storage_slot: bpSlot,

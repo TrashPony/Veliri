@@ -7,13 +7,17 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
     game.physics.enable(unit, Phaser.Physics.ARCADE);
     unit.anchor.setTo(0.5, 0.5);
 
-    let bodyBottomShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, squadBody.name + "_bottom");
+    let bodyBottomShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, squadBody.name + "_bottom_animate", 11);
+    bodyBottomShadow.animations.add('move');
+    bodyBottomShadow.play('move', 25, true).paused = true;
     bodyBottomShadow.scale.setTo(0.25);
     bodyBottomShadow.anchor.set(0.5);
     bodyBottomShadow.tint = 0x000000;
     bodyBottomShadow.alpha = 0.2;
 
-    let bodyBottom = game.make.sprite(0, 0, squadBody.name + "_bottom");
+    let bodyBottom = game.make.sprite(0, 0, squadBody.name + "_bottom_animate", 11);
+    bodyBottom.animations.add('move');
+    bodyBottom.play('move', 25, true).paused = true;
     bodyBottom.scale.setTo(0.25);
     bodyBottom.inputEnabled = true;             // включаем ивенты на спрайт
     bodyBottom.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
