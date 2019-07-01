@@ -1,4 +1,4 @@
-.inventoryEquipping {
+    .inventoryEquipping {
     border-radius: 20px;
     width: 35px;
     height: 35px;
@@ -328,8 +328,7 @@
 }
 
 .backBodyHealBar {
-    margin-left: 90px;
-    margin-top: 45px;
+    top: 20px;
 }
 
 .InventoryHead, .SquadHead {

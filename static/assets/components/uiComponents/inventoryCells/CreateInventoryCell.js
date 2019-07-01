@@ -174,8 +174,14 @@ function MarkConstructorEquip(cell) {
                     ammoCells[i].onmouseout = null;
                 }
             } else if (slotData.data.type === "equip") {
-                EquipSlotMark("inventoryEquip", "inventoryEquipping", slotData.data.item.type_slot, 5, null);
-                EquipSlotMark("UnitEquip", "UnitEquip", slotData.data.item.type_slot, 3, null);
+                if (slotData.data.item.applicable === "ore" || slotData.data.item.applicable === "digger") {
+                    EquipSlotMark("inventoryEquip", "inventoryEquipping", slotData.data.item.type_slot, 5, null, true);
+                    EquipSlotMark("UnitEquip", "UnitEquip", slotData.data.item.type_slot, 3, null, true);
+                } else {
+                    EquipSlotMark("inventoryEquip", "inventoryEquipping", slotData.data.item.type_slot, 5, null, false);
+                    EquipSlotMark("UnitEquip", "UnitEquip", slotData.data.item.type_slot, 3, null, false);
+                }
+
             } else if (slotData.data.type === "body") {
                 if (slotData.data.item.mother_ship) {
                     document.getElementById("MSIcon").className = "UnitIconSelect";

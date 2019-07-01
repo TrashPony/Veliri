@@ -14,8 +14,15 @@ func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialo
 
 	if ask.TypeAction == "get_base_mission" {
 		newMission := missions.Missions.GenerateMissionForUser(client)
-		client.SetOpenDialog(newMission.StartDialog)
-		return "new_dialog", nil, newMission.StartDialog.Pages[1], newMission
+
+		// базы фракций могут выдавать только свои квесты
+		userBase, _ := bases.Bases.Get(client.InBaseID)
+		if newMission.Fraction == userBase.Fraction {
+			client.SetOpenDialog(newMission.StartDialog)
+			return "new_dialog", nil, newMission.StartDialog.Pages[1], newMission
+		} else {
+			return "", nil, client.GetOpenDialog().Pages[ask.ToPage], nil
+		}
 	}
 
 	if ask.TypeAction == "start_training" {

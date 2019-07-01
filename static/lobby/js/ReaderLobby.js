@@ -70,7 +70,10 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "BaseStatus") {
-        console.log(jsonMessage);
         UpdateBaseStatus(JSON.parse(jsonMessage).base)
+    }
+
+    if (event === "LocalGame") {
+        location.href = "../../../field";
     }
 }

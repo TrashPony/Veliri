@@ -26,8 +26,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	}
 
 	if newPlayer.InBaseID == 0 {
-		// если игрок находиться не на базе то говорим ему что он загружал глобальную игру
-		ws.WriteJSON(Message{Event: "OutBase"})
+		// если игрок находиться не на базе то говорим ему что он загружал глобальную игру или бой
+
+		if newPlayer.GetSquad().InGame {
+			ws.WriteJSON(Message{Event: "LocalGame"})
+		} else {
+			ws.WriteJSON(Message{Event: "IntoToBase"})
+		}
+
 		return
 	} else {
 

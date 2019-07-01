@@ -14,7 +14,7 @@ function UpdateBaseStatus(base) {
     } else if (100 - base.efficiency <= 25) {
         styleEfficiency = '#ff0000';
     }
-    let logoStyle;
+    let logoStyle = 'animation: baseLogo 5s infinite ease-in-out;';
     if (base.fraction === 'Explores') {
         logoStyle = 'animation: baseLogoExplores 5s infinite ease-in-out;';
     } else if (base.fraction === 'Reverses') {

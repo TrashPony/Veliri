@@ -137,7 +137,15 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 
 		// если игрок на базе или в локальной игре то ему нельзя поднимать соеденение глобальной игры
 		if user.InBaseID != 0 || user.GetSquad().InGame {
-			// todo перенаправлять на нужный сервис а не тупо кикать
+
+			if user.InBaseID != 0 {
+				ws.WriteJSON(Message{Event: "LocalGame"})
+			}
+
+			if user.GetSquad().InGame {
+				ws.WriteJSON(Message{Event: "toBattle"})
+			}
+
 			DisconnectUser(user, ws, false)
 		}
 

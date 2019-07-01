@@ -41,7 +41,7 @@ func GetInventory(client *player.Player) {
 				if slot.Type == "body" {
 					body, _ := gameTypes.Bodies.GetByID(slot.ItemID) // MS
 					if body.MotherShip {
-						findMS = false
+						findMS = true
 						break
 					}
 				}
@@ -51,51 +51,38 @@ func GetInventory(client *player.Player) {
 		// если тела нет то надо выдать игроку стандартный набор снаряжения
 		if !findMS {
 			// ms ки
-			addBodyToStorage(5, client)
-			addBodyToStorage(6, client)
 			addBodyToStorage(7, client)
 
 			// юниты
 			addBodyToStorage(3, client)
-			addBodyToStorage(4, client)
-			addBodyToStorage(1, client)
+			addBodyToStorage(3, client)
+			addBodyToStorage(3, client)
 
 			addEquip(1, client)
 			addEquip(2, client)
-			addEquip(3, client)
-			addEquip(4, client)
 			addEquip(5, client)
 			addEquip(6, client)
 			addEquip(7, client)
 			addEquip(8, client)
 
 			addWeapon(1, client)
-			addWeapon(2, client)
 			addWeapon(3, client)
-			addWeapon(4, client)
 			addWeapon(5, client)
-			addWeapon(6, client)
+			addWeapon(5, client)
 
 			getAmmo(1, client)
-			getAmmo(2, client)
 			getAmmo(3, client)
-			getAmmo(4, client)
 			getAmmo(5, client)
-			getAmmo(6, client)
+			getAmmo(5, client)
 
 			getResource(1, client) // топливо
-			getResource(2, client)
-			getResource(3, client)
-			getResource(4, client)
-			getResource(5, client)
-			getResource(6, client)
 
-			getBox(1, client)
-			getBox(2, client)
-			getBox(3, client)
+			//getBox(1, client)
+			//getBox(2, client)
+			//getBox(3, client)
 
 			for i := 1; i < 36; i++ {
-				getBlueprints(i, client)
+				//getBlueprints(i, client)
 			}
 		}
 	}

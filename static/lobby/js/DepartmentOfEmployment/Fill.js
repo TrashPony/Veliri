@@ -1,7 +1,4 @@
 function FillDepartment(dialogPage, action, mission) {
-    console.log(dialogPage)
-    console.log(action)
-    console.log(mission);
 
     DialogAction(action);
 
@@ -19,11 +16,11 @@ function FillDepartment(dialogPage, action, mission) {
     document.getElementById('missionText').innerHTML = dialogPage.text;
     document.getElementById('missionHead').innerHTML = dialogPage.name;
     document.getElementById('missionAsc').innerHTML = '';
+    document.getElementById("missionFace").style.backgroundImage = "url('../assets/dialogPictures/" + dialogPage.picture + ".png')";
 
     if (mission) {
         document.getElementById('rewardBlock2').style.visibility = "visible";
         document.getElementById('countRewardCredits').innerHTML = mission.reward_cr;
-
     } else {
         document.getElementById('rewardBlock2').style.visibility = "hidden";
     }
