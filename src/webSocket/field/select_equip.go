@@ -34,7 +34,7 @@ func SelectEquip(msg Message, client *player.Player) {
 						Event:     "GetEquipMapTargets",
 						Unit:      gameUnit,
 						EquipSlot: equipSlot,
-						Targets:   targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame),
+						Targets:   targetPhase.GetEquipAllTargetZone(gameUnit, equipSlot.Equip, activeGame, client),
 					},
 					client.GetID(),
 					activeGame.Id,

@@ -31,7 +31,7 @@ func OutBase(base *base.Base) *coordinate.Coordinate {
 
 func CheckBaseRespawn(base *base.Base) (bool, *coordinate.Coordinate) {
 	for _, resp := range base.Respawns {
-		if !CheckTransportCoordinate(resp.Q, resp.R, 10, 100, base.MapID) {
+		if !CheckTransportCoordinate(resp.Q, resp.R, 15, 100, base.MapID) {
 			return true, resp
 		}
 	}

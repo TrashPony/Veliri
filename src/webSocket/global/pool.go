@@ -139,11 +139,11 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		if user.InBaseID != 0 || user.GetSquad().InGame {
 
 			if user.InBaseID != 0 {
-				ws.WriteJSON(Message{Event: "LocalGame"})
+				ws.WriteJSON(Message{Event: "IntoToBase"})
 			}
 
 			if user.GetSquad().InGame {
-				ws.WriteJSON(Message{Event: "toBattle"})
+				ws.WriteJSON(Message{Event: "LocalGame"})
 			}
 
 			DisconnectUser(user, ws, false)

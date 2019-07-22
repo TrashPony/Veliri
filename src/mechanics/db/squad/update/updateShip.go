@@ -41,7 +41,11 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"power = $7, "+
 				"action_point = $8, "+
 				"defend = $9,"+
-				"move = $12 "+
+				"move = $12,"+
+				"body_color_1 = $13,"+
+				"body_color_2 = $14,"+
+				"weapon_color_1 = $15,"+
+				"weapon_color_2 = $16 "+
 				"WHERE id_squad = $10 AND mother_ship = $11",
 			bodyID,
 			ship.Q,
@@ -55,6 +59,10 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 			squad.ID,
 			true, // mother_ship = $11
 			ship.Move,
+			ship.BodyColor1,
+			ship.BodyColor2,
+			ship.WeaponColor1,
+			ship.WeaponColor2,
 		)
 
 		if err != nil {

@@ -20,7 +20,7 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game, 
 			radiusCoordinates := coordinate.GetCoordinatesRadius(unitCoordinate, gameUnit.GetWeaponSlot().Weapon.Range)
 			deadZone := coordinate.GetCoordinatesRadius(unitCoordinate, gameUnit.GetWeaponSlot().Weapon.MinAttackRange)
 
-			zone := filter(gameUnit, radiusCoordinates, activeGame, gameUnit.GetWeaponSlot().Weapon.Artillery)
+			zone := filter(gameUnit, radiusCoordinates, activeGame, gameUnit.GetWeaponSlot().Weapon.Artillery, client)
 
 			for _, gameCoordinate := range zone {
 				if !(gameCoordinate.Q == gameUnit.Q && gameCoordinate.R == gameUnit.R) {

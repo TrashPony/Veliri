@@ -327,7 +327,9 @@ func (unit *Unit) CalculateParams() {
 		for _, slot := range equip {
 			if slot.Equip != nil && !slot.Equip.Active {
 				for _, equipEffect := range slot.Equip.Effects {
-					checkParams(equipEffect)
+					if equipEffect != nil {
+						checkParams(equipEffect)
+					}
 				}
 			}
 		}

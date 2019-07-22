@@ -71,6 +71,8 @@ function FillingEquipPanel(equipPanel, unit) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
                 } else if (unit.power < unit.body.equippingIII[i].equip.use_power) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };
+                } else if (unit.on_map) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит в трюме"); };
                 }
                 equipping.className = "equipSlotIII notAllow";
             }
@@ -113,6 +115,8 @@ function FillingEquipPanel(equipPanel, unit) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Снаряжение уже использвано"); };
                 } else if (unit.power < unit.body.equippingII[i].equip.use_power) {
                     equipping.onmouseover = function () { TipNotAllowEquip("Не достаточно энергии"); };
+                } else if (unit.on_map) {
+                    equipping.onmouseover = function () { TipNotAllowEquip("Юнит в трюме"); };
                 }
                 equipping.className = "equipSlotII notAllow";
             }

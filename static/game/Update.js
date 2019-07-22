@@ -1,4 +1,5 @@
 function update() {
+    GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
 
     // if (game && game.mapPoints) {
     //     // todo идея хорошая реализация нет dynamicMap(game.floorLayer, game.mapPoints);
@@ -6,7 +7,6 @@ function update() {
     // }
 
     if (game && game.typeService === "battle") {
-        UpdateRotateUnit(); // функция для повора юнитовский спрайтов
         MoveUnit();
         FlightBullet(); // ослеживает все летящие спрайты пуль
     }
@@ -30,33 +30,33 @@ function update() {
             AnimationMove(game.otherUsers[i]);
         }
 
-        /* DEBAG COLLISION */
-        if (game.squad && game.squad.colision) {
-            CreateCollision(game.squad.colision, game.squad.mather_ship.body, game.squad.mather_ship.rotate, game.squad);
-            for (let i = 0; i < game.boxes.length; i++) {
-                game.squad.colision.beginFill(0xFF0000, 0.5);
-                if (game.boxes[i] && game.boxes[i].sprite) {
-                    game.squad.colision.drawCircle(game.boxes[i].sprite.x, game.boxes[i].sprite.y, 10);
-                }
-            }
+        DebugCollision();
+    }
+}
 
-            for (let q in game.map.reservoir) {
-                for (let r in game.map.reservoir[q]) {
-                    let reservoir = game.map.reservoir[q][r];
-                    if (reservoir && reservoir.sprite) {
-                        game.squad.colision.drawCircle(reservoir.sprite.x, reservoir.sprite.y, 30);
-                    }
-                }
+function DebugCollision() {
+    if (game.squad && game.squad.colision) {
+        CreateCollision(game.squad.colision, game.squad.mather_ship.body, game.squad.mather_ship.rotate, game.squad);
+        for (let i = 0; i < game.boxes.length; i++) {
+            game.squad.colision.beginFill(0xFF0000, 0.5);
+            if (game.boxes[i] && game.boxes[i].sprite) {
+                game.squad.colision.drawCircle(game.boxes[i].sprite.x, game.boxes[i].sprite.y, 10);
             }
         }
 
-        for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-            if (game.otherUsers[i].colision) {
-                CreateCollision(game.otherUsers[i].colision, game.otherUsers[i].body, game.otherUsers[i].rotate, game.otherUsers[i])
+        for (let q in game.map.reservoir) {
+            for (let r in game.map.reservoir[q]) {
+                let reservoir = game.map.reservoir[q][r];
+                if (reservoir && reservoir.sprite) {
+                    game.squad.colision.drawCircle(reservoir.sprite.x, reservoir.sprite.y, 30);
+                }
             }
         }
-        /* DEBAG COLLISION */
     }
 
-    GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
+    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
+        if (game.otherUsers[i].colision) {
+            CreateCollision(game.otherUsers[i].colision, game.otherUsers[i].body, game.otherUsers[i].rotate, game.otherUsers[i])
+        }
+    }
 }

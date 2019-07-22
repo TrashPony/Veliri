@@ -16,10 +16,13 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 	for _, gamePlayer := range game.GetPlayers() {
 
 		if gamePlayer.Leave {
+
 			getLeaveUnit(game, gamePlayer, &units)
+
 		} else {
 
 			gamePlayer.GetSquad().MatherShip.Owner = gamePlayer.GetLogin()
+			gamePlayer.GetSquad().MatherShip.OwnerID = gamePlayer.GetID()
 
 			UnitEffects(gamePlayer.GetSquad().MatherShip)          // берем эфекты ms
 			addUnitToMap(&units, gamePlayer.GetSquad().MatherShip) // и кладем на карту, ms на карте с начала игры
@@ -30,14 +33,14 @@ func AllUnits(game *localGame.Game) (map[int]map[int]*unit.Unit, []*unit.Unit) {
 
 			for _, playerUnit := range gamePlayer.GetSquad().MatherShip.Units {
 				if playerUnit.Unit != nil {
-					if playerUnit.Unit.OnMap {
 
-						playerUnit.Unit.Owner = gamePlayer.GetLogin()
+					playerUnit.Unit.OwnerID = gamePlayer.GetID()
+					playerUnit.Unit.Owner = gamePlayer.GetLogin()
+
+					if playerUnit.Unit.OnMap {
 						UnitEffects(playerUnit.Unit)          // берем эфекты юнита
 						addUnitToMap(&units, playerUnit.Unit) // и кладем на карту
-
 					} else {
-						playerUnit.Unit.Owner = gamePlayer.GetLogin()
 						unitStorage = append(unitStorage, playerUnit.Unit)
 						gamePlayer.AddUnitStorage(playerUnit.Unit)
 					}
@@ -71,6 +74,7 @@ func getLeaveUnit(game *localGame.Game, gamePlayer *player.Player, units *map[in
 
 		memoryUnit.Leave = true
 		memoryUnit.OwnerID = ownerID
+
 		addUnitToMap(units, &memoryUnit) // и кладем на карту
 	}
 }

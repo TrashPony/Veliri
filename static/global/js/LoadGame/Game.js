@@ -16,6 +16,7 @@ function LoadGame() {
     game.camera.scale.y = 1.5;
 
     Data.squad.user_name = Data.user.login;
+    Data.squad.user_id = Data.user.id;
     Data.squad.squad_id = Data.squad.id;
 
     CreateUser(Data.squad);

@@ -1,159 +1,43 @@
-function CreateUnit(unitStat, inVisible) {
-    let q = unitStat.q;
-    let r = unitStat.r;
+function CreateLocalUnit(unit, inVisible) {
+    let xy = GetXYCenterHex(unit.q, unit.r);
 
-    let x = 0;
-    let y = 0;
+    unit.user_id = unit.owner_id;
+    unit.user_name = unit.owner;
 
-    game.mapPoints.forEach(function (point) {
-        if (point.q === q && point.r === r) {
-            x = point.x;
-            y = point.y;
+    if (game.user.name === unit.owner) {
+        unit = CreateUnit(unit, xy.x, xy.y, unit.rotate, unit.body_color_1, unit.body_color_2, unit.weapon_color_1, unit.weapon_color_2, unit.owner_id, 'MySelectUnit', true);
+        if (unit.body.mother_ship) {
+            game.camera.focusOnXY(xy.x * game.camera.scale.x, xy.y * game.camera.scale.y);
         }
+    } else {
+        unit = CreateUnit(unit, xy.x, xy.y, unit.rotate, unit.body_color_1, unit.body_color_2, unit.weapon_color_1, unit.weapon_color_2, unit.owner_id, 'HostileSelectUnit', true);
+    }
+
+    unit.sprite.unitBody.events.onInputDown.add(function () {
+        SelectUnit(unit, false)
     });
+    unit.sprite.unitBody.events.onInputOver.add(UnitMouseOver, unit); // обрабатываем наведение мышки
+    unit.sprite.unitBody.events.onInputOut.add(UnitMouseOut, unit);   // TODO onInputOut работает плохо везде, его надо чемто заменить обрабатываем убирание мышки
 
-    let unit;
-
-    if (game.user.name === unitStat.owner) {
-        unit = game.unitLayer.create(x, y, 'MySelectUnit', 0);
-        if (unitStat.body.mother_ship) {
-            game.camera.focusOn(unit);
-        }
-    } else {
-        unit = game.unitLayer.create(x, y, 'HostileSelectUnit', 0);
+    if (unit.effects !== null && unit.effects.length > 0) {
+        CreateAnimateEffects(unit)
     }
 
-    game.physics.enable(unit, Phaser.Physics.ARCADE);
-    unit.anchor.setTo(0.5, 0.5);
-    unit.inputEnabled = true;             // включаем ивенты на спрайт
-
-    let bodyShadow;
-    if (unitStat.body.mother_ship) {
-        bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unitStat.body.name);
-    } else {
-        bodyShadow = game.make.sprite(game.shadowXOffset / 2, game.shadowYOffset / 2, unitStat.body.name);
-    }
-    unit.addChild(bodyShadow);
-
-    if (unitStat.body.mother_ship) {
-        bodyShadow.scale.setTo(0.5 / 2);
-    } else {
-        bodyShadow.scale.setTo(0.3 / 2);
-    }
-
-    bodyShadow.anchor.set(0.5);
-    bodyShadow.tint = 0x000000;
-    bodyShadow.alpha = 0.4;
-    game.physics.arcade.enable(bodyShadow);
-
-    let weapon;
-    let weaponShadow;
-    for (let i in unitStat.body.weapons) {
-        if (unitStat.body.weapons.hasOwnProperty(i) && unitStat.body.weapons[i].weapon) {
-            weapon = game.make.sprite(0, 0, unitStat.body.weapons[i].weapon.name);
-            weaponShadow = game.make.sprite(game.shadowXOffset / 2, game.shadowYOffset / 2, unitStat.body.weapons[i].weapon.name);
-        }
-    }
-
-    if (weapon) {
-        weapon.anchor.setTo(0.5);
-
-        if (unitStat.body.mother_ship) {
-            weapon.scale.setTo(0.5 / 2);
-        } else {
-            weapon.scale.setTo(0.3 / 2);
-        }
-
-        weaponShadow.anchor.setTo(0.5);
-
-        if (unitStat.body.mother_ship) {
-            weaponShadow.scale.setTo(0.5 / 2);
-        } else {
-            weaponShadow.scale.setTo(0.3 / 2);
-        }
-
-        weaponShadow.tint = 0x000000;
-        weaponShadow.alpha = 0.4;
-    }
-
-    let body = game.make.sprite(0, 0, unitStat.body.name);
-    unit.addChild(body);
-    game.physics.arcade.enable(body);
-
-    if (unitStat.body.mother_ship) {
-        body.scale.setTo(0.5 / 2);
-    } else {
-        body.scale.setTo(0.3 / 2);
-    }
-
-    body.inputEnabled = true;             // включаем ивенты на спрайт
-    body.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
-    body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
-    body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
-
-    body.events.onInputDown.add(function () {
-        SelectUnit(unitStat, false)
-    });
-    body.events.onInputOver.add(UnitMouseOver, unitStat); // обрабатываем наведение мышки
-    body.events.onInputOut.add(UnitMouseOut, unitStat);   // TODO onInputOut работает плохо везде, его надо чемто заменить обрабатываем убирание мышки
-
-    if (weapon) {
-        unit.addChild(weaponShadow);
-        unit.addChild(weapon);
-    }
-
-    let healBar = game.make.sprite(0, 45, 'healBar');
-    unit.addChild(healBar);
-    healBar.anchor.setTo(0.5);
-    healBar.alpha = 0;
-    healBar.scale.setTo(1);
-
-    let heal = game.make.sprite(-50, 0, 'heal');
-    healBar.addChild(heal);
-    heal.anchor.setTo(0, 0.5);
-    heal.alpha = 1;
-
-    unitStat.sprite = unit;
-    unitStat.sprite.unitBody = body;
-    unitStat.sprite.bodyShadow = bodyShadow;
-    unitStat.sprite.healBar = healBar;
-    unitStat.sprite.heal = heal;
-    if (weapon) {
-        unitStat.sprite.weapon = weapon;
-        unitStat.sprite.weaponShadow = weaponShadow;
-    }
-
-
-    CalculateHealBar(unitStat);
-
-    if (unitStat.effects !== null && unitStat.effects.length > 0) {
-        CreateAnimateEffects(unitStat)
-    }
-
-    if (unitStat.action && game.user.name === unitStat.owner) {
-        DeactivationUnit(unitStat);
+    if (unit.action && game.user.name === unit.owner) {
+        DeactivationUnit(unit);
     }
 
     if (inVisible) {
-        unitStat.sprite.alpha = 0;
-        unitStat.sprite.unitBody.alpha = 0;
-        unitStat.sprite.bodyShadow.alpha = 0;
-        unitStat.sprite.healBar.alpha = 0;
-        unitStat.sprite.heal.alpha = 0;
-        if (unitStat.sprite.weapon) {
-            unitStat.sprite.weapon.alpha = 0;
-            unitStat.sprite.weaponShadow.alpha = 0;
-        }
+        unit.sprite.alpha = 0;
+        unit.sprite.heal.alpha = 0;
     }
 
-    addToGameUnit(unitStat);
-    SetAngle(unitStat, unitStat.rotate);
-
-    if (unitStat.reload) {
-        ReloadMark({q: unitStat.q, r: unitStat.r})
+    addToGameUnit(unit);
+    if (unit.reload) {
+        ReloadMark({q: unit.q, r: unit.r})
     }
 
-    return unitStat
+    return unit
 }
 
 function CreateAnimateEffects(unit) {

@@ -31,7 +31,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		if newPlayer.GetSquad().InGame {
 			ws.WriteJSON(Message{Event: "LocalGame"})
 		} else {
-			ws.WriteJSON(Message{Event: "IntoToBase"})
+			ws.WriteJSON(Message{Event: "OutBase"})
 		}
 
 		return

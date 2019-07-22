@@ -3,14 +3,14 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
     let missileBulletShadow = game.artilleryBulletLayer.create(xStart + game.shadowXOffset * 2, yStart + game.shadowYOffset * 2, "missile_bullet", 0);
     missileBulletShadow.angle = angle;
     missileBulletShadow.anchor.set(0.5);
-    missileBulletShadow.scale.setTo(0.5);
+    missileBulletShadow.scale.setTo(0.25);
     missileBulletShadow.tint = 0x000000;
     missileBulletShadow.alpha = 0.4;
 
     let missileBullet = game.artilleryBulletLayer.create(xStart, yStart, "missile_bullet", 0);
     missileBullet.angle = angle;
     missileBullet.anchor.setTo(0.5, 0.7);
-    missileBullet.scale.setTo(0.5);
+    missileBullet.scale.setTo(0.25);
     missileBullet.alpha = 1;
     missileBullet.targetX = targetX;
     missileBullet.targetY = targetY;
@@ -63,16 +63,16 @@ function launchRocket(xStart, yStart, angle, targetX, targetY, artillery, target
             missileBulletShadow.frame = 20;
             missileBulletShadow.x = xStart + game.shadowXOffset * 10;
             missileBulletShadow.y = yStart + game.shadowYOffset * 10;
-            missileBulletShadow.scale.set(0.55);
+            missileBulletShadow.scale.set(0.30);
 
-            missileBullet.scale.set(0.55);
+            missileBullet.scale.set(0.30);
             missileBullet.frame = 20;
 
         } else {
             game.add.tween(fireTrail).to({y: 10}, 700, Phaser.Easing.Linear.None, true, 0);
 
-            game.add.tween(missileBullet.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
-            game.add.tween(missileBulletShadow.scale).to({x: 0.55, y: 0.55}, 700, Phaser.Easing.Linear.None, true, 0);
+            game.add.tween(missileBullet.scale).to({x: 0.30, y: 0.30}, 700, Phaser.Easing.Linear.None, true, 0);
+            game.add.tween(missileBulletShadow.scale).to({x: 0.30, y: 0.30}, 700, Phaser.Easing.Linear.None, true, 0);
 
             missileBullet.shadow.animations.add('launch', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
             missileBullet.shadow.animations.play('launch', 30, false, false);

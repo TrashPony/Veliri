@@ -30,9 +30,13 @@ func SelectUnit(msg Message, client *player.Player) {
 	if findUnit && findGame {
 		if activeGame.Phase == "move" {
 
-			// если юнит не в трюме добавляем в путь МС для возвращения в трюм
-			if gameUnit.OnMap {
-				msg.Event = "ToMC"
+			if gameUnit.Body.MotherShip {
+				msg.Event = "MyMCMove"
+			} else {
+				// если юнит не в трюме добавляем в путь МС для возвращения в трюм
+				if gameUnit.OnMap {
+					msg.Event = "ToMC"
+				}
 			}
 
 			SelectMove(client, gameUnit, activeGame, msg.Event)

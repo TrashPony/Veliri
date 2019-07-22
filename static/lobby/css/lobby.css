@@ -1,6 +1,8 @@
 body {
     text-align: center;
     background-color: #7f7f7f;
+    background-image: url("../../assets/bases/base.jpg");
+    background-size: cover;
 }
 
 #ServiceTable {

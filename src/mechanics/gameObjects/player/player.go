@@ -18,7 +18,7 @@ import (
 )
 
 type Player struct {
-	id    int
+	ID    int    `json:"id"`
 	Login string `json:"login"`
 	email string
 
@@ -233,11 +233,11 @@ func (client *Player) GetLogin() (login string) {
 }
 
 func (client *Player) SetID(id int) {
-	client.id = id
+	client.ID = id
 }
 
 func (client *Player) GetID() (id int) {
-	return client.id
+	return client.ID
 }
 
 func (client *Player) SetGameID(id int) {

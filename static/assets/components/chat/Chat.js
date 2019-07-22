@@ -7,6 +7,7 @@ function ConnectChat() {
 
     chat.onopen = function () {
         console.log("Connection chat opened..." + this.readyState);
+
         chat.send(JSON.stringify({
             event: "OpenChat",
         }));
@@ -94,11 +95,18 @@ function ChatReader(data) {
     }
 
     if (data.event === 'OpenUserStat') {
-        FillUserStatus(data.player, null, data.user_id);
+        if (!document.getElementById('UsersStatus')) {
+            UsersStatus(true);
+            setTimeout(function () {
+                FillUserStatus(data.player, null, data.user_id);
+            }, 300)
+        } else {
+            FillUserStatus(data.player, null, data.user_id);
+        }
     }
 
     if (data.event === 'OpenOtherUserStat') {
-        FillOtherUserStat(data.user);
+        OtherUserStatus(data.user);
     }
 
     if (data.event === "upSkill") {

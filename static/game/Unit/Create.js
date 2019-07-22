@@ -1,13 +1,22 @@
-function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color, wColor, w2Color) {
-    let unit;
-
+function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID, boxType, healBar) {
     if (!game.unitLayer) return;
 
-    unit = game.unitLayer.create(x, y, 'MySelectUnit', 0);
-    game.physics.enable(unit, Phaser.Physics.ARCADE);
-    unit.anchor.setTo(0.5, 0.5);
+    let weaponSlot;
+    for (let i in unit.body.weapons) {
+        if (unit.body.weapons.hasOwnProperty(i) && unit.body.weapons[i].weapon) {
+            weaponSlot = unit.body.weapons[i]
+        }
+    }
 
-    let bodyBottomShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, squadBody.name + "_bottom_animate", 11);
+    let unitBox = game.unitLayer.create(x, y, boxType, 0);
+    game.physics.enable(unitBox, Phaser.Physics.ARCADE);
+    unitBox.anchor.setTo(0.5, 0.5);
+    unitBox.inputEnabled = true;
+    if (!unit.body.mother_ship) {
+        unitBox.scale.setTo(0.75);
+    }
+
+    let bodyBottomShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unit.body.name + "_bottom_animate", 11);
     bodyBottomShadow.animations.add('move');
     bodyBottomShadow.play('move', 25, true).paused = true;
     bodyBottomShadow.scale.setTo(0.25);
@@ -15,22 +24,22 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
     bodyBottomShadow.tint = 0x000000;
     bodyBottomShadow.alpha = 0.2;
 
-    let bodyBottom = game.make.sprite(0, 0, squadBody.name + "_bottom_animate", 11);
+    let bodyBottom = game.make.sprite(0, 0, unit.body.name + "_bottom_animate", 11);
     bodyBottom.animations.add('move');
     bodyBottom.play('move', 25, true).paused = true;
     bodyBottom.scale.setTo(0.25);
     bodyBottom.inputEnabled = true;             // включаем ивенты на спрайт
     bodyBottom.anchor.setTo(0.5, 0.5);          // устанавливаем центр спрайта
 
-    let bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, squadBody.name);
+    let bodyShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unit.body.name);
     bodyShadow.scale.setTo(0.25);
     bodyShadow.anchor.set(0.5);
     bodyShadow.tint = 0x000000;
     bodyShadow.alpha = 0.2;
 
-    let body = game.make.sprite(0, 0, squadBody.name);
-    let bodyMask = game.make.sprite(0, 0, squadBody.name + '_mask');
-    let bodyMask2 = game.make.sprite(0, 0, squadBody.name + '_mask2');
+    let body = game.make.sprite(0, 0, unit.body.name);
+    let bodyMask = game.make.sprite(0, 0, unit.body.name + '_mask');
+    let bodyMask2 = game.make.sprite(0, 0, unit.body.name + '_mask2');
 
     body.scale.setTo(0.25);
     body.inputEnabled = true;             // включаем ивенты на спрайт
@@ -38,7 +47,7 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
 
-    mouseBodyOver(body, squad, unit);
+    mouseBodyOver(body, unit, unitBox, userID);
 
     bodyMask.anchor.setTo(0.5);          // устанавливаем центр спрайта
     bodyMask.tint = bColor;
@@ -56,10 +65,23 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
     let weaponColorMask;
     let weaponColorMask2;
 
+    // размер картинки спрайта для правильного расположение точек слотов
+    let weaponScale;
+    //костыльная переменная
+    let spriteOffset;
+
+    if (unit.body.mother_ship) {
+        weaponScale = 0.25;
+        spriteOffset = 50;
+    } else {
+        weaponScale = 0.20;
+        spriteOffset = 20;
+    }
+
     if (weaponSlot && weaponSlot.weapon) {
 
-        let xAttach = ((weaponSlot.x_attach) / 4) - 50;
-        let yAttach = ((weaponSlot.y_attach) / 4) - 50;
+        let xAttach = ((weaponSlot.x_attach) / (1 / weaponScale)) - spriteOffset;
+        let yAttach = ((weaponSlot.y_attach) / (1 / weaponScale)) - spriteOffset;
 
         weapon = game.make.sprite(xAttach, yAttach, weaponSlot.weapon.name);
         weaponColorMask = game.make.sprite(0, 0, weaponSlot.weapon.name + '_mask');
@@ -70,7 +92,7 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
         weapon.xAttach = xAttach;
         weapon.yAttach = yAttach;
         weapon.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
-        weapon.scale.setTo(0.25);
+        weapon.scale.setTo(weaponScale);
 
         weaponColorMask.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
         weaponColorMask.tint = wColor;
@@ -80,7 +102,7 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
         weaponColorMask2.alpha = 0.3;
 
         weaponShadow.anchor.setTo(weaponSlot.weapon.x_attach / 200, weaponSlot.weapon.y_attach / 200);
-        weaponShadow.scale.setTo(0.25);
+        weaponShadow.scale.setTo(weaponScale);
         weaponShadow.tint = 0x000000;
         weaponShadow.alpha = 0.5;
 
@@ -89,32 +111,57 @@ function CreateSquad(squad, x, y, squadBody, weaponSlot, rotate, bColor, b2Color
         weapon.addChild(weaponColorMask);
     }
 
-    squad.sprite = unit;
-    squad.sprite.unitBody = body;
-    squad.sprite.bodyShadow = bodyShadow;
-    squad.sprite.bodyBottom = bodyBottom;
-    squad.sprite.bodyBottomShadow = bodyBottomShadow;
+    unit.sprite = unitBox;
+    unit.sprite.unitBody = body;
+    unit.sprite.bodyShadow = bodyShadow;
+    unit.sprite.bodyBottom = bodyBottom;
+    unit.sprite.bodyBottomShadow = bodyBottomShadow;
 
-    unit.addChild(bodyBottomShadow);
-    unit.addChild(bodyBottom);
-    unit.addChild(bodyShadow);
-    unit.addChild(body);
+    unitBox.addChild(bodyBottomShadow);
+    unitBox.addChild(bodyBottom);
+    unitBox.addChild(bodyShadow);
+    unitBox.addChild(body);
 
-    CreateEquip(squadBody, squad);
+    CreateEquip(unit);
 
     if (weapon) {
-        squad.sprite.weapon = weapon;
-        squad.sprite.weaponShadow = weaponShadow;
+        unit.sprite.weapon = weapon;
+        unit.sprite.weaponShadow = weaponShadow;
 
-        unit.addChild(weaponShadow);
-        unit.addChild(weapon);
+        unitBox.addChild(weaponShadow);
+        unitBox.addChild(weapon);
     }
 
-    SetAngle(squad, rotate);
+    unit.sprite.angle = rotate;
+    SetShadowAngle(unit, rotate);
+
+    if (healBar) {
+        let healBar = game.unitLayer.create(unitBox.world.x, unitBox.world.y + 45, 'healBar');
+        healBar.anchor.setTo(0.5);
+        healBar.alpha = 0;
+        healBar.scale.setTo(1);
+
+        let heal = game.make.sprite(-50, 0, 'heal');
+        healBar.addChild(heal);
+        heal.anchor.setTo(0, 0.5);
+        heal.alpha = 1;
+
+        unit.sprite.healBar = healBar;
+        unit.sprite.heal = heal;
+
+        setInterval(function () {
+            healBar.world.x = unitBox.world.x;
+            healBar.world.y = unitBox.world.y + 45;
+        }, 100);
+
+        CalculateHealBar(unit);
+    }
+
+    return unit
 }
 
-function CreateEquip(squadBody, squad) {
-    squad.sprite.equipSprites = [];
+function CreateEquip(unit) {
+    unit.sprite.equipSprites = [];
 
     let createSprite = function (slot) {
         if (slot.equip && (slot.equip.x_attach > 0 && slot.equip.y_attach > 0)) {
@@ -136,11 +183,11 @@ function CreateEquip(squadBody, squad) {
             slotShadow.tint = 0x000000;
             slotShadow.alpha = 0.3;
 
-            squad.sprite.addChild(slotShadow);
-            squad.sprite.addChild(attachPoint);
-            squad.sprite.addChild(slotSprite);
+            unit.sprite.addChild(slotShadow);
+            unit.sprite.addChild(attachPoint);
+            unit.sprite.addChild(slotSprite);
 
-            squad.sprite.equipSprites.push({
+            unit.sprite.equipSprites.push({
                 sprite: slotSprite,
                 shadow: slotShadow,
                 xAttach: xAttach,
@@ -157,61 +204,9 @@ function CreateEquip(squadBody, squad) {
         }
     };
 
-    createSlots(squadBody.equippingI);
-    createSlots(squadBody.equippingII);
-    createSlots(squadBody.equippingIII);
-    createSlots(squadBody.equippingIV);
-    createSlots(squadBody.equippingV);
-}
-
-function mouseBodyOver(body, squad, unit) {
-    let positionInterval = null;
-    let checkTimeOut = null;
-
-    body.events.onInputOver.add(function () {
-
-        clearTimeout(checkTimeOut);
-
-        if (document.getElementById("UserLabel" + squad.user_name)) {
-            return;
-        }
-
-        //todo загрузка аватарки
-
-        let userLabel = document.createElement('div');
-        userLabel.id = "UserLabel" + squad.user_name;
-        userLabel.className = "UserLabel";
-        document.body.appendChild(userLabel);
-        userLabel.innerHTML = `
-            <div>
-                <div>
-                    <div class="logo"></div>
-                    <h4>${squad.user_name}</h4>
-                    <div class="detailUser" onmousedown="informationFunc('${squad.user_name}', '${squad.user_id}')">i</div>
-                </div>
-            </div>
-        `;
-
-        positionInterval = setInterval(function () {
-            userLabel.style.left = unit.worldPosition.x - 50 + "px";
-            userLabel.style.top = unit.worldPosition.y - 70 + "px";
-            userLabel.style.display = "block";
-        }, 10);
-    }, this);
-
-    body.events.onInputOut.add(function () {
-        checkTimeOut = setTimeout(function () {
-            if (document.getElementById("UserLabel" + squad.user_name)) document.getElementById("UserLabel" + squad.user_name).remove();
-            clearInterval(positionInterval);
-            clearTimeout(checkTimeOut);
-        }, 2000);
-    }, this);
-}
-
-function informationFunc(userName, userId) {
-    if (userName === Data.user.login) {
-        UsersStatus()
-    } else {
-        OtherUserStatus(userName, userId)
-    }
+    createSlots(unit.body.equippingI);
+    createSlots(unit.body.equippingII);
+    createSlots(unit.body.equippingIII);
+    createSlots(unit.body.equippingIV);
+    createSlots(unit.body.equippingV);
 }

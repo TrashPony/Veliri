@@ -84,7 +84,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "setFreeCoordinate") {
-        Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, 11, true, "setFreeResp");
+        Alert("Освободите выход с базы. <br> Иначе будете отбуксированы!", "Внимание!", false, jsonData.seconds, true, "setFreeResp");
     }
 
     if (jsonData.event === "softTransition") {

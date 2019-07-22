@@ -1,5 +1,5 @@
 function CreatePathToUnit(jsonMessage) {
-    console.log(jsonMessage);
+
     let error = JSON.parse(jsonMessage).error;
     if (error === null || error === "") {
 
@@ -19,7 +19,7 @@ function CreatePathToUnit(jsonMessage) {
             unitStat.r = path[0].path_node.r;
             unitStat.rotate = path[0].unit_rotate;
 
-            unit = CreateUnit(unitStat, false)         // создаем юнита
+            unit = CreateLocalUnit(unitStat, false)         // создаем юнита
         }
 
         unit.action_points = unitStat.action_points;
@@ -61,9 +61,9 @@ function MoveHostileUnit(jsonMessage) {
                 unit.r = firstNode.path_node.r;
                 unit.rotate = firstNode.unit_rotate;
 
-                CreateUnit(unit, true);
-
+                CreateLocalUnit(unit, true);
                 unit.path = patchNodes;                // добавляем юниту путь
+                UncoverUnit(unit);                     // откраем юнита в игре
             }
 
             CheckPath(unit);
@@ -132,11 +132,7 @@ function HideUnit(unit) {
 
 function UncoverUnit(unit) {
     game.add.tween(unit.sprite).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-    for (let i in unit.sprite) {
-        if (unit.sprite.hasOwnProperty(i)) {
-            game.add.tween(unit.sprite[i]).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
-        }
-    }
+    game.add.tween(unit.sprite.heal).to({alpha: 1}, 1000, Phaser.Easing.Linear.None, true);
 }
 
 function MoveUnit() {
@@ -149,67 +145,74 @@ function MoveUnit() {
                     if (unit.movePoint == null) { // если у юнита больше нет цели перемещения выставляем ему скорость движения и поворота 0
                         StopUnit(unit);
                     } else {
-
                         let xy = GetXYCenterHex(unit.movePoint.q, unit.movePoint.r);
-
-                        let spriteRotate = unit.sprite.unitBody.angle;
-                        let needRotate = unit.rotate;
-
-                        if (spriteRotate < 0) {
-                            spriteRotate += 360;
-                        }
-
-                        if (needRotate > 360) {
-                            needRotate -= 360;
-                        }
-
-                        if (spriteRotate === needRotate) {
-                            MoveToCell(unit, xy.x, xy.y);
-                        } else {
-
-                            let markerMove = game.add.sprite(xy.x, xy.y); // пустой спрайт что бы юнит мог ориентироваться
-                            markerMove.anchor.setTo(0.5, 0.5);
-
-                            StopUnit(unit);
-
-                            markerMove.destroy();
-                        }
-
 
                         let dist = game.physics.arcade.distanceToXY(unit.sprite, xy.x, xy.y);
 
                         if (Math.round(dist) >= -10 && Math.round(dist) <= 10) { // если юнит стоит рядом с целью в приемлемом диапазоне то считаем что он достиг цели
+                            reachPoint(unit);
+                        } else {
 
-                            delete game.units[unit.q][unit.r];
+                            let spriteRotate = Math.round(unit.sprite.angle);
+                            let needRotate = Math.round(Math.atan2(xy.y - unit.sprite.y, xy.x - unit.sprite.x) * 180 / Math.PI);
 
-                            unit.q = unit.movePoint.q;
-                            unit.r = unit.movePoint.r;
-
-                            addToGameUnit(unit);
-
-                            if (unit.movePoint.type === "inToFog") {
-                                HideUnit(unit);
-                            }
-
-                            if (unit.movePoint.type === "outFog") {
-                                UncoverUnit(unit);
-                            }
-
-                            unit.movePoint = null;
-                            UpdateWatchZone(unit.watch);
-
-                            if (unit.path.length > 0) {
-                                StopUnit(unit);
-                                CheckPath(unit);
+                            let diffRotate;
+                            if (spriteRotate > needRotate) {
+                                diffRotate = spriteRotate - needRotate
                             } else {
-                                if (unit.action) {
-                                    DeactivationUnit(unit);
-                                }
+                                diffRotate = needRotate - spriteRotate
+                            }
+
+                            if (diffRotate < 0) {
+                                diffRotate += 360;
+                            }
+                            if (diffRotate > 180) diffRotate -= 180;
+
+                            // кстыль
+                            if (needRotate === 180 && spriteRotate === -180) {
+                                needRotate = -180
+                            }
+                            // кстыль
+
+                            if (needRotate === spriteRotate) {
+                                MoveToCell(unit, xy.x, xy.y);
+                            } else {
+                                SetAngle(unit, needRotate, diffRotate * 30, false);
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+function reachPoint(unit) {
+
+    delete game.units[unit.q][unit.r];
+
+    unit.q = unit.movePoint.q;
+    unit.r = unit.movePoint.r;
+
+    addToGameUnit(unit);
+
+    if (unit.movePoint.type === "inToFog") {
+        HideUnit(unit);
+    }
+
+    if (unit.movePoint.type === "outFog") {
+        UncoverUnit(unit);
+    }
+
+    unit.movePoint = null;
+    UpdateWatchZone(unit.watch);
+
+    if (unit.path.length > 0) {
+        StopUnit(unit);
+        CheckPath(unit);
+    } else {
+        if (unit.action) {
+            DeactivationUnit(unit);
         }
     }
 }

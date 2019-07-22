@@ -60,10 +60,10 @@ input {
 }
 
 #TipEquip {
+    z-index: 999;
     pointer-events: none;
     position: absolute;
     display: inline-block;
-    z-index: 901;
     background-size: 10px 2px;
     border: 1px solid #25a0e1;
     border-radius: 10px;

@@ -16,7 +16,7 @@ function UpdateWatchZone(watch) {
         if (openUnits) {
             while (openUnits.length > 0) {
                 let openUnit = openUnits.shift();
-                CreateUnit(openUnit)
+                CreateLocalUnit(openUnit)
             }
         }
     }

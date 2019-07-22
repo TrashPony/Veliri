@@ -15,9 +15,9 @@ function FlightRockets(bullet) {
 
                 game.add.tween(bullet.shadow).to({x: bullet.targetX + game.shadowXOffset}, 900, Phaser.Easing.Linear.None, true, 0);
                 game.add.tween(bullet.shadow).to({y: bullet.targetY + game.shadowYOffset}, 900, Phaser.Easing.Linear.None, true, 0);
-                game.add.tween(bullet.shadow.scale).to({x: 0.45, y: 0.45}, 900, Phaser.Easing.Linear.None, true, 0);
+                game.add.tween(bullet.shadow.scale).to({x: 0.25, y: 0.25}, 900, Phaser.Easing.Linear.None, true, 0);
 
-                game.add.tween(bullet.scale).to({x: 0.45, y: 0.45}, 900, Phaser.Easing.Linear.None, true, 0);
+                game.add.tween(bullet.scale).to({x: 0.25, y: 0.25}, 900, Phaser.Easing.Linear.None, true, 0);
                 game.add.tween(bullet.fireTrail).to({y: 5}, 900, Phaser.Easing.Linear.None, true, 0);
 
                 bullet.animations.add('end', [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]);

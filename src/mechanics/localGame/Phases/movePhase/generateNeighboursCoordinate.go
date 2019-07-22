@@ -25,7 +25,7 @@ func generateNeighboursCoordinate(client *player.Player, curr *coordinate.Coordi
 	*/
 	var noMyMS bool // переменная которая говорит что ненеадо проверять клетки вокруг мса
 
-	if event == "SelectStorageUnit" || event == "ToMC" {
+	if event == "SelectStorageUnit" || event == "ToMC" || event == "MyMCMove" {
 		noMyMS = true
 	}
 

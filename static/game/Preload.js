@@ -290,14 +290,20 @@ function preload() {
     game.load.image('heavy_tank', 'http://' + window.location.host + '/assets/units/body/heavy_tank.png');
     game.load.image('heavy_tank_bottom', 'http://' + window.location.host + '/assets/units/body/heavy_tank_bottom.png');
     game.load.image('heavy_tank_mask', 'http://' + window.location.host + '/assets/units/body/heavy_tank_mask.png');
+    game.load.image('heavy_tank_mask2', 'http://' + window.location.host + '/assets/units/body/heavy_tank_mask2.png');
+    game.load.spritesheet('heavy_tank_bottom_animate', 'http://' + window.location.host + '/assets/units/body/heavy_tank_bottom_animate.png', 200, 200, 9);
 
     game.load.image('medium_tank', 'http://' + window.location.host + '/assets/units/body/medium_tank.png');
     game.load.image('medium_tank_bottom', 'http://' + window.location.host + '/assets/units/body/medium_tank_bottom.png');
     game.load.image('medium_tank_mask', 'http://' + window.location.host + '/assets/units/body/medium_tank_mask.png');
+    game.load.image('medium_tank_mask2', 'http://' + window.location.host + '/assets/units/body/medium_tank_mask2.png');
+    game.load.spritesheet('medium_tank_bottom_animate', 'http://' + window.location.host + '/assets/units/body/medium_tank_bottom_animate.png', 200, 200, 10);
 
     game.load.image('light_tank', 'http://' + window.location.host + '/assets/units/body/light_tank.png');
     game.load.image('light_tank_bottom', 'http://' + window.location.host + '/assets/units/body/light_tank_bottom.png');
     game.load.image('light_tank_mask', 'http://' + window.location.host + '/assets/units/body/light_tank_mask.png');
+    game.load.image('light_tank_mask2', 'http://' + window.location.host + '/assets/units/body/light_tank_mask2.png');
+    game.load.spritesheet('light_tank_bottom_animate', 'http://' + window.location.host + '/assets/units/body/light_tank_bottom_animate.png', 200, 200, 11);
 
     autoPreload();
 }

@@ -1,3 +1,4 @@
+// движение на глобальной карте
 function MoveTo(jsonData) {
 
     if (!game) return;
@@ -22,15 +23,13 @@ function MoveTo(jsonData) {
             }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
         );
 
-        SetMSAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
-        //AnimationMove(game.squad);
-
+        SetAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
         game.squad.mather_ship.rotate = jsonData.path_unit.rotate;
     } else {
         MoveOther(jsonData)
     }
 }
-
+// движение на глобальной карте
 function MoveOther(jsonData) {
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
         if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
@@ -46,29 +45,14 @@ function MoveOther(jsonData) {
 
                 game.otherUsers[i].speed = jsonData.path_unit.Speed * 10;
 
-                SetMSAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond);
-                //AnimationMove(game.otherUsers[i]);
-
+                SetAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
                 game.otherUsers[i].rotate = jsonData.path_unit.rotate;
             }
         }
     }
 }
 
-function SetMSAngle(unit, angle, time) {
-
-
-    SetShadowAngle(unit, angle);
-    if (angle > 180) {
-        angle -= 360
-    }
-
-    ShortDirectionRotateTween(unit.sprite, Phaser.Math.degToRad(angle), time);
-}
-
 function AnimationMove(unit) {
-
-
     if (unit.speed && unit.speed > 0) {
 
         if (unit.speed < 30) {

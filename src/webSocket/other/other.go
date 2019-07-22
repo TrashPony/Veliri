@@ -116,23 +116,25 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 				dbPlayer.UpdateUser(client)
 			}
 
-			if msg.Event == "OpenUserStat" {
-				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), Player: client})
-			}
+			if msg.Event == "OpenUserStat" || msg.Event == "OpenOtherUserStat" {
 
-			if msg.Event == "OpenOtherUserStat" {
 				// в user_name прилетает либо id отряда игрока либо uuid отряда бота.
 				var user *player.Player
 				id, err := strconv.Atoi(msg.UserName)
 
+				if msg.UserName == "" || client.GetID() == id {
+					sendOtherMessage(Message{Event: "OpenUserStat", UserID: client.GetID(), Player: client})
+					continue
+				}
+
 				if err != nil {
 					user = globalGame.Clients.GetBotByUUID(msg.UserName)
 				} else {
-					user = globalGame.Clients.GetById(id)
+					user, _ = players.Users.Get(id)
 				}
 
 				if user != nil {
-					sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), User: user.GetShortUserInfo(false)})
+					sendOtherMessage(Message{Event: "OpenOtherUserStat", UserID: client.GetID(), User: user.GetShortUserInfo(false)})
 				}
 			}
 

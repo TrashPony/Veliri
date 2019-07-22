@@ -27,6 +27,7 @@
     border-radius: 5px;
     float: left;
     margin: 2px;
+    background-size: cover;
 }
 
 .UserLabel .detailUser {

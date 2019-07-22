@@ -1,6 +1,6 @@
 let userStat = {};
 
-function UsersStatus() {
+function UsersStatus(noMessage) {
     if (document.getElementById("UsersStatus")) {
         let jBox = $('#UsersStatus');
         setState('UsersStatus', jBox.position().left, jBox.position().top, jBox.height(), jBox.width(), false);
@@ -37,7 +37,9 @@ function UsersStatus() {
     usersStatus.appendChild(buttons.move);
     usersStatus.appendChild(buttons.close);
 
-    OpenCommonUserStat();
+    if (noMessage) {
+        OpenCommonUserStat();
+    }
     openWindow(usersStatus.id, usersStatus)
 }
 
@@ -139,7 +141,8 @@ function SetBiography() {
     }));
 }
 
-function OtherUserStatus(userName, id) {
+function OtherUserStatus(user) {
+
     // создание минималистичного статут юзера из 1й страницы, добавить кнопки типо добавить во френды, отправить сообщение, начать чат;
     // TODO почти повторяющийся код с функцией UsersStatus(), но я решил не трогать ту функцию а создать новую
     if (document.getElementById("UsersStatus")) {
@@ -197,8 +200,5 @@ function OtherUserStatus(userName, id) {
             </div>
     `;
 
-    chat.send(JSON.stringify({
-        event: "OpenOtherUserStat",
-        user_name: id,
-    }));
+    FillOtherUserStat(user);
 }

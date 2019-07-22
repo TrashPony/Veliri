@@ -30,10 +30,12 @@ function ChangeCanal(id) {
 
     currentChatID = Number(id);
 
-    chat.send(JSON.stringify({
-        event: "ChangeGroup",
-        group_id: Number(id),
-    }));
+    if (chat) {
+        chat.send(JSON.stringify({
+            event: "ChangeGroup",
+            group_id: Number(id),
+        }));
+    }
 }
 
 function OpenCanal(group, users) {

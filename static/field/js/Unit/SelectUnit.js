@@ -1,22 +1,17 @@
 function SelectUnit(unitStat, focus) {
-    // let testWeapon = {};
-    // testWeapon.type = "laser";
-    // testWeapon.artillery = false;
-    // testWeapon.name = "big_laser";
-    //
-    // OutFogFire(game.map.OneLayerMap[10][2], game.map.OneLayerMap[1][2], testWeapon, "coordinate").then(function () {
-    //    console.log("dfdfd")
-    // });
-    //
-    // let unit = this;
-    //
-    // Fire(unit, game.map.OneLayerMap[1][2], "coordinate").then(
+
+    let testWeapon = {};
+    testWeapon.type = "laser";
+    testWeapon.artillery = false;
+    testWeapon.name = "big_laser";
+
+    // Fire(unitStat, game.map.OneLayerMap[1][2], "coordinate").then(
     //     function () {
-    //         Fire(unit, game.map.OneLayerMap[1][9], "coordinate").then(
+    //         Fire(unitStat, game.map.OneLayerMap[1][59], "coordinate").then(
     //             function () {
-    //                 Fire(unit, game.map.OneLayerMap[10][2], "coordinate").then(
+    //                 Fire(unitStat, game.map.OneLayerMap[59][1], "coordinate").then(
     //                     function () {
-    //                         Fire(unit, game.map.OneLayerMap[10][9], "coordinate");
+    //                         Fire(unitStat, game.map.OneLayerMap[59][59], "coordinate");
     //                     }
     //                 );
     //             }
@@ -24,12 +19,11 @@ function SelectUnit(unitStat, focus) {
     //     }
     // );
 
-    //Fire(unitStat, GetGameUnitID(31));
     if (focus) {
         game.camera.focusOnXY(unitStat.sprite.x * game.camera.scale.x, unitStat.sprite.y * game.camera.scale.y);
     }
 
-    if(!unitStat.body.mother_ship && unitStat.owner === game.user.name) {
+    if (!unitStat.body.mother_ship && unitStat.owner === game.user.name) {
         field.send(JSON.stringify({
             event: "GetAmmoZone"
         }));
@@ -55,4 +49,28 @@ function SelectUnit(unitStat, focus) {
 
     CreateUnitSubMenu(unitStat);
     MarkUnitSelect(unitStat, 1);
+}
+
+function MarkUnitSelect(unit, frame, onclickFunc) {
+    unit.sprite.frame = frame;
+
+    if (onclickFunc) {
+        unit.sprite.events.onInputDown.add(onclickFunc);
+        unit.sprite.input.priorityID = 1;
+    }
+}
+
+function RemoveUnitMarks() {
+    for (let x in game.units) {
+        if (game.units.hasOwnProperty(x)) {
+            for (let y in game.units[x]) {
+                if (game.units[x].hasOwnProperty(y) && game.units[x][y].sprite) {
+                    let unit = game.units[x][y];
+                    unit.sprite.frame = 0;
+                    unit.sprite.events.onInputDown.removeAll();
+                    unit.sprite.input.priorityID = 0;
+                }
+            }
+        }
+    }
 }

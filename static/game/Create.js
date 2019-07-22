@@ -33,7 +33,7 @@ function create(game) {
 
     let heightMap = (game.map.RSize * game.hexagonHeight * 0.75);
 
-    game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
+    //game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
     game.world.setBounds(0, 0, game.hexagonWidth * game.map.QSize + 30, heightMap + 30); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 

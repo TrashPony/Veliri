@@ -9,7 +9,9 @@
     <link href="../assets/components/uiComponents/inventoryCells/inventoryCells.css" rel="stylesheet">
     <link href="../assets/css/menuAnimation.css" rel="stylesheet">
     <link href="../assets/css/all.css" rel="stylesheet">
+    <link href="../assets/css/user_label.css" rel="stylesheet">
     <link href="../assets/components/chat/chat.css" rel="stylesheet">
+    <link href="../assets/components/UsersStatus/users_status.css" rel="stylesheet">
 
     <link href="css/field.css" rel="stylesheet">
     <link href="css/unitSubMenu.css" rel="stylesheet">
@@ -79,8 +81,11 @@
     <script src="../game/utils/hexRadius.js"></script>
     <script src="../game/utils/AttachSprite.js"></script>
     <script src="../game/CreateMap/DynamicShadowMap.js"></script>
-    <script src="../game/utils/rotateUnit.js"></script>
-    <script src="../game/utils/ShortDirectionRotateTween.js"></script>
+
+    <script src="../game/Unit/Create.js"></script>
+    <script src="../game/Unit/Rotate.js"></script>
+    <script src="../game/Unit/ShortDirectionRotateTween.js"></script>
+    <script src="../game/Unit/MouseBodyOver.js"></script>
 
     <script src="js/LeaveBattle.js"></script>
     <script src="js/Diplomacy.js"></script>
@@ -108,7 +113,6 @@
 
     <script src="js/Unit/SelectUnit.js"></script>
     <script src="js/Unit/Move.js"></script>
-    <script src="js/Unit/RotateUnit.js"></script>
     <script src="js/Unit/Create.js"></script>
     <script src="js/Unit/getUnit.js"></script>
     <script src="js/Unit/addToGameUnit.js"></script>
@@ -143,12 +147,19 @@
     <script src="js/Map/SelectZone/AnimateSelect.js"></script>
     <script src="js/Map/SelectZone/MarkLastPathCell.js"></script>
     <script src="js/Map/SelectZone/MarkTarget.js"></script>
-    <script src="js/Map/SelectZone/UnitSelect.js"></script>
     <script src="js/Map/SelectZone/EquipSelect.js"></script>
     <script src="js/Map/SelectZone/PreviewPath.js"></script>
     <script src="js/Map/SelectZone/GameZone.js"></script>
     <script src="js/Map/SelectZone/AmmoZone.js"></script>
 
+    <script src="../assets/components/chat/Chat.js"></script>
+    <script src="../assets/components/chat/ViewGroups.js"></script>
+    <script src="../assets/components/chat/OpenChat.js"></script>
+    <script src="../assets/components/chat/Message.js"></script>
+    <script src="../assets/components/chat/NotifyBlock.js"></script>
+    <script src="../assets/components/chat/SetWindowsState.js"></script>
+
+    <script src="../assets/components/GetAvatar.js"></script>
     <script src="../assets/components/uiComponents/miniMap/MouseZoomPress.js"></script>
     <script src="../assets/components/uiComponents/miniMap/HideMap.js"></script>
     <script src="../assets/components/uiComponents/miniMap/CreateMiniMap.js"></script>
@@ -156,13 +167,17 @@
     <script src="../assets/components/uiComponents/dialogs/Action.js"></script>
 
     <script src="../assets/components/MoveWindow.js"></script>
-    <script src="../assets/components/chat/Chat.js"></script>
+    <script src="../assets/components/uiComponents/ControlButtons.js"></script>
+    <script src="../assets/components/UsersStatus/UsersStatus.js"></script>
+    <script src="../assets/components/UsersStatus/Fill.js"></script>
+
     <script src="../assets/lib/phaser.js"></script>
     <script src="../assets/lib/jquery-3.3.1.js"></script>
     <script src="../assets/lib/jquery-ui.js"></script>
     <script src="../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../assets/lib/jqueryPlugins/alsoResizeReverse.js"></script>
-    <script src="../assets/components/uiComponents/ControlButtons.js"></script>
+    <script src="../assets/lib/axios.min.js"></script>
+
 </head>
 
 <body oncontextmenu="return false;" onload="openSockets()" onmousemove="moveMouse(event)">
@@ -184,12 +199,19 @@
     </div>
 
     <div id="chat">
-        <div class="tabs"></div>
-        <div class="topButton" onclick="HideChat()"> _</div>
-        <div class="topButton" onmousedown="moveWindow(event,'chat')"> ⇿</div>
+        <div id="notifyBlock"></div>
+        <div class="tabs" id="chatTabs">
+            <div id="chatTabsLeftArrow" onclick="document.getElementById('tabsGroup').scrollLeft -= 20;"><</div>
+            <div id="tabsGroupWrapper">
+                <div id="tabsGroup"></div>
+            </div>
+            <div id="chatTabsRightArrow" onclick="document.getElementById('tabsGroup').scrollLeft += 20;">></div>
+        </div>
+        <div class="topButton" onmousedown="moveWindow(event,'chat')">⇿</div>
+        <div class="topButton" onmousedown="ViewAllGroups()">+</div>
         <div id="chatBox"></div>
         <div id="usersBox"></div>
-        <input type="text" placeholder="message" id="chatInput"
+        <input type="text" placeholder=" message..." id="chatInput"
                onkeypress="if (event.keyCode === 13) { chatMessage(); return false; }">
         <script>ConnectChat()</script>
     </div>
@@ -235,7 +257,8 @@
 
     <div id="bottomMenu">
         <div><img src="https://img.icons8.com/ios/50/000000/settings-filled.png"></div> <!-- настройки -->
-        <div><img src="https://img.icons8.com/color/48/000000/diplomacy.png" onclick="OpenDiplomacy()"></div> <!-- дипломатия -->
+        <div><img src="https://img.icons8.com/color/48/000000/diplomacy.png" onclick="OpenDiplomacy()"></div>
+        <!-- дипломатия -->
         <div><img src="https://img.icons8.com/office/40/000000/exit.png" onclick="InitLeave()"></div> <!-- убежать -->
     </div>
 
