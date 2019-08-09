@@ -83,14 +83,14 @@ func (m *missions) GenerateMissionForUser(client *player.Player) *mission.Missio
 		// назначаем и парсим диалоги
 		startDialog := gameTypes.Dialogs.GetByID(missionType.StartDialogID)
 		startDialog.Mission = newMission.UUID
-		startDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name)
+		startDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
 		newMission.StartDialog = startDialog
 
 		for _, action := range newMission.Actions {
 			endDialog := gameTypes.Dialogs.GetByID(action.DialogID)
 			endDialog.Mission = newMission.UUID
 
-			endDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name)
+			endDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
 			action.Dialog = endDialog
 			action.BaseID = toBase.ID
 		}

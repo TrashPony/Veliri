@@ -16,7 +16,7 @@ func GetWeaponTargetCoordinate(gameUnit *unit.Unit, activeGame *localGame.Game, 
 
 		unitCoordinate, find := activeGame.Map.GetCoordinate(gameUnit.GetQ(), gameUnit.GetR())
 
-		if find {
+		if find && gameUnit.GetWeaponSlot() != nil && gameUnit.GetWeaponSlot().Weapon != nil {
 			radiusCoordinates := coordinate.GetCoordinatesRadius(unitCoordinate, gameUnit.GetWeaponSlot().Weapon.Range)
 			deadZone := coordinate.GetCoordinatesRadius(unitCoordinate, gameUnit.GetWeaponSlot().Weapon.MinAttackRange)
 

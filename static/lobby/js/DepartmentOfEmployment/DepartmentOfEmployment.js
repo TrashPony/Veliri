@@ -40,14 +40,14 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
     departmentOfEmployment.appendChild(buttons.move);
     departmentOfEmployment.appendChild(buttons.close);
 
-    $(departmentOfEmployment).resizable({
-        minHeight: 400,
-        minWidth: 400,
-        handles: "se",
-        resize: function (event, ui) {
-
-        }
-    });
+    // $(departmentOfEmployment).resizable({
+    //     minHeight: 370,
+    //     minWidth: 401,
+    //     handles: "se",
+    //     resize: function (event, ui) {
+    //
+    //     }
+    // });
 
     if (!dialogPage) {
         chat.send(JSON.stringify({

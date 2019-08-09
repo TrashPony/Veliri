@@ -46,9 +46,9 @@ CREATE TABLE action_game_zone_effects (        /* эфекты которые в
 
 CREATE TABLE user_memory_unit (
   id      SERIAL PRIMARY KEY,
-  id_user INT REFERENCES users (id),
-  id_game INT REFERENCES action_games (id),
-  id_unit INT REFERENCES squad_units(id),
+  id_user INT,
+  id_game INT,
+  id_unit INT,
   unit    JSON                                 /* хранит текущие состояние юнита в виде строки json */
 );
 

@@ -24,15 +24,26 @@ function OnlyInventory() {
         moveWindow(event, 'Inventory')
     };
 
+    $(inventory).data({
+        resize: function (event, ui, el) {
+            let inventoryStorage = $('#inventoryStorageInventory');
+            inventoryStorage.css("height", el.height() - 54);
+            inventoryStorage.css("width", el.width() - 5);
+        }
+    });
+
     $(inventory).resizable({
         minHeight: 133,
-        minWidth: 163,
+        minWidth: 172,
         handles: "se",
         maxHeight: 400,
         maxWidth: 600,
         stop: function (e, ui) {
             setState(this.id, $(this).position().left, $(this).position().top, $(this).height(), $(this).width(), true);
-        }
+        },
+        resize: function (e, ui) {
+            $(this).data("resize")(event, ui, $(this))
+        },
     });
 
     inventory.appendChild(buttons.close);

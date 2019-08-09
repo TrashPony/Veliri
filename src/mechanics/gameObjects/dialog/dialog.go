@@ -23,11 +23,20 @@ func (d *Dialog) GetPageByType(typePage string) *Page {
 	return nil
 }
 
-func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorName string) {
+func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorName, userFraction string) {
 	// %UserName% %BaseName% %ToBaseName%
 
 	if d == nil {
 		return
+	}
+
+	if d.Fraction == "All" {
+		d.Fraction = userFraction
+		for _, page := range d.Pages {
+			if page.Picture == "" {
+				page.Picture = strings.ToLower(userFraction) + "_logo"
+			}
+		}
 	}
 
 	for _, page := range d.Pages {

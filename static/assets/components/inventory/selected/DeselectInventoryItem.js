@@ -130,7 +130,7 @@ function cellAmmoDestroySelect() {
         ammoCells[i].style.cursor = "auto";
 
         if (JSON.parse(ammoCells[i].slotData).ammo != null && JSON.parse(ammoCells[i].slotData).ammo !== undefined) {
-            if (ammoCells[i].className === "inventoryAmmoCell inventoryEquipping") {
+            if ($(ammoCells[i]).hasClass('inventoryEquipping')) {
                 ammoCells[i].onclick = AmmoMSMenu;
             } else {
                 ammoCells[i].onclick = AmmoUnitMenu;

@@ -238,6 +238,31 @@ function UpdateWeapon(cell, classPrefix) {
                 DestroyInventoryClickEvent();
                 DestroyInventoryTip();
             }
+
+            if (slotData.data && slotData.data.type === "ammo") {
+                let ammoCell = document.getElementsByClassName("inventoryAmmoCell " + classPrefix)[0];
+                if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('inventoryEquipping')) {
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetMotherShipAmmo",
+                        ammo_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
+                        source: slotData.parent,
+                    }));
+                } else if ($(ammoCell).hasClass('inventoryAmmoCell') && $(ammoCell).hasClass('UnitEquip')) {
+                    let unitSlot = JSON.parse(document.getElementById("ConstructorUnit").slotData).number_slot;
+                    inventorySocket.send(JSON.stringify({
+                        event: "SetUnitAmmo",
+                        ammo_id: Number(slotData.data.item.id),
+                        inventory_slot: Number(slotData.number),
+                        equip_slot: Number(JSON.parse(ammoCell.slotData).number_slot),
+                        unit_slot: Number(unitSlot),
+                        source: slotData.parent,
+                    }));
+                }
+                DestroyInventoryClickEvent();
+                DestroyInventoryTip();
+            }
         }
     });
 

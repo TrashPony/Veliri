@@ -18,12 +18,16 @@ function Training(lvl) {
                 if (!document.getElementById("training1Block")) {
                     let page = {
                         text: "Отлично перед табой находится меню ангара которое поделен на разделы",
-                        picture: "base.png",
+                        picture: "training.png",
                     };
                     let dialogBlock = CreatePageDialog("training1Block", page, null, false, true);
                     dialogBlock.style.right = "calc(50% - 125px)";
-                    dialogBlock.style.top = "calc(50% - 300px)";
+                    dialogBlock.style.top = "calc(50% - 90px)";
                     dialogBlock.style.left = "auto";
+                    dialogBlock.className += " Training";
+
+                    $('#inventoryBox').append(dialogBlock);
+
                     hangarButton.css("animation", "none");
 
                     let ask = document.createElement("div");
@@ -77,13 +81,13 @@ function Training(lvl) {
                 let MSIcon = $('#MSIcon');
                 let storage = $('#storage');
 
-                if (!document.getElementById("training1SquadBlock")) {
-                    createInfoText(storage, "training1SquadBlock", 0, +175, 175, 150, "Давай активируем первый " +
+                if (!document.getElementById("training21SquadBlock")) {
+                    createInfoText(storage, "training21SquadBlock", 0, +175, 175, 150, "Давай активируем первый " +
                         "мазершип, для этого выдели его, или перетяни в \"место для корпуса\"", true, 100, true);
                     MSIcon.css("animation", "selectMenu 1500ms infinite");
                 }
 
-                if (!cellMS && storage) {
+                if ((!cellMS || cellMS.length === 0) && storage) {
                     cellMS = FindCell('', 'MS', storage);
                     for (let i = 0; i < cellMS.length; i++) {
                         $(cellMS[i]).css("animation", "selectMenu 1500ms infinite");
@@ -94,11 +98,11 @@ function Training(lvl) {
                     clearInterval(interval);
                     $(cellMS).css("animation", "none");
                     MSIcon.css("animation", "none");
-                    if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
+                    if (document.getElementById("training21SquadBlock")) document.getElementById("training21SquadBlock").remove();
                     progressTraining(lvl);
                 }
             } else {
-                if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
+                if (document.getElementById("training21SquadBlock")) document.getElementById("training21SquadBlock").remove();
                 IntoToHangar();
             }
         }, 10)
@@ -149,6 +153,8 @@ function Training(lvl) {
     }
 
     if (lvl === 5) {
+        let equips = [];
+
         let interval = setInterval(function () {
             if (document.getElementById("ConstructorBackGround") && document.getElementById("wrapperInventoryAndStorage")) {
                 if (document.getElementById("training1IntoHangar")) document.getElementById("training1IntoHangar").remove();
@@ -177,8 +183,8 @@ function Training(lvl) {
                     powerPanel.css("animation", "selectMenu2 1500ms infinite");
                 }
 
-                let equips = FindCell('', 'equips', storage);
-                if (equips.length > 0) {
+                if (equips.length === 0) {
+                    equips = FindCell('', 'equips', storage);
                     $(equips).each(function () {
                         $(this).css("animation", "selectMenu2 1500ms infinite");
                     })
@@ -192,7 +198,7 @@ function Training(lvl) {
                         clearInterval(interval);
                         powerPanel.css("animation", "none");
                         $(equips).each(function () {
-                            this.style.animation = "none";
+                            $(this).css("animation", "none");
                         });
                         progressTraining(lvl);
                     }
@@ -205,6 +211,10 @@ function Training(lvl) {
     }
 
     if (lvl === 6) {
+
+        let weapons = [];
+        let ammo = [];
+
         let interval = setInterval(function () {
             let storage = $('#storage');
             let weaponPanel = $('#MSWeaponPanel');
@@ -226,15 +236,15 @@ function Training(lvl) {
                     weaponPanel.css("animation", "selectMenu3 1500ms infinite");
                 }
 
-                let weapons = FindCell('', 'weapons', storage);
-                if (weapons.length > 0) {
+                if (weapons.length === 0) {
+                    weapons = FindCell('', 'weapons', storage);
                     $(weapons).each(function () {
                         $(this).css("animation", "selectMenu3 1500ms infinite");
                     })
                 }
 
-                let ammo = FindCell('', 'ammo', storage);
-                if (ammo.length > 0) {
+                if (ammo.length === 0) {
+                    ammo = FindCell('', 'ammo', storage);
                     $(ammo).each(function () {
                         $(this).css("animation", "selectMenu3 1500ms infinite");
                     })
@@ -326,12 +336,13 @@ function Training(lvl) {
     if (lvl === 8) {
         let page = {
             text: "Очень хорошо, надеюсь я тебе смог помочь с освоение инвентаря.",
-            picture: "base.png",
+            picture: "training.png",
         };
         let dialogBlock = CreatePageDialog("training1Block", page, null, false, true);
         dialogBlock.style.right = "calc(50% - 125px)";
         dialogBlock.style.top = "calc(50% - 300px)";
         dialogBlock.style.left = "auto";
+        dialogBlock.className += " Training";
 
         let ask = document.createElement("div");
         ask.className = "asks";
@@ -346,32 +357,29 @@ function Training(lvl) {
 }
 
 function IntoToHangar() {
+
+    if (document.getElementById("training1IntoHangar")) {
+        return;
+    }
+
     let page = {
         text: "Для начала надо научится использовать ангар и инвентарь, что бы открыть меню ангара нажми желтую пиктограмму на интерфейсе, а для инвентаря зеленую.",
-        picture: "base.png"
+        picture: "training.png",
     };
 
     let dialogBlock = CreatePageDialog("training1IntoHangar", page, null, false, true);
     dialogBlock.style.left = "15px";
-    dialogBlock.style.top = "-20px";
-
-    let clickHangar = false;
-    let clickInventory = false;
+    dialogBlock.style.top = "60px";
+    dialogBlock.className += " Training";
 
     let hangarButton = $('#hangarButton');
     hangarButton.css("animation", "selectMenu 1500ms infinite");
-    hangarButton.click(function () {
-        clickHangar = true;
-    });
 
     let inventoryButton = $('#inventoryButton');
-    inventoryButton.css("animation", "selectMenu 1500ms infinite");
-    inventoryButton.click(function () {
-        clickInventory = true;
-    });
+    inventoryButton.css("animation", "selectMenu2 1500ms infinite");
 
     let intoHangar = setInterval(function () {
-        if (clickHangar && clickInventory && document.getElementById('wrapperInventoryAndStorage')) {
+        if (document.getElementById('wrapperInventoryAndStorage') && document.getElementById('inventoryBox')) {
             $("#wrapperInventoryAndStorage").css('left', $('#inventoryBox').position().left + 200);
 
             dialogBlock.remove();
@@ -380,7 +388,7 @@ function IntoToHangar() {
 
             clearInterval(intoHangar);
         }
-    }, 100);
+    }, 200);
 
 
     return hangarButton
@@ -389,18 +397,19 @@ function IntoToHangar() {
 function createInfoText(toInfoBlock, id, offsetY, offsetX, width, widthText, text, pic, height, bottom) {
     let squadPage = {
         text: text,
-        picture: "base.png",
+        picture: "training.png",
     };
     let SquadsBlock = CreatePageDialog(id, squadPage, null, false, pic);
     SquadsBlock.style.width = width + "px";
     SquadsBlock.style.height = height + "px";
+    SquadsBlock.className += " Training";
 
     let interval = setInterval(function () {
         if (document.getElementById(id)) {
             if (bottom) {
                 toInfoBlock.append(SquadsBlock);
                 SquadsBlock.style.right = -width - 10 + "px";
-                SquadsBlock.style.bottom = height / 2 + "px";
+                SquadsBlock.style.bottom = "0";
                 SquadsBlock.style.left = "unset";
                 SquadsBlock.style.top = "unset";
             } else {

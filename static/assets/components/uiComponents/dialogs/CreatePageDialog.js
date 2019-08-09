@@ -45,7 +45,7 @@ function CreatePageDialog(id, page, action, full, needPicture, credits, items, n
 function CreatePic(dialogBlock, page) {
     let picture = document.createElement("div");
     picture.id = "dialogPicture";
-    picture.innerHTML = "<div class='nameDialog'> Какой - то хер</div>";
+    picture.innerHTML = "<div class='nameDialog'>module</div>";
     dialogBlock.appendChild(picture);
 
     let pictureBack = document.createElement("div");

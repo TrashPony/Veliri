@@ -9,18 +9,30 @@
     pointer-events: none;
 }
 
+.dialogBlock.Training .dialogText, .dialogBlock.Training .asks, .dialogBlock.Training #dialogPicture {
+    border: 1px dashed #F8FF00;
+    background-color: #E8651E;
+    box-shadow: 0 0 4px 2px;
+}
+
+.dialogBlock.Training .asks {
+    border: 1px solid #F8FF00;
+}
+
+.dialogBlock.Training .asks:hover {
+    border: 1px solid #959c00;
+}
+
 .dialogBlock #dialogPicture {
     border-radius: 5px;
     height: 75px;
     width: 75px;
     border: 1px solid #25a0e1;
-    background-size: 100% 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    background-color: rgba(33, 176, 255, 0.6);
     float: right;
     margin-bottom: 5px;
-    position: relative;
-    left: 85px;
-    top: 81px;
+    position: absolute;
+    right: -85px;
     pointer-events: auto;
 }
 
@@ -29,10 +41,8 @@
     height: 100%;
     width: 100%;
     border: 1px solid #25a0e1;
-    background-size: 100% 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    background-color: rgba(33, 176, 255, 0.6);
     padding: 19px 0 0;
-    float: left;
     pointer-events: auto;
 }
 
@@ -81,8 +91,7 @@
     border-radius: 5px;
     width: 100%;
     border: 1px solid #25a0e1;
-    background-size: 100% 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    background-color: rgba(33, 176, 255, 0.6);
     float: left;
     margin-top: 4px;
     height: 22px;
@@ -91,7 +100,7 @@
 }
 
 .asks:hover {
-    background-image: linear-gradient(1deg, #e1bf25, #e1bf25 6px);
+    background-color: #e1bf25;
     border: 1px solid #e1bf25;
 }
 

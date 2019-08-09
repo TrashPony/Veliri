@@ -58,10 +58,10 @@ func startMining(ws *websocket.Conn, msg Message) {
 func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, reservoir *resource.Map, msg Message) {
 	exit := false
 
-	// переменная для проверки времени цикла
-	miningEquip.CurrentReload = miningEquip.Reload
-
 	for {
+
+		// переменная для проверки времени цикла
+		miningEquip.CurrentReload = miningEquip.Reload
 
 		for miningEquip.CurrentReload > 0 {
 			select {

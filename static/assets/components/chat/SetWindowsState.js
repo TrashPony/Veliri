@@ -66,8 +66,13 @@ function SetWindowsState(state) {
                     }
 
                     if (id === 'DepartmentOfEmployment') {
-                        InitDepartmentOfEmployment();
-                        awaitReady(id, currentState);
+                        let departmentID = id;
+                        setTimeout(function () { // этот костыль тут из за диалога обучения который идет не через стандартный путь
+                            if (!document.getElementById('DepartmentOfEmployment')) {
+                                InitDepartmentOfEmployment();
+                                awaitReady(departmentID, currentState);
+                            }
+                        }, 200)
                     }
 
                     // могут быть открыты только на глобалке, впрочем отруливается бекендом, но надо избежать ошибки

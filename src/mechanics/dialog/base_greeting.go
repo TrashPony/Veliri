@@ -25,7 +25,7 @@ func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dia
 	for _, mission := range client.Missions {
 		if mission.StartBase.ID == base.ID {
 			greeting := gameTypes.Dialogs.GetTypeGreeting(base.Fraction, "greeting_before_mission_not_complete")
-			greeting.ProcessingDialogText(client.Login, base.Name, "", "")
+			greeting.ProcessingDialogText(client.Login, base.Name, "", "", client.Fraction)
 			client.SetOpenDialog(greeting)
 			return greeting.Pages[1], greeting
 		}
@@ -33,7 +33,7 @@ func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dia
 
 	// нормальное привествие
 	greeting := gameTypes.Dialogs.GetTypeGreeting(base.Fraction, "greeting")
-	greeting.ProcessingDialogText(client.Login, base.Name, "", "")
+	greeting.ProcessingDialogText(client.Login, base.Name, "", "", client.Fraction)
 	client.SetOpenDialog(greeting)
 
 	// todo если игрок на базе не своей фракции

@@ -39,7 +39,7 @@ function CreateConstructorMenu() {
             let draggable = ui.draggable;
             let slotData = draggable.data("slotData");
 
-            if (slotData.data && slotData.data.type === "body") {
+            if (slotData && slotData.data && slotData.data.type === "body") {
                 inventorySocket.send(JSON.stringify({
                     event: "SetMotherShipBody",
                     id_body: Number(slotData.data.item.id),
