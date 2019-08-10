@@ -96,7 +96,7 @@
     right: 3px;
 }
 
-#subMenu .holdInput.count:after{
+#subMenu .holdInput.count:after {
     content: 'шт.';
 }
 
@@ -107,7 +107,7 @@
 #subMenu input[type=button] {
     position: static;
     margin: 15px 7% 0;
-    width: 65px;
+    width: 100px;
 }
 
 #subMenu div {
@@ -121,4 +121,10 @@
     float: left;
     margin-right: 10px;
     height: 75px;
+}
+
+#BuyDialogButtonWrapper input[type=button] {
+    position: static;
+    margin: 6px 4px 0;
+    width: 100px;
 }

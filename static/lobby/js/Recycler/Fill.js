@@ -1,6 +1,7 @@
 function FillRecycler(jsonData) {
     let itemsPool = document.getElementById("itemsPool");
     let previewPool = document.getElementById("previewPool");
+
     if (!itemsPool) return;
 
     document.getElementById('UserRecyclePercent').innerHTML = 'Потери: ' + jsonData.user_recycle_skill + '%';
@@ -11,56 +12,61 @@ function FillRecycler(jsonData) {
     $("#previewPool .InventoryCell").remove();
     $("#previewPool .RecycleSection").remove();
 
-    for (let i in jsonData.recycle_slots) {
+    for (let source in jsonData.recycle_slots) {
+        for (let i in jsonData.recycle_slots[source]) {
 
-        let cell = document.createElement("div");
-        CreateInventoryCell(cell, jsonData.recycle_slots[i].slot, i, "recycler", onclick);
+            let itemSlot = jsonData.recycle_slots[source][i];
 
-        $(cell).draggable({
-            revert: false,
-            stop: function (event, ui) {
-                let elem = document.elementFromPoint(ui.position.left, ui.position.top);
-                if (!$(elem).hasClass("itemsPools")) {
-                    if ($(this).data("slotData")) {
-                        if ($(this).data("selectedItems") !== undefined) {
-                            lobby.send(JSON.stringify({
-                                event: "RemoveItemsFromProcessor",
-                                storage_slots: $(this).data("selectedItems").slotsNumbers,
-                            }));
-                        } else {
-                            lobby.send(JSON.stringify({
-                                event: "RemoveItemFromProcessor",
-                                recycler_slot: Number($(this).data("slotData").number),
-                            }));
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, itemSlot.slot, i, "recycler", onclick);
+
+            $(cell).draggable({
+                revert: false,
+                stop: function (event, ui) {
+                    let elem = document.elementFromPoint(ui.position.left, ui.position.top);
+                    if (!$(elem).hasClass("itemsPools")) {
+                        if ($(this).data("slotData")) {
+                            if ($(this).data("selectedItems") !== undefined) {
+                                lobby.send(JSON.stringify({
+                                    event: "RemoveItemsFromProcessor",
+                                    storage_slots: $(this).data("selectedItems").slotsNumbers,
+                                }));
+                            } else {
+                                lobby.send(JSON.stringify({
+                                    event: "RemoveItemFromProcessor",
+                                    recycler_slot: Number($(this).data("slotData").number),
+                                }));
+                            }
                         }
                     }
-                }
-            },
-        });
+                },
+            });
 
-        if (!jsonData.recycle_slots[i].recycled) {
-            cell.style.border = "1px solid red";
-            cell.innerHTML += "<div class='noAllowCell'></div>"
-        }
+            if (!itemSlot.recycled) {
+                cell.style.border = "1px solid red";
+                cell.innerHTML += "<div class='noAllowCell'></div>"
+            }
 
-        cell.onclick = function () {
-            lobby.send(JSON.stringify({
-                event: "RemoveItemFromProcessor",
-                recycler_slot: Number(i),
-            }));
-        };
+            cell.onclick = function () {
+                lobby.send(JSON.stringify({
+                    event: "RemoveItemFromProcessor",
+                    recycler_slot: Number(i),
+                    item_source: itemSlot.source,
+                }));
+            };
 
-        let tax = document.createElement('div');
-        tax.className = 'itemTax';
-        tax.innerHTML = `
+            let tax = document.createElement('div');
+            tax.className = 'itemTax';
+            tax.innerHTML = `
             <span style="float: left">Налог:</span><br>
-            <span style="float: right">${jsonData.recycle_slots[i].tax_percent}%</span>
+            <span style="float: right">${itemSlot.tax_percent}%</span>
         `;
 
-        if (jsonData.recycle_slots[i].tax_percent > 0) cell.appendChild(tax);
+            if (itemSlot.tax_percent > 0) cell.appendChild(tax);
 
-        let section = CheckRecycleSection(jsonData.recycle_slots[i].slot, itemsPool);
-        section.appendChild(cell);
+            let section = CheckRecycleSection(itemSlot.slot, itemsPool);
+            section.appendChild(cell);
+        }
     }
 
     for (let i in jsonData.preview_recycle_slots) {

@@ -8,28 +8,53 @@ import (
 	wsInventory "github.com/TrashPony/Veliri/src/webSocket/inventory"
 )
 
-func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
+func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[string]map[int]*lobby.RecycleItem) {
 
 	baseStorage, find := storages.Storages.Get(user.GetID(), user.InBaseID)
 	userBase, findBase := bases.Bases.Get(user.InBaseID)
 
 	if find && findBase {
+
 		if *recycleItems == nil {
-			*recycleItems = make(map[int]*lobby.RecycleItem)
+			*recycleItems = make(map[string]map[int]*lobby.RecycleItem)
 		}
 
-		if msg.Event == "PlaceItemToProcessor" {
-			storageSlot, ok := baseStorage.Slots[msg.StorageSlot]
-			if ok {
-				(*recycleItems)[msg.StorageSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false}
-			}
+		if (*recycleItems)[msg.ItemSource] == nil {
+			(*recycleItems)[msg.ItemSource] = make(map[int]*lobby.RecycleItem)
 		}
 
-		if msg.Event == "PlaceItemsToProcessor" {
-			for _, itemSlot := range msg.StorageSlots {
-				storageSlot, ok := baseStorage.Slots[itemSlot]
+		if msg.ItemSource == "storage" {
+			if msg.Event == "PlaceItemToProcessor" {
+				// todo не передовать элементы как единичку, "ну что это блять" (с)
+				storageSlot, ok := baseStorage.Slots[msg.StorageSlot]
 				if ok {
-					(*recycleItems)[itemSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false}
+					(*recycleItems)[msg.ItemSource][msg.StorageSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false, Source: msg.ItemSource}
+				}
+			}
+
+			if msg.Event == "PlaceItemsToProcessor" {
+				for _, itemSlot := range msg.StorageSlots {
+					storageSlot, ok := baseStorage.Slots[itemSlot]
+					if ok {
+						(*recycleItems)[msg.ItemSource][itemSlot] = &lobby.RecycleItem{Slot: storageSlot, Recycled: false, Source: msg.ItemSource}
+					}
+				}
+			}
+		} else {
+			if msg.ItemSource == "squadInventory" {
+				if msg.Event == "PlaceItemToProcessor" {
+					inventorySlot, ok := user.GetSquad().Inventory.Slots[msg.StorageSlot]
+					if ok {
+						(*recycleItems)[msg.ItemSource][msg.StorageSlot] = &lobby.RecycleItem{Slot: inventorySlot, Recycled: false, Source: msg.ItemSource}
+					}
+				}
+				if msg.Event == "PlaceItemsToProcessor" {
+					for _, itemSlot := range msg.StorageSlots {
+						inventorySlot, ok := user.GetSquad().Inventory.Slots[itemSlot]
+						if ok {
+							(*recycleItems)[msg.ItemSource][itemSlot] = &lobby.RecycleItem{Slot: inventorySlot, Recycled: false, Source: msg.ItemSource}
+						}
+					}
 				}
 			}
 		}
@@ -41,18 +66,20 @@ func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[in
 	}
 }
 
-func removeItemToProcessor(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
+func removeItemToProcessor(user *player.Player, msg Message, recycleItems *map[string]map[int]*lobby.RecycleItem) {
 
 	userBase, _ := bases.Bases.Get(user.InBaseID)
 
 	if msg.Event == "RemoveItemFromProcessor" {
-		delete(*recycleItems, msg.RecyclerSlot)
+		if (*recycleItems)[msg.ItemSource] != nil {
+			delete((*recycleItems)[msg.ItemSource], msg.RecyclerSlot)
+		}
 	}
 
 	if msg.Event == "RemoveItemsFromProcessor" {
-		for _, itemSlot := range msg.StorageSlots {
-			delete(*recycleItems, itemSlot)
-		}
+		//for _, itemSlot := range msg.StorageSlots {
+		//	//delete(*recycleItems, itemSlot) todo source
+		//}
 	}
 
 	resultItems, _ := lobby.GetRecycleItems(recycleItems, user, userBase)
@@ -61,7 +88,7 @@ func removeItemToProcessor(user *player.Player, msg Message, recycleItems *map[i
 		PreviewRecycleSlots: resultItems}
 }
 
-func recycle(user *player.Player, msg Message, recycleItems *map[int]*lobby.RecycleItem) {
+func recycle(user *player.Player, msg Message, recycleItems *map[string]map[int]*lobby.RecycleItem) {
 
 	userBase, _ := bases.Bases.Get(user.InBaseID)
 
@@ -78,4 +105,5 @@ func recycle(user *player.Player, msg Message, recycleItems *map[int]*lobby.Recy
 		PreviewRecycleSlots: resultItems}
 
 	wsInventory.UpdateStorage(user.GetID())
+	wsInventory.UpdateInventory(user.GetID())
 }

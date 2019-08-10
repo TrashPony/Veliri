@@ -1,4 +1,5 @@
 //todo ультра говнокод, но иного пути я не нашел, код сценария обучения игрока
+let interval;
 
 function Training(lvl) {
     if (lvl === 1) {
@@ -10,7 +11,7 @@ function Training(lvl) {
     if (lvl === 2) {
         let hangarButton = $('#hangarButton');
 
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
 
             if (document.getElementById("ConstructorBackGround") && document.getElementById("wrapperInventoryAndStorage")) {
 
@@ -74,15 +75,15 @@ function Training(lvl) {
 
         let cellMS = null;
 
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
             if (document.getElementById("ConstructorBackGround") && document.getElementById("wrapperInventoryAndStorage")) {
 
                 if (document.getElementById("training1IntoHangar")) document.getElementById("training1IntoHangar").remove();
                 let MSIcon = $('#MSIcon');
                 let storage = $('#storage');
 
-                if (!document.getElementById("training21SquadBlock")) {
-                    createInfoText(storage, "training21SquadBlock", 0, +175, 175, 150, "Давай активируем первый " +
+                if (!document.getElementById("training1SquadBlock")) {
+                    createInfoText(storage, "training1SquadBlock", 0, +175, 175, 150, "Давай активируем первый " +
                         "мазершип, для этого выдели его, или перетяни в \"место для корпуса\"", true, 100, true);
                     MSIcon.css("animation", "selectMenu 1500ms infinite");
                 }
@@ -98,11 +99,11 @@ function Training(lvl) {
                     clearInterval(interval);
                     $(cellMS).css("animation", "none");
                     MSIcon.css("animation", "none");
-                    if (document.getElementById("training21SquadBlock")) document.getElementById("training21SquadBlock").remove();
+                    if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
                     progressTraining(lvl);
                 }
             } else {
-                if (document.getElementById("training21SquadBlock")) document.getElementById("training21SquadBlock").remove();
+                if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
                 IntoToHangar();
             }
         }, 10)
@@ -112,7 +113,7 @@ function Training(lvl) {
 
         let thorium = null;
 
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
             let storage = $('#storage');
             let thoriumPanel = $('#thorium');
             let thoriumSlots = $('.thoriumSlots');
@@ -155,7 +156,7 @@ function Training(lvl) {
     if (lvl === 5) {
         let equips = [];
 
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
             if (document.getElementById("ConstructorBackGround") && document.getElementById("wrapperInventoryAndStorage")) {
                 if (document.getElementById("training1IntoHangar")) document.getElementById("training1IntoHangar").remove();
 
@@ -215,11 +216,11 @@ function Training(lvl) {
         let weapons = [];
         let ammo = [];
 
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
             let storage = $('#storage');
             let weaponPanel = $('#MSWeaponPanel');
 
-            if (document.getElementById("ConstructorBackGround")) {
+            if (document.getElementById("ConstructorBackGround") && document.getElementById("wrapperInventoryAndStorage")) {
                 if (document.getElementById("training1IntoHangar")) document.getElementById("training1IntoHangar").remove();
 
                 if (!document.getElementById("training1SquadBlock") && document.getElementById("storage") && document.getElementById("MSWeaponPanel")) {
@@ -269,15 +270,16 @@ function Training(lvl) {
                         if (document.getElementById("training1WeaponBlock")) document.getElementById("training1WeaponBlock").remove();
                     }
                 })
-
             } else {
+                if (document.getElementById("training1SquadBlock")) document.getElementById("training1SquadBlock").remove();
+                if (document.getElementById("training1WeaponBlock")) document.getElementById("training1WeaponBlock").remove();
                 IntoToHangar();
             }
         }, 10)
     }
 
     if (lvl === 7) {
-        let interval = setInterval(function () {
+        interval = setInterval(function () {
             let storage = $('#storage');
             let unitSlot = $('.inventoryUnit.active');
             let squad = $('#Squad');
@@ -390,7 +392,6 @@ function IntoToHangar() {
         }
     }, 200);
 
-
     return hangarButton
 }
 
@@ -406,8 +407,9 @@ function createInfoText(toInfoBlock, id, offsetY, offsetX, width, widthText, tex
 
     let interval = setInterval(function () {
         if (document.getElementById(id)) {
+
             if (bottom) {
-                toInfoBlock.append(SquadsBlock);
+                if (!toInfoBlock.find(SquadsBlock).length) toInfoBlock.append(SquadsBlock);
                 SquadsBlock.style.right = -width - 10 + "px";
                 SquadsBlock.style.bottom = "0";
                 SquadsBlock.style.left = "unset";
@@ -416,6 +418,7 @@ function createInfoText(toInfoBlock, id, offsetY, offsetX, width, widthText, tex
                 SquadsBlock.style.top = Number(toInfoBlock.offset().top + offsetY) + "px";
                 SquadsBlock.style.left = Number(toInfoBlock.offset().left + offsetX) + "px";
             }
+
             $(SquadsBlock).find('.wrapperText').css('width', widthText + "px");
             $(SquadsBlock).find('.wrapperText').css('height', height - 23 + "px");
         } else {
@@ -428,6 +431,8 @@ function createInfoText(toInfoBlock, id, offsetY, offsetX, width, widthText, tex
 }
 
 function progressTraining(lvl) {
+    clearInterval(interval);
+
     lvl++;
     chat.send(JSON.stringify({
         event: "training",

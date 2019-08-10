@@ -145,14 +145,15 @@ function placeBuyDialog(type, id, name, e) {
 
     let divCalculate = document.createElement("div");
     divCalculate.style.textAlign = "center";
+    divCalculate.innerHTML = `<sapn>0 шт.</sapn> за <span class="holdInput cr" style="padding-right: 20px;"> 0 </span>`;
     subMenu.appendChild(divCalculate);
 
     divCount.inputBlock.oninput = function () {
-        divCalculate.innerHTML = divCount.inputBlock.value + " за " + divCount.inputBlock.value * divPrice.inputBlock.value + " кредитов";
+        divCalculate.innerHTML = `<sapn>${divCount.inputBlock.value}</sapn> за <span class="holdInput cr" style="padding-right: 20px;">${divCount.inputBlock.value * divPrice.inputBlock.value}</span>`;
     };
 
     divPrice.inputBlock.oninput = function () {
-        divCalculate.innerHTML = divCount.inputBlock.value + " за " + divCount.inputBlock.value * divPrice.inputBlock.value + " кредитов";
+        divCalculate.innerHTML = `<sapn>${divCount.inputBlock.value}</sapn> за <span class="holdInput cr" style="padding-right: 20px;">${divCount.inputBlock.value * divPrice.inputBlock.value}</span>`;
     };
     divMinCount.inputBlock.oninput = function () {
         while (divCount.inputBlock.value % this.value !== 0) {
@@ -166,6 +167,8 @@ function placeBuyDialog(type, id, name, e) {
         }
     };
 
+    let buttonWrapper = document.createElement("div");
+    buttonWrapper.id = "BuyDialogButtonWrapper";
     let button = document.createElement("input");
     button.type = "button";
     button.className = "lobbyButton inventoryTip";
@@ -186,7 +189,7 @@ function placeBuyDialog(type, id, name, e) {
             alert("ошибка ввода")
         }
     };
-    subMenu.appendChild(button);
+    buttonWrapper.appendChild(button);
 
     let close = document.createElement("input");
     close.type = "button";
@@ -195,8 +198,9 @@ function placeBuyDialog(type, id, name, e) {
     close.onclick = function () {
         document.getElementById("subMenu").remove();
     };
-    subMenu.appendChild(close);
+    buttonWrapper.appendChild(close);
 
+    subMenu.appendChild(buttonWrapper)
     document.body.appendChild(subMenu);
 }
 

@@ -194,7 +194,7 @@ function CreateThoriumSlots(unitIcon, ms) {
 function ItemOverTip(e, slot) {
     let inventoryTip = document.getElementById("InventoryTipOver");
     if (inventoryTip) {
-        inventoryTip.style.top = e.clientY + "px";
+        inventoryTip.style.top = e.clientY-40 + "px";
         inventoryTip.style.left = e.clientX + "px";
     } else {
         InventorySelectTip(slot, true, false);

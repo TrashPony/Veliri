@@ -81,7 +81,8 @@ func checkNoobs(newPlayer *player.Player) {
 
 func Reader(ws *websocket.Conn) {
 	// TODO проверять при крафте и произвосдстве на то что игрок находится на нужной базе
-	var recycleItems map[int]*lobby.RecycleItem
+	// source, slot_number, slot
+	var recycleItems map[string]map[int]*lobby.RecycleItem
 
 	for {
 		var msg Message

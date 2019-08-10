@@ -79,16 +79,19 @@ function InitProcessorRoot() {
         drop: function (event, ui) {
             $('.ui-selected').removeClass('ui-selected');
             let draggable = ui.draggable;
-            if (draggable.data("slotData") && draggable.data("slotData").parent === "storage") {
+
+            if (draggable.data("slotData") && (draggable.data("slotData").parent === "storage" || draggable.data("slotData").parent === "squadInventory")) {
                 if (draggable.data("selectedItems") !== undefined) {
                     lobby.send(JSON.stringify({
                         event: "PlaceItemsToProcessor",
                         storage_slots: draggable.data("selectedItems").slotsNumbers,
+                        item_source: draggable.data("slotData").parent,
                     }));
                 } else {
                     lobby.send(JSON.stringify({
                         event: "PlaceItemToProcessor",
                         storage_slot: Number(draggable.data("slotData").number),
+                        item_source: draggable.data("slotData").parent,
                     }));
                 }
             }

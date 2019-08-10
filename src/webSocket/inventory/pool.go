@@ -144,19 +144,7 @@ func UpdateSquad(event string, user *player.Player, err error, ws *websocket.Con
 	if err != nil {
 		ws.WriteJSON(Response{Event: msg.Event, Error: err.Error(), UnitSlot: msg.UnitSlot})
 	} else {
-		if user.GetSquad() != nil {
-			err = ws.WriteJSON(Response{Event: event, Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
-				InventorySize: user.GetSquad().Inventory.GetSize(), InBase: user.InBaseID > 0})
-			if err != nil {
-				ws.Close()
-			}
-		} else {
-			err = ws.WriteJSON(Response{Event: event, Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
-				InventorySize: 0, InBase: user.InBaseID > 0})
-			if err != nil {
-				ws.Close()
-			}
-		}
+		UpdateInventory(user.GetID())
 	}
 
 	if user.InBaseID > 0 {
@@ -177,6 +165,29 @@ func UpdateStorage(userID int) {
 			err := ws.WriteJSON(Response{Event: "UpdateStorage", Storage: userStorage})
 			if err != nil {
 				ws.Close()
+			}
+		}
+	}
+}
+
+func UpdateInventory(userID int) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	for ws, user := range usersInventoryWs {
+		if user.GetID() == userID {
+			if user.GetSquad() != nil {
+				err := ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
+					InventorySize: user.GetSquad().Inventory.GetSize(), InBase: user.InBaseID > 0})
+				if err != nil {
+					ws.Close()
+				}
+			} else {
+				err := ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
+					InventorySize: 0, InBase: user.InBaseID > 0})
+				if err != nil {
+					ws.Close()
+				}
 			}
 		}
 	}

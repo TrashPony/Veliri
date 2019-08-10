@@ -9,6 +9,14 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
         ${getBackgroundUrlByItem(slotData)}
     `;
 
+    cell.onmouseenter = function () {
+        notificationInventorySize(slotData.size);
+    };
+
+    cell.onmouseleave = function () {
+        document.getElementById("itemSize").remove();
+    };
+
     CreateHealBar(cell, "inventory", true);
 
     $(cell).data("slotData", {parent: parent, data: slotData, number: slotNumber, update: true});

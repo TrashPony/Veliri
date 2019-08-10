@@ -40,7 +40,7 @@ function SetWindowsState(state) {
                     }
 
                     if (id === 'UsersStatus') {
-                        UsersStatus();
+                        UsersStatus(true);
                         awaitReady(id, currentState);
                     }
 

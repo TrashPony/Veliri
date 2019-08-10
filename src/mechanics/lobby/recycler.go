@@ -14,6 +14,7 @@ type RecycleItem struct {
 	Slot       *inventory.Slot `json:"slot"`
 	Recycled   bool            `json:"recycled"` // если false то итем не плавится
 	TaxPercent int             `json:"tax_percent"`
+	Source     string          `json:"source"`
 }
 
 // я хз как еще это нормально назвать)
@@ -34,7 +35,7 @@ type Resourcer interface {
 	GetArmorItems() int
 }
 
-func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem, gameBase *base.Base) error {
+func Recycle(user *player.Player, recycleItems *map[string]map[int]*RecycleItem, gameBase *base.Base) error {
 
 	storage, ok := storages.Storages.Get(user.GetID(), user.InBaseID)
 	if !ok {
@@ -42,81 +43,108 @@ func Recycle(user *player.Player, recycleItems *map[int]*RecycleItem, gameBase *
 	}
 
 	// удаляем все слоты которые смогли переработать, с последующием добавление новых итемов на склад
-	for i, item := range *recycleItems {
-		slot, ok := storage.Slots[i]
-		if ok && item.Recycled && item.Slot.Quantity == slot.Quantity {
 
-			// небольшой костыль связаный с принимаемым типом )
-			recycleItem := make(map[int]*RecycleItem)
-			recycleItem[i] = &RecycleItem{Slot: slot}
+	for sourceKey, source := range *recycleItems {
+		for i, item := range source { // source: storage, squadInventory
 
-			possibleRecycleItems, baseTaxItems := GetRecycleItems(&recycleItem, user, gameBase)
+			// проверка перед переработкой на наличие всех айтемов
+			var slot *inventory.Slot
+			ok := false
 
-			// отдаем игроку его итемы
-			for _, slot := range possibleRecycleItems {
-				storages.Storages.AddSlot(user.GetID(), user.InBaseID, slot)
+			if sourceKey == "storage" {
+				slot, ok = storage.Slots[i]
 			}
 
-			// отдаем налог базе
-			for _, slot := range baseTaxItems {
-				if gameBase.CurrentResources[slot.ItemID] != nil && slot.Type == "recycle" && slot.ItemID == gameBase.CurrentResources[slot.ItemID].ItemID {
-					gameBase.CurrentResources[slot.ItemID].Quantity += slot.Quantity
+			if sourceKey == "squadInventory" {
+				slot, ok = user.GetSquad().Inventory.Slots[i]
+			}
+
+			if ok && item.Recycled && item.Slot.Quantity == slot.Quantity {
+
+				// небольшой костыль связаный с принимаемым типом )
+				recycleItem := make(map[string]map[int]*RecycleItem)
+				recycleItem[sourceKey] = make(map[int]*RecycleItem)
+				recycleItem[sourceKey][i] = &RecycleItem{Slot: slot}
+
+				possibleRecycleItems, baseTaxItems := GetRecycleItems(&recycleItem, user, gameBase)
+
+				// отдаем игроку его итемы, обязательно на склад
+				for _, slot := range possibleRecycleItems {
+					storages.Storages.AddSlot(user.GetID(), user.InBaseID, slot)
+				}
+
+				// отдаем налог базе
+				for _, slot := range baseTaxItems {
+					if gameBase.CurrentResources[slot.ItemID] != nil && slot.Type == "recycle" && slot.ItemID == gameBase.CurrentResources[slot.ItemID].ItemID {
+						gameBase.CurrentResources[slot.ItemID].Quantity += slot.Quantity
+					}
+				}
+
+				delete(source, i)
+
+				// удаляем переработаные итемы из инвентаря источника
+				if sourceKey == "storage" {
+					storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, i, slot.Quantity)
+				}
+				if sourceKey == "squadInventory" {
+					// мы уже сделали проверку на наичие и в теории можем не беспокоится об ошибке
+					user.GetSquad().Inventory.RemoveItem(slot.ItemID, slot.Type, slot.Quantity)
 				}
 			}
-
-			delete(*recycleItems, i)
-			storages.Storages.RemoveItemBySlot(user.GetID(), user.InBaseID, i, slot.Quantity)
 		}
 	}
 
 	return nil
 }
 
-func GetRecycleItems(recycleItems *map[int]*RecycleItem, client *player.Player, gameBase *base.Base) ([]*inventory.Slot, []*inventory.Slot) {
+func GetRecycleItems(recycleItems *map[string]map[int]*RecycleItem, client *player.Player, gameBase *base.Base) ([]*inventory.Slot, []*inventory.Slot) {
 	recyclerItems := make([]*inventory.Slot, 0)
 	inBaseItems := make([]*inventory.Slot, 0)
 
-	for _, item := range *recycleItems {
-		// обычные ресурсы имеют прямое преобразование в recycle ресурсы
-		if item.Slot.Type == "resource" {
+	for _, source := range *recycleItems {
+		for _, item := range source { // source: storage, squadInventory
 
-			// потери при переработки из за недостатка скила
-			percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
+			// обычные ресурсы имеют прямое преобразование в recycle ресурсы
+			if item.Slot.Type == "resource" {
 
-			res, ok := gameTypes.Resource.GetBaseByID(item.Slot.ItemID)
-			if ok {
-				item.Recycled = true
-				item.Slot.Tax = (item.Slot.Quantity / 100) * gameBase.GetRecyclePercent(item.Slot.ItemID)
-				item.TaxPercent = gameBase.GetRecyclePercent(item.Slot.ItemID)
+				// потери при переработки из за недостатка скила
+				percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
 
-				ParseItems(&recyclerItems, 100-(percentUserSkills+gameBase.GetRecyclePercent(item.Slot.ItemID)), res, item.Slot.Quantity)
-				ParseItems(&inBaseItems, gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
+				res, ok := gameTypes.Resource.GetBaseByID(item.Slot.ItemID)
+				if ok {
+					item.Recycled = true
+					item.Slot.Tax = (item.Slot.Quantity / 100) * gameBase.GetRecyclePercent(item.Slot.ItemID)
+					item.TaxPercent = gameBase.GetRecyclePercent(item.Slot.ItemID)
+
+					ParseItems(&recyclerItems, 100-(percentUserSkills+gameBase.GetRecyclePercent(item.Slot.ItemID)), res, item.Slot.Quantity)
+					ParseItems(&inBaseItems, gameBase.GetRecyclePercent(item.Slot.ItemID), res, item.Slot.Quantity)
+				}
 			}
-		}
 
-		// recycle ресурсы не могут быть обработаны
-		if item.Slot.Type == "recycle" {
-			continue
-		}
+			// recycle ресурсы не могут быть обработаны
+			if item.Slot.Type == "recycle" {
+				continue
+			}
 
-		// если итем поврежден то его нельзя расплавить
-		if item.Slot.HP < item.Slot.MaxHP {
-			continue
-		}
+			// если итем поврежден то его нельзя расплавить
+			if item.Slot.HP < item.Slot.MaxHP {
+				continue
+			}
 
-		// для всех остальных сущьностей, надо брать рецепт и смотреть ресурсы в нем
-		if item.Slot.Type == "body" || item.Slot.Type == "ammo" || item.Slot.Type == "equip" ||
-			item.Slot.Type == "weapon" || item.Slot.Type == "boxes" || item.Slot.Type == "detail" {
+			// для всех остальных сущьностей, надо брать рецепт и смотреть ресурсы в нем
+			if item.Slot.Type == "body" || item.Slot.Type == "ammo" || item.Slot.Type == "equip" ||
+				item.Slot.Type == "weapon" || item.Slot.Type == "boxes" || item.Slot.Type == "detail" {
 
-			percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
+				percentUserSkills := 25 - client.CurrentSkills["processing"].Level*5
 
-			bluePrint := gameTypes.BluePrints.GetByItemTypeAndID(item.Slot.ItemID, item.Slot.Type)
-			if bluePrint != nil {
+				bluePrint := gameTypes.BluePrints.GetByItemTypeAndID(item.Slot.ItemID, item.Slot.Type)
+				if bluePrint != nil {
 
-				item.Recycled = true
-				//item.ProductionLossPercent = percentUserSkills + gameBase.GetRecyclePercent(item.Slot.ItemID)
+					item.Recycled = true
+					//item.ProductionLossPercent = percentUserSkills + gameBase.GetRecyclePercent(item.Slot.ItemID)
 
-				ParseItems(&recyclerItems, 100-percentUserSkills, bluePrint, item.Slot.Quantity)
+					ParseItems(&recyclerItems, 100-percentUserSkills, bluePrint, item.Slot.Quantity)
+				}
 			}
 		}
 	}

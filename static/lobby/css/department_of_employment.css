@@ -98,12 +98,12 @@
     color: aqua;
 }
 
-#missionText a:visited{
+#missionText a:visited {
     text-decoration: none;
     color: aqua;
 }
 
-#missionText a:hover{
+#missionText a:hover {
     text-decoration: none;
     color: #0093ff;
 }
@@ -135,6 +135,7 @@
 #missionAsc .asks {
     border: 0 solid #25a0e1;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.3), rgba(37, 160, 225, 0.3) 6px);
+    background-color: unset;
 }
 
 #missionAsc .asks:hover {

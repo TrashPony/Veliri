@@ -306,17 +306,20 @@ function createTipWeaponType(table, slot, type) {
 function notificationInventorySize(loadSize) {
     let realSize = document.getElementById("sizeInventoryInfo");
 
-    if (size > 0) {
+    if (size > 0 && realSize) {
 
         if (document.getElementById("itemSize")) {
             document.getElementById("itemSize").remove();
         }
 
         let percentFill = 100 / (size / loadSize);
-
         let itemSize = document.createElement("div");
-        itemSize.id = "itemSize";
         itemSize.style.width = percentFill + "%";
+        itemSize.id = "itemSize";
+
+        if (percentFill > 100) {
+            itemSize.style.background = "rgba(255, 0, 0, 0.5)";
+        }
 
         realSize.appendChild(itemSize);
     }

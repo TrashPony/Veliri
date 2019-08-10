@@ -19,10 +19,10 @@ type Message struct {
 	RecyclerSlot int   `json:"recycler_slot"`
 	StorageSlots []int `json:"storage_slots"`
 
-	RecycleSlots        map[int]*lobby.RecycleItem `json:"recycle_slots"`
-	PreviewRecycleSlots []*inv.Slot                `json:"preview_recycle_slots"`
-	UserRecycleSkill    int                        `json:"user_recycle_skill"`
-	Storage             *inv.Inventory             `json:"storage"`
+	RecycleSlots        map[string]map[int]*lobby.RecycleItem `json:"recycle_slots"`
+	PreviewRecycleSlots []*inv.Slot                           `json:"preview_recycle_slots"`
+	UserRecycleSkill    int                                   `json:"user_recycle_skill"`
+	Storage             *inv.Inventory                        `json:"storage"`
 
 	BluePrint *blueprints.Blueprint        `json:"blue_print"`
 	BlueWorks map[int]*blueprints.BlueWork `json:"blue_works"`
@@ -31,11 +31,12 @@ type Message struct {
 	Count     int                          `json:"count"`
 	MaxCount  int                          `json:"max_count"`
 
-	StartTime     int64 `json:"start_time"`
-	ToTime        int64 `json:"to_time"`
-	MineralSaving int   `json:"mineral_saving"`
-	TimeSaving    int   `json:"time_saving"`
-	BluePrintID   int   `json:"blue_print_id"`
+	StartTime     int64  `json:"start_time"`
+	ToTime        int64  `json:"to_time"`
+	MineralSaving int    `json:"mineral_saving"`
+	TimeSaving    int    `json:"time_saving"`
+	BluePrintID   int    `json:"blue_print_id"`
+	ItemSource    string `json:"item_source"`
 
 	Fraction string `json:"fraction"`
 

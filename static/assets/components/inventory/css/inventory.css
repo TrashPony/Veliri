@@ -84,17 +84,17 @@
 }
 
 #sizeInventoryInfo {
-    width: 152px;
+    width: calc(100% - 5px);
     height: 15px;
     border: 1px solid #4c4c4c;
     text-align: left;
     display: block;
-    margin: 8px 0 -4px 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 1);
     border-radius: 10px;
     background-size: 12%;
     overflow: hidden;
     background-color: #959595;
+    margin: 8px auto -4px;
 }
 
 #sizeInventoryInfo #realSize {
@@ -123,6 +123,7 @@
     background-repeat: no-repeat;
     background-position: 119px 0;
     background-size: 12%;
+    margin: auto;
 }
 
 .utilButton, .destroyButton {

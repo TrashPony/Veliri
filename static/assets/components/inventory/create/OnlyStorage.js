@@ -60,7 +60,6 @@ function OnlyStorage() {
     document.getElementById('destroyButton').remove();
     document.getElementById('inventoryStorage').style.height = '58px';
     document.getElementById('inventoryStorageInventory').style.height = '58px';
-    document.getElementById('sizeInventoryInfo').style.margin = '8px 0 -4px 1px';
 
     $('#storage .InventoryHead').css("margin", "1px 0px 3px");
     $('#Inventory .InventoryHead').css("margin", "1px 0px 3px");
