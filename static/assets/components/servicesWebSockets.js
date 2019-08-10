@@ -1,8 +1,6 @@
 let inventorySocket;
 let marketSocket;
 
-let webSocketInit = true;
-
 function ConnectInventory() {
     inventorySocket = new WebSocket("ws://" + window.location.host + "/wsInventory");
     console.log("Websocket inventory - status: " + inventorySocket.readyState);

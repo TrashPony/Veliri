@@ -2,29 +2,31 @@ let chat;
 
 // тут уже не только чат, такие дела..
 function ConnectChat() {
-    chat = new WebSocket("ws://" + window.location.host + "/wsChat");
-    console.log("Websocket chat - status: " + chat.readyState);
+    $(document).ready(function () {
+        chat = new WebSocket("ws://" + window.location.host + "/wsChat");
+        console.log("Websocket chat - status: " + chat.readyState);
 
-    chat.onopen = function () {
-        console.log("Connection chat opened..." + this.readyState);
+        chat.onopen = function () {
+            console.log("Connection chat opened..." + this.readyState);
 
-        chat.send(JSON.stringify({
-            event: "OpenChat",
-        }));
-        initChatInterface();
-    };
+            chat.send(JSON.stringify({
+                event: "OpenChat",
+            }));
+            initChatInterface();
+        };
 
-    chat.onmessage = function (msg) {
-        ChatReader(JSON.parse(msg.data));
-    };
+        chat.onmessage = function (msg) {
+            ChatReader(JSON.parse(msg.data));
+        };
 
-    chat.onerror = function (msg) {
-        console.log("Error chat occured sending..." + msg.data);
-    };
+        chat.onerror = function (msg) {
+            console.log("Error chat occured sending..." + msg.data);
+        };
 
-    chat.onclose = function (msg) {
-        console.log("Disconnected chat - status " + this.readyState);
-    };
+        chat.onclose = function (msg) {
+            console.log("Disconnected chat - status " + this.readyState);
+        };
+    });
 }
 
 function initChatInterface() {

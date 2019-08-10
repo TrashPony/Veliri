@@ -14,7 +14,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     };
 
     cell.onmouseleave = function () {
-        document.getElementById("itemSize").remove();
+        if (document.getElementById("itemSize")) document.getElementById("itemSize").remove();
     };
 
     CreateHealBar(cell, "inventory", true);

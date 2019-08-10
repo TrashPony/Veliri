@@ -2,7 +2,7 @@ let currentChatID = 0;
 let userName = ''; // текущей пользователь
 
 function OpenChat(data) {
-    console.log(data);
+
     if (data.user)
         userName = data.user.user_name;
 
@@ -13,6 +13,14 @@ function OpenChat(data) {
     // вкладка локального чата
     tabs.innerHTML = `<div id="chat0" onclick="ChangeCanal(0)">Локальный</div>`;
     for (let i in data.groups) {
+
+        // что бы не спамить лишний инфой в вкладках
+        if (data.groups[i].private) {
+            let userNames = data.groups[i].name.split('-');
+            if (userNames[0] === userName) data.groups[i].name = userNames[1];
+            if (userNames[1] === userName) data.groups[i].name = userNames[0];
+        }
+
         tabs.innerHTML += `<div id="chat${data.groups[i].id}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
     }
 
