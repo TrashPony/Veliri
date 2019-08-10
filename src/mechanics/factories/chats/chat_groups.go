@@ -9,10 +9,12 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 var Groups = NewChatGroupStore()
 
+// todo вероятный проблемы конкуретного доступа, ибо я забыл везде использовать мьютекс...
 type groups struct {
 	groups map[int]*chatGroup.Group
 	// локальные группы чатов, отдельные чаты для каждой игровой зоны от них нельзя отписатся
@@ -89,6 +91,63 @@ func (g *groups) CreateNewGroup() {
 
 }
 
+func (g *groups) CreateNewPrivateGroup(user1 *player.Player, user2 *player.Player) (*chatGroup.Group, *chatGroup.Message) {
+	g.mx.Lock()
+	defer g.mx.Unlock()
+
+	// если у игроков уже был приватный чат то отправляем его
+	for _, privateGroup := range g.groups {
+		if privateGroup.Private &&
+			(privateGroup.PrivateKey == strconv.Itoa(user1.GetID())+":"+strconv.Itoa(user2.GetID()) ||
+				privateGroup.PrivateKey == strconv.Itoa(user2.GetID())+":"+strconv.Itoa(user1.GetID())) {
+
+			systemMessage := &chatGroup.Message{
+				//Message: "игрок " + client.GetLogin() + " покинул этот чат.",
+				Time:   time.Now().UTC(),
+				System: true,
+			}
+
+			if g.CheckUserSubscribe(privateGroup.ID, user1) {
+				//user2 не подписан
+				chats.AddUserInChat(privateGroup.ID, user2.GetID())
+				privateGroup.Users[user2.GetID()] = true
+				systemMessage.Message = "игрок " + user2.GetLogin() + " вернулся в чат."
+			}
+
+			if g.CheckUserSubscribe(privateGroup.ID, user2) {
+				//user1 не подписан
+				chats.AddUserInChat(privateGroup.ID, user1.GetID())
+				privateGroup.Users[user1.GetID()] = true
+				systemMessage.Message = "игрок " + user1.GetLogin() + " вернулся в чат."
+			}
+
+			privateGroup.History = append(privateGroup.History, systemMessage)
+			return privateGroup, systemMessage
+		}
+	}
+
+	newPrivateGroup := &chatGroup.Group{
+		Name:       user1.GetLogin() + "-" + user2.GetLogin(),
+		Local:      false,
+		Public:     false,
+		Private:    true,
+		Users:      make(map[int]bool),
+		History:    make([]*chatGroup.Message, 0),
+		PrivateKey: strconv.Itoa(user1.GetID()) + ":" + strconv.Itoa(user2.GetID()),
+	}
+
+	newPrivateGroup.ID = chats.AddNewGroup(newPrivateGroup)
+	g.groups[newPrivateGroup.ID] = newPrivateGroup
+
+	// что бы в приватную группу нельзя было подключится нельзя использовать общий метод SubscribeGroup
+	chats.AddUserInChat(newPrivateGroup.ID, user1.GetID())
+	chats.AddUserInChat(newPrivateGroup.ID, user2.GetID())
+	newPrivateGroup.Users[user1.GetID()] = true
+	newPrivateGroup.Users[user2.GetID()] = true
+
+	return newPrivateGroup, nil
+}
+
 func (g *groups) SubscribeGroup(groupID int, user *player.Player, password string) bool {
 
 	if g.CheckUserSubscribe(groupID, user) {
@@ -96,7 +155,8 @@ func (g *groups) SubscribeGroup(groupID int, user *player.Player, password strin
 	}
 
 	for _, group := range g.groups {
-		if group.ID == groupID && (group.Public || group.Password == password) {
+		// через этот метод нельзя подписатся на приватные группы
+		if group.ID == groupID && (group.Public || group.Password == password) && !group.Private {
 			group.Users[user.GetID()] = true // при подключение игрок онайн
 			chats.AddUserInChat(group.ID, user.GetID())
 		}
@@ -107,9 +167,15 @@ func (g *groups) SubscribeGroup(groupID int, user *player.Player, password strin
 
 func (g *groups) Unsubscribe(groupID int, user *player.Player) {
 	for _, group := range g.groups {
+		// если это общая группа то просто отписываемся
 		if group.ID == groupID {
 			delete(group.Users, user.GetID())
 			chats.RemoveUserInChat(group.ID, user.GetID())
+		}
+
+		// если это приватная группа и из нее все вышли, то удаляем ее
+		if group.ID == groupID && group.Private && len(group.Users) == 0 {
+			g.RemoveGroup(group.ID)
 		}
 	}
 }
@@ -128,4 +194,9 @@ func (g *groups) CheckUserSubscribe(groupID int, user *player.Player) bool {
 	}
 
 	return false
+}
+
+func (g *groups) RemoveGroup(groupID int) {
+	chats.RemoveGroup(groupID)
+	delete(g.groups, groupID)
 }

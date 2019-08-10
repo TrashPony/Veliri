@@ -36,6 +36,24 @@ func chatReader(client *player.Player, msg Message) {
 
 		}
 
+		if msg.Event == "CreateNewPrivateGroup" && msg.UserID != client.GetID() {
+			// создаем приватный чат
+			toUser := chat.Clients.GetByID(msg.UserID)
+			privateGroup, sysMessage := chats.Groups.CreateNewPrivateGroup(client, toUser)
+
+			// открываем чат у инициалитора общения
+			SendMessage("OpenChat", msg.Message, client.GetID(), 0, privateGroup,
+				chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
+
+			// говорим второму что у него есть новый чат, но не открываем его
+			SendMessage("OpenChat", msg.Message, toUser.GetID(), 0, nil,
+				chats.Groups.GetAllUserGroups(toUser), nil, false, nil, nil, nil, nil)
+
+			if sysMessage != nil {
+				SendMessage("NewChatMessage", sysMessage, 0, privateGroup.ID, nil, nil, nil, false, nil, nil, nil, nil)
+			}
+		}
+
 		if msg.Event == "SubscribeGroup" {
 			group := chats.Groups.GetGroup(msg.GroupID)
 			if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
@@ -47,13 +65,30 @@ func chatReader(client *player.Player, msg Message) {
 		}
 
 		if msg.Event == "Unsubscribe" {
+			localGroup, _ := getLocalChat(client)
 			group := chats.Groups.GetGroup(msg.GroupID)
 			if group != nil {
+
+				if group.Private {
+					systemMessage := &chatGroup.Message{
+						Message: "игрок " + client.GetLogin() + " покинул этот чат.",
+						Time:    time.Now().UTC(),
+						System:  true,
+					}
+					group.History = append(group.History, systemMessage)
+					SendMessage("NewChatMessage", systemMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil, nil, nil)
+				}
+
 				chats.Groups.Unsubscribe(msg.GroupID, client)
+
+				// оповещаем всех в чате что игровы вышел из группы.
 				SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
 					getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
-				SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
+
+				// у игрока который вышел открывается локальный чат
+				SendMessage("OpenChat", msg.Message, client.GetID(), 0, localGroup,
 					chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
+
 			}
 		}
 
@@ -72,12 +107,14 @@ func chatReader(client *player.Player, msg Message) {
 				SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, nil, nil, nil, false, nil, nil, nil, nil)
 			} else {
 				// если msg.GroupID == 0 то это сообщение в локальный чат
-				group, _ := getLocalChat(client)
+				if msg.GroupID == 0 {
+					group, _ := getLocalChat(client)
 
-				chatMessage := chatGroup.Message{UserName: client.GetLogin(), UserID: strconv.Itoa(client.GetID()), Message: msg.MessageText, Time: time.Now().UTC()}
-				group.History = append(group.History, &chatMessage)
+					chatMessage := chatGroup.Message{UserName: client.GetLogin(), UserID: strconv.Itoa(client.GetID()), Message: msg.MessageText, Time: time.Now().UTC()}
+					group.History = append(group.History, &chatMessage)
 
-				SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil, nil, nil)
+					SendMessage(msg.Event, &chatMessage, 0, msg.GroupID, group, nil, nil, true, nil, nil, nil, nil)
+				}
 			}
 		}
 	}

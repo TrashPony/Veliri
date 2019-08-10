@@ -26,7 +26,7 @@ func startMining(ws *websocket.Conn, msg Message) {
 			return
 		}
 
-		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
+		if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
 			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			return
 		}
@@ -63,6 +63,13 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 		// переменная для проверки времени цикла
 		miningEquip.CurrentReload = miningEquip.Reload
 
+		// проверка на полный трюм
+		if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
+			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			miningEquip.MiningChecker = false
+			return
+		}
+
 		for miningEquip.CurrentReload > 0 {
 			select {
 			case exitNow := <-miningEquip.GetMining():
@@ -97,13 +104,6 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 		}
 
 		if exit {
-			miningEquip.MiningChecker = false
-			return
-		}
-
-		// проверка на полный трюм
-		if user.GetSquad().MatherShip.Body.CapacitySize <= user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
 			miningEquip.MiningChecker = false
 			return
 		}

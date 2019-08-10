@@ -27,20 +27,24 @@ function NewChatMessage(message, id) {
     if (id === currentChatID) {
         let chatBox = document.getElementById("chatBox");
 
-        let chatMessage = document.createElement("div");
-        chatMessage.className = "chatMessage";
-        chatMessage.innerHTML += `
+        if (!message.system) {
+            let chatMessage = document.createElement("div");
+            chatMessage.className = "chatMessage";
+            chatMessage.innerHTML += `
                 <span class="ChatUserName">${message.user_name} > </span>
                 <span class="ChatText">${message.message}</span>
         `;
-        chatBox.appendChild(chatMessage);
+            chatBox.appendChild(chatMessage);
 
-        let userAvatar = document.createElement("div");
-        userAvatar.className = "chatUserIcon";
-        $(chatMessage).prepend(userAvatar);
-        GetUserAvatar(message.user_id).then(function (response) {
-            userAvatar.style.backgroundImage = "url('" + response.data.avatar + "')";
-        });
+            let userAvatar = document.createElement("div");
+            userAvatar.className = "chatUserIcon";
+            $(chatMessage).prepend(userAvatar);
+            GetUserAvatar(message.user_id).then(function (response) {
+                userAvatar.style.backgroundImage = "url('" + response.data.avatar + "')";
+            });
+        } else {
+            systemMessage(message.message)
+        }
     } else {
         let chatTab = document.getElementById('chat' + id);
         if (chatTab) chatTab.className = 'alertChatTab';
@@ -80,4 +84,14 @@ function HideChat() {
         transform(usersBox, 125, 1, 1.5);
         chatHide = false;
     }
+}
+
+function systemMessage(text) {
+    let chatBox = document.getElementById("chatBox");
+
+    chatBox.innerHTML += `
+            <div class="chatMessage">
+                <span class="chatSystem">${text}</span>
+            </div>
+        `;
 }

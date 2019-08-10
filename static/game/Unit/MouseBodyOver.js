@@ -44,10 +44,3 @@ function mouseBodyOver(body, unit, unitBox, userID) {
         }, 2000);
     }, this);
 }
-
-function informationFunc(userName, userId) {
-    chat.send(JSON.stringify({
-        event: "OpenOtherUserStat",
-        user_name: userId,
-    }));
-}

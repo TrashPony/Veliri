@@ -202,3 +202,10 @@ function OtherUserStatus(user) {
 
     FillOtherUserStat(user);
 }
+
+function informationFunc(userName, userId) {
+    chat.send(JSON.stringify({
+        event: "OpenOtherUserStat",
+        user_name: userId,
+    }));
+}

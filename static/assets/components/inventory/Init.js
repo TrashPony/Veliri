@@ -9,23 +9,7 @@ function InitInventoryMenu(closeFunc, option) {
             }
             includeJS("../assets/components/uiComponents/Button.js");
             includeJS("../assets/components/uiComponents/ControlButtons.js");
-            includeJS("../assets/components/uiComponents/inventoryCells/CreateInventoryCell.js");
-
-            includeJS("../assets/components/inventory/create/Create.js");
-            includeJS("../assets/components/inventory/create/Constructor.js");
-            includeJS("../assets/components/inventory/create/Inventory.js");
-            includeJS("../assets/components/inventory/create/MotherShipParams.js");
-            includeJS("../assets/components/inventory/create/Squad.js");
-            includeJS("../assets/components/inventory/create/SquadHead.js");
-            includeJS("../assets/components/inventory/create/Storage.js");
-            includeJS("../assets/components/inventory/create/OnlyStorage.js");
-            includeJS("../assets/components/inventory/create/SortPanel.js");
-            includeJS("../assets/components/inventory/create/OnlyConstructor.js");
-            includeJS("../assets/components/inventory/create/OnlyInventory.js");
-
-            includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
-            includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
-            includeJS("../assets/components/inventory/create/paramsPanel/NavInfo.js");
+            includeJS("../assets/components/inventoryCells/CreateInventoryCell.js");
 
             includeJS("../assets/components/inventory/selected/SelectInventoryItem.js");
             includeJS("../assets/components/inventory/selected/DeselectInventoryItem.js");
@@ -66,6 +50,21 @@ function InitInventoryMenu(closeFunc, option) {
             includeJS("../assets/components/inventory/inventory/SelectItems.js");
             includeJS("../assets/components/inventory/inventory/BlockInterface.js");
 
+            includeJS("../assets/components/inventory/create/Create.js");
+            includeJS("../assets/components/inventory/create/OnlyConstructor.js");
+            includeJS("../assets/components/inventory/create/OnlyInventory.js");
+            includeJS("../assets/components/inventory/create/OnlyStorage.js");
+            includeJS("../assets/components/inventory/create/Inventory.js");
+            includeJS("../assets/components/inventory/create/Constructor.js");
+            includeJS("../assets/components/inventory/create/MotherShipParams.js");
+            includeJS("../assets/components/inventory/create/Squad.js");
+            includeJS("../assets/components/inventory/create/SquadHead.js");
+            includeJS("../assets/components/inventory/create/Storage.js");
+            includeJS("../assets/components/inventory/create/SortPanel.js");
+            includeJS("../assets/components/inventory/create/paramsPanel/AttackInfo.js");
+            includeJS("../assets/components/inventory/create/paramsPanel/DefendInfo.js");
+            includeJS("../assets/components/inventory/create/paramsPanel/NavInfo.js");
+
             includeCSS("../assets/components/inventory/css/constructorMS.css");
             includeCSS("../assets/components/inventory/css/constructorUnit.css");
             includeCSS("../assets/components/inventory/css/equipMSBox.css");
@@ -78,20 +77,21 @@ function InitInventoryMenu(closeFunc, option) {
             includeCSS("../assets/components/inventory/css/weaponType.css");
             includeCSS("../assets/components/inventory/css/storage.css");
             includeCSS("../assets/components/inventory/css/marketDialog.css");
-            includeCSS("../assets/components/uiComponents/passwordProtectBox/passBlock.css");
-            includeCSS("../assets/components/uiComponents/inventoryCells/inventoryCells.css");
+            includeCSS("../assets/components/passwordProtectBox/passBlock.css");
+            includeCSS("../assets/components/inventoryCells/inventoryCells.css");
 
         }
         return resolve();
     });
-    //todo чето я хз, промис не работает
+    // todo чето я хз, промис не работает
+    // todo это важно
     promise.then(
         () => {
             initInventory = true;
             setTimeout(function () {
                 CreateInventoryMenu(closeFunc, option);
                 ConnectInventory();
-            }, 400);
+            }, 700);
         }
     );
 }

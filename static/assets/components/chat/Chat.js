@@ -61,6 +61,10 @@ function ChatReader(data) {
         OpenChat(data);
     }
 
+    if (data.event === 'RemoveGroup') {
+        RemoveGroup(data.group_id)
+    }
+
     if (data.event === 'GetAllGroups') {
         AllGroups(data.groups);
     }

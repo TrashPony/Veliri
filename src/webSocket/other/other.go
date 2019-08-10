@@ -94,7 +94,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 
 		// все что связано с чатом выплюнул сюда :\
 		if msg.Event == "OpenChat" || msg.Event == "GetAllGroups" || msg.Event == "ChangeGroup" || msg.Event == "SubscribeGroup" ||
-			msg.Event == "Unsubscribe" || msg.Event == "CreateNewGroup" || msg.Event == "NewChatMessage" {
+			msg.Event == "Unsubscribe" || msg.Event == "CreateNewGroup" || msg.Event == "NewChatMessage" || msg.Event == "CreateNewPrivateGroup" {
 			chatReader(client, msg)
 		}
 

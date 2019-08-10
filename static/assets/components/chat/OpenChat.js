@@ -2,10 +2,9 @@ let currentChatID = 0;
 let userName = ''; // текущей пользователь
 
 function OpenChat(data) {
-
+    console.log(data);
     if (data.user)
         userName = data.user.user_name;
-
 
     if (document.getElementById("allGroupsWindow")) document.getElementById("allGroupsWindow").remove();
 
@@ -17,7 +16,11 @@ function OpenChat(data) {
         tabs.innerHTML += `<div id="chat${data.groups[i].id}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
     }
 
-    ChangeCanal(0); // открываем по умолчанию локальный чат
+    if (data.group) {
+        ChangeCanal(data.group.id);
+    } else {
+        ChangeCanal(currentChatID);
+    }
 }
 
 function ChangeCanal(id) {
@@ -67,8 +70,11 @@ function updateUsers(group, users) {
 
             let chatUserLine = document.createElement("div");
             chatUserLine.className = "chatUserLine";
-            chatUserLine.id = users[i].user_name;
+            chatUserLine.id = "chatUserLine" + users[i].user_name;
             chatUserLine.innerHTML = `<div class="chatUserName">${users[i].user_name}</div>`;
+            $(chatUserLine).click(function (e) {
+                ChatUserSubMenu(e, this, users[i])
+            });
 
             let userAvatar = document.createElement("div");
             userAvatar.className = "chatUserIcon";
@@ -79,25 +85,79 @@ function updateUsers(group, users) {
             usersBox.appendChild(chatUserLine);
 
             if (users[i].user_name === userName && group.id !== 0) {
-                $('#' + users[i].user_name).append('<div class="exitChatButton" onclick="Unsubscribe(' + group.id + ')">x</div>')
+                $('#chatUserLine' + users[i].user_name).append('<div class="exitChatButton" onclick="Unsubscribe(event, ' + group.id + ')">x</div>')
             }
         }
     }
 }
 
-function systemMessage(text) {
-    let chatBox = document.getElementById("chatBox");
-
-    chatBox.innerHTML += `
-            <div class="chatMessage">
-                <span class="chatSystem">${text}</span>
-            </div>
-        `;
-}
-
-function Unsubscribe(groupID) {
+function Unsubscribe(event, groupID) {
+    event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);
     chat.send(JSON.stringify({
         event: "Unsubscribe",
         group_id: Number(groupID),
     }));
+}
+
+function ChatUserSubMenu(e, context, user) {
+    if (document.getElementById('chatSubMenu')) document.getElementById('chatSubMenu').remove();
+
+    let hideWriteButton = "";
+    if (user.user_name === userName) {
+        hideWriteButton = `display: none;`
+    }
+
+    let subMenu = document.createElement("div");
+    subMenu.id = "chatSubMenu";
+    subMenu.style.left = (e.pageX) + "px";
+    subMenu.style.top = (e.pageY) + "px";
+
+    subMenu.innerHTML = `
+        <div class="chatSubMenuUserAction">
+            <input type="button" value="Подробнее" onclick="informationFunc('${user.user_name}', '${user.user_id}'); document.getElementById('chatSubMenu').remove()">
+            <input type="button" value="Написать" style="${hideWriteButton}" onclick="CreatePrivateChatGroup('${user.user_id}'); document.getElementById('chatSubMenu').remove()">
+            <input type="button" value="Закрыть" onclick="document.getElementById('chatSubMenu').remove()">
+        </div>
+    `;
+
+    let chatSubMenuUserHead = document.createElement("div");
+    chatSubMenuUserHead.className = "chatSubMenuUserHead";
+
+    let chatUserLine = document.createElement("div");
+    chatUserLine.className = "chatUserLine";
+    chatUserLine.innerHTML = `
+    <div>
+        <div class="chatUserName">${user.user_name}</div>
+        <div class="chatUserTitle">${user.title}</div>
+    </div>
+    `;
+
+    let userAvatar = document.createElement("div");
+    userAvatar.className = "chatUserIcon";
+    $(chatUserLine).prepend(userAvatar);
+    GetUserAvatar(user.user_id).then(function (response) {
+        userAvatar.style.backgroundImage = "url('" + response.data.avatar + "')";
+    });
+
+    $(chatUserLine).prepend(userAvatar);
+    chatSubMenuUserHead.appendChild(chatUserLine);
+    $(subMenu).prepend(chatSubMenuUserHead);
+
+    document.body.appendChild(subMenu);
+}
+
+function CreatePrivateChatGroup(userID) {
+    chat.send(JSON.stringify({
+        event: "CreateNewPrivateGroup",
+        user_id: Number(userID),
+    }));
+}
+
+function RemoveGroup(groupID) {
+    if (document.getElementById("chat" + groupID)) document.getElementById("chat" + groupID).remove();
+    if (groupID === currentChatID) {
+        ChangeCanal(0)
+    } else {
+        ChangeCanal(currentChatID)
+    }
 }

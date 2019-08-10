@@ -1,5 +1,7 @@
 let windowsState = {};
 
+let serviceLocation = window.location.pathname;
+
 function SetWindowsState(state) {
 
     if (!state) return;
@@ -49,23 +51,23 @@ function SetWindowsState(state) {
                         awaitReady(id, currentState);
                     }
 
-                    // могут быть открыты только на базе, впрочем отруливается бекендом, но надо избежать ошибки
-                    if (id === 'processorRoot') {
+                    // могут быть открыты только на базе
+                    if (id === 'processorRoot' && serviceLocation === "/lobby/") {
                         InitProcessorRoot();
                         awaitReady(id, currentState);
                     }
 
-                    if (id === 'wrapperInventoryAndStorage') {
+                    if (id === 'wrapperInventoryAndStorage' && serviceLocation === "/lobby/") {
                         InitInventoryMenu(null, 'storage');
                         awaitReady(id, currentState);
                     }
 
-                    if (id === 'Workbench') {
+                    if (id === 'Workbench' && serviceLocation === "/lobby/") {
                         InitWorkbench();
                         awaitReady(id, currentState);
                     }
 
-                    if (id === 'DepartmentOfEmployment') {
+                    if (id === 'DepartmentOfEmployment' && serviceLocation === "/lobby/") {
                         let departmentID = id;
                         setTimeout(function () { // этот костыль тут из за диалога обучения который идет не через стандартный путь
                             if (!document.getElementById('DepartmentOfEmployment')) {
@@ -75,8 +77,8 @@ function SetWindowsState(state) {
                         }, 200)
                     }
 
-                    // могут быть открыты только на глобалке, впрочем отруливается бекендом, но надо избежать ошибки
-                    if (id === "Inventory") {
+                    // могут быть открыты только на глобалке
+                    if (id === "Inventory" && serviceLocation === "/global/") {
                         InitInventoryMenu(null, 'inventory');
                         awaitReady(id, currentState);
                     }

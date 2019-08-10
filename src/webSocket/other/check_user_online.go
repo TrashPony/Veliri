@@ -56,6 +56,8 @@ func getUsersInChatGroup(group *chatGroup.Group, all bool) []*player.ShortUserIn
 		chatUser := chat.Clients.GetByID(id)
 
 		if chatUser != nil {
+
+			// всех или только тех кто онлайн
 			if all || group.Users[id] {
 				users = append(users, chatUser.GetShortUserInfo(false))
 			}

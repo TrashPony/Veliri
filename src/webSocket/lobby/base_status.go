@@ -12,6 +12,7 @@ func BaseStatusSender() {
 
 		// todo возможна проблема конкуретного дотупа
 		// сравнивать предыдущие и текущие состояние базы, если есть различия то отсылать статус базы
+		// todo сейчас сравнивается только процент эффективности а надо отслеживать еще и количество ресурсов
 		for _, user := range usersLobbyWs {
 			userBase, _ := bases.Bases.Get(user.InBaseID)
 			if userBase != nil && user.LastBaseEfficiency != userBase.Efficiency {

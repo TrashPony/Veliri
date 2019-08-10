@@ -14,7 +14,9 @@ func Chats() map[int]*chatGroup.Group {
 		" name," +
 		" public," +
 		" password," +
-		" fraction " +
+		" fraction," +
+		" private," +
+		" private_key" +
 		" " +
 		"FROM chats")
 	if err != nil {
@@ -27,7 +29,8 @@ func Chats() map[int]*chatGroup.Group {
 	for rows.Next() {
 		var gameChat chatGroup.Group
 
-		err := rows.Scan(&gameChat.ID, &gameChat.Name, &gameChat.Public, &gameChat.Password, &gameChat.Fraction)
+		err := rows.Scan(&gameChat.ID, &gameChat.Name, &gameChat.Public, &gameChat.Password, &gameChat.Fraction,
+			&gameChat.Private, &gameChat.PrivateKey)
 		if err != nil {
 			log.Fatal("get scan all chats " + err.Error())
 		}
@@ -38,6 +41,36 @@ func Chats() map[int]*chatGroup.Group {
 	}
 
 	return allChats
+}
+
+func AddNewGroup(gameChat *chatGroup.Group) int {
+	id := 0
+	err := dbConnect.GetDBConnect().QueryRow("INSERT INTO "+
+		"chats "+
+		"(name, public, password, fraction, private, private_key) "+
+		"VALUES "+
+		"($1, $2, $3, $4, $5, $6) "+
+		"RETURNING id",
+		gameChat.Name, gameChat.Public, gameChat.Password, gameChat.Fraction, gameChat.Private, gameChat.PrivateKey).Scan(&id)
+	if err != nil {
+		log.Fatal("add new chat group " + err.Error())
+	}
+
+	return id
+}
+
+func RemoveGroup(idChat int) {
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM users_in_chat WHERE id_chat = $1",
+		idChat)
+	if err != nil {
+		log.Fatal("remove all user in chat" + err.Error())
+	}
+
+	_, err = dbConnect.GetDBConnect().Exec("DELETE FROM chats WHERE id = $1",
+		idChat)
+	if err != nil {
+		log.Fatal("remove chat group" + err.Error())
+	}
 }
 
 func getUsersChat(gameChat *chatGroup.Group) {

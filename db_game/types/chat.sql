@@ -4,7 +4,9 @@ CREATE TABLE chats
   name     VARCHAR(64),
   public   BOOLEAN,
   password varchar(64),
-  fraction varchar(64) --Replics Explores Reverses
+  fraction varchar(64), --Replics Explores Reverses
+  private  BOOLEAN not null default false,
+  private_key text not null default ''
 );
 
 CREATE TABLE users_in_chat
