@@ -98,10 +98,12 @@ func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int
 
 		for _, slot := range inv.Slots {
 			if slot.ItemID == itemID && slot.Type == itemType {
-				if slot.Quantity > quantityRemove {
+				if slot.Quantity >= quantityRemove {
 					slot.RemoveItemBySlot(quantityRemove)
 					return nil
 				} else {
+					// если в слоте не чего либо для полного удаления,
+					// то удаляем все из слота, и уменьшаем количество итемов которые еще надо удалить
 					quantityRemove -= slot.Quantity
 					slot.RemoveItemBySlot(slot.Quantity)
 				}
@@ -191,6 +193,8 @@ func (slot *Slot) RemoveItemBySlot(quantityRemove int) (CountRemove int) {
 		return quantityRemove
 	} else {
 		slot.Item = nil
+		slot.Quantity = 0
+		slot.Size = 0
 		return slot.Quantity
 	}
 }

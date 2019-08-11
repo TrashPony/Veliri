@@ -1,6 +1,8 @@
 package lobby
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
+	update2 "github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -14,6 +16,7 @@ func SellDetail(user *player.Player, msg Message) {
 
 		userBase, _ := bases.Bases.Get(user.InBaseID)
 		storage, _ := storages.Storages.Get(user.GetID(), user.InBaseID)
+
 		// база может купить только сырье, тесть recycle
 		err := storage.RemoveItem(msg.ID, "recycle", msg.Count)
 		if err != nil {
@@ -28,6 +31,8 @@ func SellDetail(user *player.Player, msg Message) {
 
 		// todo проверить текущую цену с тем что пришло в сообщение, если разные отправлять ошибку msg.Price
 		user.SetCredits(user.GetCredits() + msg.Count*1)
+		update2.Squad(user.GetSquad(), true)
+		update.Player(user)
 
 		//обновлять фронтенд
 		GetDetails(user)
