@@ -15,7 +15,9 @@ function MoveTo(jsonData) {
 
         game.squad.q = jsonData.path_unit.q;
         game.squad.r = jsonData.path_unit.r;
+
         game.squad.speed = jsonData.path_unit.Speed * 10;
+        game.squad.animateSpeed = jsonData.path_unit.animate;
 
         game.add.tween(game.squad.sprite).to({
                 x: jsonData.path_unit.x,
@@ -29,6 +31,7 @@ function MoveTo(jsonData) {
         MoveOther(jsonData)
     }
 }
+
 // движение на глобальной карте
 function MoveOther(jsonData) {
     for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
@@ -44,6 +47,7 @@ function MoveOther(jsonData) {
                 );
 
                 game.otherUsers[i].speed = jsonData.path_unit.Speed * 10;
+                game.otherUsers[i].animateSpeed = jsonData.path_unit.animate;
 
                 SetAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
                 game.otherUsers[i].rotate = jsonData.path_unit.rotate;
@@ -53,7 +57,7 @@ function MoveOther(jsonData) {
 }
 
 function AnimationMove(unit) {
-    if (unit.speed && unit.speed > 0) {
+    if (unit.speed && unit.speed > 0 && unit.animateSpeed) {
 
         if (unit.speed < 30) {
             unit.sprite.bodyBottom.animations.getAnimation('move').delay = 70

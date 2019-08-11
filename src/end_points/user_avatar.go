@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func GetAvatar(w http.ResponseWriter, r *http.Request) {
+func GetUserAvatar(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		userID := r.URL.Query().Get("user_id")

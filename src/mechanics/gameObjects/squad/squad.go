@@ -44,6 +44,7 @@ type PathUnit struct {
 	Millisecond int `json:"millisecond"`
 	Speed       float64
 	Traversed   bool `json:"traversed"`
+	Animate     bool `json:"animate"` // включить или нет анимацию движения гусениц
 }
 
 func (s *Squad) UpdateLock() {

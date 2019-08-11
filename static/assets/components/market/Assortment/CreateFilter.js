@@ -200,7 +200,7 @@ function placeBuyDialog(type, id, name, e) {
     };
     buttonWrapper.appendChild(close);
 
-    subMenu.appendChild(buttonWrapper)
+    subMenu.appendChild(buttonWrapper);
     document.body.appendChild(subMenu);
 }
 

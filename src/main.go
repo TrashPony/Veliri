@@ -20,8 +20,9 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", auth.Login) // если заходят на /login то отрабатывает функция auth.Login
 
-	router.HandleFunc("/upload", end_points.Upload)    // метод для загрузки файлов на сервер
-	router.HandleFunc("/avatar", end_points.GetAvatar) // метод для взятия аватарок
+	router.HandleFunc("/upload", end_points.Upload)                        // метод для загрузки файлов на сервер
+	router.HandleFunc("/avatar", end_points.GetUserAvatar)                 // метод для взятия аватарок игроков
+	router.HandleFunc("/chat_group_avatar", end_points.GetChatGroupAvatar) // метод для взятия аватарок чат груп
 
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections)

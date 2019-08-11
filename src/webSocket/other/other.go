@@ -37,6 +37,7 @@ type Message struct {
 	Missions    map[string]*mission.Mission `json:"missions"`
 	Notify      *player.Notify              `json:"notify"`
 	Notifys     map[string]*player.Notify   `json:"notifys"`
+	Greetings   string                      `json:"greetings"`
 
 	File         string                     `json:"file"`
 	Biography    string                     `json:"biography"`
@@ -88,13 +89,15 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
+			println(err.Error())
 			chat.Clients.DelClientByWS(ws)
 			break
 		}
 
 		// все что связано с чатом выплюнул сюда :\
 		if msg.Event == "OpenChat" || msg.Event == "GetAllGroups" || msg.Event == "ChangeGroup" || msg.Event == "SubscribeGroup" ||
-			msg.Event == "Unsubscribe" || msg.Event == "CreateNewGroup" || msg.Event == "NewChatMessage" || msg.Event == "CreateNewPrivateGroup" {
+			msg.Event == "Unsubscribe" || msg.Event == "CreateNewGroup" || msg.Event == "NewChatMessage" ||
+			msg.Event == "CreateNewPrivateGroup" || msg.Event == "CreateNewChatGroup" {
 			chatReader(client, msg)
 		}
 

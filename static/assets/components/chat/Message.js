@@ -3,13 +3,13 @@ function chatMessage() {
     let text = chatInput.value;
 
     if (text.indexOf("/color squad:") >= 0) {
-        if (game.squad.sprite.weaponColorMask) {
-            //game.squad.sprite.weaponColorMask.tint = Phaser.WHITE;
-            //game.squad.sprite.weaponColorMask.tint = '0x' + text.split(':')[1];
-        }
-
-        game.squad.sprite.bodyMask2.tint = Phaser.WHITE;
-        game.squad.sprite.bodyMask2.tint = '0x' + text.split(':')[1];
+        // if (game.squad.sprite.weaponColorMask) {
+        //     //game.squad.sprite.weaponColorMask.tint = Phaser.WHITE;
+        //     //game.squad.sprite.weaponColorMask.tint = '0x' + text.split(':')[1];
+        // }
+        //
+        // game.squad.sprite.bodyMask2.tint = Phaser.WHITE;
+        // game.squad.sprite.bodyMask2.tint = '0x' + text.split(':')[1];
     }
 
     if (text !== "") {
@@ -50,7 +50,7 @@ function NewChatMessage(message, id) {
         } else {
             systemMessage(message.message)
         }
-        
+
         // если скрол чата в самом низу то прокручивать его при новых сообщениях, если нет то без автопрокрутки
         if (chatIsDown) chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight;
 

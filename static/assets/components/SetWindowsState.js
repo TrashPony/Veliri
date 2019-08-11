@@ -94,18 +94,18 @@ function setState(id, left, top, height, weight, open) {
         event: "setWindowState",
         resolution: window.screen.availWidth + ':' + window.screen.availHeight,
         name: id,
-        left: Number(left),
-        top: Number(top),
-        height: Number(height),
-        width: Number(weight),
+        left: Math.trunc(Number(left)),
+        top: Math.trunc(Number(top)),
+        height: Math.trunc(Number(height)),
+        width: Math.trunc(Number(weight)),
         open: open,
     }));
 
     let state = {
-        left: Number(left),
-        top: Number(top),
-        height: Number(height),
-        width: Number(weight),
+        left: Math.trunc(Number(left)),
+        top: Math.trunc(Number(top)),
+        height: Math.trunc(Number(height)),
+        width: Math.trunc(Number(weight)),
         open: open,
     };
 

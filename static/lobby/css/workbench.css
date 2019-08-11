@@ -192,6 +192,7 @@
     transition: 0.1s;
     min-width: 170px;
     position: relative;
+    white-space: nowrap;
 }
 
 #Workbench .blueRow:hover {

@@ -20,7 +20,7 @@ func chatReader(client *player.Player, msg Message) {
 
 		if msg.Event == "GetAllGroups" {
 			SendMessage(msg.Event, msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
-				chats.Groups.GetAllGroups(), nil, false, nil, nil, nil, nil)
+				chats.Groups.GetAllowUserGroups(client), nil, false, nil, nil, nil, nil)
 		}
 
 		if msg.Event == "ChangeGroup" {
@@ -34,6 +34,19 @@ func chatReader(client *player.Player, msg Message) {
 					getUsersInChatGroup(group, false), false, nil, nil, nil, nil)
 			}
 
+		}
+
+		if msg.Event == "CreateNewChatGroup" {
+			// todo проверка полей на наличие опасных символов
+			newGroup, err := chats.Groups.CreateNewGroup(client, msg.Name, msg.Password, msg.File, msg.Greetings)
+			if err != nil {
+				sendOtherMessage(Message{Event: "Error", UserID: client.GetID(), Error: err.Error()})
+				return
+			}
+
+			// открываем чат у создателя канала
+			SendMessage("OpenChat", msg.Message, client.GetID(), 0, newGroup,
+				chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
 		}
 
 		if msg.Event == "CreateNewPrivateGroup" && msg.UserID != client.GetID() {
@@ -56,9 +69,16 @@ func chatReader(client *player.Player, msg Message) {
 
 		if msg.Event == "SubscribeGroup" {
 			group := chats.Groups.GetGroup(msg.GroupID)
-			if chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password) {
+			ok, err := chats.Groups.SubscribeGroup(msg.GroupID, client, msg.Password)
+			if err != nil {
+				sendOtherMessage(Message{Event: "Error", UserID: client.GetID(), Error: err.Error()})
+			}
+
+			if ok {
+				// открываем чат у игрока
 				SendMessage("OpenChat", msg.Message, client.GetID(), 0, chats.Groups.GetGroup(msg.GroupID),
 					chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
+				// оповещаем группу что у них новый юзер
 				SendMessage("UpdateUsers", nil, 0, msg.GroupID, group, nil,
 					getUsersInChatGroup(group, true), false, nil, nil, nil, nil)
 			}
@@ -90,10 +110,6 @@ func chatReader(client *player.Player, msg Message) {
 					chats.Groups.GetAllUserGroups(client), nil, false, nil, nil, nil, nil)
 
 			}
-		}
-
-		if msg.Event == "CreateNewGroup" {
-
 		}
 
 		if msg.Event == "NewChatMessage" {

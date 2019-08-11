@@ -47,6 +47,9 @@ func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) 
 }
 
 func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
+	c.mx.Lock()
+	defer c.mx.Unlock()
+
 	user := c.users[ws]
 	return user
 }

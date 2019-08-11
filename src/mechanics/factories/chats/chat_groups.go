@@ -1,6 +1,7 @@
 package chats
 
 import (
+	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/chats"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
@@ -30,6 +31,18 @@ func NewChatGroupStore() *groups {
 
 func (g *groups) GetAllGroups() map[int]*chatGroup.Group {
 	return g.groups
+}
+
+func (g *groups) GetAllowUserGroups(user *player.Player) map[int]*chatGroup.Group {
+	userGroups := make(map[int]*chatGroup.Group)
+
+	for _, group := range g.groups {
+		if group.Public && (group.Fraction == "" || group.Fraction == user.Fraction) {
+			userGroups[group.ID] = group
+		}
+	}
+
+	return userGroups
 }
 
 func (g *groups) GetAllLocalGroups() map[string]*chatGroup.Group {
@@ -87,8 +100,31 @@ func (g *groups) GetAllUserGroups(user *player.Player) map[int]*chatGroup.Group 
 	return userGroups
 }
 
-func (g *groups) CreateNewGroup() {
+func (g *groups) CreateNewGroup(user *player.Player, name, password, avatar, greetings string) (*chatGroup.Group, error) {
+	for _, group := range g.groups {
+		if group.Name == name {
+			return nil, errors.New("name is busy")
+		}
+	}
 
+	newGroup := &chatGroup.Group{
+		Name:         name,
+		Greetings:    greetings,
+		UserCreate:   true,
+		UserIdCreate: user.GetID(),
+		Local:        false,
+		Public:       true,
+		Users:        make(map[int]bool),
+		History:      make([]*chatGroup.Message, 0),
+	}
+
+	newGroup.SetAvatar(avatar)
+	newGroup.SetPassword(password)
+	newGroup.ID = chats.AddNewGroup(newGroup)
+	g.groups[newGroup.ID] = newGroup
+	g.SubscribeGroup(newGroup.ID, user, password)
+
+	return nil, nil
 }
 
 func (g *groups) CreateNewPrivateGroup(user1 *player.Player, user2 *player.Player) (*chatGroup.Group, *chatGroup.Message) {
@@ -148,21 +184,36 @@ func (g *groups) CreateNewPrivateGroup(user1 *player.Player, user2 *player.Playe
 	return newPrivateGroup, nil
 }
 
-func (g *groups) SubscribeGroup(groupID int, user *player.Player, password string) bool {
+func (g *groups) SubscribeGroup(groupID int, user *player.Player, password string) (bool, error) {
 
 	if g.CheckUserSubscribe(groupID, user) {
-		return false
+		return false, errors.New("already")
 	}
 
 	for _, group := range g.groups {
-		// через этот метод нельзя подписатся на приватные группы
-		if group.ID == groupID && (group.Public || group.Password == password) && !group.Private {
+		if group.ID == groupID {
+
+			if group.Fraction != "" && group.Fraction != user.Fraction {
+				return false, errors.New("wrong fraction")
+			}
+
+			// если пароль есть и он не верный то ошибка
+			if group.Secure && group.GetPassword() != password {
+				return false, errors.New("wrong password")
+			}
+
+			// через этот метод нельзя подписатся на приватные группы
+			if group.Private {
+				return false, errors.New("private group")
+			}
+
 			group.Users[user.GetID()] = true // при подключение игрок онайн
 			chats.AddUserInChat(group.ID, user.GetID())
+			return true, nil
 		}
 	}
 
-	return true
+	return false, errors.New("group not find")
 }
 
 func (g *groups) Unsubscribe(groupID int, user *player.Player) {

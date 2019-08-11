@@ -86,7 +86,7 @@
 }
 
 .actionChatTab {
-    color: #00efff !important;
+    color: #fff200 !important;
     border-bottom: 0 !important;
     box-shadow: none !important;
 }
@@ -164,7 +164,7 @@
     top: 20%;
     left: calc(50% - 100px);
     height: 300px;
-    width: 200px;
+    width: 230px;
     position: absolute;
     background-size: 100% 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
@@ -190,12 +190,27 @@
     padding: 0 5px;
 }
 
+#allGroupsWindow h4 {
+    text-align: left;
+    height: 14px;
+    font-size: 12px;
+    margin: 0px 0 1px 1px;
+    border-radius: 0 20px 0 0;
+    padding-left: 11px;
+    border: 1px solid #793f1f;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(251, 93, 0, 0.55), rgba(225, 37, 46, 0.6) 6px);
+    color: #ff7800;
+    line-height: 15px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
 #allGroupsWindow input {
     margin-top: 3px;
     float: left;
 }
 
-#allGroupsWindow input:active {
+#allGroupsWindow input[type="button"]:active {
     transform: scale(0.95);
 }
 
@@ -207,14 +222,16 @@
     height: 255px;
     float: left;
     margin-top: 3px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .chatGroup {
+    clear: both;
     transition: 0.2s;
     height: 25px;
     border-radius: 5px;
-    width: 190px;
-    float: left;
+    width: 208px;
     padding: 2px 5px 2px;
     color: #ff7800;
     font-size: 15px;
@@ -233,16 +250,29 @@
     float: left;
 }
 
+.chatGroup .chatPlayerCount {
+    text-align: center;
+}
+
+.chatGroup .public {
+    height: 24px;
+    width: 20px;
+    background-size: cover;
+    background-image: url("https://img.icons8.com/plasticine/100/000000/lock-2.png");
+}
+
 .chatLogo {
     height: 25px;
     width: 25px;
     background: rgba(128, 128, 128, 0.3);
     border-radius: 5px;
     background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .chatName {
-    width: 80px;
+    width: 91px;
     line-height: 25px;
     text-align: left;
     margin-left: 10px;
@@ -497,4 +527,164 @@
     text-indent: 8px;
     color: #efd800;
     padding-right: 4px;
+}
+
+#userGroups input {
+    width: calc(100% - 20px);
+    margin-left: 5px;
+}
+
+#NewChatCreateWrapper {
+    height: 227px;
+    width: 300px;
+    position: absolute;
+    left: calc(50% - 150px);
+    top: calc(50% - 150px);
+    border: 1px solid #25a0e1;
+    background-size: 100% 2px;
+    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
+    border-radius: 5px;
+}
+
+#NewChatCreate {
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    width: calc(100% - 8px);
+    height: 172px;
+    margin: 24px auto 0;
+    padding-top: 5px;
+}
+
+#NewChatCreateWrapper input[type="button"] {
+    margin-top: 3px;
+}
+
+#NewChatCreateWrapper h3 {
+    display: block;
+    height: 17px;
+    background: linear-gradient(0deg, red, yellow);
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    font-size: 15px;
+    margin: 3px 3px 0 3px;
+    font-weight: 100;
+    padding: 0 5px;
+}
+
+#nameNewChatGroup, #passNewChatGroup {
+    float: left;
+    margin: 0 10px 2px;
+    width: 263px;
+}
+
+#avatarNewChatGroupWrapper {
+    float: left;
+    clear: both;
+    height: 100px;
+    width: 100px;
+    margin-left: 10px;
+    box-shadow: inset 0 0 3px;
+    border-radius: 5px;
+    position: relative;
+}
+
+#avatarNewChatGroupWrapper label {
+    position: absolute;
+    bottom: 5px;
+    left: calc(50% - 35px);
+    width: 50px;
+    font-size: 12px;
+    background: #79a0b4;
+    border-radius: 5px;
+    color: #ff7800;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    padding: 0 10px;
+    box-shadow: 0 0 2px black;
+    opacity: 0.3;
+    transition: 0.2s;
+}
+
+#avatarNewChatGroupWrapper label:hover {
+    opacity: 1;
+}
+
+#avatarNewChatGroupWrapper label:active {
+    transform: scale(0.97);
+}
+
+#avatarNewChatGroup {
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+}
+
+#greetingsNewChatGroupWrapper {
+    float: left;
+    height: 100px;
+    width: 100px;
+    margin-left: 10px;
+}
+
+#greetingsNewChatGroupWrapper h4 {
+    text-align: left;
+    height: 14px;
+    font-size: 12px;
+    margin: 0 0 2px -4px;
+    border-radius: 0 20px 0 0;
+    padding-left: 11px;
+    border: 1px solid #793f1f;
+    background-size: 10px 2px;
+    background-image: linear-gradient(1deg, rgba(251, 93, 0, 0.55), rgba(225, 37, 46, 0.6) 6px);
+    color: #ff7800;
+    line-height: 15px;
+    width: 162px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#greetingsNewChatGroupWrapper textarea {
+    box-shadow: inset 0 0 5px black;
+    background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
+    background-size: 10px 3px;
+    height: 61px;
+    width: 150px;
+    margin: 0 0 0 -4px;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: justify;
+    resize: none;
+    color: #ffef0f;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#chatPassBlock {
+    position: absolute;
+    left: calc(50% - 100px);
+    top: calc(50%);
+    width: 200px;
+    height: 55px;
+    display: block;
+    background-size: 100% 2px;
+    background-image: linear-gradient(0deg, rgba(7, 41, 60, 0.6), rgba(0, 62, 95, 0.5));
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    z-index: 12;
+}
+
+#chatPassBlock input[type="text"] {
+    width: 177px;
+    margin: 6px;
+}
+
+#chatPassBlock input[type="button"] {
+    width: 80px;
+}
+
+.localTabChat {
+    background-color: rgba(0, 255, 255, 0.5);
+}
+
+.privateTabChat {
+    background-color: rgba(230, 0, 255, 0.5);
 }

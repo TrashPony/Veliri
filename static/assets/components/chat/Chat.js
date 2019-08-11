@@ -147,4 +147,8 @@ function ChatReader(data) {
     if (data.event === "DeleteNotify") {
         if (document.getElementById(data.uuid)) document.getElementById(data.uuid).remove();
     }
+
+    if (data.event === "Error") {
+        alert("ошиюка: " + data.error)
+    }
 }

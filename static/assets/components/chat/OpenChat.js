@@ -11,17 +11,20 @@ function OpenChat(data) {
     let tabs = document.getElementById('tabsGroup');
 
     // вкладка локального чата
-    tabs.innerHTML = `<div id="chat0" onclick="ChangeCanal(0)">Локальный</div>`;
+    tabs.innerHTML = `<div id="chat0" class="localTabChat" onclick="ChangeCanal(0)">Локальный</div>`;
     for (let i in data.groups) {
 
         // что бы не спамить лишний инфой в вкладках
+        let tabClass = "";
+
         if (data.groups[i].private) {
             let userNames = data.groups[i].name.split('-');
             if (userNames[0] === userName) data.groups[i].name = userNames[1];
             if (userNames[1] === userName) data.groups[i].name = userNames[0];
+            tabClass = "privateTabChat";
         }
 
-        tabs.innerHTML += `<div id="chat${data.groups[i].id}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
+        tabs.innerHTML += `<div id="chat${data.groups[i].id}" class="${tabClass}" onclick="ChangeCanal(${data.groups[i].id})">${data.groups[i].name}</div>`
     }
 
     if (data.group) {
@@ -34,10 +37,10 @@ function OpenChat(data) {
 function ChangeCanal(id) {
 
     let oldChatTab = document.getElementById('chat' + currentChatID);
-    if (oldChatTab) oldChatTab.className = '';
+    if (oldChatTab) $(oldChatTab).removeClass('actionChatTab');
 
     let chatTab = document.getElementById('chat' + id);
-    if (chatTab) chatTab.className = 'actionChatTab';
+    if (chatTab) $(chatTab).addClass('actionChatTab');
 
     currentChatID = Number(id);
 
@@ -59,6 +62,9 @@ function OpenCanal(group, users) {
 
     if (currentChatID === 0)
         systemMessage("Вы входите на территорию " + group.name);
+
+    if (group.greetings)
+        systemMessage(group.greetings);
 
     for (let i = 0; group.history && i < group.history.length; i++) {
         NewChatMessage(group.history[i], group.id)

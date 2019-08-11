@@ -16,7 +16,11 @@ func Chats() map[int]*chatGroup.Group {
 		" password," +
 		" fraction," +
 		" private," +
-		" private_key" +
+		" private_key," +
+		" avatar," +
+		" greetings," +
+		" user_create," +
+		" user_id_create" +
 		" " +
 		"FROM chats")
 	if err != nil {
@@ -28,12 +32,17 @@ func Chats() map[int]*chatGroup.Group {
 
 	for rows.Next() {
 		var gameChat chatGroup.Group
+		var avatar string
+		var password string
 
-		err := rows.Scan(&gameChat.ID, &gameChat.Name, &gameChat.Public, &gameChat.Password, &gameChat.Fraction,
-			&gameChat.Private, &gameChat.PrivateKey)
+		err := rows.Scan(&gameChat.ID, &gameChat.Name, &gameChat.Public, &password, &gameChat.Fraction,
+			&gameChat.Private, &gameChat.PrivateKey, &avatar, &gameChat.Greetings, &gameChat.UserCreate, &gameChat.UserIdCreate)
 		if err != nil {
 			log.Fatal("get scan all chats " + err.Error())
 		}
+
+		gameChat.SetAvatar(avatar)
+		gameChat.SetPassword(password)
 
 		getUsersChat(&gameChat)
 		gameChat.History = make([]*chatGroup.Message, 0)
@@ -47,11 +56,13 @@ func AddNewGroup(gameChat *chatGroup.Group) int {
 	id := 0
 	err := dbConnect.GetDBConnect().QueryRow("INSERT INTO "+
 		"chats "+
-		"(name, public, password, fraction, private, private_key) "+
+		"(name, public, password, fraction, private, private_key, avatar, greetings, user_create, user_id_create) "+
 		"VALUES "+
-		"($1, $2, $3, $4, $5, $6) "+
+		"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) "+
 		"RETURNING id",
-		gameChat.Name, gameChat.Public, gameChat.Password, gameChat.Fraction, gameChat.Private, gameChat.PrivateKey).Scan(&id)
+		gameChat.Name, gameChat.Public, gameChat.GetPassword(), gameChat.Fraction, gameChat.Private, gameChat.PrivateKey,
+		gameChat.GetAvatar(), gameChat.Greetings, gameChat.UserCreate, gameChat.UserIdCreate).Scan(&id)
+
 	if err != nil {
 		log.Fatal("add new chat group " + err.Error())
 	}

@@ -154,7 +154,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		}
 
 		path = append(path, squad.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
-			Q: forecastQ, R: forecastR, Speed: speed})
+			Q: forecastQ, R: forecastR, Speed: speed, Animate: true})
 	}
 
 	if len(path) > 1 {
