@@ -37,10 +37,16 @@ function OpenChat(data) {
 function ChangeCanal(id) {
 
     let oldChatTab = document.getElementById('chat' + currentChatID);
-    if (oldChatTab) $(oldChatTab).removeClass('actionChatTab');
+    if (oldChatTab) {
+        $(oldChatTab).removeClass('actionChatTab');
+        $(oldChatTab).removeClass('alertChatTab');
+    }
 
     let chatTab = document.getElementById('chat' + id);
-    if (chatTab) $(chatTab).addClass('actionChatTab');
+    if (chatTab) {
+        $(chatTab).removeClass('alertChatTab');
+        $(chatTab).addClass('actionChatTab');
+    }
 
     currentChatID = Number(id);
 

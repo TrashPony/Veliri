@@ -73,6 +73,10 @@ function ReaderLobby(jsonMessage) {
         UpdateBaseStatus(JSON.parse(jsonMessage).base)
     }
 
+    if (event === "GetDetails") {
+        FillDetailMarket(JSON.parse(jsonMessage).base, JSON.parse(jsonMessage).inventory_slots)
+    }
+
     if (event === "LocalGame") {
         location.href = "../../../field";
     }

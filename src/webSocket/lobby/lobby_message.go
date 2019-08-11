@@ -20,6 +20,7 @@ type Message struct {
 	StorageSlots []int `json:"storage_slots"`
 
 	RecycleSlots        map[string]map[int]*lobby.RecycleItem `json:"recycle_slots"`
+	InventorySlots      map[int]*inv.Slot                     `json:"inventory_slots"`
 	PreviewRecycleSlots []*inv.Slot                           `json:"preview_recycle_slots"`
 	UserRecycleSkill    int                                   `json:"user_recycle_skill"`
 	Storage             *inv.Inventory                        `json:"storage"`
@@ -30,6 +31,7 @@ type Message struct {
 	BPItem    interface{}                  `json:"bp_item"`
 	Count     int                          `json:"count"`
 	MaxCount  int                          `json:"max_count"`
+	Price     int                          `json:"price"`
 
 	StartTime     int64  `json:"start_time"`
 	ToTime        int64  `json:"to_time"`

@@ -170,6 +170,18 @@ func Reader(ws *websocket.Conn) {
 			if msg.Event == "CancelCraft" {
 				cancelCraft(user, msg)
 			}
+
+			if msg.Event == "GetBaseStatus" {
+				BaseStatus(user)
+			}
+
+			if msg.Event == "GetDetails" {
+				GetDetails(user)
+			}
+
+			if msg.Event == "SellDetail" {
+				SellDetail(user, msg)
+			}
 		}
 	}
 }

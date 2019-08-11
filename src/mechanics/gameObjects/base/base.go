@@ -127,7 +127,7 @@ func (b *Base) GetSumEfficiency() int {
 func (b *Base) ConsumptionBaseResource() {
 	for {
 
-		consumption := b.SumWorkResources / 10
+		consumption := b.SumWorkResources / 500
 
 		for _, currentResources := range b.CurrentResources {
 			if currentResources.Quantity > consumption {

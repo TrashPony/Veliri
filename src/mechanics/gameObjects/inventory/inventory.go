@@ -150,15 +150,21 @@ func (inv *Inventory) RemoveItemsByOtherInventory(inv2 *Inventory) bool {
 	return true
 }
 
-// метод смотрим естли необходимое количество предметов в инвентаре
-func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) bool {
+// метод считает все итемы в инвентаре
+func (inv *Inventory) ViewQuantityItems(itemID int, itemType string) int {
 	countRealItems := 0
 	for _, slot := range inv.Slots {
 		if slot.ItemID == itemID && slot.Type == itemType {
 			countRealItems += slot.Quantity
 		}
 	}
-	if countRealItems >= quantityFind {
+
+	return countRealItems
+}
+
+// метод смотрим естли необходимое количество предметов в инвентаре
+func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) bool {
+	if inv.ViewQuantityItems(itemID, itemType) >= quantityFind {
 		return true
 	} else {
 		return false
