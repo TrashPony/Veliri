@@ -57,7 +57,7 @@ CREATE TABLE map_constructor
   handler            VARCHAR(64),
 
   /* соотвественно место куда попадает игрок после ивента */
-  to_positions       json, -- [ {"q": 1, "r": 1}, {"q": 2, "r": 2} ], координаты куда ведет телепорт
+  to_positions       json, -- [ {"q": 1, "r": 1, "resp_rotate":90}, {"q": 2, "r": 2, "resp_rotate":90} ], координаты куда ведет телепорт
   to_base_id         INT,  -- не внешний ключь потому что в го нет налов, а сылки на базу может и не быть)
   to_map_id          INT REFERENCES maps (id)
 );

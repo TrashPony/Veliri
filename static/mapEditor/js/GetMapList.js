@@ -66,14 +66,12 @@ function createGame(jsonMessage) {
 
 function CreateLabelEntry(entryPoints) {
     for (let i of entryPoints) {
-        if (game.map.OneLayerMap.hasOwnProperty(i.q) && game.map.OneLayerMap.hasOwnProperty(i.r)) {
-            for (let position of i.positions) {
-                let xy = GetXYCenterHex(position.q, position.r);
-
-                let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
-                baseResp.anchor.setTo(0.5);
-                baseResp.scale.setTo(0.05);
-            }
+        for (let position of i.positions) {
+            let xy = GetXYCenterHex(position.q, position.r);
+            let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
+            baseResp.angle = position.resp_rotate;
+            baseResp.anchor.setTo(0.5);
+            baseResp.scale.setTo(0.05);
         }
     }
 }
@@ -92,6 +90,8 @@ function CreateLabelBase(bases) {
                 let respPount = bases[i].respawns[j];
                 let xy = GetXYCenterHex(respPount.q, respPount.r);
                 let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
+
+                baseResp.angle = respPount.resp_rotate;
                 baseResp.anchor.setTo(0.5);
                 baseResp.scale.setTo(0.05);
             }

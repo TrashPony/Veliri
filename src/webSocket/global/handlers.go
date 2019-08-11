@@ -49,6 +49,7 @@ func ChangeSector(user *player.Player, mapID int, ws *websocket.Conn, coor *coor
 	user.GetSquad().MapID = mapID
 	user.GetSquad().Q = toPosition.Q
 	user.GetSquad().R = toPosition.R
+	user.GetSquad().MatherShip.Rotate = toPosition.RespRotate
 
 	user.GetSquad().GlobalX = 0
 	user.GetSquad().GlobalY = 0

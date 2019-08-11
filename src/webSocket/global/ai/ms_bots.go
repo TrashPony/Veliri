@@ -109,6 +109,7 @@ func outBase(bot *player.Player, base *base.Base) {
 
 	bot.GetSquad().Q = respCoordinate.Q
 	bot.GetSquad().R = respCoordinate.R
+	bot.GetSquad().MatherShip.Rotate = respCoordinate.RespRotate
 	bot.GetSquad().MapID = base.MapID
 	bot.GetSquad().GlobalX = x
 	bot.GetSquad().GlobalY = y

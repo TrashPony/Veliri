@@ -10,9 +10,9 @@ function CreateTerrain(coordinate, x, y, q, r) {
     if (game && game.typeService === "mapEditor") {
         let style = {font: "12px Arial", fill: "#ffed00", align: "center"};
 
-        if (metaAlpha && metaAlpha === 0) {
+        //if (metaAlpha && metaAlpha === 0) {
             coordinate.coordinateText.qr = game.add.text(x - 10, y - 15, q + "," + r, style, game.redactorMetaText);
-        }
+        //}
 
         let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
         let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};

@@ -39,6 +39,7 @@ type Coordinate struct {
 	YShadowOffset       int              `json:"y_shadow_offset"`
 	ShadowIntensity     int              `json:"shadow_intensity"`
 	MapID               int              `json:"map_id"`
+	RespRotate          int              `json:"resp_rotate"`
 
 	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
 	H, G, F       int

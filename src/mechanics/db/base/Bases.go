@@ -58,8 +58,8 @@ func respawnBases(gameBase *base.Base) {
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+
 		" q,"+
-		" r"+
-		" "+
+		" r,"+
+		" rotate "+
 		" FROM bases_respawns WHERE base_id = $1", gameBase.ID)
 	if err != nil {
 		log.Fatal("get all respawn in base " + err.Error())
@@ -69,7 +69,7 @@ func respawnBases(gameBase *base.Base) {
 	for rows.Next() {
 		var respawn coordinate.Coordinate
 
-		err := rows.Scan(&respawn.Q, &respawn.R)
+		err := rows.Scan(&respawn.Q, &respawn.R, &respawn.RespRotate)
 		if err != nil {
 			log.Fatal("scan all respawn in base " + err.Error())
 		}

@@ -27,7 +27,8 @@ CREATE TABLE bases_respawns
   id      SERIAL PRIMARY KEY,
   base_id INT REFERENCES bases (id),
   q       int,
-  r       int
+  r       int,
+  rotate  int not null default 0 -- направление выхода с базы, угол от 0 до 360 который принимает корпус при выходе
 );
 
 CREATE TABLE base_users
