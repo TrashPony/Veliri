@@ -66,6 +66,7 @@ func checkNoobs(newPlayer *player.Player) {
 		if newPlayer.Training == 0 {
 
 			// если игрок не прошел обучение то кидаем ему первую страницу диалога введения
+			// todo брать не по ид а по свойству type=='training'
 			trainingDialog := gameTypes.Dialogs.GetByID(1)
 			trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "", newPlayer.Fraction)
 			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}

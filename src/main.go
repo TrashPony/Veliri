@@ -27,12 +27,14 @@ func main() {
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections)
 	router.HandleFunc("/wsInventory", webSocket.HandleConnections)
-	router.HandleFunc("/wsMapEditor", webSocket.HandleConnections)
 	router.HandleFunc("/wsField", webSocket.HandleConnections)
 	router.HandleFunc("/wsGlobal", webSocket.HandleConnections)
 	router.HandleFunc("/wsChat", webSocket.HandleConnections)
 	router.HandleFunc("/wsMarket", webSocket.HandleConnections)
 	router.HandleFunc("/wsStorage", webSocket.HandleConnections)
+
+	router.HandleFunc("/wsMapEditor", webSocket.HandleConnections)
+	router.HandleFunc("/wsDialogEditor", webSocket.HandleConnections)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/"))) // раздача статичный файлов
 
@@ -57,7 +59,7 @@ func main() {
 	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	go ai.InitAI()          // запускает ботов
 
-	port := "8080"
+	port := "8081"
 	log.Println("http server started on :" + port)
 	err := http.ListenAndServe(":"+port, router) // запускает веб сервер на 8080 порту
 	if err != nil {

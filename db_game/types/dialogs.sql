@@ -32,7 +32,7 @@ CREATE TABLE dialog_asc
   id          SERIAL PRIMARY KEY,
   /* id_page отвечает за то где показывать этот ответ */
   id_page     INT REFERENCES dialog_pages (id),
-  /* номер страницы на которую ведет ответ, если 0 то закрывает диалог */
+  /* номер страницы на которую ведет ответ */
   to_page     INT  not null default 1,
   name        text not null default '',
   text        text not null default '',
