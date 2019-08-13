@@ -33,7 +33,7 @@ func UpdateDialog(updatedDialog *dialog.Dialog) {
 	}
 }
 
-func AddDialog(newDialog *dialog.Dialog)  {
+func AddDialog(newDialog *dialog.Dialog) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
@@ -61,9 +61,10 @@ func AddPages(updatedDialog *dialog.Dialog, tx *sql.Tx) {
 			log.Fatal("delete old asc dialog" + err.Error())
 		}
 
-		err = tx.QueryRow("INSERT INTO dialog_pages (id_dialog, type, number, name, text, picture) "+
-			"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-			updatedDialog.ID, page.Type, page.Number, page.Name, page.Text, page.Picture).Scan(&page.ID)
+		err = tx.QueryRow("INSERT INTO dialog_pages (id_dialog, type, number, name, text, picture, picture_replics, picture_explores, picture_reverses) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+			updatedDialog.ID, page.Type, page.Number, page.Name, page.Text, page.GetPicture("main"),
+			page.GetPicture("Replics"), page.GetPicture("Explores"), page.GetPicture("Reverses")).Scan(&page.ID)
 		if err != nil {
 			log.Fatal("add new page dialog " + err.Error())
 		}

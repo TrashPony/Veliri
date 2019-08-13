@@ -15,16 +15,23 @@ CREATE TABLE dialogs
 
 CREATE TABLE dialog_pages
 (
-  id        SERIAL PRIMARY KEY,
-  id_dialog INT REFERENCES dialogs (id),
-  type      text not null default '',
+  id               SERIAL PRIMARY KEY,
+  id_dialog        INT REFERENCES dialogs (id),
+  type             text not null default '',
   /* номер страницы */
-  number    INT  not null default 0,
-  name      text not null default '',
+  number           INT  not null default 0,
+  name             text not null default '',
   /* содержание страницы, можно писать HTML */
-  text      text not null default '',
+  text             text not null default '',
+
   /* имя файла персонажа который ведет диалог */
-  picture   text not null default ''
+  picture          text not null default '',
+
+  /* если указан picture то эта будет картинка не зависимо от фракции, если picture не указана то берется картинка
+   по принадлежности к фракции */
+  picture_replics  text not null default '',
+  picture_explores text not null default '',
+  picture_reverses text not null default ''
 );
 
 CREATE TABLE dialog_asc

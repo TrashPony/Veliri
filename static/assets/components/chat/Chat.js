@@ -129,11 +129,11 @@ function ChatReader(data) {
     }
 
     if (data.event === "openDepartmentOfEmployment") {
-        FillDepartment(data.dialog_page)
+        FillDepartment(data.dialog_page, null, null, data.user_id)
     }
 
     if (data.event === "dialog") {
-        FillDepartment(data.dialog_page, data.dialog_action, data.mission)
+        FillDepartment(data.dialog_page, data.dialog_action, data.mission, data.user_id)
     }
 
     if (data.event === "training") {

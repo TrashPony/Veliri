@@ -1,4 +1,4 @@
-#DepartmentOfEmployment {
+#DepartmentOfEmployment, .DepartmentOfEmployment {
     position: absolute;
     display: block;
     border-radius: 5px;
@@ -15,17 +15,17 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-#infoBlock {
+#infoBlock, .infoBlock {
     width: 275px;
     float: left;
 }
 
-#rewardBlock {
+#rewardBlock, .rewardBlock {
     float: left;
     height: 244px;
 }
 
-#missionFace {
+#missionFace, .missionFace {
     height: 120px;
     width: 124px;
     background: rgba(0, 0, 0, 0.3);
@@ -35,7 +35,7 @@
     margin-left: 2px;
 }
 
-#rewards {
+#rewards, .rewards {
     overflow-y: scroll;
     border-radius: 5px 0px;
     width: 126px;
@@ -45,7 +45,7 @@
     height: 92px;
 }
 
-#rewardBlock h3 {
+#rewardBlock h3, .rewardBlock h3 {
     text-align: center;
     width: 70px;
     line-height: 18px;
@@ -61,7 +61,7 @@
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
-#missionHead {
+#missionHead, .missionHead {
     display: block;
     height: 17px;
     background: linear-gradient(0deg, red, yellow);
@@ -75,7 +75,7 @@
     text-shadow: none;
 }
 
-#missionText {
+#missionText, .missionText {
     padding: 5px;
     word-wrap: break-word;
     border-radius: 5px 5px 0 0;
@@ -93,22 +93,22 @@
     text-indent: 1.5em;
 }
 
-#missionText a:link {
+#missionText a:link, .missionText a:link {
     text-decoration: none;
     color: aqua;
 }
 
-#missionText a:visited {
+#missionText a:visited, .missionText a:visited {
     text-decoration: none;
     color: aqua;
 }
 
-#missionText a:hover {
+#missionText a:hover, .missionText a:hover {
     text-decoration: none;
     color: #0093ff;
 }
 
-#missionAsc {
+#missionAsc, .missionAsc {
     padding: 5px;
     word-wrap: break-word;
     overflow-y: auto;
@@ -126,23 +126,23 @@
     background-size: 10px 3px;
 }
 
-#missionAsc .wrapperAsk {
+#missionAsc .wrapperAsk, .missionAsc .wrapperAsk {
     text-align: left;
     box-shadow: none;
     background: none;
 }
 
-#missionAsc .asks {
+#missionAsc .asks, .missionAsc .asks {
     border: 0 solid #25a0e1;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.3), rgba(37, 160, 225, 0.3) 6px);
     background-color: unset;
 }
 
-#missionAsc .asks:hover {
+#missionAsc .asks:hover, .missionAsc .asks:hover {
     background-image: linear-gradient(1deg, rgba(255, 224, 0, 0.3), rgba(219, 225, 0, 0.3) 6px);
 }
 
-#rewardsCredits {
+#rewardsCredits, .rewardsCredits {
     background: #307294;
     box-shadow: inset 0 0 5px black, 0 0 5px black;
     float: left;
@@ -157,6 +157,6 @@
     margin: 1px;
 }
 
-#rewardsCredits span {
+#rewardsCredits span, .rewardsCredits span {
     float: right;
 }

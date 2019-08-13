@@ -89,7 +89,7 @@ function SetWindowsState(state) {
 }
 
 function setState(id, left, top, height, weight, open) {
-
+    if (chat.readyState !== WebSocket.OPEN) return;
     chat.send(JSON.stringify({
         event: "setWindowState",
         resolution: window.screen.availWidth + ':' + window.screen.availHeight,

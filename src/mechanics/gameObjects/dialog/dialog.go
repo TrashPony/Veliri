@@ -30,14 +30,15 @@ func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorNa
 		return
 	}
 
-	if d.Fraction == "All" {
-		d.Fraction = userFraction
-		for _, page := range d.Pages {
-			if page.Picture == "" {
-				page.Picture = strings.ToLower(userFraction) + "_logo"
-			}
-		}
-	}
+	// TODO
+	//if d.Fraction == "All" {
+	//	d.Fraction = userFraction
+	//	for _, page := range d.Pages {
+	//		if page.Picture == "" {
+	//			page.Picture = strings.ToLower(userFraction) + "_logo"
+	//		}
+	//	}
+	//}
 
 	for _, page := range d.Pages {
 		page.Text = strings.Replace(page.Text, "%UserName%", userName, -1)
@@ -55,13 +56,66 @@ func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorNa
 }
 
 type Page struct {
-	ID      int    `json:"id"`
-	Number  int    `json:"number"`
-	Name    string `json:"name"`
-	Text    string `json:"text"` // текст страницы
-	Asc     []Ask  `json:"asc"`  // варианты отетов
-	Picture string `json:"picture"`
-	Type    string `json:"type"`
+	ID              int    `json:"id"`
+	Number          int    `json:"number"`
+	Name            string `json:"name"`
+	Text            string `json:"text"` // текст страницы
+	Asc             []Ask  `json:"asc"`  // варианты отетов
+	picture         string
+	pictureReplics  string
+	pictureExplores string
+	pictureReverses string
+	Type            string `json:"type"`
+}
+
+func (p *Page) SetPictures(mainPicture, pictureReplics, pictureExplores, pictureReverses string) {
+	p.picture = mainPicture
+	p.pictureReplics = pictureReplics
+	p.pictureExplores = pictureExplores
+	p.pictureReverses = pictureReverses
+}
+
+func (p *Page) GetPicture(typePic string) string {
+	// если в диалог есть только главная картинка то значин в диалоге нет разделения на фракции
+	if p.pictureReplics == "" && p.pictureExplores == "" && p.pictureReverses == "" {
+		return p.picture
+	}
+
+	if typePic == "main" {
+		return p.picture
+	}
+
+	if typePic == "Replics" {
+		return p.pictureReplics
+	}
+
+	if typePic == "Explores" {
+		return p.pictureExplores
+	}
+
+	if typePic == "Reverses" {
+		return p.pictureReverses
+	}
+
+	return ""
+}
+
+func (p *Page) GetAllPicture() map[string]string {
+	pictures := make(map[string]string)
+	if p.picture != "" {
+		pictures["main"] = p.picture
+	}
+	if p.pictureReplics != "" {
+		pictures["Replics"] = p.pictureReplics
+	}
+	if p.pictureExplores != "" {
+		pictures["Explores"] = p.pictureExplores
+	}
+	if p.pictureReverses != "" {
+		pictures["Reverses"] = p.pictureReverses
+	}
+
+	return pictures
 }
 
 type Ask struct {

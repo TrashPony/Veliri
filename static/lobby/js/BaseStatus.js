@@ -1,5 +1,4 @@
 function UpdateBaseStatus(base) {
-    console.log(base);
 
     let baseLogoWrapper = document.getElementById('BaseStatus');
     let baseEfficiency = document.getElementById('efficiencyPercent');

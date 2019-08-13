@@ -1,4 +1,4 @@
-function InitDepartmentOfEmployment(dialogPage, action, mission) {
+function InitDepartmentOfEmployment(dialogPage, action, mission, userID) {
 
     if (document.getElementById('DepartmentOfEmployment')) {
         let jBox = $('#DepartmentOfEmployment');
@@ -40,21 +40,12 @@ function InitDepartmentOfEmployment(dialogPage, action, mission) {
     departmentOfEmployment.appendChild(buttons.move);
     departmentOfEmployment.appendChild(buttons.close);
 
-    // $(departmentOfEmployment).resizable({
-    //     minHeight: 370,
-    //     minWidth: 401,
-    //     handles: "se",
-    //     resize: function (event, ui) {
-    //
-    //     }
-    // });
-
     if (!dialogPage) {
         chat.send(JSON.stringify({
             event: "openDepartmentOfEmployment",
         }));
     } else {
-        FillDepartment(dialogPage, action, mission)
+        FillDepartment(dialogPage, action, mission, userID)
     }
 
     openWindow(departmentOfEmployment.id, departmentOfEmployment)

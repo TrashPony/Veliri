@@ -55,7 +55,7 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "dialog") {
-        FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission)
+        FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission, JSON.parse(jsonMessage).user_id)
     }
 
     if (event === "training") {

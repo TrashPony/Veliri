@@ -48,3 +48,15 @@ func (d *dialogStore) AddNewDialog(newDialogType *dialog.Dialog) {
 	dialogEditor.AddDialog(newDialogType)
 	d.dialogs[newDialogType.ID] = *newDialogType
 }
+
+func (d *dialogStore) GetDialogPageByID(pageID int) *dialog.Page {
+	for _, gameDialog := range d.dialogs {
+		for _, page := range gameDialog.Pages {
+			if page.ID == pageID {
+				return page
+			}
+		}
+	}
+
+	return nil
+}

@@ -23,6 +23,7 @@ func main() {
 	router.HandleFunc("/upload", end_points.Upload)                        // метод для загрузки файлов на сервер
 	router.HandleFunc("/avatar", end_points.GetUserAvatar)                 // метод для взятия аватарок игроков
 	router.HandleFunc("/chat_group_avatar", end_points.GetChatGroupAvatar) // метод для взятия аватарок чат груп
+	router.HandleFunc("/get_picture_dialog", end_points.GetPictureDialog)  // метод для взятия аватарок чат груп
 
 	router.HandleFunc("/registration", auth.Registration)
 	router.HandleFunc("/wsLobby", webSocket.HandleConnections)
@@ -59,7 +60,7 @@ func main() {
 	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	go ai.InitAI()          // запускает ботов
 
-	port := "8081"
+	port := "8080"
 	log.Println("http server started on :" + port)
 	err := http.ListenAndServe(":"+port, router) // запускает веб сервер на 8080 порту
 	if err != nil {

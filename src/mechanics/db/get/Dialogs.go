@@ -48,7 +48,10 @@ func getDialogPages(gameDialog *dialog.Dialog) {
 		" text,"+
 		" picture, "+
 		" number, "+
-		" type "+
+		" type,"+
+		" picture_replics,"+
+		" picture_explores,"+
+		" picture_reverses "+
 		" "+
 		"FROM dialog_pages "+
 		"WHERE id_dialog=$1", gameDialog.ID)
@@ -59,11 +62,15 @@ func getDialogPages(gameDialog *dialog.Dialog) {
 
 	for rows.Next() {
 		page := dialog.Page{}
-		err := rows.Scan(&page.ID, &page.Name, &page.Text, &page.Picture, &page.Number, &page.Type)
+		var mainPick, replicsPic, exploresPick, reversesPick string
+
+		err := rows.Scan(&page.ID, &page.Name, &page.Text, &mainPick, &page.Number, &page.Type, &replicsPic,
+			&exploresPick, &reversesPick)
 		if err != nil {
 			log.Fatal("get scan all dialog pages " + err.Error())
 		}
 
+		page.SetPictures(mainPick, replicsPic, exploresPick, reversesPick)
 		getPageAsk(&page)
 		gameDialog.Pages[page.Number] = &page
 	}
