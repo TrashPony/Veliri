@@ -11,6 +11,9 @@
 
     <script src="./js/socket.js"></script>
     <script src="./js/DialogList.js"></script>
+    <script src="./js/SelectDialog.js"></script>
+    <script src="./js/SetDataDialog.js"></script>
+    <script src="./js/SetPicture.js"></script>
 
     <script src="../../assets/components/GetAvatar.js"></script>
 
@@ -23,7 +26,56 @@
 </head>
 <body>
 <div id="main">
-    <div id="dialogList"></div>
+    <div id="dialogList">
+        <div id="filters">
+            <h4>Фильтры:</h4>
+
+            <div id="filtersLine">
+
+                <label>
+                    По имени: <input type="text" placeholder="Имя диалога" oninput="filterName(this)">
+                </label>
+
+                <label>Кому доступен:
+                    <select id="fraction" onchange="filterFraction(this)">
+                        <option value=""> Выкл.</option>
+                        <option value="All">Всем</option>
+                        <option value="Replics">Replics</option>
+                        <option value="Explores">Explores</option>
+                        <option value="Reverses">Reverses</option>
+                    </select>
+                </label>
+
+                <label> Тип:
+                    <select id="dialogType" onchange="filterType(this)">
+                        <option value="">Выкл.</option>
+                        <option value="greeting">Приветсвие базы</option>
+                        <option value="greeting_before_mission_not_complete">Приветсвие базы, если не сдал квест
+                        </option>
+                        <option value="mission">Задание</option>
+                    </select>
+                </label>
+
+                <label> Где доступен:
+                    <select id="access_type" onchange="filterAccess(this)">
+                        <option value="">Выкл.</option>
+                        <option value="base">На базе</option>
+                        <option value="world">Везде</option>
+                    </select>
+                </label>
+
+            </div>
+
+            <div id="createNewDialogBlock">
+                <input type="text" placeholder="Имя нового диалога" id="nameNewDialog">
+                <input type="button" value="Создать диалог" onclick="CreateDialog()">
+            </div>
+        </div>
+
+        <div id="dialogList2">
+        </div>
+    </div>
+    <div id="selectDialog"></div>
 </div>
 </body>
 </html>

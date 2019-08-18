@@ -130,11 +130,15 @@ func Transport(bot *player.Player) {
 	extraExit := false
 	go func() {
 		for {
-			oldX, oldY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
-			time.Sleep(15 * time.Second)
-			// todo runtime error: invalid memory address or nil pointer dereference
-			if oldX == bot.GetSquad().GlobalX && oldY == bot.GetSquad().GlobalY && bot.InBaseID == 0 {
-				extraExit = true
+			if bot != nil && bot.GetSquad() != nil {
+				oldX, oldY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
+				time.Sleep(15 * time.Second)
+				// todo runtime error: invalid memory address or nil pointer dereference
+				if oldX == bot.GetSquad().GlobalX && oldY == bot.GetSquad().GlobalY && bot.InBaseID == 0 {
+					extraExit = true
+				}
+			} else {
+				time.Sleep(15 * time.Second)
 			}
 		}
 	}()

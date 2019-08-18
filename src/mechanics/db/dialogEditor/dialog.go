@@ -18,13 +18,7 @@ func UpdateDialog(updatedDialog *dialog.Dialog) {
 		log.Fatal("update dialog main info" + err.Error())
 	}
 
-	// из за лени я просту удаляю все старые страницы и добавляю новые))
-	_, err = tx.Exec("DELETE FROM dialog_pages WHERE id_dialog=$1",
-		updatedDialog.ID)
-	if err != nil {
-		log.Fatal("delete old page dialog" + err.Error())
-	}
-
+	DeleteOldPageAndAsc(updatedDialog, tx)
 	AddPages(updatedDialog, tx)
 
 	err = tx.Commit()
@@ -52,16 +46,45 @@ func AddDialog(newDialog *dialog.Dialog) {
 	}
 }
 
-func AddPages(updatedDialog *dialog.Dialog, tx *sql.Tx) {
-	for _, page := range updatedDialog.Pages {
+func DeleteDialog(deleteDialog *dialog.Dialog) {
+	tx, err := dbConnect.GetDBConnect().Begin()
+	defer tx.Rollback()
 
+	DeleteOldPageAndAsc(deleteDialog, tx)
+
+	_, err = tx.Exec("DELETE FROM dialogs WHERE id=$1",
+		deleteDialog.ID)
+	if err != nil {
+		log.Fatal("delete dialog" + err.Error())
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("delete dialog: " + err.Error())
+	}
+}
+
+func DeleteOldPageAndAsc(updatedDialog *dialog.Dialog, tx *sql.Tx) {
+	// из за лени я просту удаляю все старые страницы и ответы, после добавляю новые))
+	for _, page := range updatedDialog.Pages {
 		_, err := tx.Exec("DELETE FROM dialog_asc WHERE id_page=$1",
 			page.ID)
 		if err != nil {
 			log.Fatal("delete old asc dialog" + err.Error())
 		}
+	}
 
-		err = tx.QueryRow("INSERT INTO dialog_pages (id_dialog, type, number, name, text, picture, picture_replics, picture_explores, picture_reverses) "+
+	_, err := tx.Exec("DELETE FROM dialog_pages WHERE id_dialog=$1",
+		updatedDialog.ID)
+	if err != nil {
+		log.Fatal("delete old page dialog" + err.Error())
+	}
+}
+
+func AddPages(updatedDialog *dialog.Dialog, tx *sql.Tx) {
+	for _, page := range updatedDialog.Pages {
+
+		err := tx.QueryRow("INSERT INTO dialog_pages (id_dialog, type, number, name, text, picture, picture_replics, picture_explores, picture_reverses) "+
 			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
 			updatedDialog.ID, page.Type, page.Number, page.Name, page.Text, page.GetPicture("main"),
 			page.GetPicture("Replics"), page.GetPicture("Explores"), page.GetPicture("Reverses")).Scan(&page.ID)

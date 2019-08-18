@@ -36,10 +36,14 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 }
 
 type Message struct {
-	Event   string                `json:"event"`
-	ID      int                   `json:"id"`
-	Dialogs map[int]dialog.Dialog `json:"dialogs"`
-	Dialog  *dialog.Dialog        `json:"dialog"`
+	Event    string                `json:"event"`
+	ID       int                   `json:"id"`
+	Dialogs  map[int]dialog.Dialog `json:"dialogs"`
+	Dialog   *dialog.Dialog        `json:"dialog"`
+	IdPage   int                   `json:"id_page"`
+	Fraction string                `json:"fraction"`
+	File     string                `json:"file"`
+	Name     string                `json:"name"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -63,17 +67,33 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(&Message{Event: msg.Event, Dialog: gameTypes.Dialogs.GetByID(msg.ID)})
 		}
 
-		// все измения/создания страниц, ответов происходит на фронте, потом сюда прилетает полноценный диалог
-		// и он заменяется. Главное проверять что бы небыло дубликатов по номерам страниц и ответов
-		if msg.Event == "EditDialog" {
+		if msg.Event == "SaveDialog" {
 			gameTypes.Dialogs.UpdateTypeDialog(msg.Dialog)
-			ws.WriteJSON(&Message{Event: msg.Event, Dialogs: gameTypes.Dialogs.GetAll()})
+			ws.WriteJSON(&Message{Event: "GetDialog", Dialog: gameTypes.Dialogs.GetByID(msg.Dialog.ID)})
 		}
 
 		if msg.Event == "CreateDialog" {
 			// вносим в бд, получаем ид
 			// вносим в сторедж
-			gameTypes.Dialogs.AddNewDialog(msg.Dialog)
+			gameTypes.Dialogs.AddNewDialog(msg.Name)
+			ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: gameTypes.Dialogs.GetAll()})
+		}
+
+		if msg.Event == "DeleteDialog" {
+			// todo пока пусть будет так С:
+			//gameTypes.Dialogs.DeleteDialog(msg.ID)
+			//ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: gameTypes.Dialogs.GetAll()})
+		}
+
+		if msg.Event == "SetPicture" {
+			// метод для установки картинка в страницу
+			gameTypes.Dialogs.SetPicture(msg.ID, msg.IdPage, msg.Fraction, msg.File)
+		}
+
+		if msg.Event == "AddPage" {
+			gameTypes.Dialogs.AddPage(msg.Dialog.ID)
+			gameTypes.Dialogs.UpdateTypeDialog(msg.Dialog)
+			ws.WriteJSON(&Message{Event: "GetDialog", Dialog: gameTypes.Dialogs.GetByID(msg.Dialog.ID)})
 		}
 	}
 }

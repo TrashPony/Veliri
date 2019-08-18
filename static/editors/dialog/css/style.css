@@ -14,6 +14,13 @@ body {
     top: unset;
     margin-right: 10px;
     margin-top: 10px;
+    height: 390px;
+}
+
+#dialogList .DepartmentOfEmployment .actions {
+    position: absolute;
+    bottom: 2px;
+    width: 100%;
 }
 
 .innerPicture {
@@ -33,4 +40,176 @@ body {
 
 .Reverses {
     box-shadow: inset 0 0 2px 3px blue;
+}
+
+#selectDialog {
+    display: none;
+}
+
+#pagesSelectDialog > div {
+    padding: 9px;
+    float: left;
+    position: relative;
+    left: unset;
+    top: unset;
+    margin-right: 10px;
+    margin-top: 10px;
+    display: block;
+    border-radius: 5px;
+    z-index: 11;
+    width: 402px;
+    height: 500px;
+    border: 1px solid #25a0e1;
+    background: cadetblue;
+    color: #0cc2fb;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#pagesSelectDialog > div:hover {
+    box-shadow: 0 0 3px 1px white;
+}
+
+#pagesSelectDialog textarea {
+    width: 70%;
+    float: left;
+    height: 240px;
+    border-radius: 5px;
+    background: beige;
+    box-shadow: 0 0 2px;
+    margin: 4px 6px 6px;
+}
+
+#pagesSelectDialog .pictures {
+    float: right;
+    height: 248px;
+    width: 92px;
+    margin: 5px;
+    border-radius: 5px;
+    background: darkgray;
+    box-shadow: 0 0 4px black;
+}
+
+.ascs {
+    clear: both;
+    overflow-y: scroll;
+    background: beige;
+    padding: 6px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    height: 185px;
+}
+
+.ascs .asc {
+    margin: 5px;
+    background: grey;
+    border-radius: 5px;
+    box-shadow: inset 0 0 3px black;
+    padding: 6px;
+}
+
+.ascs .asc:hover {
+    box-shadow: inset 0 0 3px 1px white;
+}
+
+.ascs .asc:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+
+.ascs .asc input[type="text"] {
+    float: left;
+    width: 300px;
+    margin-right: 5px;
+}
+
+.ascs .asc input[type="number"] {
+    float: left;
+    width: 25px;
+    margin-right: 5px;
+}
+
+.ascs .asc select {
+    margin-top: 3px;
+    float: left;
+}
+
+.pic {
+    height: 83px;
+    width: 93px;
+    position: relative;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.pic label {
+    position: absolute;
+    bottom: 10px;
+    outline: none;
+    padding-left: 5px;
+    padding-right: 5px;
+    line-height: 18px;
+    box-shadow: inset 0 0 2px black;
+    border: 0;
+    font-size: 11px;
+    background: #79a0b4;
+    border-radius: 5px;
+    color: #ff7800;
+    left: 6px;
+    opacity: 0.3;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+.pic label:hover {
+    opacity: 1;
+}
+
+.pic input {
+    display: none;
+}
+
+#headSelectDialog {
+    padding-top: 15px;
+    height: 35px;
+    background: antiquewhite;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 1px black;
+    position: relative;
+    color: #0cc2fb;
+    margin-top: 4px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#filters {
+    height: 50px;
+    background: antiquewhite;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 1px black;
+    position: relative;
+}
+
+#createNewDialogBlock {
+    position: absolute;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    height: 40px;
+    right: 0;
+    top: 0;
+    background: darkgrey;
+    border-radius: 6px;
+    box-shadow: 0 0 4px 1px black;
+}
+
+#filters h4{
+    padding: 4px 4px 0;
+    text-align: left;
+    margin: 4px 0 0;
+}
+
+#filtersLine {
+    float: left;
+    padding-left: 10px;
+    margin-top: 3px;
 }

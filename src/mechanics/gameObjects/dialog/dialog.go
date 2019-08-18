@@ -75,6 +75,24 @@ func (p *Page) SetPictures(mainPicture, pictureReplics, pictureExplores, picture
 	p.pictureReverses = pictureReverses
 }
 
+func (p *Page) SetPicture(picture, typePic string) {
+	if typePic == "main" {
+		p.picture = picture
+	}
+
+	if typePic == "Replics" {
+		p.pictureReplics = picture
+	}
+
+	if typePic == "Explores" {
+		p.pictureExplores = picture
+	}
+
+	if typePic == "Reverses" {
+		p.pictureReverses = picture
+	}
+}
+
 func (p *Page) GetPicture(typePic string) string {
 	// если в диалог есть только главная картинка то значин в диалоге нет разделения на фракции
 	if p.pictureReplics == "" && p.pictureExplores == "" && p.pictureReverses == "" {
