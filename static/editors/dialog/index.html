@@ -14,6 +14,7 @@
     <script src="./js/SelectDialog.js"></script>
     <script src="./js/SetDataDialog.js"></script>
     <script src="./js/SetPicture.js"></script>
+    <script src="./js/DialogSocket.js"></script>
 
     <script src="../../assets/components/GetAvatar.js"></script>
 
@@ -28,7 +29,11 @@
 <div id="main">
     <div id="dialogList">
         <div id="filters">
-            <h4>Фильтры:</h4>
+
+            <h4>Фильтры:
+                <input type="button" value="Даилоги" onclick="GetListDialogs()">
+                <input type="button" value="Задания" onclick="GetListMissions()">
+            </h4>
 
             <div id="filtersLine">
 
@@ -74,8 +79,16 @@
 
         <div id="dialogList2">
         </div>
+
+        <div id="MissionList">
+            миссиям не нужена доп страница для редактирования т.к. там мало информации
+
+            -- название, тип
+        </div>
     </div>
-    <div id="selectDialog"></div>
+    <div id="selectDialog">
+    </div>
+
 </div>
 </body>
 </html>

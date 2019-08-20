@@ -4,6 +4,8 @@ function ViewDialog(dialog) {
     selectDialog = dialog;
 
     document.getElementById("dialogList").style.display = "none";
+    document.getElementById("MissionList").style.display = "none";
+
     let selectDialogBlock = document.getElementById("selectDialog");
     selectDialogBlock.style.display = "block";
 

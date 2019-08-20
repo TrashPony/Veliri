@@ -30,7 +30,9 @@ function CreateDialogList(dialogs) {
 
     let dialogList = document.getElementById("dialogList");
     dialogList.style.display = "block";
+
     document.getElementById("selectDialog").style.display = "none";
+    document.getElementById("MissionList").style.display = "none";
 
     let dialogList2 = document.getElementById("dialogList2");
     dialogList2.innerHTML = '';

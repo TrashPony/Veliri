@@ -9,7 +9,7 @@ CREATE TABLE missions
   -- end_base_id      INT         not null default 0, определяет последний экшен
   fraction         text        not null default '',
   start_base_id    INT         not null default 0,
-  -- предмет которые выдается при взятие задания, обычно его надо доставить, не является игровым предметом пока для них нет таблицы
+  -- предмет которые выдается при взятие задания, обычно его надо доставить, не является игровым предметом таблица - trash_type
   delivery_item_id INT         not null default 0
 );
 

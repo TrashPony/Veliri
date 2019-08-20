@@ -11,6 +11,10 @@ import (
 
 func OutBase(base *base.Base) *coordinate.Coordinate {
 
+	if base == nil {
+		return nil
+	}
+
 	base.RespawnLock.Lock()
 	defer func() {
 		time.Sleep(time.Second)
