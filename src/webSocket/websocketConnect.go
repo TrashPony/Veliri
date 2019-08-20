@@ -1,8 +1,8 @@
 package webSocket
 
 import (
-	"github.com/TrashPony/Veliri/src/webSocket/editors/dialogEditor"
-	"github.com/TrashPony/Veliri/src/webSocket/editors/mapEditor"
+	"github.com/TrashPony/Veliri/src/webSocket/editors/map_editor"
+	"github.com/TrashPony/Veliri/src/webSocket/editors/mission_and_dialog_editor"
 	"github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/TrashPony/Veliri/src/webSocket/inventory"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
@@ -50,10 +50,10 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	}
 
 	if pool == "/wsMapEditor" {
-		mapEditor.AddNewUser(ws, login, id)
+		map_editor.AddNewUser(ws, login, id)
 	}
 
 	if pool == "/wsDialogEditor" {
-		dialogEditor.AddNewUser(ws, login, id)
+		mission_and_dialog_editor.AddNewUser(ws, login, id)
 	}
 }

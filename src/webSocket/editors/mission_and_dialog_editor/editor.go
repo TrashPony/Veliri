@@ -1,9 +1,11 @@
-package dialogEditor
+package mission_and_dialog_editor
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/missions"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
 	"github.com/gorilla/websocket"
@@ -44,6 +46,8 @@ type Message struct {
 	Fraction string                `json:"fraction"`
 	File     string                `json:"file"`
 	Name     string                `json:"name"`
+
+	Missions map[int]*mission.Mission `json:"missions"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -94,6 +98,10 @@ func Reader(ws *websocket.Conn) {
 			gameTypes.Dialogs.AddPage(msg.Dialog.ID)
 			gameTypes.Dialogs.UpdateTypeDialog(msg.Dialog)
 			ws.WriteJSON(&Message{Event: "GetDialog", Dialog: gameTypes.Dialogs.GetByID(msg.Dialog.ID)})
+		}
+
+		if msg.Event == "GetAllMissions" {
+			ws.WriteJSON(&Message{Event: msg.Event, Missions: missions.Missions.GetAllMissType()})
 		}
 	}
 }

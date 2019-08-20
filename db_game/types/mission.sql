@@ -1,17 +1,18 @@
 CREATE TABLE missions
 (
-  id               SERIAL PRIMARY KEY,
-  name             VARCHAR(64) not null default '',
-  type             text        not null default '', -- delivery
-  start_dialog_id  INT         not null default 0,
-  reward_cr        INT         not null default 0,
+  id              SERIAL PRIMARY KEY,
+  name            VARCHAR(64) not null default '',
+  type            text        not null default '', -- delivery
+  start_dialog_id INT         not null default 0,
+  reward_cr       INT         not null default 0,
   -- end_dialog_id    INT         not null default 0, определяет последний экшен
   -- end_base_id      INT         not null default 0, определяет последний экшен
-  fraction         text        not null default '',
-  start_base_id    INT         not null default 0,
+  fraction        text        not null default '',
+  start_base_id   INT         not null default 0
   -- предмет которые выдается при взятие задания, обычно его надо доставить, не является игровым предметом таблица - trash_type
-  delivery_item_id INT         not null default 0
+  -- delivery_item_id INT         not null default 0, определяет экшон!
 );
+
 
 -- таблица наград в виде предметов за квест
 CREATE TABLE reward_items
@@ -39,6 +40,8 @@ CREATE TABLE actions
   base_id           INT     not null default 0,
   Q                 INT     not null default 0,
   R                 INT     not null default 0,
+  radius            int     not null default 0, -- Q,R являются центром цели радиус показывает растояние от цели
+  sec               int     not null default 0, -- количество секунд, например надо записать показания в точке QR (постоять там секунд 30)
   count             int     not null default 0,
   current_count     int     not null default 0,
   player_id         int     not null default 0,

@@ -10,7 +10,7 @@ function CreateInventoryCell(cell, slotData, slotNumber, parent) {
     `;
 
     cell.onmouseenter = function () {
-        notificationInventorySize(slotData.size);
+        if (document.getElementById("sizeInventoryInfo")) notificationInventorySize(slotData.size);
     };
 
     cell.onmouseleave = function () {

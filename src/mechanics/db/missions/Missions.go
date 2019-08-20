@@ -16,7 +16,6 @@ func Missions() map[int]*mission.Mission {
 		" reward_cr," +
 		" fraction," +
 		" start_base_id," +
-		" delivery_item_id," +
 		" type " +
 		" " +
 		"FROM missions")
@@ -32,7 +31,7 @@ func Missions() map[int]*mission.Mission {
 		var gameMission mission.Mission
 
 		err := rows.Scan(&gameMission.ID, &gameMission.Name, &gameMission.StartDialogID, &gameMission.RewardCr,
-			&gameMission.Fraction, &gameMission.StartBaseID, &gameMission.DeliveryItemId, &gameMission.Type)
+			&gameMission.Fraction, &gameMission.StartBaseID, &gameMission.Type)
 		if err != nil {
 			log.Fatal("scan all missions " + err.Error())
 		}
@@ -82,7 +81,9 @@ func getMissionActions(missionGame *mission.Mission) {
 		" bot_id,"+
 		" dialog_id,"+
 		" number,"+
-		" async "+
+		" async,"+
+		" radius,"+
+		" sec "+
 		" "+
 		"FROM actions "+
 		"WHERE id_mission = $1", missionGame.ID)
@@ -96,7 +97,7 @@ func getMissionActions(missionGame *mission.Mission) {
 
 		err := rows.Scan(&actions.ID, &actions.TypeFuncMonitor, &actions.Complete, &actions.Description,
 			&actions.ShortDescription, &actions.BaseID, &actions.Q, &actions.R, &actions.Count, &actions.CurrentCount,
-			&actions.PlayerID, &actions.BotID, &actions.DialogID, &actions.Number, &actions.Async)
+			&actions.PlayerID, &actions.BotID, &actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec)
 		if err != nil {
 			log.Fatal("scan actions in missions " + err.Error())
 		}

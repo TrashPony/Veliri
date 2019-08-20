@@ -189,7 +189,7 @@ body {
     position: relative;
 }
 
-#createNewDialogBlock {
+#createNewDialogBlock, #createNewMissionBlock {
     position: absolute;
     padding-right: 10px;
     padding-top: 10px;
@@ -202,7 +202,7 @@ body {
     box-shadow: 0 0 4px 1px black;
 }
 
-#filters h4{
+#filters h4 {
     padding: 4px 4px 0;
     text-align: left;
     margin: 4px 0 0;
@@ -212,4 +212,64 @@ body {
     float: left;
     padding-left: 10px;
     margin-top: 3px;
+}
+
+.mission {
+    background: burlywood;
+    padding: 10px;
+}
+
+.missionProp {
+    font-size: 15px;
+    text-align: left;
+    line-height: 30px;
+    padding-left: 18px;
+}
+
+.missionProp label {
+    display: block;
+    width: 330px;
+    height: 35px;
+}
+
+.missionProp label input, .missionProp label select, .missionProp label .rewardItems {
+    float: right;
+}
+
+
+.mission h4 {
+    margin: 5px;
+    padding: 0;
+    text-align: left;
+    color: white;
+    text-shadow: 0 0 2px black;
+    font-weight: 900;
+    font-size: 20px;
+}
+
+.missionProp input {
+    width: 40px;
+}
+
+.rewardItems {
+    display: inline-block;
+}
+
+.rowAction {
+    border: 1px solid;
+    padding: 10px;
+}
+
+.rowAction h5{
+    margin: 10px 0;
+}
+
+.actionsProp {
+    padding-left: 18px;
+}
+
+.count {
+    float: left;
+    font-size: 26px;
+    font-weight: 900;
 }

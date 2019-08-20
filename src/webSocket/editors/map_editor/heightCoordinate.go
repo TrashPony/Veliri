@@ -1,4 +1,4 @@
-package mapEditor
+package map_editor
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/mapEditor"

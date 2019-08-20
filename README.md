@@ -3,6 +3,7 @@
 
 http://veliri.ru
 
+Concept Artist - https://www.artstation.com/tripoltri
 диздок - https://drive.google.com/file/d/17Fi9x18PkgwWcgjUVZIyVIXbkhoryGCF/view?usp=sharing
 (открывается через сервис https://www.draw.io, после регистрации появится в гугл диске открыть с помощью draw.io)
 

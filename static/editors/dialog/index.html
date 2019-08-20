@@ -16,12 +16,19 @@
     <script src="./js/SetPicture.js"></script>
     <script src="./js/DialogSocket.js"></script>
 
+    <script src="./js/MissionList.js"></script>
+    <script src="./js/MissionSocket.js"></script>
+
     <script src="../../assets/components/GetAvatar.js"></script>
 
     <script src="../../assets/lib/jquery-3.3.1.js"></script>
     <script src="../../assets/lib/jquery-ui.js"></script>
     <script src="../../assets/lib/jquery.ui.touch-punch.js"></script>
     <script src="../../assets/lib/axios.min.js"></script>
+
+    <link href="../../assets/components/inventoryCells/inventoryCells.css" rel="stylesheet">
+    <script src="../../assets/components/inventoryCells/CreateInventoryCell.js"></script>
+    <script src="../../assets/components/inventoryCells/FindCell.js"></script>
 
     <script defer>OpenMapEditorSocket()</script>
 </head>
@@ -79,13 +86,26 @@
 
         <div id="dialogList2">
         </div>
+    </div>
 
-        <div id="MissionList">
-            миссиям не нужена доп страница для редактирования т.к. там мало информации
+    <div id="MissionList">
 
-            -- название, тип
+        <div id="filters">
+            <h4>Фильтры:
+                <input type="button" value="Даилоги" onclick="GetListDialogs()">
+                <input type="button" value="Задания" onclick="GetListMissions()">
+            </h4>
+
+            <div id="createNewMissionBlock">
+                <input type="text" placeholder="Имя новой миссии" id="nameNewMission">
+                <input type="button" value="Создать миссию" onclick="">
+            </div>
+        </div>
+
+        <div id="MissionList2">
         </div>
     </div>
+
     <div id="selectDialog">
     </div>
 

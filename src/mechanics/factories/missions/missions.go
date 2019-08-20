@@ -6,7 +6,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -16,7 +15,7 @@ import (
 	"sync"
 )
 
-var Missions = NewMissionsStore()
+var Missions = newMissionsStore()
 
 type missions struct {
 	missionsType map[int]*mission.Mission
@@ -24,7 +23,7 @@ type missions struct {
 	mx           sync.RWMutex
 }
 
-func NewMissionsStore() *missions {
+func newMissionsStore() *missions {
 
 	return &missions{
 		missionsType: missionsDB.Missions(),
@@ -34,6 +33,10 @@ func NewMissionsStore() *missions {
 
 func (m *missions) GetByID(id int) *mission.Mission {
 	return m.missionsType[id]
+}
+
+func (m *missions) GetAllMissType() map[int]*mission.Mission {
+	return m.missionsType
 }
 
 func (m *missions) GetRandomMission() *mission.Mission {
@@ -106,11 +109,11 @@ func (m *missions) AcceptMission(client *player.Player, uuid string) *mission.Mi
 	acceptMission, ok := m.missions[uuid]
 	if ok {
 		if acceptMission.Type == "delivery" {
-			// даем игроку предмет который надо доставить
-			deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
-			storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID,
-				1, 1, deliveryItem.Size, 1, false)
-			client.Missions[acceptMission.UUID] = acceptMission
+			// TODO даем игроку предмет который надо доставить, надо просто сделать экшон GetItemOnBase (получает айтем в склад базы), выполняется сразу
+			//deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
+			//storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID,
+			//	1, 1, deliveryItem.Size, 1, false)
+			//client.Missions[acceptMission.UUID] = acceptMission
 
 			client.NotifyQueue[acceptMission.UUID] = &player.Notify{Name: "mission", UUID: acceptMission.UUID, Event: "new", Data: acceptMission}
 		}
