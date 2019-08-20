@@ -164,8 +164,4 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "DeadSquad") {
         SquadDead(jsonData.other_user);
     }
-
-    if (jsonData.event === "LocalGame") {
-        location.href = "../../../field";
-    }
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/TrashPony/Veliri/src/end_points"
 	globalGameGenerators "github.com/TrashPony/Veliri/src/mechanics/globalGame/generators"
 	"github.com/TrashPony/Veliri/src/webSocket"
-	"github.com/TrashPony/Veliri/src/webSocket/field"
 	"github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/TrashPony/Veliri/src/webSocket/global/ai"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
@@ -49,8 +48,6 @@ func main() {
 	go other.UserOnlineChecker()
 	go other.LocalChatChecker()
 	go other.NotifyWorker()
-
-	go field.Sender()
 
 	go global.MoveSender()
 

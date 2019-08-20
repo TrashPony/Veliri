@@ -3,7 +3,6 @@ package webSocket
 import (
 	"github.com/TrashPony/Veliri/src/webSocket/editors/dialogEditor"
 	"github.com/TrashPony/Veliri/src/webSocket/editors/mapEditor"
-	"github.com/TrashPony/Veliri/src/webSocket/field"
 	"github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/TrashPony/Veliri/src/webSocket/inventory"
 	"github.com/TrashPony/Veliri/src/webSocket/lobby"
@@ -32,10 +31,6 @@ func ReadSocket(login string, id int, w http.ResponseWriter, r *http.Request, po
 	// TODO функция AddNewUser везде по сути одинаковая, возможно стоить вынести реализацию из всех соедений в общую функцию
 	if pool == "/wsLobby" {
 		lobby.AddNewUser(ws, login, id)
-	}
-
-	if pool == "/wsField" {
-		field.AddNewUser(ws, login, id)
 	}
 
 	if pool == "/wsChat" {

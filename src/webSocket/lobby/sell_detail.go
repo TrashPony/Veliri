@@ -1,7 +1,7 @@
 package lobby
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/db/localGame/update"
+	playerDB "github.com/TrashPony/Veliri/src/mechanics/db/player"
 	update2 "github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/storages"
@@ -32,7 +32,7 @@ func SellDetail(user *player.Player, msg Message) {
 		// todo проверить текущую цену с тем что пришло в сообщение, если разные отправлять ошибку msg.Price
 		user.SetCredits(user.GetCredits() + msg.Count*1)
 		update2.Squad(user.GetSquad(), true)
-		update.Player(user)
+		playerDB.UpdateUser(user)
 
 		//обновлять фронтенд
 		GetDetails(user)

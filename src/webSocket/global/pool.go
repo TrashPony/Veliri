@@ -213,10 +213,6 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			useDigger(ws, msg)
 		}
 
-		if msg.Event == "Attack" {
-			startLocalGame(ws, msg)
-		}
-
 		if msg.Event == "OpenDialog" {
 
 		}
