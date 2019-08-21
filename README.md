@@ -1,5 +1,5 @@
 # Veliri
-#### демо версия браузерной мморпг с пошаговыми боями.
+#### демо версия браузерной мморпг.
 
 http://veliri.ru
 
@@ -43,7 +43,6 @@ Concept Artist - https://www.artstation.com/tripoltri
             тут находится работа верстака и переработчика ресурсов.
         - "github.com/TrashPony/Veliri/src/webSocket/global" - глобальная игровая карта, тут игроки перемещаются, 
             добывают ресурсы, начинают битва и тд.
-        - "github.com/TrashPony/Veliri/src/webSocket/field" - локальный пошаговый бой.
         - "github.com/TrashPony/Veliri/src/webSocket/inventory" - работа с инвентарем игрока, так же склады баз и 
             снаряжение отряда.
         - "github.com/TrashPony/Veliri/src/webSocket/market" - магазин.
@@ -127,7 +126,7 @@ Concept Artist - https://www.artstation.com/tripoltri
 ![Teleport](images/teleport.png)
 
 
-##### Локальный бой - "github.com/TrashPony/Veliri/src/webSocket/field"
+##### Локальный бой - "github.com/TrashPony/Veliri/src/webSocket/field" -- Убрано из игры!
 ![Local_1](images/local_1.jpg)
 
 ![Local_2](images/local_2.jpg)
