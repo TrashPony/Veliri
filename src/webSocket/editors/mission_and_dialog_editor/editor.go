@@ -48,6 +48,7 @@ type Message struct {
 	Name     string                `json:"name"`
 
 	Missions map[int]*mission.Mission `json:"missions"`
+	Mission  *mission.Mission         `json:"mission"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -102,6 +103,11 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "GetAllMissions" {
 			ws.WriteJSON(&Message{Event: msg.Event, Missions: missions.Missions.GetAllMissType()})
+		}
+
+		if msg.Event == "SaveMissions" {
+			missions.Missions.SaveTypeMission(msg.Mission)
+			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
 		}
 	}
 }

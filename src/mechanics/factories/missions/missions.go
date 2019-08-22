@@ -56,6 +56,11 @@ func (m *missions) GetRandomMission() *mission.Mission {
 	}
 }
 
+func (m *missions) SaveTypeMission(mission *mission.Mission) {
+	missionsDB.UpdateMission(mission)
+	m.missionsType[mission.ID] = mission
+}
+
 func (m *missions) GenerateMissionForUser(client *player.Player) *mission.Mission {
 
 	missionType := m.GetRandomMission()

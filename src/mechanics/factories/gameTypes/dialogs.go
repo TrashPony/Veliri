@@ -61,7 +61,8 @@ func (d *dialogStore) UpdateTypeDialog(newDialogType *dialog.Dialog) {
 	}
 
 	// при обновление ид самого диалога остается без изменений
-	dialogEditor.UpdateDialog(newDialogType)
+	oldDialog, _ := d.dialogs[newDialogType.ID]
+	dialogEditor.UpdateDialog(newDialogType, &oldDialog)
 	d.dialogs[newDialogType.ID] = *newDialogType
 }
 

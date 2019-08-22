@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func UpdateDialog(updatedDialog *dialog.Dialog) {
+func UpdateDialog(updatedDialog *dialog.Dialog, oldDialog *dialog.Dialog) {
 
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
@@ -18,7 +18,7 @@ func UpdateDialog(updatedDialog *dialog.Dialog) {
 		log.Fatal("update dialog main info" + err.Error())
 	}
 
-	DeleteOldPageAndAsc(updatedDialog, tx)
+	DeleteOldPageAndAsc(oldDialog, tx)
 	AddPages(updatedDialog, tx)
 
 	err = tx.Commit()
@@ -64,9 +64,9 @@ func DeleteDialog(deleteDialog *dialog.Dialog) {
 	}
 }
 
-func DeleteOldPageAndAsc(updatedDialog *dialog.Dialog, tx *sql.Tx) {
+func DeleteOldPageAndAsc(oldDialog *dialog.Dialog, tx *sql.Tx) {
 	// из за лени я просту удаляю все старые страницы и ответы, после добавляю новые))
-	for _, page := range updatedDialog.Pages {
+	for _, page := range oldDialog.Pages {
 		_, err := tx.Exec("DELETE FROM dialog_asc WHERE id_page=$1",
 			page.ID)
 		if err != nil {
@@ -75,7 +75,7 @@ func DeleteOldPageAndAsc(updatedDialog *dialog.Dialog, tx *sql.Tx) {
 	}
 
 	_, err := tx.Exec("DELETE FROM dialog_pages WHERE id_dialog=$1",
-		updatedDialog.ID)
+		oldDialog.ID)
 	if err != nil {
 		log.Fatal("delete old page dialog" + err.Error())
 	}
