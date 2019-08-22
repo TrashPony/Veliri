@@ -7,7 +7,27 @@ import (
 	"log"
 )
 
-func UpdateMission(updateMission *mission.Mission) {
+func AddMission(newMission *mission.Mission) {
+	tx, err := dbConnect.GetDBConnect().Begin()
+	defer tx.Rollback()
+
+	err = tx.QueryRow("INSERT INTO missions (name, start_dialog_id, reward_cr, fraction, start_base_id, type) "+
+		"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+		newMission.Name, newMission.StartDialogID, newMission.RewardCr, newMission.Fraction, newMission.StartBaseID, newMission.Type).Scan(&newMission.ID)
+	if err != nil {
+		log.Fatal("add new mission :" + err.Error())
+	}
+
+	AddActions(newMission, tx)
+	AddRewardItems(newMission, tx)
+
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("add new mission : " + err.Error())
+	}
+}
+
+func UpdateMission(updateMission, oldMission *mission.Mission) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
@@ -17,11 +37,30 @@ func UpdateMission(updateMission *mission.Mission) {
 		log.Fatal("update mission main info" + err.Error())
 	}
 
-	DeleteOldInfo(updateMission, tx)
+	DeleteOldInfo(oldMission, tx)
+	AddActions(updateMission, tx)
+	AddRewardItems(updateMission, tx)
 
 	err = tx.Commit()
 	if err != nil {
 		log.Fatal("update mission: " + err.Error())
+	}
+}
+
+func DeleteMission(deleteMission *mission.Mission) {
+	tx, err := dbConnect.GetDBConnect().Begin()
+	defer tx.Rollback()
+
+	DeleteOldInfo(deleteMission, tx)
+	_, err = tx.Exec("DELETE FROM missions WHERE id=$1",
+		deleteMission.ID)
+	if err != nil {
+		log.Fatal("delete mission" + err.Error())
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal("delete mission: " + err.Error())
 	}
 }
 
@@ -49,5 +88,43 @@ func DeleteOldInfo(updateMission *mission.Mission, tx *sql.Tx) {
 }
 
 func AddActions(updateMission *mission.Mission, tx *sql.Tx) {
+	for i, action := range updateMission.Actions {
 
+		err := tx.QueryRow("INSERT INTO actions (id_mission, type_monitor, description, short_description, "+
+			"base_id, Q, R, radius, sec, count, dialog_id, number, async) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
+			updateMission.ID, action.TypeFuncMonitor, action.Description, action.ShortDescription, action.BaseID, action.Q,
+			action.R, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async).Scan(updateMission.Actions[i].ID)
+		if err != nil {
+			log.Fatal("add new action in mission " + err.Error())
+		}
+
+		AddNeedItems(action, tx)
+	}
+}
+
+func AddNeedItems(action *mission.Action, tx *sql.Tx) {
+	// todo повторяющийся код
+	if action.NeedItems == nil {
+		return
+	}
+
+	for i, itemSlot := range action.NeedItems.Slots {
+		tx.QueryRow("INSERT INTO need_action_items (id_actions, slot, item_type, item_id, quantity, hp) "+
+			"VALUES ($1, $2, $3, $4, $5, $6)",
+			action.ID, i, itemSlot.Type, itemSlot.ItemID, itemSlot.Quantity, itemSlot.HP)
+	}
+}
+
+func AddRewardItems(updateMission *mission.Mission, tx *sql.Tx) {
+
+	if updateMission.RewardItems == nil {
+		return
+	}
+
+	for i, itemSlot := range updateMission.RewardItems.Slots {
+		tx.QueryRow("INSERT INTO need_action_items (id_mission, slot, item_type, item_id, quantity, hp) "+
+			"VALUES ($1, $2, $3, $4, $5, $6)",
+			updateMission.ID, i, itemSlot.Type, itemSlot.ItemID, itemSlot.Quantity, itemSlot.HP)
+	}
 }

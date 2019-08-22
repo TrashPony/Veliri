@@ -69,16 +69,12 @@ func getMissionActions(missionGame *mission.Mission) {
 		"SELECT"+
 		" id,"+
 		" type_monitor,"+
-		" complete,"+
 		" description,"+
 		" short_description,"+
 		" base_id,"+
 		" q,"+
 		" r,"+
 		" count,"+
-		" current_count,"+
-		" player_id,"+
-		" bot_id,"+
 		" dialog_id,"+
 		" number,"+
 		" async,"+
@@ -95,9 +91,9 @@ func getMissionActions(missionGame *mission.Mission) {
 	for rows.Next() {
 		var actions mission.Action
 
-		err := rows.Scan(&actions.ID, &actions.TypeFuncMonitor, &actions.Complete, &actions.Description,
-			&actions.ShortDescription, &actions.BaseID, &actions.Q, &actions.R, &actions.Count, &actions.CurrentCount,
-			&actions.PlayerID, &actions.BotID, &actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec)
+		err := rows.Scan(&actions.ID, &actions.TypeFuncMonitor, &actions.Description,
+			&actions.ShortDescription, &actions.BaseID, &actions.Q, &actions.R, &actions.Count,
+			&actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec)
 		if err != nil {
 			log.Fatal("scan actions in missions " + err.Error())
 		}

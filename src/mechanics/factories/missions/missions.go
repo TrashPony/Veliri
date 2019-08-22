@@ -57,7 +57,18 @@ func (m *missions) GetRandomMission() *mission.Mission {
 }
 
 func (m *missions) SaveTypeMission(mission *mission.Mission) {
-	missionsDB.UpdateMission(mission)
+	oldType, _ := m.missionsType[mission.ID]
+	missionsDB.UpdateMission(mission, oldType)
+	m.missionsType[mission.ID] = mission
+}
+
+func (m *missions) DeleteMission(mission *mission.Mission) {
+	missionsDB.DeleteMission(mission)
+	delete(m.missionsType, mission.ID)
+}
+
+func (m *missions) AddMission(mission *mission.Mission) {
+	missionsDB.AddMission(mission)
 	m.missionsType[mission.ID] = mission
 }
 
