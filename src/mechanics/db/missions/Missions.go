@@ -79,7 +79,8 @@ func getMissionActions(missionGame *mission.Mission) {
 		" number,"+
 		" async,"+
 		" radius,"+
-		" sec "+
+		" sec,"+
+		" alternative_dialog_id "+
 		" "+
 		"FROM actions "+
 		"WHERE id_mission = $1", missionGame.ID)
@@ -93,7 +94,7 @@ func getMissionActions(missionGame *mission.Mission) {
 
 		err := rows.Scan(&actions.ID, &actions.TypeFuncMonitor, &actions.Description,
 			&actions.ShortDescription, &actions.BaseID, &actions.Q, &actions.R, &actions.Count,
-			&actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec)
+			&actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec, &actions.AlternativeDialogId)
 		if err != nil {
 			log.Fatal("scan actions in missions " + err.Error())
 		}

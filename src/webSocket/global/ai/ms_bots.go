@@ -105,6 +105,10 @@ func outBase(bot *player.Player, base *base.Base) {
 
 	respCoordinate := wsGlobal.OutBase(base)
 
+	if respCoordinate == nil {
+		return
+	}
+
 	x, y := globalGame.GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 
 	bot.GetSquad().Q = respCoordinate.Q
@@ -134,6 +138,11 @@ func Transport(bot *player.Player) {
 				oldX, oldY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
 				time.Sleep(15 * time.Second)
 				// todo runtime error: invalid memory address or nil pointer dereference
+
+				if bot == nil || bot.GetSquad() == nil {
+					return
+				}
+
 				if oldX == bot.GetSquad().GlobalX && oldY == bot.GetSquad().GlobalY && bot.InBaseID == 0 {
 					extraExit = true
 				}

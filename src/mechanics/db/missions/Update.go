@@ -40,6 +40,9 @@ func UpdateMission(updateMission, oldMission *mission.Mission) {
 	DeleteOldInfo(oldMission, tx)
 	AddActions(updateMission, tx)
 	AddRewardItems(updateMission, tx)
+	for _, action := range updateMission.Actions {
+		AddNeedItems(action, tx)
+	}
 
 	err = tx.Commit()
 	if err != nil {
@@ -91,15 +94,14 @@ func AddActions(updateMission *mission.Mission, tx *sql.Tx) {
 	for i, action := range updateMission.Actions {
 
 		err := tx.QueryRow("INSERT INTO actions (id_mission, type_monitor, description, short_description, "+
-			"base_id, Q, R, radius, sec, count, dialog_id, number, async) "+
-			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
+			"base_id, Q, R, radius, sec, count, dialog_id, number, async, alternative_dialog_id) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 			updateMission.ID, action.TypeFuncMonitor, action.Description, action.ShortDescription, action.BaseID, action.Q,
-			action.R, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async).Scan(updateMission.Actions[i].ID)
+			action.R, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async,
+			action.AlternativeDialogId).Scan(&updateMission.Actions[i].ID)
 		if err != nil {
 			log.Fatal("add new action in mission " + err.Error())
 		}
-
-		AddNeedItems(action, tx)
 	}
 }
 
@@ -110,9 +112,12 @@ func AddNeedItems(action *mission.Action, tx *sql.Tx) {
 	}
 
 	for i, itemSlot := range action.NeedItems.Slots {
-		tx.QueryRow("INSERT INTO need_action_items (id_actions, slot, item_type, item_id, quantity, hp) "+
+		_, err := tx.Exec("INSERT INTO need_action_items (id_actions, slot, item_type, item_id, quantity, hp) "+
 			"VALUES ($1, $2, $3, $4, $5, $6)",
 			action.ID, i, itemSlot.Type, itemSlot.ItemID, itemSlot.Quantity, itemSlot.HP)
+		if err != nil {
+			println("update need items" + err.Error())
+		}
 	}
 }
 
@@ -123,8 +128,12 @@ func AddRewardItems(updateMission *mission.Mission, tx *sql.Tx) {
 	}
 
 	for i, itemSlot := range updateMission.RewardItems.Slots {
-		tx.QueryRow("INSERT INTO need_action_items (id_mission, slot, item_type, item_id, quantity, hp) "+
+		_, err := tx.Exec("INSERT INTO reward_items (id_mission, slot, item_type, item_id, quantity, hp) "+
 			"VALUES ($1, $2, $3, $4, $5, $6)",
 			updateMission.ID, i, itemSlot.Type, itemSlot.ItemID, itemSlot.Quantity, itemSlot.HP)
+
+		if err != nil {
+			println("update reward items" + err.Error())
+		}
 	}
 }

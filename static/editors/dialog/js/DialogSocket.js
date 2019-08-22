@@ -1,4 +1,3 @@
-
 function DeleteDialog(dialogId) {
     editor.send(JSON.stringify({
         event: "DeleteDialog",
@@ -46,6 +45,8 @@ function RemovePage(pageID) {
 
 function AddAsc(pageID) {
     let page = getPageByID(pageID);
+    if (!page.asc) page.asc = [];
+
     page.asc.push({
         id: 0,
         name: "",

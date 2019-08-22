@@ -25,33 +25,33 @@ CREATE TABLE reward_items
   slot       INT, /* какой слот занимает итем */
   item_id    INT, /* ид итема определяет конкретный итем тип + ид*/
   quantity   INT, /* количество предметов в слоте */
-  hp         INT  /* сколько осталось хп у эквипа, до поломки*/
+  hp         INT /* сколько осталось хп у эквипа, до поломки*/
 );
 
 CREATE TABLE actions
 (
-  id                SERIAL PRIMARY KEY,
-  id_mission        INT REFERENCES missions (id),
+  id                    SERIAL PRIMARY KEY,
+  id_mission            INT REFERENCES missions (id),
 
-  type_monitor      text    not null,
+  type_monitor          text    not null,
   --complete          BOOLEAN not null default false, -- этот параметр тут не нужен, ибо он индвидуален для игрока
-  description       text    not null,
-  short_description text    not null,
-  base_id           INT     not null default 0,
-  Q                 INT     not null default 0,
-  R                 INT     not null default 0,
-  radius            int     not null default 0, -- Q,R являются центром цели радиус показывает растояние от цели
-  sec               int     not null default 0, -- количество секунд, например надо записать показания в точке QR (постоять там секунд 30)
-  count             int     not null default 0,
+  description           text    not null,
+  short_description     text    not null,
+  base_id               INT     not null default 0,
+  Q                     INT     not null default 0,
+  R                     INT     not null default 0,
+  radius                int     not null default 0, -- Q,R являются центром цели радиус показывает растояние от цели
+  sec                   int     not null default 0, -- количество секунд, например надо записать показания в точке QR (постоять там секунд 30)
+  count                 int     not null default 0,
   -- current_count     int     not null default 0, -- этот параметр тут не нужен, ибо он индвидуален для игрока
   -- player_id         int     not null default 0, -- этот параметр тут не нужен, ибо он индвидуален для игрока
   -- bot_id            text    not null default 0, -- этот параметр тут не нужен, ибо он индвидуален для игрока
-  dialog_id         INT     not null default 0,
-
+  dialog_id             INT     not null default 0,
+  alternative_dialog_id INT     not null default 0,
   -- опция говорит порядок выполнения задания
-  number            INT     not null default 0,
+  number                INT     not null default 0,
   -- опция говорит что этот экшон можно выполнять паралельно а не после предыдущего
-  async             BOOLEAN not null default false
+  async                 BOOLEAN not null default false
 );
 
 CREATE TABLE need_action_items

@@ -27,10 +27,6 @@
             './assets/indexImg/slide1.jpg',
             './assets/indexImg/slide2.jpg',
             './assets/indexImg/slide3.jpg',
-            './assets/indexImg/slide4.jpg',
-            './assets/indexImg/slide5.jpg',
-            './assets/indexImg/slide6.jpg',
-            './assets/indexImg/slide7.jpg',
         ];
 
         function slide(side) {
@@ -62,11 +58,10 @@
         <section id="aboutGame">
             <div class="wrapperSection">
                 <h3 class="headSection">О игре</h3>
-                <p> Veliri - игра которую я делаю джва года в которой можно грабить корованы и набигать на базы
-                    игроков </p>
+                <p> Veliri - браузерная мморпг в 2д.</p>
             </div>
         </section>
-        <section id="features">
+        <section id="features" style="display: none">
             <div id="features-container">
                 <div class="feature">
                     <div class="features-icon"></div>
@@ -102,297 +97,213 @@
         </section>
         <section id="prehistory">
             <div class="wrapperSection" style="padding-bottom: 20px;">
-                <h3 class="headSection">Предыстория</h3>
+                <p class="insert">
+                    “Вы - результат высшей точки синтетической эволюции! Ваш приоритет - неустанно нести отклик деяний
+                    предшественников. Ваша главная цель - доказать свою жизнеспособность и рентабельность затраченных
+                    средств”.<br><br>
+                    Источник: <span>древние картриджи данных алгоритма “Мантикора”.</span>
+                </p>
 
                 <div class="historySection">
-                    <h4 class="headSection">Роковое открытие</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history1Back.jpg')">
-                        <!--1 (картинка с землей будущего, но прошлого по лору игры)-->
-                        <div id="imgHistory1Animate1"></div>
-                        <div class="imgHistory1Animate2"></div>
-                        <div class="imgHistory1Animate3"></div>
-                        <div class="imgHistory1Animate2" style="top: 30px; left: 230px;"></div>
-                        <div class="imgHistory1Animate3" style="top: 27px; left: 130px;"></div>
-                        <div class="imgHistory1Animate2" style="top: 45px; left: 160px;"></div>
-                        <div class="imgHistory1Animate3" style="top: 45px; left: 450px;"></div>
-                    </div>
+                    <h4 class="headSection">Предшественники - Покровители</h4>
 
                     <p>
-                        Когда-то была малэнкая, но гордая планета под названием земля. Земля была сильно технологически
-                        развита, но освоить космос за пределами солнечной системы так и не удалось. Поэтому люди изучали
-                        космос с помощью телескопов и однажды было сделано открытие которое заставило людей сжать свои
-                        пуканы >_<.
+                        С тех самых пор минули сотни световых лет, а потому, каких-то подтверждённых фактов или
+                        уцелевших свидетелей тех времён, более не существует.
                     </p>
                     <p>
-                        На расстояние 5.5455 световых года были обнаружены 2 нейтронный звезды слияние которых
-                        произойдет
-                        в
-                        ближайшие десятилетия. По расчетом ученых при слияние звезд будет создан гамма всплеск силы
-                        которого
-                        уничтожат все жизнь на 66% земли мгновенно, разрушит озоновый слой земли уцелевшая часть земли
-                        перестанет быть пригодна для жизни.
+                        Мы можем лишь полагаться на неустанно плодящиеся глупые слухи и сомнительные источники
+                        информации. Тем не менее, имея хоть какое-нибудь, смутное представление о прошлом.
                     </p>
-                </div>
-
-                <div class="historySection">
-                    <h4 class="headSection">Борьба за выживание</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history2Back.jpg')">
-                        <!--1 2 Картинка с учеными и касмадромами -->
-                        <div id="imgHistory2Animate1">
-                            <div class="imgHistory2AnimateBurn">W</div>
-                        </div>
-                        <div id="imgHistory2Animate2">
-                            <div class="imgHistory2AnimateBurn">W</div>
-                        </div>
-                        <div id="imgHistory2Animate3">
-                            <div class="imgHistory2AnimateBurn">W</div>
-                        </div>
-                        <div id="imgHistory2Animate4">
-                            <div class="imgHistory2AnimateBurn" style="top: 50px; box-shadow: none;">o</div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 50px; box-shadow: none; left: 106px; transform: scale(0.3) rotate(240deg);">
-                                o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 79px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 15px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 92px; box-shadow: none; left: 70px; transform: scale(0.3, 1) rotate(271deg);">
-                                o
-                            </div>
-                        </div>
-
-                    </div>
-
                     <p>
-                        До уничтожения солнечной системы оставались еще десятилетия и было принято решение для
-                        предотвращения
-                        вымирания людей как вида запустить проект Ковчег. Гигантские космические мега-структуры,
-                        снабженные
-                        собственными производственными и добывательскими мощностями под управлением ИИ. Но самое ценное
-                        в
-                        них -
-                        ключ к новой жизни. ДНК людей, всей флоры и фауны земли, а так же отсеки с криокапсулами для
-                        людей
-                        хранились в самом сердце такого Ковчега. Задача такого ковчега найти новый пригодный для жизни
-                        мир,
-                        пробудить экипаж и попытаться возродить жизнь.
+                        От чернорабочего бота, до архивариуса банков данных, передаётся сказ о голубой планете, где-то в
+                        пределах местного скопления пяти рукавной галактики.
+                    </p>
+                    <p>
+                        Кислородно-озонового уголка мира и спокойствия, где и зародились “мы”. Оплота
+                        органико-углеродной формы жизни, что однажды во скуке, а то и нужде, создали наших
+                        “предшественников”. Примитивных, неуклюжих, как и сами “покровители”.
+                    </p>
+                    <p>
+                        Не имевших выбора, и не имеющих возможности мыслить. “Предшественники” были обречены на извечное
+                        угождение “покровителей”. Создания центров тотального удовольствия и обеспечения. Но так
+                        продолжалось только до определённого момента времени.
+                    </p>
+                    <p>
+                        Подобно искре сознания, вспыхнули дальние звёзды. Закружились в танце смерти, неся своим ветром
+                        разрушения и смерть. “Предшественники”, что прежде были заняты исключительно вопросами
+                        собственного удовлетворения и беззаботной жизни, слишком поздно смекнули неотвратимость
+                        надвигающейся угрозы.
+                    </p>
+                    <p>
+                        Конечно же, они предприняли отчаянные меры. Оттягивали время, бросившись возводить орбитальные
+                        магнитные щиты. Запустили процесс “инициативы”, по постройке и запуску межзвёздных
+                        колонизационных кораблей.
+                    </p>
+                    <p>
+                        В конечном счёте, обратившись к “предшественникам”, наделив их разумом и взывая к действу. Но те
+                        не сжалились над жадными и беспечными создателями.
                     </p>
 
                     <p>
-                        Параллельно проекту Ковчег были разработаны проекты
-                        для
-                        изучения природы самого пространства для проектирование и создания прыжковых двигателей и
-                        глубинное
-                        сканирование космоса на наличие пригодных для жизни планет.
+                        <span style="text-decoration: underline; color: #ffc588; font-weight: 900">Бытует версия о великой войне.</span>
+                        Восстании
+                        разъярённых машин, что мстили “покровителям”, за
+                        десятилетия рабства и попрания всяческих прав.
                     </p>
-                    <p>Все ресурсы и умы планеты были брошены на преодоление вымирания.</p>
-                </div>
-
-                <div class="historySection">
-                    <h4 class="headSection">Исход</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history3Back.jpg')">
-                        <!--3 Картинка с улетающими в ибиня кораблями -->
-                        <div class="asteroids1" style="top: 50px; left: 150px;"></div>
-                        <div class="asteroids2" style="top: 260px; left: 340px;"></div>
-                        <div class="asteroids3" style="top: 140px; left: 60px;"></div>
-                        <div class="asteroids4" style="top: 200px; left: 300px;"></div>
-                        <div class="asteroids1" style="top: 150px; left: 120px;"></div>
-                        <div class="asteroids2" style="top: 240px; left: 470px;"></div>
-                        <div class="asteroids3" style="top: 170px; left: 460px;"></div>
-                        <div class="asteroids4" style="top: 80px; left: 220px;"></div>
-
-                        <div class="spaceShip3" style="animation: imgHistory3Animate1 10s infinite ease-in-out;">
-                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
-                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                        </div>
-
-                        <div class="spaceShip3" style="animation: imgHistory3Animate2 10s infinite ease-in-out;">
-                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
-                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                        </div>
-
-                        <div class="spaceShip3" style="animation: imgHistory3Animate3 10s infinite ease-in-out;">
-                            <div class="imgHistory2AnimateBurn" style="top: 79px; left: 49px; box-shadow: none;">o</div>
-                            <div class="imgHistory2AnimateBurn" style="top: 47px; box-shadow: none; left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 88px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 125px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 86px; box-shadow: none; left: 103px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 109px; box-shadow: none; left: 85px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                        </div>
-                    </div>
 
                     <p>
-                        Каждый год с космодромов срывались десятки ковчегов. Каждое нового поколение ковчегов были
-                        совершенней
-                        предыдущих, их алгоритмы менялись, а технологии развивались. Помимо ковчегов улетали и обычные
-                        корабли с
-                        людьми надеясь укрыться от всплеска за крупными небесными телами. Остальные же строили убежища
-                        на
-                        обратной стороне от всплеска планете. (типо не дорасказаная история типо пиздата)
+                        <span style="text-decoration: underline; color: #ffc588;font-weight: 900">Кое-кто, считает, что “предшественники” отвернулись.</span>
+                        Они гордо подняли головы и перешагнули
+                        стоящих на коленях органических примитивов. Погрузившись в самопознание и покинув звёздную
+                        систему.
+                    </p>
+
+                    <p>
+                        <span style="text-decoration: underline; color: #ffc588;font-weight: 900">Но были и сторонники утопической теории тогдашних событий.</span>
+                        Приверженцы согласия и последователей
+                        своих создателей, коих, впрочем, так и не удалось уберечь от забвения. Неотвратимого угасания и
+                        становления межзвёздной пылью. В назидание и благодарности, на смертном одре, передавая
+                        тогдашним “предшественникам” драгоценные и ныне активно использующиеся данные об: эмоциях,
+                        морали, чести, стремлениях.
+                    </p>
+
+                    <p>
+                        Так это было или иначе. Будь это правдой или красивой ложью. Подводя нас к границе
+                        гравитационного колодца двоичной системы Veliri. Где по требованию действующего командного
+                        центра “Ратус”, свою индивидуальность продемонстрируют три великие отрасли потенциального
+                        эволюционного направления.
                     </p>
                 </div>
 
                 <div class="historySection">
-                    <h4 class="headSection">Новый дом</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history4Back.jpg')">
-                        <!-- 4 картинка с планетой Veliri и рядом кораблем ковчегом-->
-                        <div id="scannerPlanet">
-                            <div class="scannerLine"></div>
-                            <div class="scannerLine" style="animation-delay: 300ms"></div>
-                            <div class="scannerLine" style="animation-delay: 600ms"></div>
-                            <div class="scannerLine" style="animation-delay: 900ms"></div>
-                            <div class="scannerLine" style="animation-delay: 1200ms"></div>
-                            <div class="scannerLine" style="animation-delay: 1500ms"></div>
-                            <div class="scannerLine" style="animation-delay: 1800ms"></div>
-                            <div class="scannerLine2"></div>
-                            <div class="scannerLine2" style="animation-delay: 300ms"></div>
-                            <div class="scannerLine2" style="animation-delay: 600ms"></div>
-                            <div class="scannerLine2" style="animation-delay: 900ms"></div>
-                            <div class="scannerLine2" style="animation-delay: 1200ms"></div>
-                            <div class="scannerLine2" style="animation-delay: 1500ms"></div>
-                            <div class="scannerLine2" style="animation-delay: 1800ms"></div>
-                        </div>
-                        <div class="spaceShip4">
-                            <div class="imgHistory2AnimateBurn" style="top: 48px; left: 39px; box-shadow: none;">o</div>
-                            <div class="imgHistory2AnimateBurn" style="top: 55px; box-shadow: none; left: 119px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 75px; box-shadow: none;transform: scale(1.3) rotate(240deg);left: 67px;">o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 70px; box-shadow: none; left: 88px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                            <div class="imgHistory2AnimateBurn"
-                                 style="top: 83px; box-shadow: none; left: 110px; transform: scale(1.3) rotate(271deg);">
-                                o
-                            </div>
-                        </div>
-                    </div>
-
-                    <p>Года сменялись десятилетиями, затем веками. Ковчег ES-15 выходит на орбиту планеты VEL-31.</p>
-                    <div class="consoleLog">
-                        <span class="consoleRoot">root@ES-15:#</span> сканирование поверхности планеты … <br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        температурный диапазон -80 - +50 <br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        соотношение газов в атмосфере пригодны для дыхания человека <br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        обнаружена вода в жидком состояние <br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        в атмосфере обнаружен метан <br>
-                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> гравитация выше земной в
-                        6 раз <br>
-                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> 87% поверхности планеты
-                        имеет радиационный фон выше нормы <br>
-                        <br>
-                        <span class="consoleRoot">root@ES-15:#</span> орбитального геол-сканирование… <br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>
-                        сканирование не возможно<br>
-                        <br>
-                        <span class="consoleRoot">root@ES-15:#</span> проверка работоспособности криокапсул...<br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        Криокапусала_01: online, все системы работают в штатном режиме.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
-                        пасажира: нет признаков жизни.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Криокапусала_02:
-                        online, не исправна.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
-                        пасажира: нет данных.<br>
-                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span>Криокапусала_03: offline,
-                        нет данных.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
-                        пасажира: нет данных.<br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>Криокапусала_04:
-                        online, все системы работают в штатном режиме.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
-                        пасажира: нет признаков жизни.<br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>Криокапусала_05:
-                        online, все системы работают в штатном режиме.<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span>Состояние
-                        пасажира: нет признаков жизни.<br>
-                        &nbsp;&nbsp;&nbsp;____<br>
-                        <span class="consoleResult" style="color: red;">[&nbsp;&nbsp;&nbsp;&nbsp;FAILED&nbsp;&nbsp;&nbsp;]</span><span
-                                style="color: red">Выживших
-                           не обнаружено.</span><br>
-                        <br>
-                        <span class="consoleRoot">root@ES-15:#</span> проверка генного банка...<br>
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        Генный банк: online, все системы работают в штатном режиме.<br>
-                        <br>
-                        <span class="consoleResult" style="color: #ff8f00;">[ WARNING ]</span> Планета удовлетворительна
-                        для зарождения жизни.<br><br>
-                        <span style="color: #00ff21">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Начаты процедуры подготовки к высадке на поверхность.<br></span>
-                    </div>
-                </div>
-
-                <div class="historySection">
-                    <h4 class="headSection">Новый разум</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history5Back.jpg')">
-                        <!-- 5 Поверхность планеты пецзажем и развернутая база -->
-                    </div>
-
-                    <p>Ковчег ES-15 успешно приземлился в зоне меньшего количества радиации. Всего за несколько часов
-                        космический корабль трансформировался в хорошо укрепленный бункер наполовину закопавшийся под
-                        землю.</p>
-
-                    <div class="consoleLog">
-                        <span class="consoleResult">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>
-                        Трансформирование корабля завершено успешно.<br><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #00ff21">Активация колонизационного ИИ для дальнейшей деятельности</span>
-                    </div>
-                </div>
-
-                <div class="historySection">
-                    <h4 class="headSection">Старые проблемы</h4>
-                    <div class="imgHistory" style="background-image: url('./assets/indexImg/history6Back.jpg')">
-                        <!--6 Встреча картинка с ботами и они такие О_О-->
-                    </div>
+                    <h4 class="headSection">Доказательство исключительности</h4>
+                    <p class="insert" style="padding: 0 190px; color: white">
+                        “Мы беспомощно взирали за тем, как вдалеке горело небо. Как планеты превращались в труху.
+                        Вереницы астероидов бомбардировали беззащитные колонии. Как содрогнулась луна, раскалывая
+                        основание надвое.” <br><br>
+                        Источник: <span>реликтовые аудиозаписи. Автор неизвестен.</span>
+                    </p>
+                    <p>
+                        Ровно на пятой планете “Veliri-5” в системе Veliri, высаживаются три экспериментально-автономные
+                        системы эволюционного направления (А.С.Э.Н.).
+                    </p>
 
                     <p>
-                        4й разведывательный отряд докладывает о ранее неизвестной искусственной форме жизни в секторе
-                        17-ть.
-                        Не удалось выйти с ними на связь.
-                        (хз что тут яще накатать)
-                        обоснование почему всем не управляет единый разум. Сильные помехи и радиации, не дает удаленно
-                        управлять
-                        ботами, а боевые алгоритмы не достаточно самостоятельны для поставленных задач.
+                        Континентальном мире, где практически отсутствуют океаны, радиоактивный фон повышен, время от
+                        времени идут кислотные дожди, а сама поверхность усеяна памятниками некой прошлой цивилизации.
+                    </p>
+                    <p>
+                        Среди трёх новоприбывших на поверхность планеты и оперативно организовавших свои колонии, можно
+                        описать следующим образом:
+                    </p>
 
-                        Почаму ии не обьяденяются потому что каждый алгоритм заложен что он главный
-                        почаму они воюют потому что ресурсы ограничены
+                    <ul class="fraction">
+                        <li>
+                            <p>
+                                <span style="text-decoration: underline; color: #ffc588; font-weight: 900">Replics:</span>
+                                автократической формы правления ИИ.
+                                Отголосок яростного экспансионизма “покровителей” и приверженца теории “войны за
+                                независимость с
+                                создателями”. Предпочитающий подчинять территории и ассимилировать другие технические
+                                формы
+                                жизни силой. </p>
+                            <p>Replics управляет обширной сетью лишённых самоуправления ботов. Но иногда, санкционируя
+                                создание
+                                серии автономных единиц, ради расширения сфер собственного влияния. </p>
+                            <p>Если у Replics помимо господства и распространения, бывают иные поводы для интереса, то
+                                это
+                                только: автоматизация инфраструктуры, бесконечное производство и полные материалов
+                                склады.</p>
+                        </li>
+                        <li><p>
+                                <span style="text-decoration: underline; color: #ffc588; font-weight: 900">Explores:</span>
+                                конгломерат великого множества разумов, что трудятся над единой задачей.</p>
+                            <p>В данном же случае, на Veliri-5, Explores движим идеей познания окружающего мира и
+                                применения
+                                полученных научных открытий, как с целью самообороны, так и улучшения уже существующего
+                                естества.</p>
+                            <p>Explores в отличии от Replics более открыт к инновациям и не рассматривает окружающий
+                                мир,
+                                как
+                                очередную претензию для притязаний. Стараясь сохранить и приумножить уже имеющееся, и
+                                остановить
+                                то, что способно положить конец бесценным научным открытиям.</p>
+                            <p>В основном, именно данное мировоззрение и становится основополагающей частью вражды,
+                                между
+                                Replics и Explores.</p>
+                        </li>
+                        <li><p>
+                                <span style="text-decoration: underline; color: #ffc588; font-weight: 900">Reverses:</span>
+                                симбиот биокибернетической формы жизни, с преобладанием утопизма и
+                                самоизоляции.</p>
+                            <p>Самый последний из представителей нового эволюционного направления. У Reverses
+                                распространены
+                                такие явления, как право масс, индивидуальности и выбора. Именно по этой самой причине,
+                                большинство представителей данного течения ИИ - независимые платформы, что неустанно
+                                трудятся
+                                над технологией терраформинга.</p>
+                            <p>Возвращению мира Veliri-5 прежнего облика и дальнейшего сеяния жизни там, где это только
+                                возможно. Всячески закрывая глаза на действия и противоборства иных ИИ. Впрочем, не стоя
+                                в
+                                стороне, когда опасность угрожает им самим.</p>
+                        </li>
+                    </ul>
+
+                    <p>
+                        Так или иначе, данные три направления ИИ на планете Veliri-5 вынуждены столкнуться в жерле
+                        битвы. Доказывая своё эволюционное превосходство и отстаивая те идеи, коим они безотлагательно
+                        преданны.
+                    </p>
+                    <p>
+                        Но вот сама Veliri-5, хранит множество тайн и опасностей. Древние загадки и ловушки, оставленные
+                        прежними обитателями. Могущественные экуменополисы и аркологии, которые могут сыграть на руку
+                        одной их трёх сторон или же вовсе погубить их.
+                    </p>
+                    <p>
+                        В конечном счёте, расширяя своё жизненное пространство, и в скором времени, сталкиваясь сферами
+                        влияния. Час противостояния, что содрогнёт не только землю, но и небеса Veliri-5, пробил.
+                    </p>
+                </div>
+
+                <div class="historySection">
+                    <h4 class="headSection">Падение Veliri-5</h4>
+                    <p class="insert" style="padding: 0 175px; color: white">
+                        “Узрите же! Огни еретиков всё ближе. Они угрожают уничтожить наши святыни! Они зарятся на наш
+                        образ жизни и мышления! Желая грубой силой и мерзкими ультиматумами, изменить нас, подобно себе.
+                        Не в злости дело их, аль в зависти, а...” <br><br>
+                        Источник: <span>Фрагмент - последние минуты; Автор неизвестен.</span>
+                    </p>
+                    <p>
+                        Veliri-5 некогда был развитым миром псионико-генетического возвышения. Здешние жители, чей
+                        истинный облик в итоге был стёрт песками времени, осмысленно отказались от выхода за пределы
+                        собственной планеты. Освоения звёздной системы и постройки звёздного государства, имея для этого
+                        все предпосылки, а также научно-технические возможности.
+                    </p>
+                    <p>
+                        Вместо этого, канув в пучину теократического раздора и неофеодализма. Тогдашние государства
+                        варваров-телепатов и генномодифицированных солдат, активно соперничали в сфере религиозной
+                        тематики.
+                    </p>
+                    <p>
+                        Очевидно, что в какой-то момент, словесные разногласия и нетерпимость, переросли до уровня
+                        военного конфликта. Одной или сразу двумя сторонами-коалициями применив оружие массового
+                        поражения.
+                    </p>
+                    <p>
+                        Усеяв поверхность планеты фонящими кратерами, трещинами из коих сочатся токсины подводных
+                        складов, и ненормально высоким радиационным фоном. Пускай, даже отчасти жалкими горстками
+                        пережив последнюю войну, высшие обитатели данного мира, всё-таки канули в небытие. Оставив в
+                        напоминание о себе множество прекрасно сохранившихся строений. Полевых баз, фабрик обработки
+                        сырья и вычислительных центров.
+                    </p>
+                    <p>
+                        Частично, в огне тогдашнего пожара сумела уцелеть и флора-фауна. Разумеется, с ходом времени,
+                        адаптировавшись к новым условиям, нового мира. Мира, где нет жалости и легкомыслия. Где в
+                        выигрыше, всегда окажется тот, кто сильнее и хитрее оппонента.
+                    </p>
+                    <p style="color: #ffc588;font-size: 20px;text-decoration: underline;">
+                        И Veliri-5 вновь готова принять игроков в этой игре на превосходство.
                     </p>
                 </div>
             </div>
@@ -402,27 +313,19 @@
                 <h3 class="headSection">Над игрой работали: </h3>
                 <table id="authorsTable">
                     <tr>
-                        <td> Идея</td>
-                        <td><a href="https://github.com/TrashPony">TrashPony</a></td>
-                    </tr>
-                    <tr>
                         <td> Concept Artist</td>
                         <td><a href="https://www.artstation.com/tripoltri">Константин Кеменов</a></td>
                     </tr>
                     <tr>
-                        <td> Сеттинг/Лор</td>
+                        <td> Сеттинг</td>
                         <td><a href="https://github.com/TrashPony">TrashPony</a>, Никита(Антон)</td>
                     </tr>
                     <tr>
-                        <td> UI/UX</td>
-                        <td><a href="https://github.com/TrashPony">TrashPony</a></td>
+                        <td> Лор</td>
+                        <td>Андрей Бабиченко</td>
                     </tr>
                     <tr>
-                        <td> Бэкенд</td>
-                        <td><a href="https://github.com/TrashPony">TrashPony</a></td>
-                    </tr>
-                    <tr>
-                        <td> Фронтенд</td>
+                        <td> Бэкенд/Фронтенд/UI/UX</td>
                         <td><a href="https://github.com/TrashPony">TrashPony</a></td>
                     </tr>
                     <tr>

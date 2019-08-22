@@ -97,10 +97,11 @@ func AddPages(updatedDialog *dialog.Dialog, tx *sql.Tx) {
 }
 
 func AddAsks(page *dialog.Page, tx *sql.Tx) {
-	for _, asc := range page.Asc {
+	for i, asc := range page.Asc {
 		err := tx.QueryRow("INSERT INTO dialog_asc (id_page, to_page, name, text, type_action) "+
 			"VALUES ($1, $2, $3, $4, $5) RETURNING id",
-			page.ID, asc.ToPage, asc.Name, asc.Text, asc.TypeAction).Scan(&asc.ID)
+			page.ID, asc.ToPage, asc.Name, asc.Text, asc.TypeAction).Scan(&page.Asc[i].ID)
+
 		if err != nil {
 			log.Fatal("add new asc dialog " + err.Error())
 		}

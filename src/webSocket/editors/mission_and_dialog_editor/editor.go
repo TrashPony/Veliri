@@ -20,9 +20,7 @@ var usersWs = make(map[*websocket.Conn]*player.Player)
 func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	mutex.Lock()
-
-	utils.CheckDoubleLogin(login, &usersWs)
-
+	//utils.CheckDoubleLogin(login, &usersWs)
 	newPlayer, ok := players.Users.Get(id)
 
 	if !ok {

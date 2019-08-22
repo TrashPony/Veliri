@@ -31,20 +31,21 @@ type Action struct {
 	Complete        bool   `json:"complete"`
 
 	//мета информация
-	Description      string               `json:"description"`
-	ShortDescription string               `json:"short_description"`
-	BaseID           int                  `json:"base_id"`
-	Q                int                  `json:"q"`
-	R                int                  `json:"r"`
-	Radius           int                  `json:"radius"`
-	Sec              int                  `json:"sec"`
-	Count            int                  `json:"count"`
-	CurrentCount     int                  `json:"current_count"`
-	PlayerID         int                  `json:"player_id"`
-	BotID            int                  `json:"bot_id"`
-	DialogID         int                  `json:"dialog_id"`
-	NeedItems        *inventory.Inventory `json:"need_items"`
-	Number           int                  `json:"number"`
-	Async            bool                 `json:"async"`
-	Dialog           *dialog.Dialog       `json:"dialog"`
+	Description         string               `json:"description"`
+	ShortDescription    string               `json:"short_description"`
+	BaseID              int                  `json:"base_id"`
+	Q                   int                  `json:"q"`
+	R                   int                  `json:"r"`
+	Radius              int                  `json:"radius"`
+	Sec                 int                  `json:"sec"`
+	Count               int                  `json:"count"`
+	CurrentCount        int                  `json:"current_count"`
+	PlayerID            int                  `json:"player_id"`
+	BotID               int                  `json:"bot_id"`
+	DialogID            int                  `json:"dialog_id"`
+	AlternativeDialogId int                  `json:"alternative_dialog_id"`
+	NeedItems           *inventory.Inventory `json:"need_items"`
+	Number              int                  `json:"number"`
+	Async               bool                 `json:"async"`
+	Dialog              *dialog.Dialog       `json:"dialog"`
 }

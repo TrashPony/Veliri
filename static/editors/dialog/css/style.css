@@ -256,12 +256,29 @@ body {
 }
 
 .rowAction {
-    border: 1px solid;
+    border: 1px solid rgb(0, 0, 0);
     padding: 10px;
+    background: bisque;
+    box-shadow: 0 0 3px;
+    margin-bottom: 10px;
 }
 
 .rowAction h5{
     margin: 10px 0;
+}
+
+.rowAction table input {
+    width: 100px;
+}
+
+.rowAction table {
+    width: 1240px;
+}
+
+.rowAction table td {
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    font-weight: 900;
 }
 
 .actionsProp {
