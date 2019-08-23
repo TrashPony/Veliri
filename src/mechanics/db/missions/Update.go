@@ -40,6 +40,7 @@ func UpdateMission(updateMission, oldMission *mission.Mission) {
 	DeleteOldInfo(oldMission, tx)
 	AddActions(updateMission, tx)
 	AddRewardItems(updateMission, tx)
+
 	for _, action := range updateMission.Actions {
 		AddNeedItems(action, tx)
 	}
@@ -67,15 +68,15 @@ func DeleteMission(deleteMission *mission.Mission) {
 	}
 }
 
-func DeleteOldInfo(updateMission *mission.Mission, tx *sql.Tx) {
+func DeleteOldInfo(oldMission *mission.Mission, tx *sql.Tx) {
 
 	_, err := tx.Exec("DELETE FROM reward_items WHERE id=$1",
-		updateMission.ID)
+		oldMission.ID)
 	if err != nil {
 		log.Fatal("delete reward_items in mission" + err.Error())
 	}
 
-	for _, action := range updateMission.Actions {
+	for _, action := range oldMission.Actions {
 		_, err := tx.Exec("DELETE FROM need_action_items WHERE id_actions=$1",
 			action.ID)
 		if err != nil {
@@ -83,8 +84,8 @@ func DeleteOldInfo(updateMission *mission.Mission, tx *sql.Tx) {
 		}
 	}
 
-	_, err = tx.Exec("DELETE FROM actions WHERE dialog_id=$1",
-		updateMission.ID)
+	_, err = tx.Exec("DELETE FROM actions WHERE id_mission=$1",
+		oldMission.ID)
 	if err != nil {
 		log.Fatal("delete old actions" + err.Error())
 	}

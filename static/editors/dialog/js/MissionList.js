@@ -1,5 +1,23 @@
 let allMission = {};
 
+let missFilters = {
+    id: 0,
+    name: "",
+    fraction: "",
+    type: "",
+    access: "",
+};
+
+function filterMissID(context) {
+    missFilters.id = Number(context.value);
+    GetListMissions();
+}
+
+function filterMissName(context) {
+    missFilters.name = context.value;
+    GetListMissions();
+}
+
 function MissionList(missions) {
     allMission = missions;
 
@@ -10,69 +28,93 @@ function MissionList(missions) {
     document.getElementById("selectDialog").style.display = "none";
     document.getElementById("dialogList").style.display = "none";
 
-    MissionList2.innerHTML = '';
-
     for (let i in missions) {
         if (missions.hasOwnProperty(i)) {
 
             let mission = missions[i];
+            let missBlock = document.getElementById("mission" + mission.id);
 
-            MissionList2.innerHTML += `
-<div class="mission">
-    <div class="missionProp">
-        <input type="text" value="${mission.name}" style="display: block;width: 320px; margin-bottom: 5px;" oninput="SetMissionName(this, ${mission.id})">
-        <input type="button" value="Сохранить" onclick="SaveMission(${mission.id})" style="width: 85px;">  
-         
-        <label> ID: 
-            <input type="text" value="${mission.id}" disabled>
-        </label>
-        
-        <label> Доступно фракции:
-            <select id="fractionMiss${mission.id}" onchange="SetFraction(this, ${mission.id})">
-                        <option value="All">Всем</option>
-                        <option value="Replics">Replics</option>
-                        <option value="Explores">Explores</option>
-                        <option value="Reverses">Reverses</option>
-            </select>
-        </label>
-        
-        <label> Тип:
-             <select id="typeMiss${mission.id}" onchange="SetTypeMission(this, ${mission.id})">
-                        <option value="">-</option>
-                        <option value="delivery">delivery</option>
-            </select>
-        </label>
-        
-        <label> Награда кредитов: 
-            <input type="number" value="${mission.reward_cr}" oninput="SetRewardCr(this, ${mission.id})">
-        </label>
-        
-        <label> Награда предметы:
-            <div class="rewardItems" id="rewardItems${mission.id}"></div>
-        </label>
-        
-        <label> Ид базы начала квеста (0 - на всех): 
-            <input type="number" value="${mission.start_base_id}" oninput="SetBaseStart(this, ${mission.id})">
-        </label>
-        
-        <label> Ид диалога для старта задания: 
-            <input type="number" value="${mission.start_dialog_id}" oninput="SetStartDialog(this, ${mission.id})">
-        </label>
-        
-    </div>
-    
-    <div class="actionsProp" id="actionsProp${mission.id}">
-    
-    </div>
-</div>
-`;
+            // проверка на фильтры
+            if (!(mission.id === missFilters.id || missFilters.id === 0)) {
+                if (missBlock) missBlock.remove();
+                continue
+            }
 
-            setTimeout(function () {
+            if (!(mission.name.indexOf(missFilters.name) + 1 || missFilters.name === '')) {
+                if (missBlock) missBlock.remove();
+                continue
+            }
+
+
+            if (document.getElementById("mission" + mission.id)) {
+                $('#missionName' + mission.id).val(mission.name);
                 $('#fractionMiss' + mission.id).val(mission.fraction);
                 $('#typeMiss' + mission.id).val(mission.type);
+                $('#missionRewardCR' + mission.id).val(mission.reward_cr);
                 if (mission.reward_items) ItemFill('rewardItems' + mission.id, mission.reward_items.slots);
+                $('#missionStartBase' + mission.id).val(mission.start_base_id);
+                $('#missionStartDialogID' + mission.id).val(mission.start_dialog_id);
+
                 ActionFill(mission);
-            }, 100)
+            } else {
+                MissionList2.innerHTML += `
+                    <div class="mission" id="mission${mission.id}">
+                        <div class="missionProp">
+                            <input id="missionName${mission.id}" type="text" value="${mission.name}" style="display: block;width: 320px; margin-bottom: 5px;" oninput="SetMissionName(this, ${mission.id})">
+                            <input type="button" value="Сохранить" onclick="SaveMission(${mission.id})" style="width: 85px;">  
+                            <input type="button" value="Удалить" onclick="DeleteMission(${mission.id})" style="width: 85px;">  
+
+                            <label> ID: 
+                                <input type="text" value="${mission.id}" disabled>
+                            </label>
+                            
+                            <label> Доступно фракции:
+                                <select id="fractionMiss${mission.id}" onchange="SetFraction(this, ${mission.id})">
+                                            <option value="All">Всем</option>
+                                            <option value="Replics">Replics</option>
+                                            <option value="Explores">Explores</option>
+                                            <option value="Reverses">Reverses</option>
+                                </select>
+                            </label>
+                            
+                            <label> Тип:
+                                 <select id="typeMiss${mission.id}" onchange="SetTypeMission(this, ${mission.id})">
+                                            <option value="">-</option>
+                                            <option value="delivery">delivery</option>
+                                </select>
+                            </label>
+                            
+                            <label> Награда кредитов: 
+                                <input id="missionRewardCR${mission.id}" type="number" value="${mission.reward_cr}" oninput="SetRewardCr(this, ${mission.id})">
+                            </label>
+                            
+                            <label> Награда предметы:
+                                <div class="rewardItems" id="rewardItems${mission.id}"></div>
+                            </label>
+                            
+                            <label> Ид базы начала квеста (0 - на всех): 
+                                <input id="missionStartBase${mission.id}" type="number" value="${mission.start_base_id}" oninput="SetBaseStart(this, ${mission.id})">
+                            </label>
+                            
+                            <label> Ид диалога для старта задания: 
+                                <input id="missionStartDialogID${mission.id}" type="number" value="${mission.start_dialog_id}" oninput="SetStartDialog(this, ${mission.id})">
+                            </label>
+                            
+                        </div>
+                        
+                        <div class="actionsProp" id="actionsProp${mission.id}">
+                        
+                        </div>
+                    </div>
+                    `;
+
+                setTimeout(function () {
+                    $('#fractionMiss' + mission.id).val(mission.fraction);
+                    $('#typeMiss' + mission.id).val(mission.type);
+                    if (mission.reward_items) ItemFill('rewardItems' + mission.id, mission.reward_items.slots);
+                    ActionFill(mission);
+                }, 100)
+            }
         }
     }
 }
@@ -172,9 +214,13 @@ function ActionFill(mission) {
 }
 
 function ItemFill(parentID, slots) {
-    for (let i in slots) {
-        let cell = document.createElement("div");
-        CreateInventoryCell(cell, slots[i], i, "");
-        document.getElementById(parentID).appendChild(cell);
+    let parent = document.getElementById(parentID);
+    if (parent) {
+        parent.innerHTML = '';
+        for (let i in slots) {
+            let cell = document.createElement("div");
+            CreateInventoryCell(cell, slots[i], i, "");
+            parent.appendChild(cell);
+        }
     }
 }

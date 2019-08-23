@@ -215,8 +215,11 @@ body {
 }
 
 .mission {
-    background: burlywood;
+    background: #d2cdc7;
     padding: 10px;
+    box-shadow: 0 0 5px black;
+    border-radius: 10px;
+    margin: 10px 0;
 }
 
 .missionProp {
@@ -263,12 +266,12 @@ body {
     margin-bottom: 10px;
 }
 
-.rowAction h5{
+.rowAction h5 {
     margin: 10px 0;
 }
 
 .rowAction table input {
-    width: 100px;
+    width: 50px;
 }
 
 .rowAction table {
@@ -279,6 +282,7 @@ body {
     text-align: center;
     border: 1px solid rgba(0, 0, 0, 0.2);
     font-weight: 900;
+    font-size: 10px;
 }
 
 .actionsProp {

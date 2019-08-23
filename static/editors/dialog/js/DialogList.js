@@ -1,9 +1,15 @@
 let filters = {
+    id: 0,
     name: "",
     fraction: "",
     type: "",
     access: "",
 };
+
+function filterID(context) {
+    filters.id = Number(context.value);
+    GetListDialogs();
+}
 
 function filterName(context) {
     filters.name = context.value;
@@ -42,6 +48,10 @@ function CreateDialogList(dialogs) {
         let dialog = dialogs[i];
 
         // проверка на фильтры
+        if (!(dialog.id === filters.id || filters.id === 0)) {
+            continue
+        }
+
         if (!(dialog.name.indexOf(filters.name) + 1 || filters.name === '')) {
             continue
         }
@@ -62,7 +72,10 @@ function CreateDialogList(dialogs) {
 
         dialogList2.innerHTML += `
             <div id="${dialog.id}" class="DepartmentOfEmployment">
-            
+                
+                <h3 style="position: absolute;right: 7px;top: -17px;color: red;">
+                    ID: ${dialog.id}
+                </h3>
                 <h3 class="missionHead" id="missionHead${dialog.id}">
                     ${dialog.name} (${dialog.fraction}, ${dialog.access_type})
                 </h3>

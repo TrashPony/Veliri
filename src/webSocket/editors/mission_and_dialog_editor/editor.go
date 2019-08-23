@@ -108,12 +108,12 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
 		}
 
-		if msg.Event == "DeleteMissions" {
+		if msg.Event == "DeleteMission" {
 			missions.Missions.DeleteMission(msg.Mission)
 			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
 		}
 
-		if msg.Event == "AddMissions" {
+		if msg.Event == "AddMission" {
 			missions.Missions.AddMission(msg.Mission)
 			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
 		}

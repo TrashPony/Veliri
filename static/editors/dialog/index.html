@@ -46,6 +46,11 @@
             <div id="filtersLine">
 
                 <label>
+                    По ИД: <input type="number" placeholder="ИД" oninput="filterID(this)" min="0" value="0"
+                                  style="width: 40px;">
+                </label>
+
+                <label>
                     По имени: <input type="text" placeholder="Имя диалога" oninput="filterName(this)">
                 </label>
 
@@ -99,8 +104,17 @@
 
             <div id="createNewMissionBlock">
                 <input type="text" placeholder="Имя новой миссии" id="nameNewMission">
-                <input type="button" value="Создать миссию" onclick="">
+                <input type="button" value="Создать миссию" onclick="AddMission()">
             </div>
+
+            <label>
+                ИД: <input type="number" placeholder="ИД" oninput="filterMissID(this)" min="0" value="0"
+                           style="width: 40px;">
+            </label>
+
+            <label>
+                Имя: <input type="text" placeholder="Имя" oninput="filterMissName(this)">
+            </label>
         </div>
 
         <div id="MissionList2">
