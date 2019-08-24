@@ -83,7 +83,8 @@ func getBoxStorage(gameBox *boxInMap.Box) {
 		" item_type,"+
 		" item_id,"+
 		" quantity,"+
-		" hp"+
+		" hp,"+
+		" place_user_id"+
 		" "+
 		"FROM box_storage "+
 		"WHERE id_box = $1", gameBox.ID)

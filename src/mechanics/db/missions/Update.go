@@ -11,9 +11,10 @@ func AddMission(newMission *mission.Mission) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
-	err = tx.QueryRow("INSERT INTO missions (name, start_dialog_id, reward_cr, fraction, start_base_id, type) "+
-		"VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-		newMission.Name, newMission.StartDialogID, newMission.RewardCr, newMission.Fraction, newMission.StartBaseID, newMission.Type).Scan(&newMission.ID)
+	err = tx.QueryRow("INSERT INTO missions (name, start_dialog_id, reward_cr, fraction, start_base_id, type, not_finished_dialog_id) "+
+		"VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+		newMission.Name, newMission.StartDialogID, newMission.RewardCr, newMission.Fraction, newMission.StartBaseID,
+		newMission.Type, newMission.NotFinishedDialogId).Scan(&newMission.ID)
 	if err != nil {
 		log.Fatal("add new mission :" + err.Error())
 	}
@@ -31,8 +32,8 @@ func UpdateMission(updateMission, oldMission *mission.Mission) {
 	tx, err := dbConnect.GetDBConnect().Begin()
 	defer tx.Rollback()
 
-	_, err = tx.Exec("UPDATE missions SET name = $2, start_dialog_id = $3, reward_cr = $4, fraction = $5, start_base_id = $6, type = $7 WHERE id = $1",
-		updateMission.ID, updateMission.Name, updateMission.StartDialogID, updateMission.RewardCr, updateMission.Fraction, updateMission.StartBaseID, updateMission.Type)
+	_, err = tx.Exec("UPDATE missions SET name = $2, start_dialog_id = $3, reward_cr = $4, fraction = $5, start_base_id = $6, type = $7, not_finished_dialog_id = $8 WHERE id = $1",
+		updateMission.ID, updateMission.Name, updateMission.StartDialogID, updateMission.RewardCr, updateMission.Fraction, updateMission.StartBaseID, updateMission.Type, updateMission.NotFinishedDialogId)
 	if err != nil {
 		log.Fatal("update mission main info" + err.Error())
 	}
@@ -70,7 +71,7 @@ func DeleteMission(deleteMission *mission.Mission) {
 
 func DeleteOldInfo(oldMission *mission.Mission, tx *sql.Tx) {
 
-	_, err := tx.Exec("DELETE FROM reward_items WHERE id=$1",
+	_, err := tx.Exec("DELETE FROM reward_items WHERE id_mission=$1",
 		oldMission.ID)
 	if err != nil {
 		log.Fatal("delete reward_items in mission" + err.Error())
@@ -95,11 +96,11 @@ func AddActions(updateMission *mission.Mission, tx *sql.Tx) {
 	for i, action := range updateMission.Actions {
 
 		err := tx.QueryRow("INSERT INTO actions (id_mission, type_monitor, description, short_description, "+
-			"base_id, Q, R, radius, sec, count, dialog_id, number, async, alternative_dialog_id) "+
-			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
+			"base_id, Q, R, radius, sec, count, dialog_id, number, async, alternative_dialog_id, map_id, owner_place, end_text) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id",
 			updateMission.ID, action.TypeFuncMonitor, action.Description, action.ShortDescription, action.BaseID, action.Q,
 			action.R, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async,
-			action.AlternativeDialogId).Scan(&updateMission.Actions[i].ID)
+			action.AlternativeDialogId, action.MapID, action.OwnerPlace, action.EndText).Scan(&updateMission.Actions[i].ID)
 		if err != nil {
 			log.Fatal("add new action in mission " + err.Error())
 		}

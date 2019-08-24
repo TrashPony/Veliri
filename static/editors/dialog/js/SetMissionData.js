@@ -27,21 +27,22 @@ function SetTypeMission(context, id) {
 
 function SetRewardCr(context, id) {
     let mission = getMissionByID(id);
-    mission.reward_cr = context.value;
-}
-
-function SetRewardItems() {
-    //todo
+    mission.reward_cr = Number(context.value);
 }
 
 function SetBaseStart(context, id) {
     let mission = getMissionByID(id);
-    mission.start_base_id = context.value;
+    mission.start_base_id = Number(context.value);
 }
 
 function SetStartDialog(context, id) {
     let mission = getMissionByID(id);
-    mission.start_dialog_id = context.value;
+    mission.start_dialog_id = Number(context.value);
+}
+
+function SetNotFinishedDialog(context, id) {
+    let mission = getMissionByID(id);
+    mission.not_finished_dialog_id = Number(context.value);
 }
 
 function AddAction(id) {
@@ -126,6 +127,11 @@ function SetTypeMonitorAction(context, id) {
     action.type_func_monitor = context.value;
 }
 
+function SetEndTextAction(context, id) {
+    let action = getActionByID(id);
+    action.end_text = context.value;
+}
+
 function SetAsyncAction(context, id) {
     let action = getActionByID(id);
     action.async = $(context).is(':checked');
@@ -135,9 +141,19 @@ function SetAsyncAction(context, id) {
  *   мета-информация по действиям
  **/
 
+function SetOwnerPlace(context, id) {
+    let action = getActionByID(id);
+    action.owner_place = $(context).is(':checked');
+}
+
 function SetActionBaseID(context, id) {
     let action = getActionByID(id);
     action.base_id = Number(context.value);
+}
+
+function SetActionMapID(context, id) {
+    let action = getActionByID(id);
+    action.map_id = Number(context.value);
 }
 
 function SetActionQ(context, id) {
@@ -173,8 +189,4 @@ function SetActionDialogID(context, id) {
 function SetAltDialogID(context, id) {
     let action = getActionByID(id);
     action.alternative_dialog_id = Number(context.value);
-}
-
-function SetActionNeedItems() {
-    //todo
 }

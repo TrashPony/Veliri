@@ -55,7 +55,10 @@ function ReaderLobby(jsonMessage) {
     }
 
     if (event === "dialog") {
-        FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission, JSON.parse(jsonMessage).user_id)
+        // этот костыль тут из за диалога обучения который идет не через стандартный путь
+        setTimeout(function () {
+            FillDepartment(JSON.parse(jsonMessage).dialog_page, JSON.parse(jsonMessage).dialog_action, JSON.parse(jsonMessage).mission, JSON.parse(jsonMessage).user_id)
+        }, 200);
     }
 
     if (event === "training") {

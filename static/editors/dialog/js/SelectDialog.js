@@ -25,18 +25,18 @@ function ViewDialog(dialog) {
              <input type="button" value="Назад" style="float: left; margin-left: 20px" onclick="GetListDialogs()">
 
             <label> Название диалога: 
-                <input type="text" title="name" value="${dialog.name}" oninput="SetNameDialog(this)">
+                <input type="text" value="${dialog.name}" oninput="SetNameDialog(this)">
             </label>
             
             <label> Где доступен: 
-                <select id="access_type" onchange="SetAccessType(this)">
+                <select id="accessTypeDialog" onchange="SetAccessType(this)">
                     <option value="base">На базе</option>
                     <option value="world">Везде</option>
                 </select>
             </label>
             
             <label> Кому доступен: 
-                <select id="fraction" onchange="SetDialogFraction(this)">
+                <select id="fractionDialog" onchange="SetDialogFraction(this)">
                     <option value="All">Всем</option>
                     <option value="Replics">Replics</option>
                     <option value="Explores">Explores</option>
@@ -45,11 +45,12 @@ function ViewDialog(dialog) {
             </label>
             
              <label> Тип: 
-                <select id="dialogType" onchange="SetTypeDialog(this)">
+                <select id="dialogType2" onchange="SetTypeDialog(this)">
                     <option value="">Прост)</option>
                     <option value="greeting">Приветсвие базы</option>
                     <option value="greeting_before_mission_not_complete">Приветсвие базы, если не сдал квест</option>
                     <option value="mission">Задание</option>
+                    <option value="training">training</option>
                 </select>
             </label>
             
@@ -62,12 +63,12 @@ function ViewDialog(dialog) {
 
     setTimeout(function () {
 
-        $('#access_type').val(dialog.access_type);
-        $('#fraction').val(dialog.fraction);
-        $('#dialogType').val(dialog.type);
+        $('#accessTypeDialog').val(dialog.access_type);
+        $('#fractionDialog').val(dialog.fraction);
+        $('#dialogType2').val(dialog.type);
 
         RenderPages(dialog)
-    }, 200);
+    }, 400);
 }
 
 function RenderPages() {
@@ -91,7 +92,6 @@ function RenderPages() {
             pagesSelectDialog.innerHTML += `
                     <div class="page" id="page${page.id}">
                     
-                        <label for="onePictureCheckBox" style="float: left"> 
                             <span style="float: left">
                                 Одна картинка для всех: 
                                 <input type="checkbox" title="onePicture" id="onePictureCheckBox${page.id}" onclick="ChangePicOption(${page.id})">
@@ -100,7 +100,6 @@ function RenderPages() {
                                 Номер страницы: <span style="color: #ecb416">${page.number}</span><br>
                                 <input type="button" value="Удалить" onclick="RemovePage(${page.id})">
                             </span>
-                        <label>
 
                         <input type="text" value="${page.name}" style="float: left; margin-top: 1px;" oninput="SetDialogPageHead(this, ${page.id})">
                         <textarea class="pageText" oninput="SetDialogPageText(this, ${page.id})">${page.text}</textarea>

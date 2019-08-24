@@ -29,6 +29,19 @@ func (d *dialogStore) GetByID(id int) *dialog.Dialog {
 	return &newDialog
 }
 
+func (d *dialogStore) GetTrainingStartDialog(fraction string) *dialog.Dialog {
+
+	for _, startDialog := range d.dialogs {
+		if startDialog.Type == "training" && startDialog.Fraction == fraction {
+			var newDialog dialog.Dialog
+			deepcopy.Copy(&newDialog, startDialog)
+			return &newDialog
+		}
+	}
+
+	return nil
+}
+
 func (d *dialogStore) GetTypeGreeting(fraction, typeDialog string) *dialog.Dialog {
 	for _, gameDialog := range d.dialogs {
 		if gameDialog.Fraction == fraction && gameDialog.AccessType == "base" && gameDialog.Type == typeDialog {

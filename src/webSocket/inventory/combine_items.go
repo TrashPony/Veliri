@@ -42,12 +42,12 @@ func combineItems(ws *websocket.Conn, msg Message) {
 			// если источник и приемник находятся в 1 инвентаре то нарватся на перигруз невозможно
 			if msg.Source == "squadInventory" {
 				add = true
-				user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity)
+				user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
 			} else {
 				// проверка на перегруз
 				if user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+dstSlot.Size {
 					add = true
-					user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity)
+					user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
 				} else {
 					add = false
 				}

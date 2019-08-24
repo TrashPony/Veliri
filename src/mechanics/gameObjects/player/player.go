@@ -72,6 +72,7 @@ type Player struct {
 	NotifyQueue map[string]*Notify `json:"notify_queue"`
 
 	UserInterface map[string]map[string]*Window `json:"user_interface"` // resolution, window_id, state
+	StoryEpisode  int                           `json:"story_episode"`
 }
 
 type ShortUserInfo struct {

@@ -24,33 +24,36 @@ func (d *Dialog) GetPageByType(typePage string) *Page {
 }
 
 func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorName, userFraction string) {
-	// %UserName% %BaseName% %ToBaseName%
 
 	if d == nil {
 		return
 	}
 
-	// TODO
-	//if d.Fraction == "All" {
-	//	d.Fraction = userFraction
-	//	for _, page := range d.Pages {
-	//		if page.Picture == "" {
-	//			page.Picture = strings.ToLower(userFraction) + "_logo"
-	//		}
-	//	}
-	//}
+	importantlyWrapperStart := "<span class=\"importantly\">"
+	importantlyWrapperEnd := "</span>"
+
+	processing := func(text string) string {
+
+		text = strings.Replace(text, "%UserName%", importantlyWrapperStart+userName+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "%BaseName%", importantlyWrapperStart+BaseName+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "%ToBaseName%", importantlyWrapperStart+ToBaseName+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "%ToSectorName%", importantlyWrapperStart+ToSectorName+importantlyWrapperEnd, -1)
+
+		text = strings.Replace(text, "Replics", importantlyWrapperStart+"Replics"+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "Explores", importantlyWrapperStart+"Explores"+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "Reverses", importantlyWrapperStart+"Reverses"+importantlyWrapperEnd, -1)
+
+		text = strings.Replace(text, "Veliri-5", importantlyWrapperStart+"Veliri-5"+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
+		text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
+
+		return text
+	}
 
 	for _, page := range d.Pages {
-		page.Text = strings.Replace(page.Text, "%UserName%", userName, -1)
-		page.Text = strings.Replace(page.Text, "%BaseName%", BaseName, -1)
-		page.Text = strings.Replace(page.Text, "%ToBaseName%", ToBaseName, -1)
-		page.Text = strings.Replace(page.Text, "%ToSectorName%", ToSectorName, -1)
-
+		page.Text = processing(page.Text)
 		for _, asc := range page.Asc {
-			asc.Text = strings.Replace(asc.Text, "%UserName%", userName, -1)
-			asc.Text = strings.Replace(asc.Text, "%BaseName%", BaseName, -1)
-			asc.Text = strings.Replace(asc.Text, "%ToBaseName%", ToBaseName, -1)
-			asc.Text = strings.Replace(asc.Text, "%ToSectorName%", ToSectorName, -1)
+			asc.Text = processing(asc.Text)
 		}
 	}
 }

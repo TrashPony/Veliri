@@ -12,7 +12,7 @@ import (
 
 func User(id int, login string) *player.Player {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, name, mail, credits, training, last_base_id,"+
-		" fraction, avatar, biography, scientific_points, attack_points, production_points, title "+
+		" fraction, avatar, biography, scientific_points, attack_points, production_points, title, story_episode "+
 		"FROM users "+
 		"WHERE id=$1 AND name=$2", id, login)
 	if err != nil {
@@ -29,7 +29,7 @@ func User(id int, login string) *player.Player {
 
 		err := rows.Scan(&id, &name, &mail, &credits, &newUser.Training, &newUser.LastBaseID,
 			&newUser.Fraction, &avatar, &newUser.Biography, &newUser.ScientificPoints, &newUser.AttackPoints,
-			&newUser.ProductionPoints, &newUser.Title)
+			&newUser.ProductionPoints, &newUser.Title, &newUser.StoryEpisode)
 		if err != nil {
 			log.Fatal("get user " + err.Error())
 		}

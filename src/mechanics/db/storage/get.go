@@ -11,7 +11,7 @@ func UserStorage(userId, baseId int) *inv.Inventory {
 	userInventory.Slots = make(map[int]*inv.Slot)
 	userInventory.SetSlotsSize(999)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp, place_user_id "+
 		"FROM base_storage "+
 		"WHERE base_id = $1 AND user_id = $2", baseId, userId)
 	if err != nil {

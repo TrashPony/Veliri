@@ -26,7 +26,7 @@ func divideItems(ws *websocket.Conn, msg Message) {
 			slot, ok := user.GetSquad().Inventory.Slots[msg.InventorySlot]
 			if ok && slot.Quantity > msg.Count {
 				if user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, msg.Count, slot.HP,
-					slot.Size/float32(slot.Quantity), slot.MaxHP, true) {
+					slot.Size/float32(slot.Quantity), slot.MaxHP, true, user.GetID()) {
 					slot.RemoveItemBySlot(msg.Count)
 				}
 			}

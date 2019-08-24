@@ -19,7 +19,8 @@ CREATE TABLE users
   fraction          varchar(64),
   avatar            text, -- todo надо переделать на bytea забирать и обновлять методами decode(string text, format text) и encode(data bytea, format text) но мне лень
   biography         text,
-  title             text
+  title             text,
+  story_episode     int not null default 1 -- текущее продвижение по сюжету
 );
 
 CREATE TABLE user_current_mission

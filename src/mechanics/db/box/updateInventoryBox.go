@@ -25,8 +25,8 @@ func Inventory(updateBox *boxInMap.Box) {
 		}
 
 		if slot.InsertToDB && slot.Item != nil {
-			_, err := tx.Exec("INSERT INTO box_storage (id_box, slot, item_type, item_id, quantity, hp) VALUES ($1, $2, $3, $4, $5, $6)",
-				updateBox.ID, slotNum, slot.Type, slot.ItemID, slot.Quantity, slot.HP)
+			_, err := tx.Exec("INSERT INTO box_storage (id_box, slot, item_type, item_id, quantity, hp, place_user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+				updateBox.ID, slotNum, slot.Type, slot.ItemID, slot.Quantity, slot.HP, slot.PlaceUserID)
 			if err != nil {
 				log.Fatal("add new item from box storage" + err.Error())
 			}
@@ -34,8 +34,8 @@ func Inventory(updateBox *boxInMap.Box) {
 		}
 
 		if !slot.InsertToDB && slot.Item != nil {
-			_, err := tx.Exec("UPDATE box_storage SET quantity = $1, item_type = $2, item_id = $3, hp = $4 WHERE id_box = $5 AND slot = $6",
-				slot.Quantity, slot.Type, slot.ItemID, slot.HP, updateBox.ID, slotNum)
+			_, err := tx.Exec("UPDATE box_storage SET quantity = $1, item_type = $2, item_id = $3, hp = $4, place_user_id = $7 WHERE id_box = $5 AND slot = $6",
+				slot.Quantity, slot.Type, slot.ItemID, slot.HP, updateBox.ID, slotNum, slot.PlaceUserID)
 			if err != nil {
 				log.Fatal("update slot from box storage" + err.Error())
 			}

@@ -5,6 +5,11 @@ body {
     user-select: none;
 }
 
+.importantly {
+    text-decoration: none;
+    color: #faff00;
+}
+
 input {
     outline: none;
     padding-left: 5px;

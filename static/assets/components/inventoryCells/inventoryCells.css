@@ -15,7 +15,7 @@
 }
 
 .nameItemInCell {
-    position: absolute;
+    position: fixed;
     top: -20px;
     left: 0;
     background-size: 100% 2px;

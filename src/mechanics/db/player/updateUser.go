@@ -14,10 +14,11 @@ func UpdateUser(user *player.Player) {
 
 	_, err = tx.Exec("UPDATE users "+
 		"SET mail = $2, credits = $3, training = $4, last_base_id = $5, fraction = $6, avatar = $7, biography = $8, "+
-		" scientific_points = $9, attack_points = $10, production_points = $11, title = $12 "+
+		" scientific_points = $9, attack_points = $10, production_points = $11, title = $12, story_episode = $13 "+
 		"WHERE id = $1",
 		user.GetID(), user.GetEmail(), user.GetCredits(), user.Training, user.LastBaseID, user.Fraction,
-		user.GetAvatar(), user.Biography, user.ScientificPoints, user.AttackPoints, user.ProductionPoints, user.Title)
+		user.GetAvatar(), user.Biography, user.ScientificPoints, user.AttackPoints, user.ProductionPoints, user.Title,
+		user.StoryEpisode)
 	if err != nil {
 		log.Fatal("update user " + err.Error())
 	}

@@ -19,6 +19,8 @@ function GetListDialogs() {
 }
 
 function SaveDialog() {
+
+    console.log(selectDialog);
     editor.send(JSON.stringify({
         event: "SaveDialog",
         dialog: selectDialog,

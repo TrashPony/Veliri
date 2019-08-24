@@ -46,12 +46,17 @@
             <div id="filtersLine">
 
                 <label>
-                    По ИД: <input type="number" placeholder="ИД" oninput="filterID(this)" min="0" value="0"
-                                  style="width: 40px;">
+                    ИД: <input type="number" placeholder="ИД" oninput="filterID(this)" min="0" value="0"
+                               style="width: 40px;">
                 </label>
 
                 <label>
-                    По имени: <input type="text" placeholder="Имя диалога" oninput="filterName(this)">
+                    ИД задания: <input type="number" placeholder="ИД задания" oninput="getMissionDialogs(this)"
+                                       style="width: 40px;" min="0" value="0">
+                </label>
+
+                <label>
+                    Имя: <input type="text" placeholder="Имя диалога" oninput="filterName(this)">
                 </label>
 
                 <label>Кому доступен:

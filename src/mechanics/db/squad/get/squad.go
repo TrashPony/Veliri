@@ -250,7 +250,8 @@ func SquadInventory(squadID int) *inv.Inventory {
 		"item_type, "+
 		"item_id, "+
 		"quantity, "+
-		"hp "+
+		"hp,"+
+		"place_user_id "+
 		""+
 		"FROM squad_inventory "+
 		"WHERE id_squad = $1", squadID)

@@ -16,7 +16,10 @@ func Missions() map[int]*mission.Mission {
 		" reward_cr," +
 		" fraction," +
 		" start_base_id," +
-		" type " +
+		" type," +
+		" not_finished_dialog_id," +
+		" main_story," +
+		" story " +
 		" " +
 		"FROM missions")
 	if err != nil {
@@ -31,7 +34,8 @@ func Missions() map[int]*mission.Mission {
 		var gameMission mission.Mission
 
 		err := rows.Scan(&gameMission.ID, &gameMission.Name, &gameMission.StartDialogID, &gameMission.RewardCr,
-			&gameMission.Fraction, &gameMission.StartBaseID, &gameMission.Type)
+			&gameMission.Fraction, &gameMission.StartBaseID, &gameMission.Type, &gameMission.NotFinishedDialogId,
+			&gameMission.MainStory, &gameMission.Story)
 		if err != nil {
 			log.Fatal("scan all missions " + err.Error())
 		}
@@ -51,7 +55,7 @@ func rewardItems(missionGame *mission.Mission) {
 	missionGame.RewardItems.Slots = make(map[int]*inventory.Slot)
 	missionGame.RewardItems.SetSlotsSize(999)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp, place_user_id "+
 		"FROM reward_items "+
 		"WHERE id_mission = $1", missionGame.ID)
 	if err != nil {
@@ -80,7 +84,10 @@ func getMissionActions(missionGame *mission.Mission) {
 		" async,"+
 		" radius,"+
 		" sec,"+
-		" alternative_dialog_id "+
+		" alternative_dialog_id,"+
+		" map_id,"+
+		" owner_place,"+
+		" end_text "+
 		" "+
 		"FROM actions "+
 		"WHERE id_mission = $1", missionGame.ID)
@@ -94,7 +101,8 @@ func getMissionActions(missionGame *mission.Mission) {
 
 		err := rows.Scan(&actions.ID, &actions.TypeFuncMonitor, &actions.Description,
 			&actions.ShortDescription, &actions.BaseID, &actions.Q, &actions.R, &actions.Count,
-			&actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec, &actions.AlternativeDialogId)
+			&actions.DialogID, &actions.Number, &actions.Async, &actions.Radius, &actions.Sec,
+			&actions.AlternativeDialogId, &actions.MapID, &actions.OwnerPlace, &actions.EndText)
 		if err != nil {
 			log.Fatal("scan actions in missions " + err.Error())
 		}
@@ -110,7 +118,7 @@ func needActionItems(action *mission.Action) {
 	action.NeedItems.Slots = make(map[int]*inventory.Slot)
 	action.NeedItems.SetSlotsSize(999)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT slot, item_type, item_id, quantity, hp, place_user_id "+
 		"FROM need_action_items "+
 		"WHERE id_actions = $1", action.ID)
 	if err != nil {

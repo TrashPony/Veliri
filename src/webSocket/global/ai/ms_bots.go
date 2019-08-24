@@ -156,8 +156,10 @@ func Transport(bot *player.Player) {
 	// следим что бы у ботов всегда осталавалось топливо
 	go func() {
 		for {
-			for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
-				slot.Count = slot.MaxCount
+			if bot != nil && bot.GetSquad() != nil {
+				for _, slot := range bot.GetSquad().MatherShip.Body.ThoriumSlots {
+					slot.Count = slot.MaxCount
+				}
 			}
 			time.Sleep(60 * time.Second)
 		}
@@ -172,7 +174,7 @@ func Transport(bot *player.Player) {
 			outBase(bot, botBase)
 		}
 
-		if !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
+		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
 
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)

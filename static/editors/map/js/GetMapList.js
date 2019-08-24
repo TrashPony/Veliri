@@ -23,12 +23,8 @@ function CreateMapList(jsonMessage) {
         let option = document.createElement("option");
         option.id = maps[i].id;
         option.value = maps[i].id;
+        option.innerHTML = maps[i].Name + `<span style='color: red'> ID: ${maps[i].id}</span>`;
 
-        if (maps[i].global) {
-            option.innerHTML = maps[i].Name + "<span style='color: red'> Глоб.</span>";
-        } else {
-            option.innerHTML = maps[i].Name;
-        }
         mapSelect.appendChild(option);
     }
 }

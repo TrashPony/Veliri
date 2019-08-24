@@ -2,6 +2,7 @@ package lobby
 
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -66,12 +67,13 @@ func checkNoobs(newPlayer *player.Player) {
 		if newPlayer.Training == 0 {
 
 			// если игрок не прошел обучение то кидаем ему первую страницу диалога введения
-			// todo брать не по ид а по свойству type=='training'
-			trainingDialog := gameTypes.Dialogs.GetByID(1)
-			trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), "", "", "", newPlayer.Fraction)
-			lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
-			newPlayer.SetOpenDialog(trainingDialog)
-
+			trainingDialog := gameTypes.Dialogs.GetTrainingStartDialog(newPlayer.Fraction)
+			if trainingDialog != nil {
+				base, _ := bases.Bases.Get(newPlayer.InBaseID)
+				trainingDialog.ProcessingDialogText(newPlayer.GetLogin(), base.Name, "", "", newPlayer.Fraction)
+				lobbyPipe <- Message{Event: "dialog", UserID: newPlayer.GetID(), DialogPage: trainingDialog.Pages[1]}
+				newPlayer.SetOpenDialog(trainingDialog)
+			}
 		} else {
 			if newPlayer.Training < 999 {
 				lobbyPipe <- Message{Event: "training", UserID: newPlayer.GetID(), Count: newPlayer.Training}
@@ -101,21 +103,10 @@ func Reader(ws *websocket.Conn) {
 			if (msg.Fraction == "Replics" || msg.Fraction == "Explores" || msg.Fraction == "Reverses") && user.Fraction == "" {
 				user.Fraction = msg.Fraction
 
-				// todo захардкожаные данный, это плохо :(
-				if msg.Fraction == "Replics" {
-					user.InBaseID = 1
-					user.LastBaseID = 1
-				}
+				base := bases.Bases.GetCapital(user.Fraction)
 
-				if msg.Fraction == "Explores" {
-					user.InBaseID = 6
-					user.LastBaseID = 6
-				}
-
-				if msg.Fraction == "Reverses" {
-					user.InBaseID = 5
-					user.LastBaseID = 5
-				}
+				user.InBaseID = base.ID
+				user.LastBaseID = base.ID
 
 				dbPlayer.UpdateUser(user)
 				lobbyPipe <- Message{Event: "choiceFractionComplete", UserID: user.GetID()}

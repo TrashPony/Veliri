@@ -8,16 +8,19 @@ import (
 )
 
 type Mission struct {
-	ID            int                  `json:"id"`
-	UUID          string               `json:"uuid"`
-	StartDialogID int                  `json:"start_dialog_id"`
-	Name          string               `json:"name"`
-	Actions       []*Action            `json:"actions"`
-	RewardCr      int                  `json:"reward_cr"`
-	RewardItems   *inventory.Inventory `json:"reward_items"`
-	Fraction      string               `json:"fraction"`
-	StartBaseID   int                  `json:"start_base_id"`
-	Type          string               `json:"type"`
+	ID                  int                  `json:"id"`
+	UUID                string               `json:"uuid"`
+	StartDialogID       int                  `json:"start_dialog_id"`
+	NotFinishedDialogId int                  `json:"not_finished_dialog_id"`
+	Name                string               `json:"name"`
+	Actions             []*Action            `json:"actions"`
+	RewardCr            int                  `json:"reward_cr"`
+	RewardItems         *inventory.Inventory `json:"reward_items"`
+	Fraction            string               `json:"fraction"`
+	StartBaseID         int                  `json:"start_base_id"`
+	Type                string               `json:"type"`
+	MainStory           bool                 `json:"main_story"`
+	Story               int                  `json:"story"`
 
 	// методанные необходмые для правильной работы квеста
 	StartDialog *dialog.Dialog     `json:"start_dialog"`
@@ -36,6 +39,7 @@ type Action struct {
 	BaseID              int                  `json:"base_id"`
 	Q                   int                  `json:"q"`
 	R                   int                  `json:"r"`
+	MapID               int                  `json:"map_id"`
 	Radius              int                  `json:"radius"`
 	Sec                 int                  `json:"sec"`
 	Count               int                  `json:"count"`
@@ -48,4 +52,6 @@ type Action struct {
 	Number              int                  `json:"number"`
 	Async               bool                 `json:"async"`
 	Dialog              *dialog.Dialog       `json:"dialog"`
+	OwnerPlace          bool                 `json:"owner_place"`
+	EndText             string               `json:"end_text"`
 }

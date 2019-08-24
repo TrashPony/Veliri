@@ -1,10 +1,18 @@
 body {
     background-color: grey;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+    color: white;
+}
+
+body select {
+    color: #ffc03d;
+    font-weight: 900;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
 
 #main {
     margin: auto;
-    width: 1300px;
+    width: 1520px;
 }
 
 #dialogList .DepartmentOfEmployment {
@@ -192,14 +200,16 @@ body {
 #createNewDialogBlock, #createNewMissionBlock {
     position: absolute;
     padding-right: 10px;
-    padding-top: 10px;
+    padding-top: 5px;
     padding-left: 10px;
+    padding-bottom: 5px;
     height: 40px;
     right: 0;
     top: 0;
     background: darkgrey;
     border-radius: 6px;
     box-shadow: 0 0 4px 1px black;
+    width: 140px;
 }
 
 #filters h4 {
@@ -226,7 +236,12 @@ body {
     font-size: 15px;
     text-align: left;
     line-height: 30px;
-    padding-left: 18px;
+    width: 330px;
+    float: left;
+    background: azure;
+    padding: 8px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
 }
 
 .missionProp label {
@@ -237,11 +252,12 @@ body {
 
 .missionProp label input, .missionProp label select, .missionProp label .rewardItems {
     float: right;
+    text-align: center;
 }
 
 
 .mission h4 {
-    margin: 5px;
+    margin: -5px 0 5px;
     padding: 0;
     text-align: left;
     color: white;
@@ -249,6 +265,13 @@ body {
     font-weight: 900;
     font-size: 20px;
 }
+
+.mission:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+
 
 .missionProp input {
     width: 40px;
@@ -264,18 +287,26 @@ body {
     background: bisque;
     box-shadow: 0 0 3px;
     margin-bottom: 10px;
+    position: relative;
+}
+
+.rowAction textarea {
+    border-radius: 5px;
+    background: beige;
+    box-shadow: 0 0 2px;
 }
 
 .rowAction h5 {
-    margin: 10px 0;
+    margin: 10px 0 0;
 }
 
 .rowAction table input {
     width: 50px;
+    text-align: center;
 }
 
 .rowAction table {
-    width: 1240px;
+    width: 1115px;
 }
 
 .rowAction table td {
@@ -285,12 +316,54 @@ body {
     font-size: 10px;
 }
 
+.rowAction label {
+    font-size: 15px;
+}
+
 .actionsProp {
     padding-left: 18px;
+    float: right;
+    width: 1135px;
 }
 
 .count {
     float: left;
     font-size: 26px;
     font-weight: 900;
+}
+
+.addItemButton {
+    border-radius: 5px;
+    width: 25px;
+    height: 25px;
+    float: left;
+    position: relative;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 1);
+    border: 1px solid #959595;
+    background-color: #4c4c4c;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    font-weight: 900;
+    color: red;
+    line-height: 27px;
+    font-size: 25px;
+}
+
+.addItemButton:hover {
+    color: yellow;
+}
+
+#RemoveItemDialog, #AddItemDialog {
+    position: fixed;
+    left: calc(50% - 100px);
+    width: 200px;
+    height: 100px;
+    background: #8cb3c7;
+    border-radius: 5px;
+    box-shadow: 0 0 3px black;
+    top: calc(50% - 50px);
+}
+
+#AddItemDialog {
+    height: 153px;
 }

@@ -21,7 +21,14 @@ function DeleteMission(missionID) {
 }
 
 function AddMission() {
+    let name = document.getElementById("nameNewMission").value;
+    if (name === "") {
+        alert("Укажите имя");
+        return
+    }
+
     editor.send(JSON.stringify({
         event: "AddMission",
+        name: name,
     }));
 }

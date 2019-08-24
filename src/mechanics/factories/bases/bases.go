@@ -31,6 +31,18 @@ func (b *store) Get(id int) (*base.Base, bool) {
 	return val, ok
 }
 
+func (b *store) GetCapital(fraction string) *base.Base {
+	b.mx.Lock()
+	defer b.mx.Unlock()
+
+	for _, gameBase := range b.bases {
+		if gameBase.Capital && gameBase.Fraction == fraction {
+			return gameBase
+		}
+	}
+	return nil
+}
+
 func (b *store) GetBasesByMap(mapID int) map[int]*base.Base {
 	b.mx.Lock()
 	defer b.mx.Unlock()

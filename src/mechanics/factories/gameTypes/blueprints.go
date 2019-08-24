@@ -33,7 +33,7 @@ func (b *bluePrintsStore) GetByItemTypeAndID(itemID int, itemType string) *bluep
 		if bluePrint.ItemId == itemID && bluePrint.ItemType == itemType {
 			err := deepcopy.Copy(&newBluePrint, &bluePrint) // функция глубокого копировния (very slow, but work)
 			if err != nil {
-				println(err.Error())
+				println("GetByItemTypeAndID: " + err.Error())
 			} else {
 				return &newBluePrint
 			}

@@ -119,12 +119,12 @@ func Mining(ws *websocket.Conn, user *player.Player, miningEquip *equip.Equip, r
 
 		if reservoir.Count < countRes {
 			user.GetSquad().Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
-				reservoir.Count, 1, reservoir.Resource.Size, 1, false)
+				reservoir.Count, 1, reservoir.Resource.Size, 1, false, user.GetID())
 
 			reservoir.Count = 0
 		} else {
 			user.GetSquad().Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
-				countRes, 1, reservoir.Resource.Size, 1, false)
+				countRes, 1, reservoir.Resource.Size, 1, false, user.GetID())
 
 			reservoir.Count -= countRes
 		}

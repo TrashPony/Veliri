@@ -45,8 +45,12 @@ type Message struct {
 	File     string                `json:"file"`
 	Name     string                `json:"name"`
 
-	Missions map[int]*mission.Mission `json:"missions"`
-	Mission  *mission.Mission         `json:"mission"`
+	Missions     map[int]*mission.Mission `json:"missions"`
+	Mission      *mission.Mission         `json:"mission"`
+	Slot         int                      `json:"slot"`
+	ItemType     string                   `json:"item_type"`
+	ItemID       int                      `json:"item_id"`
+	ItemQuantity int                      `json:"item_quantity"`
 }
 
 func Reader(ws *websocket.Conn) {
@@ -63,6 +67,31 @@ func Reader(ws *websocket.Conn) {
 		if msg.Event == "OpenEditor" {
 			// отсылаем все диалоги которые есть в игре
 			ws.WriteJSON(&Message{Event: msg.Event, Dialogs: gameTypes.Dialogs.GetAll()})
+		}
+
+		if msg.Event == "GetMissionDialog" {
+
+			if msg.ID == 0 {
+				ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: gameTypes.Dialogs.GetAll()})
+				continue
+			}
+
+			dialogs := make(map[int]dialog.Dialog)
+			gameMission := missions.Missions.GetByID(msg.ID)
+
+			if gameMission != nil {
+				dialogs[gameMission.StartDialogID] = *gameTypes.Dialogs.GetByID(gameMission.StartDialogID)
+				dialogs[gameMission.NotFinishedDialogId] = *gameTypes.Dialogs.GetByID(gameMission.NotFinishedDialogId)
+
+				if gameMission.Actions != nil {
+					for _, action := range gameMission.Actions {
+						dialogs[action.DialogID] = *gameTypes.Dialogs.GetByID(action.DialogID)
+						dialogs[action.AlternativeDialogId] = *gameTypes.Dialogs.GetByID(action.AlternativeDialogId)
+					}
+				}
+			}
+
+			ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: dialogs})
 		}
 
 		if msg.Event == "GetDialog" {
@@ -83,9 +112,8 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "DeleteDialog" {
-			// todo пока пусть будет так С:
-			//gameTypes.Dialogs.DeleteDialog(msg.ID)
-			//ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: gameTypes.Dialogs.GetAll()})
+			gameTypes.Dialogs.DeleteDialog(msg.ID)
+			ws.WriteJSON(&Message{Event: "OpenEditor", Dialogs: gameTypes.Dialogs.GetAll()})
 		}
 
 		if msg.Event == "SetPicture" {
@@ -114,7 +142,27 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "AddMission" {
-			missions.Missions.AddMission(msg.Mission)
+			missions.Missions.AddMission(msg.Name)
+			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
+		}
+
+		if msg.Event == "RemoveMissionRewardItem" {
+			missions.Missions.RemoveItem(msg.ID, msg.Slot)
+			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
+		}
+
+		if msg.Event == "RemoveActionItem" {
+			missions.Missions.ActionRemoveItem(msg.ID, msg.Slot)
+			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
+		}
+
+		if msg.Event == "AddMissionRewardItem" {
+			missions.Missions.AddItem(msg.ID, msg.ItemID, msg.ItemQuantity, msg.ItemType)
+			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
+		}
+
+		if msg.Event == "AddActionItem" {
+			missions.Missions.ActionAddItem(msg.ID, msg.ItemID, msg.ItemQuantity, msg.ItemType)
 			ws.WriteJSON(&Message{Event: "GetAllMissions", Missions: missions.Missions.GetAllMissType()})
 		}
 	}

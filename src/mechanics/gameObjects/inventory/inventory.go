@@ -23,22 +23,23 @@ type Slot struct {
 	MaxHP      int         `json:"max_hp"`
 	Size       float32     `json:"size"`
 
-	Tax  int  `json:"tax"`  // поле для налогов
-	Find bool `json:"find"` // поле для верстака, обозначающие естли такое количество итемов на складе или нет
+	PlaceUserID int  `json:"place_user_id"`
+	Tax         int  `json:"tax"`  // поле для налогов
+	Find        bool `json:"find"` // поле для верстака, обозначающие естли такое количество итемов на складе или нет
 }
 
 func (inv *Inventory) SetSlotsSize(size int) {
 	inv.size = size
 }
 
-func (inv *Inventory) AddItemFromSlot(slot *Slot) bool {
+func (inv *Inventory) AddItemFromSlot(slot *Slot, userID int) bool {
 
 	if slot.Quantity <= 0 { // slot.Size/float32(slot.Quantity) деление на ноль все сломает
 		return false
 	}
 
 	return inv.AddItem(slot.Item, slot.Type, slot.ItemID, slot.Quantity,
-		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP, false)
+		slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP, false, userID)
 }
 
 func (inv *Inventory) GetSize() float32 {
@@ -66,7 +67,7 @@ func round(x float64, prec int) float64 {
 	return rounder / pow
 }
 
-func (inv *Inventory) AddItem(item interface{}, itemType string, itemID, quantity, hp int, itemSize float32, maxHP int, newSlot bool) bool {
+func (inv *Inventory) AddItem(item interface{}, itemType string, itemID, quantity, hp int, itemSize float32, maxHP int, newSlot bool, userID int) bool {
 
 	//newSlot говорит о том что этот айтем надо положить в строго новый слот
 	if !newSlot {
@@ -74,22 +75,31 @@ func (inv *Inventory) AddItem(item interface{}, itemType string, itemID, quantit
 			if slot.ItemID == itemID && slot.Type == itemType && slot.HP == hp && slot.Item != nil {
 				slot.Quantity = slot.Quantity + quantity
 				slot.Size = slot.Size + (itemSize * float32(quantity))
+				slot.PlaceUserID = userID
 				return true
 			}
 		}
 	}
 
-	for i := 1; i <= inv.size; i++ { // ищем пустой слот
-		_, ok := inv.Slots[i]
-		if !ok {
-			newItem := Slot{Item: item, Type: itemType, ItemID: itemID, InsertToDB: true,
-				Quantity: quantity, HP: hp, MaxHP: maxHP, Size: itemSize * float32(quantity)}
-			inv.Slots[i] = &newItem
-			return true
-		}
+	newNumberSlot := inv.GetEmptySlot()
+	if newNumberSlot > 0 {
+		newItem := Slot{Item: item, Type: itemType, ItemID: itemID, InsertToDB: true,
+			Quantity: quantity, HP: hp, MaxHP: maxHP, Size: itemSize * float32(quantity), PlaceUserID: userID}
+		inv.Slots[newNumberSlot] = &newItem
+		return true
 	}
 
 	return false
+}
+
+func (inv *Inventory) GetEmptySlot() int {
+	for i := 1; i <= inv.size; i++ { // ищем пустой слот
+		_, ok := inv.Slots[i]
+		if !ok {
+			return i
+		}
+	}
+	return 0
 }
 
 func (inv *Inventory) RemoveItem(itemID int, itemType string, quantityRemove int) error {
@@ -173,10 +183,11 @@ func (inv *Inventory) ViewItems(itemID int, itemType string, quantityFind int) b
 	}
 }
 
-func (slot *Slot) AddItemBySlot(quantity int) {
+func (slot *Slot) AddItemBySlot(quantity, userID int) {
 	// определяем вес 1 вещи
 	sizeOneItem := slot.Size / float32(slot.Quantity)
 	slot.Quantity += quantity
+	slot.PlaceUserID = userID
 	// находим новый вес для всей стопки
 	slot.Size = sizeOneItem * float32(slot.Quantity)
 }
@@ -200,114 +211,123 @@ func (slot *Slot) RemoveItemBySlot(quantityRemove int) (CountRemove int) {
 }
 
 func (inv *Inventory) FillInventory(rows *sql.Rows) {
+	inv.SetSlotsSize(9999) // у всех инвентарей 9999 ячеек
 	for rows.Next() {
 
 		var inventorySlot = Slot{}
 		var slot int
 
-		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity, &inventorySlot.HP)
+		err := rows.Scan(&slot, &inventorySlot.Type, &inventorySlot.ItemID, &inventorySlot.Quantity, &inventorySlot.HP, &inventorySlot.PlaceUserID)
 		if err != nil {
 			log.Fatal("scan inventory slots " + err.Error())
 		}
 
-		if inventorySlot.Type == "weapon" {
-			weapon, _ := gameTypes.Weapons.GetByID(inventorySlot.ItemID)
+		FillSlot(&inventorySlot, slot, inv, false)
+	}
+}
 
-			inventorySlot.Item = weapon
-			inventorySlot.Size = weapon.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = weapon.MaxHP
+func FillSlot(inventorySlot *Slot, slot int, inv *Inventory, maxHP bool) {
+	if inventorySlot.Type == "weapon" {
+		weapon, _ := gameTypes.Weapons.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = weapon
+		inventorySlot.Size = weapon.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = weapon.MaxHP
 
-		if inventorySlot.Type == "ammo" {
-			ammo, _ := gameTypes.Ammo.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = ammo
-			inventorySlot.Size = ammo.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у аммо нет хп
+	if inventorySlot.Type == "ammo" {
+		ammo, _ := gameTypes.Ammo.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = ammo
+		inventorySlot.Size = ammo.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у аммо нет хп
 
-		if inventorySlot.Type == "equip" {
-			equip, _ := gameTypes.Equips.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = equip
-			inventorySlot.Size = equip.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = equip.MaxHP
+	if inventorySlot.Type == "equip" {
+		equip, _ := gameTypes.Equips.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = equip
+		inventorySlot.Size = equip.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = equip.MaxHP
 
-		if inventorySlot.Type == "body" {
-			body, _ := gameTypes.Bodies.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = body
-			inventorySlot.Size = body.CapacitySize * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = body.MaxHP
+	if inventorySlot.Type == "body" {
+		body, _ := gameTypes.Bodies.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = body
+		inventorySlot.Size = body.CapacitySize * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = body.MaxHP
 
-		if inventorySlot.Type == "resource" {
-			resource, _ := gameTypes.Resource.GetBaseByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = resource
-			inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у ресов нет хп
+	if inventorySlot.Type == "resource" {
+		resource, _ := gameTypes.Resource.GetBaseByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = resource
+		inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у ресов нет хп
 
-		if inventorySlot.Type == "recycle" {
-			resource, _ := gameTypes.Resource.GetRecycledByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = resource
-			inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у ресов нет хп
+	if inventorySlot.Type == "recycle" {
+		resource, _ := gameTypes.Resource.GetRecycledByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = resource
+		inventorySlot.Size = resource.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у ресов нет хп
 
-		if inventorySlot.Type == "detail" {
-			detail, _ := gameTypes.Resource.GetDetailByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = detail
-			inventorySlot.Size = detail.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у ящиков тож нет хп
+	if inventorySlot.Type == "detail" {
+		detail, _ := gameTypes.Resource.GetDetailByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = detail
+		inventorySlot.Size = detail.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у ящиков тож нет хп
 
-		if inventorySlot.Type == "boxes" {
-			box, _ := gameTypes.Boxes.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = box
-			inventorySlot.Size = box.FoldSize * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у ящиков тож нет хп
+	if inventorySlot.Type == "boxes" {
+		box, _ := gameTypes.Boxes.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = box
+		inventorySlot.Size = box.FoldSize * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у ящиков тож нет хп
 
-		if inventorySlot.Type == "blueprints" {
-			blueprint, _ := gameTypes.BluePrints.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = blueprint
-			inventorySlot.Size = 0  // чертежи не занимают места
-			inventorySlot.MaxHP = 1 // у чертежов нет хп
+	if inventorySlot.Type == "blueprints" {
+		blueprint, _ := gameTypes.BluePrints.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = blueprint
+		inventorySlot.Size = 0  // чертежи не занимают места
+		inventorySlot.MaxHP = 1 // у чертежов нет хп
 
-		if inventorySlot.Type == "trash" {
-			trashItem, _ := gameTypes.TrashItems.GetByID(inventorySlot.ItemID)
+		inv.Slots[slot] = inventorySlot
+	}
 
-			inventorySlot.Item = trashItem
-			inventorySlot.Size = trashItem.Size * float32(inventorySlot.Quantity)
-			inventorySlot.MaxHP = 1 // у мусора нет хп
+	if inventorySlot.Type == "trash" {
+		trashItem, _ := gameTypes.TrashItems.GetByID(inventorySlot.ItemID)
 
-			inv.Slots[slot] = &inventorySlot
-		}
+		inventorySlot.Item = trashItem
+		inventorySlot.Size = trashItem.Size * float32(inventorySlot.Quantity)
+		inventorySlot.MaxHP = 1 // у мусора нет хп
+
+		inv.Slots[slot] = inventorySlot
+	}
+
+	if maxHP {
+		inventorySlot.HP = inventorySlot.MaxHP
 	}
 }

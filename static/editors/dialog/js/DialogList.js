@@ -31,6 +31,14 @@ function filterAccess(context) {
     GetListDialogs();
 }
 
+function getMissionDialogs(context) {
+    // особая функция которая запрашивает у сервера ток те диалоги которые принадлежат к мисии
+    editor.send(JSON.stringify({
+        event: "GetMissionDialog",
+        id: Number(context.value),
+    }));
+}
+
 function CreateDialogList(dialogs) {
     selectDialog = {};
 
@@ -68,6 +76,10 @@ function CreateDialogList(dialogs) {
             continue
         }
 
+        if (!dialog.pages) {
+            continue
+        }
+
         let startPage = dialog.pages[1];
 
         dialogList2.innerHTML += `
@@ -76,7 +88,7 @@ function CreateDialogList(dialogs) {
                 <h3 style="position: absolute;right: 7px;top: -17px;color: red;">
                     ID: ${dialog.id}
                 </h3>
-                <h3 class="missionHead" id="missionHead${dialog.id}">
+                <h3 class="missionHead" id="missionHead${dialog.id}" style="width: 315px;">
                     ${dialog.name} (${dialog.fraction}, ${dialog.access_type})
                 </h3>
                 

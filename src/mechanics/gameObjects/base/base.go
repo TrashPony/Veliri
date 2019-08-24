@@ -23,6 +23,7 @@ type Base struct {
 	CurrentResources          map[int]*inventory.Slot  `json:"current_resources"` // [id_recycled_type]count
 	Efficiency                int                      `json:"efficiency"`
 	Fraction                  string                   `json:"fraction"`
+	Capital                   bool                     `json:"capital"`
 }
 
 type Transport struct {

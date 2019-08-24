@@ -91,7 +91,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 				if slot.Item != nil {
 					realSlot, ok := user.GetSquad().Inventory.Slots[i]
 					if ok {
-						addOk := oldBox.GetStorage().AddItemFromSlot(realSlot)
+						addOk := oldBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
 						if addOk {
 							realSlot.RemoveItemBySlot(realSlot.Quantity)
 						}
@@ -116,7 +116,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 					realSlot, ok := user.GetSquad().Inventory.Slots[i]
 					if ok {
 						createBox = true
-						addOk := newBox.GetStorage().AddItemFromSlot(realSlot)
+						addOk := newBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
 						if addOk {
 							realSlot.RemoveItemBySlot(realSlot.Quantity)
 						}
@@ -173,7 +173,7 @@ func BoxToBox(user *player.Player, boxID, boxSlot, toBoxID int) (error, *boxInMa
 
 	if ok && slot.Item != nil && toBox.CapacitySize >= toBox.GetStorage().GetSize()+slot.Size {
 
-		placeOk := toBox.GetStorage().AddItemFromSlot(slot)
+		placeOk := toBox.GetStorage().AddItemFromSlot(slot, user.GetID())
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
 			go boxes.Boxes.UpdateBox(getBox)
@@ -202,7 +202,7 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.B
 	slot, ok := mapBox.GetStorage().Slots[boxSlot]
 
 	if ok && slot.Item != nil && user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+slot.Size {
-		placeOk := user.GetSquad().Inventory.AddItemFromSlot(slot)
+		placeOk := user.GetSquad().Inventory.AddItemFromSlot(slot, user.GetID())
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
 			go update.Squad(user.GetSquad(), true)
@@ -233,7 +233,7 @@ func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *boxI
 	slot, ok := user.GetSquad().Inventory.Slots[inventorySlot]
 	if ok && slot.Item != nil && mapBox.CapacitySize >= mapBox.GetStorage().GetSize()+slot.Size {
 
-		placeOk := mapBox.GetStorage().AddItemFromSlot(slot)
+		placeOk := mapBox.GetStorage().AddItemFromSlot(slot, user.GetID())
 
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)

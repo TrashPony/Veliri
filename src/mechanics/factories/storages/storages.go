@@ -55,7 +55,7 @@ func (p *pool) AddItem(userId, baseId int, item interface{}, itemType string, it
 		baseStorage, baseOk := userStorages[baseId]
 		if baseOk {
 
-			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize, maxHP, newSlot)
+			ok := baseStorage.AddItem(item, itemType, itemID, quantity, hp, itemSize, maxHP, newSlot, userId)
 			if ok {
 				storage.Inventory(baseStorage, userId, baseId)
 			}
@@ -84,7 +84,7 @@ func (p *pool) AddSlot(userId, baseId int, slot *inv.Slot) bool {
 		baseStorage, baseOk := userStorages[baseId]
 		if baseOk {
 
-			ok := baseStorage.AddItemFromSlot(slot)
+			ok := baseStorage.AddItemFromSlot(slot, userId)
 			if ok {
 				storage.Inventory(baseStorage, userId, baseId)
 			}
@@ -114,7 +114,7 @@ func (p *pool) AddItemBySlot(userId, baseId, numberSlot, quantity int) bool {
 		if baseOk {
 			slot, ok := baseStorage.Slots[numberSlot]
 			if ok {
-				slot.AddItemBySlot(quantity)
+				slot.AddItemBySlot(quantity, userId)
 				storage.Inventory(baseStorage, userId, baseId)
 				return true
 			}

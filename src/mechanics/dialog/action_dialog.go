@@ -52,7 +52,7 @@ func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialo
 
 	if ask.TypeAction == "get_base_greeting" {
 		userBase, _ := bases.Bases.Get(client.InBaseID)
-		_, greeting := GetBaseGreeting(client, userBase)
+		_, greeting, _ := GetBaseGreeting(client, userBase)
 		client.SetOpenDialog(greeting)
 		return "get_base_greeting", nil, greeting.Pages[1], nil
 	}

@@ -456,11 +456,6 @@
     text-indent: 1.5em;
 }
 
-.missionNotify a:link, .importantly {
-    text-decoration: none;
-    color: aqua;
-}
-
 .missionNotify a:visited {
     text-decoration: none;
     color: aqua;

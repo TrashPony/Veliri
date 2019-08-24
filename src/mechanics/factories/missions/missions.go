@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/getlantern/deepcopy"
@@ -35,6 +36,15 @@ func (m *missions) GetByID(id int) *mission.Mission {
 	return m.missionsType[id]
 }
 
+func (m *missions) GetStory(episode int, fraction string) *mission.Mission {
+	for _, miss := range m.missionsType {
+		if miss.MainStory && miss.Story == episode && miss.Fraction == fraction {
+			return miss
+		}
+	}
+	return nil
+}
+
 func (m *missions) GetAllMissType() map[int]*mission.Mission {
 	return m.missionsType
 }
@@ -44,8 +54,8 @@ func (m *missions) GetRandomMission() *mission.Mission {
 		// TODO возможны проблемы))
 		count := 0
 		count2 := rand.Intn(len(m.missionsType))
-		for id := range m.missionsType {
-			if count == count2 {
+		for id, miss := range m.missionsType {
+			if count == count2 && !miss.MainStory {
 				gameMission := m.GetByID(id)
 				if gameMission != nil {
 					return gameMission
@@ -67,9 +77,63 @@ func (m *missions) DeleteMission(mission *mission.Mission) {
 	delete(m.missionsType, mission.ID)
 }
 
-func (m *missions) AddMission(mission *mission.Mission) {
-	missionsDB.AddMission(mission)
-	m.missionsType[mission.ID] = mission
+func (m *missions) RemoveItem(missionID, slot int) {
+	typeMiss, _ := m.missionsType[missionID]
+	delete(typeMiss.RewardItems.Slots, slot)
+	m.SaveTypeMission(typeMiss)
+}
+
+func (m *missions) AddItem(missionID, itemID, itemQuantity int, itemType string) {
+	typeMiss, _ := m.missionsType[missionID]
+
+	slotNumber := typeMiss.RewardItems.GetEmptySlot()
+	if slotNumber > 0 {
+		var inventorySlot = inv.Slot{Type: itemType, ItemID: itemID, Quantity: itemQuantity, PlaceUserID: 0}
+		inv.FillSlot(&inventorySlot, slotNumber, typeMiss.RewardItems, true)
+	}
+
+	m.SaveTypeMission(typeMiss)
+}
+
+func (m *missions) ActionAddItem(actionID, itemID, itemQuantity int, itemType string) {
+	for _, miss := range m.missionsType {
+		for _, action := range miss.Actions {
+			if action.ID == actionID {
+				var inventorySlot = inv.Slot{Type: itemType, ItemID: itemID, Quantity: itemQuantity, PlaceUserID: 0}
+				slotNumber := action.NeedItems.GetEmptySlot()
+				if slotNumber > 0 {
+					inv.FillSlot(&inventorySlot, slotNumber, action.NeedItems, true)
+					m.SaveTypeMission(miss)
+				}
+				return
+			}
+		}
+	}
+}
+
+func (m *missions) ActionRemoveItem(actionID, slot int) {
+	for _, miss := range m.missionsType {
+		for _, action := range miss.Actions {
+			if action.ID == actionID {
+				delete(action.NeedItems.Slots, slot)
+				m.SaveTypeMission(miss)
+				return
+			}
+		}
+	}
+}
+
+func (m *missions) AddMission(name string) {
+	newInventory := &inv.Inventory{Slots: make(map[int]*inv.Slot)}
+	newInventory.SetSlotsSize(999)
+
+	newMission := mission.Mission{
+		Name:        name,
+		Actions:     make([]*mission.Action, 0),
+		RewardItems: newInventory,
+	}
+	missionsDB.AddMission(&newMission)
+	m.missionsType[newMission.ID] = &newMission
 }
 
 func (m *missions) GenerateMissionForUser(client *player.Player) *mission.Mission {
@@ -125,7 +189,7 @@ func (m *missions) AcceptMission(client *player.Player, uuid string) *mission.Mi
 	acceptMission, ok := m.missions[uuid]
 	if ok {
 		if acceptMission.Type == "delivery" {
-			// TODO даем игроку предмет который надо доставить, надо просто сделать экшон GetItemOnBase (получает айтем в склад базы), выполняется сразу
+
 			//deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
 			//storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID,
 			//	1, 1, deliveryItem.Size, 1, false)

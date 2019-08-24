@@ -199,8 +199,8 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 
 			if msg.Event == "openDepartmentOfEmployment" {
 				userBase, _ := bases.Bases.Get(client.InBaseID)
-				page, _ := dialog.GetBaseGreeting(client, userBase)
-				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), DialogPage: page})
+				page, _, miss := dialog.GetBaseGreeting(client, userBase)
+				sendOtherMessage(Message{Event: msg.Event, UserID: client.GetID(), DialogPage: page, Mission: miss})
 			}
 
 			if msg.Event == "setWindowState" {

@@ -11,6 +11,7 @@ function SetAccessType(context) {
 
 function SetDialogFraction(context) {
     selectDialog.fraction = context.value;
+
 }
 
 function SetTypeDialog(context) {
@@ -71,5 +72,5 @@ function SetDialogAscToPageNumber(context, idAsc) {
 
 function SetDialogAscTypeAction(context, idAsc) {
     let asc = getAscByID(idAsc);
-    asc.type_action = Number(context.value);
+    asc.type_action = context.value;
 }

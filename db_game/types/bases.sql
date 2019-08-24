@@ -12,7 +12,7 @@ CREATE TABLE bases
   gravity_radius               int, /* радиус стабильной гравитации вокруг баз */
   --Replics Explores Reverses, нация за кторую играет игрок
   fraction                     varchar(64),
-
+  capital                      boolean not null default false, -- сталица фракции
   -- количество ресурсов ниже которого будет снижатся налоги на переработку (на каждый ресурс индивидуально)
   boundary_amount_of_resources int not null default 1000,
 
@@ -40,14 +40,15 @@ CREATE TABLE base_users
 
 CREATE TABLE base_storage
 ( /* инвнтерь конкретной базы конктретного игрока */
-  id        SERIAL PRIMARY KEY,
-  base_id   INT REFERENCES bases (id),
-  user_id   INT REFERENCES users (id),
+  id            SERIAL PRIMARY KEY,
+  base_id       INT REFERENCES bases (id),
+  user_id       INT REFERENCES users (id),
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
    переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints) */
-  item_type VARCHAR(64),
-  slot      INT, /* какой слот занимает итем */
-  item_id   INT, /* ид итема определяет конкретный итем тип + ид*/
-  quantity  INT, /* количество предметов в слоте */
-  hp        INT /* сколько осталось хп у эквипа, до поломки*/
+  item_type     VARCHAR(64),
+  slot          INT, /* какой слот занимает итем */
+  item_id       INT, /* ид итема определяет конкретный итем тип + ид*/
+  quantity      INT, /* количество предметов в слоте */
+  hp            INT, /* сколько осталось хп у эквипа, до поломки*/
+  place_user_id INT -- ид игрока который туда положить предмет(обновли последним), необходимо для публичных ящиков
 );
