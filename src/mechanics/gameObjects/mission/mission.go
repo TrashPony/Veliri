@@ -28,6 +28,19 @@ type Mission struct {
 	StartMap    *_map.ShortInfoMap `json:"start_map"`
 }
 
+func (m *Mission) CheckAvailableActionByIndex(number int) bool {
+	// функция проверяет дост к действию т.к. они выполняются последовательно надо что бы были выполнены все последующие
+	for _, action := range m.Actions {
+		// любое не выполненое действие снизу сразу не дает доступ к действию number,
+		// однако исключение являются асинхронные действия (action.Async), т.к. они не имеют порядка выполнения
+		if action.Number < number && !action.Complete && !action.Async {
+			return false
+		}
+	}
+
+	return true
+}
+
 type Action struct {
 	ID              int    `json:"id"`
 	TypeFuncMonitor string `json:"type_func_monitor"`

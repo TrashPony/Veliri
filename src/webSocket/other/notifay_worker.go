@@ -45,7 +45,7 @@ func DeleteNotify(user *player.Player, uuid string) bool {
 	notify, ok := user.NotifyQueue[uuid]
 	if ok && notify != nil {
 		if notify.Name == "mission" && notify.Event != "complete" {
-			// незавершенные миссии нельзя удалить с панели
+			// незавершенные миссии нельзя удалить с панели // todo проверять наличие миссии у игрока
 		} else {
 			delete(user.NotifyQueue, notify.UUID)
 			dbPlayer.UpdateUser(user)

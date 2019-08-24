@@ -3,7 +3,6 @@ package dialog
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/missions"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
@@ -14,11 +13,12 @@ import (
 func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dialog.Dialog, *mission.Mission) {
 
 	// TODO проверка на нападение на сектор если да то "На сектор напали! Почему ты все еще на базе!? Иди обороняй!"
+	// todo если игрок на базе не своей фракции
 
-	// сначала ищем диалоги которые положены по мисии
+	// сначала ищем диалоги которые положены по мисии, и доступны
 	for _, userMission := range client.Missions {
 		for _, action := range userMission.Actions {
-			if action.BaseID == base.ID && action.Dialog != nil {
+			if action.BaseID == base.ID && action.Dialog != nil && userMission.CheckAvailableActionByIndex(action.Number) {
 				client.SetOpenDialog(action.Dialog)
 				return action.Dialog.Pages[1], action.Dialog, nil
 			}
@@ -37,21 +37,14 @@ func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dia
 
 	// если игрок прошел обучение выдаем ему фракционный сюжет
 	if client.Training >= 9 && base.ID == bases.Bases.GetCapital(client.Fraction).ID {
-		userMission := missions.Missions.GetStory(client.StoryEpisode, client.Fraction)
-		greeting := gameTypes.Dialogs.GetByID(userMission.StartDialogID)
 
-		// ToSectorName берется из первого экшона где он указан, в сюжетных заданиях рандомно нечего не генерится
-		toSectorName := ""
-		for _, action := range userMission.Actions {
-			if action.MapID != 0 {
-				mp, _ := maps.Maps.GetByID(action.MapID)
-				toSectorName = mp.Name
-			}
+		storyMiss := missions.Missions.GetStory(client.StoryEpisode, client.Fraction)
+
+		if storyMiss != nil {
+			userMission := missions.Missions.GenerateMissionForUser(client, storyMiss)
+			client.SetOpenDialog(userMission.StartDialog)
+			return userMission.StartDialog.Pages[1], userMission.StartDialog, nil
 		}
-
-		greeting.ProcessingDialogText(client.Login, base.Name, "", toSectorName, client.Fraction)
-		client.SetOpenDialog(greeting)
-		return greeting.Pages[1], greeting, nil
 	}
 
 	// нормальное привествие
@@ -59,8 +52,5 @@ func GetBaseGreeting(client *player.Player, base *base.Base) (*dialog.Page, *dia
 	greeting.ProcessingDialogText(client.Login, base.Name, "", "", client.Fraction)
 	client.SetOpenDialog(greeting)
 
-	// todo если игрок на базе не своей фракции
-
-	// todo invalid memory address or nil pointer dereference т.к. нет диалога для другой фракции
 	return greeting.Pages[1], greeting, nil
 }

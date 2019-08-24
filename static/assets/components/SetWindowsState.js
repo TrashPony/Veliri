@@ -88,24 +88,24 @@ function SetWindowsState(state) {
     }
 }
 
-function setState(id, left, top, height, weight, open) {
+function setState(id, left, top, height, width, open) {
     if (chat.readyState !== WebSocket.OPEN) return;
     chat.send(JSON.stringify({
         event: "setWindowState",
         resolution: window.screen.availWidth + ':' + window.screen.availHeight,
         name: id,
-        left: Math.trunc(Number(left)),
-        top: Math.trunc(Number(top)),
-        height: Math.trunc(Number(height)),
-        width: Math.trunc(Number(weight)),
+        left: Math.round(Number(left)),
+        top: Math.round(Number(top)),
+        height: Math.round(Number(height)),
+        width: Math.round(Number(width)),
         open: open,
     }));
 
     let state = {
-        left: Math.trunc(Number(left)),
-        top: Math.trunc(Number(top)),
-        height: Math.trunc(Number(height)),
-        width: Math.trunc(Number(weight)),
+        left: Math.round(Number(left)),
+        top: Math.round(Number(top)),
+        height: Math.round(Number(height)),
+        width: Math.round(Number(width)),
         open: open,
     };
 

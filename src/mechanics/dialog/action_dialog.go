@@ -13,7 +13,11 @@ import (
 func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialog.Page, *mission.Mission) {
 
 	if ask.TypeAction == "get_base_mission" {
-		newMission := missions.Missions.GenerateMissionForUser(client)
+
+		// генерирует задание для игрока, это сделано для того что бы
+		// опции которые берутся рандомно совпадали в диалоге
+		// и последующем задании
+		newMission := missions.Missions.GenerateMissionForUser(client, missions.Missions.GetRandomMission())
 
 		// базы фракций могут выдавать только свои квесты
 		userBase, _ := bases.Bases.Get(client.InBaseID)
@@ -42,6 +46,9 @@ func actionDialog(client *player.Player, ask *dialog.Ask) (string, error, *dialo
 
 	if ask.TypeAction == "accept_mission" {
 		missions.Missions.AcceptMission(client, client.GetOpenDialog().Mission)
+		if ask.ToPage == 0 {
+			return "close", nil, nil, nil
+		}
 	}
 
 	if ask.TypeAction == "get_reward" {

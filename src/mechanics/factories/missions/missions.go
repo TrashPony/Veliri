@@ -8,6 +8,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/getlantern/deepcopy"
@@ -136,70 +137,136 @@ func (m *missions) AddMission(name string) {
 	m.missionsType[newMission.ID] = &newMission
 }
 
-func (m *missions) GenerateMissionForUser(client *player.Player) *mission.Mission {
+/**
+* Функция генерит из заготовки экземляр для пользователя под конкретным uuid, который указывается в
+* диалогах дабы всегда можно было с диалога перейти в задание
+**/
+func (m *missions) GenerateMissionForUser(client *player.Player, missionType *mission.Mission) *mission.Mission {
 
-	missionType := m.GetRandomMission()
-
+	// если игроку удалось взять это задание то даже если в нем указаны эти параметры они будут совпадать
 	startBase, _ := bases.Bases.Get(client.InBaseID)
 	startMap, _ := maps.Maps.GetByID(startBase.MapID)
 
-	if missionType.Type == "delivery" {
-		//в доставке нам нужен в основном только пункт назначения
-		// и там только 1 экшон это соотвественно начать диалог на базе назначения
-
-		var newMission mission.Mission
-		deepcopy.Copy(&newMission, &missionType)
-
-		newMission.StartBase = startBase
-		newMission.StartMap = startMap.GetShortInfoMap()
-
-		newMission.UUID = uuid.Must(uuid.NewV4(), nil).String()
-
-		// назначаем место назначения, ищем пока не найдет базу которая не база игрока где он берет квест)
-		var toBase *base.Base
-		for toBase == nil || toBase.ID == startBase.ID {
-			toBase = bases.Bases.GetRandomBase()
-		}
-
-		toMap, _ := maps.Maps.GetByID(toBase.MapID)
-
-		// назначаем и парсим диалоги
-		startDialog := gameTypes.Dialogs.GetByID(missionType.StartDialogID)
-		startDialog.Mission = newMission.UUID
-		startDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
-		newMission.StartDialog = startDialog
-
-		for _, action := range newMission.Actions {
-			endDialog := gameTypes.Dialogs.GetByID(action.DialogID)
-			endDialog.Mission = newMission.UUID
-
-			endDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
-			action.Dialog = endDialog
-			action.BaseID = toBase.ID
-		}
-
-		m.missions[newMission.UUID] = &newMission
-		return &newMission
+	var newMission mission.Mission
+	err := deepcopy.Copy(&newMission, &missionType)
+	if err != nil {
+		println("GenerateMissionForUser: " + err.Error())
 	}
-	return nil
+
+	newMission.StartBase = startBase
+	newMission.StartMap = startMap.GetShortInfoMap()
+	newMission.UUID = uuid.Must(uuid.NewV4(), nil).String()
+
+	var toMap *_map.Map
+	var toBase *base.Base
+
+	// ToSectorName берется из первого экшона где он указан, аналогично и ToBase
+	// если action.MapID или action.BaseID равны -1 генерить рандомно
+	for _, action := range missionType.Actions {
+
+		if action.MapID > 0 {
+			mp, _ := maps.Maps.GetByID(action.MapID)
+			toMap = mp
+		}
+
+		if action.MapID == -1 {
+			for toMap == nil || toMap.Id == startMap.Id {
+				toMap = maps.Maps.GetRandomMap()
+			}
+			action.MapID = toMap.Id // докидываем что бы при паринге экшоно не изменить
+		}
+
+		if action.BaseID > 0 {
+			toBase, _ = bases.Bases.Get(action.BaseID)
+		}
+
+		if action.BaseID == -1 {
+			for toBase == nil || toBase.ID == startBase.ID {
+				toBase = bases.Bases.GetRandomBase()
+			}
+			action.BaseID = toBase.ID // докидываем что бы при паринге экшоно не изменить
+		}
+	}
+
+	startDialog := gameTypes.Dialogs.GetByID(missionType.StartDialogID)
+	// указываем принадлежность диалога к миссии
+	startDialog.Mission = newMission.UUID
+	startDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
+	newMission.StartDialog = startDialog
+
+	for _, action := range newMission.Actions {
+
+		// если action.MapID или action.BaseID (или другие мета) равны -1 генерить рандомно
+		if action.MapID == -1 {
+			action.MapID = maps.Maps.GetRandomMap().Id
+		}
+
+		if action.BaseID == -1 {
+			action.BaseID = bases.Bases.GetRandomBase().ID
+		}
+
+		if action.DialogID > 0 {
+			actionDialog := gameTypes.Dialogs.GetByID(action.DialogID)
+			// указываем принадлежность диалога к миссии
+			actionDialog.Mission = newMission.UUID
+			actionDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
+			action.Dialog = actionDialog
+		}
+	}
+
+	m.missions[newMission.UUID] = &newMission
+	return &newMission
 }
 
+/**
+* после взятия задания игроком, надо запустить воркеры отслеживания действий
+**/
 func (m *missions) AcceptMission(client *player.Player, uuid string) *mission.Mission {
 
 	acceptMission, ok := m.missions[uuid]
 	if ok {
-		if acceptMission.Type == "delivery" {
-
-			//deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
-			//storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID,
-			//	1, 1, deliveryItem.Size, 1, false)
-			//client.Missions[acceptMission.UUID] = acceptMission
-
-			client.NotifyQueue[acceptMission.UUID] = &player.Notify{Name: "mission", UUID: acceptMission.UUID, Event: "new", Data: acceptMission}
-		}
+		m.StartWorkersMonitor(client, acceptMission)
+		client.Missions[acceptMission.UUID] = acceptMission
+		client.NotifyQueue[acceptMission.UUID] = &player.Notify{Name: "mission", UUID: acceptMission.UUID, Event: "new", Data: acceptMission}
 		return acceptMission
 	}
 
 	dbPlayer.UpdateUser(client)
 	return nil
+}
+
+/**
+* функция запускат воркеры
+**/
+func (m *missions) StartWorkersMonitor(client *player.Player, gameMission *mission.Mission) {
+	for _, action := range gameMission.Actions {
+
+		if action.TypeFuncMonitor == "delivery_item" {
+
+		}
+		if action.TypeFuncMonitor == "get_item_on_base" {
+
+		}
+		if action.TypeFuncMonitor == "get_item_on_obj" {
+
+		}
+		if action.TypeFuncMonitor == "place_item_in_obj" {
+
+		}
+		if action.TypeFuncMonitor == "attack_map_obj" {
+
+		}
+		if action.TypeFuncMonitor == "to_q_r" {
+
+		}
+		if action.TypeFuncMonitor == "talk_with_base" {
+
+		}
+		if action.TypeFuncMonitor == "extract_item" {
+
+		}
+	}
+	//deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)
+	//storages.Storages.AddItem(client.GetID(), client.InBaseID, deliveryItem, "trash", deliveryItem.ID,
+	//	1, 1, deliveryItem.Size, 1, false)
 }

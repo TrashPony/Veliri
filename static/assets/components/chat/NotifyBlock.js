@@ -15,6 +15,9 @@ function FillNotifyBlock(data) {
 }
 
 function newNotify(notify) {
+
+    if (document.getElementById(notify.uuid)) document.getElementById(notify.uuid).remove();
+
     if (notify && notify.name === "mission") {
 
         if (notify.event === "new") {
@@ -23,13 +26,13 @@ function newNotify(notify) {
         }
 
         if (notify.event === "complete") {
-            if (document.getElementById(notify.uuid)) {
-                document.getElementById(notify.uuid).style.background = "#3dff00";
-                document.getElementById(notify.uuid).onclick = function () {
-                    // todo запрос на бекенд для удаления.
-                    this.remove()
-                }
-            }
+            let tip = NotifyPin(notify.uuid);
+            addMission(tip, notify.data);
+            tip.style.background = "#3dff00";
+            tip.onclick = function () {
+                // todo запрос на бекенд для удаления.
+                this.remove()
+            };
         }
     }
 
