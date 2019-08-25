@@ -85,7 +85,7 @@ function NotifyPin(uuid) {
 function addMission(notifyTip, mission) {
     notifyTip.innerHTML = ` 
                 <h3>${mission.name}</h3>
-                <h4>Заказчик глава ${mission.start_base.name} из сектора ${mission.start_map.Name}</h4>
+                <h4>Заказчик ${mission.start_base.name} из сектора ${mission.start_map.Name}</h4>
                 <p>${mission.start_dialog.pages[1].text}</p>
 `;
 }

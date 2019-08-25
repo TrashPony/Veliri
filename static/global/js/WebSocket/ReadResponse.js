@@ -164,4 +164,13 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "DeadSquad") {
         SquadDead(jsonData.other_user);
     }
+
+    if (jsonData.event === "GetMissions") {
+        FillMissionsSelect(jsonData.missions, jsonData.mission_uuid)
+    }
+
+    if (jsonData.event === "GetPortalPointToGlobalPath") {
+        let {x, y} = GetXYCenterHex(jsonData.q, jsonData.r);
+        if (game && game.squad && jsonData.name === "mission") game.squad.missionMove = {x: x, y: y, radius: 0}
+    }
 }

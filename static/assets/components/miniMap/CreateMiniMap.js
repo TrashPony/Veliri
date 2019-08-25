@@ -68,6 +68,24 @@ function CreateMiniMap() {
                 ctx.lineTo(game.squad.moveTo.x / kX, game.squad.moveTo.y / kY);
                 ctx.stroke();
             }
+
+            if (game.squad.missionMove) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#00ff03";
+                ctx.moveTo(game.squad.sprite.x / kX + hexagonWidth / 2, game.squad.sprite.y / kY + hexagonHeight / 2);
+                ctx.lineTo(game.squad.missionMove.x / kX, game.squad.missionMove.y / kY);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "rgba(0, 255, 0, 0.5)";
+                ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
+                ctx.ellipse(game.squad.missionMove.x / kX + hexagonWidth / 2, game.squad.missionMove.y / kY + hexagonHeight / 2,
+                    game.squad.missionMove.radius / kX, game.squad.missionMove.radius / kY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
+            }
+
             ctx.fillStyle = "#19ff00";
             ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
         }

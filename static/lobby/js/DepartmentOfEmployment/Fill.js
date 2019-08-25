@@ -6,7 +6,7 @@ function FillDepartment(dialogPage, action, mission, userID) {
         setState(doe.id, $(doe).position().left, $(doe).position().top, $(doe).height(), $(doe).width(), false);
         return;
     }
-    // TODO придумать куда притсрать обучение 9++ при взятие первого задания
+
     if (!document.getElementById('DepartmentOfEmployment')) {
         InitDepartmentOfEmployment(dialogPage, action, mission, userID);
         return

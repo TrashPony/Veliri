@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
@@ -9,6 +10,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
@@ -22,9 +24,9 @@ var globalPipe = make(chan Message, 1)
 
 type Message struct {
 	// когда я забил х на эту структуру данных а теперь тут какое то адище
-	IDSender      int
-	IDUserSend    int
-	IDMap         int
+	IDSender      int                             // переменная не для данных а для отсылки сообщений
+	IDUserSend    int                             // переменная не для данных а для отсылки сообщений
+	IDMap         int                             // переменная не для данных а для отсылки сообщений
 	Event         string                          `json:"event"`
 	Map           *_map.Map                       `json:"map"`
 	Error         string                          `json:"error"`
@@ -72,6 +74,9 @@ type Message struct {
 	Cloud         *Cloud                          `json:"cloud"`
 	ToSquadID     string                          `json:"to_squad_id"`
 	Bot           bool                            `json:"bot"`
+	MapID         int                             `json:"map_id"`
+	Missions      map[string]*mission.Mission     `json:"missions"`
+	MissionUUID   string                          `json:"mission_uuid"`
 }
 
 type Cloud struct {
@@ -213,12 +218,41 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			useDigger(ws, msg)
 		}
 
-		if msg.Event == "OpenDialog" {
-
+		if msg.Event == "Attack" {
+			//todo методы атаки,
+			// просто землю
+			// обьекты на карте
+			// игроков/нпс
 		}
 
-		if msg.Event == "Ask" {
+		if msg.Event == "GetMissions" {
+			go SendMessage(Message{Event: msg.Event, IDUserSend: user.GetID(), Missions: user.Missions, MissionUUID: user.SelectMission})
+		}
 
+		if msg.Event == "SelectMission" {
+
+			if msg.MissionUUID == "" {
+				user.SelectMission = msg.MissionUUID
+			} else {
+				_, ok := user.Missions[msg.MissionUUID]
+				if ok {
+					user.SelectMission = msg.MissionUUID
+				}
+			}
+			go SendMessage(Message{Event: "GetMissions", IDUserSend: user.GetID(), Missions: user.Missions, MissionUUID: user.SelectMission})
+		}
+
+		if msg.Event == "GetPortalPointToGlobalPath" {
+			_, transitionPoints := maps.Maps.FindGlobalPath(user.GetSquad().MapID, msg.MapID)
+			if len(transitionPoints) > 0 {
+				go SendMessage(Message{
+					Event:      "GetPortalPointToGlobalPath",
+					IDUserSend: user.GetID(),
+					Name:       msg.Name,
+					Q:          transitionPoints[0].Q,
+					R:          transitionPoints[0].R,
+				})
+			}
 		}
 	}
 }

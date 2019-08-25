@@ -29,6 +29,7 @@
     <link href="./css/miningPanel.css" rel="stylesheet">
     <link href="./css/anomalyScanner.css" rel="stylesheet">
     <link href="./css/action_panel.css" rel="stylesheet">
+    <link href="./css/mission_block.css" rel="stylesheet">
 
     <script src="../assets/components/servicesWebSockets.js"></script>
 
@@ -73,6 +74,7 @@
     <script src="js/Interface/FillUserMeta.js"></script>
     <script src="js/Interface/VisibleAnomalies.js"></script>
     <script src="js/Interface/AnomalyCatch.js"></script>
+    <script src="js/Interface/Mission.js"></script>
 
     <script src="js/Actions/Stop.js"></script>
     <script src="js/Actions/Attack.js"></script>
@@ -278,6 +280,19 @@
             <div id="lowGravity"></div>
             <div id="catchAnomaly">Danger anomaly!</div>
             <div id="criticalDamage">Critical Damage!!!</div>
+        </div>
+
+        <div id="MissionInfoBlock">
+            <div id="moveMissionButton" onmousedown="moveWindow(event,'MissionInfoBlock')"></div>
+            <select id="SelectMission" onclick="SelectMission(this)">
+                <option value="">Выбраное задание</option>
+            </select>
+            <input type="button" onclick="DetailMission()" value="Подробно">
+            <input type="button" onclick="HideMission()" id="hideMissionButton" value="Скрыть"
+                   style="left: 0; border-radius: 0 5px 0 0;">
+
+            <div id="MissionPoints"></div>
+            <div id="MissionStory"></div>
         </div>
 
         <div id="anomalyScanner">

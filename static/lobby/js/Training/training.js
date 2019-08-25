@@ -503,7 +503,7 @@ function Training(lvl) {
             `,
             picture: "training.png",
         };
-
+        // todo можно повесить просто еще 1 ивент на кнопку который увеличит уровень и сделает все прежне
         let dialogBlock = CreatePageDialog("training1IntoDepartmentOfEmployment", page, null, false, true);
         dialogBlock.style.left = "15px";
         dialogBlock.style.top = "60px";
@@ -525,8 +525,38 @@ function Training(lvl) {
                     clearInterval(intoDOE);
                     Training(lvl)
                 }
+
+                if ($('.missionNotify').length >= 1) {
+                    // TODO проблема из за того что missionNotify относится не только к миссиям
+                    dialogBlock.remove();
+                    document.getElementById('DepartmentOfEmploymentButton').style.animation = "none";
+                    clearInterval(intoDOE);
+                    progressTraining(lvl);
+                }
             }
         }, 200);
+    }
+    if (lvl === 10) {
+        let page = {
+            text: `
+                <p>Для того что бы выйти из базы - нажми эту пиктограмму.</p>
+                <p>Убедись перед выходом что ты не забыл топливо, оружие и боеприпасы!</p>
+            `,
+            picture: "training.png",
+        };
+
+        let dialogBlock = CreatePageDialog("training1IntoDepartmentOfEmployment", page, null, false, true);
+        dialogBlock.style.left = "15px";
+        dialogBlock.style.top = "60px";
+        dialogBlock.className += " Training";
+
+        let OutBaseButton = $('#OutBaseButton');
+        OutBaseButton.css("animation", "selectMenu 1500ms infinite");
+        OutBaseButton.mouseup(function () {
+            dialogBlock.remove();
+            OutBaseButton.style.animation = "none";
+            progressTraining(lvl);
+        })
     }
 }
 

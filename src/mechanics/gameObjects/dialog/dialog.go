@@ -29,33 +29,32 @@ func (d *Dialog) ProcessingDialogText(userName, BaseName, ToBaseName, ToSectorNa
 		return
 	}
 
+	for _, page := range d.Pages {
+		page.Text = ProcessingText(page.Text, userName, BaseName, ToBaseName, ToSectorName, userFraction)
+		for _, asc := range page.Asc {
+			asc.Text = ProcessingText(asc.Text, userName, BaseName, ToBaseName, ToSectorName, userFraction)
+		}
+	}
+}
+
+func ProcessingText(text, userName, BaseName, ToBaseName, ToSectorName, userFraction string) string {
 	importantlyWrapperStart := "<span class=\"importantly\">"
 	importantlyWrapperEnd := "</span>"
 
-	processing := func(text string) string {
+	text = strings.Replace(text, "%UserName%", importantlyWrapperStart+userName+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "%BaseName%", importantlyWrapperStart+BaseName+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "%ToBaseName%", importantlyWrapperStart+ToBaseName+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "%ToSectorName%", importantlyWrapperStart+ToSectorName+importantlyWrapperEnd, -1)
 
-		text = strings.Replace(text, "%UserName%", importantlyWrapperStart+userName+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "%BaseName%", importantlyWrapperStart+BaseName+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "%ToBaseName%", importantlyWrapperStart+ToBaseName+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "%ToSectorName%", importantlyWrapperStart+ToSectorName+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Replics", importantlyWrapperStart+"Replics"+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Explores", importantlyWrapperStart+"Explores"+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Reverses", importantlyWrapperStart+"Reverses"+importantlyWrapperEnd, -1)
 
-		text = strings.Replace(text, "Replics", importantlyWrapperStart+"Replics"+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "Explores", importantlyWrapperStart+"Explores"+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "Reverses", importantlyWrapperStart+"Reverses"+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Veliri-5", importantlyWrapperStart+"Veliri-5"+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
+	text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
 
-		text = strings.Replace(text, "Veliri-5", importantlyWrapperStart+"Veliri-5"+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
-		text = strings.Replace(text, "Veliri", importantlyWrapperStart+"Veliri"+importantlyWrapperEnd, -1)
-
-		return text
-	}
-
-	for _, page := range d.Pages {
-		page.Text = processing(page.Text)
-		for _, asc := range page.Asc {
-			asc.Text = processing(asc.Text)
-		}
-	}
+	return text
 }
 
 type Page struct {

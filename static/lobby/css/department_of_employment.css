@@ -83,13 +83,12 @@
     margin: auto auto 2px 3px;
     width: 260px;
     height: 233px;
-    font-family: sans-serif;
     float: left;
     box-shadow: inset 0 0 5px black;
     background: linear-gradient(0deg, transparent 60%, rgba(0, 0, 0, 0.1) 21%), #adc6cd;
     background-size: 10px 3px;
     color: #ff8100;
-    font-size: 15px;
+    font-size: 13px;
     text-indent: 1.5em;
     overflow-y: scroll;
 }

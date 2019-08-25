@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
@@ -212,6 +213,22 @@ func (m *missions) GenerateMissionForUser(client *player.Player, missionType *mi
 			actionDialog.ProcessingDialogText(client.GetLogin(), startBase.Name, toBase.Name, toMap.Name, client.Fraction)
 			action.Dialog = actionDialog
 		}
+
+		// парсим описания экшонов
+		var userName, baseName, toSectorName string
+
+		if action.MapID > 0 {
+			mp, _ := maps.Maps.GetByID(action.MapID)
+			toSectorName = mp.Name
+		}
+
+		if action.BaseID > 0 {
+			toBase, _ := bases.Bases.Get(action.BaseID)
+			baseName = toBase.Name
+		}
+
+		action.Description = dialog.ProcessingText(action.Description, userName, baseName, "", toSectorName, "")
+		action.ShortDescription = dialog.ProcessingText(action.ShortDescription, userName, baseName, "", toSectorName, "")
 	}
 
 	m.missions[newMission.UUID] = &newMission
@@ -257,13 +274,16 @@ func (m *missions) StartWorkersMonitor(client *player.Player, gameMission *missi
 
 		}
 		if action.TypeFuncMonitor == "to_q_r" {
-
+			go toQR(gameMission, action, client)
 		}
 		if action.TypeFuncMonitor == "talk_with_base" {
 
 		}
 		if action.TypeFuncMonitor == "extract_item" {
 
+		}
+		if action.TypeFuncMonitor == "to_sector" {
+			go toSector(gameMission, action, client)
 		}
 	}
 	//deliveryItem, _ := gameTypes.TrashItems.GetByID(acceptMission.DeliveryItemId)

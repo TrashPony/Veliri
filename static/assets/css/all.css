@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:300,500,700|Noto+Sans+SC:300,500,700|Source+Code+Pro:300,500,700&display=swap');
+
+/*font-family: 'Noto Sans SC', sans-serif;*/
+/*font-family: 'Source Code Pro', monospace;*/
+
 body {
+    font-family: 'Comfortaa', cursive;
     background-color: #696969;
     text-align: center;
     margin: 0;

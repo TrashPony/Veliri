@@ -158,6 +158,7 @@ function ActionFill(mission) {
                             <option value="get_item_on_obj">Взять предмет из объекта</option>
                             <option value="place_item_in_obj">Положить предмет в обьект на карте</option>
                             <option value="attack_map_obj">Стрельнуть по объекту на карте</option>
+                            <option value="to_sector">Отправится в сектор</option>
                         </select>
                     </label>
                     <br>

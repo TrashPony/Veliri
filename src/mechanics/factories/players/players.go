@@ -2,6 +2,7 @@ package players
 
 import (
 	dbPlayer "github.com/TrashPony/Veliri/src/mechanics/db/player"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/missions"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/squad_inventory"
 	"sync"
@@ -27,6 +28,7 @@ func (usersStore *usersStore) Get(id int) (*player.Player, bool) {
 	return val, ok
 }
 
+// неверное название метода, он достает игроков из базы данных если игрок еще не в сторедже
 func (usersStore *usersStore) Add(id int, login string) *player.Player {
 	usersStore.mx.Lock()
 	defer usersStore.mx.Unlock()
@@ -35,6 +37,11 @@ func (usersStore *usersStore) Add(id int, login string) *player.Player {
 
 	squad_inventory.GetInventory(newUser)
 	usersStore.users[id] = newUser
+
+	// запускаем отслеживание миссий
+	for _, mission := range newUser.Missions {
+		missions.Missions.StartWorkersMonitor(newUser, mission)
+	}
 
 	return newUser
 }

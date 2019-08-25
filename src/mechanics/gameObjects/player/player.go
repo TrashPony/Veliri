@@ -68,6 +68,8 @@ type Player struct {
 	// [name]Skill
 	CurrentSkills map[string]*skill.Skill     `json:"current_skills"`
 	Missions      map[string]*mission.Mission `json:"missions"`
+	// uuid мисси которую отслеживает игрок, от этого зависит что будет отображатся на мини карте и в блоке заданий на фронте
+	SelectMission string `json:"select_mission"`
 
 	NotifyQueue map[string]*Notify `json:"notify_queue"`
 
