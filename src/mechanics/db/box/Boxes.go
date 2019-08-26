@@ -19,7 +19,8 @@ func Boxes() map[int]*boxInMap.Box {
 		" id_box_type," +
 		" q," +
 		" r," +
-		" rotate" +
+		" rotate," +
+		" current_hp" +
 		" " +
 		" FROM box_in_map")
 	if err != nil {
@@ -32,7 +33,7 @@ func Boxes() map[int]*boxInMap.Box {
 		var password int
 
 		err := rows.Scan(&gameBox.ID, &password, &gameBox.DestroyTime, &gameBox.MapID, &gameBox.TypeID,
-			&gameBox.Q, &gameBox.R, &gameBox.Rotate)
+			&gameBox.Q, &gameBox.R, &gameBox.Rotate, &gameBox.HP)
 		if err != nil {
 			log.Fatal("get scan all box " + err.Error())
 		}
@@ -55,7 +56,8 @@ func getTypeBox(gameBox *boxInMap.Box) {
 		" fold_size,"+
 		" protect,"+
 		" protect_lvl,"+
-		" underground"+
+		" underground,"+
+		" hp"+
 		" "+
 		"FROM box_type "+
 		"WHERE id = $1", gameBox.TypeID)
@@ -66,7 +68,7 @@ func getTypeBox(gameBox *boxInMap.Box) {
 
 	for rows.Next() {
 		err := rows.Scan(&gameBox.Type, &gameBox.CapacitySize, &gameBox.FoldSize, &gameBox.Protect,
-			&gameBox.ProtectLvl, &gameBox.Underground)
+			&gameBox.ProtectLvl, &gameBox.Underground, &gameBox.HP)
 		if err != nil {
 			log.Fatal("get scan type box " + err.Error())
 		}

@@ -16,14 +16,13 @@ type Map struct {
 	Specification       string
 	OneLayerMap         map[int]map[int]*coordinate.Coordinate
 	Reservoir           map[int]map[int]*resource.Map `json:"reservoir"`
-	Respawns            int
-	Global              bool                     `json:"global"`
-	InGame              bool                     `json:"in_game"`
-	HandlersCoordinates []*coordinate.Coordinate `json:"handlers_coordinates"`
-	Beams               []*Beam                  `json:"beams"`
-	Emitters            []*Emitter               `json:"emitters"`
-	GeoData             []*ObstaclePoint         `json:"geo_data"`
-	Anomalies           []*Anomalies             `json:"anomalies"`
+	Global              bool                          `json:"global"`
+	InGame              bool                          `json:"in_game"`
+	HandlersCoordinates []*coordinate.Coordinate      `json:"handlers_coordinates"`
+	Beams               []*Beam                       `json:"beams"`
+	Emitters            []*Emitter                    `json:"emitters"`
+	GeoData             []*ObstaclePoint              `json:"geo_data"`
+	Anomalies           []*Anomalies                  `json:"anomalies"`
 
 	// тут хранятся просчитанные шаблоны координат, что бы не проверять координаты при каждом поиске пути
 	GeoDataMaps map[int]map[int]map[int]coordinate.Coordinate `json:"-"`

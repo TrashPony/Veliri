@@ -1,9 +1,10 @@
 package maps
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/db/get"
+	dbMap "github.com/TrashPony/Veliri/src/mechanics/db/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/anomaly"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/getlantern/deepcopy"
@@ -13,36 +14,48 @@ import (
 type mapStore struct {
 	maps    map[int]*_map.Map
 	anomaly map[int][]*anomaly.Anomaly
+	// хранить в себе инвентари обьектов на карте [MapID], [Q], [R]
+	inventoryObjects map[int]map[int]map[int]*inventory.Inventory
 }
 
 var Maps = newMapStore()
 
 func newMapStore() *mapStore {
-	m := &mapStore{maps: get.Maps(), anomaly: make(map[int][]*anomaly.Anomaly)}
+	m := &mapStore{
+		maps:             dbMap.Maps(),
+		anomaly:          make(map[int][]*anomaly.Anomaly),
+		inventoryObjects: make(map[int]map[int]map[int]*inventory.Inventory),
+	}
 
 	for id, mp := range m.maps {
-		respawns := 0
 		mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
 
 		for _, q := range mp.OneLayerMap { // считает количество респаунов на карте
 			for _, mapCoordinate := range q {
-				if mapCoordinate.Type == "respawn" {
-					respawns++
-				}
-
+				// переносим координаты со слушателями в отдельный масив для удобного доступа
 				if mapCoordinate.Handler != "" || mapCoordinate.Transport {
 					mapCoordinate.HandlerOpen = true
 					mp.HandlersCoordinates = append(mp.HandlersCoordinates, mapCoordinate)
 				}
+
+				// если координата хранит инвентарь то создаем его в карте
+				if mapCoordinate.ObjectInventory {
+					if m.inventoryObjects[mp.Id] == nil {
+						m.inventoryObjects[mp.Id] = make(map[int]map[int]*inventory.Inventory)
+					}
+
+					if m.inventoryObjects[mp.Id][mapCoordinate.Q] == nil {
+						m.inventoryObjects[mp.Id][mapCoordinate.Q] = make(map[int]*inventory.Inventory)
+					}
+
+					objInventory := &inventory.Inventory{}
+					objInventory.Slots = make(map[int]*inventory.Slot)
+					objInventory.SetSlotsSize(9999)
+					m.inventoryObjects[mp.Id][mapCoordinate.Q][mapCoordinate.R] = objInventory
+				}
 			}
 		}
 
-		//if mp.Global { // если карта глобальная генерим на ней ресурсы
-		//	anomalyGenerator(mp, m) // сначала генерить аномалии что бы можно было использовать больше ячеек
-		//	resourceGenerator(mp)
-		//}
-
-		mp.Respawns = respawns
 		m.maps[id] = mp
 	}
 

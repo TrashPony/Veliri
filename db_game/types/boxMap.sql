@@ -7,7 +7,8 @@ CREATE TABLE box_in_map
   id_box_type  INT REFERENCES box_type (id),
   q            int,
   r            int,
-  rotate       int
+  rotate       int,
+  current_hp   int not null default 1
 );
 
 CREATE TABLE box_type
@@ -19,7 +20,8 @@ CREATE TABLE box_type
   fold_size     REAL, /* размер если ящик нести в инвентаре */
   protect       BOOLEAN, /* тру-на ящик можно поставить пароль */
   protect_lvl   int, /* 1-5 число описывающие сложность замка */
-  underground   BOOLEAN /* если ящик под землей то его нельзя задавить */
+  underground   BOOLEAN, /* если ящик под землей то его нельзя задавить */
+  hp            int not null default 100
 );
 
 CREATE TABLE box_storage

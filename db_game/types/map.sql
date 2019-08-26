@@ -78,9 +78,13 @@ CREATE TABLE coordinate_type
   attack                BOOLEAN, /* определяет можно ли атаковать через эту координату в локальном бою*/
 
   /* параметр чисто для отображения, говорит перекроет юнит своим телом этот обьект или нет если надетет на него*/
-  unit_overlap          BOOLEAN
-);
+  unit_overlap          BOOLEAN,
 
+  object_name           text    not null default '',
+  object_description    text    not null default '',
+  object_inventory      BOOLEAN not null default false, -- todo хранить состояние инвентаря в таболице map_constructor
+  object_hp             int     not null default -1     -- -1 -бесмертный, 0 - мертвый
+);
 
 CREATE TABLE coordinate_type_effect
 (

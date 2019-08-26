@@ -21,6 +21,7 @@ type Box struct {
 	R            int                  `json:"r"`
 	Rotate       int                  `json:"rotate"`
 	storage      *inventory.Inventory // содержимое не публично т.к. что бы узнать содержимое надо его открыть или просканирова
+	HP           int                  `json:"hp"`
 }
 
 func (b *Box) SetPassword(password int) {

@@ -59,6 +59,11 @@ type Coordinate struct {
 	Positions []*Coordinate `json:"positions"`
 	ToBaseID  int           `json:"to_base_id"`
 	ToMapID   int           `json:"to_map_id"`
+
+	ObjectName        string `json:"object_name"`
+	ObjectDescription string `json:"object_description"`
+	ObjectInventory   bool   `json:"object_inventory"`
+	ObjectHP          int    `json:"object_hp"`
 }
 
 func (coor *Coordinate) GetZ() int {

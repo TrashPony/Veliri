@@ -1,8 +1,8 @@
 package map_editor
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/db/get"
-	"github.com/TrashPony/Veliri/src/mechanics/db/mapEditor"
+	bdMap "github.com/TrashPony/Veliri/src/mechanics/db/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/db/maps/mapEditor"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
@@ -126,7 +126,7 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "getAllTypeCoordinate" { // +
-			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: get.AllTypeCoordinate()})
+			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: bdMap.AllTypeCoordinate()})
 		}
 
 		if msg.Event == "addHeightCoordinate" {
