@@ -60,48 +60,37 @@ function CreateReservoir(reservoir, q, r) {
     game.map.reservoir[q][r].sprite.inputEnabled = true;
     game.map.reservoir[q][r].sprite.input.pixelPerfectOver = true;
     game.map.reservoir[q][r].sprite.input.pixelPerfectClick = true;
+    game.map.reservoir[q][r].sprite.input.pixelPerfectAlpha = 1;
 
     let tip;
-    let reservoirLine;
-
+    let posInterval;
     game.map.reservoir[q][r].sprite.events.onInputOver.add(function () {
-        reservoirLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, reservoirTexture);
-        reservoirLine.anchor.setTo(0.5);
-        reservoirLine.scale.set(0.11);
-        reservoirLine.tint = 0x00FF00;
-        reservoirLine.angle = reservoir.rotate;
 
         tip = document.createElement("div");
         tip.id = "reservoirTip" + q + "" + r;
         tip.className = "reservoirTip";
         tip.style.left = stylePositionParams.left + "px";
         tip.style.top = stylePositionParams.top + "px";
-        tip.innerHTML = "<h3>" + reservoir.name + "</h3>";
         document.body.appendChild(tip);
 
-        let wrapper = document.createElement("div");
-        tip.appendChild(wrapper);
+        tip.innerHTML = `
+            <h3>${reservoir.name}</h3>
+            <div class="Description"> Залежи минерала ${reservoir.name}. Лежат тут, никто их не трогает...</div>
+            <div class="reservoirInfo">
+                <div class="iconOreTip" style="background: url('/assets/resource/${reservoir.name}.png') center center / contain no-repeat"></div>
+                <div class="nameOre">${reservoir.name}</div>
+                <div class="countOre" id="countOre${q}${r}">${game.map.reservoir[q][r].count}</div>
+            </div>
+        `;
 
-        let icon = document.createElement("div");
-        icon.className = "iconOreTip";
-        icon.style.background = "url(/assets/resource/" + reservoir.name + ".png)" +
-            " center center / contain no-repeat";
-        wrapper.appendChild(icon);
-
-        let nameOre = document.createElement("div");
-        nameOre.className = "nameOre";
-        nameOre.innerHTML = reservoir.name;
-        wrapper.appendChild(nameOre);
-
-        let count = document.createElement("div");
-        count.className = "countOre";
-        count.id = "countOre" + q + "" + r;
-        count.innerHTML = game.map.reservoir[q][r].count;
-        wrapper.appendChild(count);
+        posInterval = setInterval(function () {
+            tip.style.left = stylePositionParams.left + "px";
+            tip.style.top = stylePositionParams.top + "px";
+        }, 10)
     });
 
     game.map.reservoir[q][r].sprite.events.onInputOut.add(function () {
+        setInterval(posInterval);
         tip.remove();
-        reservoirLine.destroy()
     });
 }

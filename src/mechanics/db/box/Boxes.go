@@ -20,7 +20,8 @@ func Boxes() map[int]*boxInMap.Box {
 		" q," +
 		" r," +
 		" rotate," +
-		" current_hp" +
+		" current_hp," +
+		" owned_by_map_object" +
 		" " +
 		" FROM box_in_map")
 	if err != nil {
@@ -33,12 +34,17 @@ func Boxes() map[int]*boxInMap.Box {
 		var password int
 
 		err := rows.Scan(&gameBox.ID, &password, &gameBox.DestroyTime, &gameBox.MapID, &gameBox.TypeID,
-			&gameBox.Q, &gameBox.R, &gameBox.Rotate, &gameBox.HP)
+			&gameBox.Q, &gameBox.R, &gameBox.Rotate, &gameBox.HP, &gameBox.OwnedByMapObject)
 		if err != nil {
 			log.Fatal("get scan all box " + err.Error())
 		}
 
-		getTypeBox(&gameBox)
+		if !gameBox.OwnedByMapObject {
+			getTypeBox(&gameBox)
+		} else {
+			gameBox.CapacitySize = 100
+		}
+
 		getBoxStorage(&gameBox)
 		gameBox.SetPassword(password)
 

@@ -64,6 +64,7 @@ type Coordinate struct {
 	ObjectDescription string `json:"object_description"`
 	ObjectInventory   bool   `json:"object_inventory"`
 	ObjectHP          int    `json:"object_hp"`
+	BoxID             int    `json:"box_id"`
 }
 
 func (coor *Coordinate) GetZ() int {

@@ -2,8 +2,11 @@ package maps
 
 import (
 	dbMap "github.com/TrashPony/Veliri/src/mechanics/db/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/anomaly"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
@@ -14,17 +17,14 @@ import (
 type mapStore struct {
 	maps    map[int]*_map.Map
 	anomaly map[int][]*anomaly.Anomaly
-	// хранить в себе инвентари обьектов на карте [MapID], [Q], [R]
-	inventoryObjects map[int]map[int]map[int]*inventory.Inventory
 }
 
 var Maps = newMapStore()
 
 func newMapStore() *mapStore {
 	m := &mapStore{
-		maps:             dbMap.Maps(),
-		anomaly:          make(map[int][]*anomaly.Anomaly),
-		inventoryObjects: make(map[int]map[int]map[int]*inventory.Inventory),
+		maps:    dbMap.Maps(),
+		anomaly: make(map[int][]*anomaly.Anomaly),
 	}
 
 	for id, mp := range m.maps {
@@ -40,23 +40,64 @@ func newMapStore() *mapStore {
 
 				// если координата хранит инвентарь то создаем его в карте
 				if mapCoordinate.ObjectInventory {
-					if m.inventoryObjects[mp.Id] == nil {
-						m.inventoryObjects[mp.Id] = make(map[int]map[int]*inventory.Inventory)
-					}
 
-					if m.inventoryObjects[mp.Id][mapCoordinate.Q] == nil {
-						m.inventoryObjects[mp.Id][mapCoordinate.Q] = make(map[int]*inventory.Inventory)
-					}
+					box, mx := boxes.Boxes.GetByQR(mapCoordinate.Q, mapCoordinate.R, mp.Id)
+					mx.Unlock()
 
-					objInventory := &inventory.Inventory{}
-					objInventory.Slots = make(map[int]*inventory.Slot)
-					objInventory.SetSlotsSize(9999)
-					m.inventoryObjects[mp.Id][mapCoordinate.Q][mapCoordinate.R] = objInventory
+					if box == nil {
+						objectBox := &boxInMap.Box{
+							MapID:            mp.Id,
+							CapacitySize:     100.00,
+							Protect:          false,
+							Q:                mapCoordinate.Q,
+							R:                mapCoordinate.R,
+							HP:               -1,
+							OwnedByMapObject: true,
+						}
+						objectBox.GetStorage().Slots = make(map[int]*inventory.Slot)
+						objectBox.GetStorage().SetSlotsSize(999)
+
+						mapCoordinate.BoxID = boxes.Boxes.InsertNewBox(objectBox).ID
+					} else {
+						mapCoordinate.BoxID = box.ID
+					}
 				}
 			}
 		}
-
 		m.maps[id] = mp
+	}
+
+	for _, mp := range m.maps {
+		for _, q := range mp.OneLayerMap {
+			for _, mapCoordinate := range q {
+				if mapCoordinate.ObjectName != "" {
+					// userName, BaseName, ToBaseName, ToSectorName, userFraction
+					toMapName := ""
+					if mapCoordinate.Handler == "sector" {
+						toMapName = m.maps[mapCoordinate.ToMapID].Name
+					} else {
+
+						// ¯\_(ツ)_/¯
+
+						for _, mp2 := range m.maps {
+							for _, q2 := range mp2.OneLayerMap {
+								for _, mapCoordinate2 := range q2 {
+									if mapCoordinate2.Handler == "sector" && mapCoordinate2.ToMapID == mp.Id {
+										for _, points := range mapCoordinate2.Positions {
+											if points.Q == mapCoordinate.Q && points.R == mapCoordinate.R {
+												toMapName = mp2.Name
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					mapCoordinate.ObjectName = dialog.ProcessingText(mapCoordinate.ObjectName, "", "", "", toMapName, "")
+					mapCoordinate.ObjectDescription = dialog.ProcessingText(mapCoordinate.ObjectDescription, "", "", "", toMapName, "")
+				}
+			}
+		}
 	}
 
 	return m

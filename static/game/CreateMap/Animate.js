@@ -14,6 +14,8 @@ function CreateAnimate(coordinate, x, y) {
             game.floorObjectLayer, coordinate.animate_loop);
     }
 
+    ObjectEvents(coordinate, animate);
+
     coordinate.objectSprite = animate;
 }
 

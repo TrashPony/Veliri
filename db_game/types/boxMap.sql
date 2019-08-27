@@ -1,14 +1,15 @@
 CREATE TABLE box_in_map
 (/* таблица описывает все ящики которые лежат на карте */
-  id           SERIAL PRIMARY KEY,
-  password     int, /* если ящик общий то пароль - 0, если запаролен то 1-4 числа */
-  destroy_time timestamp, /* время когда ящик самоликвидируется */
-  id_map       INT REFERENCES maps (id),
-  id_box_type  INT REFERENCES box_type (id),
-  q            int,
-  r            int,
-  rotate       int,
-  current_hp   int not null default 1
+  id                  SERIAL PRIMARY KEY,
+  password            int, /* если ящик общий то пароль - 0, если запаролен то 1-4 числа */
+  destroy_time        timestamp, /* время когда ящик самоликвидируется */
+  id_map              INT REFERENCES maps (id),
+  id_box_type         INT     not null default 0,
+  q                   int,
+  r                   int,
+  rotate              int,
+  current_hp          int     not null default 1,
+  owned_by_map_object boolean not null default false -- говорит что это инвентарь обьекта на карте
 );
 
 CREATE TABLE box_type

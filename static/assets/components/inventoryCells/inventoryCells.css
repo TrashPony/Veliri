@@ -126,7 +126,6 @@
 
 .inventoryEquipping.noActive:before {
     content: "N/A";
-    font-family: Arial;
     font-size: 9px;
     color: #00FFFD;
     text-shadow: -0 -1px 0 #382626,
@@ -201,7 +200,6 @@
 .inventoryUnit.noActive:before {
     text-align: center;
     content: "N/A";
-    font-family: Arial;
     font-size: 9px;
     color: #00FFFD;
     text-shadow: -0 -1px 0 #382626,
@@ -264,7 +262,6 @@
     position: relative;
     bottom: 4px;
     left: 2px;
-    font-family: Arial;
     font-size: 9px;
     color: #fff16f;
     text-shadow: -0 -1px 1px #000000,
