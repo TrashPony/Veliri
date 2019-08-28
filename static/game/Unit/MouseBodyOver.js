@@ -1,21 +1,38 @@
+let positionInterval = null;
+let checkTimeOut = null;
+
 function mouseBodyOver(body, unit, unitBox, userID) {
-    let positionInterval = null;
-    let checkTimeOut = null;
 
     body.events.onInputOver.add(function () {
+        unitInfo(unit, unitBox, userID)
+    }, this);
 
-        clearTimeout(checkTimeOut);
+    body.events.onInputOut.add(function () {
+        unitRemoveInfo(unit, unitBox, userID)
+    }, this);
+}
 
-        if (document.getElementById("UserLabel" + unit.user_name + unit.id)) {
-            return;
-        }
+function unitInfo(unit, unitBox, userID) {
+    if (Data.squad.user_id === unit.user_id) {
+        unitBox.frame = 1;
+    } else {
+        //todo враг красны, нейтрал белый
+        unitBox.frame = 2;
+    }
 
-        let userLabel = document.createElement('div');
-        userLabel.id = "UserLabel" + unit.user_name + unit.id;
-        userLabel.className = "UserLabel";
-        document.body.appendChild(userLabel);
+    clearTimeout(checkTimeOut);
+    checkTimeOut = null;
 
-        userLabel.innerHTML = `
+    if (document.getElementById("UserLabel" + unit.user_name + unit.id)) {
+        return;
+    }
+
+    let userLabel = document.createElement('div');
+    userLabel.id = "UserLabel" + unit.user_name + unit.id;
+    userLabel.className = "UserLabel";
+    document.body.appendChild(userLabel);
+
+    userLabel.innerHTML = `
             <div>
                 <div>
                     <div class="logo" id="userAvatar${userID}${unit.id}" ></div>
@@ -25,22 +42,28 @@ function mouseBodyOver(body, unit, unitBox, userID) {
             </div>
         `;
 
-        positionInterval = setInterval(function () {
-            userLabel.style.left = unitBox.worldPosition.x - 50 + "px";
-            userLabel.style.top = unitBox.worldPosition.y - 70 + "px";
-            userLabel.style.display = "block";
-        }, 10);
+    positionInterval = setInterval(function () {
+        userLabel.style.left = unitBox.worldPosition.x - 50 + "px";
+        userLabel.style.top = unitBox.worldPosition.y - 70 + "px";
+        userLabel.style.display = "block";
+    }, 10);
 
-        GetUserAvatar(userID).then(function (response) {
-            $("#userAvatar" + userID + unit.id).css('background-image', "url('" + response.data.avatar + "')");
-        });
-    }, this);
+    GetUserAvatar(userID).then(function (response) {
+        $("#userAvatar" + userID + unit.id).css('background-image', "url('" + response.data.avatar + "')");
+    });
+}
 
-    body.events.onInputOut.add(function () {
+function unitRemoveInfo(unit, unitBox) {
+    if (!GetSelectUnitByID(unit.id)) {
+        unitBox.frame = 0;
+    }
+
+    if (!checkTimeOut) {
         checkTimeOut = setTimeout(function () {
             if (document.getElementById("UserLabel" + unit.user_name + unit.id)) document.getElementById("UserLabel" + unit.user_name + unit.id).remove();
             clearInterval(positionInterval);
             clearTimeout(checkTimeOut);
+            checkTimeOut = null;
         }, 2000);
-    }, this);
+    }
 }

@@ -10,10 +10,10 @@ function Game(jsonData) {
 
 function LoadGame() {
 
-    //game.input.onDown.add(StartSelectableUnits, game);
-    //game.input.onDown.add(initMove, game);
-
+    game.input.onUp.add(initMove, this);
     game.input.onUp.add(StopSelectableUnits, this);
+    game.input.onUp.add(UnSelectUnit, this);
+
 
     game.camera.scale.x = 1.5;
     game.camera.scale.y = 1.5;

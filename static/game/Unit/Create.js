@@ -11,7 +11,6 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     let unitBox = game.unitLayer.create(x, y, boxType, 0);
     game.physics.enable(unitBox, Phaser.Physics.ARCADE);
     unitBox.anchor.setTo(0.5, 0.5);
-    unitBox.inputEnabled = true;
     if (!unit.body.mother_ship) {
         unitBox.scale.setTo(0.75);
     }
@@ -46,8 +45,12 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     body.anchor.setTo(0.5);               // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
+    body.input.priorityID = 1;
 
     mouseBodyOver(body, unit, unitBox, userID);
+    body.events.onInputDown.add(function () {
+        SelectOneUnit(unit, unitBox, userID);
+    }, this);
 
     bodyMask.anchor.setTo(0.5);          // устанавливаем центр спрайта
     bodyMask.tint = bColor;
