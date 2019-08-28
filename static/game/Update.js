@@ -31,6 +31,8 @@ function update() {
         }
 
         DebugCollision();
+
+        StartSelectableUnits();
     }
 }
 
