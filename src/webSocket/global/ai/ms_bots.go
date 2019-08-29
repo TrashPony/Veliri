@@ -22,7 +22,7 @@ import (
 	"time"
 )
 
-const RespBots = 3
+const RespBots = 0
 
 func InitAI() {
 	allMaps := maps.Maps.GetAllMap()

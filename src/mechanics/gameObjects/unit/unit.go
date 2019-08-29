@@ -33,6 +33,7 @@ type Unit struct {
 
 	//-- боевые характиристики живучести/нацигации
 	Speed           int  `json:"speed"`
+	MinSpeed        int  `json:"min_speed"`
 	Initiative      int  `json:"initiative"`
 	MaxHP           int  `json:"max_hp"`
 	Armor           int  `json:"armor"`
@@ -62,6 +63,29 @@ type Unit struct {
 	/* путь к файлу готовой покраске, пока не реализовано */
 	BodyTexture   string `json:"body_texture"`
 	WeaponTexture string `json:"weapon_texture"`
+
+	/* путь по которому идет юнит */
+	ActualPath   *[]PathUnit `json:"actual_path"`
+	CurrentSpeed float64     `json:"current_speed"`
+	HighGravity  bool        `json:"high_gravity"`
+	Afterburner  bool        `json:"afterburner"`
+
+	GlobalX int     `json:"global_x"` /* текущая координата на пиксельной сетке */
+	GlobalY int     `json:"global_y"` /* текущая координата на пиксельной сетке */
+	ToX     float64 `json:"to_x"`     /* куда юнит двигается */
+	ToY     float64 `json:"to_y"`     /* куда юнит двигается */
+}
+
+type PathUnit struct {
+	X           int `json:"x"`
+	Y           int `json:"y"`
+	Q           int `json:"q"`
+	R           int `json:"r"`
+	Rotate      int `json:"rotate"`
+	Millisecond int `json:"millisecond"`
+	Speed       float64
+	Traversed   bool `json:"traversed"`
+	Animate     bool `json:"animate"` // включить или нет анимацию движения гусениц
 }
 
 type ReloadAction struct {

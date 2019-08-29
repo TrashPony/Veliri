@@ -64,6 +64,11 @@ func (client *Player) GetUnit(q, r int) (gameUnit *unit.Unit, find bool) {
 	return
 }
 
+func (client *Player) GetUnitByID(id int) *unit.Unit {
+	gameUnit, find = client.units
+	return
+}
+
 func (client *Player) DelUnit(gameUnit *unit.Unit, delSquad bool) {
 	delete(client.units[strconv.Itoa(gameUnit.Q)], strconv.Itoa(gameUnit.R))
 

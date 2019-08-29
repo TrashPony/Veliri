@@ -14,6 +14,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 	"log"
@@ -24,9 +25,9 @@ var globalPipe = make(chan Message, 1)
 
 type Message struct {
 	// когда я забил х на эту структуру данных а теперь тут какое то адище
-	IDSender      int                             // переменная не для данных а для отсылки сообщений
-	IDUserSend    int                             // переменная не для данных а для отсылки сообщений
-	IDMap         int                             // переменная не для данных а для отсылки сообщений
+	IDSender      int // переменная не для данных а для отсылки сообщений
+	IDUserSend    int // переменная не для данных а для отсылки сообщений
+	IDMap         int // переменная не для данных а для отсылки сообщений
 	Event         string                          `json:"event"`
 	Map           *_map.Map                       `json:"map"`
 	Error         string                          `json:"error"`
@@ -39,8 +40,8 @@ type Message struct {
 	R             int                             `json:"r"`
 	ToX           float64                         `json:"to_x"`
 	ToY           float64                         `json:"to_y"`
-	PathUnit      squad.PathUnit                  `json:"path_unit"`
-	Path          []squad.PathUnit                `json:"path"`
+	PathUnit      unit.PathUnit                   `json:"path_unit"`
+	Path          []unit.PathUnit                 `json:"path"`
 	BaseID        int                             `json:"base_id"`
 	OtherUser     *player.ShortUserInfo           `json:"other_user"`
 	OtherUsers    []*player.ShortUserInfo         `json:"other_users"`
@@ -77,6 +78,7 @@ type Message struct {
 	MapID         int                             `json:"map_id"`
 	Missions      map[string]*mission.Mission     `json:"missions"`
 	MissionUUID   string                          `json:"mission_uuid"`
+	Units         []unit.Unit                     `json:"units"`
 }
 
 type Cloud struct {

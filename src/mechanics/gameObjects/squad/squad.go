@@ -15,16 +15,8 @@ type Squad struct {
 	InGame          bool                 `json:"in_game"`
 	Q               int                  `json:"q"`
 	R               int                  `json:"r"`
-	GlobalX         int                  `json:"global_x"` /* вычасляема координата на пиксельной сетке */
-	GlobalY         int                  `json:"global_y"` /* вычасляема координата на пиксельной сетке */
-	ToX             float64              `json:"to_x"`     /* куда отряд двигается */
-	ToY             float64              `json:"to_y"`     /* куда отряд двигается */
 	MapID           int                  `json:"map_id"`
 	BaseID          int                  `json:"base_id"` /* если отряд не у игрока то он храниться на этой базе */
-	ActualPath      *[]PathUnit          `json:"actual_path"`
-	CurrentSpeed    float64              `json:"current_speed"`
-	HighGravity     bool                 `json:"high_gravity"`
-	Afterburner     bool                 `json:"afterburner"`
 	Evacuation      bool                 `json:"evacuation"`
 	InSky           bool                 `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 	MoveChecker     bool                 `json:"move_checker"`
@@ -35,22 +27,24 @@ type Squad struct {
 
 // TODO concurrent map read and map write Inventory
 
-type PathUnit struct {
-	X           int `json:"x"`
-	Y           int `json:"y"`
-	Q           int `json:"q"`
-	R           int `json:"r"`
-	Rotate      int `json:"rotate"`
-	Millisecond int `json:"millisecond"`
-	Speed       float64
-	Traversed   bool `json:"traversed"`
-	Animate     bool `json:"animate"` // включить или нет анимацию движения гусениц
-}
-
 func (s *Squad) UpdateLock() {
 	s.updateDB.Lock()
 }
 
 func (s *Squad) UpdateUnlock() {
 	s.updateDB.Unlock()
+}
+
+func (s *Squad) GetUnitByID(id int) *unit.Unit {
+	if s.MatherShip.ID == id {
+		return s.MatherShip
+	}
+
+	for _, unitSlot := range s.MatherShip.Units {
+		if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.ID == id {
+			return unitSlot.Unit
+		}
+	}
+
+	return nil
 }

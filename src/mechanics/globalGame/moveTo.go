@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/getlantern/deepcopy"
 	"math"
 )
@@ -15,35 +15,36 @@ const HexagonWidth = 50
 const VerticalOffset = HexagonHeight * 3 / 4
 const HorizontalOffset = HexagonWidth
 
-func MoveSquad(user *player.Player, ToX, ToY float64, mp *_map.Map) ([]squad.PathUnit, error) {
-	startX := float64(user.GetSquad().GlobalX)
-	startY := float64(user.GetSquad().GlobalY)
-	rotate := user.GetSquad().MatherShip.Rotate
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
 
-	maxSpeed := float64(user.GetSquad().MatherShip.Speed * 3)
-	minSpeed := float64(user.GetSquad().MatherShip.Speed)
-	speed := float64(user.GetSquad().MatherShip.Speed)
+	startX := float64(moveUnit.GlobalX)
+	startY := float64(moveUnit.GlobalY)
+	rotate := moveUnit.Rotate
+
+	maxSpeed := float64(moveUnit.Speed)
+	minSpeed := float64(moveUnit.MinSpeed)
+	startSpeed := float64(moveUnit.MinSpeed)
 
 	// если текущая скорость выше стартовой то берем ее
-	if float64(user.GetSquad().MatherShip.Speed) < user.GetSquad().CurrentSpeed {
-		speed = user.GetSquad().CurrentSpeed
+	if float64(moveUnit.MinSpeed) < moveUnit.CurrentSpeed {
+		startSpeed = moveUnit.CurrentSpeed
 	}
 
 	var fakeThoriumSlots map[int]*detail.ThoriumSlot
 
 	// копируем что бы не произошло вычетание топлива на расчетах
-	err := deepcopy.Copy(&fakeThoriumSlots, &user.GetSquad().MatherShip.Body.ThoriumSlots)
+	err := deepcopy.Copy(&fakeThoriumSlots, &moveUnit.Body.ThoriumSlots)
 	if err != nil || len(fakeThoriumSlots) == 0 {
 		println(err.Error())
 		return nil, err
 	}
 
-	if user.GetSquad().Afterburner { // если форсаж то х2 скорости
+	if moveUnit.Afterburner { // если форсаж то х2 скорости (доступно только МС)
 		maxSpeed = maxSpeed * 2
 	}
 
-	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, speed, ToX, ToY, rotate, mp, false,
-		fakeThoriumSlots, user.GetSquad().Afterburner, user.GetSquad().HighGravity, user.GetSquad().MatherShip.Body)
+	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, mp, false,
+		fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity, moveUnit.Body)
 
 	return path, err
 }

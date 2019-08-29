@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/gorilla/websocket"
 	"math"
@@ -15,47 +16,56 @@ import (
 func Move(ws *websocket.Conn, msg Message) {
 	user := globalGame.Clients.GetByWs(ws)
 
-	if user != nil && user.GetSquad() != nil {
-		// обнуляем маршрут что бы игрок больше не двигался
-		stopMove(user, false)
+	if user != nil && user.GetSquad() != nil && msg.Units != nil {
+		for _, moveUnit := range msg.Units {
+			userMoveUnit := user.GetSquad().GetUnitByID(moveUnit.ID)
 
-		mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
-		if find && user.InBaseID == 0 && !user.GetSquad().Evacuation {
+			if userMoveUnit != nil {
 
-			for user.GetSquad().MoveChecker {
-				time.Sleep(10 * time.Millisecond) // без этого будет блокировка
-				// Ожидаем пока не завершится текущая клетка хода
-				// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
-				// менятся и когда начнется движение то отряд телепортирует обратно
+				// обнуляем маршрут что бы игрок больше не двигался
+				stopMove(userMoveUnit, false)
+
+				mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
+				if find && user.InBaseID == 0 && !user.GetSquad().Evacuation {
+
+					for user.GetSquad().MoveChecker {
+						time.Sleep(10 * time.Millisecond) // без этого будет блокировка
+						// Ожидаем пока не завершится текущая клетка хода
+						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
+						// менятся и когда начнется движение то отряд телепортирует обратно
+					}
+
+					// todo переделать мове метод
+					// todo если ходит сразу много юнитов изменять ToX и ToY так что бы они занимали центры гейсов
+					path, err := globalGame.MoveUnit(userMoveUnit, msg.ToX, msg.ToY, mp)
+					userMoveUnit.ActualPath = &path
+
+					// todo паника когда игрок умер но его цикл движения не прекратился, из за чего происходят проверки тела которого уже нет
+					go MoveUserMS(ws, msg, user, &path)
+
+					if len(path) > 1 {
+						userMoveUnit.ToX = float64(path[len(path)-1].X)
+						userMoveUnit.ToY = float64(path[len(path)-1].Y)
+					} else {
+						userMoveUnit.ToX = float64(userMoveUnit.GlobalX)
+						userMoveUnit.ToY = float64(userMoveUnit.GlobalY)
+					}
+
+					if err != nil && len(path) == 0 {
+						go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
+					}
+					go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
+				}
 			}
-
-			path, err := globalGame.MoveSquad(user, msg.ToX, msg.ToY, mp)
-			user.GetSquad().ActualPath = &path
-
-			// todo паника когда игрок умер но его цикл движения не прекратился, из за чего происходят проверки тела которого уже нет
-			go MoveUserMS(ws, msg, user, &path)
-
-			if len(path) > 1 {
-				user.GetSquad().ToX = float64(path[len(path)-1].X)
-				user.GetSquad().ToY = float64(path[len(path)-1].Y)
-			} else {
-				user.GetSquad().ToX = float64(user.GetSquad().GlobalX)
-				user.GetSquad().ToY = float64(user.GetSquad().GlobalY)
-			}
-
-			if err != nil && len(path) == 0 {
-				go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
-			}
-			go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 		}
 	}
 }
 
-func stopMove(user *player.Player, resetSpeed bool) {
-	if user.GetSquad() != nil {
-		user.GetSquad().ActualPath = nil // останавливаем прошлое движение
+func stopMove(userUnit *unit.Unit, resetSpeed bool) {
+	if userUnit != nil {
+		userUnit.ActualPath = nil // останавливаем прошлое движение
 		if resetSpeed {
-			user.GetSquad().CurrentSpeed = 0
+			userUnit.CurrentSpeed = 0
 		}
 	}
 }
