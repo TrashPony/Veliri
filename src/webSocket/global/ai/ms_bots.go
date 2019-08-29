@@ -111,12 +111,12 @@ func outBase(bot *player.Player, base *base.Base) {
 
 	x, y := globalGame.GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 
-	bot.GetSquad().Q = respCoordinate.Q
-	bot.GetSquad().R = respCoordinate.R
+	bot.GetSquad().MatherShip.Q = respCoordinate.Q
+	bot.GetSquad().MatherShip.R = respCoordinate.R
 	bot.GetSquad().MatherShip.Rotate = respCoordinate.RespRotate
 	bot.GetSquad().MapID = base.MapID
-	bot.GetSquad().GlobalX = x
-	bot.GetSquad().GlobalY = y
+	bot.GetSquad().MatherShip.X = x
+	bot.GetSquad().MatherShip.Y = y
 	bot.GetSquad().Evacuation = false
 
 	// если мы зашли на базу сбрасываем путь бота в ноль
@@ -125,7 +125,7 @@ func outBase(bot *player.Player, base *base.Base) {
 
 	bot.InBaseID = 0
 	//оповещаем игроков что бот в игре
-	wsGlobal.LoadGame(bot.GetFakeWS(), wsGlobal.Message{})
+	wsGlobal.LoadGame(bot, wsGlobal.Message{})
 }
 
 func Transport(bot *player.Player) {
@@ -135,7 +135,7 @@ func Transport(bot *player.Player) {
 	go func() {
 		for {
 			if bot != nil && bot.GetSquad() != nil {
-				oldX, oldY := bot.GetSquad().GlobalX, bot.GetSquad().GlobalY
+				oldX, oldY := bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y
 				time.Sleep(15 * time.Second)
 				// todo runtime error: invalid memory address or nil pointer dereference
 
@@ -143,7 +143,7 @@ func Transport(bot *player.Player) {
 					return
 				}
 
-				if oldX == bot.GetSquad().GlobalX && oldY == bot.GetSquad().GlobalY && bot.InBaseID == 0 {
+				if oldX == bot.GetSquad().MatherShip.X && oldY == bot.GetSquad().MatherShip.Y && bot.InBaseID == 0 {
 					extraExit = true
 				}
 			} else {
@@ -174,7 +174,7 @@ func Transport(bot *player.Player) {
 			outBase(bot, botBase)
 		}
 
-		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().Evacuation && bot.GetSquad().ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
+		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().Evacuation && bot.GetSquad().MatherShip.ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
 
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
 			path := getPathAI(bot, mp)
@@ -183,10 +183,10 @@ func Transport(bot *player.Player) {
 
 			for i := 0; path != nil && i < len(path); i++ {
 				if exit {
-					bot.GetSquad().ActualPath = nil
+					bot.GetSquad().MatherShip.ActualPath = nil
 					break
 				}
-				wsGlobal.Move(bot.GetFakeWS(), wsGlobal.Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
+				wsGlobal.Move(bot, wsGlobal.Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
 				for {
 					time.Sleep(100 * time.Millisecond)
 
@@ -195,12 +195,12 @@ func Transport(bot *player.Player) {
 						exit = true
 						// если у бота есть цель то она выросла на 1 пройденный сектор)
 						bot.CurrentPoint++
-						bot.GetSquad().ActualPath = nil
+						bot.GetSquad().MatherShip.ActualPath = nil
 						break
 					}
 
 					if !bot.GetSquad().MoveChecker {
-						bot.GetSquad().ActualPath = nil
+						bot.GetSquad().MatherShip.ActualPath = nil
 						break
 					}
 				}
@@ -209,7 +209,7 @@ func Transport(bot *player.Player) {
 
 		if extraExit {
 			extraExit = false
-			bot.GetSquad().ActualPath = nil
+			bot.GetSquad().MatherShip.ActualPath = nil
 			println("бот завис 2")
 			break
 		}
@@ -280,7 +280,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 	// проверка на то что х, у достижимы
 	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true)
 	if possible {
-		path := aiSearchPath(toX, toY, bot.GetSquad().GlobalX, bot.GetSquad().GlobalY, 50, bot, mp)
+		path := aiSearchPath(toX, toY, bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y, 50, bot, mp)
 		return path
 	} else {
 		println("достижимость: ", possible, bot.GetSquad().MapID, toX, toY)

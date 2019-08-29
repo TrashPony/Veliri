@@ -58,7 +58,7 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 
 	for ws, user := range users {
 		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
-			dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+			dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
 				go softTransition(user, x, y, coor, ws)
 			}
@@ -77,10 +77,10 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, 
 
 	for {
 		time.Sleep(100 * time.Millisecond)
-		dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 		if dist < 120 && countTime > 50 {
 			if coor.Handler == "base" {
-				go wsGlobal.IntoToBase(user, coor.ToBaseID, ws)
+				go wsGlobal.IntoToBase(user, coor.ToBaseID)
 			}
 			if coor.Handler == "sector" {
 				go wsGlobal.ChangeSector(user, coor.ToMapID, ws, coor)

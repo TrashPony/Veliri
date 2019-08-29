@@ -1,9 +1,11 @@
 package unit
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/getlantern/deepcopy"
 )
 
 type Unit struct {
@@ -70,10 +72,37 @@ type Unit struct {
 	HighGravity  bool        `json:"high_gravity"`
 	Afterburner  bool        `json:"afterburner"`
 
-	GlobalX int     `json:"global_x"` /* текущая координата на пиксельной сетке */
-	GlobalY int     `json:"global_y"` /* текущая координата на пиксельной сетке */
-	ToX     float64 `json:"to_x"`     /* куда юнит двигается */
-	ToY     float64 `json:"to_y"`     /* куда юнит двигается */
+	X   int     `json:"x"`    /* текущая координата на пиксельной сетке */
+	Y   int     `json:"y"`    /* текущая координата на пиксельной сетке */
+	ToX float64 `json:"to_x"` /* куда юнит двигается */
+	ToY float64 `json:"to_y"` /* куда юнит двигается */
+}
+
+type ShortUnitInfo struct {
+	ID int `json:"id"`
+	/* позиция */
+	Rotate int `json:"rotate"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Q      int `json:"q"`
+	R      int `json:"r"`
+
+	/*видимый фит*/
+	Body *detail.Body `json:"body"`
+
+	/* покраска юнитов */
+	BodyColor1   string `json:"body_color_1"`
+	BodyColor2   string `json:"body_color_2"`
+	WeaponColor1 string `json:"weapon_color_1"`
+	WeaponColor2 string `json:"weapon_color_2"`
+
+	/* путь к файлу готовой покраске, пока не реализовано */
+	BodyTexture   string `json:"body_texture"`
+	WeaponTexture string `json:"weapon_texture"`
+
+	/*ид владелдьца*/
+	OwnerID int    `json:"owner_id"`
+	Owner   string `json:"owner"`
 }
 
 type PathUnit struct {
@@ -96,6 +125,67 @@ type ReloadAction struct {
 type Slot struct {
 	Unit       *Unit `json:"unit"`
 	NumberSlot int   `json:"number_slot"`
+}
+
+func (unit *Unit) GetShortInfo() *ShortUnitInfo {
+	if unit == nil || unit.Body == nil {
+		return nil
+	}
+
+	var hostile ShortUnitInfo
+
+	hostile.X = unit.X
+	hostile.Y = unit.Y
+	hostile.Q = unit.Q
+	hostile.R = unit.R
+	hostile.Rotate = unit.Rotate
+
+	hostile.Body, _ = gameTypes.Bodies.GetByID(unit.Body.ID)
+	hostile.OwnerID = unit.OwnerID
+	hostile.Owner = unit.Owner
+	hostile.ID = unit.ID
+
+	hostile.BodyColor1 = unit.BodyColor1
+	hostile.BodyColor2 = unit.BodyColor2
+	hostile.BodyTexture = unit.BodyTexture
+
+	hostile.WeaponColor1 = unit.WeaponColor1
+	hostile.WeaponColor2 = unit.WeaponColor2
+	hostile.WeaponTexture = unit.WeaponTexture
+
+	if unit.GetWeaponSlot() != nil && unit.GetWeaponSlot().Weapon != nil {
+		for _, weaponSlot := range hostile.Body.Weapons {
+			if weaponSlot != nil {
+				weaponSlot.Weapon, _ = gameTypes.Weapons.GetByID(unit.GetWeaponSlot().Weapon.ID)
+			}
+		}
+	}
+
+	copyEquips := func(realEquips *map[int]*detail.BodyEquipSlot, copyEquips *map[int]*detail.BodyEquipSlot) {
+		for key, equipSlot := range *realEquips {
+
+			var fakeSlot detail.BodyEquipSlot
+			err := deepcopy.Copy(&fakeSlot, equipSlot)
+			if err != nil {
+				println(err.Error())
+			}
+
+			fakeSlot.HP = 0
+			fakeSlot.Used = false
+			fakeSlot.StepsForReload = 0
+			fakeSlot.Target = nil
+
+			(*copyEquips)[key] = &fakeSlot
+		}
+	}
+
+	copyEquips(&unit.Body.EquippingI, &hostile.Body.EquippingI)
+	copyEquips(&unit.Body.EquippingII, &hostile.Body.EquippingII)
+	copyEquips(&unit.Body.EquippingIII, &hostile.Body.EquippingIII)
+	copyEquips(&unit.Body.EquippingIV, &hostile.Body.EquippingIV)
+	copyEquips(&unit.Body.EquippingV, &hostile.Body.EquippingV)
+
+	return &hostile
 }
 
 func (unit *Unit) GetID() int {

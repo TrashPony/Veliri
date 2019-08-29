@@ -1,58 +1,66 @@
 // движение на глобальной карте
+// function MoveTo(jsonData) {
+//
+//     if (!game) return;
+//
+//     CreateMiniMap();
+//
+//     //if (game.squad && Number(jsonData.other_user.squad_id) === game.squad.id) {
+//         game.floorSelectLineLayer.forEach(function (sprite) {
+//             sprite.visible = false;
+//         });
+//
+//         let thoriumEfficiency = document.getElementById("speedBarEfficiency");
+//         thoriumEfficiency.innerHTML = (jsonData.path_unit.Speed * 10).toFixed(0);
+//
+//         game.squad.q = jsonData.path_unit.q;
+//         game.squad.r = jsonData.path_unit.r;
+//
+//         game.squad.speed = jsonData.path_unit.Speed * 10;
+//         game.squad.animateSpeed = jsonData.path_unit.animate;
+//
+//         game.add.tween(game.squad.sprite).to({
+//                 x: jsonData.path_unit.x,
+//                 y: jsonData.path_unit.y
+//             }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
+//         );
+//
+//         SetAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
+//         game.squad.mather_ship.rotate = jsonData.path_unit.rotate;
+//     // } else {
+//     //     MoveOther(jsonData)
+//     // }
+// }
+
+// движение на глобальной карте
 function MoveTo(jsonData) {
 
     if (!game) return;
 
-    CreateMiniMap();
+    let unit = game.units[jsonData.short_unit.id];
+    let path = jsonData.path_unit;
 
-    if (game.squad && Number(jsonData.other_user.squad_id) === game.squad.id) {
-        game.floorSelectLineLayer.forEach(function (sprite) {
-            sprite.visible = false;
-        });
+    if (unit) {
 
-        let thoriumEfficiency = document.getElementById("speedBarEfficiency");
-        thoriumEfficiency.innerHTML = (jsonData.path_unit.Speed * 10).toFixed(0);
+        if (unit.owner === game.user_name && unit.body.mother_ship) {
+            let thoriumEfficiency = document.getElementById("speedBarEfficiency");
+            thoriumEfficiency.innerHTML = (path.Speed).toFixed(0);
+        }
 
-        game.squad.q = jsonData.path_unit.q;
-        game.squad.r = jsonData.path_unit.r;
-
-        game.squad.speed = jsonData.path_unit.Speed * 10;
-        game.squad.animateSpeed = jsonData.path_unit.animate;
-
-        game.add.tween(game.squad.sprite).to({
-                x: jsonData.path_unit.x,
-                y: jsonData.path_unit.y
-            }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
+        game.add.tween(unit.sprite).to({
+                x: path.x,
+                y: path.y
+            }, path.millisecond, Phaser.Easing.Linear.None, true, 0
         );
 
-        SetAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
-        game.squad.mather_ship.rotate = jsonData.path_unit.rotate;
+        unit.speed = path.Speed;
+        unit.animateSpeed = path.animate;
+        unit.rotate = path.rotate;
+
+        SetAngle(unit, path.rotate, path.millisecond, true);
+
     } else {
-        MoveOther(jsonData)
-    }
-}
-
-// движение на глобальной карте
-function MoveOther(jsonData) {
-    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-        if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
-
-            if (!game.otherUsers[i].sprite) {
-                CreateOtherUser(game.otherUsers[i]);
-            } else {
-                game.add.tween(game.otherUsers[i].sprite).to({
-                        x: jsonData.path_unit.x,
-                        y: jsonData.path_unit.y
-                    }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
-                );
-
-                game.otherUsers[i].speed = jsonData.path_unit.Speed * 10;
-                game.otherUsers[i].animateSpeed = jsonData.path_unit.animate;
-
-                SetAngle(game.otherUsers[i], jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
-                game.otherUsers[i].rotate = jsonData.path_unit.rotate;
-            }
-        }
+        // todo создаем юнита
     }
 }
 

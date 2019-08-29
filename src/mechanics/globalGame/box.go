@@ -26,8 +26,8 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
 	stopY := float64(65) * math.Sin(radRotate)
 
-	forecastX := float64(user.GetSquad().GlobalX) - stopX // - т.к. нам нужна точка позади
-	forecastY := float64(user.GetSquad().GlobalY) - stopY
+	forecastX := float64(user.GetSquad().MatherShip.X) - stopX // - т.к. нам нужна точка позади
+	forecastY := float64(user.GetSquad().MatherShip.Y) - stopY
 
 	hexCoordinate := GetQRfromXY(int(forecastX), int(forecastY), mp)
 
@@ -78,8 +78,8 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
 	stopY := float64(65) * math.Sin(radRotate)
 
-	forecastX := float64(user.GetSquad().GlobalX) - stopX // - т.к. нам нужна точка позади
-	forecastY := float64(user.GetSquad().GlobalY) - stopY
+	forecastX := float64(user.GetSquad().MatherShip.X) - stopX // - т.к. нам нужна точка позади
+	forecastY := float64(user.GetSquad().MatherShip.Y) - stopY
 
 	hexCoordinate := GetQRfromXY(int(forecastX), int(forecastY), mp)
 
@@ -143,7 +143,7 @@ func checkUseBox(user *player.Player, boxID int) (error, *boxInMap.Box, *sync.Mu
 	if mapBox != nil {
 		boxX, boxY := GetXYCenterHex(mapBox.Q, mapBox.R)
 
-		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, boxX, boxY)
+		dist := GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
 		if dist < 150 {
 			return nil, mapBox, mx
 		} else {

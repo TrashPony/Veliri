@@ -1,24 +1,25 @@
 package global
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 )
 
-func afterburnerToggle(ws *websocket.Conn, msg Message) {
-	user := globalGame.Clients.GetByWs(ws)
-	if user != nil {
+func afterburnerToggle(user *player.Player, msg Message) {
+	// перегрузка доступна только у мс
 
-		if user.GetSquad().Afterburner {
-			user.GetSquad().Afterburner = false
-		} else {
-			user.GetSquad().Afterburner = true
-		}
-
-		msg.ToX = user.GetSquad().ToX
-		msg.ToY = user.GetSquad().ToY
-
-		Move(ws, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-		go SendMessage(Message{Event: "AfterburnerToggle", Afterburner: user.GetSquad().Afterburner, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+	if user.GetSquad().MatherShip.Afterburner {
+		user.GetSquad().MatherShip.Afterburner = false
+	} else {
+		user.GetSquad().MatherShip.Afterburner = true
 	}
+
+	msg.ToX = user.GetSquad().MatherShip.ToX
+	msg.ToY = user.GetSquad().MatherShip.ToY
+
+	Move(user, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
+	go SendMessage(Message{
+		Event:       "AfterburnerToggle",
+		Afterburner: user.GetSquad().MatherShip.Afterburner,
+		IDUserSend:  user.GetID(),
+		IDMap:       user.GetSquad().MapID})
 }

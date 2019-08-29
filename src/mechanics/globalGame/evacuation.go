@@ -6,11 +6,11 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"sync"
 )
 
-func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]squad.PathUnit, int, *base.Transport, error) {
+func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]unit.PathUnit, int, *base.Transport, error) {
 
 	mapBases := bases.Bases.GetBasesByMap(mp.Id)
 	minDist := 0.0
@@ -23,7 +23,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]squad.PathUnit, int,
 	for _, mapBase := range mapBases {
 
 		x, y := GetXYCenterHex(mapBase.Q, mapBase.R)
-		dist := GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, x, y)
+		dist := GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 		transport := mapBase.GetFreeTransport()
 
 		if ((dist < minDist && int(dist) < mapBase.GravityRadius) ||
@@ -48,7 +48,7 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]squad.PathUnit, int,
 			}
 
 			_, path := MoveTo(float64(startX), float64(startY), 15, 15, 15,
-				float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 0, mp,
+				float64(user.GetSquad().MatherShip.X), float64(user.GetSquad().MatherShip.Y), 0, mp,
 				true, nil, false, false, nil)
 
 			return path, evacuationBase.ID, transport, nil
@@ -60,11 +60,11 @@ func LaunchEvacuation(user *player.Player, mp *_map.Map) ([]squad.PathUnit, int,
 	}
 }
 
-func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []squad.PathUnit {
+func ReturnEvacuation(user *player.Player, mp *_map.Map, baseID int) []unit.PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
-	_, path := MoveTo(float64(user.GetSquad().GlobalX), float64(user.GetSquad().GlobalY), 250, 15, 15,
+	_, path := MoveTo(float64(user.GetSquad().MatherShip.X), float64(user.GetSquad().MatherShip.Y), 250, 15, 15,
 		float64(endX), float64(endY), 0, mp, true, nil, false, false, nil)
 	return path
 }

@@ -30,13 +30,13 @@ func launchAnomaly(anomaly *_map.Anomalies, mp *_map.Map) {
 func mortalityAnomaly(anomaly *_map.Anomalies, mp *_map.Map) {
 	for {
 		users, rLock := globalGame.Clients.GetAll()
-		for ws, user := range users {
+		for _, user := range users {
 			if user.GetSquad() != nil && user.GetSquad().MapID == mp.Id {
-				dist := globalGame.GetBetweenDist(user.GetSquad().GlobalX, user.GetSquad().GlobalY, anomaly.X, anomaly.Y)
+				dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, anomaly.X, anomaly.Y)
 
 				if int(dist) < anomaly.Radius {
 					// чем ближе к центру тем полнее урон
-					wsGlobal.SquadDamage(user, int(float64(anomaly.Power)*((float64(anomaly.Radius)-dist)/float64(anomaly.Radius))), ws)
+					wsGlobal.SquadDamage(user, int(float64(anomaly.Power)*((float64(anomaly.Radius)-dist)/float64(anomaly.Radius))), user.GetSquad().MatherShip)
 
 					// отправка сообщения что "опасность! вы находитесь рядом с аномалией!"
 					go wsGlobal.SendMessage(wsGlobal.Message{Event: "AnomalyCatch", IDUserSend: user.GetID(), Bot: user.Bot, Anomaly: anomaly})

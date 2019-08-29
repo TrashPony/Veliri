@@ -12,26 +12,26 @@ function update() {
     }
 
     if (game && game.typeService === "global") {
-        if (game.squad && game.squad.toBox && game.squad.toBox.to) {
-            let dist = game.physics.arcade.distanceToXY(game.squad.sprite, game.squad.toBox.x, game.squad.toBox.y);
-            if (dist < 150) {
-                global.send(JSON.stringify({
-                    event: "openBox",
-                    box_id: game.squad.toBox.boxID
-                }));
-            }
-        }
-
-        AnimateMiningLaser();
-        AnimateDigger();
-
-        AnimationMove(game.squad);
-        for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-            AnimationMove(game.otherUsers[i]);
-        }
-
-        DebugCollision();
-
+        // if (game.squad && game.squad.toBox && game.squad.toBox.to) {
+        //     let dist = game.physics.arcade.distanceToXY(game.squad.sprite, game.squad.toBox.x, game.squad.toBox.y);
+        //     if (dist < 150) {
+        //         global.send(JSON.stringify({
+        //             event: "openBox",
+        //             box_id: game.squad.toBox.boxID
+        //         }));
+        //     }
+        // }
+        //
+        // AnimateMiningLaser();
+        // AnimateDigger();
+        //
+        // AnimationMove(game.squad);
+        // for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
+        //     AnimationMove(game.otherUsers[i]);
+        // }
+        //
+        // DebugCollision();
+        //
         StartSelectableUnits();
     }
 }

@@ -73,22 +73,25 @@ function CheckSelectUnits() {
     // каждое выделение снимает выделение с других, но если юнит уже был выделен то снимать не надо
     selectUnits = [];
 
-    // todo проверка всех своих юнитов
-    if (CheckBoxInBox(
-        rectOption.x,
-        rectOption.y,
-        rectOption.x + -1 * rectOption.width,
-        rectOption.y + -1 * rectOption.height,
+    for (let i in game.units) {
+        if (game.units.hasOwnProperty(i)) {
+            if (CheckBoxInBox(
+                rectOption.x,
+                rectOption.y,
+                rectOption.x + -1 * rectOption.width,
+                rectOption.y + -1 * rectOption.height,
 
-        game.squad.sprite.x - (game.squad.sprite.width / 8),
-        game.squad.sprite.y - (game.squad.sprite.height / 8),
-        game.squad.sprite.x + (game.squad.sprite.width / 8),
-        game.squad.sprite.y + (game.squad.sprite.height / 8),
-    )) {
-        unitInfo(game.squad, game.squad.sprite, Data.squad.user_id);
-        selectUnits.push(game.squad)
-    } else {
-        unitRemoveInfo(game.squad, game.squad.sprite)
+                game.units[i].sprite.x - (game.units[i].sprite.width / 8),
+                game.units[i].sprite.y - (game.units[i].sprite.height / 8),
+                game.units[i].sprite.x + (game.units[i].sprite.width / 8),
+                game.units[i].sprite.y + (game.units[i].sprite.height / 8),
+            )) {
+                unitInfo(game.units[i], game.units[i].sprite, game.units[i].owner_id);
+                selectUnits.push(game.units[i])
+            } else {
+                unitRemoveInfo(game.units[i], game.units[i].sprite)
+            }
+        }
     }
 }
 
@@ -114,18 +117,22 @@ function UnSelectUnit(pointer) {
 function initMove(pointer) {
     if (game.input.activePointer.leftButton.isDown && pointer.duration <= 200) {
 
-        if (game.squad.toBox) {
-            game.squad.toBox.to = false
-        }
+        // if (game.squad.toBox) {
+        //     game.squad.toBox.to = false
+        // }
 
         if (!selectOneUnit) {
+            let unitsID = [];
+            for (let i in selectUnits) {
+                unitsID.push(selectUnits[i].id);
+            }
             console.log(selectUnits)
-            // global.send(JSON.stringify({
-            //     event: "MoveTo",
-            //     to_x: e.worldX / game.camera.scale.x,
-            //     to_y: e.worldY / game.camera.scale.y,
-            //     //units: selectUnits,
-            // }));
+            global.send(JSON.stringify({
+                event: "MoveTo",
+                to_x: (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x,
+                to_y: (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y,
+                units_id: unitsID,
+            }));
         } else {
             selectOneUnit = false;
         }

@@ -23,12 +23,12 @@ function unitInfo(unit, unitBox, userID) {
     clearTimeout(checkTimeOut);
     checkTimeOut = null;
 
-    if (document.getElementById("UserLabel" + unit.user_name + unit.id)) {
+    if (document.getElementById("UserLabel" + unit.owner + unit.id)) {
         return;
     }
 
     let userLabel = document.createElement('div');
-    userLabel.id = "UserLabel" + unit.user_name + unit.id;
+    userLabel.id = "UserLabel" + unit.owner + unit.id;
     userLabel.className = "UserLabel";
     document.body.appendChild(userLabel);
 
@@ -36,8 +36,8 @@ function unitInfo(unit, unitBox, userID) {
             <div>
                 <div>
                     <div class="logo" id="userAvatar${userID}${unit.id}" ></div>
-                    <h4>${unit.user_name}</h4>
-                    <div class="detailUser" onmousedown="informationFunc('${unit.user_name}', '${unit.user_id}')">i</div>
+                    <h4>${unit.owner}</h4>
+                    <div class="detailUser" onmousedown="informationFunc('${unit.owner}', '${unit.owner_id}')">i</div>
                 </div>
             </div>
         `;
@@ -60,7 +60,7 @@ function unitRemoveInfo(unit, unitBox) {
 
     if (!checkTimeOut) {
         checkTimeOut = setTimeout(function () {
-            if (document.getElementById("UserLabel" + unit.user_name + unit.id)) document.getElementById("UserLabel" + unit.user_name + unit.id).remove();
+            if (document.getElementById("UserLabel" + unit.owner + unit.id)) document.getElementById("UserLabel" + unit.owner + unit.id).remove();
             clearInterval(positionInterval);
             clearTimeout(checkTimeOut);
             checkTimeOut = null;

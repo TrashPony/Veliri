@@ -5,7 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
 
@@ -58,7 +58,7 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 	go FlyTransport(transport, transportBase, mp, path)
 }
 
-func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.Map, path []squad.PathUnit) {
+func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.Map, path []unit.PathUnit) {
 	for _, pathUnit := range path {
 		time.Sleep(400 * time.Millisecond)
 

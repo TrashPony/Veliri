@@ -44,31 +44,30 @@ function CreateMiniMap() {
             }
         }
 
-        for (let q in game.units) {
-            for (let r in game.units[q]) {
-                if (game.units[q][r].sprite) {
+        for (let id in game.units) {
+            if (game.units[id].sprite) {
+                if (game.units[id].owner === game.user_name) {
+                    ctx.fillStyle = "#19ff00";
 
-                    if (game.units[q][r].owner === game.user.name) {
-                        ctx.fillStyle = "#19ff00";
-                    } else {
-                        // TODO союзные юниты  ctx.fillStyle = "#00F7FF"
-                        ctx.fillStyle = "#ff000e";
+                    if (game.units[id].moveTo) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#00fcff";
+                        ctx.moveTo(game.units[id].sprite.x / kX + hexagonWidth / 2, game.units[id].sprite.y / kY + hexagonHeight / 2);
+                        ctx.lineTo(game.units[id].moveTo.x / kX, game.units[id].moveTo.y / kY);
+                        ctx.stroke();
                     }
 
-                    ctx.fillRect(game.units[q][r].sprite.x / kX, game.units[q][r].sprite.y / kY, hexagonWidth, hexagonHeight);
+                } else {
+                    // TODO союзные юниты  ctx.fillStyle = "#00F7FF"
+                    ctx.fillStyle = "#ff000e";
                 }
+
+                ctx.fillRect(game.units[id].sprite.x / kX, game.units[id].sprite.y / kY, hexagonWidth, hexagonHeight);
             }
         }
 
+        // todo
         if (game.squad) {
-            if (game.squad.moveTo) {
-                ctx.beginPath();
-                ctx.strokeStyle = "#00fcff";
-                ctx.moveTo(game.squad.sprite.x / kX + hexagonWidth / 2, game.squad.sprite.y / kY + hexagonHeight / 2);
-                ctx.lineTo(game.squad.moveTo.x / kX, game.squad.moveTo.y / kY);
-                ctx.stroke();
-            }
-
             if (game.squad.missionMove) {
                 ctx.beginPath();
                 ctx.strokeStyle = "#00ff03";

@@ -12,7 +12,7 @@ import (
 
 func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coordinate) {
 	if coor.Handler == "base" {
-		IntoToBase(user, coor.ToBaseID, ws)
+		IntoToBase(user, coor.ToBaseID)
 	}
 
 	if coor.Handler == "sector" {
@@ -41,36 +41,36 @@ func ChangeSector(user *player.Player, mapID int, ws *websocket.Conn, coor *coor
 		time.Sleep(300 * time.Millisecond)
 	}
 
-	stopMove(user, true)
+	stopMove(user.GetSquad().MatherShip, true)
 
 	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
-	DisconnectUser(user, ws, true) // если только сообщение то можно не горутиной
+	DisconnectUser(user, true) // если только сообщение то можно не горутиной
 
 	user.GetSquad().MapID = mapID
-	user.GetSquad().Q = toPosition.Q
-	user.GetSquad().R = toPosition.R
+	user.GetSquad().MatherShip.Q = toPosition.Q
+	user.GetSquad().MatherShip.R = toPosition.R
 	user.GetSquad().MatherShip.Rotate = toPosition.RespRotate
 
-	user.GetSquad().GlobalX = 0
-	user.GetSquad().GlobalY = 0
+	user.GetSquad().MatherShip.X = 0
+	user.GetSquad().MatherShip.Y = 0
 
 	if user.Bot {
-		LoadGame(ws, Message{Event: "InitGame"})
+		LoadGame(user, Message{Event: "InitGame"})
 	}
 }
 
-func IntoToBase(user *player.Player, baseID int, ws *websocket.Conn) {
+func IntoToBase(user *player.Player, baseID int) {
 	if !user.Bot {
 		bases.UserIntoBase(user.GetID(), baseID)
 	}
 
 	go SendMessage(Message{Event: "IntoToBase", IDUserSend: user.GetID(), Bot: user.Bot})
-	go DisconnectUser(user, ws, true)
+	go DisconnectUser(user, true)
 
 	user.InBaseID = baseID
 
 	if user.GetSquad() != nil {
-		user.GetSquad().GlobalX = 0
-		user.GetSquad().GlobalY = 0
+		user.GetSquad().MatherShip.X = 0
+		user.GetSquad().MatherShip.Y = 0
 	}
 }

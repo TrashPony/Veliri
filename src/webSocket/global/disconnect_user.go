@@ -3,12 +3,11 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/gorilla/websocket"
 )
 
-func DisconnectUser(user *player.Player, ws *websocket.Conn, onlyMessage bool) {
+func DisconnectUser(user *player.Player, onlyMessage bool) {
 	if !onlyMessage {
-		globalGame.Clients.DelClientByWS(ws)
+		globalGame.Clients.DelClientByID(user.GetID())
 	}
 
 	if user != nil && user.GetSquad() != nil {

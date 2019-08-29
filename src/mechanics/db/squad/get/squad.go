@@ -15,7 +15,7 @@ import (
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, q, r, id_map, id_base FROM squads WHERE id_user=$1", userID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, id_map, id_base FROM squads WHERE id_user=$1", userID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,8 +26,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 	for rows.Next() {
 		var userSquad squad.Squad
 
-		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.Q,
-			&userSquad.R, &userSquad.MapID, &userSquad.BaseID)
+		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.MapID, &userSquad.BaseID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -39,6 +38,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 			userSquad.MatherShip.Units = make(map[int]*unit.Slot)
 
 			for _, slot := range userSquad.MatherShip.Body.EquippingIV {
+
 				unitSlot := unit.Slot{}
 				unitSlot.Unit = SquadUnits(userSquad.ID, slot.Number)
 				unitSlot.NumberSlot = slot.Number

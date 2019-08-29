@@ -4,7 +4,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -12,7 +11,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/getlantern/deepcopy"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -80,28 +78,15 @@ type Player struct {
 type ShortUserInfo struct {
 	// структура которая описываем минимальный набор данных для отображение и взаимодействия,
 	// что бы другие игроки не палили трюмы, фиты и дронов без спец оборудования
-	UserID    string       `json:"user_id"`
-	SquadID   string       `json:"squad_id"`
-	UserName  string       `json:"user_name"`
-	X         int          `json:"x"`
-	Y         int          `json:"y"`
-	Q         int          `json:"q"`
-	R         int          `json:"r"`
-	Rotate    int          `json:"rotate"`
-	Body      *detail.Body `json:"body"`
-	Biography string       `json:"biography"`
-	Title     string       `json:"title"`
-	Fraction  string       `json:"fraction"`
+	UserID   string `json:"user_id"`
+	SquadID  string `json:"squad_id"`
+	UserName string `json:"user_name"`
 
-	/* покраска юнитов */
-	BodyColor1   string `json:"body_color_1"`
-	BodyColor2   string `json:"body_color_2"`
-	WeaponColor1 string `json:"weapon_color_1"`
-	WeaponColor2 string `json:"weapon_color_2"`
+	Biography string `json:"biography"`
+	Title     string `json:"title"`
+	Fraction  string `json:"fraction"`
 
-	/* путь к файлу готовой покраске, пока не реализовано */
-	BodyTexture   string `json:"body_texture"`
-	WeaponTexture string `json:"weapon_texture"`
+	MotherShip *unit.ShortUnitInfo `json:"mother_ship"`
 }
 
 type Notify struct {
@@ -151,62 +136,15 @@ func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {
 		return &hostile
 	}
 
-	if client == nil || client.GetSquad() == nil || client.GetSquad().MatherShip == nil || client.GetSquad().MatherShip.Body == nil {
-		return nil
-	}
-
 	if client.Bot {
 		hostile.SquadID = client.UUID
 	} else {
 		hostile.SquadID = strconv.Itoa(client.GetSquad().ID)
 	}
 
-	hostile.X = client.GetSquad().GlobalX
-	hostile.Y = client.GetSquad().GlobalY
-	hostile.Q = client.GetSquad().Q
-	hostile.R = client.GetSquad().R
-	hostile.Rotate = client.GetSquad().MatherShip.Rotate
-	hostile.Body, _ = gameTypes.Bodies.GetByID(client.GetSquad().MatherShip.Body.ID)
-
-	hostile.BodyColor1 = client.GetSquad().MatherShip.BodyColor1
-	hostile.BodyColor2 = client.GetSquad().MatherShip.BodyColor2
-	hostile.BodyTexture = client.GetSquad().MatherShip.BodyTexture
-
-	hostile.WeaponColor1 = client.GetSquad().MatherShip.WeaponColor1
-	hostile.WeaponColor2 = client.GetSquad().MatherShip.WeaponColor2
-	hostile.WeaponTexture = client.GetSquad().MatherShip.WeaponTexture
-
-	if client.GetSquad().MatherShip.GetWeaponSlot() != nil && client.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
-		for _, weaponSlot := range hostile.Body.Weapons {
-			if weaponSlot != nil {
-				weaponSlot.Weapon, _ = gameTypes.Weapons.GetByID(client.GetSquad().MatherShip.GetWeaponSlot().Weapon.ID)
-			}
-		}
+	if client.GetSquad() != nil && client.GetSquad().MatherShip != nil {
+		hostile.MotherShip = client.GetSquad().MatherShip.GetShortInfo()
 	}
-
-	copyEquips := func(realEquips *map[int]*detail.BodyEquipSlot, copyEquips *map[int]*detail.BodyEquipSlot) {
-		for key, equipSlot := range *realEquips {
-
-			var fakeSlot detail.BodyEquipSlot
-			err := deepcopy.Copy(&fakeSlot, equipSlot)
-			if err != nil {
-				println(err.Error())
-			}
-
-			fakeSlot.HP = 0
-			fakeSlot.Used = false
-			fakeSlot.StepsForReload = 0
-			fakeSlot.Target = nil
-
-			(*copyEquips)[key] = &fakeSlot
-		}
-	}
-
-	copyEquips(&client.GetSquad().MatherShip.Body.EquippingI, &hostile.Body.EquippingI)
-	copyEquips(&client.GetSquad().MatherShip.Body.EquippingII, &hostile.Body.EquippingII)
-	copyEquips(&client.GetSquad().MatherShip.Body.EquippingIII, &hostile.Body.EquippingIII)
-	copyEquips(&client.GetSquad().MatherShip.Body.EquippingIV, &hostile.Body.EquippingIV)
-	copyEquips(&client.GetSquad().MatherShip.Body.EquippingV, &hostile.Body.EquippingV)
 
 	return &hostile
 }

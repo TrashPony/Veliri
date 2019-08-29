@@ -20,9 +20,18 @@ func GetInventory(client *player.Player) {
 		client.SetSquads(squads)
 
 		for _, activeSquad := range squads {
+
 			if activeSquad.Active {
 				client.SetSquad(activeSquad)
-				return
+			}
+
+			activeSquad.MatherShip.OwnerID = client.GetID()
+			activeSquad.MatherShip.Owner = client.GetLogin()
+			for _, unitSlot := range activeSquad.MatherShip.Units {
+				if unitSlot.Unit != nil {
+					unitSlot.Unit.OwnerID = client.GetID()
+					unitSlot.Unit.Owner = client.GetLogin()
+				}
 			}
 		}
 	} else {

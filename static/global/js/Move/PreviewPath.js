@@ -7,7 +7,8 @@ function PreviewPath(jsonData) {
         if (label) label.destroy();
     }
 
-    game.squad.moveTo = jsonData.path[jsonData.path.length - 1]; // это нужно для отрисовки пути на мине карте
+    // это нужно для отрисовки пути на мине карте
+    game.units[jsonData.short_unit.id].moveTo = jsonData.path[jsonData.path.length - 1];
 
     CreateMiniMap();
 

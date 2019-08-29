@@ -1,6 +1,28 @@
+function CreateUnits(units) {
+    for (let i in units) {
+        if (units.hasOwnProperty(i)) {
+            console.log(units[i]);
+            game.units[i] = CreateUnit(
+                units[i],
+                units[i].x,
+                units[i].y,
+                units[i].rotate,
+                units[i].body_color_1,
+                units[i].body_color_2,
+                units[i].weapon_color_1,
+                units[i].weapon_color_2,
+                units[i].owner_id,
+                'MySelectUnit',
+                false,
+            );
+        }
+    }
+}
+
 function CreateUser(squad) {
-    let x = squad.global_x;
-    let y = squad.global_y;
+
+    let x = squad.mather_ship.global_x;
+    let y = squad.mather_ship.global_y;
 
     squad.body = squad.mather_ship.body;
     CreateUnit(squad, x, y, squad.mather_ship.rotate,

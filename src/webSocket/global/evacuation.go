@@ -4,19 +4,14 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/gorilla/websocket"
 	"time"
 )
 
-func evacuationSquad(ws *websocket.Conn) {
-	user := globalGame.Clients.GetByWs(ws)
+func evacuationSquad(user *player.Player) {
 
-	if user == nil {
-		return
-	}
-
-	if user.GetSquad().HighGravity {
+	if user.GetSquad().MatherShip.HighGravity {
 		go SendMessage(Message{Event: "Error", Error: "High Gravity", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
 		return
 	}
@@ -25,7 +20,7 @@ func evacuationSquad(ws *websocket.Conn) {
 
 	if find && !user.GetSquad().Evacuation && user.InBaseID == 0 {
 
-		stopMove(user, true)
+		stopMove(user.GetSquad().MatherShip, true)
 
 		path, baseID, transport, err := globalGame.LaunchEvacuation(user, mp)
 		defer func() {
@@ -98,8 +93,8 @@ func evacuationSquad(ws *websocket.Conn) {
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
-			user.GetSquad().GlobalX = pathUnit.X
-			user.GetSquad().GlobalY = pathUnit.Y
+			user.GetSquad().MatherShip.X = pathUnit.X
+			user.GetSquad().MatherShip.Y = pathUnit.Y
 
 			time.Sleep(100 * time.Millisecond)
 		}
@@ -111,8 +106,8 @@ func evacuationSquad(ws *websocket.Conn) {
 		user.InBaseID = baseID
 
 		if user.GetSquad() != nil {
-			user.GetSquad().GlobalX = 0
-			user.GetSquad().GlobalY = 0
+			user.GetSquad().MatherShip.X = 0
+			user.GetSquad().MatherShip.Y = 0
 		} else {
 			return
 		}
@@ -123,6 +118,6 @@ func evacuationSquad(ws *websocket.Conn) {
 			go bases.UserIntoBase(user.GetID(), baseID)
 		}
 
-		go DisconnectUser(user, ws, true)
+		go DisconnectUser(user, true)
 	}
 }

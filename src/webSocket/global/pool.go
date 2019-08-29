@@ -25,9 +25,9 @@ var globalPipe = make(chan Message, 1)
 
 type Message struct {
 	// когда я забил х на эту структуру данных а теперь тут какое то адище
-	IDSender      int // переменная не для данных а для отсылки сообщений
-	IDUserSend    int // переменная не для данных а для отсылки сообщений
-	IDMap         int // переменная не для данных а для отсылки сообщений
+	IDSender      int                             // переменная не для данных а для отсылки сообщений
+	IDUserSend    int                             // переменная не для данных а для отсылки сообщений
+	IDMap         int                             // переменная не для данных а для отсылки сообщений
 	Event         string                          `json:"event"`
 	Map           *_map.Map                       `json:"map"`
 	Error         string                          `json:"error"`
@@ -78,7 +78,10 @@ type Message struct {
 	MapID         int                             `json:"map_id"`
 	Missions      map[string]*mission.Mission     `json:"missions"`
 	MissionUUID   string                          `json:"mission_uuid"`
-	Units         []unit.Unit                     `json:"units"`
+	UnitsID       []int                           `json:"units_id"`
+	ShortUnits    map[int]*unit.ShortUnitInfo     `json:"short_units"`
+	ShortUnit     *unit.ShortUnitInfo             `json:"short_unit"`
+	Unit          *unit.Unit                      `json:"unit"`
 }
 
 type Cloud struct {
@@ -104,10 +107,10 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 		// значит игрок оказался не там ибо на глобалке невозмоно быть без отряда
 		if newPlayer.LastBaseID > 0 {
 			// отправляем его на ближаюшую базу
-			IntoToBase(newPlayer, newPlayer.LastBaseID, ws)
+			IntoToBase(newPlayer, newPlayer.LastBaseID)
 		} else {
 			// TODO иначе на респаун его фракции
-			IntoToBase(newPlayer, 1, ws)
+			IntoToBase(newPlayer, 1)
 		}
 
 		return
@@ -138,7 +141,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			println(err.Error())
-			go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
+			go DisconnectUser(globalGame.Clients.GetByWs(ws), false)
 			return
 		}
 
@@ -153,71 +156,72 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 				ws.WriteJSON(Message{Event: "LocalGame"})
 			}
 
-			DisconnectUser(user, ws, false)
+			DisconnectUser(user, false)
 		}
 
 		if msg.Event == "InitGame" {
-			LoadGame(ws, msg)
+			LoadGame(user, msg)
 		}
 
 		if msg.Event == "MoveTo" {
-			go Move(ws, msg)
+			go Move(user, msg)
 		}
 
 		if msg.Event == "StopMove" {
-			stopMove(globalGame.Clients.GetByWs(ws), true)
+			//TODO
+			stopMove(nil, true)
 		}
 
 		if msg.Event == "ThrowItems" {
-			throwItems(ws, msg)
+			throwItems(user, msg)
 		}
 
 		if msg.Event == "openBox" {
-			openBox(ws, msg)
+			openBox(user, msg)
 		}
 
 		if msg.Event == "placeNewBox" {
-			placeNewBox(ws, msg)
+			placeNewBox(user, msg)
 		}
 
 		if msg.Event == "getItemsFromBox" || msg.Event == "getItemFromBox" {
-			useBox(ws, msg)
+			useBox(user, msg)
 		}
 
 		if msg.Event == "placeItemToBox" || msg.Event == "placeItemsToBox" {
-			useBox(ws, msg)
+			useBox(user, msg)
 		}
 
 		if msg.Event == "boxToBoxItem" || msg.Event == "boxToBoxItems" {
-			boxToBox(ws, msg)
+			boxToBox(user, msg)
 		}
 
 		if msg.Event == "evacuation" {
-			evacuationSquad(ws)
+			evacuationSquad(user)
 		}
 
 		if msg.Event == "updateThorium" {
-			updateThorium(ws, msg)
+			updateThorium(user, msg)
 		}
 
 		if msg.Event == "removeThorium" {
-			removeThorium(ws, msg)
+			removeThorium(user, msg)
 		}
 
 		if msg.Event == "AfterburnerToggle" {
-			afterburnerToggle(ws, msg)
+			afterburnerToggle(user, msg)
 		}
 
 		if msg.Event == "startMining" {
-			startMining(ws, msg)
+			startMining(user, msg)
 		}
 
 		if msg.Event == "SelectDigger" {
-			selectDigger(ws, msg)
+			selectDigger(user, msg)
 		}
 
 		if msg.Event == "useDigger" {
-			useDigger(ws, msg)
+			useDigger(user, msg)
 		}
 
 		if msg.Event == "Attack" {
@@ -289,7 +293,7 @@ func MoveSender() {
 				}
 
 				if err != nil {
-					go DisconnectUser(globalGame.Clients.GetByWs(ws), ws, false)
+					go DisconnectUser(globalGame.Clients.GetByWs(ws), false)
 					log.Printf("error: %v", err)
 				}
 			}

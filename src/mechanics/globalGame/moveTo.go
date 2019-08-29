@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/getlantern/deepcopy"
 	"math"
@@ -17,15 +16,18 @@ const HorizontalOffset = HexagonWidth
 
 func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
 
-	startX := float64(moveUnit.GlobalX)
-	startY := float64(moveUnit.GlobalY)
+	startX := float64(moveUnit.X)
+	startY := float64(moveUnit.Y)
 	rotate := moveUnit.Rotate
+
+	//todo
+	moveUnit.MinSpeed = 10
 
 	maxSpeed := float64(moveUnit.Speed)
 	minSpeed := float64(moveUnit.MinSpeed)
-	startSpeed := float64(moveUnit.MinSpeed)
 
 	// если текущая скорость выше стартовой то берем ее
+	startSpeed := float64(moveUnit.MinSpeed)
 	if float64(moveUnit.MinSpeed) < moveUnit.CurrentSpeed {
 		startSpeed = moveUnit.CurrentSpeed
 	}
@@ -50,9 +52,9 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 }
 
 func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map,
-	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []squad.PathUnit) {
+	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []unit.PathUnit) {
 
-	path := make([]squad.PathUnit, 0)
+	path := make([]unit.PathUnit, 0)
 
 	fullMax := maxSpeed
 
@@ -79,14 +81,10 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 
 		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed))
 
-		if dist > maxSpeed*25 { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
-			if int(maxSpeed)*10 != int(speed)*10 {
-				if maxSpeed > speed {
-					if len(path)%2 == 0 {
-						speed += minSpeed / 10
-					}
-				} else {
-					speed -= minSpeed / 10
+		if dist > maxSpeed { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
+			if maxSpeed > speed {
+				if len(path)%2 == 0 {
+					speed += minSpeed / 2
 				}
 			} else {
 				speed = maxSpeed
@@ -154,7 +152,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		path = append(path, squad.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
+		path = append(path, unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
 			Q: forecastQ, R: forecastR, Speed: speed, Animate: true})
 	}
 

@@ -14,16 +14,16 @@ function LoadGame() {
     game.input.onUp.add(StopSelectableUnits, this);
     game.input.onUp.add(UnSelectUnit, this);
 
-
     game.camera.scale.x = 1.5;
     game.camera.scale.y = 1.5;
 
-    Data.squad.user_name = Data.user.login;
-    Data.squad.user_id = Data.user.id;
-    Data.squad.squad_id = Data.squad.id;
+    game.user_name = Data.user.login;
+    game.user_id = Data.user.id;
+    game.my_squad_sprite = {};
 
-    CreateUser(Data.squad);
-    CreateOtherUsers(Data.other_users);
+    game.units = Data.short_units;
+
+    CreateUnits(game.units);
     CreateBase(Data.bases);
     CreateBoxes(Data.boxes);
     CreateMiniMap(Data.map);
@@ -31,7 +31,6 @@ function LoadGame() {
     FillSquadBlock(Data.squad);
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     Anomaly(Data.squad);
-    FocusMS();
 
     setTimeout(function () {
         if (debug) {

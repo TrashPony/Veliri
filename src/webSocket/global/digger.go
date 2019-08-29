@@ -5,18 +5,17 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/gorilla/websocket"
 	"math/rand"
 	"time"
 )
 
-func selectDigger(ws *websocket.Conn, msg Message) {
-	user := globalGame.Clients.GetByWs(ws)
+func selectDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
-	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
+	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
 
-	if user != nil && squadCoordinate != nil {
+	if squadCoordinate != nil {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
@@ -50,15 +49,13 @@ func selectDigger(ws *websocket.Conn, msg Message) {
 	}
 }
 
-func useDigger(ws *websocket.Conn, msg Message) {
-	user := globalGame.Clients.GetByWs(ws)
-
+func useDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
-	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().GlobalX, user.GetSquad().GlobalY, mp)
+	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
 
-	if user != nil && squadCoordinate != nil {
+	if squadCoordinate != nil {
 
-		stopMove(user, true)
+		stopMove(user.GetSquad().MatherShip, true)
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {

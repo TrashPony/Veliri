@@ -29,7 +29,7 @@ func toQR(gameMission *mission.Mission, action *mission.Action, client *player.P
 		if gameMission.CheckAvailableActionByIndex(action.Number) {
 			if client.GetSquad().MapID == action.MapID {
 				x, y := globalGame.GetXYCenterHex(action.Q, action.R)
-				dist := globalGame.GetBetweenDist(client.GetSquad().GlobalX, client.GetSquad().GlobalY, x, y)
+				dist := globalGame.GetBetweenDist(client.GetSquad().MatherShip.X, client.GetSquad().MatherShip.Y, x, y)
 				if int(dist) < action.Radius {
 					action.Complete = true
 				} else {

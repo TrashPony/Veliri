@@ -47,8 +47,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 		// убираем скорость у игрока если у него есть отряд
 		if newPlayer.GetSquad() != nil {
-			newPlayer.GetSquad().GlobalX = 0
-			newPlayer.GetSquad().GlobalY = 0
+			newPlayer.GetSquad().MatherShip.X = 0
+			newPlayer.GetSquad().MatherShip.Y = 0
 		}
 	}
 
