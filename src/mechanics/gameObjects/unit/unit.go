@@ -76,6 +76,12 @@ type Unit struct {
 	Y   int     `json:"y"`    /* текущая координата на пиксельной сетке */
 	ToX float64 `json:"to_x"` /* куда юнит двигается */
 	ToY float64 `json:"to_y"` /* куда юнит двигается */
+	// у мс мап ид ставится сразу как создается отряд, тоесть ситуация что отряд на глобалке без мап ид крайне мала, а юниты получают мап ид как выйдут из трюма
+	MapID int `json:"map_id"`
+
+	Evacuation      bool `json:"evacuation"`
+	ForceEvacuation bool `json:"force_evacuation"`
+	InSky           bool `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 }
 
 type ShortUnitInfo struct {
@@ -101,8 +107,12 @@ type ShortUnitInfo struct {
 	WeaponTexture string `json:"weapon_texture"`
 
 	/*ид владелдьца*/
-	OwnerID int    `json:"owner_id"`
-	Owner   string `json:"owner"`
+	OwnerID         int    `json:"owner_id"`
+	Owner           string `json:"owner"`
+	MapID           int    `json:"map_id"`
+	Evacuation      bool   `json:"evacuation"`
+	ForceEvacuation bool   `json:"force_evacuation"`
+	InSky           bool   `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 }
 
 type PathUnit struct {
@@ -139,6 +149,10 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 	hostile.Q = unit.Q
 	hostile.R = unit.R
 	hostile.Rotate = unit.Rotate
+	hostile.MapID = unit.MapID
+	hostile.Evacuation = unit.Evacuation
+	hostile.ForceEvacuation = unit.ForceEvacuation
+	hostile.InSky = unit.InSky
 
 	hostile.Body, _ = gameTypes.Bodies.GetByID(unit.Body.ID)
 	hostile.OwnerID = unit.OwnerID

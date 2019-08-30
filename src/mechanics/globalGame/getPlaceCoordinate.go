@@ -3,28 +3,28 @@ package globalGame
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/gorilla/websocket"
 )
 
-func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.Player, mp *_map.Map) {
+func GetPlaceCoordinate(placeUnit unit.Unit, units map[*websocket.Conn]*unit.ShortUnitInfo, mp *_map.Map) {
 
-	if user.GetSquad().MatherShip.X == 0 && user.GetSquad().MatherShip.Y == 0 {
-		x, y := GetXYCenterHex(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
-		user.GetSquad().MatherShip.X = x
-		user.GetSquad().MatherShip.Y = y
+	if placeUnit.X == 0 && placeUnit.Y == 0 {
+		x, y := GetXYCenterHex(placeUnit.Q, placeUnit.R)
+		placeUnit.X = x
+		placeUnit.Y = y
 
-		user.GetSquad().MatherShip.ToX = float64(x)
-		user.GetSquad().MatherShip.ToY = float64(y)
+		placeUnit.ToX = float64(x)
+		placeUnit.ToY = float64(y)
 
-		user.GetSquad().MatherShip.CurrentSpeed = 0
+		placeUnit.CurrentSpeed = 0
 	}
 
 	findPlace := false
-	for _, gameUser := range users {
-		if gameUser.GetSquad() != nil && gameUser.GetID() != user.GetID() && !user.GetSquad().InSky {
-			dist := GetBetweenDist(gameUser.GetSquad().MatherShip.X, gameUser.GetSquad().MatherShip.Y,
-				user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+	for _, gameUnit := range units {
+		if gameUnit.ID != placeUnit.ID && !placeUnit.InSky {
+
+			dist := GetBetweenDist(gameUnit.X, gameUnit.Y, placeUnit.X, placeUnit.Y)
 
 			if dist < 150 {
 				findPlace = true
@@ -33,7 +33,7 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 	}
 
 	if findPlace {
-		resp, _ := mp.GetCoordinate(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
+		resp, _ := mp.GetCoordinate(placeUnit.Q, placeUnit.R)
 		respCoordinates := coordinate.GetCoordinatesRadius(resp, 2)
 
 		for _, respFakeCoordinate := range respCoordinates {
@@ -42,16 +42,16 @@ func GetPlaceCoordinate(user *player.Player, users map[*websocket.Conn]*player.P
 				x, y := GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 				find := false
 
-				for _, gameUser := range users {
-					dist := GetBetweenDist(gameUser.GetSquad().MatherShip.X, gameUser.GetSquad().MatherShip.Y, x, y)
-					if dist < 150 && !user.GetSquad().InSky {
+				for _, gameUnit := range units {
+					dist := GetBetweenDist(gameUnit.X, gameUnit.Y, x, y)
+					if dist < 150 && !placeUnit.InSky {
 						find = true
 					}
 				}
 
 				if !find {
-					user.GetSquad().MatherShip.X = x
-					user.GetSquad().MatherShip.Y = y
+					placeUnit.X = x
+					placeUnit.Y = y
 					break
 				}
 			}

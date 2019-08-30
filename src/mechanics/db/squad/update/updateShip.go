@@ -45,7 +45,8 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"body_color_1 = $13,"+
 				"body_color_2 = $14,"+
 				"weapon_color_1 = $15,"+
-				"weapon_color_2 = $16 "+
+				"weapon_color_2 = $16,"+
+				"id_map = $17 "+
 				"WHERE id_squad = $10 AND mother_ship = $11",
 			bodyID,
 			ship.Q,
@@ -63,6 +64,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 			ship.BodyColor2,
 			ship.WeaponColor1,
 			ship.WeaponColor2,
+			ship.MapID,
 		)
 
 		if err != nil {
@@ -85,9 +87,10 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"on_map, "+
 				"action_point, "+
 				"defend, "+
-				"move "+
+				"move,"+
+				"id_map "+
 				") "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 				squad.ID,
 				bodyID,
 				ship.Q,
@@ -101,6 +104,7 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				ship.Speed,
 				ship.Defend,
 				ship.Move,
+				ship.MapID,
 			).Scan(&id)
 			if err != nil {
 				log.Fatal("add new ship to squad " + err.Error())

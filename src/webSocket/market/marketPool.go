@@ -166,7 +166,7 @@ func OrderSender() {
 
 		if !find {
 			marketName = "Пустош"
-			userMapID = user.GetSquad().MapID
+			userMapID = user.GetSquad().MatherShip.MapID
 		} else {
 			marketName = userBase.Name
 			userMap, _ := maps.Maps.GetByID(userBase.MapID)

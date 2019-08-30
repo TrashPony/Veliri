@@ -9,7 +9,6 @@ function preload() {
     game.load.spritesheet('lineGameZone', 'http://' + window.location.host + '/assets/select/lineGameZone.png', 80, 100, 6);
     // unit
     game.load.spritesheet('MySelectUnit', 'http://' + window.location.host + '/assets/select/mySelectUnit.png', 100, 100, 4);
-    game.load.spritesheet('HostileSelectUnit', 'http://' + window.location.host + '/assets/select/hostileUnitSelect.png', 100, 100, 3);
     // zone
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
     game.load.spritesheet('mapEditor', 'http://' + window.location.host + '/assets/select/mapEditor.png', 80, 100, 6);
@@ -80,7 +79,9 @@ function preload() {
     game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/objects/fallen_01.png');
     game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
-    game.load.image('evacuation', 'http://' + window.location.host + '/assets/map/objects/evacuation.png');
+    game.load.image('evacuation_explores', 'http://' + window.location.host + '/assets/map/evacuations/evacuation_explores.png');
+    game.load.image('evacuation_replics', 'http://' + window.location.host + '/assets/map/evacuations/evacuation_replics.png');
+    game.load.image('evacuation_reverses', 'http://' + window.location.host + '/assets/map/evacuations/evacuation_reverses.png');
 
     // Boxes
     game.load.image('box', 'http://' + window.location.host + '/assets/map/boxes/box.png');

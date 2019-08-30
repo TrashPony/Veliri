@@ -9,7 +9,7 @@ CREATE TABLE squads
   /* позиция отряда на глобальной карте */
   q       int,
   r       int,
-  id_map  INT REFERENCES maps (id),
+  --id_map  INT REFERENCES maps (id), -- устарело, МС определяет главынй мап_ид отряда
 
   /* если отряд неактивен то он храниться на конкретной базе */
   id_base INT REFERENCES bases (id)
@@ -36,6 +36,7 @@ CREATE TABLE squad_units
   q              INT, /* q - колона на которой стоит юнит */
   r              INT, /* r - строка на которой стоит юнит */
   rotate         INT,
+  id_map         INT,
 
   /* игрок в бою */
   on_map         BOOLEAN,
@@ -82,15 +83,15 @@ CREATE TABLE squad_units_equipping
 
 CREATE TABLE squad_inventory
 (/* инвентарь отряда не боевой параметр */
-  id        SERIAL PRIMARY KEY,
-  id_squad  INT REFERENCES squads (id), /* какому отряду принаджелит */
+  id            SERIAL PRIMARY KEY,
+  id_squad      INT REFERENCES squads (id), /* какому отряду принаджелит */
 
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
    переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints), (trash) */
-  item_type VARCHAR(64),
-  slot      INT, /* какой слот занимает итем */
-  item_id   INT, /* ид итема определяет конкретный итем тип + ид*/
-  quantity  INT, /* количество предметов в слоте */
-  hp        INT, /* сколько осталось хп у эквипа, до поломки*/
+  item_type     VARCHAR(64),
+  slot          INT, /* какой слот занимает итем */
+  item_id       INT, /* ид итема определяет конкретный итем тип + ид*/
+  quantity      INT, /* количество предметов в слоте */
+  hp            INT, /* сколько осталось хп у эквипа, до поломки*/
   place_user_id INT -- ид игрока который туда положить предмет(обновли последним), необходимо для публичных ящиков
 );

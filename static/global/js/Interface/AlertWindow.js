@@ -1,5 +1,7 @@
 function Alert(text, headText, okButton, time, alert, id) {
 
+    if (document.getElementById(id))document.getElementById(id).remove();
+
     let notificationWrapper = document.createElement("div");
     notificationWrapper.id = id;
     if (alert){

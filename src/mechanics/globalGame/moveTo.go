@@ -23,12 +23,13 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 	//todo
 	moveUnit.MinSpeed = 10
 
-	maxSpeed := float64(moveUnit.Speed)
-	minSpeed := float64(moveUnit.MinSpeed)
+	// т.к. метод расчитывает в секунду а путь строится по 100 мс то скорость делим на 10
+	maxSpeed := float64(moveUnit.Speed) / 10
+	minSpeed := float64(moveUnit.MinSpeed) / 10
 
 	// если текущая скорость выше стартовой то берем ее
-	startSpeed := float64(moveUnit.MinSpeed)
-	if float64(moveUnit.MinSpeed) < moveUnit.CurrentSpeed {
+	startSpeed := minSpeed
+	if minSpeed < moveUnit.CurrentSpeed {
 		startSpeed = moveUnit.CurrentSpeed
 	}
 
@@ -45,13 +46,13 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 		maxSpeed = maxSpeed * 2
 	}
 
-	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, mp, false,
+	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 5, mp, true,
 		fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity, moveUnit.Body)
 
 	return path, err
 }
 
-func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate int, mp *_map.Map,
+func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate, rotateAngle int, mp *_map.Map,
 	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []unit.PathUnit) {
 
 	path := make([]unit.PathUnit, 0)
@@ -79,20 +80,29 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		minDistRotate := float64(speed) / ((2 * math.Pi) / float64(360/speed))
+		// скорость * (180/угол поворота) = длинна полокружности (грабая модель)
+		// длинны окружности получаем ее радиус r= длинна полокружности /2 пи
+		// r*2 получаем минимальное растояние от бтр до обьекта к которому он может повернутся не останавливаясь
+		minDistRotate := ((speed * (180 / float64(rotateAngle))) / (2 * math.Pi)) * 2
 
-		if dist > maxSpeed { // TODO не правильно, тут надо расчитать растояние когда надо сбрасывать скорость
-			if maxSpeed > speed {
-				if len(path)%2 == 0 {
-					speed += minSpeed / 2
+		if dist > maxSpeed*5 {
+			if int(maxSpeed)*10 != int(speed)*10 {
+
+				if maxSpeed > speed {
+					if len(path)%2 == 0 {
+						speed += maxSpeed / 10
+					}
+				} else {
+					speed -= maxSpeed / 10
 				}
+
 			} else {
 				speed = maxSpeed
 			}
 		} else {
 			if minSpeed < speed {
 				if len(path)%2 == 0 {
-					speed -= minSpeed / 10
+					speed -= maxSpeed / 10
 				}
 			} else {
 				speed = minSpeed
@@ -103,7 +113,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса
 		stopY := float64(speed) * math.Sin(radRotate)
 
-		for i := 0; i < int(minSpeed); i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
+		for i := 0; i < rotateAngle; i++ { // т.к. за 1 учаток пути корпус может повернуться на много градусов тут этот for)
 			needRad := math.Atan2(ToY-forecastY, ToX-forecastX)
 			//  math.Atan2 куда у - текущие у, куда х - текущие х, получаем угол
 			needRotate := int(needRad * 180 / 3.14) // находим какой угол необходимо принять телу

@@ -7,7 +7,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
-	"github.com/gorilla/websocket"
 	"time"
 )
 
@@ -56,19 +55,19 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 
-	for ws, user := range users {
-		if user.GetSquad() != nil && mapID == user.GetSquad().MapID {
+	for _, user := range users {
+		if user.GetSquad() != nil && mapID == user.GetSquad().MatherShip.MapID {
 			dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
-				go softTransition(user, x, y, coor, ws)
+				go softTransition(user, x, y, coor)
 			}
 		}
 	}
 }
 
-func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, ws *websocket.Conn) {
+func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) {
 	countTime := 0
-	go wsGlobal.SendMessage(wsGlobal.Message{Event: "softTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Seconds: 3, Bot: user.Bot})
+	go wsGlobal.SendMessage(wsGlobal.Message{Event: "softTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Seconds: 3, Bot: user.Bot})
 
 	user.GetSquad().SoftTransition = true
 	defer func() {
@@ -83,12 +82,12 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate, 
 				go wsGlobal.IntoToBase(user, coor.ToBaseID)
 			}
 			if coor.Handler == "sector" {
-				go wsGlobal.ChangeSector(user, coor.ToMapID, ws, coor)
+				go wsGlobal.ChangeSector(user, coor.ToMapID, coor)
 			}
 			return
 		} else {
 			if dist > 120 {
-				go wsGlobal.SendMessage(wsGlobal.Message{Event: "removeSoftTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
+				go wsGlobal.SendMessage(wsGlobal.Message{Event: "removeSoftTransition", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot})
 				return
 			}
 		}

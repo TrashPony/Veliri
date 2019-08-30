@@ -27,19 +27,24 @@ type Base struct {
 }
 
 type Transport struct {
-	ID      int  `json:"id"`
-	X       int  `json:"x"`
-	Y       int  `json:"y"`
-	Job     bool `json:"job"`      /* на задание он или нет */
-	Down    bool `json:"down"`     /* на земле он или нет */
-	SquadID bool `json:"squad_id"` /* ид того кого он тащит */
+	ID       int    `json:"id"`
+	X        int    `json:"x"`
+	Y        int    `json:"y"`
+	Rotate   int    `json:"rotate"`
+	Fraction string `json:"fraction"`
+	Job      bool   `json:"job"`      /* на задание он или нет */
+	Down     bool   `json:"down"`     /* на земле он или нет */
+	SquadID  bool   `json:"squad_id"` /* ид того кого он тащит */
 }
 
 func (b *Base) CreateTransports(count int) {
 	b.Transports = make(map[int]*Transport)
 
 	for i := 0; i < count; i++ {
-		b.Transports[i] = &Transport{ID: i, Down: true}
+		b.Transports[i] = &Transport{ID: i, Down: true, Fraction: b.Fraction}
+		if b.Transports[i].Fraction == "" {
+			b.Transports[i].Fraction = "Replics"
+		}
 	}
 }
 
@@ -50,16 +55,6 @@ func (b *Base) GetFreeTransport() *Transport {
 		}
 	}
 	return nil
-}
-
-type defender struct {
-	// TODO
-}
-
-func (b *Base) CreateDefenders(count int) {
-	for i := 0; i < count; i++ {
-		// TODO
-	}
 }
 
 func (b *Base) GetRecyclePercent(resource int) int {

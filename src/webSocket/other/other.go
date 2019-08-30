@@ -158,7 +158,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 				userBase, _ := bases.Bases.Get(client.InBaseID)
 
 				if userBase == nil {
-					userMapID = client.GetSquad().MapID
+					userMapID = client.GetSquad().MatherShip.MapID
 				} else {
 					userMapID = userBase.MapID
 				}
@@ -173,7 +173,7 @@ func Reader(ws *websocket.Conn, client *player.Player) {
 				userBase, _ := bases.Bases.Get(client.InBaseID)
 
 				if userBase == nil {
-					userMapID = client.GetSquad().MapID
+					userMapID = client.GetSquad().MatherShip.MapID
 				} else {
 					userMapID = userBase.MapID
 				}

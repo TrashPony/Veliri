@@ -74,5 +74,5 @@ func getLocalChat(client *player.Player) (*chatGroup.Group, string) {
 	}
 
 	// игрок на глобальной карте
-	return chats.Groups.GetLocalGroup("map:" + strconv.Itoa(client.GetSquad().MapID)), "map:" + strconv.Itoa(client.GetSquad().MapID)
+	return chats.Groups.GetLocalGroup("map:" + strconv.Itoa(client.GetSquad().MatherShip.MapID)), "map:" + strconv.Itoa(client.GetSquad().MatherShip.MapID)
 }

@@ -22,13 +22,13 @@ func SquadDamage(user *player.Player, damage int, damageUnit *unit.Unit) {
 		}
 	}
 
-	go SendMessage(Message{Event: "DamageUnit", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot, Unit: damageUnit})
+	go SendMessage(Message{Event: "DamageUnit", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot, Unit: damageUnit})
 
 	// если умер мс то весь отряд умирает
 	if damageUnit.Body.MotherShip && damageUnit.HP <= 0 {
 		// останавливаем движение, Обязательно! иначае в методе move, приложение упадет на всех возможных проверках
 		stopMove(damageUnit, true)
-		go SendMessage(Message{Event: "DeadSquad", OtherUser: user.GetShortUserInfo(true), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "DeadSquad", OtherUser: user.GetShortUserInfo(true), IDMap: user.GetSquad().MatherShip.MapID})
 		// время для проигрыша анимации например
 		time.Sleep(2 * time.Second)
 		// удаляем отряд из игры
@@ -41,6 +41,6 @@ func SquadDamage(user *player.Player, damage int, damageUnit *unit.Unit) {
 		// останавливаем движение, Обязательно! иначае в методе move, приложение упадет на всех возможных проверках
 		stopMove(damageUnit, true)
 		// todo удаляем юнита и обновляем в бд
-		go SendMessage(Message{Event: "DeadUnit", IDMap: user.GetSquad().MapID, Unit: damageUnit})
+		go SendMessage(Message{Event: "DeadUnit", IDMap: user.GetSquad().MatherShip.MapID, Unit: damageUnit})
 	}
 }

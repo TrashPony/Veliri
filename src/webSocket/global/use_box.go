@@ -10,10 +10,10 @@ import (
 func placeNewBox(user *player.Player, msg Message) {
 	err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 	if err != nil {
-		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	} else {
-		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
-		go SendMessage(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().MatherShip.X, Y: user.GetSquad().MatherShip.Y, IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().MatherShip.X, Y: user.GetSquad().MatherShip.Y, IDMap: user.GetSquad().MatherShip.MapID})
 	}
 }
 
@@ -33,19 +33,19 @@ func openBox(user *player.Player, msg Message) {
 			if mapBox.Protect {
 				if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
 					go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-						Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+						Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 				} else {
 					if msg.BoxPassword == 0 {
 						go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password",
-							IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+							IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 					} else {
 						go SendMessage(Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password",
-							IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+							IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 					}
 				}
 			} else {
 				go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-					Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+					Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			}
 		}
 	}
@@ -80,9 +80,9 @@ func useBox(user *player.Player, msg Message) {
 	}
 
 	if err != nil {
-		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	}
-	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 }
 
 func boxToBox(user *player.Player, msg Message) {
@@ -94,7 +94,7 @@ func boxToBox(user *player.Player, msg Message) {
 	if msg.Event == "boxToBoxItem" {
 		err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
 		if err != nil {
-			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		} else {
 			updateBoxInfo(getBox)
 			updateBoxInfo(toBox)
@@ -105,7 +105,7 @@ func boxToBox(user *player.Player, msg Message) {
 		for _, i := range msg.Slots {
 			err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
 			if err != nil {
-				go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+				go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			} else {
 				updateBoxInfo(getBox)
 				updateBoxInfo(toBox)
@@ -113,7 +113,7 @@ func boxToBox(user *player.Player, msg Message) {
 		}
 	}
 
-	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 }
 
 func updateBoxInfo(box *boxInMap.Box) {
@@ -130,7 +130,7 @@ func updateBoxInfo(box *boxInMap.Box) {
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
 			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID,
-				Inventory: box.GetStorage(), Size: box.CapacitySize, IDMap: user.GetSquad().MapID})
+				Inventory: box.GetStorage(), Size: box.CapacitySize, IDMap: user.GetSquad().MatherShip.MapID})
 		}
 	}
 }

@@ -1,38 +1,4 @@
 // движение на глобальной карте
-// function MoveTo(jsonData) {
-//
-//     if (!game) return;
-//
-//     CreateMiniMap();
-//
-//     //if (game.squad && Number(jsonData.other_user.squad_id) === game.squad.id) {
-//         game.floorSelectLineLayer.forEach(function (sprite) {
-//             sprite.visible = false;
-//         });
-//
-//         let thoriumEfficiency = document.getElementById("speedBarEfficiency");
-//         thoriumEfficiency.innerHTML = (jsonData.path_unit.Speed * 10).toFixed(0);
-//
-//         game.squad.q = jsonData.path_unit.q;
-//         game.squad.r = jsonData.path_unit.r;
-//
-//         game.squad.speed = jsonData.path_unit.Speed * 10;
-//         game.squad.animateSpeed = jsonData.path_unit.animate;
-//
-//         game.add.tween(game.squad.sprite).to({
-//                 x: jsonData.path_unit.x,
-//                 y: jsonData.path_unit.y
-//             }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
-//         );
-//
-//         SetAngle(game.squad, jsonData.path_unit.rotate, jsonData.path_unit.millisecond, true);
-//         game.squad.mather_ship.rotate = jsonData.path_unit.rotate;
-//     // } else {
-//     //     MoveOther(jsonData)
-//     // }
-// }
-
-// движение на глобальной карте
 function MoveTo(jsonData) {
 
     if (!game) return;
@@ -44,7 +10,7 @@ function MoveTo(jsonData) {
 
         if (unit.owner === game.user_name && unit.body.mother_ship) {
             let thoriumEfficiency = document.getElementById("speedBarEfficiency");
-            thoriumEfficiency.innerHTML = (path.Speed).toFixed(0);
+            thoriumEfficiency.innerHTML = (path.Speed * 10).toFixed(0);
         }
 
         game.add.tween(unit.sprite).to({

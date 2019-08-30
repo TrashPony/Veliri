@@ -145,15 +145,11 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			return
 		}
 
-		// если игрок на базе или в локальной игре то ему нельзя поднимать соеденение глобальной игры
-		if user.InBaseID != 0 || user.GetSquad().InGame {
+		// если игрок на базе то ему нельзя поднимать соеденение глобальной игры
+		if user.InBaseID != 0 {
 
 			if user.InBaseID != 0 {
-				ws.WriteJSON(Message{Event: "IntoToBase"})
-			}
-
-			if user.GetSquad().InGame {
-				ws.WriteJSON(Message{Event: "LocalGame"})
+				go SendMessage(Message{Event: "IntoToBase"})
 			}
 
 			DisconnectUser(user, false)
@@ -197,7 +193,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "evacuation" {
-			evacuationSquad(user)
+			evacuationUnit(user.GetSquad().MatherShip) // игрок может инициализировать эвакуацию только МС
 		}
 
 		if msg.Event == "updateThorium" {
@@ -249,7 +245,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "GetPortalPointToGlobalPath" {
-			_, transitionPoints := maps.Maps.FindGlobalPath(user.GetSquad().MapID, msg.MapID)
+			_, transitionPoints := maps.Maps.FindGlobalPath(user.GetSquad().MatherShip.MapID, msg.MapID)
 			if len(transitionPoints) > 0 {
 				go SendMessage(Message{
 					Event:      "GetPortalPointToGlobalPath",

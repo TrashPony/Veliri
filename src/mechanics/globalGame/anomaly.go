@@ -15,7 +15,7 @@ type VisibleAnomaly struct {
 }
 
 func GetVisibleAnomaly(user *player.Player, slot *detail.BodyEquipSlot) (visibleAnomalies []VisibleAnomaly, err error) {
-	anomalies := maps.Maps.GetAllMapAnomaly(user.GetSquad().MapID)
+	anomalies := maps.Maps.GetAllMapAnomaly(user.GetSquad().MatherShip.MapID)
 	if slot == nil || slot.Equip == nil || slot.Equip.Applicable != "geo_scan" || slot.HP < 0 {
 		return nil, errors.New("no anomaly")
 	}

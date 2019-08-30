@@ -68,8 +68,8 @@ func respBot(base *base.Base, mp *_map.Map) {
 			BodyColor2:   "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
 			WeaponColor1: "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
 			WeaponColor2: "0x" + strings.Split(randomcolor.GetRandomColorInHex(), "#")[1],
+			MapID:        mp.Id,
 		},
-		MapID: mp.Id,
 	}
 
 	// ставим рандомную пуху
@@ -114,10 +114,10 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.GetSquad().MatherShip.Q = respCoordinate.Q
 	bot.GetSquad().MatherShip.R = respCoordinate.R
 	bot.GetSquad().MatherShip.Rotate = respCoordinate.RespRotate
-	bot.GetSquad().MapID = base.MapID
+	bot.GetSquad().MatherShip.MapID = base.MapID
 	bot.GetSquad().MatherShip.X = x
 	bot.GetSquad().MatherShip.Y = y
-	bot.GetSquad().Evacuation = false
+	bot.GetSquad().MatherShip.Evacuation = false
 
 	// если мы зашли на базу сбрасываем путь бота в ноль
 	bot.GlobalPath = nil
@@ -174,9 +174,9 @@ func Transport(bot *player.Player) {
 			outBase(bot, botBase)
 		}
 
-		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().Evacuation && bot.GetSquad().MatherShip.ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
+		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().MatherShip.Evacuation && bot.GetSquad().MatherShip.ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
 
-			mp, _ := maps.Maps.GetByID(bot.GetSquad().MapID)
+			mp, _ := maps.Maps.GetByID(bot.GetSquad().MatherShip.MapID)
 			path := getPathAI(bot, mp)
 
 			exit := false
@@ -190,7 +190,7 @@ func Transport(bot *player.Player) {
 				for {
 					time.Sleep(100 * time.Millisecond)
 
-					if mp.Id != bot.GetSquad().MapID {
+					if mp.Id != bot.GetSquad().MatherShip.MapID {
 						//это означает что сектор сменился
 						exit = true
 						// если у бота есть цель то она выросла на 1 пройденный сектор)
@@ -243,10 +243,10 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 			return nil
 		}
 
-		if randMap.Id == bot.GetSquad().MapID {
+		if randMap.Id == bot.GetSquad().MatherShip.MapID {
 			toX, toY = globalGame.GetXYCenterHex(randEntryBase.Q, randEntryBase.R)
 		} else {
-			_, transitionPoints := maps.Maps.FindGlobalPath(bot.GetSquad().MapID, randMap.Id)
+			_, transitionPoints := maps.Maps.FindGlobalPath(bot.GetSquad().MatherShip.MapID, randMap.Id)
 			if len(transitionPoints) > 0 {
 				// добавляем координату входа в базу в путь
 				baseCoordinate, _ := randMap.GetCoordinate(randEntryBase.Q, randEntryBase.R)
@@ -267,7 +267,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		//toX, toY = rand.Intn(xSize), rand.Intn(ySize)
 
 	} else {
-		if len(bot.GlobalPath) > bot.CurrentPoint && bot.GlobalPath[bot.CurrentPoint].MapID == bot.GetSquad().MapID {
+		if len(bot.GlobalPath) > bot.CurrentPoint && bot.GlobalPath[bot.CurrentPoint].MapID == bot.GetSquad().MatherShip.MapID {
 			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
 		} else {
 			bot.GlobalPath = nil
@@ -283,7 +283,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		path := aiSearchPath(toX, toY, bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y, 50, bot, mp)
 		return path
 	} else {
-		println("достижимость: ", possible, bot.GetSquad().MapID, toX, toY)
+		println("достижимость: ", possible, bot.GetSquad().MatherShip.MapID, toX, toY)
 		bot.GlobalPath = nil
 		return nil
 	}

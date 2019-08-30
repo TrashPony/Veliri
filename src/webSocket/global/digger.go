@@ -12,14 +12,14 @@ import (
 )
 
 func selectDigger(user *player.Player, msg Message) {
-	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
+	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
 
 	if squadCoordinate != nil {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			return
 		}
 
@@ -45,12 +45,12 @@ func selectDigger(user *player.Player, msg Message) {
 		}
 
 		go SendMessage(Message{Event: "SelectDigger", Coordinates: result, IDUserSend: user.GetID(),
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MapID})
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
 	}
 }
 
 func useDigger(user *player.Player, msg Message) {
-	mp, _ := maps.Maps.GetByID(user.GetSquad().MapID)
+	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
 
 	if squadCoordinate != nil {
@@ -59,7 +59,7 @@ func useDigger(user *player.Player, msg Message) {
 
 		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 		if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {
-			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			return
 		}
 
@@ -157,24 +157,24 @@ func useDigger(user *player.Player, msg Message) {
 
 						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
-							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
+							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MatherShip.MapID})
 
 						for _, otherUser := range users {
 							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
 							if err == nil {
 								go SendMessage(Message{Event: "AnomalySignal", IDUserSend: otherUser.GetID(),
-									Anomalies: anomalies, IDMap: user.GetSquad().MapID})
+									Anomalies: anomalies, IDMap: user.GetSquad().MatherShip.MapID})
 							} else {
 								go SendMessage(Message{Event: "RemoveAnomalies", IDUserSend: otherUser.GetID(),
-									IDMap: user.GetSquad().MapID})
+									IDMap: user.GetSquad().MatherShip.MapID})
 							}
 						}
 					} else {
 						mpCoordinate.DynamicObject = &dynamicObject
 						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
 							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
-							Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MapID})
+							Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MatherShip.MapID})
 					}
 				}
 			}

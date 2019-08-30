@@ -21,5 +21,5 @@ func afterburnerToggle(user *player.Player, msg Message) {
 		Event:       "AfterburnerToggle",
 		Afterburner: user.GetSquad().MatherShip.Afterburner,
 		IDUserSend:  user.GetID(),
-		IDMap:       user.GetSquad().MapID})
+		IDMap:       user.GetSquad().MatherShip.MapID})
 }

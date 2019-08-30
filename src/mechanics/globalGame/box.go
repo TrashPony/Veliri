@@ -16,7 +16,7 @@ import (
 )
 
 func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMap.Box) {
-	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
+	mp, find := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	if !find {
 		return errors.New("no map"), nil
 	}
@@ -68,7 +68,7 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 
 func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxInMap.Box) {
 
-	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
+	mp, find := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	if !find {
 		return errors.New("no map"), false, nil
 	}

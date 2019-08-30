@@ -25,9 +25,6 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 
 			_, newSquad := new.AddNewSquad(newBody.Name, user.GetID()) // делаем новый отряд
 
-			base, _ := bases.Bases.Get(user.InBaseID)
-			newSquad.MapID = base.MapID
-
 			if user.GetSquad() != nil {
 				user.GetSquad().Active = false         //  старый отряд делаем не активным
 				user.GetSquad().BaseID = user.InBaseID // ид базы где храниться отряд
@@ -44,6 +41,9 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 			user.GetSquad().MatherShip.Power = newBody.MaxPower     // устанавливаем мощьность как у тела
 			user.GetSquad().MatherShip.ActionPoints = newBody.Speed // устанавливаем скорость как у тела
 			user.GetSquad().MatherShip.Body = newBody
+
+			base, _ := bases.Bases.Get(user.InBaseID)
+			newSquad.MatherShip.MapID = base.MapID
 
 			RemoveSlotBySource(user, inventorySlot, source, 1)
 

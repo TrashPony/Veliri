@@ -18,8 +18,8 @@ func Squad(squad *squad.Squad, full bool) {
 		log.Fatal("update squad tx error: " + err.Error())
 	}
 
-	_, err = tx.Exec("UPDATE squads SET active=$1, in_game=$2, id_map=$4, id_base=$5, name=$6 WHERE id=$3",
-		squad.Active, squad.InGame, squad.ID, squad.MapID, squad.BaseID, squad.Name)
+	_, err = tx.Exec("UPDATE squads SET active=$1, in_game=$2, id_base=$4, name=$5 WHERE id=$3",
+		squad.Active, squad.InGame, squad.ID, squad.BaseID, squad.Name)
 
 	if err != nil {
 		log.Fatal("update squad" + err.Error())

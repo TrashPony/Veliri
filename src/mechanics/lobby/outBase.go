@@ -25,7 +25,7 @@ func OutBase(user *player.Player) error {
 
 		user.GetSquad().MatherShip.Q = respCoordinate.Q
 		user.GetSquad().MatherShip.R = respCoordinate.R
-		user.GetSquad().MapID = gameBase.MapID
+		user.GetSquad().MatherShip.MapID = gameBase.MapID
 		user.GetSquad().MatherShip.Rotate = respCoordinate.RespRotate
 
 		user.LastBaseID = user.InBaseID

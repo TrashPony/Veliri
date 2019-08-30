@@ -6,17 +6,16 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/gorilla/websocket"
 	"time"
 )
 
-func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coordinate) {
+func HandlerParse(user *player.Player, coor *coordinate.Coordinate) {
 	if coor.Handler == "base" {
 		IntoToBase(user, coor.ToBaseID)
 	}
 
 	if coor.Handler == "sector" {
-		ChangeSector(user, coor.ToMapID, ws, coor)
+		ChangeSector(user, coor.ToMapID, coor)
 	}
 
 	if !user.Bot {
@@ -24,7 +23,7 @@ func HandlerParse(user *player.Player, ws *websocket.Conn, coor *coordinate.Coor
 	}
 }
 
-func ChangeSector(user *player.Player, mapID int, ws *websocket.Conn, coor *coordinate.Coordinate) {
+func ChangeSector(user *player.Player, mapID int, coor *coordinate.Coordinate) {
 
 	var toPosition *coordinate.Coordinate
 	for {
@@ -43,10 +42,10 @@ func ChangeSector(user *player.Player, mapID int, ws *websocket.Conn, coor *coor
 
 	stopMove(user.GetSquad().MatherShip, true)
 
-	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
+	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot})
 	DisconnectUser(user, true) // если только сообщение то можно не горутиной
 
-	user.GetSquad().MapID = mapID
+	user.GetSquad().MatherShip.MapID = mapID
 	user.GetSquad().MatherShip.Q = toPosition.Q
 	user.GetSquad().MatherShip.R = toPosition.R
 	user.GetSquad().MatherShip.Rotate = toPosition.RespRotate

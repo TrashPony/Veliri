@@ -25,13 +25,15 @@ function update() {
         // AnimateMiningLaser();
         // AnimateDigger();
         //
-        // AnimationMove(game.squad);
         // for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
         //     AnimationMove(game.otherUsers[i]);
         // }
         //
         // DebugCollision();
         //
+        for (let i in game.units){
+            AnimationMove(game.units[i]);
+        }
         StartSelectableUnits();
     }
 }

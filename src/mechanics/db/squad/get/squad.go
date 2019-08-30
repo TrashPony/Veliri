@@ -15,7 +15,7 @@ import (
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
 
-	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, id_map, id_base FROM squads WHERE id_user=$1", userID)
+	rows, err := dbConnect.GetDBConnect().Query("Select id, name, active, in_game, id_base FROM squads WHERE id_user=$1", userID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +26,7 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 	for rows.Next() {
 		var userSquad squad.Squad
 
-		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.MapID, &userSquad.BaseID)
+		err := rows.Scan(&userSquad.ID, &userSquad.Name, &userSquad.Active, &userSquad.InGame, &userSquad.BaseID)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -75,7 +75,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"weapon_color_1,"+
 			"weapon_color_2,"+
 			"body_texture,"+
-			"weapon_texture "+
+			"weapon_texture,"+
+			"id_map "+
 			""+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND mother_ship=$2", squadID, true)
@@ -111,6 +112,7 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			&ship.WeaponColor2,
 			&ship.BodyTexture,
 			&ship.WeaponTexture,
+			&ship.MapID,
 		)
 
 		if err != nil {
@@ -187,7 +189,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"weapon_color_1,"+
 			"weapon_color_2,"+
 			"body_texture,"+
-			"weapon_texture "+
+			"weapon_texture,"+
+			"id_map "+
 			" "+
 			"FROM squad_units "+
 			"WHERE id_squad=$1 AND slot=$2 AND mother_ship=$3", squadID, slot, false)
@@ -222,6 +225,7 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			&squadUnit.WeaponColor2,
 			&squadUnit.BodyTexture,
 			&squadUnit.WeaponTexture,
+			&squadUnit.MapID,
 		)
 		if err != nil {
 			log.Fatal("get units squad " + err.Error())

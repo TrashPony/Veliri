@@ -6,12 +6,12 @@ import (
 )
 
 func DisconnectUser(user *player.Player, onlyMessage bool) {
-	if !onlyMessage {
-		globalGame.Clients.DelClientByID(user.GetID())
+	if !onlyMessage && user != nil {
+		globalGame.Clients.DelClientByID(user.ID)
 	}
 
 	if user != nil && user.GetSquad() != nil {
 		go SendMessage(Message{Event: "DisconnectUser", OtherUser: user.GetShortUserInfo(true),
-			IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
+			IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	}
 }

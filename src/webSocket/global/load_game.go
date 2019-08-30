@@ -10,7 +10,7 @@ import (
 
 func LoadGame(user *player.Player, msg Message) {
 	// TODO при загрузке нового игрока весь мир замерает на некоторые секунды, возможно актуально только для ботов
-	mp, find := maps.Maps.GetByID(user.GetSquad().MapID)
+	mp, find := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
 	if find {
 
@@ -18,12 +18,12 @@ func LoadGame(user *player.Player, msg Message) {
 		user.GetSquad().MatherShip.Afterburner = false
 		user.GetSquad().MoveChecker = false
 		user.GetSquad().MatherShip.ActualPath = nil
-		user.GetSquad().MatherShip.HighGravity = globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MapID)
+		user.GetSquad().MatherShip.HighGravity = globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID)
 
 		//TODO globalGame.GetPlaceCoordinate(user)
 		user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y = globalGame.GetXYCenterHex(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
 
-		go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDSender: user.GetID(), IDMap: user.GetSquad().MapID})
+		go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
 			Event:      msg.Event,
 			Map:        mp,
@@ -33,8 +33,8 @@ func LoadGame(user *player.Player, msg Message) {
 			Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
 			IDUserSend: user.GetID(),
 			Credits:    user.GetCredits(),
-			IDMap:      user.GetSquad().MapID,
-			ShortUnits: globalGame.Clients.GetAllShortUnits(),
+			IDMap:      user.GetSquad().MatherShip.MapID,
+			ShortUnits: globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID),
 			Bot:        user.Bot,
 		})
 
@@ -42,9 +42,9 @@ func LoadGame(user *player.Player, msg Message) {
 		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 		anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)
 		if err == nil {
-			go SendMessage(Message{Event: "AnomalySignal", IDUserSend: user.GetID(), Anomalies: anomalies, IDMap: user.GetSquad().MapID, Bot: user.Bot})
+			go SendMessage(Message{Event: "AnomalySignal", IDUserSend: user.GetID(), Anomalies: anomalies, IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot})
 		}
 	} else {
-		go SendMessage(Message{Event: "Error", Error: "no allow", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Bot: user.Bot})
+		go SendMessage(Message{Event: "Error", Error: "no allow", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot})
 	}
 }

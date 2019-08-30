@@ -61,10 +61,11 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"mother_ship, "+
 				"action_point, "+
 				"defend, "+
-				"move "+
+				"move,"+
+				"id_map, "+
 				""+
 				") "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id",
 				squad.ID,
 				slotUnit.Unit.Body.ID,
 				slot,
@@ -79,6 +80,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				slotUnit.Unit.ActionPoints,
 				slotUnit.Unit.Defend,
 				slotUnit.Unit.Move,
+				slotUnit.Unit.MapID,
 			).Scan(&id)
 			if err != nil {
 				log.Fatal("add new unit to squad " + err.Error())
@@ -106,7 +108,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"body_color_1 = $15,"+
 					"body_color_2 = $16,"+
 					"weapon_color_1 = $17,"+
-					"weapon_color_2 = $18 "+
+					"weapon_color_2 = $18,"+
+					"id_map = $19 "+
 					"WHERE id_squad = $11 AND slot = $12",
 				slotUnit.Unit.Body.ID,
 				slotUnit.Unit.Q,
@@ -126,6 +129,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				slotUnit.Unit.BodyColor2,
 				slotUnit.Unit.WeaponColor1,
 				slotUnit.Unit.WeaponColor2,
+				slotUnit.Unit.MapID,
 			)
 
 			if err != nil {

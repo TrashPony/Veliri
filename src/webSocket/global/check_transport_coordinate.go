@@ -3,7 +3,7 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"time"
 )
@@ -47,42 +47,41 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 	x, y := globalGame.GetXYCenterHex(q, r)
 
 	lock := false
-	users, rLock := globalGame.Clients.GetAll()
-	defer rLock.Unlock()
+	units := globalGame.Clients.GetAllShortUnits(mapID)
 
-	for _, user := range users {
-		if user.GetSquad() != nil {
-			dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+	for _, gameUnit := range units {
 
-			if int(dist) < distCheck && mapID == user.GetSquad().MapID {
-				if !user.GetSquad().ForceEvacuation {
-					go SendMessage(Message{Event: "setFreeCoordinate", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID, Seconds: seconds, Bot: user.Bot})
-					go ForceEvacuation(user, x, y, seconds, distCheck)
-				}
-				lock = true
-				user.GetSquad().ForceEvacuation = true
+		dist := globalGame.GetBetweenDist(gameUnit.X, gameUnit.Y, x, y)
+
+		if int(dist) < distCheck && mapID == gameUnit.MapID {
+			dangerUnit := globalGame.Clients.GetUnitByID(gameUnit.ID)
+			if !gameUnit.ForceEvacuation {
+				go SendMessage(Message{Event: "setFreeCoordinate", IDUserSend: gameUnit.OwnerID, IDMap: gameUnit.MapID, Seconds: seconds, Bot: false})
+				go ForceEvacuation(dangerUnit, x, y, seconds, distCheck)
 			}
+			lock = true
+			dangerUnit.ForceEvacuation = true
 		}
 	}
 
 	return lock
 }
 
-func ForceEvacuation(user *player.Player, x, y, seconds, distCheck int) {
+func ForceEvacuation(unit *unit.Unit, x, y, seconds, distCheck int) {
 	timeCount := 0
 	for {
 		timeCount++
 		time.Sleep(100 * time.Millisecond)
 
-		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		dist := globalGame.GetBetweenDist(unit.X, unit.Y, x, y)
 
 		if int(dist) > distCheck {
-			go SendMessage(Message{Event: "removeNoticeFreeCoordinate", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
-			user.GetSquad().ForceEvacuation = false
+			go SendMessage(Message{Event: "removeNoticeFreeCoordinate", IDUserSend: unit.OwnerID, IDMap: unit.MapID})
+			unit.ForceEvacuation = false
 			break
 		} else {
-			if timeCount > seconds*10 && !user.GetSquad().Evacuation {
-				go evacuationSquad(user)
+			if timeCount > seconds*10 && !unit.Evacuation {
+				go evacuationUnit(unit)
 			}
 		}
 	}

@@ -58,6 +58,10 @@ function CheckBoxInBox(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
 function SelectOneUnit(unit, boxSprite, userId) {
     selectOneUnit = true;
 
+    if (unit.owner_id !== game.user_id) {
+        return
+    }
+
     for (let i in selectUnits) {
         selectUnits[i].sprite.frame = 0;
     }
@@ -86,8 +90,11 @@ function CheckSelectUnits() {
                 game.units[i].sprite.x + (game.units[i].sprite.width / 8),
                 game.units[i].sprite.y + (game.units[i].sprite.height / 8),
             )) {
-                unitInfo(game.units[i], game.units[i].sprite, game.units[i].owner_id);
-                selectUnits.push(game.units[i])
+
+                if (game.units[i].owner_id === game.user_id) {
+                    unitInfo(game.units[i], game.units[i].sprite, game.units[i].owner_id);
+                    selectUnits.push(game.units[i])
+                }
             } else {
                 unitRemoveInfo(game.units[i], game.units[i].sprite)
             }

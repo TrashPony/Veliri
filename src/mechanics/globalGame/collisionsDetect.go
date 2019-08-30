@@ -6,8 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/gorilla/websocket"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"math"
 )
 
@@ -128,39 +127,30 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 	return true, startCoordinate.Q, startCoordinate.R, true
 }
 
-func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map[*websocket.Conn]*player.Player) (bool, *player.Player) {
+func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo) (bool, *unit.ShortUnitInfo) {
 
-	if moveUser.GetSquad() == nil {
-		return true, nil
-	}
+	bodyMove := moveUnit.Body
+	mX, mY := float64(moveUnit.X), float64(moveUnit.Y)
 
-	bodyMove := moveUser.GetSquad().MatherShip.Body
-	mX, mY := float64(moveUser.GetSquad().MatherShip.X), float64(moveUser.GetSquad().MatherShip.Y)
+	for _, otherUnit := range units {
 
-	for _, user := range users {
-
-		if user.GetSquad() == nil {
+		if otherUnit == nil {
 			continue
 		}
 
-		if user.GetSquad().MapID != moveUser.GetSquad().MapID {
+		if moveUnit.MapID != otherUnit.MapID {
 			// по неведомой причине нельзя этот иф класть в общий, он не работает там
-			// TODO тут я тоже не уверен надо дебажить, проблема что боты сталкиваются на разных картах имея одинаковые координаты
 			continue
 		}
 
-		if user != nil && (moveUser.GetID() > 0 && moveUser.GetID() != user.GetID()) || (moveUser.UUID != "" && moveUser.UUID != user.UUID) && !user.GetSquad().Evacuation {
+		if otherUnit != nil && (moveUnit.ID > 0 && moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
 
-			if user.GetSquad().MapID != moveUser.GetSquad().MapID {
-				println("колизия: ", user.GetID(), user.GetSquad().MapID, moveUser.GetID(), moveUser.GetSquad().MapID, user.GetSquad().MapID == moveUser.GetSquad().MapID)
-			}
+			bodyUser := otherUnit.Body
 
-			bodyUser := user.GetSquad().MatherShip.Body
-
-			dist := int(GetBetweenDist(x, y, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y))
+			dist := int(GetBetweenDist(x, y, otherUnit.X, otherUnit.Y))
 
 			if dist < bodyMove.SideRadius+bodyUser.SideRadius {
-				return false, user
+				return false, otherUnit
 			}
 
 			if dist < bodyMove.FrontRadius+bodyUser.FrontRadius {
@@ -169,19 +159,19 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyMove.FrontRadius)*math.Cos(rad)) + x
 					bY := int(float64(bodyMove.FrontRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
 
 					if distToObstacle < float64(bodyUser.FrontRadius) {
-						userRotate := user.GetSquad().MatherShip.Rotate
+						userRotate := otherUnit.Rotate
 
-						abRad := math.Atan2(float64(bY-user.GetSquad().MatherShip.X), float64(bX-user.GetSquad().MatherShip.Y))
+						abRad := math.Atan2(float64(bY-otherUnit.X), float64(bX-otherUnit.Y))
 						ab := int(abRad * 180 / math.Pi)
 
 						if ab < 0 && userRotate > 180 {
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false, user
+							return false, otherUnit
 						}
 					}
 				}
@@ -193,11 +183,11 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyMove.FrontRadius)*math.Cos(rad)) + x
 					bY := int(float64(bodyMove.FrontRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
 
 					if distToObstacle < float64(bodyUser.BackRadius) {
 
-						userRotate := user.GetSquad().MatherShip.Rotate
+						userRotate := otherUnit.Rotate
 						if userRotate >= 180 {
 							userRotate -= 180
 						} else {
@@ -206,13 +196,13 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 							}
 						}
 
-						abRad := math.Atan2(float64(bY-user.GetSquad().MatherShip.Y), float64(bX-user.GetSquad().MatherShip.X))
+						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
 						ab := int(abRad * 180 / math.Pi)
 						if ab < 0 && userRotate > 180 {
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false, user
+							return false, otherUnit
 						}
 					}
 				}
@@ -220,8 +210,8 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 
 			if dist < bodyMove.FrontRadius+bodyUser.SideRadius {
 				// проверяем морду идущего и бока стоящего
-				if checkCollision(rotate, bodyMove.LeftFrontAngle, bodyMove.RightFrontAngle, bodyMove.FrontRadius, x, y, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, bodyUser.SideRadius) {
-					return false, user
+				if checkCollision(rotate, bodyMove.LeftFrontAngle, bodyMove.RightFrontAngle, bodyMove.FrontRadius, x, y, otherUnit.X, otherUnit.Y, bodyUser.SideRadius) {
+					return false, otherUnit
 				}
 			}
 
@@ -231,11 +221,11 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyMove.BackRadius)*math.Cos(rad)) + x
 					bY := int(float64(bodyMove.BackRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
 
 					if distToObstacle < float64(bodyUser.BackRadius) {
 
-						userRotate := user.GetSquad().MatherShip.Rotate
+						userRotate := otherUnit.Rotate
 						if userRotate >= 180 {
 							userRotate -= 180
 						} else {
@@ -244,13 +234,13 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 							}
 						}
 
-						abRad := math.Atan2(float64(bY-user.GetSquad().MatherShip.Y), float64(bX-user.GetSquad().MatherShip.X))
+						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
 						ab := int(abRad * 180 / math.Pi)
 						if ab < 0 && userRotate > 180 {
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false, user
+							return false, otherUnit
 						}
 					}
 				}
@@ -262,18 +252,18 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					rad := float64(i) * math.Pi / 180
 					bX := int(float64(bodyMove.BackRadius)*math.Cos(rad)) + x
 					bY := int(float64(bodyMove.BackRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
 					if distToObstacle < float64(bodyUser.FrontRadius) {
-						userRotate := user.GetSquad().MatherShip.Rotate
+						userRotate := otherUnit.Rotate
 
-						abRad := math.Atan2(float64(bY-user.GetSquad().MatherShip.Y), float64(bX-user.GetSquad().MatherShip.X))
+						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
 						ab := int(abRad * 180 / math.Pi)
 
 						if ab < 0 && userRotate > 180 {
 							ab += 360
 						}
 						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false, user
+							return false, otherUnit
 						}
 					}
 				}
@@ -290,10 +280,10 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					squad.rectDebag.lineTo(-50, -25);
 			*/
 
-			heightUserMove, widthUserMove := float64(moveUser.GetSquad().MatherShip.Body.Height), float64(moveUser.GetSquad().MatherShip.Body.Width)
-			heightUser, widthUser := float64(user.GetSquad().MatherShip.Body.Height), float64(user.GetSquad().MatherShip.Body.Width)
+			heightUserMove, widthUserMove := float64(moveUnit.Body.Height), float64(moveUnit.Body.Width)
+			heightUser, widthUser := float64(otherUnit.Body.Height), float64(otherUnit.Body.Width)
 
-			uX, uY := float64(user.GetSquad().MatherShip.X), float64(user.GetSquad().MatherShip.Y)
+			uX, uY := float64(otherUnit.X), float64(otherUnit.Y)
 			mUserRect := rect{
 				sides: []sideRec{
 					{x1: mX - widthUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY + heightUserMove},
@@ -301,8 +291,8 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					{x1: mX + widthUserMove, y1: mY + heightUserMove, x2: mX + widthUserMove, y2: mY - heightUserMove},
 					{x1: mX + heightUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY - heightUserMove},
 				},
-				centerX: float64(moveUser.GetSquad().MatherShip.X),
-				centerY: float64(moveUser.GetSquad().MatherShip.Y),
+				centerX: float64(moveUnit.X),
+				centerY: float64(moveUnit.Y),
 			}
 
 			userRect := rect{
@@ -312,12 +302,12 @@ func CheckCollisionsPlayers(moveUser *player.Player, x, y, rotate int, users map
 					{x1: uX + widthUser, y1: uY + heightUser, x2: uX + widthUser, y2: uY - heightUser},
 					{x1: uX + heightUser, y1: uY - heightUser, x2: uX - widthUser, y2: uY - heightUser},
 				},
-				centerX: float64(user.GetSquad().MatherShip.X),
-				centerY: float64(user.GetSquad().MatherShip.Y),
+				centerX: float64(otherUnit.X),
+				centerY: float64(otherUnit.Y),
 			}
 
-			if mUserRect.detect(&userRect, float64(moveUser.GetSquad().MatherShip.Rotate), float64(user.GetSquad().MatherShip.Rotate)) {
-				return false, user
+			if mUserRect.detect(&userRect, float64(moveUnit.Rotate), float64(otherUnit.Rotate)) {
+				return false, otherUnit
 			}
 		}
 	}

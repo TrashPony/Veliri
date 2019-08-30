@@ -47,13 +47,13 @@ func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) 
 	}
 
 	c.users[newWS] = newClient
-	c.connects[newWS] = gameConnect{ID: newClient.GetID(), Bot: newClient.Bot, MapID: newClient.GetSquad().MapID}
+	c.connects[newWS] = gameConnect{ID: newClient.GetID(), Bot: newClient.Bot, MapID: newClient.GetSquad().MatherShip.MapID}
 
 	// мазершип всегда сразу на карте
 	c.units[newClient.GetSquad().MatherShip.ID] = newClient.GetSquad().MatherShip
 }
 
-func (c *wsUsers) GetAllShortUnits() map[int]*unit.ShortUnitInfo {
+func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
 	// этого метода хвати и для колизий
 	c.unitsMX.Lock()
 	defer c.unitsMX.Unlock()
@@ -61,10 +61,19 @@ func (c *wsUsers) GetAllShortUnits() map[int]*unit.ShortUnitInfo {
 	shortUnits := make(map[int]*unit.ShortUnitInfo)
 
 	for _, gameUnit := range c.units {
-		shortUnits[gameUnit.ID] = gameUnit.GetShortInfo()
+		if gameUnit.MapID == mapID {
+			shortUnits[gameUnit.ID] = gameUnit.GetShortInfo()
+		}
 	}
 
 	return shortUnits
+}
+
+func (c *wsUsers) GetUnitByID(id int) *unit.Unit {
+	c.unitsMX.Lock()
+	defer c.unitsMX.Unlock()
+
+	return c.units[id]
 }
 
 func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {

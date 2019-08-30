@@ -4,15 +4,16 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/gorilla/websocket"
 )
 
-func HandlerDetect(moveUser *player.Player) *coordinate.Coordinate {
-	mp, _ := maps.Maps.GetByID(moveUser.GetSquad().MapID)
+func HandlerDetect(moveUnit *unit.Unit) *coordinate.Coordinate {
+	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 
 	for _, coor := range mp.HandlersCoordinates {
 		xHandle, yHandle := GetXYCenterHex(coor.Q, coor.R)
-		dist := int(GetBetweenDist(moveUser.GetSquad().MatherShip.X, moveUser.GetSquad().MatherShip.Y, xHandle, yHandle))
+		dist := int(GetBetweenDist(moveUnit.X, moveUnit.Y, xHandle, yHandle))
 		if dist < 60 && coor.Handler != "" {
 			return coor
 		}
@@ -30,7 +31,7 @@ func CheckHandlerCoordinate(coor *coordinate.Coordinate, users map[*websocket.Co
 		busy := false
 
 		for _, user := range users {
-			if user.GetSquad() != nil && coor.ToMapID == user.GetSquad().MapID {
+			if user.GetSquad() != nil && coor.ToMapID == user.GetSquad().MatherShip.MapID {
 				dist := GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 				if dist < 135 {
 					busy = true

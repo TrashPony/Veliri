@@ -45,7 +45,6 @@ func Bases() map[int]*base.Base {
 
 		respawnBases(&gameBase)
 		gameBase.CreateTransports(transports)
-		gameBase.CreateDefenders(defenders)
 
 		bases[gameBase.ID] = &gameBase
 	}

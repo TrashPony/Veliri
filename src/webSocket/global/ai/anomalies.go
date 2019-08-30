@@ -31,7 +31,7 @@ func mortalityAnomaly(anomaly *_map.Anomalies, mp *_map.Map) {
 	for {
 		users, rLock := globalGame.Clients.GetAll()
 		for _, user := range users {
-			if user.GetSquad() != nil && user.GetSquad().MapID == mp.Id {
+			if user.GetSquad() != nil && user.GetSquad().MatherShip.MapID == mp.Id {
 				dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, anomaly.X, anomaly.Y)
 
 				if int(dist) < anomaly.Radius {

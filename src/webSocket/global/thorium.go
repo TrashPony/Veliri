@@ -14,10 +14,10 @@ func updateThorium(user *player.Player, msg Message) {
 	msg.ToY = user.GetSquad().MatherShip.ToY
 
 	Move(user, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 
 	go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(),
-		ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MapID})
+		ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MatherShip.MapID})
 }
 
 func removeThorium(user *player.Player, msg Message) {
@@ -28,7 +28,7 @@ func removeThorium(user *player.Player, msg Message) {
 	msg.ToY = user.GetSquad().MatherShip.ToY
 
 	Move(user, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
-	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MapID})
+	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(),
-		ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MapID})
+		ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MatherShip.MapID})
 }
