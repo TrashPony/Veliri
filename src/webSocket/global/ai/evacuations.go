@@ -16,10 +16,13 @@ import (
 
 func EvacuationsLife() {
 	allMaps := maps.Maps.GetAllMap()
-	// TODO иногда не запускаются
 	for _, mp := range allMaps {
 		mapBases := bases.Bases.GetBasesByMap(mp.Id)
 		for _, mapBase := range mapBases {
+
+			// запускаем отслеживать транспортные товки
+			go TransportMonitor(mapBase, mp)
+
 			for _, transport := range mapBase.Transports {
 
 				// задаем начальное положение эвакуаторов как у баз
@@ -27,6 +30,8 @@ func EvacuationsLife() {
 				transport.X = x
 				transport.Y = y
 
+				// TODO выедает производительность по неведомой причине, возможная причина расчеты в недостижимые точки
+				// после выставления минимальной скорость 5 и стартовой скорости 5 производительность выросла в разы
 				go LaunchTransport(transport, mapBase, mp)
 			}
 		}
@@ -51,13 +56,11 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 		y += yBase // докидываем положение базы
 
 		// формируем путь для движения
-		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 15, 15,
+		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 5, 5,
 			float64(x), float64(y), transport.Rotate, 10, mp, true, nil, false, false, nil)
-
 		// запускаем транспорт
-		go TransportMonitor(transportBase, mp)
-
 		FlyTransport(transport, transportBase, mp, path)
+		time.Sleep(1 * time.Second)
 	}
 }
 
@@ -76,20 +79,25 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 		transport.X = pathUnit.X
 		transport.Y = pathUnit.Y
 		transport.Rotate = pathUnit.Rotate
+		transport.Speed = pathUnit.Speed
 	}
 }
 
 func TransportMonitor(transportBase *base.Base, mp *_map.Map) {
-	for _, coordinate := range mp.HandlersCoordinates {
+	for {
+		for _, coordinate := range mp.HandlersCoordinates {
 
-		xHandle, yHandle := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
-		xBase, yBase := globalGame.GetXYCenterHex(transportBase.Q, transportBase.R)
+			xHandle, yHandle := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
+			xBase, yBase := globalGame.GetXYCenterHex(transportBase.Q, transportBase.R)
 
-		dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
-		if dist < transportBase.GravityRadius {
-			if coordinate.Transport {
-				wsGlobal.CheckTransportCoordinate(coordinate.Q, coordinate.R, 20, 60, mp.Id)
+			dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
+			if dist < transportBase.GravityRadius {
+				if coordinate.Transport {
+					wsGlobal.CheckTransportCoordinate(coordinate.Q, coordinate.R, 20, 60, mp.Id)
+				}
 			}
 		}
+
+		time.Sleep(1 * time.Second)
 	}
 }

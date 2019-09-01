@@ -24,7 +24,7 @@ function MoveTo(jsonData) {
         unit.rotate = path.rotate;
 
         SetAngle(unit, path.rotate, path.millisecond, true);
-
+        CreateMiniMap();
     } else {
         CreateNewUnit(unit)
     }

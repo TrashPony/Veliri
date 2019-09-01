@@ -30,8 +30,8 @@ function LoadGame() {
     FillSquadBlock(Data.squad);
     Anomaly(Data.squad);
 
-    //todo FillUserMeta(Data.credits, Data.experience, Data.squad);
-
+    FillUserMeta(Data.credits, Data.experience, Data.squad);
+    ChangeGravity(Data.high_gravity);
 
     setTimeout(function () {
         CreateMiniMap();

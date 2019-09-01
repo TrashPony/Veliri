@@ -25,17 +25,18 @@ func LoadGame(user *player.Player, msg Message) {
 
 		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
-			Event:      msg.Event,
-			Map:        mp,
-			User:       user,
-			Squad:      user.GetSquad(),
-			Bases:      bases.Bases.GetBasesByMap(mp.Id),
-			Boxes:      boxes.Boxes.GetAllBoxByMapID(mp.Id),
-			IDUserSend: user.GetID(),
-			Credits:    user.GetCredits(),
-			IDMap:      user.GetSquad().MatherShip.MapID,
-			ShortUnits: globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID),
-			Bot:        user.Bot,
+			Event:       msg.Event,
+			Map:         mp,
+			User:        user,
+			Squad:       user.GetSquad(),
+			Bases:       bases.Bases.GetBasesByMap(mp.Id),
+			Boxes:       boxes.Boxes.GetAllBoxByMapID(mp.Id),
+			IDUserSend:  user.GetID(),
+			Credits:     user.GetCredits(),
+			IDMap:       user.GetSquad().MatherShip.MapID,
+			ShortUnits:  globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID),
+			Bot:         user.Bot,
+			HighGravity: globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
 		})
 
 		// находим аномалии

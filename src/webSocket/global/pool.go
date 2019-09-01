@@ -84,6 +84,7 @@ type Message struct {
 	Unit          *unit.Unit                      `json:"unit"`
 	UnitID        int                             `json:"unit_id"`
 	Equip         *detail.BodyEquipSlot           `json:"equip"`
+	HighGravity   bool                            `json:"high_gravity"`
 }
 
 type Cloud struct {

@@ -60,7 +60,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ChangeGravity") {
-        ChangeGravity(jsonData.squad)
+        ChangeGravity(jsonData.high_gravity)
     }
 
     if (jsonData.event === "DestroyBox") {

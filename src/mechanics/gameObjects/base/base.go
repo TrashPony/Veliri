@@ -27,14 +27,15 @@ type Base struct {
 }
 
 type Transport struct {
-	ID       int    `json:"id"`
-	X        int    `json:"x"`
-	Y        int    `json:"y"`
-	Rotate   int    `json:"rotate"`
-	Fraction string `json:"fraction"`
-	Job      bool   `json:"job"`      /* на задание он или нет */
-	Down     bool   `json:"down"`     /* на земле он или нет */
-	SquadID  bool   `json:"squad_id"` /* ид того кого он тащит */
+	ID       int     `json:"id"`
+	X        int     `json:"x"`
+	Y        int     `json:"y"`
+	Rotate   int     `json:"rotate"`
+	Speed    float64 `json:"speed"`
+	Fraction string  `json:"fraction"`
+	Job      bool    `json:"job"`      /* на задание он или нет */
+	Down     bool    `json:"down"`     /* на земле он или нет */
+	SquadID  bool    `json:"squad_id"` /* ид того кого он тащит */
 }
 
 func (b *Base) CreateTransports(count int) {

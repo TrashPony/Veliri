@@ -1,24 +1,27 @@
 function FillUserMeta(credits, experience, squad) {
     let creditBlock = document.getElementById("Credits");
-    creditBlock.innerHTML = "" +
-        "<div style='position: relative'>" +
+    if (creditBlock) {
+        creditBlock.innerHTML = "" +
+            "<div style='position: relative'>" +
             "<span style='position: absolute;'>Кредиты: </span>" +
             "<span style='position: absolute; right: 10px; color: #00fdff'>" + credits + "</span>" +
-        "</div>";
+            "</div>";
+    }
+
     let experienceBlock = document.getElementById("Experience");
-    experienceBlock.innerHTML = "" +
-        "<div style='position: relative'>" +
+    if (experienceBlock) {
+        experienceBlock.innerHTML = "" +
+            "<div style='position: relative'>" +
             "<span style='position: absolute;'>Опыт: </span>" +
             "<span style='position: absolute; right: 10px; color: #00fdff'>" + experience + "</span>" +
-        "</div>";
-
-    ChangeGravity(squad)
+            "</div>";
+    }
 }
 
-function ChangeGravity(squad) {
+function ChangeGravity(high_gravity) {
     let gravity = document.getElementById("lowGravity");
 
-    if (!squad.high_gravity) {
+    if (!high_gravity) {
         gravity.innerHTML = "LOW GRAVITY";
         gravity.style.visibility = "visible";
         gravity.style.color = "#bdbd00";

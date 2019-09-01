@@ -61,6 +61,7 @@ func evacuationUnit(unit *unit.Unit) {
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
+			transport.Rotate = pathUnit.Rotate
 
 			time.Sleep(100 * time.Millisecond)
 		}
@@ -89,6 +90,8 @@ func evacuationUnit(unit *unit.Unit) {
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
+			transport.Rotate = pathUnit.Rotate
+
 			unit.X = pathUnit.X
 			unit.Y = pathUnit.Y
 

@@ -103,7 +103,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		if moveUnit.HighGravity != newGravity {
 			moveUnit.HighGravity = newGravity
 			go SendMessage(Message{Event: "ChangeGravity", IDUserSend: user.GetID(), ShortUnit: moveUnit.GetShortInfo(),
-				IDMap: moveUnit.MapID, Bot: user.Bot})
+				IDMap: moveUnit.MapID, HighGravity: newGravity, Bot: user.Bot})
 			moveRepeat = true
 			return
 		}
