@@ -16,14 +16,14 @@ func LoadGame(user *player.Player, msg Message) {
 
 		// обнуляем все параметры глобальной игры
 		user.GetSquad().MatherShip.Afterburner = false
-		user.GetSquad().MoveChecker = false
+		user.GetSquad().MatherShip.MoveChecker = false
 		user.GetSquad().MatherShip.ActualPath = nil
 		user.GetSquad().MatherShip.HighGravity = globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID)
 
 		//TODO globalGame.GetPlaceCoordinate(user)
 		user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y = globalGame.GetXYCenterHex(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
 
-		go SendMessage(Message{Event: "ConnectNewUser", OtherUser: user.GetShortUserInfo(true), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
 			Event:      msg.Event,
 			Map:        mp,

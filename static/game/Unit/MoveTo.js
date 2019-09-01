@@ -19,14 +19,14 @@ function MoveTo(jsonData) {
             }, path.millisecond, Phaser.Easing.Linear.None, true, 0
         );
 
-        unit.speed = path.Speed;
+        unit.speed = path.Speed * 10;
         unit.animateSpeed = path.animate;
         unit.rotate = path.rotate;
 
         SetAngle(unit, path.rotate, path.millisecond, true);
 
     } else {
-        // todo создаем юнита
+        CreateNewUnit(unit)
     }
 }
 

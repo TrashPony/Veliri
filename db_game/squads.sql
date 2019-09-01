@@ -81,17 +81,18 @@ CREATE TABLE squad_units_equipping
   target           VARCHAR(64) /* цель снаряжения, говорит куда применять его на фазе атаки */
 );
 
-CREATE TABLE squad_inventory
+/* Главным инвентарем отряда конечно является МП, однако у других юнитов тож есть инвентари например что руда копать, или в ящиках лазить */
+CREATE TABLE squad_units_inventory
 (/* инвентарь отряда не боевой параметр */
   id            SERIAL PRIMARY KEY,
-  id_squad      INT REFERENCES squads (id), /* какому отряду принаджелит */
+  id_unit       INT not null default 0, /* какому юниту в отряде принадлежит инвентарь */
 
   /* оружие(weapon), снаряжение(equip) или боеприпасы (ammo), корпуса (body), ресурсы (resource),
    переработака (recycle), ящики (boxes), детали (detail), чертеж (blueprints), (trash) */
-  item_type     VARCHAR(64),
-  slot          INT, /* какой слот занимает итем */
-  item_id       INT, /* ид итема определяет конкретный итем тип + ид*/
-  quantity      INT, /* количество предметов в слоте */
-  hp            INT, /* сколько осталось хп у эквипа, до поломки*/
-  place_user_id INT -- ид игрока который туда положить предмет(обновли последним), необходимо для публичных ящиков
+  item_type     text not null default '',
+  slot          INT not null default 0, /* какой слот занимает итем */
+  item_id       INT not null default 0, /* ид итема определяет конкретный итем тип + ид*/
+  quantity      INT not null default 0, /* количество предметов в слоте */
+  hp            INT not null default 0, /* сколько осталось хп у эквипа, до поломки*/
+  place_user_id INT not null default 0 -- ид игрока который туда положить предмет(обновли последним), необходимо для публичных ящиков
 );

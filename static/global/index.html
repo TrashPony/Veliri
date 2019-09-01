@@ -26,7 +26,6 @@
     <link href="./css/damageBar.css" rel="stylesheet">
     <link href="./css/lowGravity.css" rel="stylesheet">
     <link href="./css/tips.css" rel="stylesheet">
-    <link href="./css/miningPanel.css" rel="stylesheet">
     <link href="./css/anomalyScanner.css" rel="stylesheet">
     <link href="./css/action_panel.css" rel="stylesheet">
     <link href="./css/mission_block.css" rel="stylesheet">
@@ -62,7 +61,7 @@
 
     <script src="js/Handlers/Tunnels.js"></script>
 
-    <script src="js/Interface/FocusMS.js"></script>
+    <script src="js/Interface/FocusUnit.js"></script>
     <script src="../assets/components/miniMap/MouseZoomPress.js"></script>
     <script src="../assets/components/miniMap/HideMap.js"></script>
     <script src="js/Interface/OpenBox.js"></script>
@@ -76,11 +75,9 @@
     <script src="js/Interface/AnomalyCatch.js"></script>
     <script src="js/Interface/Mission.js"></script>
 
-    <script src="js/Actions/Stop.js"></script>
     <script src="js/Actions/Attack.js"></script>
     <script src="js/Actions/Scan.js"></script>
-    <script src="js/Actions/Chase.js"></script>
-    <script src="js/Actions/Dialog.js"></script>
+    <script src="js/Actions/UnselectAll.js"></script>
 
     <script src="js/Collision/Collision.js"></script>
 
@@ -271,7 +268,6 @@
             <div class="zoomButton" onmouseleave="mouseZoomPress('')" onmousedown="mouseZoomPress('zoomDown')"
                  onmouseup="mouseZoomPress('')"> -
             </div>
-            <div class="zoomButton" onmousedown="FocusMS()"> &#9055;</div>
         </div>
 
         <div id="Notifications"></div>
@@ -295,10 +291,6 @@
             <div id="MissionStory"></div>
         </div>
 
-        <div id="anomalyScanner">
-            <div id="anomalyDisplay"></div>
-        </div>
-
         <div id="chat">
             <div id="notifyBlock"></div>
             <div class="tabs" id="chatTabs">
@@ -319,8 +311,6 @@
 
         <div id="globalMenu">
             <div onclick="UsersStatus()"><img src="https://img.icons8.com/color/30/000000/development-skill.png"></div>
-            <div onclick="InitInventoryMenu(null, 'inventory')"><img
-                        src="https://img.icons8.com/color/80/000000/move-by-trolley.png"></div>
             <div onclick="InitInventoryMenu(null,'constructor')"><img
                         src="https://img.icons8.com/office/30/000000/tank.png"></div> <!-- меню оснащения отряда -->
             <div onclick="GlobalViewMap()"><img src="https://img.icons8.com/color/40/000000/waypoint-map.png"></div>
@@ -329,77 +319,81 @@
             <!-- эвакуация, возможно надо перместить на минимапу -->
         </div>
 
-        <div id="statusBar">
-            <div id="Thorium">
-                <div class="Thorium noActive"></div>
-                <div class="Thorium noActive"></div>
-                <div class="Thorium noActive"></div>
-            </div>
-            <div id="backAfterburner">
-                <div id="Afterburner" onclick="AfterburnerToggle()"></div>
-            </div>
-        </div>
-
         <div id="SquadBar">
-            <div id="HeadGlobal">
-                <div id="MS">
-                    <div class="body"></div>
-                    <div class="weapon"></div>
-                    <div class="ammo"></div>
+            <h4>Панель управления отрядом</h4>
+            <div id="MS">
+                <div id="anomalyScanner">
+                    <div id="anomalyDisplay"></div>
                 </div>
-                <div id="Credits"> Кредиты:</div>
-                <div id="Experience"> Опыт:</div>
+                <div class="weapon"></div>
+                <div class="ammo"></div>
+            </div>
+            <div id="HeadGlobal">
+                <div id="statusBar">
+                    <div id="reactorStatus">
+
+                    </div>
+                    <div id="Thorium">
+                        <div class="Thorium noActive"></div>
+                        <div class="Thorium noActive"></div>
+                        <div class="Thorium noActive"></div>
+                    </div>
+                    <div style="float: left; margin: 4px 0 0;">
+                        <div id="speedBarEfficiency"></div>
+                        <div id="thoriumBarEfficiency"></div>
+                    </div>
+                    <div id="backAfterburner">
+                        <div id="Afterburner" onclick="AfterburnerToggle()"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="ActionPanel">
+                <div id="ActionPanelWrapper">
+                    <div id="Attack" onclick="Attack()"
+                         style="background-image: url('https://img.icons8.com/offices/40/000000/centre-of-gravity.png')"></div>
+                    <div style="background-image: url('https://img.icons8.com/doodle/48/000000/three-way-direction.png')"></div>
+                    <div id="Scan" onclick="Scan()"
+                         style="background-image: url('https://img.icons8.com/ultraviolet/64/000000/radar.png')"></div>
+                    <div style="background-image: url('https://img.icons8.com/color/96/000000/multicast.png')"></div>
+                    <div style="background-image: url('https://img.icons8.com/officel/40/000000/feed-in.png')"></div>
+                    <div id="Stop"
+                         style="background-image: url('https://img.icons8.com/flat_round/64/000000/delete-sign.png')"></div>
+                </div>
             </div>
             <div id="Units">
-                <div id="unitSlot1"><span>N/A</span>
+                <div id="unitSlot1" class="unitsSlot"><span>N/A</span>
+                    <div class="body"></div>
+                    <div class="weapon"></div>
+                    <div class="ammo"></div>
+
+                </div>
+                <div id="unitSlot2" class="unitsSlot"><span>N/A</span>
                     <div class="body"></div>
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
-                <div id="unitSlot2"><span>N/A</span>
+                <div id="unitSlot3" class="unitsSlot"><span>N/A</span>
                     <div class="body"></div>
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
-                <div id="unitSlot3"><span>N/A</span>
+                <div id="unitSlot4" class="unitsSlot"><span>N/A</span>
                     <div class="body"></div>
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
-                <div id="unitSlot4"><span>N/A</span>
+                <div id="unitSlot5" class="unitsSlot"><span>N/A</span>
                     <div class="body"></div>
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
-                <div id="unitSlot5"><span>N/A</span>
-                    <div class="body"></div>
-                    <div class="weapon"></div>
-                    <div class="ammo"></div>
-                </div>
-                <div id="unitSlot6"><span>N/A</span>
+                <div id="unitSlot6" class="unitsSlot"><span>N/A</span>
                     <div class="body"></div>
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
             </div>
         </div>
-        <div id="damageMS">
-        </div>
-        <div id="damageUnit">
-        </div>
-    </div>
-
-    <div id="ActionPanel">
-        <div id="ActionPanelWrapper">
-            <div id="Attack" onclick="Attack()">Attack</div>
-            <div id="Scan" onclick="Scan()">Scan</div>
-            <div id="Chase" onclick="Chase()">Chase</div>
-            <div id="Dialog" onclick="Dialog()">Dialog</div>
-            <div id="Stop" onclick="Stop()">Stop</div>
-        </div>
-    </div>
-
-    <div id="MiningPanel">
     </div>
 </div>
 </body>

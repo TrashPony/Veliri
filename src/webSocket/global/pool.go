@@ -82,6 +82,8 @@ type Message struct {
 	ShortUnits    map[int]*unit.ShortUnitInfo     `json:"short_units"`
 	ShortUnit     *unit.ShortUnitInfo             `json:"short_unit"`
 	Unit          *unit.Unit                      `json:"unit"`
+	UnitID        int                             `json:"unit_id"`
+	Equip         *detail.BodyEquipSlot           `json:"equip"`
 }
 
 type Cloud struct {
@@ -164,8 +166,9 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "StopMove" {
-			//TODO
-			stopMove(nil, true)
+			for _, id := range msg.UnitsID {
+				stopMove(globalGame.Clients.GetUnitByID(id), true)
+			}
 		}
 
 		if msg.Event == "ThrowItems" {
@@ -209,11 +212,11 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "startMining" {
-			startMining(user, msg)
+			startMining(globalGame.Clients.GetUnitByID(msg.UnitID), msg)
 		}
 
-		if msg.Event == "SelectDigger" {
-			selectDigger(user, msg)
+		if msg.Event == "SelectEquip" {
+			SelectEquip(user, msg)
 		}
 
 		if msg.Event == "useDigger" {

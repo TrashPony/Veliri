@@ -45,7 +45,7 @@ function startMoveEvacuation(jsonData) {
     let unit = game.units[jsonData.short_unit.id];
 
     if (unit.owner_id === game.user_id) {
-        FocusMS();
+        FocusUnit(unit.id);
     }
 
     let tween = game.add.tween(unit).to({alpha: 0.6}, 200, "Linear", true, 0, -1);

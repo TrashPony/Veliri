@@ -32,14 +32,17 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				log.Fatal("delete memory unit " + err.Error())
 			}
 
-			_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit = $2",
-				squad.ID, id)
+			_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit = $2", squad.ID, id)
 			if err != nil {
 				log.Fatal("delete unit equip " + err.Error())
 			}
 
-			_, err = tx.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot = $2",
-				squad.ID, slot)
+			_, err = tx.Exec("DELETE FROM squad_units_inventory WHERE id_unit=$1", id)
+			if err != nil {
+				log.Fatal("delete inventory unit " + err.Error())
+			}
+
+			_, err = tx.Exec("DELETE FROM squad_units WHERE id_squad=$1 AND slot = $2", squad.ID, slot)
 			if err != nil {
 				log.Fatal("delete unit " + err.Error())
 			}
@@ -62,7 +65,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"action_point, "+
 				"defend, "+
 				"move,"+
-				"id_map, "+
+				"id_map "+
 				""+
 				") "+
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id",

@@ -22,7 +22,7 @@ func RemoveMSBody(user *player.Player) error {
 
 			BodyRemove(user, user.GetSquad().MatherShip)
 
-			for _, inventorySlot := range user.GetSquad().Inventory.Slots {
+			for _, inventorySlot := range user.GetSquad().MatherShip.Inventory.Slots {
 				storages.Storages.AddSlot(user.GetID(), user.InBaseID, inventorySlot)
 			}
 

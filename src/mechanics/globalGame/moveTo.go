@@ -46,7 +46,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 		maxSpeed = maxSpeed * 2
 	}
 
-	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 5, mp, true,
+	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 5, mp, false,
 		fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity, moveUnit.Body)
 
 	return path, err
@@ -83,7 +83,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		// скорость * (180/угол поворота) = длинна полокружности (грабая модель)
 		// длинны окружности получаем ее радиус r= длинна полокружности /2 пи
 		// r*2 получаем минимальное растояние от бтр до обьекта к которому он может повернутся не останавливаясь
-		minDistRotate := ((speed * (180 / float64(rotateAngle))) / (2 * math.Pi)) * 2
+		minDistRotate := 10 + ((speed*(180/float64(rotateAngle)))/(2*math.Pi))*2
 
 		if dist > maxSpeed*5 {
 			if int(maxSpeed)*10 != int(speed)*10 {

@@ -56,7 +56,7 @@ func Recycle(user *player.Player, recycleItems *map[string]map[int]*RecycleItem,
 			}
 
 			if sourceKey == "squadInventory" {
-				slot, ok = user.GetSquad().Inventory.Slots[i]
+				slot, ok = user.GetSquad().MatherShip.Inventory.Slots[i]
 			}
 
 			if ok && item.Recycled && item.Slot.Quantity == slot.Quantity {
@@ -88,7 +88,7 @@ func Recycle(user *player.Player, recycleItems *map[string]map[int]*RecycleItem,
 				}
 				if sourceKey == "squadInventory" {
 					// мы уже сделали проверку на наичие и в теории можем не беспокоится об ошибке
-					user.GetSquad().Inventory.RemoveItem(slot.ItemID, slot.Type, slot.Quantity)
+					user.GetSquad().MatherShip.Inventory.RemoveItem(slot.ItemID, slot.Type, slot.Quantity)
 				}
 			}
 		}

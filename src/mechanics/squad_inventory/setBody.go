@@ -23,13 +23,14 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 				return errors.New("wrong type body")
 			}
 
-			_, newSquad := new.AddNewSquad(newBody.Name, user.GetID()) // делаем новый отряд
-
 			if user.GetSquad() != nil {
 				user.GetSquad().Active = false         //  старый отряд делаем не активным
 				user.GetSquad().BaseID = user.InBaseID // ид базы где храниться отряд
 				update.Squad(user.GetSquad(), true)    // обновляем старый отряд в бд
 			}
+
+			_, newSquad := new.AddNewSquad(newBody.Name, user.GetID()) // делаем новый отряд
+			user.SetSquad(newSquad)
 
 			GetInventory(user)
 
@@ -43,7 +44,7 @@ func SetMSBody(user *player.Player, idBody, inventorySlot int, source string) er
 			user.GetSquad().MatherShip.Body = newBody
 
 			base, _ := bases.Bases.Get(user.InBaseID)
-			newSquad.MatherShip.MapID = base.MapID
+			user.GetSquad().MatherShip.MapID = base.MapID
 
 			RemoveSlotBySource(user, inventorySlot, source, 1)
 

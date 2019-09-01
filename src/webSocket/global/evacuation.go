@@ -75,7 +75,7 @@ func evacuationUnit(unit *unit.Unit) {
 			return
 		}
 
-		path = globalGame.ReturnEvacuation(unit, mp, baseID)
+		path = globalGame.ReturnEvacuation(unit, mp, baseID, transport)
 
 		for _, pathUnit := range path {
 

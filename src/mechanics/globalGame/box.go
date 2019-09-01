@@ -38,7 +38,7 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 		return errors.New("place busy"), nil
 	}
 
-	slot, find := user.GetSquad().Inventory.Slots[numberSlot]
+	slot, find := user.GetSquad().MatherShip.Inventory.Slots[numberSlot]
 	if find && slot != nil && slot.Item != nil && slot.Type == "boxes" {
 		typeBox, _ := gameTypes.Boxes.GetByID(slot.ItemID)
 		if typeBox != nil {
@@ -63,7 +63,6 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 	} else {
 		return errors.New("inventory slot not find"), nil
 	}
-	return errors.New("unknown error"), nil
 }
 
 func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxInMap.Box) {
@@ -89,7 +88,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 		if oldBox != nil {
 			for i, slot := range slots {
 				if slot.Item != nil {
-					realSlot, ok := user.GetSquad().Inventory.Slots[i]
+					realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
 					if ok {
 						addOk := oldBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
 						if addOk {
@@ -113,7 +112,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 			createBox := false
 			for i, slot := range slots {
 				if slot.Item != nil {
-					realSlot, ok := user.GetSquad().Inventory.Slots[i]
+					realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
 					if ok {
 						createBox = true
 						addOk := newBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
@@ -201,8 +200,8 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.B
 
 	slot, ok := mapBox.GetStorage().Slots[boxSlot]
 
-	if ok && slot.Item != nil && user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+slot.Size {
-		placeOk := user.GetSquad().Inventory.AddItemFromSlot(slot, user.GetID())
+	if ok && slot.Item != nil && user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().MatherShip.Inventory.GetSize()+slot.Size {
+		placeOk := user.GetSquad().MatherShip.Inventory.AddItemFromSlot(slot, user.GetID())
 		if placeOk {
 			slot.RemoveItemBySlot(slot.Quantity)
 			go update.Squad(user.GetSquad(), true)
@@ -215,7 +214,7 @@ func GetItemFromBox(user *player.Player, boxID, boxSlot int) (error, *boxInMap.B
 		if !ok || slot.Item == nil {
 			return errors.New("no find box slot"), nil
 		}
-		if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().Inventory.GetSize()+slot.Size {
+		if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().MatherShip.Inventory.GetSize()+slot.Size {
 			return errors.New("weight exceeded"), nil
 		}
 	}
@@ -230,7 +229,7 @@ func PlaceItemToBox(user *player.Player, boxID, inventorySlot int) (error, *boxI
 	}
 	defer mx.Unlock()
 
-	slot, ok := user.GetSquad().Inventory.Slots[inventorySlot]
+	slot, ok := user.GetSquad().MatherShip.Inventory.Slots[inventorySlot]
 	if ok && slot.Item != nil && mapBox.CapacitySize >= mapBox.GetStorage().GetSize()+slot.Size {
 
 		placeOk := mapBox.GetStorage().AddItemFromSlot(slot, user.GetID())

@@ -43,14 +43,14 @@ func placeItemToProcessor(user *player.Player, msg Message, recycleItems *map[st
 		} else {
 			if msg.ItemSource == "squadInventory" {
 				if msg.Event == "PlaceItemToProcessor" {
-					inventorySlot, ok := user.GetSquad().Inventory.Slots[msg.StorageSlot]
+					inventorySlot, ok := user.GetSquad().MatherShip.Inventory.Slots[msg.StorageSlot]
 					if ok {
 						(*recycleItems)[msg.ItemSource][msg.StorageSlot] = &lobby.RecycleItem{Slot: inventorySlot, Recycled: false, Source: msg.ItemSource}
 					}
 				}
 				if msg.Event == "PlaceItemsToProcessor" {
 					for _, itemSlot := range msg.StorageSlots {
-						inventorySlot, ok := user.GetSquad().Inventory.Slots[itemSlot]
+						inventorySlot, ok := user.GetSquad().MatherShip.Inventory.Slots[itemSlot]
 						if ok {
 							(*recycleItems)[msg.ItemSource][itemSlot] = &lobby.RecycleItem{Slot: inventorySlot, Recycled: false, Source: msg.ItemSource}
 						}

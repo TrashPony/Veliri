@@ -21,11 +21,16 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 	if ship != nil && ship.ID != 0 {
 
 		if ship.Body == nil {
-			_, err := tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit=$2",
-				squad.ID, ship.ID)
+			_, err := tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad=$1 AND id_squad_unit=$2", squad.ID, ship.ID)
 			if err != nil {
 				log.Fatal("delete all unit equip " + err.Error())
 			}
+
+			_, err = tx.Exec("DELETE FROM squad_units_inventory WHERE id_unit=$1", ship.ID)
+			if err != nil {
+				log.Fatal("delete inventory ms " + err.Error())
+			}
+
 		} else {
 			UpdateBody(ship, squad.ID, tx)
 		}

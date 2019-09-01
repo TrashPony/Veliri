@@ -15,7 +15,7 @@ function CreateObject(coordinate, x, y) {
             coordinate.shadow_intensity);
     }
 
-    ObjectEvents(coordinate, object);
+    ObjectEvents(coordinate, object, x, y);
 
     coordinate.objectSprite = object;
 }
@@ -32,29 +32,17 @@ function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOf
         shadow.alpha = shadowIntensity / 100;
     }
 
-    // TODO это происходит ебать как долго
-    // но работает
-
-    // let borderSprite = createSillhouette(texture);
-    // let border = group.create(x + xOffset, y + yOffset, borderSprite);
-    // border.scale.set(((scale / 100) / 1.9));
-    // border.anchor.setTo(0.5);
-    // border.tint = 0xfffab0;
-    // border.visible = false;
-    // border.angle = rotate;
-
     let object = group.create(x + xOffset, y + yOffset, texture);
     object.anchor.setTo(0.5);
     object.scale.set((scale / 100) / 2);
     object.angle = rotate;
 
     object.shadow = shadow;
-    //object.border = border;
 
     return object
 }
 
-function ObjectEvents(coordinate, object) {
+function ObjectEvents(coordinate, object, x, y) {
 
     object.inputEnabled = true;
     object.input.pixelPerfectOver = true;
@@ -67,7 +55,21 @@ function ObjectEvents(coordinate, object) {
         let posInterval;
         object.events.onInputOver.add(function () {
 
-            //object.border.visible = true;
+            // из за того что эта очень ресурсоемкая операция приходится вот так извращатся
+            if (!object.border) {
+                if (coordinate.unit_overlap) {
+                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate,
+                        coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
+                    game.floorOverObjectLayer.swap(object, object.border);
+                } else {
+                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate,
+                        coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
+                    game.floorObjectLayer.swap(object, object.border);
+                }
+            } else {
+                object.border.visible = true;
+            }
+
             tip = document.createElement("div");
             tip.id = "reservoirTip" + coordinate.q + "" + coordinate.r;
             tip.className = "reservoirTip";
@@ -87,9 +89,9 @@ function ObjectEvents(coordinate, object) {
         });
 
         object.events.onInputOut.add(function () {
-            //object.border.visible = false;
+            if (object.border) object.border.visible = false;
             setInterval(posInterval);
-            tip.remove();
+            if (tip) tip.remove();
         });
     }
 
@@ -107,6 +109,17 @@ function ObjectEvents(coordinate, object) {
     if (coordinate.texture_object.indexOf('base') + 1) {
         // todo выводить окошо с мин информацией по базе
     }
+}
+
+function CreateBorder(x, y, texture, scale, rotate, xOffset, yOffset, group) {
+    let borderSprite = createSillhouette(texture);
+    let border = group.create(x + xOffset, y + yOffset, borderSprite);
+    border.scale.set((scale / 100) / 1.9);
+    border.anchor.setTo(0.5);
+    border.tint = 0xffffff;
+    border.angle = rotate;
+
+    return border
 }
 
 function createSillhouette(srcKey) {

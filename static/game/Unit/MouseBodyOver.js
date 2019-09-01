@@ -1,22 +1,22 @@
 let positionInterval = null;
 let checkTimeOut = null;
 
-function mouseBodyOver(body, unit, unitBox, userID) {
+function mouseBodyOver(body, unit, unitBox) {
 
     body.events.onInputOver.add(function () {
-        unitInfo(unit, unitBox, userID)
+        unitInfo(unit, unitBox)
     }, this);
 
     body.events.onInputOut.add(function () {
-        unitRemoveInfo(unit, unitBox, userID)
+        unitRemoveInfo(unit, unitBox)
     }, this);
 }
 
-function unitInfo(unit, unitBox, userID) {
-    if (Data.squad.user_id === unit.user_id) {
+function unitInfo(unit, unitBox) {
+    if (game.user_id === unit.owner_id) {
         unitBox.frame = 1;
     } else {
-        //todo враг красны, нейтрал белый
+        //todo враг красны
         unitBox.frame = 2;
     }
 
@@ -35,7 +35,7 @@ function unitInfo(unit, unitBox, userID) {
     userLabel.innerHTML = `
             <div>
                 <div>
-                    <div class="logo" id="userAvatar${userID}${unit.id}" ></div>
+                    <div class="logo" id="userAvatar${unit.owner_id}${unit.id}" ></div>
                     <h4>${unit.owner}</h4>
                     <div class="detailUser" onmousedown="informationFunc('${unit.owner}', '${unit.owner_id}')">i</div>
                 </div>
@@ -48,8 +48,8 @@ function unitInfo(unit, unitBox, userID) {
         userLabel.style.display = "block";
     }, 10);
 
-    GetUserAvatar(userID).then(function (response) {
-        $("#userAvatar" + userID + unit.id).css('background-image', "url('" + response.data.avatar + "')");
+    GetUserAvatar(unit.owner_id).then(function (response) {
+        $("#userAvatar" + unit.owner_id + unit.id).css('background-image', "url('" + response.data.avatar + "')");
     });
 }
 

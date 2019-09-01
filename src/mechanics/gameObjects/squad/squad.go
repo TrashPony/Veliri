@@ -1,21 +1,18 @@
 package squad
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"sync"
 )
 
 type Squad struct {
-	ID             int                  `json:"id"`
-	Name           string               `json:"name"`
-	Active         bool                 `json:"active"`
-	MatherShip     *unit.Unit           `json:"mather_ship"`
-	Inventory      *inventory.Inventory `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
-	InGame         bool                 `json:"in_game"`
-	BaseID         int                  `json:"base_id"` /* если отряд не у игрока то он храниться на этой базе */
-	MoveChecker    bool                 `json:"move_checker"`
-	SoftTransition bool                 `json:"soft_transition"`
+	ID             int        `json:"id"`
+	Name           string     `json:"name"`
+	Active         bool       `json:"active"`
+	MatherShip     *unit.Unit `json:"mather_ship"`
+	InGame         bool       `json:"in_game"`
+	BaseID         int        `json:"base_id"` /* если отряд не у игрока то он храниться на этой базе */
+	SoftTransition bool       `json:"soft_transition"`
 	updateDB       sync.Mutex
 }
 

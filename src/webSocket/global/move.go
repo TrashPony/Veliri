@@ -25,7 +25,7 @@ func Move(user *player.Player, msg Message) {
 				mp, find := maps.Maps.GetByID(moveUnit.MapID)
 				if find && user.InBaseID == 0 && !moveUnit.Evacuation {
 
-					for user.GetSquad().MoveChecker { // TODO чекер для юнита
+					for moveUnit.MoveChecker { // TODO чекер для юнита
 						time.Sleep(10 * time.Millisecond) // без этого будет блокировка
 						// Ожидаем пока не завершится текущая клетка хода
 						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
@@ -63,17 +63,30 @@ func stopMove(userUnit *unit.Unit, resetSpeed bool) {
 		if resetSpeed {
 			userUnit.CurrentSpeed = 0
 		}
+
+		go SendMessage(Message{
+			Event:     "MoveTo",
+			ShortUnit: userUnit.GetShortInfo(),
+			PathUnit: unit.PathUnit{
+				X:           userUnit.X,
+				Y:           userUnit.Y,
+				Rotate:      userUnit.Rotate,
+				Millisecond: 100,
+				Speed:       userUnit.CurrentSpeed,
+			},
+			IDMap: userUnit.MapID,
+		})
 	}
 }
 
 func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, moveUnit *unit.Unit) {
 	moveRepeat := false
-	user.GetSquad().MoveChecker = true
+	moveUnit.MoveChecker = true
 
 	defer func() {
 		stopMove(moveUnit, false)
 		if user.GetSquad() != nil {
-			user.GetSquad().MoveChecker = false
+			moveUnit.MoveChecker = false
 		}
 		if moveRepeat {
 			Move(user, msg)
@@ -108,7 +121,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			return
 		}
 
-		if moveUnit.Body.MotherShip {
+		if moveUnit.Body.MotherShip && moveUnit.HP > 0 {
 			// находим аномалии
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
 			anomalies, err := globalGame.GetVisibleAnomaly(user, equipSlot)

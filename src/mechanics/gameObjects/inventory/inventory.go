@@ -43,6 +43,11 @@ func (inv *Inventory) AddItemFromSlot(slot *Slot, userID int) bool {
 }
 
 func (inv *Inventory) GetSize() float32 {
+
+	if inv == nil {
+		return 0
+	}
+
 	var inventorySquadSize float32
 	for _, slot := range inv.Slots {
 		if slot.Item != nil {

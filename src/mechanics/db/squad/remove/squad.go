@@ -15,9 +15,18 @@ func Squad(squad *squad.Squad) {
 		log.Fatal("delete squad, thorium" + err.Error())
 	}
 
-	_, err = tx.Exec("DELETE FROM squad_inventory WHERE id_squad = $1", squad.ID)
+	_, err = tx.Exec("DELETE FROM squad_units_inventory WHERE id_unit = $1", squad.MatherShip.ID)
 	if err != nil {
 		log.Fatal("delete squad, inventory" + err.Error())
+	}
+
+	for _, slotUnit := range squad.MatherShip.Units {
+		if slotUnit.Unit != nil {
+			_, err = tx.Exec("DELETE FROM squad_units_inventory WHERE id_unit = $1", slotUnit.Unit.ID)
+			if err != nil {
+				log.Fatal("delete squad, inventory" + err.Error())
+			}
+		}
 	}
 
 	_, err = tx.Exec("DELETE FROM squad_units_equipping WHERE id_squad = $1", squad.ID)

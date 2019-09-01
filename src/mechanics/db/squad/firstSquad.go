@@ -8,9 +8,9 @@ import (
 
 func AddNewSquad(name string, userID int) (err error, newSquad *squad.Squad) {
 	id := 0
-	err = dbConnect.GetDBConnect().QueryRow("INSERT INTO squads (name, active, id_user, in_game, q, r, id_map, id_base) "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
-		name, true, userID, false, 0, 0, 2, 1).Scan(&id)
+	err = dbConnect.GetDBConnect().QueryRow("INSERT INTO squads (name, active, id_user, in_game, id_base) "+
+		"VALUES ($1, $2, $3, $4, $5) RETURNING id",
+		name, true, userID, false, 1).Scan(&id)
 
 	if err != nil {
 		log.Fatal("add new squad " + err.Error())

@@ -24,7 +24,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "ConnectNewUser") {
-        CreateOtherUser(jsonData.other_user);
+        CreateNewUnit(jsonData.short_unit);
     }
 
     if (jsonData.event === "openBox") {
@@ -157,7 +157,11 @@ function ReadResponse(jsonData) {
         AnomalyCatch(jsonData)
     }
 
-    if (jsonData.event === "DamageSquad") {
+    if (jsonData.event === "DamageUnit") {
+        FillSquadBlock(jsonData.squad)
+    }
+
+    if (jsonData.event === "FillSquadBlock") {
         FillSquadBlock(jsonData.squad)
     }
 
@@ -172,5 +176,9 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "GetPortalPointToGlobalPath") {
         let {x, y} = GetXYCenterHex(jsonData.q, jsonData.r);
         if (game && game.squad && jsonData.name === "mission") game.squad.missionMove = {x: x, y: y, radius: 0}
+    }
+
+    if (jsonData.event === "InitMiningOre") {
+        InitMiningOre(jsonData.short_unit.id, jsonData.slot, jsonData.type_slot, jsonData.equip)
     }
 }

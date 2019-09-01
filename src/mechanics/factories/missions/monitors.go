@@ -12,7 +12,7 @@ func toSector(gameMission *mission.Mission, action *mission.Action, client *play
 	for {
 		if gameMission.CheckAvailableActionByIndex(action.Number) {
 			// этот воркер проверяет что бы игрок находился в нужном секторе
-			if client.GetSquad().MatherShip.MapID == action.MapID {
+			if client.GetSquad() != nil && client.GetSquad().MatherShip != nil && client.GetSquad().MatherShip.MapID == action.MapID {
 				action.Complete = true
 			} else {
 				action.Complete = false
@@ -27,7 +27,7 @@ func toQR(gameMission *mission.Mission, action *mission.Action, client *player.P
 	// проверяет что игрок находится в Q,R радиусе Radius в нужном секторе
 	for {
 		if gameMission.CheckAvailableActionByIndex(action.Number) {
-			if client.GetSquad().MatherShip.MapID == action.MapID {
+			if client.GetSquad() != nil && client.GetSquad().MatherShip != nil && client.GetSquad().MatherShip.MapID == action.MapID {
 				x, y := globalGame.GetXYCenterHex(action.Q, action.R)
 				dist := globalGame.GetBetweenDist(client.GetSquad().MatherShip.X, client.GetSquad().MatherShip.Y, x, y)
 				if int(dist) < action.Radius {

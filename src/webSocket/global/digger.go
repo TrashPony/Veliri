@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -11,17 +12,11 @@ import (
 	"time"
 )
 
-func selectDigger(user *player.Player, msg Message) {
+func selectDigger(user *player.Player, msg Message, diggerSlot *detail.BodyEquipSlot) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
 
 	if squadCoordinate != nil {
-
-		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
-		if diggerSlot == nil || diggerSlot.Equip == nil && diggerSlot.Equip.Applicable == "digger" {
-			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-			return
-		}
 
 		result := make([]*coordinate.Coordinate, 0)
 

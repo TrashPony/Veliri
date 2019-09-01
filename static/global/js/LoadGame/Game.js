@@ -26,13 +26,15 @@ function LoadGame() {
     CreateUnits(game.units);
     CreateBase(Data.bases);
     CreateBoxes(Data.boxes);
-    CreateMiniMap(Data.map);
     ThoriumBar(Data.squad.mather_ship.body.thorium_slots);
     FillSquadBlock(Data.squad);
-    FillUserMeta(Data.credits, Data.experience, Data.squad);
     Anomaly(Data.squad);
 
+    //todo FillUserMeta(Data.credits, Data.experience, Data.squad);
+
+
     setTimeout(function () {
+        CreateMiniMap();
         if (debug) {
             CreateGeoData(Data.map.geo_data);
             CreateAnomalies(Data.map.anomalies)

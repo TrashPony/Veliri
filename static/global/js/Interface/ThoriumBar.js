@@ -49,17 +49,11 @@ function ThoriumBar(thoriumSlots) {
         }
     }
 
-    let thorium = document.getElementById("Thorium");
-
     let speedEfficiency = document.getElementById("speedBarEfficiency");
-    if (!speedEfficiency) speedEfficiency = document.createElement("div");
     speedEfficiency.id = "speedBarEfficiency";
-    thorium.appendChild(speedEfficiency);
 
     let thoriumEfficiency = document.getElementById("thoriumBarEfficiency");
-    if (!thoriumEfficiency) thoriumEfficiency = document.createElement("div");
     thoriumEfficiency.id = "thoriumBarEfficiency";
-    thorium.appendChild(thoriumEfficiency);
 
     let efficiencyCalc = 0;
     let thoriumEfficiencyCalc = 0;
@@ -79,7 +73,6 @@ function ThoriumBar(thoriumSlots) {
     }
 
     if(aburner) {
-        // todo неправильно считает
         thoriumEfficiencyCalc -= thoriumEfficiencyCalc * 15;
     }
 

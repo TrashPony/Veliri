@@ -11,7 +11,7 @@ func ItemsRepair(user *player.Player) error {
 	// todo высчитывание денег и рем комплектов необходимых, отнимание денег или рем комплектов )
 
 	//if user.GetCredits() > 100 {
-	for _, slot := range user.GetSquad().Inventory.Slots {
+	for _, slot := range user.GetSquad().MatherShip.Inventory.Slots {
 		if slot.Type == "body" {
 			body, _ := gameTypes.Bodies.GetByID(slot.ItemID)
 			slot.HP = body.MaxHP

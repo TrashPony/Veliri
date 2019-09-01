@@ -1,30 +1,38 @@
-function GetEquip(typeSlot, numberSlot) {
-    if (typeSlot === 1) {
-        return game.squad.mather_ship.body.equippingI[numberSlot]
-    }
+function GetEquip(unitID, typeSlot, numberSlot) {
 
-    if (typeSlot === 2) {
-        return game.squad.mather_ship.body.equippingII[numberSlot]
-    }
+    let unit = game.units[unitID];
 
-    if (typeSlot === 3) {
-        return game.squad.mather_ship.body.equippingIII[numberSlot]
-    }
+    if (unit) {
+        if (typeSlot === 1) {
+            return unit.body.equippingI[numberSlot]
+        }
 
-    if (typeSlot === 4) {
-        return game.squad.mather_ship.body.equippingIV[numberSlot]
-    }
+        if (typeSlot === 2) {
+            return unit.body.equippingII[numberSlot]
+        }
 
-    if (typeSlot === 5) {
-        return game.squad.mather_ship.body.equippingV[numberSlot]
+        if (typeSlot === 3) {
+            return unit.body.equippingIII[numberSlot]
+        }
+
+        if (typeSlot === 4) {
+            return unit.body.equippingIV[numberSlot]
+        }
+
+        if (typeSlot === 5) {
+            return unit.body.equippingV[numberSlot]
+        }
     }
 }
 
-function GetSpriteEqip(typeSlot, numberSlot) {
-    for (let i = 0; i < game.squad.sprite.equipSprites.length; i++) {
-        let slot = game.squad.sprite.equipSprites[i];
-        if (slot.slot.type_slot === typeSlot && slot.slot.number_slot === numberSlot) {
-            return slot
+function GetSpriteEqip(unitID, typeSlot, numberSlot) {
+    let unit = game.units[unitID];
+    if (unit) {
+        for (let i = 0; i < unit.sprite.equipSprites.length; i++) {
+            let slot = unit.sprite.equipSprites[i];
+            if (slot.slot.type_slot === typeSlot && slot.slot.number_slot === numberSlot) {
+                return slot
+            }
         }
     }
 }

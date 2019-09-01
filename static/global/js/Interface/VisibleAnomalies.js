@@ -4,7 +4,6 @@ function VisibleAnomalies(anomalies) {
     let display = document.getElementById("anomalyDisplay");
     display.offsetHeight;
 
-
     for (let i = 0; i < anomalies.length; i++) {
 
         anomalies[i].rotate -= 180;

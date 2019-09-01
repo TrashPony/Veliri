@@ -13,9 +13,6 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     unitBox.anchor.setTo(0.5, 0.5);
     if (!unit.body.mother_ship) {
         unitBox.scale.setTo(0.75);
-    } else if (unit.owner_id === game.user_id) {
-        game.my_squad_sprite = unitBox;
-        FocusMS();
     }
 
     let bodyBottomShadow = game.make.sprite(game.shadowXOffset, game.shadowYOffset, unit.body.name + "_bottom_animate", 11);
@@ -50,9 +47,9 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
     body.input.priorityID = 1;
 
-    mouseBodyOver(body, unit, unitBox, userID);
+    mouseBodyOver(body, unit, unitBox);
     body.events.onInputDown.add(function () {
-        SelectOneUnit(unit, unitBox, userID);
+        SelectOneUnit(unit, unitBox, true);
     }, this);
 
     bodyMask.anchor.setTo(0.5);          // устанавливаем центр спрайта

@@ -1,15 +1,10 @@
 #statusBar {
-    position: absolute;
+    position: relative;
+    float: left;
     display: block;
-    border-radius: 5px;
-    width: 235px;
-    height: 50px;
-    border: 1px solid #25a0e1;
+    width: 302px;
+    height: 46px;
     z-index: 999;
-    background-size: 10px 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
-    top: 185px;
-    right: 15px;
 }
 
 #stopMove {
@@ -43,7 +38,7 @@
     width: 120px;
     height: 40px;
     border-radius: 5px;
-    margin: 5px;
+    margin: 5px 2px;
     float: left;
     word-wrap: break-word;
     text-align: left;
@@ -117,19 +112,15 @@
 #speedBarEfficiency, #thoriumBarEfficiency {
     height: 18px;
     width: 50px;
-    position: absolute;
-    top: 4px;
-    left: 128px;
-    line-height: 18px;
+    line-height: 19px;
     user-select: none;
     text-align: right;
     padding-right: 4px;
-    background: url(https://img.icons8.com/color/52/000000/speedometer.png) -1px center / 50% no-repeat, #4c4c4c;
+    background: url(https://img.icons8.com/color/52/000000/speedometer.png) -1px center / 50% no-repeat, rgba(0, 0, 0, 0.21);
     border-radius: 5px;
     border: 1px solid #959595;
     margin: 1px;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
-    font-family: Arial;
     font-size: 9px;
     color: #00FFFD;
     text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
@@ -138,15 +129,15 @@
 #thoriumBarEfficiency {
     top: 24px;
     left: 128px;
-    background: url(https://img.icons8.com/color/52/000000/gas-station.png) 3px center / 40% no-repeat, #4c4c4c;
+    background: url(https://img.icons8.com/color/52/000000/gas-station.png) 3px center / 40% no-repeat, rgba(0, 0, 0, 0.21);
 }
 
 #backAfterburner {
     height: 40px;
     width: 40px;
-    float: right;
+    float: left;
     background: #4c4c4c;
-    margin: 5px;
+    margin: 5px 2px;
     border-radius: 5px;
 }
 
@@ -177,6 +168,27 @@
         -moz-box-shadow: inset 0 0 10px 0 rgba(204, 169, 44, 0);
         box-shadow: inset 0 0 0 10px rgba(204, 169, 44, 0);
     }
+}
+
+#reactorStatus {
+    background: url(https://img.icons8.com/plasticine/100/000000/charge-battery.png) center -4px / 77% no-repeat, rgba(0, 0, 0, 0.21);
+    width: 70px;
+    height: 44px;
+    float: left;
+    margin: 3px 3px;
+    border-radius: 5px;
+}
+
+#countPower, #recoverPower {
+    font-size: 10px;
+    color: #00e1ff;
+    margin-top: 1px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
+}
+
+#recoverPower {
+    color: #83ff00;
+    margin-top: 20px;
 }
 
 @keyframes noCountPulse {

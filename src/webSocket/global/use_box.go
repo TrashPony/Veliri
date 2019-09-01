@@ -8,6 +8,7 @@ import (
 )
 
 func placeNewBox(user *player.Player, msg Message) {
+	// устанавливать ящики может только мп
 	err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 	if err != nil {
 		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
@@ -27,9 +28,7 @@ func openBox(user *player.Player, msg Message) {
 		x, y := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
 		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 
-		if dist < 150 {
-			stopMove(user.GetSquad().MatherShip, true)
-
+		if dist < 75 {
 			if mapBox.Protect {
 				if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
 					go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),

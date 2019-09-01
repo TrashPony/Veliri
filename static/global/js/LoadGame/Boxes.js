@@ -37,25 +37,30 @@ function CreateBox(mapBox) {
         box.input.pixelPerfectOver = true;
         box.input.pixelPerfectClick = true;
 
-        let boxLine;
         box.events.onInputOver.add(function () {
-            boxLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, mapBox.type);
-            boxLine.anchor.setTo(0.5);
-            boxLine.scale.set(0.11);
-            boxLine.tint = 0x00FF00;
-            boxLine.angle = mapBox.rotate;
+            if (!box.border) {
+                box.border = CreateBorder(xy.x, xy.y, mapBox.type, 20, mapBox.rotate, 0, 0, game.floorObjectLayer);
+                game.floorObjectLayer.swap(box, box.border);
+            } else {
+                box.border.visible = true;
+            }
         });
 
         box.events.onInputOut.add(function () {
-            boxLine.destroy();
+            if (box.border) box.border.visible = false;
         });
 
         box.events.onInputDown.add(function () {
-            game.squad.toBox = {
-                boxID: mapBox.id,
-                to: true,
-                x: box.x,
-                y: box.y
+            for (let i in selectUnits) {
+                let selectedUnit = game.units[selectUnits[i].id];
+                if (selectedUnit && selectedUnit.owner_id === game.user_id && selectedUnit.body.mother_ship) {
+                    selectedUnit.toBox = {
+                        boxID: mapBox.id,
+                        to: true,
+                        x: box.x,
+                        y: box.y
+                    }
+                }
             }
         });
     }

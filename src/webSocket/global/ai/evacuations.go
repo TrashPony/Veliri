@@ -52,9 +52,11 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 
 		// формируем путь для движения
 		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 15, 15,
-			float64(x), float64(y), 0, 10, mp, true, nil, false, false, nil)
+			float64(x), float64(y), transport.Rotate, 10, mp, true, nil, false, false, nil)
 
 		// запускаем транспорт
+		go TransportMonitor(transportBase, mp)
+
 		FlyTransport(transport, transportBase, mp, path)
 	}
 }
@@ -68,8 +70,6 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 			time.Sleep(200 * time.Millisecond)
 		}
 
-		TransportMonitor(transport, transportBase, mp)
-
 		go wsGlobal.SendMessage(wsGlobal.Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
 			BaseID: transportBase.ID, TransportID: transport.ID, IDMap: mp.Id})
 
@@ -79,7 +79,7 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 	}
 }
 
-func TransportMonitor(transport *base.Transport, transportBase *base.Base, mp *_map.Map) {
+func TransportMonitor(transportBase *base.Base, mp *_map.Map) {
 	for _, coordinate := range mp.HandlersCoordinates {
 
 		xHandle, yHandle := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)

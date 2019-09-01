@@ -20,7 +20,7 @@ function FillingInventory(jsonData) {
         if (squad) {
 
             if (document.getElementById("Inventory")) {
-                InventoryTable(squad.inventory);
+                InventoryTable(squad.mather_ship.inventory);
                 document.getElementById("inventoryStorageInventory").style.opacity = "1";
             }
 

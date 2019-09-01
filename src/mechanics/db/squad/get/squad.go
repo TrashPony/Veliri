@@ -47,7 +47,6 @@ func UserSquads(userID int) (squads []*squad.Squad, err error) {
 			}
 		}
 
-		userSquad.Inventory = SquadInventory(userSquad.ID)
 		squads = append(squads, &userSquad)
 	}
 
@@ -123,9 +122,10 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 
 		if idBody.Valid {
 			ship.Body, _ = gameTypes.Bodies.GetByID(int(idBody.Int64))
-			BodyEquip(ship)
 
+			BodyEquip(ship)
 			SquadThorium(ship, squadID)
+			ship.Inventory = SquadInventory(ship.ID)
 
 			ship.CalculateParams()
 
@@ -235,6 +235,7 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	squadUnit.Body, _ = gameTypes.Bodies.GetByID(idBody)
 	BodyEquip(&squadUnit)
 	squadUnit.Target = ParseTarget(target)
+	squadUnit.Inventory = SquadInventory(squadUnit.ID)
 
 	squadUnit.CalculateParams()
 
@@ -245,7 +246,7 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 	}
 }
 
-func SquadInventory(squadID int) *inv.Inventory {
+func SquadInventory(unitID int) *inv.Inventory {
 	var inventory inv.Inventory
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
@@ -257,10 +258,10 @@ func SquadInventory(squadID int) *inv.Inventory {
 		"hp,"+
 		"place_user_id "+
 		""+
-		"FROM squad_inventory "+
-		"WHERE id_squad = $1", squadID)
+		"FROM squad_units_inventory "+
+		"WHERE id_unit = $1", unitID)
 	if err != nil {
-		log.Fatal("get inventory squad " + err.Error())
+		log.Fatal("get inventory unit in squad " + err.Error())
 	}
 	defer rows.Close()
 

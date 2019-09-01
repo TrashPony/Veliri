@@ -55,8 +55,10 @@ function CheckBoxInBox(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
     return ((ax1 < bx2 && ax2 > bx1) || (ax1 > bx2 && ax2 < bx1)) && ((ay1 < by2 && ay2 > by1) || (ay1 > by2 && ay2 < by1))
 }
 
-function SelectOneUnit(unit, boxSprite, userId) {
-    selectOneUnit = true;
+function SelectOneUnit(unit, boxSprite, setFlag) {
+    if (setFlag) {
+        selectOneUnit = true;
+    }
 
     if (unit.owner_id !== game.user_id) {
         return
@@ -69,7 +71,7 @@ function SelectOneUnit(unit, boxSprite, userId) {
     selectUnits = [];
     selectUnits.push(unit);
     setTimeout(function () {
-        unitInfo(unit, boxSprite, userId);
+        unitInfo(unit, boxSprite);
     }, 10)
 }
 
@@ -110,38 +112,48 @@ function GetSelectUnitByID(unitID) {
     }
 }
 
-function UnSelectUnit(pointer) {
-    if (game.input.activePointer.rightButton.isDown && pointer.duration <= 100) {
-
-        for (let i in selectUnits) {
-            selectUnits[i].sprite.frame = 0;
-        }
-
-        selectUnits = [];
+function UnSelectUnit() {
+    if (game.input.activePointer.rightButton.isDown && game.input.activePointer.rightButton.duration <= 100) {
+        UnselectAll();
     }
 }
 
 function initMove(pointer) {
     if (game.input.activePointer.leftButton.isDown && pointer.duration <= 200) {
 
-        // if (game.squad.toBox) {
-        //     game.squad.toBox.to = false
-        // }
 
         if (!selectOneUnit) {
-            let unitsID = [];
-            for (let i in selectUnits) {
-                unitsID.push(selectUnits[i].id);
-            }
-            console.log(selectUnits)
+
+            // todo если игрок передумал и тыкнул в другое место то не преследовать ящик
+            // if (game.units[selectUnits[i].id] && game.units[selectUnits[i].id].toBox) {
+            //     game.units[selectUnits[i].id].toBox.to = false
+            // }
+
+
             global.send(JSON.stringify({
                 event: "MoveTo",
                 to_x: (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x,
                 to_y: (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y,
-                units_id: unitsID,
+                units_id: getIDsSelectUnits(),
             }));
         } else {
             selectOneUnit = false;
         }
     }
+}
+
+function getIDsSelectUnits() {
+    let unitsID = [];
+    for (let i in selectUnits) {
+        unitsID.push(selectUnits[i].id);
+    }
+
+    return unitsID;
+}
+
+function StopUnit(id) {
+    global.send(JSON.stringify({
+        event: "StopMove",
+        units_id: [Number(id)],
+    }));
 }

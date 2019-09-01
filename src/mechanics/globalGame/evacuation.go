@@ -47,7 +47,7 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]unit.PathUnit, int, *bas
 			}
 
 			_, path := MoveTo(float64(startX), float64(startY), 15, 15, 15,
-				float64(unit.X), float64(unit.Y), 0, 10, mp,
+				float64(unit.X), float64(unit.Y), transport.Rotate, 10, mp,
 				true, nil, false, false, nil)
 
 			return path, evacuationBase.ID, transport, nil
@@ -59,11 +59,11 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]unit.PathUnit, int, *bas
 	}
 }
 
-func ReturnEvacuation(unit *unit.Unit, mp *_map.Map, baseID int) []unit.PathUnit {
+func ReturnEvacuation(unit *unit.Unit, mp *_map.Map, baseID int, transport *base.Transport) []unit.PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
 	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := MoveTo(float64(unit.X), float64(unit.Y), 15, 15, 15,
-		float64(endX), float64(endY), 0, 10, mp, true, nil, false, false, nil)
+		float64(endX), float64(endY), transport.Rotate, 10, mp, true, nil, false, false, nil)
 	return path
 }

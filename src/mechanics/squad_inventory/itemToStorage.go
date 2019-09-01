@@ -9,7 +9,7 @@ import (
 
 func ItemToStorage(user *player.Player, inventorySlot int) error {
 	if user.InBaseID > 0 {
-		slot := user.GetSquad().Inventory.Slots[inventorySlot]
+		slot := user.GetSquad().MatherShip.Inventory.Slots[inventorySlot]
 
 		if slot == nil {
 			return errors.New("no find slot")
@@ -19,7 +19,7 @@ func ItemToStorage(user *player.Player, inventorySlot int) error {
 			slot.HP, slot.Size/float32(slot.Quantity), slot.MaxHP, false)
 
 		if ok {
-			user.GetSquad().Inventory.Slots[inventorySlot].RemoveItemBySlot(slot.Quantity)
+			user.GetSquad().MatherShip.Inventory.Slots[inventorySlot].RemoveItemBySlot(slot.Quantity)
 		}
 
 		go update.Squad(user.GetSquad(), true)

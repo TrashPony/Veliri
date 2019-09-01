@@ -26,8 +26,8 @@ func Squad(squad *squad.Squad, full bool) {
 	}
 
 	if full {
-		InventorySquad(squad, tx)
 		Units(squad, tx)
+		InventorySquad(squad, tx)
 	}
 
 	MotherShip(squad, tx)

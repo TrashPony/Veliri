@@ -66,6 +66,14 @@ function CreateReservoir(reservoir, q, r) {
     let posInterval;
     game.map.reservoir[q][r].sprite.events.onInputOver.add(function () {
 
+        if (!game.map.reservoir[q][r].border) {
+            game.map.reservoir[q][r].border = CreateBorder(xy.x, xy.y, reservoirTexture, 20, reservoir.rotate,
+                0, 0, group);
+            group.swap(game.map.reservoir[q][r].sprite, game.map.reservoir[q][r].border);
+        } else {
+            game.map.reservoir[q][r].border.visible = true;
+        }
+
         tip = document.createElement("div");
         tip.id = "reservoirTip" + q + "" + r;
         tip.className = "reservoirTip";
@@ -90,6 +98,7 @@ function CreateReservoir(reservoir, q, r) {
     });
 
     game.map.reservoir[q][r].sprite.events.onInputOut.add(function () {
+        if (game.map.reservoir[q][r].border) game.map.reservoir[q][r].border.visible = false;
         setInterval(posInterval);
         tip.remove();
     });

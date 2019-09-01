@@ -16,7 +16,13 @@ func afterburnerToggle(user *player.Player, msg Message) {
 	msg.ToX = user.GetSquad().MatherShip.ToX
 	msg.ToY = user.GetSquad().MatherShip.ToY
 
-	Move(user, msg) // пересчитываем путь т.к. эффективность двиготеля изменилась
+	// пересчитываем путь т.к. эффективность двиготеля изменилась
+	// перегрузку может использовать только мп поэтому создаем масив с одним юнитом
+	msg.UnitsID = []int{user.GetSquad().MatherShip.ID}
+	if user.GetSquad().MatherShip.MoveChecker {
+		Move(user, msg)
+	}
+
 	go SendMessage(Message{
 		Event:       "AfterburnerToggle",
 		Afterburner: user.GetSquad().MatherShip.Afterburner,

@@ -46,8 +46,8 @@ function CreateMiniMap() {
 
         for (let id in game.units) {
             if (game.units[id].sprite) {
-                if (game.units[id].owner === game.user_name) {
-                    ctx.fillStyle = "#19ff00";
+                if (game.units[id].owner_id === game.user_id) {
+                    ctx.fillStyle = "#19ff00"; // свои юниты
 
                     if (game.units[id].moveTo) {
                         ctx.beginPath();
@@ -58,8 +58,9 @@ function CreateMiniMap() {
                     }
 
                 } else {
-                    // TODO союзные юниты  ctx.fillStyle = "#00F7FF"
-                    ctx.fillStyle = "#ff000e";
+                    // TODO союзные юниты (союзные игроки) ctx.fillStyle = "#00F7FF"
+                    //todo враг красны
+                    ctx.fillStyle = "#ff7a00"; // нейтрал
                 }
 
                 ctx.fillRect(game.units[id].sprite.x / kX, game.units[id].sprite.y / kY, hexagonWidth, hexagonHeight);
@@ -87,16 +88,6 @@ function CreateMiniMap() {
 
             ctx.fillStyle = "#19ff00";
             ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
-        }
-
-        if (game.otherUsers) {
-            ctx.fillStyle = "#ff7a00";
-            for (let i = 0; i < game.otherUsers.length; i++) {
-                if (game.otherUsers[i].sprite) {
-                    ctx.fillRect(game.otherUsers[i].sprite.x / kX, game.otherUsers[i].sprite.y / kY,
-                        hexagonWidth, hexagonHeight)
-                }
-            }
         }
 
         for (let i in game.bases) {

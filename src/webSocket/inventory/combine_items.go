@@ -17,7 +17,7 @@ func combineItems(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Source == "squadInventory" {
-		srcSlot, _ = user.GetSquad().Inventory.Slots[msg.SrcSlot]
+		srcSlot, _ = user.GetSquad().MatherShip.Inventory.Slots[msg.SrcSlot]
 	}
 
 	if msg.Source == "storage" {
@@ -26,7 +26,7 @@ func combineItems(ws *websocket.Conn, msg Message) {
 	}
 
 	if msg.Destination == "squadInventory" {
-		dstSlot, _ = user.GetSquad().Inventory.Slots[msg.DstSlot]
+		dstSlot, _ = user.GetSquad().MatherShip.Inventory.Slots[msg.DstSlot]
 	}
 
 	if msg.Destination == "storage" {
@@ -42,12 +42,12 @@ func combineItems(ws *websocket.Conn, msg Message) {
 			// если источник и приемник находятся в 1 инвентаре то нарватся на перигруз невозможно
 			if msg.Source == "squadInventory" {
 				add = true
-				user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
+				user.GetSquad().MatherShip.Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
 			} else {
 				// проверка на перегруз
-				if user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+dstSlot.Size {
+				if user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().MatherShip.Inventory.GetSize()+dstSlot.Size {
 					add = true
-					user.GetSquad().Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
+					user.GetSquad().MatherShip.Inventory.Slots[msg.DstSlot].AddItemBySlot(srcSlot.Quantity, user.GetID())
 				} else {
 					add = false
 				}
@@ -60,7 +60,7 @@ func combineItems(ws *websocket.Conn, msg Message) {
 		}
 
 		if msg.Source == "squadInventory" && add {
-			user.GetSquad().Inventory.Slots[msg.SrcSlot].RemoveItemBySlot(srcSlot.Quantity)
+			user.GetSquad().MatherShip.Inventory.Slots[msg.SrcSlot].RemoveItemBySlot(srcSlot.Quantity)
 		}
 
 		if msg.Source == "storage" && add {

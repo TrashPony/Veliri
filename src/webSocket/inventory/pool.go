@@ -178,7 +178,7 @@ func UpdateInventory(userID int) {
 		if user.GetID() == userID {
 			if user.GetSquad() != nil {
 				err := ws.WriteJSON(Response{Event: "UpdateSquad", Squad: user.GetSquad(), BaseSquads: user.GetSquadsByBaseID(user.InBaseID),
-					InventorySize: user.GetSquad().Inventory.GetSize(), InBase: user.InBaseID > 0})
+					InventorySize: user.GetSquad().MatherShip.Inventory.GetSize(), InBase: user.InBaseID > 0})
 				if err != nil {
 					ws.Close()
 				}

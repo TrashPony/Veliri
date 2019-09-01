@@ -368,6 +368,12 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 	const boxRadius = 5
 
 	for _, mapBox := range boxs {
+
+		// поздемные ящики не имеют колизий
+		if mapBox.Underground {
+			continue
+		}
+
 		xBox, yBox := GetXYCenterHex(mapBox.Q, mapBox.R)
 		dist := int(GetBetweenDist(x, y, xBox, yBox))
 

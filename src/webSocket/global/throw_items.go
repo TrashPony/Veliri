@@ -6,7 +6,7 @@ import (
 )
 
 func throwItems(user *player.Player, msg Message) {
-
+	// выкинуть вещи из  трюма может только мп
 	err, newBox, box := globalGame.ThrowItems(user, msg.ThrowItems)
 
 	if err != nil {

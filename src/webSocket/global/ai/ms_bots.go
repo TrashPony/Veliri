@@ -199,7 +199,7 @@ func Transport(bot *player.Player) {
 						break
 					}
 
-					if !bot.GetSquad().MoveChecker {
+					if !bot.GetSquad().MatherShip.MoveChecker {
 						bot.GetSquad().MatherShip.ActualPath = nil
 						break
 					}

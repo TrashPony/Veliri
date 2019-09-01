@@ -1,57 +1,56 @@
 package global
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"time"
 )
 
-func startMining(user *player.Player, msg Message) {
-	reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, user.GetSquad().MatherShip.MapID)
+func startMining(miner *unit.Unit, msg Message) {
+	reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, miner.MapID)
 	if reservoir == nil {
-		go SendMessage(Message{Event: "Error", Error: "no reservoir", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "Error", Error: "no reservoir", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		return
 	}
 
-	miningEquip := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
+	miningEquip := miner.Body.GetEquip(msg.TypeSlot, msg.Slot)
 	if miningEquip == nil || miningEquip.Equip == nil && miningEquip.Equip.Applicable == reservoir.Type {
-		go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		return
 	}
 
-	if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-		go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+	if miner.Body.CapacitySize < miner.Inventory.GetSize()+reservoir.Resource.Size {
+		go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		return
 	}
 
 	x, y := globalGame.GetXYCenterHex(reservoir.Q, reservoir.R)
-	dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
-	if int(dist) < miningEquip.Equip.Radius*100 && !miningEquip.Equip.MiningChecker {
+	dist := globalGame.GetBetweenDist(miner.X, miner.Y, x, y)
+	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker {
 
-		go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Equip.Reload,
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Equip.Reload,
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: miner.MapID})
 
 		miningEquip.Equip.MiningChecker = true
 		miningEquip.Equip.CreateMining()
 
-		go Mining(user, miningEquip.Equip, reservoir, msg)
+		go Mining(miner, miningEquip.Equip, reservoir, msg)
 	} else {
-		if int(dist) > miningEquip.Equip.Radius*100 {
-			go SendMessage(Message{Event: "Error", Error: "not enough distance", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		if int(dist) > miningEquip.Equip.Radius {
+			go SendMessage(Message{Event: "Error", Error: "not enough distance", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 			return
 		}
 		if miningEquip.Equip.MiningChecker {
-			go SendMessage(Message{Event: "Error", Error: "extractor work", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+			go SendMessage(Message{Event: "Error", Error: "extractor work", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 			return
 		}
 	}
 }
 
-func Mining(user *player.Player, miningEquip *equip.Equip, reservoir *resource.Map, msg Message) {
+func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map, msg Message) {
 	exit := false
 
 	for {
@@ -60,8 +59,8 @@ func Mining(user *player.Player, miningEquip *equip.Equip, reservoir *resource.M
 		miningEquip.CurrentReload = miningEquip.Reload
 
 		// проверка на полный трюм
-		if user.GetSquad().MatherShip.Body.CapacitySize < user.GetSquad().Inventory.GetSize()+reservoir.Resource.Size {
-			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		if miner.Body.CapacitySize < miner.Inventory.GetSize()+reservoir.Resource.Size {
+			go SendMessage(Message{Event: "Error", Error: "inventory is full", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 			miningEquip.MiningChecker = false
 			return
 		}
@@ -71,26 +70,26 @@ func Mining(user *player.Player, miningEquip *equip.Equip, reservoir *resource.M
 			case exitNow := <-miningEquip.GetMining():
 				if exitNow {
 					// игрок сам отменить копание
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
+					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
 					exit = true
 				}
 			default:
 
-				if globalGame.Clients.GetById(user.GetID()) == nil {
+				if globalGame.Clients.GetById(miner.OwnerID) == nil {
 					// игрок вышел
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
+					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
 					exit = true
 				}
 
 				x, y := globalGame.GetXYCenterHex(reservoir.Q, reservoir.R)
-				dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+				dist := globalGame.GetBetweenDist(miner.X, miner.Y, x, y)
 
-				if int(dist) > miningEquip.Radius*100 {
+				if int(dist) > miningEquip.Radius {
 					// игрок уехал слишком далеко
-					go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
+					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
 					exit = true
 				}
 
@@ -107,44 +106,43 @@ func Mining(user *player.Player, miningEquip *equip.Equip, reservoir *resource.M
 		// проверка сколько итемов влезет в трюм
 		// Region определяет кубоменты доставаемые итемом
 		var countRes int
-		if user.GetSquad().MatherShip.Body.CapacitySize >= user.GetSquad().Inventory.GetSize()+float32(miningEquip.Region) {
+		if miner.Body.CapacitySize >= miner.Inventory.GetSize()+float32(miningEquip.Region) {
 			countRes = int(float32(miningEquip.Region) / reservoir.Resource.Size)
 		} else {
-			countRes = int((user.GetSquad().MatherShip.Body.CapacitySize - user.GetSquad().Inventory.GetSize()) / reservoir.Resource.Size)
+			countRes = int((miner.Body.CapacitySize - miner.Inventory.GetSize()) / reservoir.Resource.Size)
 		}
 
 		if reservoir.Count < countRes {
-			user.GetSquad().Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
-				reservoir.Count, 1, reservoir.Resource.Size, 1, false, user.GetID())
+			miner.Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
+				reservoir.Count, 1, reservoir.Resource.Size, 1, false, miner.OwnerID)
 
 			reservoir.Count = 0
 		} else {
-			user.GetSquad().Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
-				countRes, 1, reservoir.Resource.Size, 1, false, user.GetID())
+			miner.Inventory.AddItem(reservoir.Resource, "resource", reservoir.Resource.TypeID,
+				countRes, 1, reservoir.Resource.Size, 1, false, miner.OwnerID)
 
 			reservoir.Count -= countRes
 		}
 
-		update.Squad(user.GetSquad(), true)
+		//update.Squad(user.GetSquad(), true) todo
 
-		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-		go SendMessage(Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count,
-			IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
+		go SendMessage(Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count, IDMap: miner.MapID})
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
-			go SendMessage(Message{Event: "stopMining", OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
+			go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
 
 			maps.Maps.RemoveReservoirByQR(reservoir.Q, reservoir.R, reservoir.MapID)
-			go SendMessage(Message{Event: "destroyReservoir", OtherUser: user.GetShortUserInfo(true), Q: reservoir.Q,
-				R: reservoir.R, IDMap: user.GetSquad().MatherShip.MapID})
+			go SendMessage(Message{Event: "destroyReservoir", ShortUnit: miner.GetShortInfo(), Q: reservoir.Q,
+				R: reservoir.R, IDMap: miner.MapID})
 
 			miningEquip.MiningChecker = false
 			return
 		} else {
-			go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: user.GetSquad().MatherShip.MapID})
+			go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: miner.MapID})
 		}
 	}
 }

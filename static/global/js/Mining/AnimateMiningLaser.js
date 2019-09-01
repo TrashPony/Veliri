@@ -24,32 +24,23 @@ function AnimateMiningLaser() {
         miningLaser.in.lineTo(targetX * 4, targetY * 4);
     }
 
-    if (game.squad && game.squad.miningLaser && game.squad.miningLaser.length > 0) {
-        for (let i in game.squad.miningLaser) {
-            if (game.squad.miningLaser[i]) {
+    for (let i in game.units) {
+        let unit = game.units[i];
 
-                //game.squad.miningLaser[i].equipSprite
-                //console.log(game.squad.miningLaser[i].equipSprite);
-                animateLaser(game.squad, game.squad.miningLaser[i])
-            }
+        if (unit.selectMiningLine) {
+            unit.selectMiningLine.graphics.clear();
+            unit.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
+            unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
+            unit.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
+            unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
         }
-    }
 
-    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-        if (game.otherUsers[i].miningLaser && game.otherUsers[i].miningLaser.length > 0) {
-            for (let j in game.otherUsers[i].miningLaser) {
-                if (game.otherUsers[i].miningLaser[j]) {
-                    animateLaser(game.otherUsers[i], game.otherUsers[i].miningLaser[j])
+        if (unit.miningLaser && unit.miningLaser.length > 0) {
+            for (let j in unit.miningLaser) {
+                if (unit.miningLaser[j]) {
+                    animateLaser(unit, unit.miningLaser[j])
                 }
             }
         }
-    }
-
-    if (game.squad && game.squad.selectMiningLine) {
-        game.squad.selectMiningLine.graphics.clear();
-        game.squad.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
-        game.squad.selectMiningLine.graphics.drawCircle(game.squad.sprite.x, game.squad.sprite.y, game.squad.selectMiningLine.radius);
-        game.squad.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
-        game.squad.selectMiningLine.graphics.drawCircle(game.squad.sprite.x, game.squad.sprite.y, game.squad.selectMiningLine.radius);
     }
 }

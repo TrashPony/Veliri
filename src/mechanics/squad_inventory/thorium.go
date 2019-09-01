@@ -41,7 +41,7 @@ func RemoveThorium(user *player.Player, numThoriumSlot int) error {
 	if thoriumSlot != nil && thoriumSlot.Count > 0 {
 		item, _ := gameTypes.Resource.GetRecycledByID(1)
 
-		user.GetSquad().Inventory.AddItem(item, "recycle", 1, thoriumSlot.Count, 1,
+		user.GetSquad().MatherShip.Inventory.AddItem(item, "recycle", 1, thoriumSlot.Count, 1,
 			item.Size/float32(thoriumSlot.Count), 1, false, user.GetID())
 
 		thoriumSlot.Count = 0

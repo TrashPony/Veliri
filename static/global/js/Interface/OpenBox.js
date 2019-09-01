@@ -1,7 +1,13 @@
 function OpenBox(inventory, boxID, capacitySize, error) {
 
-    if (game.squad.toBox) {
-        game.squad.toBox.to = false
+    for (let i in game.units) {
+        let unit = game.units[i];
+        if (unit && unit.toBox && unit.toBox.to && unit.toBox.boxID === boxID) {
+            unit.toBox.to = false;
+            setTimeout(function () {
+                StopUnit(unit.id);
+            }, 100)
+        }
     }
 
     if (error) {
@@ -100,7 +106,9 @@ function OpenBox(inventory, boxID, capacitySize, error) {
     storageCell.className = "storageCell";
     $(storageCell).selectable({
         filter: '.InventoryCell.active',
-        start: function() {$('.ui-selected').removeClass('ui-selected')}
+        start: function () {
+            $('.ui-selected').removeClass('ui-selected')
+        }
     });
 
     fillInventory(storageCell, inventory, boxID);

@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/getlantern/deepcopy"
 )
 
@@ -82,6 +83,10 @@ type Unit struct {
 	Evacuation      bool `json:"evacuation"`
 	ForceEvacuation bool `json:"force_evacuation"`
 	InSky           bool `json:"in_sky"` /* отряд по той или иной причине летит Оо */
+
+	MoveChecker bool `json:"move_checker"`
+
+	Inventory *inventory.Inventory `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
 }
 
 type ShortUnitInfo struct {

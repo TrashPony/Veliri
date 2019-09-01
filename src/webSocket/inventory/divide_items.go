@@ -23,9 +23,9 @@ func divideItems(ws *websocket.Conn, msg Message) {
 	} else {
 		if user.GetSquad() != nil {
 
-			slot, ok := user.GetSquad().Inventory.Slots[msg.InventorySlot]
+			slot, ok := user.GetSquad().MatherShip.Inventory.Slots[msg.InventorySlot]
 			if ok && slot.Quantity > msg.Count {
-				if user.GetSquad().Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, msg.Count, slot.HP,
+				if user.GetSquad().MatherShip.Inventory.AddItem(slot.Item, slot.Type, slot.ItemID, msg.Count, slot.HP,
 					slot.Size/float32(slot.Quantity), slot.MaxHP, true, user.GetID()) {
 					slot.RemoveItemBySlot(msg.Count)
 				}

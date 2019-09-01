@@ -1,19 +1,32 @@
 #SquadBar {
     position: absolute;
     border-radius: 5px;
-    top: 15px;
-    right: 15px;
+    bottom: 15px;
+    right: calc(50% - 335px);
     background-size: 10px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.6), rgba(37, 160, 225, 0.6) 6px);
     border: 1px solid #25a0e1;
-    width: 235px;
-    height: 165px;
+    width: 770px;
+    height: 180px;
+    padding: 5px;
+}
+
+#SquadBar h4 {
+    position: absolute;
+    top: -13px;
+    margin: 0;
+    padding: 3px 3px 0px;
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 6px 6px 0px 0px;
+    z-index: 0;
 }
 
 .body, .weapon, .ammo {
     float: left;
-    height: 40px;
-    width: 35px;
+    height: 50px;
+    width: 50px;
     border: 1px solid #959595;
     background-color: rgba(76, 76, 76, 0.66);
     border-radius: 8px;
@@ -23,7 +36,7 @@
 
 .weapon, .ammo {
     height: 19px;
-    width: 24px;
+    width: 36px;
 }
 
 .body {
@@ -32,60 +45,58 @@
 
 .weapon {
     margin-top: -1px;
-    height: 20px;
+    height: 50px;
     border-radius: 0 8px 0 0;
 }
 
-.ammo {
-    border-radius: 0 0 8px 0;
-}
-
-#Units {
-    height: 100px;
-    width: 225px;
-    box-shadow: inset 0 0 5px black;
-    background: #8cb3c7;
-    margin: 5px;
-}
-
-#HeadGlobal {
-    height: 50px;
-    width: 225px;
-    box-shadow: inset 0 0 5px black;
-    background: #8cb3c7;
-    margin: 5px;
-    border-radius: 10px;
-}
-
-#MS {
-    height: 50px;
-    width: 75px;
-    float: left;
-    margin-top: 5px;
-    margin-left: 5px;
-}
-
-#MS .body, #MS .weapon, #MS .ammo {
-    float: left;
-    height: 40px;
-    width: 40px;
-    visibility: visible;
-}
-
-#MS .weapon, #MS .ammo {
-    height: 19px;
-    width: 24px;
-}
-
-#MS .weapon {
-    margin-top: -1px;
+#Units .ammo {
+    border-radius: 50% 0 0 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
     height: 20px;
 }
 
-#Units > div {
+#Units .body {
+    border-radius: 5px 0 0 0;
+}
+
+#Units {
+    height: 130px;
+    width: 615px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    float: left;
+    border-radius: 5px;
+}
+
+#HeadGlobal {
+    height: 45px;
+    width: 300px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    border-radius: 5px;
+    float: left;
+    margin-bottom: 2px;
+    padding: 0 5px 5px 0;
+}
+
+#MS {
+    width: 150px;
+    float: left;
+    margin-right: 5px;
     position: relative;
-    height: 40px;
-    width: 63px;
+    box-shadow: inset 0 0 5px black;
+    background: #8cb3c7;
+    height: 182px;
+}
+
+#Units > div {
+    overflow: hidden;
+    position: relative;
+    height: 120px;
+    width: 90px;
     float: left;
     border: 1px solid #959595;
     margin: 5px 5px 0 5px;
@@ -94,13 +105,13 @@
     background: -webkit-gradient(linear, left top, right top, color-stop(0%, #4c4c4c), color-stop(20%, #1AA9DA), color-stop(0%, #1AA9DA), color-stop(100%, #4c4c4c));
 }
 
-#Units > div span {
+#Units > div > span {
     position: absolute;
-    font-size: 14px;
+    font-size: 24px;
     color: #adadad;
     text-shadow: 0 0 5px black;
-    top: 12px;
     left: 21px;
+    top: 48px;
 }
 
 #Credits, #Experience {
@@ -122,4 +133,213 @@
 
 #Credits {
     margin-top: 6px;
+}
+
+#MS .weapon {
+    visibility: visible;
+    height: 49px;
+    width: 49px;
+    margin-top: 1px;
+    border-radius: 0 0 5px 5px;
+    float: left;
+    border-top: 0;
+    border-right: 0;
+}
+
+#MS .ammo {
+    visibility: visible;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-radius: 0 0 50% 50%;
+}
+
+.unitButtonsMask {
+    height: 50px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: 100ms;
+    opacity: 0.01;
+}
+
+.unitButtonsMask:hover {
+    opacity: 1;
+}
+
+#MS .unitButtonsMask {
+    height: 50px;
+    width: 50px;
+    opacity: 1;
+    float: left;
+    position: relative;
+    background: none;
+}
+
+.unitButtonsMask div {
+    height: 20px;
+    width: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 5px;
+    float: left;
+    margin: 2px 9px 0;
+}
+
+.unitButtonsMask div:hover {
+    box-shadow: inset 0 0 5px rgb(187, 255, 241) !important;
+}
+
+.unitButtonsMask div:active {
+    transform: scale(0.98);
+}
+
+.unitButtonsMask .selectUnit {
+    background: url("https://img.icons8.com/ultraviolet/80/000000/circled-dot.png") center center / contain no-repeat, rgba(0, 0, 0, 0.6);
+}
+
+.unitButtonsMask .outUnit {
+    background: url("https://img.icons8.com/color/104/000000/external.png") center center / contain no-repeat, rgba(0, 0, 0, 0.6);
+}
+
+.unitButtonsMask .changeAmmo {
+    background: url("https://img.icons8.com/color/48/000000/bullet-2.png") center center / contain no-repeat, rgba(0, 0, 0, 0.6);
+}
+
+.unitButtonsMask .openUnitHold {
+    background: url("https://img.icons8.com/color/64/000000/cardboard-box.png") center center / contain no-repeat, rgba(0, 0, 0, 0.6);
+}
+
+#MS .unitButtonsMask div {
+    width: 21px;
+    margin: 1px;
+    display: block;
+}
+
+#MS .unitButtonsMask .openUnitHold {
+    width: 46px;
+    margin: 1px;
+    height: 23px;
+}
+
+#Units table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    top: -2px;
+    position: relative;
+}
+
+#Units table td {
+    width: 20px;
+    height: 18px;
+    border: 1px solid;
+}
+
+.unitEquip {
+    float: left;
+    height: 47px;
+    width: 100%;
+}
+
+.unitEquip div {
+    height: 20px;
+    width: 22px;
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.45);
+    border-radius: 5px;
+    float: left;
+    margin: 1px 4px 0;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, #4c4c4c), color-stop(20%, #1AA9DA), color-stop(0%, #1AA9DA), color-stop(100%, #4c4c4c));
+}
+
+#MSEquip {
+    margin-top: 2px;
+    float: left;
+}
+
+#MSEquip > div {
+    overflow: hidden;
+    position: relative;
+    height: 24px;
+    width: 24px;
+    box-shadow: inset 0 0 1px 1px rgba(0, 0, 0, 0.45);
+    border-radius: 5px;
+    float: left;
+    margin: 3px 3px 0;
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, #4c4c4c), color-stop(20%, #1AA9DA), color-stop(0%, #1AA9DA), color-stop(100%, #4c4c4c));
+}
+
+#MSEquip > div:hover {
+    box-shadow: 0 0 5px rgb(187, 255, 241) !important;
+}
+
+#MSEquip > div:active {
+    transform: scale(0.97);
+}
+
+.unitEquip > div:hover {
+    box-shadow: 0 0 5px rgb(187, 255, 241) !important;
+}
+
+.unitEquip > div:active {
+    transform: scale(0.97);
+}
+
+.hpBarWrapper, .energyBarWrapper {
+    float: left;
+    width: 78px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    height: 3px;
+    border-radius: 10px;
+    margin: 1px 5px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.hpCount {
+    height: 100%;
+    width: 100%;
+    background: #01ff01;
+    box-shadow: inset 0 0 1px black;
+}
+
+.energyCount {
+    height: 100%;
+    width: 100%;
+    background: #00e1ff;
+    box-shadow: inset 0 0 1px black;
+}
+
+#MS .hpBarWrapper {
+    width: 139px;
+    margin-top: 6px;
+    height: 4px;
+}
+
+.reloadEquip {
+    height: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes reload {
+    0% {
+        height: 0;
+        visibility: visible;
+    }
+    100% {
+        height: 100%;
+    }
+}
+
+.ammoCount {
+    color: #83ff00;
+    font-size: 10px;
+    position: absolute;
+    top: 12px;
+    right: 1px;
+    text-shadow: 0 -1px 1px #000000, 0 -1px 1px #000000, 0 1px 1px #000000, 0 1px 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px 0 1px #000000, 1px 0 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000, -1px -1px 1px #000000, 1px -1px 1px #000000, -1px 1px 1px #000000, 1px 1px 1px #000000;
 }
