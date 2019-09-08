@@ -19,12 +19,18 @@ function fillSquadUnit(id, unit) {
         // TODO ленивое обновление данных
     } else {
         if (id !== 'MS') {
+
+            let backButton = "";
+            if (unit.on_map){
+                backButton = "background: url(https://img.icons8.com/cute-clipart/64/000000/login-rounded-up.png) center center / contain no-repeat, rgba(0, 0, 0, 0.6);"
+            }
+
             msBlock.style.background = "none";
             msBlock.innerHTML += `
                 <div id="unitEquip${unit.id}">
                     <div class="unitButtonsMask">
                         <div class="selectUnit" title="Выделить и показать" onclick="FocusUnit(${unit.id})"></div>
-                        <div class="outUnit"  title="Вывести на карту" onclick="OutUnit(${unit.id})"></div>
+                        <div class="outUnit" style="${backButton}" title="Вывести/Вернуть" onclick="PlaceUnit(${unit.id})"></div>
                         <div class="changeAmmo"  title="Сменить боеприпасы" onclick="ChangeAmmo(${unit.id})"></div>
                         <div class="openUnitHold" title="Открыть трюм" onclick="OpenInventoryUnit(${unit.id})"></div>
                     </div>
@@ -79,8 +85,8 @@ function fillSquadUnit(id, unit) {
         `;
 
             $('#reactorStatus').html(`
-        <div id="countPower">${unit.power} / ${unit.max_power}</div>
-        <div id="recoverPower">+${unit.recovery_power} <span>ед/сек.</span></div>`)
+        <div id="countPower">${(unit.power/100).toFixed(0)} / ${(unit.max_power/100).toFixed(0)}</div>
+        <div id="recoverPower">+${(unit.recovery_power/100).toFixed(1)} <span>ед/сек.</span></div>`)
         }
     }
 
@@ -202,4 +208,17 @@ function fillEquipBlock(unit) {
     let percentHP = 100 / (unit.body.max_hp / unit.hp);
     hpBar.style.background = GetColorDamage(percentHP);
     hpBar.style.width = percentHP + "%";
+
+    let energyBar = document.getElementById('energy' + unit.id);
+    if (energyBar){
+        let percent = 100 / (unit.body.max_power / unit.power);
+        energyBar.style.width = percent + "%";
+    }
+}
+
+function PlaceUnit(unitID) {
+    global.send(JSON.stringify({
+        event: "PlaceUnit",
+        unit_id: Number(unitID),
+    }))
 }

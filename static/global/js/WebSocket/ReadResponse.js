@@ -16,11 +16,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "WorkOutThorium") {
-        ThoriumBar(jsonData.thorium_slots)
-    }
-
-    if (jsonData.event === "DisconnectUser") {
-        DisconnectUser(jsonData);
+        ThoriumBar(jsonData.unit, jsonData.thorium_slots)
     }
 
     if (jsonData.event === "ConnectNewUser") {
@@ -180,5 +176,13 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "InitMiningOre") {
         InitMiningOre(jsonData.short_unit.id, jsonData.slot, jsonData.type_slot, jsonData.equip)
+    }
+
+    if (jsonData.event === "PlaceUnit") {
+        CreateNewUnit(jsonData.short_unit)
+    }
+
+    if (jsonData.event === "RemoveUnit"){
+        RemoveUnit(jsonData)
     }
 }

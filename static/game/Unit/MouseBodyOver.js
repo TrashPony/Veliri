@@ -1,5 +1,5 @@
-let positionInterval = null;
-let checkTimeOut = null;
+let positionsInterval = {};
+let checksTimeOut = {};
 
 function mouseBodyOver(body, unit, unitBox) {
 
@@ -20,8 +20,8 @@ function unitInfo(unit, unitBox) {
         unitBox.frame = 2;
     }
 
-    clearTimeout(checkTimeOut);
-    checkTimeOut = null;
+    clearTimeout(checksTimeOut[unit.id]);
+    checksTimeOut[unit.id] = null;
 
     if (document.getElementById("UserLabel" + unit.owner + unit.id)) {
         return;
@@ -31,7 +31,6 @@ function unitInfo(unit, unitBox) {
     userLabel.id = "UserLabel" + unit.owner + unit.id;
     userLabel.className = "UserLabel";
     document.body.appendChild(userLabel);
-
     userLabel.innerHTML = `
             <div>
                 <div>
@@ -42,7 +41,7 @@ function unitInfo(unit, unitBox) {
             </div>
         `;
 
-    positionInterval = setInterval(function () {
+    positionsInterval[unit.id] = setInterval(function () {
         userLabel.style.left = unitBox.worldPosition.x - 50 + "px";
         userLabel.style.top = unitBox.worldPosition.y - 70 + "px";
         userLabel.style.display = "block";
@@ -58,12 +57,12 @@ function unitRemoveInfo(unit, unitBox) {
         unitBox.frame = 0;
     }
 
-    if (!checkTimeOut) {
-        checkTimeOut = setTimeout(function () {
+    if (!checksTimeOut[unit.id]) {
+        checksTimeOut[unit.id] = setTimeout(function () {
             if (document.getElementById("UserLabel" + unit.owner + unit.id)) document.getElementById("UserLabel" + unit.owner + unit.id).remove();
-            clearInterval(positionInterval);
-            clearTimeout(checkTimeOut);
-            checkTimeOut = null;
+            clearInterval(positionsInterval[unit.id]);
+            clearTimeout(checksTimeOut[unit.id]);
+            checksTimeOut[unit.id] = null;
         }, 2000);
     }
 }

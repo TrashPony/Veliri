@@ -163,7 +163,11 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "MoveTo" {
-			go Move(user, msg)
+			go Move(user, msg, true)
+		}
+
+		if msg.Event == "PlaceUnit" {
+			placeUnit(user, msg)
 		}
 
 		if msg.Event == "StopMove" {

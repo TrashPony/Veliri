@@ -1,16 +1,22 @@
-function DisconnectUser(jsonData) {
+function RemoveUnit(jsonData) {
 
-    if (!game.otherUsers) return;
+    if (!game || !game.units) return;
 
-    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-        if (game.otherUsers[i].squad_id === jsonData.other_user.squad_id) {
-            if (game.otherUsers[i].sprite) {
-                game.otherUsers[i].sprite.destroy();
-            }
-            if (game.otherUsers[i].colision) {
-                game.otherUsers[i].colision.destroy();
-            }
-            game.otherUsers.splice(i, 1);
+    let unit = game.units[jsonData.short_unit.id];
+    if (unit) {
+
+        while (0 < unit.oldPoint.length) {
+            let label = unit.oldPoint.shift();
+            if (label) label.destroy();
         }
+
+        if (unit.sprite) {
+            unit.sprite.destroy();
+        }
+        if (unit.colision) {
+            unit.colision.destroy();
+        }
+
+        delete game.units[jsonData.short_unit.id]
     }
 }

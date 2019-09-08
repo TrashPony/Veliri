@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"math"
@@ -22,11 +21,32 @@ const (
 
 type Points map[string]*coordinate.Coordinate
 
-func FindPath(client *player.Player, gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int) (error, []*coordinate.Coordinate) {
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
+
+	startX := moveUnit.X
+	startY := moveUnit.Y
+
+	path := make([]unit.PathUnit, 0)
+
+	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id)
+	_, path2 := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
+		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, moveUnit.Speed, allUnits)
+
+	for _, unitPath := range path2 {
+		path = append(path, unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 1000,
+			Speed: float64(moveUnit.Speed), Animate: true})
+	}
+
+	return path, nil
+}
+
+func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (error, []*coordinate.Coordinate) {
 
 	xSize, ySize := gameMap.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
 
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
+	start.Rotate = gameUnit.Rotate
+
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
 
 	if end.X >= xSize || end.Y >= ySize || end.X < 0 || end.Y < 0 || start.X >= xSize || start.Y >= ySize || start.X < 0 || start.Y < 0 {
@@ -53,7 +73,7 @@ func FindPath(client *player.Player, gameMap *_map.Map, start, end *coordinate.C
 			}
 			break
 		}
-		parseNeighbours(client, current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap)
+		parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits)
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -68,13 +88,13 @@ func FindPath(client *player.Player, gameMap *_map.Map, start, end *coordinate.C
 	return nil, path
 }
 
-func parseNeighbours(client *player.Player, curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map,
-	end *coordinate.Coordinate, gameUnit *unit.Unit, xSize, ySize, scaleMap int) {
+func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map,
+	end *coordinate.Coordinate, gameUnit *unit.Unit, xSize, ySize, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) {
 
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoordinate := generateNeighboursCoordinate(client, curr, gameMap, gameUnit, scaleMap) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits, end) // берем всех соседей этой клетки
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {

@@ -67,6 +67,9 @@ type Unit struct {
 	BodyTexture   string `json:"body_texture"`
 	WeaponTexture string `json:"weapon_texture"`
 
+	/* очередь глобальных коодинат по которому юнит еще будет идти */
+	PointsPath []*coordinate.Coordinate
+
 	/* путь по которому идет юнит */
 	ActualPath   *[]PathUnit `json:"actual_path"`
 	CurrentSpeed float64     `json:"current_speed"`
@@ -87,6 +90,9 @@ type Unit struct {
 	MoveChecker bool `json:"move_checker"`
 
 	Inventory *inventory.Inventory `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
+
+	FollowUnitID int  `json:"follow_unit_id"`
+	Return       bool `json:"returning"`
 }
 
 type ShortUnitInfo struct {

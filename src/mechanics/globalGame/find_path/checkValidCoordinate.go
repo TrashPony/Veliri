@@ -3,36 +3,68 @@ package find_path
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"math"
 	"sync"
 )
 
 var mx sync.Mutex
 
-func checkValidForMoveCoordinate(client *player.Player, gameMap *_map.Map, x int, y int, gameUnit *unit.Unit, scaleMap int) (*coordinate.Coordinate, bool) {
+func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, gameUnit *unit.Unit, scaleMap int,
+	allUnits map[int]*unit.ShortUnitInfo, end *coordinate.Coordinate) (*coordinate.Coordinate, bool) {
+
 	mx.Lock()
 	geoCoordinate, ok := gameMap.GeoDataMaps[scaleMap][x][y]
 	mx.Unlock()
 
+	//needRad := math.Atan2(float64(end.Y-y), float64(end.X-x))
+	//needAngle := int(needRad * 180 / 3.14)
+	//diffRotate := pRotate - needAngle
+	//if diffRotate < 0 {
+	//	diffRotate = 360 - diffRotate
+	//}
+	//
+	//if diffRotate != 0 { // если разница есть то поворачиваем корпус
+	//
+	//}
+
+	needRad := math.Atan2(float64(pY-y), float64(pX-x))
+	needAngle := int(needRad * 180 / 3.14)
+	diffRotate := 0
+
+	if pRotate > needAngle {
+		diffRotate = pRotate - needAngle
+	} else {
+		diffRotate = needAngle - pRotate
+	}
+
+	if diffRotate > 180 {
+		return nil, false
+	}
+
+	newCoor := &coordinate.Coordinate{X: x, Y: y, Rotate: needAngle}
+
+	free, _ := globalGame.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
+	if !free {
+		return nil, false
+	}
+
 	if ok {
-		if geoCoordinate.State == BLOCKED {
-			return nil, false
-		} else {
-			return &coordinate.Coordinate{X: x, Y: y}, true
+		if geoCoordinate.State != BLOCKED {
+			return newCoor, true
 		}
 	} else {
-		possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, gameUnit.Rotate, gameMap, gameUnit.Body, true)
+		possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body, true)
 
-		newCoor := &coordinate.Coordinate{X: x, Y: y}
 		addGeoCoordinate(newCoor, gameMap, scaleMap, possible)
 
 		if possible {
 			return newCoor, true
 		}
-		return nil, false
 	}
+
+	return nil, false
 }
 
 func addGeoCoordinate(new *coordinate.Coordinate, gameMap *_map.Map, scale int, possible bool) {

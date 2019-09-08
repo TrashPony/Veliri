@@ -30,8 +30,6 @@ func EvacuationsLife() {
 				transport.X = x
 				transport.Y = y
 
-				// TODO выедает производительность по неведомой причине, возможная причина расчеты в недостижимые точки
-				// после выставления минимальной скорость 5 и стартовой скорости 5 производительность выросла в разы
 				go LaunchTransport(transport, mapBase, mp)
 			}
 		}
@@ -56,7 +54,8 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 		y += yBase // докидываем положение базы
 
 		// формируем путь для движения
-		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 5, 5,
+		// минимальная и текущая скорость должна быть 1 иначе будут мертвые зоны и дедлоки
+		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 1, 1,
 			float64(x), float64(y), transport.Rotate, 10, mp, true, nil, false, false, nil)
 		// запускаем транспорт
 		FlyTransport(transport, transportBase, mp, path)

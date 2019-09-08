@@ -20,7 +20,7 @@ func afterburnerToggle(user *player.Player, msg Message) {
 	// перегрузку может использовать только мп поэтому создаем масив с одним юнитом
 	msg.UnitsID = []int{user.GetSquad().MatherShip.ID}
 	if user.GetSquad().MatherShip.MoveChecker {
-		Move(user, msg)
+		Move(user, msg, false)
 	}
 
 	go SendMessage(Message{

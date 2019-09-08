@@ -19,6 +19,7 @@ type Coordinate struct {
 	GameID              int              `json:"game_id"`
 	X                   int              `json:"x"`
 	Y                   int              `json:"y"`
+	Rotate              int              `json:"rotate"` // используется при расчете поиска пути
 	Z                   int              `json:"z"`
 	R                   int              `json:"r"`
 	Q                   int              `json:"q"`

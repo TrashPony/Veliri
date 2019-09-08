@@ -75,15 +75,17 @@ func respBot(base *base.Base, mp *_map.Map) {
 	// ставим рандомную пуху
 	weapon := gameTypes.Weapons.GetRandom()
 
-	botSquad.MatherShip.SetWeaponSlot(
-		&detail.BodyWeaponSlot{
-			Weapon:     weapon,
-			Type:       3,
-			Number:     3, // TODO проблема, номер может быть разный
-			WeaponType: weapon.Type,
-			HP:         weapon.MaxHP,
-		},
-	)
+	if botSquad.MatherShip.GetWeaponSlot() != nil {
+		botSquad.MatherShip.SetWeaponSlot(
+			&detail.BodyWeaponSlot{
+				Weapon:     weapon,
+				Type:       3,
+				Number:     botSquad.MatherShip.GetWeaponSlot().Number,
+				WeaponType: weapon.Type,
+				HP:         weapon.MaxHP,
+			},
+		)
+	}
 
 	newBot.SetSquad(&botSquad)
 	newBot.GetSquad().MatherShip.CalculateParams()
@@ -118,39 +120,19 @@ func outBase(bot *player.Player, base *base.Base) {
 	bot.GetSquad().MatherShip.X = x
 	bot.GetSquad().MatherShip.Y = y
 	bot.GetSquad().MatherShip.Evacuation = false
+	bot.GetSquad().MatherShip.PointsPath = nil
 
 	// если мы зашли на базу сбрасываем путь бота в ноль
 	bot.GlobalPath = nil
 	bot.CurrentPoint = 0
 
 	bot.InBaseID = 0
+
 	//оповещаем игроков что бот в игре
 	wsGlobal.LoadGame(bot, wsGlobal.Message{})
 }
 
 func Transport(bot *player.Player) {
-
-	//-- монитор зависаний
-	extraExit := false
-	go func() {
-		for {
-			if bot != nil && bot.GetSquad() != nil {
-				oldX, oldY := bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y
-				time.Sleep(15 * time.Second)
-				// todo runtime error: invalid memory address or nil pointer dereference
-
-				if bot == nil || bot.GetSquad() == nil {
-					return
-				}
-
-				if oldX == bot.GetSquad().MatherShip.X && oldY == bot.GetSquad().MatherShip.Y && bot.InBaseID == 0 {
-					extraExit = true
-				}
-			} else {
-				time.Sleep(15 * time.Second)
-			}
-		}
-	}()
 
 	//-- монитор топлива
 	// следим что бы у ботов всегда осталавалось топливо
@@ -174,51 +156,39 @@ func Transport(bot *player.Player) {
 			outBase(bot, botBase)
 		}
 
-		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().MatherShip.Evacuation && bot.GetSquad().MatherShip.ActualPath == nil && bot.InBaseID == 0 { // todo и есть топливо
+		if bot != nil && bot.GetSquad() != nil && !bot.GetSquad().MatherShip.Evacuation && bot.InBaseID == 0 { // todo и есть топливо
 
 			mp, _ := maps.Maps.GetByID(bot.GetSquad().MatherShip.MapID)
-			path := getPathAI(bot, mp)
 
-			exit := false
+			if bot.GetSquad().MatherShip.PointsPath != nil && 0 < len(bot.GetSquad().MatherShip.PointsPath) {
 
-			for i := 0; path != nil && i < len(path); i++ {
-				if exit {
-					bot.GetSquad().MatherShip.ActualPath = nil
-					break
-				}
-				wsGlobal.Move(bot, wsGlobal.Message{ToX: float64(path[i].X), ToY: float64(path[i].Y)})
+				toPoint := bot.GetSquad().MatherShip.PointsPath[0]
+				bot.GetSquad().MatherShip.PointsPath = bot.GetSquad().MatherShip.PointsPath[1:]
+
+				wsGlobal.Move(bot, wsGlobal.Message{ToX: float64(toPoint.X), ToY: float64(toPoint.Y), UnitsID: []int{bot.GetSquad().MatherShip.ID}}, true)
+
 				for {
 					time.Sleep(100 * time.Millisecond)
+					if !bot.GetSquad().MatherShip.MoveChecker {
+						// бот перестал идти
+						break
+					}
 
 					if mp.Id != bot.GetSquad().MatherShip.MapID {
 						//это означает что сектор сменился
-						exit = true
-						// если у бота есть цель то она выросла на 1 пройденный сектор)
-						bot.CurrentPoint++
-						bot.GetSquad().MatherShip.ActualPath = nil
-						break
-					}
-
-					if !bot.GetSquad().MatherShip.MoveChecker {
-						bot.GetSquad().MatherShip.ActualPath = nil
 						break
 					}
 				}
+			} else {
+				getPathAI(bot, mp)
 			}
-		}
-
-		if extraExit {
-			extraExit = false
-			bot.GetSquad().MatherShip.ActualPath = nil
-			println("бот завис 2")
-			break
 		}
 
 		time.Sleep(100 * time.Millisecond)
 	}
 }
 
-func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
+func getPathAI(bot *player.Player, mp *_map.Map) {
 	var toX, toY int
 
 	if bot.GlobalPath == nil {
@@ -240,7 +210,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 		randEntryBase := randMap.GetRandomEntryBase()
 
 		if randEntryBase == nil || randEntryBase.ID == 0 {
-			return nil
+			return
 		}
 
 		if randMap.Id == bot.GetSquad().MatherShip.MapID {
@@ -256,7 +226,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 				bot.CurrentPoint = 0
 				toX, toY = globalGame.GetXYCenterHex(transitionPoints[0].Q, transitionPoints[0].R)
 			} else {
-				return nil
+				return
 			}
 		}
 
@@ -271,7 +241,6 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
 		} else {
 			bot.GlobalPath = nil
-			return nil
 		}
 	}
 
@@ -280,12 +249,17 @@ func getPathAI(bot *player.Player, mp *_map.Map) []*coordinate.Coordinate {
 	// проверка на то что х, у достижимы
 	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true)
 	if possible {
-		path := aiSearchPath(toX, toY, bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y, 50, bot, mp)
-		return path
+
+		go func() {
+			for bot.InBaseID == 0 {
+				bot.GetSquad().MatherShip.PointsPath = aiSearchPath(toX, toY, bot.GetSquad().MatherShip.X, bot.GetSquad().MatherShip.Y, 50, bot, mp)
+				time.Sleep(15 * time.Second)
+			}
+		}()
+
 	} else {
 		println("достижимость: ", possible, bot.GetSquad().MatherShip.MapID, toX, toY)
 		bot.GlobalPath = nil
-		return nil
 	}
 }
 
@@ -297,8 +271,10 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 
 	mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, scale)
 
-	_, path := find_path.FindPath(bot, mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale)
+	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id)
+
+	_, path := find_path.FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
+		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale, allUnits)
 
 	if len(path) == 0 {
 		return aiSearchPath(toX, toY, startX, startY, scale-10, bot, mp)

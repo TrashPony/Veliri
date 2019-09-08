@@ -52,6 +52,7 @@ func ChangeSector(user *player.Player, mapID int, coor *coordinate.Coordinate) {
 
 	user.GetSquad().MatherShip.X = 0
 	user.GetSquad().MatherShip.Y = 0
+	user.GetSquad().MatherShip.PointsPath = nil
 
 	if user.Bot {
 		LoadGame(user, Message{Event: "InitGame"})

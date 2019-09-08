@@ -16,6 +16,9 @@ const HorizontalOffset = HexagonWidth
 
 func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
 
+	moveUnit.ToX = ToX
+	moveUnit.ToY = ToY
+
 	startX := float64(moveUnit.X)
 	startY := float64(moveUnit.Y)
 	rotate := moveUnit.Rotate
@@ -33,13 +36,30 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 		startSpeed = moveUnit.CurrentSpeed
 	}
 
-	var fakeThoriumSlots map[int]*detail.ThoriumSlot
+	if moveUnit.FollowUnitID != 0 {
+		followUnit := Clients.GetUnitByID(moveUnit.FollowUnitID)
+		dist := GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
+		if dist < 100 {
+			maxSpeed = followUnit.CurrentSpeed
+		}
+	}
 
 	// копируем что бы не произошло вычетание топлива на расчетах
-	err := deepcopy.Copy(&fakeThoriumSlots, &moveUnit.Body.ThoriumSlots)
-	if err != nil || len(fakeThoriumSlots) == 0 {
-		println(err.Error())
-		return nil, err
+	var fakeThoriumSlots map[int]*detail.ThoriumSlot
+	if moveUnit.Body.MotherShip {
+		err := deepcopy.Copy(&fakeThoriumSlots, &moveUnit.Body.ThoriumSlots)
+		if err != nil || len(fakeThoriumSlots) == 0 {
+			println(err.Error())
+			return nil, err
+		}
+	} else {
+		// если это юнит то проецируем его энергию в топливо т.к. у юнита нет реактора и для двжиения он тратить свой акум
+		if moveUnit.Power <= 0 {
+			return nil, errors.New("not thorium")
+		}
+
+		fakeThoriumSlots = make(map[int]*detail.ThoriumSlot)
+		fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
 	}
 
 	if moveUnit.Afterburner { // если форсаж то х2 скорости (доступно только МС)
@@ -80,11 +100,6 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		// скорость * (180/угол поворота) = длинна полокружности (грабая модель)
-		// длинны окружности получаем ее радиус r= длинна полокружности /2 пи
-		// r*2 получаем минимальное растояние от бтр до обьекта к которому он может повернутся не останавливаясь
-		minDistRotate := 10 + ((speed*(180/float64(rotateAngle)))/(2*math.Pi))*2
-
 		if dist > maxSpeed*5 {
 			if int(maxSpeed)*10 != int(speed)*10 {
 
@@ -108,6 +123,14 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 				speed = minSpeed
 			}
 		}
+
+		// скорость * (180/угол поворота) = длинна полокружности (грабая модель)
+		// длинны окружности получаем ее радиус r= длинна полокружности /2 пи
+		// r*2 получаем минимальное растояние от бтр до обьекта к которому он может повернутся не останавливаясь
+		minDistRotate := 10 + ((speed*(180/float64(rotateAngle)))/(2*math.Pi))*2
+		// todo анализировать будующий путь - если нельзя проекхать по большой траектории из за препятсвий или
+		// todo или радиус большой траектории слишком большой
+		// todo то тормазить машину до скорости в которой юнит сможет проехать
 
 		radRotate := float64(rotate) * math.Pi / 180
 		stopX := float64(speed) * math.Cos(radRotate) // идем по вектору движения корпуса

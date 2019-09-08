@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -11,13 +12,20 @@ import (
 	"time"
 )
 
-func Move(user *player.Player, msg Message) {
+// TODO все алгоритмы движения/столкновений не оптимальны, поэтому пишу так что бы их можно было легко подменить
+
+func Move(user *player.Player, msg Message, newAction bool) {
 	if user.GetSquad() != nil && msg.UnitsID != nil {
 		for _, unitID := range msg.UnitsID {
 
 			moveUnit := user.GetSquad().GetUnitByID(unitID)
 
-			if moveUnit != nil {
+			if moveUnit != nil && moveUnit.OnMap {
+
+				if newAction {
+					moveUnit.FollowUnitID = 0
+					moveUnit.Return = false
+				}
 
 				// обнуляем маршрут что бы игрок больше не двигался
 				stopMove(moveUnit, false)
@@ -25,11 +33,15 @@ func Move(user *player.Player, msg Message) {
 				mp, find := maps.Maps.GetByID(moveUnit.MapID)
 				if find && user.InBaseID == 0 && !moveUnit.Evacuation {
 
-					for moveUnit.MoveChecker { // TODO чекер для юнита
+					for moveUnit.MoveChecker {
 						time.Sleep(10 * time.Millisecond) // без этого будет блокировка
 						// Ожидаем пока не завершится текущая клетка хода
 						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
 						// менятся и когда начнется движение то отряд телепортирует обратно
+						// todo расчет движения без остановки
+						//  (расчитывать путь пока юнит ходит и когда путь будет расчинан заменять его путь,
+						//  однако непонятно откуда начинать считать путь, можно например давать фору на 2-3 ячейки
+						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
 					// todo если ходит сразу много юнитов изменять ToX и ToY так что бы они занимали центры гейсов
@@ -37,14 +49,7 @@ func Move(user *player.Player, msg Message) {
 					moveUnit.ActualPath = &path
 
 					go MoveGlobalUnit(msg, user, &path, moveUnit)
-
-					if len(path) > 1 {
-						moveUnit.ToX = float64(path[len(path)-1].X)
-						moveUnit.ToY = float64(path[len(path)-1].Y)
-					} else {
-						moveUnit.ToX = float64(moveUnit.X)
-						moveUnit.ToY = float64(moveUnit.Y)
-					}
+					go FollowUnit(user, moveUnit, msg)
 
 					if err != nil && len(path) == 0 {
 						go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: moveUnit.MapID, Bot: user.Bot})
@@ -57,25 +62,74 @@ func Move(user *player.Player, msg Message) {
 	}
 }
 
-func stopMove(userUnit *unit.Unit, resetSpeed bool) {
-	if userUnit != nil {
-		userUnit.ActualPath = nil // останавливаем прошлое движение
+func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
+	if moveUnit != nil {
+		moveUnit.ActualPath = nil // останавливаем прошлое движение
+
 		if resetSpeed {
-			userUnit.CurrentSpeed = 0
+			moveUnit.CurrentSpeed = 0
 		}
 
 		go SendMessage(Message{
 			Event:     "MoveTo",
-			ShortUnit: userUnit.GetShortInfo(),
+			ShortUnit: moveUnit.GetShortInfo(),
 			PathUnit: unit.PathUnit{
-				X:           userUnit.X,
-				Y:           userUnit.Y,
-				Rotate:      userUnit.Rotate,
+				X:           moveUnit.X,
+				Y:           moveUnit.Y,
+				Rotate:      moveUnit.Rotate,
 				Millisecond: 100,
-				Speed:       userUnit.CurrentSpeed,
+				Speed:       moveUnit.CurrentSpeed,
 			},
-			IDMap: userUnit.MapID,
+			IDMap: moveUnit.MapID,
 		})
+	}
+}
+
+func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
+	// если юнит преследует другово юнита, то достаем его и мониторим его положение
+	// если по какойто причине (столкновение, гравитация и тд) надо перестроить маршрут то сохраняем FollowUnitID
+	// однако если сам игрок сгенерил событие движения то мы не сохраняем параметр FollowUnitID
+
+	var followUnit *unit.Unit
+	if moveUnit.FollowUnitID != 0 {
+		followUnit = globalGame.Clients.GetUnitByID(moveUnit.FollowUnitID)
+	} else {
+		return
+	}
+
+	if followUnit != nil {
+		for {
+
+			if moveUnit.FollowUnitID == 0 || !moveUnit.OnMap || !followUnit.OnMap || moveUnit.MapID != followUnit.MapID {
+				moveUnit.FollowUnitID = 0
+				moveUnit.Return = false
+				return
+			}
+
+			dist := globalGame.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
+			if dist < 90 {
+
+				stopMove(moveUnit, true)
+
+				if moveUnit.Return {
+					ReturnUnit(user, moveUnit)
+					return
+				}
+
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
+
+			dist = globalGame.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.ToX), int(moveUnit.ToY))
+			if dist > 90 || moveUnit.ActualPath == nil {
+				msg.ToX = float64(followUnit.X)
+				msg.ToY = float64(followUnit.Y)
+				Move(user, msg, false)
+				return
+			}
+
+			time.Sleep(100 * time.Millisecond)
+		}
 	}
 }
 
@@ -85,17 +139,18 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 
 	defer func() {
 		stopMove(moveUnit, false)
-		if user.GetSquad() != nil {
+		if moveUnit != nil {
 			moveUnit.MoveChecker = false
 		}
+
 		if moveRepeat {
-			Move(user, msg)
+			Move(user, msg, false)
 		}
 	}()
 
 	for i, pathUnit := range *path {
 		// юнит или отряд умер или путь изменился
-		if user.GetSquad() == nil || moveUnit == nil || moveUnit.HP <= 0 || moveUnit.ActualPath == nil || moveUnit.ActualPath != path {
+		if user.GetSquad() == nil || moveUnit == nil || !moveUnit.OnMap || moveUnit.HP <= 0 || moveUnit.ActualPath == nil || moveUnit.ActualPath != path {
 			return
 		}
 
@@ -108,16 +163,12 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			return
 		}
 
-		globalGame.WorkOutThorium(user.GetSquad().MatherShip.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
-		if moveUnit.Afterburner {
-			SquadDamage(user, 1, moveUnit)
-		}
-
 		// колизии юнит - юнит
 		noCollision, collisionUnit := initCheckCollision(moveUnit, &pathUnit)
 		if !noCollision && collisionUnit != nil {
 
 			playerToPlayerCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
+			moveRepeat = true
 			return
 		}
 
@@ -152,9 +203,30 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			return
 		}
 
-		// говорим юзеру как расходуется его топливо
-		go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
-			ThoriumSlots: moveUnit.Body.ThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
+		// расход топлива
+		if !moveUnit.Body.MotherShip {
+
+			fakeThoriumSlots := make(map[int]*detail.ThoriumSlot)
+			fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
+
+			globalGame.WorkOutThorium(fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
+			if moveUnit.Afterburner {
+				SquadDamage(user, 1, moveUnit)
+			}
+
+			moveUnit.Power = int(fakeThoriumSlots[1].WorkedOut)
+
+			go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
+				ThoriumSlots: fakeThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
+		} else {
+
+			globalGame.WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
+			if moveUnit.Afterburner {
+				SquadDamage(user, 1, moveUnit)
+			}
+			go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
+				ThoriumSlots: moveUnit.Body.ThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
+		}
 
 		// оповещаем мир как двигается отряд
 		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
@@ -170,13 +242,12 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		moveUnit.X = int(pathUnit.X)
 		moveUnit.Y = int(pathUnit.Y)
 
-		if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != moveUnit.Q && pathUnit.R != moveUnit.R)) ||
-			i+1 == len(*path) {
+		if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != moveUnit.Q && pathUnit.R != moveUnit.R)) || i+1 == len(*path) {
 
 			moveUnit.Q = pathUnit.Q
 			moveUnit.R = pathUnit.R
 
-			if !user.Bot {
+			if !user.Bot { // TODO апдейт юнитов
 				go update.Squad(user.GetSquad(), false)
 			}
 		}

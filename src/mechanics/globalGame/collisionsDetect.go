@@ -129,8 +129,7 @@ func CheckMapResource(x, y, rotate int, mp *_map.Map, body *detail.Body, startCo
 
 func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo) (bool, *unit.ShortUnitInfo) {
 
-	bodyMove := moveUnit.Body
-	mX, mY := float64(moveUnit.X), float64(moveUnit.Y)
+	mX, mY := float64(x), float64(y)
 
 	for _, otherUnit := range units {
 
@@ -139,135 +138,10 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 		}
 
 		if moveUnit.MapID != otherUnit.MapID {
-			// по неведомой причине нельзя этот иф класть в общий, он не работает там
 			continue
 		}
 
-		if otherUnit != nil && (moveUnit.ID > 0 && moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
-
-			bodyUser := otherUnit.Body
-
-			dist := int(GetBetweenDist(x, y, otherUnit.X, otherUnit.Y))
-
-			if dist < bodyMove.SideRadius+bodyUser.SideRadius {
-				return false, otherUnit
-			}
-
-			if dist < bodyMove.FrontRadius+bodyUser.FrontRadius {
-				// промеряем морду идущего с мордой стоящего
-				for i := rotate - bodyMove.LeftFrontAngle; i < rotate+bodyMove.RightFrontAngle; i++ {
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyMove.FrontRadius)*math.Cos(rad)) + x
-					bY := int(float64(bodyMove.FrontRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
-
-					if distToObstacle < float64(bodyUser.FrontRadius) {
-						userRotate := otherUnit.Rotate
-
-						abRad := math.Atan2(float64(bY-otherUnit.X), float64(bX-otherUnit.Y))
-						ab := int(abRad * 180 / math.Pi)
-
-						if ab < 0 && userRotate > 180 {
-							ab += 360
-						}
-						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false, otherUnit
-						}
-					}
-				}
-			}
-
-			if dist < bodyMove.FrontRadius+bodyUser.FrontRadius {
-				// проверяем морду идущего и жопу стоящего
-				for i := rotate - bodyMove.LeftFrontAngle; i < rotate+bodyMove.RightFrontAngle; i++ {
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyMove.FrontRadius)*math.Cos(rad)) + x
-					bY := int(float64(bodyMove.FrontRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
-
-					if distToObstacle < float64(bodyUser.BackRadius) {
-
-						userRotate := otherUnit.Rotate
-						if userRotate >= 180 {
-							userRotate -= 180
-						} else {
-							if userRotate < 180 {
-								userRotate += 180
-							}
-						}
-
-						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
-						ab := int(abRad * 180 / math.Pi)
-						if ab < 0 && userRotate > 180 {
-							ab += 360
-						}
-						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false, otherUnit
-						}
-					}
-				}
-			}
-
-			if dist < bodyMove.FrontRadius+bodyUser.SideRadius {
-				// проверяем морду идущего и бока стоящего
-				if checkCollision(rotate, bodyMove.LeftFrontAngle, bodyMove.RightFrontAngle, bodyMove.FrontRadius, x, y, otherUnit.X, otherUnit.Y, bodyUser.SideRadius) {
-					return false, otherUnit
-				}
-			}
-
-			if dist < bodyMove.BackRadius+bodyUser.BackRadius {
-				// промеряем жопу идущего с жопой стоящего
-				for i := (rotate + 180) - bodyMove.LeftBackAngle; i < (rotate+180)+bodyMove.RightBackAngle; i++ {
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyMove.BackRadius)*math.Cos(rad)) + x
-					bY := int(float64(bodyMove.BackRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
-
-					if distToObstacle < float64(bodyUser.BackRadius) {
-
-						userRotate := otherUnit.Rotate
-						if userRotate >= 180 {
-							userRotate -= 180
-						} else {
-							if userRotate < 180 {
-								userRotate += 180
-							}
-						}
-
-						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
-						ab := int(abRad * 180 / math.Pi)
-						if ab < 0 && userRotate > 180 {
-							ab += 360
-						}
-						if ab > userRotate-bodyUser.LeftBackAngle && ab < userRotate+bodyUser.RightBackAngle {
-							return false, otherUnit
-						}
-					}
-				}
-			}
-
-			if dist < bodyMove.BackRadius+bodyUser.FrontRadius {
-				// промеряем жопу идущего с мордой стоящего
-				for i := (rotate + 180) - bodyMove.LeftBackAngle; i < (rotate+180)+bodyMove.RightBackAngle; i++ {
-					rad := float64(i) * math.Pi / 180
-					bX := int(float64(bodyMove.BackRadius)*math.Cos(rad)) + x
-					bY := int(float64(bodyMove.BackRadius)*math.Sin(rad)) + y
-					distToObstacle := GetBetweenDist(bX, bY, otherUnit.X, otherUnit.Y)
-					if distToObstacle < float64(bodyUser.FrontRadius) {
-						userRotate := otherUnit.Rotate
-
-						abRad := math.Atan2(float64(bY-otherUnit.Y), float64(bX-otherUnit.X))
-						ab := int(abRad * 180 / math.Pi)
-
-						if ab < 0 && userRotate > 180 {
-							ab += 360
-						}
-						if ab > userRotate-bodyUser.LeftFrontAngle && ab < userRotate+bodyUser.RightFrontAngle {
-							return false, otherUnit
-						}
-					}
-				}
-			}
+		if otherUnit != nil && (moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
 
 			/*
 				    squad.rectDebag.moveTo(-50, -25);
@@ -283,7 +157,6 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 			heightUserMove, widthUserMove := float64(moveUnit.Body.Height), float64(moveUnit.Body.Width)
 			heightUser, widthUser := float64(otherUnit.Body.Height), float64(otherUnit.Body.Width)
 
-			uX, uY := float64(otherUnit.X), float64(otherUnit.Y)
 			mUserRect := rect{
 				sides: []sideRec{
 					{x1: mX - widthUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY + heightUserMove},
@@ -291,10 +164,11 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 					{x1: mX + widthUserMove, y1: mY + heightUserMove, x2: mX + widthUserMove, y2: mY - heightUserMove},
 					{x1: mX + heightUserMove, y1: mY - heightUserMove, x2: mX - widthUserMove, y2: mY - heightUserMove},
 				},
-				centerX: float64(moveUnit.X),
-				centerY: float64(moveUnit.Y),
+				centerX: float64(x),
+				centerY: float64(y),
 			}
 
+			uX, uY := float64(otherUnit.X), float64(otherUnit.Y)
 			userRect := rect{
 				sides: []sideRec{
 					{x1: uX - widthUser, y1: uY - heightUser, x2: uX - widthUser, y2: uY + heightUser},
@@ -306,7 +180,13 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 				centerY: float64(otherUnit.Y),
 			}
 
-			if mUserRect.detect(&userRect, float64(moveUnit.Rotate), float64(otherUnit.Rotate)) {
+			if mUserRect.centerX == userRect.centerX && mUserRect.centerY == userRect.centerY {
+				// при одинаковом прямоугольнике и одинаковым центром, не будет пересечений и колизия будет не найдена
+				// поэтому это тут
+				return false, otherUnit
+			}
+
+			if mUserRect.detect(&userRect, float64(rotate), float64(otherUnit.Rotate)) {
 				return false, otherUnit
 			}
 		}
@@ -399,22 +279,4 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 		}
 	}
 	return nil
-}
-
-func checkLevelViewCoordinate(one, past *coordinate.Coordinate) bool {
-	if one.Level > past.Level {
-		diffLevel := one.Level - past.Level
-		if diffLevel < 2 {
-			return false
-		} else {
-			return true
-		}
-	} else {
-		diffLevel := past.Level - one.Level
-		if diffLevel < 2 {
-			return false
-		} else {
-			return true
-		}
-	}
 }

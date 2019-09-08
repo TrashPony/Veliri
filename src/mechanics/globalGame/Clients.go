@@ -11,7 +11,7 @@ type wsUsers struct {
 	users     map[*websocket.Conn]*player.Player // карта игроков которые онлайн
 	units     map[int]*unit.Unit                 // карта юнитов в игре (юнити и мсы)
 	connects  map[*websocket.Conn]gameConnect    // специальная карта для быстрой отправки сообщений.
-	mx        sync.RWMutex
+	usersMX   sync.RWMutex
 	connectMX sync.RWMutex
 	unitsMX   sync.RWMutex
 }
@@ -33,11 +33,14 @@ func NewClientsStore() *wsUsers {
 }
 
 func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) {
-	c.mx.Lock()
-	defer c.mx.Unlock()
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
 
 	c.connectMX.Lock()
 	defer c.connectMX.Unlock()
+
+	c.unitsMX.Lock()
+	defer c.unitsMX.Unlock()
 
 	for ws, client := range c.users {
 		if !client.Bot && client.GetID() == newClient.GetID() {
@@ -50,7 +53,45 @@ func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) 
 	c.connects[newWS] = gameConnect{ID: newClient.GetID(), Bot: newClient.Bot, MapID: newClient.GetSquad().MatherShip.MapID}
 
 	// мазершип всегда сразу на карте
+	if newClient.Bot {
+		// у ботов отрицательныйх идиник
+		newClient.GetSquad().MatherShip.ID = c.getBotID()
+	}
+
 	c.units[newClient.GetSquad().MatherShip.ID] = newClient.GetSquad().MatherShip
+
+	for _, unitSlot := range newClient.GetSquad().MatherShip.Units {
+		if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap {
+			// юнит на карте
+			unitSlot.Unit.X, unitSlot.Unit.Y = GetXYCenterHex(unitSlot.Unit.Q, unitSlot.Unit.R)
+
+			if unitSlot.Unit.ID == 0 {
+				unitSlot.Unit.ID = c.getBotID()
+			}
+
+			c.units[unitSlot.Unit.ID] = unitSlot.Unit
+		}
+	}
+}
+
+func (c *wsUsers) getBotID() int {
+	botID := -1
+
+	for {
+		_, ok := c.units[botID]
+		if !ok {
+			return botID
+		} else {
+			botID--
+		}
+	}
+}
+
+func (c *wsUsers) PlaceUnit(newUnit *unit.Unit) {
+	c.unitsMX.Lock()
+	defer c.unitsMX.Unlock()
+
+	c.units[newUnit.ID] = newUnit
 }
 
 func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
@@ -76,17 +117,36 @@ func (c *wsUsers) GetUnitByID(id int) *unit.Unit {
 	return c.units[id]
 }
 
+func (c *wsUsers) RemoveUnitByID(id int) {
+	c.unitsMX.Lock()
+	defer c.unitsMX.Unlock()
+	delete(c.units, id)
+}
+
+func (c *wsUsers) GetUserByUnitId(unitID int) *player.Player {
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
+
+	for _, user := range c.users {
+		if user.GetSquad() != nil && user.GetSquad().MatherShip != nil && user.GetSquad().GetUnitByID(unitID) != nil {
+			return user
+		}
+	}
+
+	return nil
+}
+
 func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
-	c.mx.Lock()
-	defer c.mx.Unlock()
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
 
 	user := c.users[ws]
 	return user
 }
 
 func (c *wsUsers) GetBySquadId(id int) *player.Player {
-	c.mx.Lock()
-	defer c.mx.Unlock()
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
 
 	for _, client := range c.users {
 		if client.GetSquad().ID == id {
@@ -98,8 +158,8 @@ func (c *wsUsers) GetBySquadId(id int) *player.Player {
 }
 
 func (c *wsUsers) GetById(id int) *player.Player {
-	c.mx.Lock()
-	defer c.mx.Unlock()
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
 
 	for _, client := range c.users {
 		if client.GetID() == id {
@@ -110,8 +170,8 @@ func (c *wsUsers) GetById(id int) *player.Player {
 }
 
 func (c *wsUsers) GetBotByUUID(uuid string) *player.Player {
-	c.mx.Lock()
-	defer c.mx.Unlock()
+	c.usersMX.Lock()
+	defer c.usersMX.Unlock()
 
 	for _, client := range c.users {
 		if client.Bot && client.UUID == uuid {
@@ -132,12 +192,12 @@ func (c *wsUsers) GetAll() (map[*websocket.Conn]*player.Player, *sync.RWMutex) {
 		Кто бы ты небыл, всегда! всегда Закрывай этот ебучий мьютекс дефером, где бы ты его не вызвал!
 		DANGER!!! DANGER!!! DANGER!!! DANGER!!! DANGER!!! DANGER!!! DANGER!!! DANGER!!! DANGER!!!
 	*/
-	c.mx.Lock()
-	return c.users, &c.mx
+	c.usersMX.Lock()
+	return c.users, &c.usersMX
 }
 
 func (c *wsUsers) DelClientByID(id int) {
-	c.mx.Lock()
+	c.usersMX.Lock()
 
 	var ws *websocket.Conn
 	for userWS, user := range c.connects {
@@ -152,7 +212,7 @@ func (c *wsUsers) DelClientByID(id int) {
 			ws.Close()
 		}
 	}
-	c.mx.Unlock()
+	c.usersMX.Unlock()
 
 	c.connectMX.Lock()
 	_, ok := c.connects[ws]

@@ -56,7 +56,12 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 		if int(dist) < distCheck && mapID == gameUnit.MapID {
 			dangerUnit := globalGame.Clients.GetUnitByID(gameUnit.ID)
 			if !gameUnit.ForceEvacuation {
-				go SendMessage(Message{Event: "setFreeCoordinate", IDUserSend: gameUnit.OwnerID, IDMap: gameUnit.MapID, Seconds: seconds, Bot: false})
+				user := globalGame.Clients.GetUserByUnitId(gameUnit.ID)
+
+				if user != nil {
+					go SendMessage(Message{Event: "setFreeCoordinate", IDUserSend: gameUnit.OwnerID, IDMap: gameUnit.MapID, Seconds: seconds, Bot: user.Bot})
+				}
+
 				go ForceEvacuation(dangerUnit, x, y, seconds, distCheck)
 			}
 			lock = true

@@ -15,7 +15,7 @@ function CreateUnits(units) {
                 false,
             );
 
-            if (game.units[i].owner_id === game.user_id) {
+            if (game.units[i].owner_id === game.user_id && game.units[i].body.mother_ship) {
                 FocusUnit(game.units[i].id);
             }
         }
@@ -24,7 +24,7 @@ function CreateUnits(units) {
 
 function CreateNewUnit(newUnit) {
 
-    if (!game) return;
+    if (!game || !game.units || !newUnit || !newUnit.id) return;
 
     let unit = game.units[newUnit.id];
     if (!unit || !unit.sprite) {

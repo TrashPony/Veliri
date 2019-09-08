@@ -1,14 +1,23 @@
-let oldPoint = [];
-
 function PreviewPath(jsonData) {
 
-    while (0 < oldPoint.length) {
-        let label = oldPoint.shift();
+    if (!game || !game.units) return;
+
+    let unit = game.units[jsonData.short_unit.id];
+
+    if (unit && !unit.oldPoint) {
+        unit.oldPoint = []
+    }
+
+    while (unit && unit.oldPoint && 0 < unit.oldPoint.length) {
+        let label = unit.oldPoint.shift();
         if (label) label.destroy();
     }
 
+    if (!jsonData.path) {
+        return
+    }
     // это нужно для отрисовки пути на мине карте
-    game.units[jsonData.short_unit.id].moveTo = jsonData.path[jsonData.path.length - 1];
+    unit.moveTo = jsonData.path[jsonData.path.length - 1];
 
     CreateMiniMap();
 
@@ -26,7 +35,7 @@ function PreviewPath(jsonData) {
                 label.destroy();
             });
 
-            oldPoint.push(label)
+            unit.oldPoint.push(label)
         }
     }
 }

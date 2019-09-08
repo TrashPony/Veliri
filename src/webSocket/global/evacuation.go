@@ -12,9 +12,10 @@ import (
 func evacuationUnit(unit *unit.Unit) {
 
 	unit.HighGravity = globalGame.GetGravity(unit.X, unit.Y, unit.MapID)
+	user := globalGame.Clients.GetUserByUnitId(unit.ID)
 
 	if unit.HighGravity {
-		go SendMessage(Message{Event: "Error", Error: "High Gravity", IDUserSend: unit.OwnerID, IDMap: unit.MapID, Bot: false})
+		go SendMessage(Message{Event: "Error", Error: "High Gravity", IDUserSend: unit.OwnerID, IDMap: unit.MapID, Bot: user.Bot})
 		return
 	}
 
@@ -35,7 +36,7 @@ func evacuationUnit(unit *unit.Unit) {
 		}()
 
 		if err != nil {
-			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: unit.OwnerID, IDMap: unit.MapID, Bot: false})
+			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: unit.OwnerID, IDMap: unit.MapID, Bot: user.Bot})
 			return
 		}
 
@@ -120,6 +121,7 @@ func evacuationUnit(unit *unit.Unit) {
 			go bases.UserIntoBase(user.GetID(), baseID)
 		}
 
+		time.Sleep(1 * time.Second) // искуственная задержка что бы клиент на логин не выбивало
 		go DisconnectUser(user, true)
 	}
 }

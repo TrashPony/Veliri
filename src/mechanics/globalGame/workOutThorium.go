@@ -31,10 +31,18 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner, highG
 				thorium = thorium * 5
 			}
 
-			slot.WorkedOut += thorium
-			if slot.WorkedOut >= 100 {
-				slot.Count--
-				slot.WorkedOut = 0
+			if slot.Inversion {
+				slot.WorkedOut--
+				if slot.WorkedOut <= 0 {
+					slot.Count--
+					return efficiency
+				}
+			} else {
+				slot.WorkedOut += thorium
+				if slot.WorkedOut >= 100 {
+					slot.Count--
+					slot.WorkedOut = 0
+				}
 			}
 		}
 	}
