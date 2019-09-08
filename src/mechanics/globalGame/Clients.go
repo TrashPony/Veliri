@@ -113,7 +113,6 @@ func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
 func (c *wsUsers) GetUnitByID(id int) *unit.Unit {
 	c.unitsMX.Lock()
 	defer c.unitsMX.Unlock()
-
 	return c.units[id]
 }
 

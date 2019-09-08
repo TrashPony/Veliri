@@ -12,6 +12,8 @@ func Squad(squad *squad.Squad, full bool) {
 	squad.UpdateLock()
 
 	tx, err := dbConnect.GetDBConnect().Begin()
+
+	defer squad.UpdateUnlock()
 	defer tx.Rollback()
 
 	if err != nil {
@@ -34,8 +36,6 @@ func Squad(squad *squad.Squad, full bool) {
 	SquadThorium(squad, tx)
 
 	tx.Commit()
-
-	squad.UpdateUnlock()
 }
 
 func SquadThorium(squad *squad.Squad, tx *sql.Tx) {

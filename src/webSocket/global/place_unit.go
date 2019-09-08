@@ -20,6 +20,7 @@ func placeUnit(user *player.Player, msg Message) {
 
 		if outUnit.OnMap {
 			// возвращаем
+
 			outUnit.FollowUnitID = user.GetSquad().MatherShip.ID
 			outUnit.Return = true
 
@@ -35,7 +36,6 @@ func placeUnit(user *player.Player, msg Message) {
 
 		} else {
 
-			// todo иногда тут происходит деадлок
 			// берем координату позади отряда todo смотрим что бы она была пустая
 			radRotate := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
 

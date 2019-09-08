@@ -33,7 +33,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 				mp, find := maps.Maps.GetByID(moveUnit.MapID)
 				if find && user.InBaseID == 0 && !moveUnit.Evacuation {
 
-					for moveUnit.MoveChecker {
+					for moveUnit.MoveChecker && moveUnit.OnMap {
 						time.Sleep(10 * time.Millisecond) // без этого будет блокировка
 						// Ожидаем пока не завершится текущая клетка хода
 						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
@@ -112,7 +112,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 				stopMove(moveUnit, true)
 
 				if moveUnit.Return {
-					ReturnUnit(user, moveUnit)
+					go ReturnUnit(user, moveUnit)
 					return
 				}
 

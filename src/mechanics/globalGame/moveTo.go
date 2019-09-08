@@ -39,8 +39,11 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 	if moveUnit.FollowUnitID != 0 {
 		followUnit := Clients.GetUnitByID(moveUnit.FollowUnitID)
 		dist := GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
-		if dist < 100 {
+		if dist < 90 && followUnit.CurrentSpeed > 0 {
 			maxSpeed = followUnit.CurrentSpeed
+			if followUnit.CurrentSpeed <= 0 {
+				return nil, errors.New("follower dont move")
+			}
 		}
 	}
 
