@@ -55,7 +55,7 @@ func placeUnit(user *player.Player, msg Message) {
 				outUnit.Rotate = user.GetSquad().MatherShip.Rotate + 180
 			}
 
-			units := globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID)
+			units := globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true)
 			mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
 			okUnits, _ := globalGame.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units)

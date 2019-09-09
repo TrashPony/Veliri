@@ -58,12 +58,13 @@ func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) 
 		newClient.GetSquad().MatherShip.ID = c.getBotID()
 	}
 
+	GetPlaceCoordinate(newClient.GetSquad().MatherShip, c.GetAllShortUnits(newClient.GetSquad().MatherShip.MapID, false))
 	c.units[newClient.GetSquad().MatherShip.ID] = newClient.GetSquad().MatherShip
 
 	for _, unitSlot := range newClient.GetSquad().MatherShip.Units {
 		if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap {
 			// юнит на карте
-			unitSlot.Unit.X, unitSlot.Unit.Y = GetXYCenterHex(unitSlot.Unit.Q, unitSlot.Unit.R)
+			GetPlaceCoordinate(unitSlot.Unit, c.GetAllShortUnits(unitSlot.Unit.MapID, false))
 
 			if unitSlot.Unit.ID == 0 {
 				unitSlot.Unit.ID = c.getBotID()
@@ -94,10 +95,11 @@ func (c *wsUsers) PlaceUnit(newUnit *unit.Unit) {
 	c.units[newUnit.ID] = newUnit
 }
 
-func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
-	// этого метода хвати и для колизий
-	c.unitsMX.Lock()
-	defer c.unitsMX.Unlock()
+func (c *wsUsers) GetAllShortUnits(mapID int, lock bool) map[int]*unit.ShortUnitInfo {
+	if lock {
+		c.unitsMX.Lock()
+		defer c.unitsMX.Unlock()
+	}
 
 	shortUnits := make(map[int]*unit.ShortUnitInfo)
 

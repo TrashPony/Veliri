@@ -28,7 +28,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathU
 
 	path := make([]unit.PathUnit, 0)
 
-	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id)
+	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 	_, path2 := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
 		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, moveUnit.Speed, allUnits)
 

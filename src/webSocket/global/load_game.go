@@ -34,7 +34,7 @@ func LoadGame(user *player.Player, msg Message) {
 			IDUserSend:  user.GetID(),
 			Credits:     user.GetCredits(),
 			IDMap:       user.GetSquad().MatherShip.MapID,
-			ShortUnits:  globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID),
+			ShortUnits:  globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true),
 			Bot:         user.Bot,
 			HighGravity: globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
 		})

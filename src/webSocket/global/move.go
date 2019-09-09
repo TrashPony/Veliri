@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -16,7 +17,16 @@ import (
 
 func Move(user *player.Player, msg Message, newAction bool) {
 	if user.GetSquad() != nil && msg.UnitsID != nil {
-		for _, unitID := range msg.UnitsID {
+
+		var toPos []*coordinate.Coordinate
+		if len(msg.UnitsID) > 1 {
+			toPos = globalGame.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
+		} else {
+			toPos = make([]*coordinate.Coordinate, 0)
+			toPos = append(toPos, &coordinate.Coordinate{X: int(msg.ToX), Y: int(msg.ToY)})
+		}
+
+		for i, unitID := range msg.UnitsID {
 
 			moveUnit := user.GetSquad().GetUnitByID(unitID)
 
@@ -44,8 +54,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
-					// todo если ходит сразу много юнитов изменять ToX и ToY так что бы они занимали центры гейсов
-					path, err := globalGame.MoveUnit(moveUnit, msg.ToX, msg.ToY, mp)
+					path, err := globalGame.MoveUnit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), mp)
 					moveUnit.ActualPath = &path
 
 					go MoveGlobalUnit(msg, user, &path, moveUnit)
@@ -166,7 +175,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		// колизии юнит - юнит
 		noCollision, collisionUnit := initCheckCollision(moveUnit, &pathUnit)
 		if !noCollision && collisionUnit != nil {
-
 			playerToPlayerCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
 			moveRepeat = true
 			return
@@ -256,7 +264,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 
 func initCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *unit.ShortUnitInfo) {
 	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
-	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID)
+	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
 	return globalGame.CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units)
 }
 

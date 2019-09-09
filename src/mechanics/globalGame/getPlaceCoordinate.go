@@ -1,13 +1,14 @@
 package globalGame
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/gorilla/websocket"
 )
 
-func GetPlaceCoordinate(placeUnit unit.Unit, units map[*websocket.Conn]*unit.ShortUnitInfo, mp *_map.Map) {
+func GetPlaceCoordinate(placeUnit *unit.Unit, units map[int]*unit.ShortUnitInfo) {
+
+	mp, _ := maps.Maps.GetByID(placeUnit.MapID)
 
 	if placeUnit.X == 0 && placeUnit.Y == 0 {
 		x, y := GetXYCenterHex(placeUnit.Q, placeUnit.R)
@@ -26,7 +27,7 @@ func GetPlaceCoordinate(placeUnit unit.Unit, units map[*websocket.Conn]*unit.Sho
 
 			dist := GetBetweenDist(gameUnit.X, gameUnit.Y, placeUnit.X, placeUnit.Y)
 
-			if dist < 150 {
+			if dist < 80 {
 				findPlace = true
 			}
 		}
@@ -37,14 +38,16 @@ func GetPlaceCoordinate(placeUnit unit.Unit, units map[*websocket.Conn]*unit.Sho
 		respCoordinates := coordinate.GetCoordinatesRadius(resp, 2)
 
 		for _, respFakeCoordinate := range respCoordinates {
+
 			respCoordinate, ok := mp.GetCoordinate(respFakeCoordinate.Q, respFakeCoordinate.R)
+
 			if ok && respCoordinate.Move {
 				x, y := GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 				find := false
 
 				for _, gameUnit := range units {
 					dist := GetBetweenDist(gameUnit.X, gameUnit.Y, x, y)
-					if dist < 150 && !placeUnit.InSky {
+					if dist < 80 && !placeUnit.InSky {
 						find = true
 					}
 				}

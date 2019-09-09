@@ -47,7 +47,7 @@ func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // Ð·Ð
 	x, y := globalGame.GetXYCenterHex(q, r)
 
 	lock := false
-	units := globalGame.Clients.GetAllShortUnits(mapID)
+	units := globalGame.Clients.GetAllShortUnits(mapID, true)
 
 	for _, gameUnit := range units {
 
