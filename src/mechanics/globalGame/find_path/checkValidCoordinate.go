@@ -55,7 +55,7 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, g
 			return newCoor, true
 		}
 	} else {
-		possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body, true)
+		possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body)
 
 		addGeoCoordinate(newCoor, gameMap, scaleMap, possible)
 

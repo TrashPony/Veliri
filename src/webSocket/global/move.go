@@ -332,7 +332,6 @@ func playerToPlayerCollisionReaction(takeUnit, toUnit *unit.Unit) {
 		toUnit.Rotate,
 		mp,
 		toUnit.Body,
-		false,
 	)
 
 	// проверка нового места толкаемого юзера на колизию с другими юзерами // TODO не отдебажено

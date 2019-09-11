@@ -161,7 +161,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp, body, false)
+		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp, body)
 
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
