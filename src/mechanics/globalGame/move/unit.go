@@ -2,15 +2,12 @@ package move
 
 import (
 	"errors"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
-	"github.com/getlantern/deepcopy"
 )
 
-func Unit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
+func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 
 	moveUnit.ToX = ToX
 	moveUnit.ToY = ToY
@@ -43,30 +40,12 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit,
 		}
 	}
 
-	// копируем что бы не произошло вычетание топлива на расчетах
-	var fakeThoriumSlots map[int]*detail.ThoriumSlot
 	if moveUnit.Body.MotherShip {
-		err := deepcopy.Copy(&fakeThoriumSlots, &moveUnit.Body.ThoriumSlots)
-		if err != nil || len(fakeThoriumSlots) == 0 {
-			println(err.Error())
-			return nil, err
-		}
-	} else {
-		// если это юнит то проецируем его энергию в топливо т.к. у юнита нет реактора и для двжиения он тратить свой акум
-		if moveUnit.Power <= 0 {
-			return nil, errors.New("not thorium")
-		}
-
-		fakeThoriumSlots = make(map[int]*detail.ThoriumSlot)
-		fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
+		efficiency := WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
+		maxSpeed = (maxSpeed * efficiency) / 100
 	}
 
-	if moveUnit.Afterburner { // если форсаж то х2 скорости (доступно только МС)
-		maxSpeed = maxSpeed * 2
-	}
-
-	err, path := To(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 5, mp, false,
-		fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity, moveUnit.Body)
+	err, path := To(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 25)
 
 	return path, err
 }

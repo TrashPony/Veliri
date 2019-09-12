@@ -13,7 +13,7 @@ func InitCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *un
 	return CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units)
 }
 
-func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (unit.PathUnit, unit.PathUnit) {
+func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *unit.PathUnit) {
 	// задаем переменные массы шаров
 	mass1 := takeUnit.Body.CapacitySize
 	mass2 := toUnit.Body.CapacitySize
@@ -71,7 +71,7 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (unit.PathUnit, un
 	// проверка нового места толкаемого юзера на колизию в статичной карте
 	mp, _ := maps.Maps.GetByID(takeUnit.MapID)
 
-	possibleMove, _, _:= CheckCollisionsOnStaticMap(
+	possibleMove, _, _, _ := CheckCollisionsOnStaticMap(
 		int(toUnit.X+int(float64(speed2)*math.Cos(needRad))),
 		int(toUnit.Y+int(float64(speed2)*math.Sin(needRad))),
 		toUnit.Rotate,
@@ -111,5 +111,5 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (unit.PathUnit, un
 		Speed:       speed2,
 	}
 
-	return userPath, toUserPath
+	return &userPath, &toUserPath
 }

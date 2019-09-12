@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -56,10 +57,10 @@ func Move(user *player.Player, msg Message, newAction bool) {
 						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
-					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), mp)
+					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y))
 					moveUnit.ActualPath = &path
 
-					go MoveGlobalUnit(msg, user, &path, moveUnit)
+					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
 					go FollowUnit(user, moveUnit, msg)
 
 					if err != nil && len(path) == 0 {
@@ -84,7 +85,7 @@ func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
 		go SendMessage(Message{
 			Event:     "MoveTo",
 			ShortUnit: moveUnit.GetShortInfo(),
-			PathUnit: unit.PathUnit{
+			PathUnit: &unit.PathUnit{
 				X:           moveUnit.X,
 				Y:           moveUnit.Y,
 				Rotate:      moveUnit.Rotate,
@@ -144,7 +145,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 	}
 }
 
-func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, moveUnit *unit.Unit) {
+func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, moveUnit *unit.Unit, mp *_map.Map) {
 	moveRepeat := false
 	moveUnit.MoveChecker = true
 
@@ -175,16 +176,21 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		}
 
 		// колизии юнит - юнит
-		noCollision, collisionUnit := collisions.InitCheckCollision(moveUnit, &pathUnit)
+		noCollision, collisionUnit := collisions.InitCheckCollision(moveUnit, pathUnit)
 		if !noCollision && collisionUnit != nil {
 
 			unitPath, toUnitPath := collisions.UnitToUnitCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
 
 			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPath, IDMap: moveUnit.MapID})
-			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: toUnitPath, IDMap: moveUnit.MapID})
+			go SendMessage(Message{Event: "MoveTo", ShortUnit: collisionUnit, PathUnit: toUnitPath, IDMap: moveUnit.MapID})
 			time.Sleep(200 * time.Millisecond)
 
 			moveRepeat = true
+			return
+		}
+
+		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(pathUnit.X, pathUnit.Y, pathUnit.Rotate, mp, moveUnit.Body)
+		if !possibleMove {
 			return
 		}
 
@@ -220,6 +226,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		}
 
 		// расход топлива
+		// TODO если расход топлима изменился или топливо кончилось то останавливатся или перерасчитывать путь
 		if !moveUnit.Body.MotherShip {
 
 			fakeThoriumSlots := make(map[int]*detail.ThoriumSlot)

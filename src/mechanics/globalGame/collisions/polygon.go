@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-type polygon struct {
+type Polygon struct {
 	sides            []*sideRec
 	centerX, centerY float64
 }
@@ -15,7 +15,7 @@ type sideRec struct {
 	x2, y2 float64
 }
 
-func (r *polygon) rotate(rotate int) {
+func (r *Polygon) rotate(rotate int) {
 
 	// поворачиваем квадрат по формуле (x0:y0 - центр)
 	//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
@@ -38,7 +38,7 @@ func (r *polygon) rotate(rotate int) {
 	}
 }
 
-func (r *polygon) detectCollisionRectToCircle(centerCircle *point, radius int) bool {
+func (r *Polygon) detectCollisionRectToCircle(centerCircle *point, radius int) bool {
 	// A - [0]1 B - [1]1 C = [2]1 D = [3]1
 
 	if r.detectPointInRectangle(centerCircle.x, centerCircle.y) {
@@ -47,16 +47,16 @@ func (r *polygon) detectCollisionRectToCircle(centerCircle *point, radius int) b
 	}
 
 	/*
-		intersectCircle(S, (A, B)) or
-	    intersectCircle(S, (B, C)) or
-	    intersectCircle(S, (C, D)) or
-	    intersectCircle(S, (D, A))
+			intersectCircle(S, (A, B)) or
+		    intersectCircle(S, (B, C)) or
+		    intersectCircle(S, (C, D)) or
+		    intersectCircle(S, (D, A))
 	*/
 
-	a := &point{x: int(r.sides[0].x1), y: int(r.sides[0].y1)}
-	b := &point{x: int(r.sides[1].x1), y: int(r.sides[1].y1)}
-	c := &point{x: int(r.sides[2].x1), y: int(r.sides[2].y1)}
-	d := &point{x: int(r.sides[3].x1), y: int(r.sides[3].y1)}
+	a := &point{x: r.sides[0].x1, y: r.sides[0].y1}
+	b := &point{x: r.sides[1].x1, y: r.sides[1].y1}
+	c := &point{x: r.sides[2].x1, y: r.sides[2].y1}
+	d := &point{x: r.sides[3].x1, y: r.sides[3].y1}
 
 	intersect1, _, _ := IntersectVectorToCircle(a, b, centerCircle, radius)
 	intersect2, _, _ := IntersectVectorToCircle(b, c, centerCircle, radius)
@@ -71,7 +71,7 @@ func (r *polygon) detectCollisionRectToCircle(centerCircle *point, radius int) b
 	return false
 }
 
-func (r *polygon) detectCollisionRectToRect(r2 *polygon, alpha11, alpha22 float64) bool {
+func (r *Polygon) detectCollisionRectToRect(r2 *Polygon, alpha11, alpha22 float64) bool {
 
 	intersection := func(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2 float64) bool {
 		v1 := (bx2-bx1)*(ay1-by1) - (by2-by1)*(ax1-bx1)
@@ -93,22 +93,22 @@ func (r *polygon) detectCollisionRectToRect(r2 *polygon, alpha11, alpha22 float6
 	return false
 }
 
-func (r *polygon) detectPointInRectangle(x, y int) bool {
-	dot := func(u, v *point) int {
+func (r *Polygon) detectPointInRectangle(x, y float64) bool {
+	dot := func(u, v *point) float64 {
 		return u.x*v.x + u.y*v.y
 	}
 
 	// A - [0]1 B - [1]1 C = [2]1 D = [3]1
 	//0 ≤ AP·AB ≤ AB·AB and 0 ≤ AP·AD ≤ AD·AD
-	AB := vector(&point{x: int(r.sides[0].x1), y: int(r.sides[0].y1)}, &point{x: int(r.sides[1].x1), y: int(r.sides[1].y1)})
-	AM := vector(&point{x: int(r.sides[0].x1), y: int(r.sides[0].y1)}, &point{x: int(x), y: int(y)})
-	BC := vector(&point{x: int(r.sides[1].x1), y: int(r.sides[1].y1)}, &point{x: int(r.sides[2].x1), y: int(r.sides[2].y1)})
-	BM := vector(&point{x: int(r.sides[1].x1), y: int(r.sides[1].y1)}, &point{x: int(x), y: int(y)})
+	AB := vector(&point{x: r.sides[0].x1, y: r.sides[0].y1}, &point{x: r.sides[1].x1, y: r.sides[1].y1})
+	AM := vector(&point{x: r.sides[0].x1, y: r.sides[0].y1}, &point{x: x, y: y})
+	BC := vector(&point{x: r.sides[1].x1, y: r.sides[1].y1}, &point{x: r.sides[2].x1, y: r.sides[2].y1})
+	BM := vector(&point{x: r.sides[1].x1, y: r.sides[1].y1}, &point{x: x, y: y})
 
 	return 0 <= dot(AB, AM) && dot(AB, AM) <= dot(AB, AB) && 0 <= dot(BC, BM) && dot(BC, BM) <= dot(BC, BC)
 }
 
-func getBodyRect(body *detail.Body, x, y float64, rotate int) polygon {
+func getBodyRect(body *detail.Body, x, y float64, rotate int) *Polygon {
 
 	/*
 		squad.rectDebag.moveTo(-50, -25);
@@ -128,7 +128,7 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int) polygon {
 
 	heightBody, widthBody := float64(body.Height), float64(body.Width)
 
-	bodyRec := polygon{
+	bodyRec := Polygon{
 		sides: []*sideRec{
 			// A 									// B
 			{x1: x - widthBody, y1: y - heightBody, x2: x - widthBody, y2: y + heightBody},
@@ -144,5 +144,5 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int) polygon {
 	}
 
 	bodyRec.rotate(rotate)
-	return bodyRec
+	return &bodyRec
 }

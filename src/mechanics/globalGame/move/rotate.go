@@ -1,6 +1,6 @@
 package move
 
-func RotateUnit(unitRotate, needRotate *int) int {
+func RotateUnit(unitRotate, needRotate *int, step int) {
 
 	if *unitRotate < 0 {
 		*unitRotate += 360
@@ -18,14 +18,21 @@ func RotateUnit(unitRotate, needRotate *int) int {
 		*needRotate -= 360
 	}
 
-	if unitRotate != needRotate {
-		if directionRotate(*unitRotate, *needRotate) {
-			return 1
+	if !(*unitRotate > *needRotate && *unitRotate-*needRotate > step || *needRotate > *unitRotate && *needRotate-*unitRotate > step) {
+		if *unitRotate >= *needRotate {
+			step = *unitRotate - *needRotate
 		} else {
-			return -1
+			step = *needRotate - *unitRotate
 		}
 	}
-	return 0
+
+	if unitRotate != needRotate {
+		if directionRotate(*unitRotate, *needRotate) {
+			*unitRotate += step
+		} else {
+			*unitRotate -= step
+		}
+	}
 }
 
 func directionRotate(unitAngle, needAngle int) bool {

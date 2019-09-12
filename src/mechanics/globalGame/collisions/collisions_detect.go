@@ -9,22 +9,23 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
-func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body) (bool, int, int) {
+func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body) (bool, int, int, bool) {
 
 	q, r := game_math.GetQRfromXY(x, y)
 	startCoordinate, find := mp.OneLayerMap[q][r]
+
 	if !find {
-		return false, 0, 0
+		return false, 0, 0, true
 	}
 
 	if body == nil {
-		return true, startCoordinate.Q, startCoordinate.R
+		return true, 0, 0, true
 	}
 
 	rect := getBodyRect(body, float64(x), float64(y), rotate)
 	for _, obstacle := range mp.GeoData {
-		if rect.detectCollisionRectToCircle(&point{x: obstacle.X, y: obstacle.Y}, obstacle.Radius) {
-			return false, startCoordinate.Q, startCoordinate.R
+		if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
+			return false, startCoordinate.Q, startCoordinate.R, true
 		}
 	}
 
@@ -37,13 +38,13 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 			}
 
 			reservoirX, reservoirY := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
-			if rect.detectCollisionRectToCircle(&point{x: reservoirX, y: reservoirY}, reservoirRadius) {
-				return false, startCoordinate.Q, startCoordinate.R
+			if rect.detectCollisionRectToCircle(&point{x: float64(reservoirX), y: float64(reservoirY)}, reservoirRadius) {
+				return false, startCoordinate.Q, startCoordinate.R, true
 			}
 		}
 	}
 
-	return true, startCoordinate.Q, startCoordinate.R
+	return true, startCoordinate.Q, startCoordinate.R, true
 }
 
 func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.Box {
@@ -60,7 +61,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 		}
 
 		xBox, yBox := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
-		if rect.detectCollisionRectToCircle(&point{x: xBox, y: yBox}, boxRadius) {
+		if rect.detectCollisionRectToCircle(&point{x: float64(xBox), y: float64(yBox)}, boxRadius) {
 			return mapBox
 		}
 	}
@@ -90,7 +91,7 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 				return false, otherUnit
 			}
 
-			if mUserRect.detectCollisionRectToRect(&userRect, float64(rotate), float64(otherUnit.Rotate)) {
+			if mUserRect.detectCollisionRectToRect(userRect, float64(rotate), float64(otherUnit.Rotate)) {
 				return false, otherUnit
 			}
 		}

@@ -41,29 +41,29 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 	// мониторить ячейки для эвакуации, если они в ПРЕДЕЛАХ БАЗЫ
 
 	// находим рандомную точку окружности что бы туда следовать
+	xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
+
 	for {
 		radRotate := float64(rand.Intn(360)) * math.Pi / 180 // берем рандомный угол
 
 		radius := rand.Intn(transportBase.GravityRadius) // и рандомную дальность в радиусе базы
-		x := int(float64(radius) * math.Cos(radRotate))
-		y := int(float64(radius) * math.Sin(radRotate))
-
-		xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
-
-		x += xBase // докидываем положение базы
-		y += yBase // докидываем положение базы
+		x := int(float64(radius)*math.Cos(radRotate)) + xBase
+		y := int(float64(radius)*math.Sin(radRotate)) + yBase
 
 		// формируем путь для движения
 		// минимальная и текущая скорость должна быть 1 иначе будут мертвые зоны и дедлоки
 		_, path := move.To(float64(transport.X), float64(transport.Y), 15, 1, 1,
-			float64(x), float64(y), transport.Rotate, 10, mp, true, nil, false, false, nil)
+			float64(x), float64(y), transport.Rotate, 10)
+
 		// запускаем транспорт
-		FlyTransport(transport, transportBase, mp, path)
-		time.Sleep(1 * time.Second)
+		if FlyTransport(transport, transportBase, mp, path) {
+			continue
+		}
+		//time.Sleep(1 * time.Second)
 	}
 }
 
-func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.Map, path []unit.PathUnit) {
+func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.Map, path []*unit.PathUnit) bool {
 	for _, pathUnit := range path {
 		time.Sleep(200 * time.Millisecond)
 
@@ -80,6 +80,8 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 		transport.Rotate = pathUnit.Rotate
 		transport.Speed = pathUnit.Speed
 	}
+
+	return true
 }
 
 func TransportMonitor(transportBase *base.Base, mp *_map.Map) {

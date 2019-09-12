@@ -1,6 +1,8 @@
 package collisions
 
-import "math"
+import (
+	"math"
+)
 
 func vector(p1, p2 *point) *point {
 	return &point{
@@ -12,7 +14,7 @@ func vector(p1, p2 *point) *point {
 func IntersectVectorToCircle(a, b, centerCircle *point, radius int) (intersect bool, point1, point2 *point) {
 	// https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
 	// вычисляем расстояние между A и B
-	var LAB = int(math.Sqrt(math.Pow(float64(b.x-a.x), 2) + math.Pow(float64(b.y-a.y), 2)))
+	var LAB = math.Sqrt(math.Pow(b.x-a.x, 2) + math.Pow(b.y-a.y, 2))
 
 	// вычислить вектор направления D от A до B
 	var Dx = (b.x - a.x) / LAB
@@ -27,12 +29,12 @@ func IntersectVectorToCircle(a, b, centerCircle *point, radius int) (intersect b
 	E := &point{x: (t * Dx) + a.x, y: (t * Dy) + a.y}
 
 	// высчитывает растояние от E до центра круга
-	var LEC = int(math.Sqrt(math.Pow(float64(E.x-centerCircle.x), 2) + math.Pow(float64(E.y-centerCircle.y), 2)))
+	var LEC = math.Sqrt(math.Pow(E.x-centerCircle.x, 2) + math.Pow(E.y-centerCircle.y, 2))
 
 	// проверяем что бы проекционная точка была ближе радиуса
 	if int(LEC) < radius {
 		// compute distance from t to circle intersection point
-		var dt = int(math.Sqrt(math.Pow(float64(radius), 2) - math.Pow(float64(LEC), 2)))
+		var dt = math.Sqrt(math.Pow(float64(radius), 2) - math.Pow(LEC, 2))
 		// ищем первую точку пересечения
 		point1 := &point{x: (t-dt)*Dx + a.x, y: (t-dt)*Dy + a.y}
 		// и вторую

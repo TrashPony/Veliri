@@ -71,10 +71,10 @@ type Unit struct {
 	PointsPath []*coordinate.Coordinate
 
 	/* путь по которому идет юнит */
-	ActualPath   *[]PathUnit `json:"actual_path"`
-	CurrentSpeed float64     `json:"current_speed"`
-	HighGravity  bool        `json:"high_gravity"`
-	Afterburner  bool        `json:"afterburner"`
+	ActualPath   *[]*PathUnit `json:"actual_path"`
+	CurrentSpeed float64      `json:"current_speed"`
+	HighGravity  bool         `json:"high_gravity"`
+	Afterburner  bool         `json:"afterburner"`
 
 	X   int     `json:"x"`    /* текущая координата на пиксельной сетке */
 	Y   int     `json:"y"`    /* текущая координата на пиксельной сетке */

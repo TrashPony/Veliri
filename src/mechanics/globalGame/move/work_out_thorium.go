@@ -47,5 +47,9 @@ func WorkOutThorium(thoriumSlots map[int]*detail.ThoriumSlot, afterburner, highG
 		}
 	}
 
+	if afterburner {
+		efficiency *= 2
+	}
+
 	return efficiency
 }
