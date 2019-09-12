@@ -7,7 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
 	"strings"
 )
@@ -91,20 +91,20 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 
 	minDist := 150.0
 
-	globalGame.GetXYCenterHex(q, r)
+	game_math.GetXYCenterHex(q, r)
 
-	x, y := globalGame.GetXYCenterHex(q, r)
+	x, y := game_math.GetXYCenterHex(q, r)
 
 	for _, base := range bases.Bases.GetBasesByMap(mp.Id) {
-		baseX, baseY := globalGame.GetXYCenterHex(base.Q, base.R)
-		if globalGame.GetBetweenDist(x, y, baseX, baseY) < 350 {
+		baseX, baseY := game_math.GetXYCenterHex(base.Q, base.R)
+		if game_math.GetBetweenDist(x, y, baseX, baseY) < 350 {
 			return false
 		}
 	}
 
 	for _, handler := range mp.HandlersCoordinates {
-		handlerX, handlerY := globalGame.GetXYCenterHex(handler.Q, handler.R)
-		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+		handlerX, handlerY := game_math.GetXYCenterHex(handler.Q, handler.R)
+		if game_math.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
 			return false
 		}
 
@@ -112,14 +112,14 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 
 	entryPoints := maps.Maps.GetEntryPointsByMapID(mp.Id)
 	for _, exit := range entryPoints {
-		handlerX, handlerY := globalGame.GetXYCenterHex(exit.Q, exit.R)
-		if globalGame.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+		handlerX, handlerY := game_math.GetXYCenterHex(exit.Q, exit.R)
+		if game_math.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
 			return false
 		}
 	}
 
 	for _, geoPoint := range mp.GeoData {
-		if globalGame.GetBetweenDist(x, y, geoPoint.X, geoPoint.Y) < float64(30+geoPoint.Radius) {
+		if game_math.GetBetweenDist(x, y, geoPoint.X, geoPoint.Y) < float64(30+geoPoint.Radius) {
 			return false
 		}
 	}
@@ -127,8 +127,8 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	for _, xLine := range mp.OneLayerMap {
 		for _, coordinate := range xLine {
 			if strings.Contains(coordinate.TextureObject, "road") {
-				coordinateX, coordinateY := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
-				if globalGame.GetBetweenDist(x, y, coordinateX, coordinateY) < minDist {
+				coordinateX, coordinateY := game_math.GetXYCenterHex(coordinate.Q, coordinate.R)
+				if game_math.GetBetweenDist(x, y, coordinateX, coordinateY) < minDist {
 					return false
 				}
 			}

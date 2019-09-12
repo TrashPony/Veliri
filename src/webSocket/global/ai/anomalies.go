@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
 	"time"
 )
@@ -32,7 +33,7 @@ func mortalityAnomaly(anomaly *_map.Anomalies, mp *_map.Map) {
 		users, rLock := globalGame.Clients.GetAll()
 		for _, user := range users {
 			if user.GetSquad() != nil && user.GetSquad().MatherShip.MapID == mp.Id {
-				dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, anomaly.X, anomaly.Y)
+				dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, anomaly.X, anomaly.Y)
 
 				if int(dist) < anomaly.Radius {
 					// чем ближе к центру тем полнее урон

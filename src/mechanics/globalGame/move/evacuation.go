@@ -1,4 +1,4 @@
-package globalGame
+package move
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"sync"
 )
 
@@ -21,8 +22,8 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]unit.PathUnit, int, *bas
 
 	for _, mapBase := range mapBases {
 
-		x, y := GetXYCenterHex(mapBase.Q, mapBase.R)
-		dist := GetBetweenDist(unit.X, unit.Y, x, y)
+		x, y := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
+		dist := game_math.GetBetweenDist(unit.X, unit.Y, x, y)
 		transport := mapBase.GetFreeTransport()
 
 		if ((dist < minDist && int(dist) < mapBase.GravityRadius) ||
@@ -40,13 +41,13 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]unit.PathUnit, int, *bas
 			transport.Job = true
 
 			if transport.X == 0 && transport.Y == 0 {
-				startX, startY = GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
+				startX, startY = game_math.GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
 			} else {
 				startX = transport.X
 				startY = transport.Y
 			}
 
-			_, path := MoveTo(float64(startX), float64(startY), 15, 15, 15,
+			_, path := To(float64(startX), float64(startY), 15, 15, 15,
 				float64(unit.X), float64(unit.Y), transport.Rotate, 10, mp,
 				true, nil, false, false, nil)
 
@@ -61,9 +62,9 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]unit.PathUnit, int, *bas
 
 func ReturnEvacuation(unit *unit.Unit, mp *_map.Map, baseID int, transport *base.Transport) []unit.PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
-	endX, endY := GetXYCenterHex(mapBase.Q, mapBase.R)
+	endX, endY := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
 
-	_, path := MoveTo(float64(unit.X), float64(unit.Y), 15, 15, 15,
+	_, path := To(float64(unit.X), float64(unit.Y), 15, 15, 15,
 		float64(endX), float64(endY), transport.Rotate, 10, mp, true, nil, false, false, nil)
 	return path
 }

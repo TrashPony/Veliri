@@ -58,7 +58,7 @@ func main() {
 	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	go ai.InitAI()          // запускает ботов
 
-	port := "8080"
+	port := "8081"
 	log.Println("http server started on :" + port)
 	err := http.ListenAndServe(":"+port, router) // запускает веб сервер на 8080 порту
 	if err != nil {

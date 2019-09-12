@@ -5,11 +5,13 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/box"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
 func placeNewBox(user *player.Player, msg Message) {
 	// устанавливать ящики может только мп
-	err, newBox := globalGame.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
+	err, newBox := box.PlaceNewBox(user, msg.Slot, msg.BoxPassword)
 	if err != nil {
 		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	} else {
@@ -25,8 +27,8 @@ func openBox(user *player.Player, msg Message) {
 
 	if mapBox != nil {
 
-		x, y := globalGame.GetXYCenterHex(mapBox.Q, mapBox.R)
-		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		x, y := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 
 		if dist < 75 {
 			if mapBox.Protect {
@@ -55,25 +57,25 @@ func useBox(user *player.Player, msg Message) {
 	var mapBox *boxInMap.Box
 
 	if msg.Event == "getItemFromBox" {
-		err, mapBox = globalGame.GetItemFromBox(user, msg.BoxID, msg.Slot)
+		err, mapBox = box.GetItemFromBox(user, msg.BoxID, msg.Slot)
 		updateBoxInfo(mapBox)
 	}
 
 	if msg.Event == "placeItemToBox" {
-		err, mapBox = globalGame.PlaceItemToBox(user, msg.BoxID, msg.Slot)
+		err, mapBox = box.PlaceItemToBox(user, msg.BoxID, msg.Slot)
 		updateBoxInfo(mapBox)
 	}
 
 	if msg.Event == "getItemsFromBox" {
 		for _, i := range msg.Slots {
-			err, mapBox = globalGame.GetItemFromBox(user, msg.BoxID, i)
+			err, mapBox = box.GetItemFromBox(user, msg.BoxID, i)
 			updateBoxInfo(mapBox)
 		}
 	}
 
 	if msg.Event == "placeItemsToBox" {
 		for _, i := range msg.Slots {
-			err, mapBox = globalGame.PlaceItemToBox(user, msg.BoxID, i)
+			err, mapBox = box.PlaceItemToBox(user, msg.BoxID, i)
 			updateBoxInfo(mapBox)
 		}
 	}
@@ -91,7 +93,7 @@ func boxToBox(user *player.Player, msg Message) {
 	}
 
 	if msg.Event == "boxToBoxItem" {
-		err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
+		err, getBox, toBox := box.BoxToBox(user, msg.BoxID, msg.Slot, msg.ToBoxID)
 		if err != nil {
 			go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		} else {
@@ -102,7 +104,7 @@ func boxToBox(user *player.Player, msg Message) {
 
 	if msg.Event == "boxToBoxItems" {
 		for _, i := range msg.Slots {
-			err, getBox, toBox := globalGame.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
+			err, getBox, toBox := box.BoxToBox(user, msg.BoxID, i, msg.ToBoxID)
 			if err != nil {
 				go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			} else {
@@ -124,8 +126,8 @@ func updateBoxInfo(box *boxInMap.Box) {
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 	for _, user := range users {
-		boxX, boxY := globalGame.GetXYCenterHex(box.Q, box.R)
-		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
+		boxX, boxY := game_math.GetXYCenterHex(box.Q, box.R)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
 			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID,

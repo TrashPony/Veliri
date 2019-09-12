@@ -6,12 +6,13 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"time"
 )
 
 func evacuationUnit(unit *unit.Unit) {
 
-	unit.HighGravity = globalGame.GetGravity(unit.X, unit.Y, unit.MapID)
+	unit.HighGravity = move.GetGravity(unit.X, unit.Y, unit.MapID)
 	user := globalGame.Clients.GetUserByUnitId(unit.ID)
 
 	if unit.HighGravity {
@@ -25,7 +26,7 @@ func evacuationUnit(unit *unit.Unit) {
 
 		stopMove(unit, true)
 
-		path, baseID, transport, err := globalGame.LaunchEvacuation(unit, mp)
+		path, baseID, transport, err := move.LaunchEvacuation(unit, mp)
 		defer func() {
 			unit.ForceEvacuation = false
 			unit.Evacuation = false
@@ -77,7 +78,7 @@ func evacuationUnit(unit *unit.Unit) {
 			return
 		}
 
-		path = globalGame.ReturnEvacuation(unit, mp, baseID, transport)
+		path = move.ReturnEvacuation(unit, mp, baseID, transport)
 
 		for _, pathUnit := range path {
 

@@ -1,4 +1,4 @@
-package globalGame
+package move
 
 import "github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 

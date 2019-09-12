@@ -13,7 +13,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
@@ -111,7 +113,7 @@ func outBase(bot *player.Player, base *base.Base) {
 		return
 	}
 
-	x, y := globalGame.GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
+	x, y := game_math.GetXYCenterHex(respCoordinate.Q, respCoordinate.R)
 
 	bot.GetSquad().MatherShip.Q = respCoordinate.Q
 	bot.GetSquad().MatherShip.R = respCoordinate.R
@@ -214,7 +216,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) {
 		}
 
 		if randMap.Id == bot.GetSquad().MatherShip.MapID {
-			toX, toY = globalGame.GetXYCenterHex(randEntryBase.Q, randEntryBase.R)
+			toX, toY = game_math.GetXYCenterHex(randEntryBase.Q, randEntryBase.R)
 		} else {
 			_, transitionPoints := maps.Maps.FindGlobalPath(bot.GetSquad().MatherShip.MapID, randMap.Id)
 			if len(transitionPoints) > 0 {
@@ -224,7 +226,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) {
 				bot.GlobalPath = transitionPoints
 
 				bot.CurrentPoint = 0
-				toX, toY = globalGame.GetXYCenterHex(transitionPoints[0].Q, transitionPoints[0].R)
+				toX, toY = game_math.GetXYCenterHex(transitionPoints[0].Q, transitionPoints[0].R)
 			} else {
 				return
 			}
@@ -238,7 +240,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) {
 
 	} else {
 		if len(bot.GlobalPath) > bot.CurrentPoint && bot.GlobalPath[bot.CurrentPoint].MapID == bot.GetSquad().MatherShip.MapID {
-			toX, toY = globalGame.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
+			toX, toY = game_math.GetXYCenterHex(bot.GlobalPath[bot.CurrentPoint].Q, bot.GlobalPath[bot.CurrentPoint].R)
 		} else {
 			bot.GlobalPath = nil
 		}
@@ -247,7 +249,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) {
 	//println("я иду в х:", toX, " y:", toY)
 
 	// проверка на то что х, у достижимы
-	possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body)
+	possible, _, _:= collisions.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body)
 	if possible {
 
 		go func() {
@@ -269,7 +271,7 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 		return nil
 	}
 
-	mp.SetXYSize(globalGame.HexagonWidth, globalGame.HexagonHeight, scale)
+	mp.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scale)
 
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 

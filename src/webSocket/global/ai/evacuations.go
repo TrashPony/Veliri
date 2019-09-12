@@ -6,9 +6,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
-
 	"math"
 	"math/rand"
 	"time"
@@ -26,7 +26,7 @@ func EvacuationsLife() {
 			for _, transport := range mapBase.Transports {
 
 				// задаем начальное положение эвакуаторов как у баз
-				x, y := globalGame.GetXYCenterHex(mapBase.Q, mapBase.R)
+				x, y := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
 				transport.X = x
 				transport.Y = y
 
@@ -48,14 +48,14 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 		x := int(float64(radius) * math.Cos(radRotate))
 		y := int(float64(radius) * math.Sin(radRotate))
 
-		xBase, yBase := globalGame.GetXYCenterHex(transportBase.Q, transportBase.R)
+		xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
 
 		x += xBase // докидываем положение базы
 		y += yBase // докидываем положение базы
 
 		// формируем путь для движения
 		// минимальная и текущая скорость должна быть 1 иначе будут мертвые зоны и дедлоки
-		_, path := globalGame.MoveTo(float64(transport.X), float64(transport.Y), 15, 1, 1,
+		_, path := move.To(float64(transport.X), float64(transport.Y), 15, 1, 1,
 			float64(x), float64(y), transport.Rotate, 10, mp, true, nil, false, false, nil)
 		// запускаем транспорт
 		FlyTransport(transport, transportBase, mp, path)
@@ -86,10 +86,10 @@ func TransportMonitor(transportBase *base.Base, mp *_map.Map) {
 	for {
 		for _, coordinate := range mp.HandlersCoordinates {
 
-			xHandle, yHandle := globalGame.GetXYCenterHex(coordinate.Q, coordinate.R)
-			xBase, yBase := globalGame.GetXYCenterHex(transportBase.Q, transportBase.R)
+			xHandle, yHandle := game_math.GetXYCenterHex(coordinate.Q, coordinate.R)
+			xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
 
-			dist := int(globalGame.GetBetweenDist(xBase, yBase, xHandle, yHandle))
+			dist := int(game_math.GetBetweenDist(xBase, yBase, xHandle, yHandle))
 			if dist < transportBase.GravityRadius {
 				if coordinate.Transport {
 					wsGlobal.CheckTransportCoordinate(coordinate.Q, coordinate.R, 20, 60, mp.Id)

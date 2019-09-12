@@ -6,6 +6,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 )
 
 func LoadGame(user *player.Player, msg Message) {
@@ -18,10 +20,10 @@ func LoadGame(user *player.Player, msg Message) {
 		user.GetSquad().MatherShip.Afterburner = false
 		user.GetSquad().MatherShip.MoveChecker = false
 		user.GetSquad().MatherShip.ActualPath = nil
-		user.GetSquad().MatherShip.HighGravity = globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID)
+		user.GetSquad().MatherShip.HighGravity = move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID)
 
 		//TODO globalGame.GetPlaceCoordinate(user)
-		user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y = globalGame.GetXYCenterHex(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
+		user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y = game_math.GetXYCenterHex(user.GetSquad().MatherShip.Q, user.GetSquad().MatherShip.R)
 
 		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
@@ -36,7 +38,7 @@ func LoadGame(user *player.Player, msg Message) {
 			IDMap:       user.GetSquad().MatherShip.MapID,
 			ShortUnits:  globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true),
 			Bot:         user.Bot,
-			HighGravity: globalGame.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
+			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
 		})
 
 		// находим аномалии

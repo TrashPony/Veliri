@@ -9,7 +9,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"time"
 )
 
@@ -20,7 +22,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 
 		var toPos []*coordinate.Coordinate
 		if len(msg.UnitsID) > 1 {
-			toPos = globalGame.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
+			toPos = move.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
 		} else {
 			toPos = make([]*coordinate.Coordinate, 0)
 			toPos = append(toPos, &coordinate.Coordinate{X: int(msg.ToX), Y: int(msg.ToY)})
@@ -54,7 +56,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
-					path, err := globalGame.MoveUnit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), mp)
+					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), mp)
 					moveUnit.ActualPath = &path
 
 					go MoveGlobalUnit(msg, user, &path, moveUnit)
@@ -115,7 +117,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 				return
 			}
 
-			dist := globalGame.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
+			dist := game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
 			if dist < 90 {
 
 				stopMove(moveUnit, true)
@@ -129,7 +131,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 				continue
 			}
 
-			dist = globalGame.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.ToX), int(moveUnit.ToY))
+			dist = game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.ToX), int(moveUnit.ToY))
 			if dist > 90 || moveUnit.ActualPath == nil {
 				msg.ToX = float64(followUnit.X)
 				msg.ToY = float64(followUnit.Y)
@@ -163,7 +165,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			return
 		}
 
-		newGravity := globalGame.GetGravity(moveUnit.X, moveUnit.Y, user.GetSquad().MatherShip.MapID)
+		newGravity := move.GetGravity(moveUnit.X, moveUnit.Y, user.GetSquad().MatherShip.MapID)
 		if moveUnit.HighGravity != newGravity {
 			moveUnit.HighGravity = newGravity
 			go SendMessage(Message{Event: "ChangeGravity", IDUserSend: user.GetID(), ShortUnit: moveUnit.GetShortInfo(),
@@ -173,9 +175,15 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		}
 
 		// колизии юнит - юнит
-		noCollision, collisionUnit := initCheckCollision(moveUnit, &pathUnit)
+		noCollision, collisionUnit := collisions.InitCheckCollision(moveUnit, &pathUnit)
 		if !noCollision && collisionUnit != nil {
-			playerToPlayerCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
+
+			unitPath, toUnitPath := collisions.UnitToUnitCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
+
+			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPath, IDMap: moveUnit.MapID})
+			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: toUnitPath, IDMap: moveUnit.MapID})
+			time.Sleep(200 * time.Millisecond)
+
 			moveRepeat = true
 			return
 		}
@@ -190,7 +198,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 		}
 
 		// если на пути встречается ящик то мы его давим и падает скорость
-		mapBox := globalGame.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, moveUnit.MapID, moveUnit.Body)
+		mapBox := collisions.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, moveUnit.MapID, moveUnit.Body)
 		if mapBox != nil {
 			go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
 			boxes.Boxes.DestroyBox(mapBox)
@@ -217,7 +225,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			fakeThoriumSlots := make(map[int]*detail.ThoriumSlot)
 			fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
 
-			globalGame.WorkOutThorium(fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
+			move.WorkOutThorium(fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
 			if moveUnit.Afterburner {
 				SquadDamage(user, 1, moveUnit)
 			}
@@ -228,7 +236,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 				ThoriumSlots: fakeThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
 		} else {
 
-			globalGame.WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
+			move.WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
 			if moveUnit.Afterburner {
 				SquadDamage(user, 1, moveUnit)
 			}
@@ -260,113 +268,4 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]unit.PathUnit, mov
 			}
 		}
 	}
-}
-
-func initCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *unit.ShortUnitInfo) {
-	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
-	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
-	return globalGame.CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units)
-}
-
-func playerToPlayerCollisionReaction(takeUnit, toUnit *unit.Unit) {
-	// задаем переменные массы шаров
-	mass1 := takeUnit.Body.CapacitySize
-	mass2 := toUnit.Body.CapacitySize
-
-	if takeUnit.CurrentSpeed < 2 {
-		takeUnit.CurrentSpeed = 2
-	}
-
-	// задаем переменные скорости
-	// расчет для первой машины
-	radRotate1 := float64(takeUnit.Rotate) * math.Pi / 180
-	xVel1 := float64(takeUnit.CurrentSpeed) * math.Cos(radRotate1) // идем по вектору движения корпуса
-	yVel1 := float64(takeUnit.CurrentSpeed) * math.Sin(radRotate1)
-
-	// расчет для второй машины
-	radRotate2 := float64(toUnit.Rotate) * math.Pi / 180
-	xVel2 := float64(toUnit.CurrentSpeed) * math.Cos(radRotate2) // идем по вектору движения корпуса
-	yVel2 := float64(toUnit.CurrentSpeed) * math.Sin(radRotate2)
-
-	//Угол между осью х и линией действия
-	needRad := math.Atan2(float64(toUnit.Y-takeUnit.Y), float64(toUnit.X-takeUnit.X))
-	cosAlfa := math.Cos(needRad)
-	sinAlfa := math.Sin(needRad)
-
-	// находим скорости вдоль линии действия
-	xVel1prime := xVel1*cosAlfa + yVel1*sinAlfa
-	xVel2prime := xVel2*cosAlfa + yVel2*sinAlfa
-
-	// находим скорости перпендикулярные линии действия
-	yVel1prime := yVel1*cosAlfa - xVel1*sinAlfa
-	yVel2prime := yVel2*cosAlfa - xVel2*sinAlfa
-
-	//// применяем законы сохранения
-	P := float64(mass1)*xVel1prime + float64(mass2)*xVel2prime
-	V := xVel1prime - xVel2prime
-	v2f := (P + float64(mass1)*V) / (float64(mass1) + float64(mass2))
-	v1f := v2f - xVel1prime + xVel2prime
-	xVel1prime = v1f
-	xVel2prime = v2f
-
-	// Проецируем обратно на оси Х и У.
-	xVel1 = xVel1prime*cosAlfa - yVel1prime*sinAlfa
-	yVel1 = yVel1prime*cosAlfa + xVel1prime*sinAlfa
-
-	xVel2 = xVel2prime*cosAlfa - yVel2prime*sinAlfa
-	yVel2 = yVel2prime*cosAlfa + xVel2prime*sinAlfa
-
-	speed1 := math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))
-	speed2 := math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))
-
-	takeUnit.CurrentSpeed = speed1
-	takeUnit.X += int(float64(-speed1) * math.Cos(needRad))
-	takeUnit.Y += int(float64(-speed1) * math.Sin(needRad))
-
-	// проверка нового места толкаемого юзера на колизию в статичной карте
-	mp, _ := maps.Maps.GetByID(takeUnit.MapID)
-
-	possibleMove, _, _, _ := globalGame.CheckCollisionsOnStaticMap(
-		int(toUnit.X+int(float64(speed2)*math.Cos(needRad))),
-		int(toUnit.Y+int(float64(speed2)*math.Sin(needRad))),
-		toUnit.Rotate,
-		mp,
-		toUnit.Body,
-	)
-
-	// проверка нового места толкаемого юзера на колизию с другими юзерами // TODO не отдебажено
-	noCollision, _ := initCheckCollision(toUnit, &unit.PathUnit{
-		X:      int(toUnit.X + int(float64(speed2)*math.Cos(needRad))),
-		Y:      int(toUnit.Y + int(float64(speed2)*math.Sin(needRad))),
-		Rotate: toUnit.Rotate,
-	})
-
-	if possibleMove && noCollision {
-		toUnit.X += int(float64(speed2) * math.Cos(needRad))
-		toUnit.Y += int(float64(speed2) * math.Sin(needRad))
-	} else {
-		// оталкиваем игрока инициализирующего столкновение иначе они застрянут
-		takeUnit.X += int(float64(-speed2) * math.Cos(needRad))
-		takeUnit.Y += int(float64(-speed2) * math.Sin(needRad))
-	}
-
-	userPath := unit.PathUnit{
-		X:           takeUnit.X,
-		Y:           takeUnit.Y,
-		Rotate:      takeUnit.Rotate,
-		Millisecond: 200,
-		Speed:       takeUnit.CurrentSpeed,
-	}
-
-	toUserPath := unit.PathUnit{
-		X:           toUnit.X,
-		Y:           toUnit.Y,
-		Rotate:      toUnit.Rotate,
-		Millisecond: 200,
-		Speed:       speed2,
-	}
-
-	go SendMessage(Message{Event: "MoveTo", ShortUnit: takeUnit.GetShortInfo(), PathUnit: userPath, IDMap: takeUnit.MapID})
-	go SendMessage(Message{Event: "MoveTo", ShortUnit: toUnit.GetShortInfo(), PathUnit: toUserPath, IDMap: toUnit.MapID})
-	time.Sleep(200 * time.Millisecond)
 }

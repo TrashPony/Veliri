@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"time"
 )
 
@@ -44,14 +45,14 @@ func CheckBaseRespawn(base *base.Base) (bool, *coordinate.Coordinate) {
 
 func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // заставляет игроков эвакуироватся с точки респауна базы
 
-	x, y := globalGame.GetXYCenterHex(q, r)
+	x, y := game_math.GetXYCenterHex(q, r)
 
 	lock := false
 	units := globalGame.Clients.GetAllShortUnits(mapID, true)
 
 	for _, gameUnit := range units {
 
-		dist := globalGame.GetBetweenDist(gameUnit.X, gameUnit.Y, x, y)
+		dist := game_math.GetBetweenDist(gameUnit.X, gameUnit.Y, x, y)
 
 		if int(dist) < distCheck && mapID == gameUnit.MapID {
 			dangerUnit := globalGame.Clients.GetUnitByID(gameUnit.ID)
@@ -78,7 +79,7 @@ func ForceEvacuation(unit *unit.Unit, x, y, seconds, distCheck int) {
 		timeCount++
 		time.Sleep(100 * time.Millisecond)
 
-		dist := globalGame.GetBetweenDist(unit.X, unit.Y, x, y)
+		dist := game_math.GetBetweenDist(unit.X, unit.Y, x, y)
 
 		if int(dist) > distCheck {
 			go SendMessage(Message{Event: "removeNoticeFreeCoordinate", IDUserSend: unit.OwnerID, IDMap: unit.MapID})

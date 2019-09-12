@@ -1,81 +1,16 @@
-package globalGame
+package move
 
 import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/getlantern/deepcopy"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
 
-const HexagonHeight = 55 // Константы описывающие свойства гексов на игровом поле
-const HexagonWidth = 50
-const VerticalOffset = HexagonHeight * 3 / 4
-const HorizontalOffset = HexagonWidth
-
-func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
-
-	moveUnit.ToX = ToX
-	moveUnit.ToY = ToY
-
-	startX := float64(moveUnit.X)
-	startY := float64(moveUnit.Y)
-	rotate := moveUnit.Rotate
-
-	//todo
-	moveUnit.MinSpeed = 10
-
-	// т.к. метод расчитывает в секунду а путь строится по 100 мс то скорость делим на 10
-	maxSpeed := float64(moveUnit.Speed) / 10
-	minSpeed := float64(moveUnit.MinSpeed) / 10
-
-	// если текущая скорость выше стартовой то берем ее
-	startSpeed := minSpeed
-	if minSpeed < moveUnit.CurrentSpeed {
-		startSpeed = moveUnit.CurrentSpeed
-	}
-
-	if moveUnit.FollowUnitID != 0 {
-		followUnit := Clients.GetUnitByID(moveUnit.FollowUnitID)
-		dist := GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
-		if dist < 90 && followUnit.CurrentSpeed > 0 {
-			maxSpeed = followUnit.CurrentSpeed
-			if followUnit.CurrentSpeed <= 0 {
-				return nil, errors.New("follower dont move")
-			}
-		}
-	}
-
-	// копируем что бы не произошло вычетание топлива на расчетах
-	var fakeThoriumSlots map[int]*detail.ThoriumSlot
-	if moveUnit.Body.MotherShip {
-		err := deepcopy.Copy(&fakeThoriumSlots, &moveUnit.Body.ThoriumSlots)
-		if err != nil || len(fakeThoriumSlots) == 0 {
-			println(err.Error())
-			return nil, err
-		}
-	} else {
-		// если это юнит то проецируем его энергию в топливо т.к. у юнита нет реактора и для двжиения он тратить свой акум
-		if moveUnit.Power <= 0 {
-			return nil, errors.New("not thorium")
-		}
-
-		fakeThoriumSlots = make(map[int]*detail.ThoriumSlot)
-		fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
-	}
-
-	if moveUnit.Afterburner { // если форсаж то х2 скорости (доступно только МС)
-		maxSpeed = maxSpeed * 2
-	}
-
-	err, path := MoveTo(startX, startY, maxSpeed, minSpeed, startSpeed, ToX, ToY, rotate, 5, mp, false,
-		fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity, moveUnit.Body)
-
-	return path, err
-}
-
-func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate, rotateAngle int, mp *_map.Map,
+func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate, rotateAngle int, mp *_map.Map,
 	ignoreObstacle bool, thoriumSlots map[int]*detail.ThoriumSlot, afterburner, gravity bool, body *detail.Body) (error, []unit.PathUnit) {
 
 	path := make([]unit.PathUnit, 0)
@@ -89,7 +24,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 		forecastQ := 0
 		forecastR := 0
 		// находим длинную вектора до цели
-		dist = GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
+		dist = game_math.GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
 		if dist < 10 {
 			break
 		}
@@ -161,7 +96,7 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 		}
 
-		possibleMove, q, r, front := CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp, body)
+		possibleMove, q, r := collisions.CheckCollisionsOnStaticMap(int(forecastX+stopX), int(forecastY+stopY), rotate, mp, body)
 
 		if (diffRotate == 0 || dist > minDistRotate) && (possibleMove || ignoreObstacle) {
 			forecastX = forecastX + stopX
@@ -175,15 +110,8 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 			}
 
 			if !possibleMove {
-				if front { // если препятвие спереди то идем назад
-					forecastX = forecastX - stopX
-					forecastY = forecastY - stopY
-				} else { // иначе вперед
-					forecastX = forecastX + stopX
-					forecastY = forecastY + stopY
-				}
-			} else {
-				// если мы поворачиваемся то наша скорость = 0
+				// смотрим точку где мы моем доехать до упора и поворачиваемся
+				forecastX, forecastY = DetailCheckStaticCollision(forecastX, forecastY, rotate, mp, body)
 				speed = 0
 			}
 		}
@@ -197,4 +125,24 @@ func MoveTo(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, r
 	}
 
 	return nil, path
+}
+
+func DetailCheckStaticCollision(startX, startY float64, rotate int, mp *_map.Map, body *detail.Body) (float64, float64) {
+
+	radRotate := float64(rotate) * math.Pi / 180
+
+	oldX, oldY := 0.0, 0.0
+
+	for {
+		stopX := 1 * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := 1 * math.Sin(radRotate)
+
+		possibleMove, _, _ := collisions.CheckCollisionsOnStaticMap(int(startX+stopX), int(startY+stopY), rotate, mp, body)
+		if possibleMove {
+			oldX = stopX
+			oldY = stopY
+		} else {
+			return oldX, oldY
+		}
+	}
 }

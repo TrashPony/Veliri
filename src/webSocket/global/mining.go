@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"time"
 )
 
@@ -27,8 +28,8 @@ func startMining(miner *unit.Unit, msg Message) {
 		return
 	}
 
-	x, y := globalGame.GetXYCenterHex(reservoir.Q, reservoir.R)
-	dist := globalGame.GetBetweenDist(miner.X, miner.Y, x, y)
+	x, y := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
+	dist := game_math.GetBetweenDist(miner.X, miner.Y, x, y)
 	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker {
 
 		go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Equip.Reload,
@@ -83,8 +84,8 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 					exit = true
 				}
 
-				x, y := globalGame.GetXYCenterHex(reservoir.Q, reservoir.R)
-				dist := globalGame.GetBetweenDist(miner.X, miner.Y, x, y)
+				x, y := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
+				dist := game_math.GetBetweenDist(miner.X, miner.Y, x, y)
 
 				if int(dist) > miningEquip.Radius {
 					// игрок уехал слишком далеко

@@ -1,4 +1,4 @@
-package globalGame
+package collisions
 
 import "testing"
 
@@ -44,22 +44,24 @@ func TestIntersectVectorToCircle(t *testing.T) {
 func TestPointInVector(t *testing.T) {
 
 	// принадлежит отрезку
-	if !pointInVector(&point{x: 50, y: 20}, &point{x: 40, y: 20}, &point{x: 45, y: 20}) {
+	testPoint := &point{x: 45, y: 20}
+	if !testPoint.pointInVector(&point{x: 50, y: 20}, &point{x: 40, y: 20}) {
 		t.Error("intersect point in vector test 1 failed ")
 	}
 
 	// не принадлежит отрезку
-	if pointInVector(&point{x: 50, y: 25}, &point{x: 40, y: 20}, &point{x: 45, y: 20}) {
+	if testPoint.pointInVector(&point{x: 50, y: 25}, &point{x: 40, y: 20}) {
 		t.Error("intersect point in vector test 2 failed ")
 	}
 
 	// не принадлежит отрезку
-	if pointInVector(&point{x: 50, y: 5}, &point{x: 40, y: 20}, &point{x: 45, y: 20}) {
+	if testPoint.pointInVector(&point{x: 50, y: 5}, &point{x: 40, y: 20}) {
 		t.Error("intersect point in vector test 3 failed ")
 	}
 
 	// не принадлежит отрезку
-	if pointInVector(&point{x: 1438, y: 986}, &point{x: 1467, y: 980}, &point{x: 2841, y: 662}) {
+	testPoint = &point{x: 45, y: 20}
+	if testPoint.pointInVector(&point{x: 1438, y: 986}, &point{x: 1467, y: 980}) {
 		t.Error("intersect point in vector test 4 failed ")
 	}
 }

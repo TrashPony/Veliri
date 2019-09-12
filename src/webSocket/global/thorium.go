@@ -7,7 +7,7 @@ import (
 
 func updateThorium(user *player.Player, msg Message) {
 
-	// "squadInventory" потому что в глобальной игре нет больше инвентарей
+	// "squadInventory" потому что в глобальной игре зарядить акум можно только из МС
 	squad_inventory.SetThorium(user, msg.InventorySlot, msg.ThoriumSlot, "squadInventory")
 
 	msg.ToX = user.GetSquad().MatherShip.ToX
@@ -15,7 +15,6 @@ func updateThorium(user *player.Player, msg Message) {
 
 	Move(user, msg, false) // пересчитываем путь т.к. эффективность двиготеля изменилась
 	go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-
 	go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(),
 		ThoriumSlots: user.GetSquad().MatherShip.Body.ThoriumSlots, IDMap: user.GetSquad().MatherShip.MapID})
 }

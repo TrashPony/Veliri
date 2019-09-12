@@ -1,8 +1,9 @@
-package globalGame
+package move
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
 func GetUnitPos(units []int, mapID, toX, toY int) []*coordinate.Coordinate {
@@ -10,7 +11,11 @@ func GetUnitPos(units []int, mapID, toX, toY int) []*coordinate.Coordinate {
 	toPos := make([]*coordinate.Coordinate, 0)
 
 	mp, _ := maps.Maps.GetByID(mapID)
-	center := GetQRfromXY(toX, toY, mp)
+	q, r := game_math.GetQRfromXY(toX, toY)
+	center, find := mp.OneLayerMap[q][r]
+	if !find {
+		return nil
+	}
 
 	getNearCoordinate := func() *coordinate.Coordinate {
 
@@ -32,13 +37,13 @@ func GetUnitPos(units []int, mapID, toX, toY int) []*coordinate.Coordinate {
 			// ищем самую ближнюю координту к toX, toY
 			min := true
 
-			x1, y1 := GetXYCenterHex(coor1.Q, coor1.R)
-			dist1 := GetBetweenDist(x1, y1, toX, toY)
+			x1, y1 := game_math.GetXYCenterHex(coor1.Q, coor1.R)
+			dist1 := game_math.GetBetweenDist(x1, y1, toX, toY)
 
 			for _, coor3 := range radius {
 
-				x3, y3 := GetXYCenterHex(coor3.Q, coor3.R)
-				dist3 := GetBetweenDist(x3, y3, toX, toY)
+				x3, y3 := game_math.GetXYCenterHex(coor3.Q, coor3.R)
+				dist3 := game_math.GetBetweenDist(x3, y3, toX, toY)
 
 				if dist1 > dist3 && !check(coor3.Q, coor3.R) {
 					min = false
@@ -57,11 +62,11 @@ func GetUnitPos(units []int, mapID, toX, toY int) []*coordinate.Coordinate {
 
 	for i := 0; i < len(units); i++ {
 		if i == 0 {
-			x, y := GetXYCenterHex(center.Q, center.R)
+			x, y := game_math.GetXYCenterHex(center.Q, center.R)
 			toPos = append(toPos, &coordinate.Coordinate{Q: center.Q, R: center.R, X: x, Y: y})
 		} else {
 			coordinateNear := getNearCoordinate()
-			x, y := GetXYCenterHex(coordinateNear.Q, coordinateNear.R)
+			x, y := game_math.GetXYCenterHex(coordinateNear.Q, coordinateNear.R)
 			toPos = append(toPos, &coordinate.Coordinate{Q: coordinateNear.Q, R: coordinateNear.R, X: x, Y: y})
 		}
 	}

@@ -4,7 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"math"
 	"sync"
 )
@@ -45,7 +45,7 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, g
 
 	newCoor := &coordinate.Coordinate{X: x, Y: y, Rotate: needAngle}
 
-	free, _ := globalGame.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
+	free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
 	if !free {
 		return nil, false
 	}
@@ -55,7 +55,7 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, g
 			return newCoor, true
 		}
 	} else {
-		possible, _, _, _ := globalGame.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body)
+		possible, _, _:= collisions.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body)
 
 		addGeoCoordinate(newCoor, gameMap, scaleMap, possible)
 

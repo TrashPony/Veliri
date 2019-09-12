@@ -6,6 +6,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"math"
 )
 
@@ -58,8 +60,8 @@ func placeUnit(user *player.Player, msg Message) {
 			units := globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true)
 			mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
-			okUnits, _ := globalGame.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units)
-			okMap, _, _, _ := globalGame.CheckCollisionsOnStaticMap(outUnit.X, outUnit.Y, outUnit.Rotate, mp, outUnit.Body)
+			okUnits, _ := collisions.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units)
+			okMap, _, _:= collisions.CheckCollisionsOnStaticMap(outUnit.X, outUnit.Y, outUnit.Rotate, mp, outUnit.Body)
 
 			if okUnits && okMap {
 
@@ -68,7 +70,7 @@ func placeUnit(user *player.Player, msg Message) {
 				outUnit.Afterburner = false
 				outUnit.MoveChecker = false
 				outUnit.ActualPath = nil
-				outUnit.HighGravity = globalGame.GetGravity(outUnit.X, outUnit.Y, outUnit.MapID)
+				outUnit.HighGravity = move.GetGravity(outUnit.X, outUnit.Y, outUnit.MapID)
 
 				outUnit.CalculateParams()
 

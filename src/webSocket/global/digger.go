@@ -8,13 +8,20 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
 	"time"
 )
 
 func selectDigger(user *player.Player, msg Message, diggerSlot *detail.BodyEquipSlot) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
-	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
+
+	q, r := game_math.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+	squadCoordinate, find := mp.OneLayerMap[q][r]
+	if ! find {
+		go SendMessage(Message{Event: "Error", Error: "wrong place", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		return
+	}
 
 	if squadCoordinate != nil {
 
@@ -46,7 +53,12 @@ func selectDigger(user *player.Player, msg Message, diggerSlot *detail.BodyEquip
 
 func useDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
-	squadCoordinate := globalGame.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mp)
+	q, r := game_math.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
+	squadCoordinate, find := mp.OneLayerMap[q][r]
+	if ! find {
+		go SendMessage(Message{Event: "Error", Error: "wrong place", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+		return
+	}
 
 	if squadCoordinate != nil {
 

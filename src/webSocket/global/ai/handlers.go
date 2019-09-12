@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
 	"time"
 )
@@ -26,7 +27,7 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 	for {
 		time.Sleep(300 * time.Millisecond)
 
-		xEntry, yEntry := globalGame.GetXYCenterHex(coor.Q, coor.R)
+		xEntry, yEntry := game_math.GetXYCenterHex(coor.Q, coor.R)
 		checkTransitionUser(xEntry, yEntry, mp.Id, coor)
 
 		if coor.Handler == "base" {
@@ -57,7 +58,7 @@ func checkTransitionUser(x, y, mapID int, coor *coordinate.Coordinate) {
 
 	for _, user := range users {
 		if user.GetSquad() != nil && mapID == user.GetSquad().MatherShip.MapID {
-			dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+			dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 			if dist < 100 && !user.GetSquad().SoftTransition && coor.HandlerOpen {
 				go softTransition(user, x, y, coor)
 			}
@@ -76,7 +77,7 @@ func softTransition(user *player.Player, x, y int, coor *coordinate.Coordinate) 
 
 	for {
 		time.Sleep(100 * time.Millisecond)
-		dist := globalGame.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 		if dist < 120 && countTime > 50 {
 			if coor.Handler == "base" {
 				go wsGlobal.IntoToBase(user, coor.ToBaseID)

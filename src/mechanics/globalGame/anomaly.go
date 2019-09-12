@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
 
@@ -28,9 +29,9 @@ func GetVisibleAnomaly(user *player.Player, slot *detail.BodyEquipSlot) (visible
 			continue
 		}
 
-		x, y := GetXYCenterHex(anomaly.GetQ(), anomaly.GetR())
+		x, y := game_math.GetXYCenterHex(anomaly.GetQ(), anomaly.GetR())
 
-		dist := GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
 		maxDist := (anomaly.GetPower() + slot.Equip.Radius) * 100
 
 		if int(dist) < maxDist {
