@@ -1,6 +1,6 @@
 // движение на глобальной карте
 function MoveTo(jsonData) {
-
+    console.log(jsonData)
     if (!game || !game.units) return;
 
     let unit = game.units[jsonData.short_unit.id];

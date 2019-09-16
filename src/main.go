@@ -55,8 +55,8 @@ func main() {
 	go ai.SkyGenerator()  // запускает генерацию облаков на картах, небо тоже немножко аи)
 	go ai.HandlersLife()  // мониторинг входов выходов секторов
 
-	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
-	go ai.InitAI()          // запускает ботов
+	//go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
+	go ai.InitAI() // запускает ботов
 
 	port := "8080"
 	log.Println("http server started on :" + port)

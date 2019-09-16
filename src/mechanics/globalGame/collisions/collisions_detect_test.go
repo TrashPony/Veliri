@@ -21,6 +21,16 @@ func TestCollisionRectToCircle(t *testing.T) {
 	if bodyRec.detectCollisionRectToCircle(&point{2907, 1095}, 8) {
 		t.Error("intersect rect to circle test 1 failed ")
 	}
+
+	if bodyRec.detectCollisionRectToCircle(&point{1853, 299}, 17) {
+		t.Error("intersect rect to circle test 2 failed ")
+	}
+
+	intersect, _, _ := IntersectVectorToCircle(&point{x: 1459, y: 1057}, &point{x: 1425, y: 1057}, &point{x: 1853, y: 299}, 17)
+	println(intersect)
+	if intersect {
+		t.Error("intersect vector to circle test 2 failed ")
+	}
 }
 
 func TestIntersectVectorToCircle(t *testing.T) {
@@ -39,7 +49,6 @@ func TestIntersectVectorToCircle(t *testing.T) {
 	//
 	//// прямая пересекает окружность
 	intersect, point1, point2 = IntersectVectorToCircle(&point{x: 50, y: 10}, &point{x: 15, y: 30}, &point{x: 30, y: 30}, 10)
-	println(intersect, int(point1.x), int(point1.y), int(point2.x), int(point2.y))
 	if !intersect || int(point1.x) != 32 || int(point1.y) != 20 || int(point2.x) != 20 || int(point2.y) != 26 {
 		t.Error("intersect vector to circle test 3 failed ")
 	}

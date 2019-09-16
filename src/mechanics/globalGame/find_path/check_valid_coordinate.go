@@ -5,7 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
-	"math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"sync"
 )
 
@@ -18,36 +18,13 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, g
 	geoCoordinate, ok := gameMap.GeoDataMaps[scaleMap][x][y]
 	mx.Unlock()
 
-	//needRad := math.Atan2(float64(end.Y-y), float64(end.X-x))
-	//needAngle := int(needRad * 180 / 3.14)
-	//diffRotate := pRotate - needAngle
-	//if diffRotate < 0 {
-	//	diffRotate = 360 - diffRotate
-	//}
-	//
-	//if diffRotate != 0 { // если разница есть то поворачиваем корпус
-	//
-	//}
+	newCoor := &coordinate.Coordinate{X: x, Y: y, Rotate: game_math.GetBetweenAngle(float64(x), float64(y), float64(pX), float64(pY))}
 
-	needRad := math.Atan2(float64(pY-y), float64(pX-x))
-	needAngle := int(needRad * 180 / 3.14)
-	diffRotate := 0
-
-	if pRotate > needAngle {
-		diffRotate = pRotate - needAngle
-	} else {
-		diffRotate = needAngle - pRotate
-	}
-
-	if diffRotate > 180 {
-		return nil, false
-	}
-
-	newCoor := &coordinate.Coordinate{X: x, Y: y, Rotate: needAngle}
-
-	free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
-	if !free {
-		return nil, false
+	if allUnits != nil {
+		free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
+		if !free {
+			return nil, false
+		}
 	}
 
 	if ok {
@@ -55,7 +32,7 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, pX, pY, pRotate int, g
 			return newCoor, true
 		}
 	} else {
-		possible, _, _, _ := collisions.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, pRotate, gameMap, gameUnit.Body)
+		possible, _, _, _ := collisions.CheckCollisionsOnStaticMap(x*scaleMap, y*scaleMap, newCoor.Rotate, gameMap, gameUnit.Body, true)
 
 		addGeoCoordinate(newCoor, gameMap, scaleMap, possible)
 

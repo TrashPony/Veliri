@@ -129,6 +129,9 @@ function initMove(pointer) {
             //     game.units[selectUnits[i].id].toBox.to = false
             // }
 
+            if (moveDebug) {
+                moveDebug.clear();
+            }
 
             global.send(JSON.stringify({
                 event: "MoveTo",

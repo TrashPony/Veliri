@@ -77,6 +77,7 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *
 		toUnit.Rotate,
 		mp,
 		toUnit.Body,
+		false,
 	)
 
 	// проверка нового места толкаемого юзера на колизию с другими юзерами // TODO не отдебажено

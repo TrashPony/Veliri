@@ -9,7 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
-func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body) (bool, int, int, bool) {
+func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body, full bool) (bool, int, int, bool) {
 
 	q, r := game_math.GetQRfromXY(x, y)
 	startCoordinate, find := mp.OneLayerMap[q][r]
@@ -22,7 +22,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 		return true, 0, 0, true
 	}
 
-	rect := getBodyRect(body, float64(x), float64(y), rotate)
+	rect := getBodyRect(body, float64(x), float64(y), rotate, full)
 	for _, obstacle := range mp.GeoData {
 		if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
 			return false, startCoordinate.Q, startCoordinate.R, true
@@ -52,7 +52,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 
 	const boxRadius = 5
 
-	rect := getBodyRect(body, float64(x), float64(y), rotate)
+	rect := getBodyRect(body, float64(x), float64(y), rotate, false)
 	for _, mapBox := range boxs {
 
 		// поздемные ящики не имеют колизий
@@ -82,8 +82,8 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 
 		if otherUnit != nil && (moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
 
-			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate)
-			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate)
+			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, false)
+			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false)
 
 			if mUserRect.centerX == userRect.centerX && mUserRect.centerY == userRect.centerY {
 				// при одинаковом прямоугольнике и одинаковым центром, не будет пересечений и колизия будет не найдена

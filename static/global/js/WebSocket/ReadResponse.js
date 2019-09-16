@@ -182,7 +182,51 @@ function ReadResponse(jsonData) {
         CreateNewUnit(jsonData.short_unit)
     }
 
-    if (jsonData.event === "RemoveUnit"){
+    if (jsonData.event === "RemoveUnit") {
         RemoveUnit(jsonData)
+    }
+
+    if (jsonData.event === "CreateRect") {
+        FindPathDebug(jsonData)
+    }
+
+    if (jsonData.event === "CreateLine") {
+        FindPathDebug(jsonData)
+    }
+
+    if (jsonData.event === "ClearPath") {
+        findPath.clear();
+    }
+}
+
+let moveDebug = null;
+let findPath = null;
+
+function FindPathDebug(jsonData) {
+    if (!moveDebug) {
+        moveDebug = game.add.graphics(0, 0);
+        findPath = game.add.graphics(0, 0);
+    }
+
+    let color = 0xFFFFFF;
+    if (jsonData.color === "green") color = 0x00FF00;
+    if (jsonData.color === "red") color = 0xFF0000;
+    if (jsonData.color === "blue") color = 0x0000FF;
+
+    moveDebug.lineStyle(2, color, 1);
+    findPath.lineStyle(2, color, 1);
+
+    if (jsonData.event === "CreateRect") {
+        if (jsonData.color !== "white") {
+            moveDebug.drawRect(jsonData.x - jsonData.rect_size / 2, jsonData.y - jsonData.rect_size / 2, jsonData.rect_size, jsonData.rect_size);
+        } else {
+            findPath.drawRect(jsonData.x - jsonData.rect_size / 2, jsonData.y - jsonData.rect_size / 2, jsonData.rect_size, jsonData.rect_size);
+        }
+    }
+
+    if (jsonData.event === "CreateLine") {
+        moveDebug.moveTo(jsonData.x, jsonData.y);
+        moveDebug.lineTo(jsonData.to_x, jsonData.to_y);
+        //moveDebug.endFill();
     }
 }

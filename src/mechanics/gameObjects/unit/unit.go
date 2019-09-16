@@ -87,7 +87,8 @@ type Unit struct {
 	ForceEvacuation bool `json:"force_evacuation"`
 	InSky           bool `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 
-	MoveChecker bool `json:"move_checker"`
+	MoveChecker bool   `json:"move_checker"`
+	MoveUUID    string `json:"-"`
 
 	Inventory *inventory.Inventory `json:"inventory"` // в роли ключей карты выступают номера слотов где содержиться итем
 

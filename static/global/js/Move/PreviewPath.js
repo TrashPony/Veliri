@@ -1,5 +1,5 @@
 function PreviewPath(jsonData) {
-
+    console.log(jsonData)
     if (!game || !game.units) return;
 
     let unit = game.units[jsonData.short_unit.id];
@@ -22,20 +22,18 @@ function PreviewPath(jsonData) {
     CreateMiniMap();
 
     for (let i = 0; jsonData.path && i < jsonData.path.length; i++) {
-        if (i % 3 === 0 || i + 1 === jsonData.path.length) {
-            let label = game.floorObjectLayer.create(jsonData.path[i].x, jsonData.path[i].y, 'pathCell');
-            label.anchor.setTo(0.5);
-            label.scale.set(0.25);
+        let label = game.floorObjectLayer.create(jsonData.path[i].x, jsonData.path[i].y, 'pathCell');
+        label.anchor.setTo(0.5);
+        label.scale.set(0.25);
 
-            let tween = game.add.tween(label).to({
-                alpha: 1
-            }, 100 * (i + 1), Phaser.Easing.Linear.None, true);
+        let tween = game.add.tween(label).to({
+            alpha: 1
+        }, jsonData.path[i].millisecond * (i + 1), Phaser.Easing.Linear.None, true);
 
-            tween.onComplete.add(function () {
-                label.destroy();
-            });
+        tween.onComplete.add(function () {
+            label.destroy();
+        });
 
-            unit.oldPoint.push(label)
-        }
+        unit.oldPoint.push(label)
     }
 }
