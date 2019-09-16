@@ -57,13 +57,14 @@ func Move(user *player.Player, msg Message, newAction bool) {
 						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
-					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y))
+					path, err := Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), user)
 					moveUnit.ActualPath = &path
 
 					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
 					go FollowUnit(user, moveUnit, msg)
 
 					if err != nil && len(path) == 0 {
+						println(err.Error())
 						go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: moveUnit.MapID, Bot: user.Bot})
 					}
 					go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(),
@@ -82,18 +83,18 @@ func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
 			moveUnit.CurrentSpeed = 0
 		}
 
-		go SendMessage(Message{
-			Event:     "MoveTo",
-			ShortUnit: moveUnit.GetShortInfo(),
-			PathUnit: &unit.PathUnit{
-				X:           moveUnit.X,
-				Y:           moveUnit.Y,
-				Rotate:      moveUnit.Rotate,
-				Millisecond: 100,
-				Speed:       moveUnit.CurrentSpeed,
-			},
-			IDMap: moveUnit.MapID,
-		})
+		//go SendMessage(Message{
+		//	Event:     "MoveTo",
+		//	ShortUnit: moveUnit.GetShortInfo(),
+		//	PathUnit: &unit.PathUnit{
+		//		X:           moveUnit.X,
+		//		Y:           moveUnit.Y,
+		//		Rotate:      moveUnit.Rotate,
+		//		Millisecond: 100,
+		//		Speed:       moveUnit.CurrentSpeed,
+		//	},
+		//	IDMap: moveUnit.MapID,
+		//})
 	}
 }
 
@@ -171,8 +172,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			moveUnit.HighGravity = newGravity
 			go SendMessage(Message{Event: "ChangeGravity", IDUserSend: user.GetID(), ShortUnit: moveUnit.GetShortInfo(),
 				IDMap: moveUnit.MapID, HighGravity: newGravity, Bot: user.Bot})
-			moveRepeat = true
-			return
 		}
 
 		// колизии юнит - юнит
@@ -189,10 +188,11 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			return
 		}
 
-		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(pathUnit.X, pathUnit.Y, pathUnit.Rotate, mp, moveUnit.Body)
-		if !possibleMove {
-			return
-		}
+		//possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(pathUnit.X, pathUnit.Y, pathUnit.Rotate, mp, moveUnit.Body, false)
+		//if !possibleMove {
+		//	println("collision")
+		//	return
+		//}
 
 		if moveUnit.Body.MotherShip && moveUnit.HP > 0 {
 			// находим аномалии
@@ -255,7 +255,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
 			moveUnit.CurrentSpeed = pathUnit.Speed
 		} else {
 			moveUnit.CurrentSpeed = 0

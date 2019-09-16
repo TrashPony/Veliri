@@ -22,26 +22,26 @@ const (
 
 type Points map[string]*coordinate.Coordinate
 
-func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]unit.PathUnit, error) {
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]*unit.PathUnit, error) {
 
 	startX := moveUnit.X
 	startY := moveUnit.Y
 
-	path := make([]unit.PathUnit, 0)
+	path := make([]*unit.PathUnit, 0)
 
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 	_, path2 := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, moveUnit.Speed, allUnits)
+		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, 10, allUnits)
 
 	for _, unitPath := range path2 {
-		path = append(path, unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 1000,
+		path = append(path, &unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 250,
 			Speed: float64(moveUnit.Speed), Animate: true})
 	}
 
 	return path, nil
 }
 
-func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (error, []*coordinate.Coordinate) {
+func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
 
 	xSize, ySize := gameMap.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
 
@@ -51,7 +51,41 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
 
 	if end.X >= xSize || end.Y >= ySize || end.X < 0 || end.Y < 0 || start.X >= xSize || start.Y >= ySize || start.X < 0 || start.Y < 0 {
-		return errors.New("no path"), nil
+		return nil, nil, 0, 0, errors.New("start or end out the range")
+	}
+
+	// если конечная точка является невалидной то ищем ближайшую валидную точку и говорим что это цель
+	_, valid := checkValidForMoveCoordinate(gameMap, end.X, end.Y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits, end)
+	if !valid {
+		getValidEnd := func() *coordinate.Coordinate {
+			for radius := 0; radius < 10; radius++ {
+				for angle := 10; angle < 360; angle += 10 {
+					x := int(math.Round(float64(float64(end.X) + float64(radius)*math.Cos(float64(angle)))))
+					y := int(math.Round(float64(float64(end.Y) + float64(radius)*math.Sin(float64(angle)))))
+
+					_, valid := checkValidForMoveCoordinate(gameMap, x, y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits, end)
+					if valid {
+						return &coordinate.Coordinate{X: x, Y: y}
+					}
+				}
+			}
+			return nil
+		}
+		end = getValidEnd()
+	}
+
+	if end == nil {
+		return nil, nil, 0, 0, errors.New("end point not valid")
+	} else {
+		return start, end, xSize, ySize, nil
+	}
+}
+
+func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (error, []*coordinate.Coordinate) {
+
+	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, allUnits)
+	if err != nil {
+		return err, nil
 	}
 
 	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
@@ -62,7 +96,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 
 	for {
 		if len(openPoints) <= 0 {
-			return errors.New("no path"), nil
+			return errors.New("path no find"), nil
 		}
 		current := MinF(openPoints, xSize, ySize) // Берем точку с мин стоимостью пути
 		if current.EqualXY(end) {                 // если текущая точка и есть конец начинаем генерить путь
@@ -85,6 +119,14 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 
 	end.X *= scaleMap
 	end.Y *= scaleMap
+
+	if len(path) > 0 {
+		end.Rotate = game_math.GetBetweenAngle(float64(end.X), float64(end.Y), float64(path[len(path)-1].X), float64(path[len(path)-1].Y))
+	} else {
+		start.X, start.Y = start.X*scaleMap, start.Y*scaleMap
+		end.Rotate = game_math.GetBetweenAngle(float64(end.X), float64(end.Y), float64(start.X), float64(start.Y))
+	}
+
 	path = append(path, end)
 	return nil, path
 }
