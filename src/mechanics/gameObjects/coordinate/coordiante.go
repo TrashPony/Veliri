@@ -66,6 +66,8 @@ type Coordinate struct {
 	ObjectInventory   bool   `json:"object_inventory"`
 	ObjectHP          int    `json:"object_hp"`
 	BoxID             int    `json:"box_id"`
+
+	Find bool `json:"-"`
 }
 
 func (coor *Coordinate) GetZ() int {
