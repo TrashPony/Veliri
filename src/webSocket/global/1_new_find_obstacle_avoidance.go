@@ -1,6 +1,7 @@
 package global
 
 import (
+	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -13,7 +14,7 @@ import (
 )
 
 //gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo
-func ObstacleAvoidance(mp *_map.Map, start, end, collision *coordinate.Coordinate, gameUnit *unit.Unit, size int, user *player.Player, uuid string) ([]*coordinate.Coordinate, error) {
+func ObstacleAvoidance(mp *_map.Map, obstacle *Obstacle, gameUnit *unit.Unit, size int, user *player.Player, uuid string) ([]*coordinate.Coordinate, error) {
 
 	// start - это валидная координата перед препятсивем (точка входа)
 	// end - это валидная координата после препяствия (точка выхода)
@@ -48,13 +49,13 @@ func ObstacleAvoidance(mp *_map.Map, start, end, collision *coordinate.Coordinat
 	*/
 
 	ClearVisiblePath(mp.Id, user)
-	CreateRect("white", int(start.X), int(start.Y), size, mp.Id, user)
-	CreateRect("red", int(collision.X), int(collision.Y), size, mp.Id, user)
+	CreateRect("white", int(obstacle.Entry.X), int(obstacle.Entry.Y), size, mp.Id, user)
+	CreateRect("red", int(obstacle.EntryCollision.X), int(obstacle.EntryCollision.Y), size, mp.Id, user)
 
-	xO, yO := collision.X, collision.Y
-	xEnd, yEnd := end.X, end.Y
+	xO, yO := obstacle.EntryCollision.X, obstacle.EntryCollision.Y
+	xEnd, yEnd := obstacle.Out.X, obstacle.Out.Y
 
-	x1, y1, angleStart := GetStartBugOptions(start.X, start.Y, xO, yO, mp, gameUnit, size, user)
+	x1, y1, angleStart := GetStartBugOptions(obstacle.Entry.X, obstacle.Entry.Y, xO, yO, mp, gameUnit, size, user)
 
 	CreateRect("red", int(xO), int(yO), size, mp.Id, user)
 
@@ -65,11 +66,6 @@ func ObstacleAvoidance(mp *_map.Map, start, end, collision *coordinate.Coordinat
 	exit := false
 	noPath := false
 
-	// TODO проверка на целостность обьекта
-	// TODO если руки вернулись на точку старта но так и не встретили точку выхода значит это
-	// TODO либо точки принадлежат разным обьектам
-	// TODO либо это внутрений контур из которого нет выхода!
-
 	go Hand(-1, x1, y1, &oneHandStop, &exit, &noPath, &oneHandPoints, angleStart, size, mp, user, gameUnit, uuid, xEnd, yEnd)
 	go Hand(1, x1, y1, &twoHandStop, &exit, &noPath, &twoHandPoints, angleStart, size, mp, user, gameUnit, uuid, xEnd, yEnd)
 
@@ -78,19 +74,15 @@ func ObstacleAvoidance(mp *_map.Map, start, end, collision *coordinate.Coordinat
 	}
 	exit = true
 
-	//extX, extY := 0, 0
+	if noPath {
+		return nil, errors.New("no path")
+	}
+
 	if oneHandStop {
 		return oneHandPoints, nil
 	} else {
 		return twoHandPoints, nil
-		//extX, extY = SearchPoint(&twoHandPoints, unitX, unitY, size, mp, user, gameUnit)
 	}
-
-	//for extX == 0 && extY == 0 && uuid == gameUnit.MoveUUID {
-	//	extX, extY, _ = ObstacleAvoidance(mp, start, end, xObstacle, yObstacle, unitX, unitY, gameUnit, size-5, user, uuid)
-	//}
-
-	//return extX, extY, nil
 }
 
 func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map, gameUnit *unit.Unit, size int, user *player.Player) (int, int, int) {
@@ -129,11 +121,6 @@ func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map
 				// алгоритм не смог найти точку входа
 				// увеличить дискретность и попробовать снова
 				println("no hook")
-				//extX, extY := 0, 0
-				//for extX == 0 && extY == 0 && uuid == gameUnit.MoveUUID {
-				//extX, extY, _ = ObstacleAvoidance(mp, start, end, xObstacle, yObstacle, unitX, unitY, gameUnit, size+5, user, uuid)
-				//}
-				//return extX, extY, nil
 			}
 
 			break
@@ -150,7 +137,6 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_
 	// TODO самый дорогой метод в алгоритме
 	for i := len(*points) - 1; i >= 0; i-- {
 		collision := SearchCollisionInLine(float64((*points)[i].X), float64((*points)[i].Y), float64(unitX), float64(unitY), mp, gameUnit.Body)
-		println(collision, i)
 		if !collision {
 			CreateRect("green", (*points)[i].X, (*points)[i].Y, size, mp.Id, user)
 			return (*points)[i].X, (*points)[i].Y
@@ -160,7 +146,7 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_
 }
 
 func Hand(side float64, x, y int, stopFlag *bool, exitFlag, noPath *bool, points *[]*coordinate.Coordinate, angleStart,
-	size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, xEnd, yEnd int) {
+size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, xEnd, yEnd int) {
 
 	// угол в радианах
 	angle := float64(angleStart) * math.Pi / 180

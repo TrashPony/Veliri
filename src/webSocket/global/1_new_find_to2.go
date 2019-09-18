@@ -16,7 +16,6 @@ func To2(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, ms 
 	path := make([]*unit.PathUnit, 0)
 
 	for {
-
 		// находим длинную вектора до цели
 		dist := game_math.GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
 		if dist < speed+5 {

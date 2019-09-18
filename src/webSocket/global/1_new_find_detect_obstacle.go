@@ -81,6 +81,7 @@ func DetectObstacle(entryPoints, outPoints, collisions, obstaclePoints []*coordi
 	obstacle.Entry = entryPoints[firstEntryID]
 	obstacle.EntryCollision = collisions[firstEntryID]
 	obstacle.Out = outPoints[lastOutID]
+	obstacle.Contour = obstaclePoints
 
 	return obstacle
 }
@@ -89,4 +90,5 @@ type Obstacle struct {
 	Entry          *coordinate.Coordinate
 	EntryCollision *coordinate.Coordinate
 	Out            *coordinate.Coordinate
+	Contour        []*coordinate.Coordinate
 }

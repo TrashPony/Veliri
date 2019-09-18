@@ -10,11 +10,11 @@ import (
 )
 
 // возвращает xКолизии, yКолизии, хВыхода из колизии, yВыхода из колизии прошли без столкновений
-func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, startMove bool) (
+func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, startMove bool, size int) (
 	entryPoints, collisionPoints, outPoints []*coordinate.Coordinate, collision, endIsObstacle bool) {
 
 	// идем по линии со скорость 10 рх
-	speed := 10.0
+	speed := float64(size)
 
 	// угол от старта до конца
 	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
@@ -33,9 +33,10 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 	outPoints = make([]*coordinate.Coordinate, 0)
 
 	currentCollision := false
-
 	extraExit := false
+
 	for {
+
 		// находим длинную вектора до цели
 		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
 		//distToStart := game_math.GetBetweenDist(int(currentX), int(currentY), int(startX), int(startY))
