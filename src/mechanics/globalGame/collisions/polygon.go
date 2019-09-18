@@ -108,7 +108,7 @@ func (r *Polygon) detectPointInRectangle(x, y float64) bool {
 	return 0 <= dot(AB, AM) && dot(AB, AM) <= dot(AB, AB) && 0 <= dot(BC, BM) && dot(BC, BM) <= dot(BC, BC)
 }
 
-func getBodyRect(body *detail.Body, x, y float64, rotate int, full bool) *Polygon {
+func getBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *Polygon {
 
 	/*
 		squad.rectDebag.moveTo(-50, -25);
@@ -130,6 +130,14 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int, full bool) *Polygo
 
 	if full {
 		if heightBody > widthBody {
+			widthBody = heightBody
+		} else {
+			heightBody = widthBody
+		}
+	}
+
+	if min {
+		if heightBody < widthBody {
 			widthBody = heightBody
 		} else {
 			heightBody = widthBody

@@ -13,7 +13,6 @@ import (
 func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, startMove bool) (
 	entryPoints, collisionPoints, outPoints []*coordinate.Coordinate, collision, endIsObstacle bool) {
 
-	// TODO учитывать угол поворота юнита
 	// идем по линии со скорость 10 рх
 	speed := 10.0
 
@@ -56,7 +55,7 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
 
-		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, true)
+		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
 		if !possibleMove {
 			// если юнит по каким то причинам стартует из колизии то дать ему выйти и потом уже искать колизию
 			//if !(distToStart < speed+2 && startMove) {
@@ -78,6 +77,35 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 			}
 		}
 
+		currentX += stopX
+		currentY += stopY
+	}
+}
+
+func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body) bool {
+	// идем по линии со скорость 10 рх
+	speed := 10.0
+
+	// текущее положение курсора
+	currentX, currentY := startX, startY
+
+	// угол от старта до конца
+	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
+	radian := float64(angle) * math.Pi / 180
+
+	for {
+		// находим длинную вектора до цели
+		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
+		if distToEnd < speed+15 {
+			return false
+		}
+
+		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
+		if !possibleMove {
+			return true
+		}
+
+		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
 		currentX += stopX
 		currentY += stopY
 	}

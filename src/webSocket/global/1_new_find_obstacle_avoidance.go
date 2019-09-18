@@ -149,8 +149,7 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_
 	// идем по масиву с конца что бы найти самую дальную валидну точку
 	// TODO самый дорогой метод в алгоритме
 	for i := len(*points) - 1; i >= 0; i-- {
-		// todo надо сделать облегченную функция BetweenLine что бы обрабатывать до 1 колизии и не собирать методанные
-		_, _, _, collision, _ := BetweenLine(float64((*points)[i].X), float64((*points)[i].Y), float64(unitX), float64(unitY), mp, gameUnit.Body, false)
+		collision := SearchCollisionInLine(float64((*points)[i].X), float64((*points)[i].Y), float64(unitX), float64(unitY), mp, gameUnit.Body)
 		println(collision, i)
 		if !collision {
 			CreateRect("green", (*points)[i].X, (*points)[i].Y, size, mp.Id, user)
@@ -224,6 +223,6 @@ func Hand(side float64, x, y int, stopFlag *bool, exitFlag, noPath *bool, points
 }
 
 func checkRect(x, y int, body *detail.Body, mp *_map.Map) bool {
-	possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(x, y, 0, mp, body, true)
+	possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(x, y, 0, mp, body, false, true)
 	return possibleMove
 }
