@@ -63,7 +63,8 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY, maxSpeed f
 		return noCollision(moveUnit, startX, startY, maxSpeed, user, rectSize, rotate)
 	} else {
 		// 0.3 на прямой были найдены препятвия
-		entryPoint, outPoint, collisionPoints, collision, endIsObstacle := BetweenLine(startX, startY, ToX, ToY, mp, moveUnit.Body, true, rectSize)
+		// size 5 потому что из за большой скорость можнео не заметить препятвия на конце линии, важно для endIsObstacle
+		entryPoint, outPoint, collisionPoints, collision, endIsObstacle := BetweenLine(startX, startY, ToX, ToY, mp, moveUnit.Body, true, 5)
 		DrawPoints(entryPoint, outPoint, collisionPoints, rectSize, mp.Id, user)
 
 		// 0.1 если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
@@ -73,7 +74,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY, maxSpeed f
 			lastOutX, lastOutY := &outPoint[len(outPoint)-1].X, &outPoint[len(outPoint)-1].Y
 
 			// ищем ближайшую точку которая не в колизии
-			EndIsObstacle(&ToX, &ToY, lastEntryX, lastEntryY, lastOutX, lastOutY, &collision, moveUnit, len(entryPoint))
+			EndIsObstacle(&ToX, &ToY, lastEntryX, lastEntryY, lastOutX, lastOutY, &collision, moveUnit, len(entryPoint), user)
 		}
 
 		if !collision {
@@ -124,21 +125,28 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY, maxSpeed float64, user *
 			//  2.1.2 если между координатой истиного пути и целью есть препятсивия запоминаем координату, переходим к пункту 1 и формируем новую
 
 			// находим все препятвия на пути
-			obstacles := DetectObstacles(entryPoint, outPoint, collisionPoints, moveUnit, size, user, uuid, mp)
+			obstacles, err := DetectObstacles(entryPoint, outPoint, collisionPoints, moveUnit, size, user, uuid, mp)
+			if err != nil {
+				// TODO
+				println("error 1")
+				return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
+			}
+
 			// берем первое препятвие и обходим его
-			points, err := ObstacleAvoidance(mp, obstacles[0], moveUnit, size, user, uuid)
+			points, err := ObstacleAvoidance(mp, obstacles[0], moveUnit, size, user, uuid) // TODO в некоторых случаях нули возвращаются в проходимые проходы, так не должно быть
+			if err != nil || (x == 0 && y == 0) {
+				// TODO
+				println("error 2")
+				return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
+			}
+
 			// находим максимальную отдаленную точку куда может попать юнит
 			x, y = SearchPoint(&points, x, y, size, mp, user, moveUnit)
 
-			// TODO в некоторых случаях нули возвращаются в проходимые проходы, так не должно быть
-			if err != nil || (x == 0 && y == 0) {
-				return nil, err
-			}
-
 			CreateRect("green", int(x), int(y), size, moveUnit.MapID, user)
 			createPath(x, y)
-	} else {
-		CreateRect("green", int(moveUnit.ToX), int(moveUnit.ToY), size, moveUnit.MapID, user)
+		} else {
+			CreateRect("green", int(moveUnit.ToX), int(moveUnit.ToY), size, moveUnit.MapID, user)
 			//  2.1.1 если между координатой истиного пути и целью нет препятсвий формируем путь. Выходим из функции.
 			createPath(int(moveUnit.ToX), int(moveUnit.ToY))
 			break
@@ -148,15 +156,17 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY, maxSpeed float64, user *
 	return path, nil
 }
 
-func EndIsObstacle(ToX, ToY *float64, xCollision, yCollision, xEnd, yEnd *int, collision *bool, moveUnit *unit.Unit, countCollision int) {
+func EndIsObstacle(ToX, ToY *float64, lastEntryX, lastEntryY, lastOutX, lastOutY *int, collision *bool, moveUnit *unit.Unit, countCollision int, user *player.Player) {
 
-	collisionStartDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *xCollision, *yCollision)
-	collisionEndDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *xEnd, *yEnd)
+	collisionStartDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *lastEntryX, *lastEntryY)
+	collisionEndDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *lastOutX, *lastOutY)
 
 	// если то старта колизии ближе чем до конца то считаем что маршрут без колизий
 	if collisionStartDist < collisionEndDist {
-		moveUnit.ToX, moveUnit.ToY = float64(*xCollision), float64(*yCollision)
+		*ToX, *ToY = float64(*lastEntryX), float64(*lastEntryY)
+		moveUnit.ToX, moveUnit.ToY = float64(*lastEntryX), float64(*lastEntryY)
 
+		CreateRect("blue", *lastEntryX, *lastEntryY, 30, moveUnit.MapID, user)
 		// говорим что нет колизий если она всего одна
 		if countCollision == 1 {
 			*collision = false
@@ -164,10 +174,10 @@ func EndIsObstacle(ToX, ToY *float64, xCollision, yCollision, xEnd, yEnd *int, c
 
 	} else {
 		// иначе переназначаем конечный пункт что бы не искать путь вечно
-		*ToX, *ToY = float64(*xCollision), float64(*yCollision)
+		*ToX, *ToY = float64(*lastOutX), float64(*lastOutY)
+		moveUnit.ToX, moveUnit.ToY = float64(*lastOutX), float64(*lastOutY)
+		CreateRect("blue", *lastOutX, *lastOutY, 30, moveUnit.MapID, user)
 	}
-
-	*xCollision, *yCollision = int(*ToX), int(*ToY)
 }
 
 func DrawPoints(entryPoints, collisionPoints, outPoints []*coordinate.Coordinate, size int, mapID int, user *player.Player) {

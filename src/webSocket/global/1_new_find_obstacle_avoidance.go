@@ -10,7 +10,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
-	"time"
 )
 
 //gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo
@@ -48,45 +47,46 @@ func ObstacleAvoidance(mp *_map.Map, obstacle *Obstacle, gameUnit *unit.Unit, si
 		иначе - налево. Процедура повторяется до тех пор, пока жук не вернется в исходную точку.
 	*/
 
+	// TODO иногда поиск идет не на то препятсвие
+	// уобьекта obstacle уже есть конту ненадо его опять искать жуком, просто обхгодим то что уже есть
 	ClearVisiblePath(mp.Id, user)
 	CreateRect("white", int(obstacle.Entry.X), int(obstacle.Entry.Y), size, mp.Id, user)
 	CreateRect("red", int(obstacle.EntryCollision.X), int(obstacle.EntryCollision.Y), size, mp.Id, user)
 
-	xO, yO := obstacle.EntryCollision.X, obstacle.EntryCollision.Y
-	xEnd, yEnd := obstacle.Out.X, obstacle.Out.Y
-
-	x1, y1, angleStart := GetStartBugOptions(obstacle.Entry.X, obstacle.Entry.Y, xO, yO, mp, gameUnit, size, user)
-
-	CreateRect("red", int(xO), int(yO), size, mp.Id, user)
-
-	oneHandPoints := make([]*coordinate.Coordinate, 0)
-	twoHandPoints := make([]*coordinate.Coordinate, 0)
-	oneHandStop := false
-	twoHandStop := false
-	exit := false
-	noPath := false
-
-	go Hand(-1, x1, y1, &oneHandStop, &exit, &noPath, &oneHandPoints, angleStart, size, mp, user, gameUnit, uuid, xEnd, yEnd)
-	go Hand(1, x1, y1, &twoHandStop, &exit, &noPath, &twoHandPoints, angleStart, size, mp, user, gameUnit, uuid, xEnd, yEnd)
-
-	for !oneHandStop && !twoHandStop {
-		time.Sleep(time.Millisecond)
-	}
-	exit = true
-
-	if noPath {
-		return nil, errors.New("no path")
+	// если обьект не полный значит у него заполнилась только 1 сторона
+	if obstacle.NoFull {
+		return obstacle.Contour, nil
 	}
 
-	if oneHandStop {
-		return oneHandPoints, nil
+	pointsOne := make([]*coordinate.Coordinate, 0)
+	pointsTwo := make([]*coordinate.Coordinate, 0)
+
+	// смотрим в какую сторону надо пройти путь меньше
+	for i := len(obstacle.Contour) - 1; i >= 0; i-- {
+		distToEnd := game_math.GetBetweenDist(obstacle.Contour[i].X, obstacle.Contour[i].Y, obstacle.Out.X, obstacle.Out.Y)
+		if int(distToEnd) < size+10 {
+			break
+		}
+		pointsOne = append(pointsOne, obstacle.Contour[i])
+	}
+
+	for i := 0; i < len(obstacle.Contour); i++ {
+		distToEnd := game_math.GetBetweenDist(obstacle.Contour[i].X, obstacle.Contour[i].Y, obstacle.Out.X, obstacle.Out.Y)
+		if int(distToEnd) < size+10 {
+			break
+		}
+		pointsTwo = append(pointsTwo, obstacle.Contour[i])
+	}
+
+	if len(pointsOne) < len(pointsTwo) {
+		return pointsOne, nil
 	} else {
-		return twoHandPoints, nil
+		return pointsTwo, nil
 	}
 }
 
-func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map, gameUnit *unit.Unit, size int, user *player.Player) (int, int, int) {
-
+func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map, gameUnit *unit.Unit, size int, user *player.Player) (int, int, int, error) {
+	// TODO весь метод не правильный
 	// к сожалению по неведымим причинам иногда координата xStart, yStart бывает недоступной, из за чего алгоритм не работает
 	// поэтому оступаем назад пока не найдем нужную координату по вектору и обязательно проверяем что бы спереди было препятвие
 	// после нахождения точки надо надо обязательно найти направление к точке входа в препятвиея, иначе алгоритм опять же не запустится
@@ -94,9 +94,15 @@ func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map
 	angleStart := game_math.GetBetweenAngle(float64(xStart), float64(yStart), float64(xCollision), float64(yCollision))
 	radian := float64(angleStart) * math.Pi / 180
 
+	count := 0
 	for {
-		if !checkRect(xStart, yStart, gameUnit.Body, mp) {
+		count++
+		if count > 4 {
+			return 0, 0, 0, errors.New("no hook")
+		}
 
+		ok, _ := checkRect(xStart, yStart, gameUnit.Body, mp)
+		if !ok {
 			CreateRect("white", int(xStart), int(yStart), size, mp.Id, user)
 			x3, y3 := float64(size)*math.Cos(radian), float64(size)*math.Sin(radian)
 
@@ -111,7 +117,9 @@ func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map
 
 				radian := float64(angleStart) * math.Pi / 180
 				x3, y3 := float64(size)*math.Cos(radian), float64(size)*math.Sin(radian)
-				if !checkRect(xStart+int(math.Round(x3)), yStart+int(math.Round(y3)), gameUnit.Body, mp) {
+
+				ok, _ := checkRect(xStart+int(math.Round(x3)), yStart+int(math.Round(y3)), gameUnit.Body, mp)
+				if !ok {
 					findHook = true
 					break
 				}
@@ -120,14 +128,15 @@ func GetStartBugOptions(xStart, yStart, xCollision, yCollision int, mp *_map.Map
 			if !findHook {
 				// алгоритм не смог найти точку входа
 				// увеличить дискретность и попробовать снова
-				println("no hook")
+				return 0, 0, 0, errors.New("no hook")
+				// todo надо исправить но я не ибу как
 			}
 
 			break
 		}
 	}
 
-	return xStart, yStart, angleStart
+	return xStart, yStart, angleStart, nil
 }
 
 func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit) (int, int) {
@@ -145,8 +154,8 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_
 	return 0, 0
 }
 
-func Hand(side float64, x, y int, stopFlag *bool, exitFlag, noPath *bool, points *[]*coordinate.Coordinate, angleStart,
-size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, xEnd, yEnd int) {
+func Hand(side float64, x, y int, stopFlag *bool, exitFlag, noPath, noMap *bool, points *[]*coordinate.Coordinate, angleStart,
+	size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, xEnd, yEnd int) {
 
 	// угол в радианах
 	angle := float64(angleStart) * math.Pi / 180
@@ -179,7 +188,14 @@ size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, x
 			return
 		}
 
-		if checkRect(x, y, gameUnit.Body, mp) {
+		ok, coorNoMap := checkRect(x, y, gameUnit.Body, mp)
+		if coorNoMap {
+			*stopFlag = true
+			*noMap = true
+			return
+		}
+
+		if ok {
 			// поворачиваем направо
 			angle += 1.5708 * side // +90 градусов
 			CreateRect("white", int(x), int(y), size, mp.Id, user)
@@ -187,7 +203,7 @@ size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, x
 			x += int(math.Round(x3))
 			y += int(math.Round(y3))
 
-			// TODO класть сюда только те координаты которые изменяют свое положение относительно оси,
+			// TODO помечать координаты которые изменяют свое положение относительно оси,
 			//  а то сканировать все поинты дорого
 			*points = append(*points, &coordinate.Coordinate{X: x, Y: y})
 
@@ -208,7 +224,14 @@ size int, mp *_map.Map, user *player.Player, gameUnit *unit.Unit, uuid string, x
 	}
 }
 
-func checkRect(x, y int, body *detail.Body, mp *_map.Map) bool {
+func checkRect(x, y int, body *detail.Body, mp *_map.Map) (bool, bool) {
+
+	q, r := game_math.GetQRfromXY(x, y)
+	_, find := mp.OneLayerMap[q][r]
+	if !find {
+		return false, true
+	}
+
 	possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(x, y, 0, mp, body, false, true)
-	return possibleMove
+	return possibleMove, false
 }

@@ -35,13 +35,16 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 	currentCollision := false
 	extraExit := false
 
+	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
+	minDist := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
+
 	for {
 
 		// находим длинную вектора до цели
 		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
 		//distToStart := game_math.GetBetweenDist(int(currentX), int(currentY), int(startX), int(startY))
 
-		if distToEnd < speed+15 || extraExit {
+		if distToEnd < speed || extraExit || minDist < distToEnd {
 			if currentCollision {
 				endIsObstacle = true
 				extraExit = true
@@ -80,6 +83,8 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 
 		currentX += stopX
 		currentY += stopY
+
+		minDist = distToEnd
 	}
 }
 
@@ -94,10 +99,13 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body 
 	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
 	radian := float64(angle) * math.Pi / 180
 
+	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
+	minDist := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
+
 	for {
 		// находим длинную вектора до цели
 		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
-		if distToEnd < speed+15 {
+		if distToEnd < speed || minDist < distToEnd {
 			return false
 		}
 
@@ -109,5 +117,7 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
 		currentX += stopX
 		currentY += stopY
+
+		minDist = distToEnd
 	}
 }

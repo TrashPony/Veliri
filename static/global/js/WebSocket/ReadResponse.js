@@ -214,7 +214,7 @@ function FindPathDebug(jsonData) {
     if (jsonData.color === "blue") color = 0x0000FF;
 
     moveDebug.lineStyle(2, color, 1);
-    findPath.lineStyle(2, color, 1);
+    findPath.lineStyle(1, color, 0.5);
 
     if (jsonData.event === "CreateRect") {
         if (jsonData.color !== "white") {
