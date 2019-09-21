@@ -2,25 +2,25 @@ package move
 
 import (
 	"errors"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/satori/go.uuid"
 	"math"
-	"strconv"
 )
 
 func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
+
+	moveUUID := uuid.NewV1().String()
+	moveUnit.MoveUUID = moveUUID
 	moveUnit.ToX = ToX
 	moveUnit.ToY = ToY
 
 	startX := float64(moveUnit.X)
 	startY := float64(moveUnit.Y)
+	rotate := 30
 
 	maxSpeed := float64(moveUnit.Speed)
 	if moveUnit.Body.MotherShip {
@@ -39,16 +39,53 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 		}
 	}
 
-	return LeftHandAlgorithm(moveUnit, startX, startY, ToX, ToY, maxSpeed)
+	// что бы игрок не смог сгенерить одновременно много путей
+	pathPoints, err := find_path.LeftHandAlgorithm(moveUnit, startX, startY, ToX, ToY, moveUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if moveUUID == moveUnit.MoveUUID {
+		return CreatePath(pathPoints, startX, startY, maxSpeed, moveUnit, rotate), nil
+	} else {
+		return nil, errors.New("wrong uuid")
+	}
 }
 
-func To2(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, ms int) (error, []*unit.PathUnit) {
+func CreatePath(pathPoints []*coordinate.Coordinate, startX, startY, maxSpeed float64, moveUnit *unit.Unit, rotate int) []*unit.PathUnit {
 
+	path := make([]*unit.PathUnit, 0)
+
+	appendPath := func(appendPath []*unit.PathUnit) {
+		for i := 0; i < len(appendPath); i++ {
+			path = append(path, appendPath[i])
+		}
+	}
+
+	for i, pathPoint := range pathPoints {
+		if i == 0 || len(path) == 0 {
+			_, path = UnitTo(float64(startX), float64(startY), maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), moveUnit.Rotate, rotate, 200)
+		} else {
+
+			lastX, lastY, lastAngle := float64(path[len(path)-1].X), float64(path[len(path)-1].Y), path[len(path)-1].Rotate
+
+			_, aPath := UnitTo(lastX, lastY, maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), lastAngle, rotate, 200)
+			appendPath(aPath)
+		}
+	}
+
+	return path
+}
+
+func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, ms int) (error, []*unit.PathUnit) {
+
+	// TODO искать предварительно часть пути до тех пока не будет разница в углу 0
+	// TODO в разных вариантах, разворот на скорости или развород на месте, выбирать то где мешье частей пути (выше скорость)
+	//  или если 1 из способов не пройти
 	speed = speed / float64(1000/ms)
 	path := make([]*unit.PathUnit, 0)
 
 	for {
-
 		// находим длинную вектора до цели
 		dist := game_math.GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
 		if dist < speed+5 {
@@ -76,151 +113,4 @@ func To2(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, ms 
 	}
 
 	return nil, path
-}
-
-func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY, maxSpeed float64) ([]*unit.PathUnit, error) {
-
-	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
-	rotate := 180
-
-	xCollision, yCollision, xEnd, yEnd, collision, endIsObstacle := BetweenLine(startX, startY, ToX, ToY, mp, moveUnit.Body, true)
-
-	path := make([]*unit.PathUnit, 0)
-	appendPath := func(appendPath []*unit.PathUnit) {
-		for i := 0; i < len(appendPath); i++ {
-			path = append(path, appendPath[i])
-		}
-	}
-
-	// если конечная точка нгаходится в первом препятсвие то смотрим куда ближе идти ко входу или к выходу
-	if endIsObstacle {
-		collisionStartDist := game_math.GetBetweenDist(int(ToX), int(ToY), xCollision, yCollision)
-		collisionEndDist := game_math.GetBetweenDist(int(ToX), int(ToY), xEnd, yEnd)
-
-		// если то старта колизии ближе чем до конца то считаем что маршрут без колизий
-		if collisionStartDist < collisionEndDist {
-			moveUnit.ToX, moveUnit.ToY = float64(xCollision), float64(yCollision)
-			collision = false
-		} else {
-			// иначе переназначаем конечный пункт что бы не искать путь вечно
-			ToX, ToY = float64(xCollision), float64(yCollision)
-		}
-	}
-
-	if !collision {
-		//на прямой между стартом и концом нет прептявий
-
-		err, path := To2(startX, startY, maxSpeed, moveUnit.ToX, moveUnit.ToY, moveUnit.Rotate, rotate, 200)
-		return path, err
-	} else {
-		// на прямой были найдены препятвия
-
-		x, y, err := FindExtremum(mp, &coordinate.Coordinate{X: xCollision, Y: yCollision}, &coordinate.Coordinate{X: xEnd, Y: yEnd}, moveUnit.X, moveUnit.Y, moveUnit)
-		if err != nil {
-			return nil, err
-		}
-
-		_, path = To2(startX, startY, maxSpeed, float64(x), float64(y), moveUnit.Rotate, rotate, 200)
-
-		for {
-
-			xCollision, yCollision, xEnd, yEnd, collision, endIsObstacle = BetweenLine(float64(x), float64(y), ToX, ToY, mp, moveUnit.Body, false)
-			if !collision {
-				_, aPath := To2(float64(path[len(path)-1].X), float64(path[len(path)-1].Y), maxSpeed, moveUnit.ToX, moveUnit.ToY, path[len(path)-1].Rotate, rotate, 200)
-				appendPath(aPath)
-				break
-			} else {
-
-				x, y, err = FindExtremum(mp, &coordinate.Coordinate{X: xCollision, Y: yCollision}, &coordinate.Coordinate{X: xEnd, Y: yEnd}, x, y, moveUnit)
-				if err != nil {
-					return nil, err
-				}
-
-				_, aPath := To2(float64(path[len(path)-1].X), float64(path[len(path)-1].Y), maxSpeed, float64(x), float64(y), path[len(path)-1].Rotate, rotate, 200)
-				appendPath(aPath)
-			}
-		}
-
-		return path, nil
-	}
-}
-
-// возвращает xКолизии, yКолизии, хВыхода из колизии, yВыхода из колизии прошли без столкновений
-func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, startMove bool) (xCollision, yCollision, xEnd, yEnd int, collision, endIsObstacle bool) {
-
-	// TODO учитывать угол поворота юнита
-	// идем по линии со скорость 10 рх
-	speed := 10.0
-
-	// угол от старта до конца
-	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
-	radian := float64(angle) * math.Pi / 180
-
-	// текущее положение курсора
-	currentX, currentY := startX, startY
-
-	for {
-		// находим длинную вектора до цели
-		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
-		distToStart := game_math.GetBetweenDist(int(currentX), int(currentY), int(startX), int(startY))
-
-		if distToEnd < speed+2 {
-			if !collision {
-				return 0, 0, 0, 0, false, false
-			} else {
-				endIsObstacle = true
-			}
-		}
-
-		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
-
-		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, true, false)
-		if !possibleMove {
-			// если юнит по каким то причинам стартует из колизии то дать ему выйти и потом уже искать колизию
-			if !(distToStart < speed+2 && startMove) {
-				// фиксируем 1 точку колизии
-				if !collision {
-					xCollision = int(currentX)
-					yCollision = int(currentY)
-					collision = true
-				}
-			}
-		} else {
-			// фиксируем точку выхода из колизии
-			if collision {
-				return xCollision, yCollision, int(currentX), int(currentY), collision, endIsObstacle
-			}
-		}
-
-		currentX += stopX
-		currentY += stopY
-	}
-}
-
-//gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo
-func FindExtremum(mp *_map.Map, start, end *coordinate.Coordinate, unitX, unitY int, gameUnit *unit.Unit) (int, int, error) {
-
-	println(
-		" xStart: " + strconv.Itoa(start.X) + " yStart: " + strconv.Itoa(start.Y) +
-			" xEnd: " + strconv.Itoa(end.X) + " yEnd: " + strconv.Itoa(end.Y))
-
-	// todo крайне дорогой метод из за поиска А* который тут особо и не нужен
-	err, path := find_path.FindPath(mp, start, end, gameUnit, 30, nil)
-	if err != nil {
-		return 0, 0, errors.New(err.Error() +
-			" xStart: " + strconv.Itoa(start.X) + " yStart: " + strconv.Itoa(start.Y) +
-			" xEnd: " + strconv.Itoa(end.X) + " yEnd: " + strconv.Itoa(end.Y))
-	}
-
-	x, y := 0, 0
-
-	for _, point := range path {
-		_, _, _, _, collision, _ := BetweenLine(float64(unitX), float64(unitY), float64(point.X), float64(point.Y), mp, gameUnit.Body, false)
-		if !collision {
-			x = point.X
-			y = point.Y
-		}
-	}
-
-	return x, y, nil
 }

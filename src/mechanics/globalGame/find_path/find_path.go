@@ -22,23 +22,27 @@ const (
 
 type Points map[string]*coordinate.Coordinate
 
-func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]*unit.PathUnit, error) {
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string) ([]*coordinate.Coordinate, error) {
 
 	startX := moveUnit.X
 	startY := moveUnit.Y
 
-	path := make([]*unit.PathUnit, 0)
+	//path := make([]*unit.PathUnit, 0)
 
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
-	_, path2 := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, 30, allUnits)
+	err, path := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
+		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, size, allUnits, uuid)
 
-	for _, unitPath := range path2 {
-		path = append(path, &unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 250,
-			Speed: float64(moveUnit.Speed), Animate: true})
+	//for _, unitPath := range path2 {
+	//	path = append(path, &unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 250,
+	//		Speed: float64(moveUnit.Speed), Animate: true})
+	//}
+
+	if err != nil {
+		println(err.Error())
 	}
 
-	return path, nil
+	return path, err
 }
 
 func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
@@ -55,7 +59,7 @@ func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUni
 	}
 
 	// если конечная точка является невалидной то ищем ближайшую валидную точку и говорим что это цель
-	_, valid := checkValidForMoveCoordinate(gameMap, end.X, end.Y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits, end)
+	_, valid := checkValidForMoveCoordinate(gameMap, end.X, end.Y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits)
 	if !valid {
 		getValidEnd := func() *coordinate.Coordinate {
 			for radius := 0; radius < 10; radius++ {
@@ -63,7 +67,7 @@ func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUni
 					x := int(math.Round(float64(float64(end.X) + float64(radius)*math.Cos(float64(angle)))))
 					y := int(math.Round(float64(float64(end.Y) + float64(radius)*math.Sin(float64(angle)))))
 
-					_, valid := checkValidForMoveCoordinate(gameMap, x, y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits, end)
+					_, valid := checkValidForMoveCoordinate(gameMap, x, y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits)
 					if valid {
 						return &coordinate.Coordinate{X: x, Y: y}
 					}
@@ -81,7 +85,7 @@ func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUni
 	}
 }
 
-func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (error, []*coordinate.Coordinate) {
+func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo, uuid string) (error, []*coordinate.Coordinate) {
 
 	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, allUnits)
 	if err != nil {
@@ -94,13 +98,17 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	var path []*coordinate.Coordinate
 	var noSortedPath []*coordinate.Coordinate
 
-	for {
+	for uuid == gameUnit.MoveUUID {
+
 		if len(openPoints) <= 0 {
 			return errors.New("path no find"), nil
 		}
 		current := MinF(openPoints, xSize, ySize) // Берем точку с мин стоимостью пути
-		if current.EqualXY(end) {                 // если текущая точка и есть конец начинаем генерить путь
+
+		if current.EqualXY(end) { // если текущая точка и есть конец начинаем генерить путь
+
 			for !current.EqualXY(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
+
 				current = current.Parent     // по родительским точкам
 				if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то
 					noSortedPath = append(noSortedPath, current)
@@ -137,7 +145,7 @@ func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits, end) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits) // берем всех соседей этой клетки
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {

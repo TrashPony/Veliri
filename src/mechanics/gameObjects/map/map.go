@@ -33,9 +33,6 @@ type Map struct {
 
 	Anomalies []*Anomalies `json:"anomalies"`
 
-	// тут хранятся просчитанные шаблоны координат, что бы не проверять координаты при каждом поиске пути
-	GeoDataMaps map[int]map[int]map[int]coordinate.Coordinate `json:"-"`
-
 	// показывает позицию на карте мира, пока используется ради меню карты на фронте
 	XGlobal int `json:"x_global"`
 	YGlobal int `json:"y_global"`

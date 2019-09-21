@@ -23,6 +23,32 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 		return true, true
 	}
 
+	noCach := func() (bool, bool) {
+		possibleMove, front := searchStaticMapCollision(x, y, rotate, mp, body, full, min)
+		if !possibleMove {
+			return possibleMove, front
+		} else {
+			return CheckMapReservoir(x, y, rotate, mp, body, full, min)
+		}
+	}
+
+	if min {
+		find, value := getCacheCoordinate(mp.Id, body.ID, x, y)
+		if find {
+			if value {
+				return CheckMapReservoir(x, y, rotate, mp, body, full, min)
+			} else {
+				return false, false
+			}
+		} else {
+			return noCach()
+		}
+	} else {
+		return noCach()
+	}
+}
+
+func searchStaticMapCollision(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
 	xZone, yZone := x/100, y/100
 
 	if mp.GeoZone[xZone] == nil || mp.GeoZone[xZone][yZone] == nil {
@@ -30,7 +56,6 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 	}
 
 	zone := mp.GeoZone[xZone][yZone]
-
 	rect := getBodyRect(body, float64(x), float64(y), rotate, full, min)
 
 	fastFindObstacle := func() (bool, bool) {
@@ -56,6 +81,11 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 					if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
 						possibleMove = false
 						Front = true
+
+						if min {
+							addCacheCoordinate(mp.Id, body.ID, x, y, false)
+						}
+
 						return
 					}
 				}
@@ -83,6 +113,11 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 					if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
 						possibleMove = false
 						Front = true
+
+						if min {
+							addCacheCoordinate(mp.Id, body.ID, x, y, false)
+						}
+
 						return
 					}
 				}
@@ -90,6 +125,11 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 
 			possibleMove = true
 			Front = true
+
+			if min {
+				addCacheCoordinate(mp.Id, body.ID, x, y, true)
+			}
+
 			return
 		}()
 
@@ -100,12 +140,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 		return possibleMove, Front
 	}
 
-	possibleMove, front := fastFindObstacle()
-	if !possibleMove {
-		return possibleMove, front
-	} else {
-		return CheckMapReservoir(x, y, rotate, mp, body, full, min)
-	}
+	return fastFindObstacle()
 }
 
 func CheckMapReservoir(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {

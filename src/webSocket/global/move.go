@@ -57,7 +57,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
 					}
 
-					path, err := Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), user)
+					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y))
 					moveUnit.ActualPath = &path
 
 					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
