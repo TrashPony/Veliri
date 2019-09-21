@@ -18,6 +18,7 @@ func DetectObstacles(entryPoints, outPoints, collisions []*coordinate.Coordinate
 	// todo пройти по контору препятсвия со следующей не помеченой точки из масива start
 
 	ClearVisiblePath(mp.Id, user)
+
 	obstacles := make([]*Obstacle, 0)
 	for i := 0; i < len(entryPoints); i++ {
 		if !entryPoints[0].Find {
@@ -49,6 +50,7 @@ func GetObstaclePoints(start, collisions, out *coordinate.Coordinate, gameUnit *
 	exit := false
 	noPath := false
 	noMap := false
+
 	// TODO неправильно работают пути к координатам которые за картой
 	go Hand(-1, x1, y1, &oneHandStop, &exit, &noPath, &noMap, &oneHandPoints, angleStart, size, mp, user, gameUnit, uuid, 0, 0)
 	go Hand(1, x1, y1, &twoHandStop, &exit, &noPath, &noMap, &twoHandPoints, angleStart, size, mp, user, gameUnit, uuid, 0, 0)
@@ -78,6 +80,7 @@ func DetectObstacle(entryPoints, outPoints, collisions, points []*coordinate.Coo
 		for _, point := range obstaclePoints {
 			for i, startPoint := range entryPoints {
 				dist := game_math.GetBetweenDist(point.X, point.Y, startPoint.X, startPoint.Y)
+				println(int(dist))
 				if int(dist) < 100 { // todo нихуя не 100
 					startPoint.Find = true
 					if i < firstEntryID {
@@ -104,7 +107,9 @@ func DetectObstacle(entryPoints, outPoints, collisions, points []*coordinate.Coo
 		obstacle.Out = outPoints[lastOutID]
 	}
 
-	searchPoints(points)
+	if len(points) > 0 {
+		searchPoints(points)
+	}
 
 	obstacle.Contour = points
 	obstacle.NoFull = noPath

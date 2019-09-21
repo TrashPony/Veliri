@@ -7,29 +7,113 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"time"
 )
 
-func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, int, int, bool) {
+func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
 
 	q, r := game_math.GetQRfromXY(x, y)
-	startCoordinate, find := mp.OneLayerMap[q][r]
+	_, find := mp.OneLayerMap[q][r]
 
 	if !find {
-		return false, 0, 0, true
+		return false, true
 	}
 
 	if body == nil {
-		return true, 0, 0, true
+		return true, true
 	}
+
+	xZone, yZone := x/100, y/100
+
+	if mp.GeoZone[xZone] == nil || mp.GeoZone[xZone][yZone] == nil {
+		return false, true
+	}
+
+	zone := mp.GeoZone[xZone][yZone]
 
 	rect := getBodyRect(body, float64(x), float64(y), rotate, full, min)
-	for _, obstacle := range mp.GeoData {
-		if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
-			return false, startCoordinate.Q, startCoordinate.R, true
+
+	fastFindObstacle := func() (bool, bool) {
+
+		possibleMove := false
+		Front := true
+		stopFind := false
+
+		go func() {
+
+			defer func() { stopFind = true }()
+
+			for i := 0; i < len(zone); i++ {
+
+				if stopFind {
+					return
+				}
+
+				obstacle := zone[i]
+
+				distToObstacle := game_math.GetBetweenDist(x, y, obstacle.X, obstacle.Y)
+				if int(distToObstacle) < obstacle.Radius+body.Height*2 {
+					if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
+						possibleMove = false
+						Front = true
+						return
+					}
+				}
+			}
+
+			possibleMove = true
+			Front = true
+			return
+		}()
+
+		go func() {
+
+			defer func() { stopFind = true }()
+
+			for i := len(zone) - 1; i >= 0; i-- {
+
+				if stopFind {
+					return
+				}
+
+				obstacle := zone[i]
+
+				distToObstacle := game_math.GetBetweenDist(x, y, obstacle.X, obstacle.Y)
+				if int(distToObstacle) < obstacle.Radius+body.Height*2 {
+					if rect.detectCollisionRectToCircle(&point{x: float64(obstacle.X), y: float64(obstacle.Y)}, obstacle.Radius) {
+						possibleMove = false
+						Front = true
+						return
+					}
+				}
+			}
+
+			possibleMove = true
+			Front = true
+			return
+		}()
+
+		for !stopFind {
+			time.Sleep(time.Millisecond)
 		}
+
+		return possibleMove, Front
 	}
 
+	possibleMove, front := fastFindObstacle()
+	if !possibleMove {
+		return possibleMove, front
+	} else {
+		return CheckMapReservoir(x, y, rotate, mp, body, full, min)
+	}
+}
+
+func CheckMapReservoir(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
+
 	const reservoirRadius = 15
+
+	rect := getBodyRect(body, float64(x), float64(y), rotate, full, min)
+
 	for _, qLine := range mp.Reservoir {
 		for _, reservoir := range qLine {
 
@@ -39,12 +123,12 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 
 			reservoirX, reservoirY := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
 			if rect.detectCollisionRectToCircle(&point{x: float64(reservoirX), y: float64(reservoirY)}, reservoirRadius) {
-				return false, startCoordinate.Q, startCoordinate.R, true
+				return false, true
 			}
 		}
 	}
 
-	return true, startCoordinate.Q, startCoordinate.R, true
+	return true, true
 }
 
 func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.Box {

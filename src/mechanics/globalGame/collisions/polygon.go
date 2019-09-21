@@ -144,21 +144,24 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *P
 		}
 	}
 
-	bodyRec := Polygon{
+	bodyRec := getRect(x, y, heightBody, widthBody)
+	bodyRec.rotate(rotate)
+	return bodyRec
+}
+
+func getRect(x, y, height, width float64) *Polygon {
+	return &Polygon{
 		sides: []*sideRec{
 			// A 									// B
-			{x1: x - widthBody, y1: y - heightBody, x2: x - widthBody, y2: y + heightBody},
+			{x1: x - width, y1: y - height, x2: x - width, y2: y + height},
 			// B									// C
-			{x1: x - widthBody, y1: y + heightBody, x2: x + widthBody, y2: y + heightBody},
+			{x1: x - width, y1: y + height, x2: x + width, y2: y + height},
 			// C									// D
-			{x1: x + widthBody, y1: y + heightBody, x2: x + widthBody, y2: y - heightBody},
+			{x1: x + width, y1: y + height, x2: x + width, y2: y - height},
 			// D									// A
-			{x1: x + widthBody, y1: y - heightBody, x2: x - widthBody, y2: y - heightBody},
+			{x1: x + width, y1: y - height, x2: x - width, y2: y - height},
 		},
 		centerX: float64(x),
 		centerY: float64(y),
 	}
-
-	bodyRec.rotate(rotate)
-	return &bodyRec
 }

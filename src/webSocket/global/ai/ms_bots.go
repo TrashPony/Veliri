@@ -249,7 +249,7 @@ func getPathAI(bot *player.Player, mp *_map.Map) {
 	//println("я иду в х:", toX, " y:", toY)
 
 	// проверка на то что х, у достижимы
-	possible, _, _, _ := collisions.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true, false)
+	possible, _ := collisions.CheckCollisionsOnStaticMap(toX, toY, 0, mp, bot.GetSquad().MatherShip.Body, true, false)
 	if possible {
 
 		go func() {

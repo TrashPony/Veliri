@@ -52,7 +52,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY, maxSpeed f
 
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 	rotate := 180
-	rectSize := 25
+	rectSize := 30
 
 	CreateRect("green", int(startX), int(startY), rectSize, moveUnit.MapID, user)
 	CreateLine("white", int(startX), int(startY), int(ToX), int(ToY), rectSize, moveUnit.MapID, user)
@@ -128,16 +128,16 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY, maxSpeed float64, user *
 			obstacles, err := DetectObstacles(entryPoint, outPoint, collisionPoints, moveUnit, size, user, uuid, mp)
 			if err != nil {
 				// TODO
-				println("error 1")
-				return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
+				return nil, err
+				//return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
 			}
 
 			// берем первое препятвие и обходим его
 			points, err := ObstacleAvoidance(mp, obstacles[0], moveUnit, size, user, uuid) // TODO в некоторых случаях нули возвращаются в проходимые проходы, так не должно быть
 			if err != nil || (x == 0 && y == 0) {
 				// TODO
-				println("error 2")
-				return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
+				return nil, err
+				//return startFind(moveUnit, x, y+1, ToX, ToY, maxSpeed, user, uuid, size, rotate, mp)
 			}
 
 			// находим максимальную отдаленную точку куда может попать юнит

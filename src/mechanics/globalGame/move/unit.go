@@ -174,7 +174,7 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
 
-		possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, true, false)
+		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, true, false)
 		if !possibleMove {
 			// если юнит по каким то причинам стартует из колизии то дать ему выйти и потом уже искать колизию
 			if !(distToStart < speed+2 && startMove) {

@@ -30,7 +30,7 @@ func newMapStore() *mapStore {
 	for id, mp := range m.maps {
 		mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
 
-		for _, q := range mp.OneLayerMap { // считает количество респаунов на карте
+		for _, q := range mp.OneLayerMap {
 			for _, mapCoordinate := range q {
 				// переносим координаты со слушателями в отдельный масив для удобного доступа
 				if mapCoordinate.Handler != "" || mapCoordinate.Transport {

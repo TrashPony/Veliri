@@ -143,7 +143,26 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY, size int, mp *_
 	// 2. смотрим каждую координату в масиве "возможный путь" (от дальней)
 	// 	2.1 если между юнитом и координатой нет препятсвий то это истиный путь, запоминаем координату
 	// идем по масиву с конца что бы найти самую дальную валидну точку
-	// TODO самый дорогой метод в алгоритме
+
+	/*
+		// TODO проблема при выборке если надо пройти внутрь С образного препятсвия, потому что брать самую дальнюю проходимую точку это не лучшая тактика
+		тут бужет проложен путь из о до W из за текущей тактики и это не верно
+
+		* - start
+		8 - end
+		o - player
+		W - wrong_point
+		N - need_point
+
+		   o
+
+		     N_________
+		         8     |
+		               |
+		W______________|
+
+
+	*/
 	for i := len(*points) - 1; i >= 0; i-- {
 		collision := SearchCollisionInLine(float64((*points)[i].X), float64((*points)[i].Y), float64(unitX), float64(unitY), mp, gameUnit.Body)
 		if !collision {
@@ -232,6 +251,6 @@ func checkRect(x, y int, body *detail.Body, mp *_map.Map) (bool, bool) {
 		return false, true
 	}
 
-	possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(x, y, 0, mp, body, false, true)
+	possibleMove, _ := collisions.CheckCollisionsOnStaticMap(x, y, 0, mp, body, false, true)
 	return possibleMove, false
 }

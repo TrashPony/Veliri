@@ -38,7 +38,8 @@ func main() {
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/"))) // раздача статичный файлов
 
-	globalGameGenerators.GenerateObjectsMap()
+	globalGameGenerators.GenerateObjectsMap()     // заполняем карты динамическими обьектами
+	globalGameGenerators.UpdateMapZoneCollision() // заполняем зоны проходимости на карте
 
 	go lobby.ReposeSender()
 	go lobby.WorkerChecker()

@@ -31,7 +31,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map) ([]*unit.Path
 
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 	_, path2 := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, 10, allUnits)
+		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, 30, allUnits)
 
 	for _, unitPath := range path2 {
 		path = append(path, &unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 250,
