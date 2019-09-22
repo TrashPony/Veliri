@@ -11,6 +11,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/satori/go.uuid"
 	"math"
+	"strconv"
 	"time"
 )
 
@@ -22,8 +23,8 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 		// TODO идиальное время 200 мс :С
 		if debug.Store.Move {
 			elapsed := time.Since(start)
-			print("time create path: ")
-			fmt.Printf("%f\n", elapsed.Seconds())
+			fmt.Println("time all path: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+			fmt.Println("--------------------------------------------------")
 		}
 	}()
 
@@ -68,7 +69,17 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 
 func CreatePath(pathPoints []*coordinate.Coordinate, startX, startY, maxSpeed float64, moveUnit *unit.Unit, rotate int) []*unit.PathUnit {
 
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time create path: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+		}
+	}()
+
 	path := make([]*unit.PathUnit, 0)
+
+	timeUnit := 250
 
 	appendPath := func(appendPath []*unit.PathUnit) {
 		for i := 0; i < len(appendPath); i++ {
@@ -78,12 +89,12 @@ func CreatePath(pathPoints []*coordinate.Coordinate, startX, startY, maxSpeed fl
 
 	for i, pathPoint := range pathPoints {
 		if i == 0 || len(path) == 0 {
-			_, path = UnitTo(float64(startX), float64(startY), maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), moveUnit.Rotate, rotate, 200)
+			_, path = UnitTo(float64(startX), float64(startY), maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), moveUnit.Rotate, rotate, timeUnit)
 		} else {
 
 			lastX, lastY, lastAngle := float64(path[len(path)-1].X), float64(path[len(path)-1].Y), path[len(path)-1].Rotate
 
-			_, aPath := UnitTo(lastX, lastY, maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), lastAngle, rotate, 200)
+			_, aPath := UnitTo(lastX, lastY, maxSpeed, float64(pathPoint.X), float64(pathPoint.Y), lastAngle, rotate, timeUnit)
 			appendPath(aPath)
 		}
 	}
@@ -96,6 +107,8 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 	// TODO искать предварительно часть пути до тех пока не будет разница в углу 0
 	// TODO в разных вариантах, разворот на скорости или развород на месте, выбирать то где мешье частей пути (выше скорость)
 	//  или если 1 из способов не пройти
+
+	// TODO если юнит имеет высокую скорость последние точки делить его путь что бы адекватно обработать колизии
 
 	speed = speed / float64(1000/ms)
 	path := make([]*unit.PathUnit, 0)

@@ -2,6 +2,7 @@ package find_path
 
 import (
 	"errors"
+	"fmt"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -9,11 +10,17 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
+	"strconv"
+	"sync"
+	"time"
 )
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
 
-type Points map[string]*coordinate.Coordinate
+type Points struct {
+	points map[string]*coordinate.Coordinate
+	mx     sync.Mutex
+}
 
 func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string) ([]*coordinate.Coordinate, error) {
 
@@ -25,13 +32,16 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 	start := &coordinate.Coordinate{X: startX, Y: startY}
 	end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
 
+	// чисто А стар
+	// err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, nil)
+	// return path, err
+
 	err, regions := FindRegionPath(mp, start, end, moveUnit, uuid)
 	if err != nil {
 
 		// если не удалось построить путь по регионам то делаем без регионов
 		// todo однако это не правильно
 
-		println("без регионов")
 		err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, regions)
 		return path, err
 	} else {
@@ -53,7 +63,6 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 			end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
 
 			err, path = FindPath(mp, start, end, moveUnit, size, allUnits, uuid, nil)
-			println(len(path))
 		}
 
 		if debug.Store.AStartResult {
@@ -67,9 +76,6 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 }
 
 func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
-
-	println(mp.QSize * game_math.HexagonWidth)
-	println(int(float64(mp.RSize) * float64(game_math.HexagonHeight) * 0.75))
 
 	xSize, ySize := mp.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
 
@@ -92,10 +98,19 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
 	allUnits map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region) (error, []*coordinate.Coordinate) {
 
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time aStar path: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+		}
+	}()
+
 	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap)
 
-	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
-	openPoints[start.Key()] = start               // кладем в карту посещенных точек стартовую точку
+	// создаем 2 карты для посещенных (open) и непосещеных (close) точек
+	openPoints, closePoints := Points{points: make(map[string]*coordinate.Coordinate)}, Points{points: make(map[string]*coordinate.Coordinate)}
+	openPoints.points[start.Key()] = start // кладем в карту посещенных точек стартовую точку
 
 	if err != nil {
 		return err, nil
@@ -104,25 +119,59 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	var path []*coordinate.Coordinate
 	var noSortedPath []*coordinate.Coordinate
 
+	exit := false
+	countWorker := 0
+
 	for uuid == gameUnit.MoveUUID {
 
-		if len(openPoints) <= 0 {
-			return errors.New("a star path no find"), nil
-		}
-		current := MinF(openPoints, xSize, ySize) // Берем точку с мин стоимостью пути
-
-		if current.EqualXY(end) { // если текущая точка и есть конец начинаем генерить путь
-
-			for !current.EqualXY(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
-
-				current = current.Parent     // по родительским точкам
-				if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то добавляем в путь координату
-					noSortedPath = append(noSortedPath, current)
-				}
-			}
+		if exit {
 			break
 		}
-		parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits, regions)
+
+		// 32 идиальное колво воркеров, подобрано эксперементально, скорее всего зависит от камня (fx8350)
+		if len(openPoints.points) <= 0 || countWorker > 32 {
+			time.Sleep(time.Millisecond)
+
+			if len(openPoints.points) <= 0 && countWorker == 0 {
+				return errors.New("a star path no find"), nil
+			}
+
+			continue
+		}
+
+		current, find := MinF(&openPoints, &closePoints, xSize, ySize) // Берем точку с мин стоимостью пути
+		if !find || exit {
+			continue
+		}
+		countWorker++
+
+		go func() {
+			defer func() {
+				countWorker--
+			}()
+
+			if current.EqualXY(end) { // если текущая точка и есть конец начинаем генерить путь
+
+				for !current.EqualXY(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
+
+					current = current.Parent // по родительским точкам
+
+					if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то добавляем в путь координату
+						noSortedPath = append(noSortedPath, current)
+					}
+				}
+				exit = true
+				return
+			}
+
+			if !exit {
+				parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits, regions)
+			}
+		}()
+
+		if exit {
+			break
+		}
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -148,15 +197,18 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map, end *coordinate.Coordinate,
 	gameUnit *unit.Unit, xSize, ySize, scaleMap int, allUnits map[int]*unit.ShortUnitInfo, regions []*_map.Region) {
 
-	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
-	(*close)[curr.Key()] = curr // добавляем в массив посещенные
-
 	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits, xSize, ySize, regions) // берем всех соседей этой клетки
+
+	open.mx.Lock()
+	defer open.mx.Unlock()
+
+	close.mx.Lock()
+	defer close.mx.Unlock()
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {
 
-			if (*close)[c.Key()] != nil || (*open)[c.Key()] != nil {
+			if close.points[c.Key()] != nil || open.points[c.Key()] != nil {
 				continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
 			}
 
@@ -166,10 +218,10 @@ func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *
 			c.F = c.GetF()       // длина пути до цели
 			c.Parent = curr      //ref is needed?
 
-			(*open)[c.Key()] = c // добавляем точку в масив не посещеных
+			open.points[c.Key()] = c // добавляем точку в масив не посещеных
 
 			if debug.Store.AStartNeighbours {
-				debug.Store.AddMessage("CreateRect", "orange", c.X*scaleMap, c.Y*scaleMap, 0, 0, scaleMap, gameMap.Id, 20)
+				debug.Store.AddMessage("CreateRect", "orange", c.X*scaleMap, c.Y*scaleMap, 0, 0, scaleMap, gameMap.Id, 0)
 			}
 		}
 	}
@@ -182,13 +234,26 @@ func GetH(a, b *coordinate.Coordinate) int { // эвристическое пр�
 	return int(tmp)
 }
 
-func MinF(points Points, xSize, ySize int) (min *coordinate.Coordinate) { // берет точку с минимальной стоимостью пути из масива не посещеных
+func MinF(open, close *Points, xSize, ySize int) (min *coordinate.Coordinate, find bool) { // берет точку с минимальной стоимостью пути из масива не посещеных
 	min = &coordinate.Coordinate{F: xSize*ySize + 1}
 
-	for _, p := range points {
+	open.mx.Lock()
+	defer open.mx.Unlock()
+
+	close.mx.Lock()
+	defer close.mx.Unlock()
+
+	find = false
+	for _, p := range open.points {
 		if p.F < min.F {
 			min = p
+			find = true
 		}
+	}
+
+	if find {
+		delete(open.points, min.Key()) // удаляем ячейку из не посещенных
+		close.points[min.Key()] = min  // добавляем в массив посещенные
 	}
 
 	return

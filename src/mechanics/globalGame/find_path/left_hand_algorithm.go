@@ -2,6 +2,7 @@ package find_path
 
 import (
 	"errors"
+	"fmt"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -9,6 +10,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"strconv"
+	"time"
 )
 
 func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uuid string) ([]*coordinate.Coordinate, error) {
@@ -108,18 +111,45 @@ func EndIsObstacle(ToX, ToY *float64, lastEntryX, lastEntryY, lastOutX, lastOutY
 }
 
 func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64) (int, int) {
-	// ищем самую дальнюю точку до которой можем дойти
-	for i := len(*points) - 1; i >= 0; i-- {
 
-		collision := collisions.SearchCollisionInLine(
-			float64((*points)[i].X)+size/2,
-			float64((*points)[i].Y)+size/2,
-			float64(unitX),
-			float64(unitY), mp, gameUnit.Body, size)
-		if !collision {
-			return (*points)[i].X + int(size)/2, (*points)[i].Y + int(size)/2
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time search line: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
 		}
+	}()
 
+	// todo самый дорогой метод на дальних дистациях из за того что он считается много раз, возможно можно просчитать его в 1 фор
+	// ищем самую дальнюю точку до которой можем дойти
+
+	x, y := 0, 0
+	lastIndex := 0
+	countClose := 0
+
+	for i := len(*points) - 1; i >= 0; i-- {
+		go func(index int) {
+
+			defer func() {
+				countClose++
+			}()
+
+			collision := collisions.SearchCollisionInLine(
+				float64((*points)[index].X)+size/2,
+				float64((*points)[index].Y)+size/2,
+				float64(unitX),
+				float64(unitY), mp, gameUnit.Body, size)
+			if !collision {
+				if index > lastIndex {
+					x, y, lastIndex = (*points)[index].X+int(size)/2, (*points)[index].Y+int(size)/2, index
+				}
+			}
+		}(i)
 	}
-	return 0, 0
+
+	for countClose < len(*points) {
+		time.Sleep(time.Millisecond)
+	}
+
+	return x, y
 }

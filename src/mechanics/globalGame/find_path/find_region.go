@@ -2,11 +2,14 @@ package find_path
 
 import (
 	"errors"
+	"fmt"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"strconv"
+	"time"
 )
 
 // функция находит путь из 1го региона в другой
@@ -20,6 +23,14 @@ type RegionParent struct {
 }
 
 func FindRegionPath(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, uuid string) (error, []*_map.Region) {
+
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time region path: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+		}
+	}()
 
 	// TODO проверить доступность этих регионов
 	startZone := mp.GeoZones[start.X/game_math.DiscreteSize][start.Y/game_math.DiscreteSize]
