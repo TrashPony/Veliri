@@ -276,7 +276,7 @@ func aiSearchPath(toX, toY, startX, startY, scale int, bot *player.Player, mp *_
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 
 	_, path := find_path.FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale, allUnits, "")
+		&coordinate.Coordinate{X: toX, Y: toY}, bot.GetSquad().MatherShip, scale, allUnits, "", nil)
 
 	if len(path) == 0 {
 		return aiSearchPath(toX, toY, startX, startY, scale-10, bot, mp)

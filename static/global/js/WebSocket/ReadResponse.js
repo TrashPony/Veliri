@@ -15,6 +15,10 @@ function ReadResponse(jsonData) {
         MoveTo(jsonData);
     }
 
+    if (jsonData.event === "MoveStop") {
+        MoveStop(jsonData)
+    }
+
     if (jsonData.event === "WorkOutThorium") {
         ThoriumBar(jsonData.unit, jsonData.thorium_slots)
     }
@@ -212,21 +216,22 @@ function FindPathDebug(jsonData) {
     if (jsonData.color === "green") color = 0x00FF00;
     if (jsonData.color === "red") color = 0xFF0000;
     if (jsonData.color === "blue") color = 0x0000FF;
+    if (jsonData.color === "orange") color = 0xff9200;
+    if (jsonData.color === "black") color = 0x000000;
 
-    moveDebug.lineStyle(2, color, 1);
+    moveDebug.lineStyle(1, color, 1);
     findPath.lineStyle(1, color, 0.5);
 
     if (jsonData.event === "CreateRect") {
         if (jsonData.color !== "white") {
-            moveDebug.drawRect(jsonData.x - jsonData.rect_size / 2, jsonData.y - jsonData.rect_size / 2, jsonData.rect_size, jsonData.rect_size);
+            moveDebug.drawRect(jsonData.x, jsonData.y, jsonData.rect_size, jsonData.rect_size);
         } else {
-            findPath.drawRect(jsonData.x - jsonData.rect_size / 2, jsonData.y - jsonData.rect_size / 2, jsonData.rect_size, jsonData.rect_size);
+            findPath.drawRect(jsonData.x, jsonData.y, jsonData.rect_size, jsonData.rect_size);
         }
     }
 
     if (jsonData.event === "CreateLine") {
         moveDebug.moveTo(jsonData.x, jsonData.y);
         moveDebug.lineTo(jsonData.to_x, jsonData.to_y);
-        //moveDebug.endFill();
     }
 }

@@ -3,7 +3,9 @@ package _map
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
+	"strconv"
 )
 
 type Map struct {
@@ -23,13 +25,12 @@ type Map struct {
 	Emitters            []*Emitter                    `json:"emitters"`
 	GeoData             []*ObstaclePoint              `json:"geo_data"`
 
-	// разделяем карту на зоны (100х100рх) при загрузке сервера,
-	// однако квадраты будут размером 200х200 и будут накладыватся друг на друга (это нужно на тот случай если юнит стоит на границе)
-	// добавляем в зону все поинты которые пересекают данных квадрат
+	// разделяем карту на зоны (DiscreteSize х DiscreteSize) при загрузке сервера,
+	// добавляем в зону все поинты которые пересекают данных квадрат и ближайшие к нему
 	// когда надо найти колизию с юнитом делем его полизию на 100 и отбрасываем дровь так мы получим зону
-	// например положение юнита 55:77 = зона 0:0, 159:234 = 1:2, 1654:2340 = 16:23
+	// например положение юнита 55/DiscreteSize:77/DiscreteSize = зона 0:0, 257/DiscreteSize:400/DiscreteSize = 1:1, 1654/DiscreteSize:2340/DiscreteSize = 6:9
 	// и смотрим только те точки которые находятся в данной зоне
-	GeoZone [][][]*ObstaclePoint `json:"geo_zone"`
+	GeoZones [][]*Zone `json:"-"`
 
 	Anomalies []*Anomalies `json:"anomalies"`
 
@@ -39,6 +40,103 @@ type Map struct {
 
 	Fraction       string `json:"fraction"`
 	PossibleBattle bool   `json:"possible_battle"`
+}
+
+type Zone struct {
+	Size      int                      `json:"size"`
+	DiscreteX int                      `json:"discrete_x"`
+	DiscreteY int                      `json:"discrete_y"`
+	Obstacle  []*ObstaclePoint         `json:"obstacle"`
+	Regions   []*Region                `json:"regions"`
+	Cells     []*coordinate.Coordinate `json:"cells"` // все координаты в зоне
+}
+
+func (z *Zone) GetNeighboursZone(mp *Map) []*Zone {
+
+	neighboursZones := make([]*Zone, 0)
+	checkRegion := func(zone *Zone) {
+		if zone != nil {
+			neighboursZones = append(neighboursZones, zone)
+		}
+	}
+	//строго лево
+	if z.DiscreteX-1 >= 0 {
+		checkRegion(mp.GeoZones[z.DiscreteX-1][z.DiscreteY])
+	}
+	//строго право
+	if len(mp.GeoZones[z.DiscreteX+1]) > 0 {
+		checkRegion(mp.GeoZones[z.DiscreteX+1][z.DiscreteY])
+	}
+	//верх центр
+	if z.DiscreteY-1 >= 0 {
+		checkRegion(mp.GeoZones[z.DiscreteX][z.DiscreteY-1])
+	}
+	//низ центр
+	checkRegion(mp.GeoZones[z.DiscreteX][z.DiscreteY+1])
+
+	////верх лево
+	//if z.DiscreteY-1 >= 0 && z.DiscreteX-1 > 0 {
+	//	checkRegion(mp.GeoZones[z.DiscreteX-1][z.DiscreteY-1])
+	//}
+	//
+	////верх право
+	//if z.DiscreteY-1 >= 0 && len(mp.GeoZones[z.DiscreteX+1]) > 0 {
+	//	checkRegion(mp.GeoZones[z.DiscreteX+1][z.DiscreteY-1])
+	//}
+	////низ лево
+	//if z.DiscreteX-1 >= 0 {
+	//	checkRegion(mp.GeoZones[z.DiscreteX-1][z.DiscreteY+1])
+	//}
+	////низ право
+	//if len(mp.GeoZones[z.DiscreteX+1]) > 0 {
+	//	checkRegion(mp.GeoZones[z.DiscreteX+1][z.DiscreteY+1])
+	//}
+
+	return neighboursZones
+}
+
+func (z *Zone) GetRegionsByXY(x, y int) *Region {
+
+	for _, region := range z.Regions {
+		if region != nil && region.Index != 0 {
+
+			_, find := region.Cells[x/game_math.CellSize][y/game_math.CellSize]
+			if find {
+				return region
+			}
+		}
+	}
+
+	return nil
+}
+
+func (z *Zone) GetKey() string {
+	return strconv.Itoa(z.DiscreteX) + "" + strconv.Itoa(z.DiscreteY)
+}
+
+type Region struct {
+	Index       int                                    `json:"index"`
+	Cells       map[int]map[int]*coordinate.Coordinate `json:"cells"`        // координаты принадлежащие району
+	GlobalLinks map[string]*Link                       `json:"global_links"` // уникальные зоны
+	Links       []*Link                                `json:"links"`        // зоны в которые можно пройти из этого региона по каждой клетке
+	Zone        *Zone                                  `json:"zone"`         // что бы каждый регион знал своего родителя
+}
+
+func (r *Region) GetKey() string {
+	return r.Zone.GetKey() + strconv.Itoa(r.Index)
+}
+
+type Link struct {
+	Zone   *Zone   `json:"zone"`
+	Region *Region `json:"region"`
+	FromX  int     `json:"from_x"`
+	FromY  int     `json:"from_y"`
+	ToX    int     `json:"to_x"`
+	ToY    int     `json:"to_y"`
+}
+
+func (l *Link) GetGlobalKey() string {
+	return strconv.Itoa(l.Zone.DiscreteX) + "" + strconv.Itoa(l.Zone.DiscreteY) + "" + strconv.Itoa(l.Region.Index)
 }
 
 type ShortInfoMap struct {

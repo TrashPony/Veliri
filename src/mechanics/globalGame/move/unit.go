@@ -2,16 +2,30 @@ package move
 
 import (
 	"errors"
+	"fmt"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/satori/go.uuid"
 	"math"
+	"time"
 )
 
 func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
+
+	start := time.Now()
+
+	defer func() {
+		// TODO идиальное время 200 мс :С
+		if debug.Store.Move {
+			elapsed := time.Since(start)
+			print("time create path: ")
+			fmt.Printf("%f\n", elapsed.Seconds())
+		}
+	}()
 
 	moveUUID := uuid.NewV1().String()
 	moveUnit.MoveUUID = moveUUID
@@ -20,7 +34,7 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 
 	startX := float64(moveUnit.X)
 	startY := float64(moveUnit.Y)
-	rotate := 30
+	rotate := 90
 
 	maxSpeed := float64(moveUnit.Speed)
 	if moveUnit.Body.MotherShip {
@@ -82,6 +96,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 	// TODO искать предварительно часть пути до тех пока не будет разница в углу 0
 	// TODO в разных вариантах, разворот на скорости или развород на месте, выбирать то где мешье частей пути (выше скорость)
 	//  или если 1 из способов не пройти
+
 	speed = speed / float64(1000/ms)
 	path := make([]*unit.PathUnit, 0)
 
@@ -106,10 +121,6 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 		q, r := game_math.GetQRfromXY(int(forecastX), int(forecastY))
 		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: ms,
 			Q: q, R: r, Speed: speed, Animate: true})
-	}
-
-	if len(path) > 1 {
-		path[len(path)-1].Speed = 0 // на последней точке машина останавливается
 	}
 
 	return nil, path

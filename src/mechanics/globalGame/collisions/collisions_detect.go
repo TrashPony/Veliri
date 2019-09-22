@@ -24,7 +24,7 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 	}
 
 	noCach := func() (bool, bool) {
-		possibleMove, front := searchStaticMapCollision(x, y, rotate, mp, body, full, min)
+		possibleMove, front := searchStaticMapCollisionByBody(x, y, rotate, mp, body, full, min)
 		if !possibleMove {
 			return possibleMove, front
 		} else {
@@ -48,14 +48,14 @@ func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Bod
 	}
 }
 
-func searchStaticMapCollision(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
-	xZone, yZone := x/100, y/100
+func searchStaticMapCollisionByBody(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
+	xZone, yZone := x/game_math.DiscreteSize, y/game_math.DiscreteSize
 
-	if mp.GeoZone[xZone] == nil || mp.GeoZone[xZone][yZone] == nil {
+	if mp.GeoZones[xZone] == nil || mp.GeoZones[xZone][yZone] == nil {
 		return false, true
 	}
 
-	zone := mp.GeoZone[xZone][yZone]
+	obstacles := mp.GeoZones[xZone][yZone].Obstacle
 	rect := getBodyRect(body, float64(x), float64(y), rotate, full, min)
 
 	fastFindObstacle := func() (bool, bool) {
@@ -68,13 +68,13 @@ func searchStaticMapCollision(x, y, rotate int, mp *_map.Map, body *detail.Body,
 
 			defer func() { stopFind = true }()
 
-			for i := 0; i < len(zone); i++ {
+			for i := 0; i < len(obstacles); i++ {
 
 				if stopFind {
 					return
 				}
 
-				obstacle := zone[i]
+				obstacle := obstacles[i]
 
 				distToObstacle := game_math.GetBetweenDist(x, y, obstacle.X, obstacle.Y)
 				if int(distToObstacle) < obstacle.Radius+body.Height*2 {
@@ -100,13 +100,13 @@ func searchStaticMapCollision(x, y, rotate int, mp *_map.Map, body *detail.Body,
 
 			defer func() { stopFind = true }()
 
-			for i := len(zone) - 1; i >= 0; i-- {
+			for i := len(obstacles) - 1; i >= 0; i-- {
 
 				if stopFind {
 					return
 				}
 
-				obstacle := zone[i]
+				obstacle := obstacles[i]
 
 				distToObstacle := game_math.GetBetweenDist(x, y, obstacle.X, obstacle.Y)
 				if int(distToObstacle) < obstacle.Radius+body.Height*2 {

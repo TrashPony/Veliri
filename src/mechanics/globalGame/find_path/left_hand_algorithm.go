@@ -1,21 +1,22 @@
 package find_path
 
 import (
+	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
 func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uuid string) ([]*coordinate.Coordinate, error) {
 
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
-	rectSize := 30
 
 	// 0 пытаемя проложить путь от начала пути до конечной точки по прямой
-	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit.Body)
+	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit.Body, game_math.CellSize)
 	if !collision {
 		return []*coordinate.Coordinate{{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)}}, nil
 	} else {
@@ -36,7 +37,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 		if !collision {
 			return []*coordinate.Coordinate{{X: int(ToX), Y: int(ToY)}}, nil
 		} else {
-			return startFind(moveUnit, int(startX), int(startY), ToX, ToY, uuid, rectSize, mp)
+			return startFind(moveUnit, int(startX), int(startY), ToX, ToY, uuid, game_math.CellSize, mp)
 		}
 	}
 }
@@ -63,7 +64,16 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 				}
 			}
 			// находим максимальную отдаленную точку куда может попать юнит
-			x, y = SearchPoint(&points, x, y, mp, moveUnit)
+			x, y = SearchPoint(&points, x, y, mp, moveUnit, float64(size))
+			if x == 0 && y == 0 {
+				return nil, errors.New("line not to cell")
+			}
+
+			if debug.Store.HandAlgorithm && len(path) > 0 {
+				debug.Store.AddMessage("CreateLine", "red", path[len(path)-1].X,
+					path[len(path)-1].Y, x, y, size, mp.Id, 20)
+			}
+
 			path = append(path, &coordinate.Coordinate{X: x, Y: y})
 		} else {
 			//  2.1.1 если между координатой истиного пути и целью нет препятсвий формируем путь. Выходим из функции.
@@ -97,13 +107,19 @@ func EndIsObstacle(ToX, ToY *float64, lastEntryX, lastEntryY, lastOutX, lastOutY
 	}
 }
 
-func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit) (int, int) {
+func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64) (int, int) {
 	// ищем самую дальнюю точку до которой можем дойти
 	for i := len(*points) - 1; i >= 0; i-- {
-		collision := collisions.SearchCollisionInLine(float64((*points)[i].X), float64((*points)[i].Y), float64(unitX), float64(unitY), mp, gameUnit.Body)
+
+		collision := collisions.SearchCollisionInLine(
+			float64((*points)[i].X)+size/2,
+			float64((*points)[i].Y)+size/2,
+			float64(unitX),
+			float64(unitY), mp, gameUnit.Body, size)
 		if !collision {
-			return (*points)[i].X, (*points)[i].Y
+			return (*points)[i].X + int(size)/2, (*points)[i].Y + int(size)/2
 		}
+
 	}
 	return 0, 0
 }

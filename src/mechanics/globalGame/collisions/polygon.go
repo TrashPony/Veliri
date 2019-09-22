@@ -144,12 +144,17 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *P
 		}
 	}
 
-	bodyRec := getRect(x, y, heightBody, widthBody)
+	bodyRec := getCenterRect(x, y, heightBody*2, widthBody*2)
 	bodyRec.rotate(rotate)
 	return bodyRec
 }
 
-func getRect(x, y, height, width float64) *Polygon {
+func getCenterRect(x, y, height, width float64) *Polygon {
+
+	// делем на 2 что бы центр квадрата был в х у
+	height = height / 2
+	width = width / 2
+
 	return &Polygon{
 		sides: []*sideRec{
 			// A 									// B
@@ -163,5 +168,22 @@ func getRect(x, y, height, width float64) *Polygon {
 		},
 		centerX: float64(x),
 		centerY: float64(y),
+	}
+}
+
+func getRect(x, y, height, width float64) *Polygon {
+	return &Polygon{
+		sides: []*sideRec{
+			// A 									// B
+			{x1: x, y1: y, x2: x, y2: y + height},
+			// B									// C
+			{x1: x, y1: y + height, x2: x + width, y2: y + height},
+			// C									// D
+			{x1: x + width, y1: y + height, x2: x + width, y2: y},
+			// D									// A
+			{x1: x + width, y1: y, x2: x, y2: y},
+		},
+		centerX: float64(x + width/2),
+		centerY: float64(y + height/2),
 	}
 }

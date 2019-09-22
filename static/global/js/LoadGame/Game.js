@@ -1,6 +1,6 @@
 let game;
 let Data;
-let debug = true;
+let debug = false;
 
 function Game(jsonData) {
     Data = jsonData;

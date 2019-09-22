@@ -6,7 +6,7 @@ func RotateUnit(unitRotate, needRotate *int, step int) {
 		*unitRotate += 360
 	}
 
-	if *unitRotate > 360 {
+	if *unitRotate >= 360 {
 		*unitRotate -= 360
 	}
 
@@ -14,23 +14,28 @@ func RotateUnit(unitRotate, needRotate *int, step int) {
 		*needRotate += 360
 	}
 
-	if *needRotate > 360 {
+	if *needRotate >= 360 {
 		*needRotate -= 360
 	}
 
-	if !(*unitRotate > *needRotate && *unitRotate-*needRotate > step || *needRotate > *unitRotate && *needRotate-*unitRotate > step) {
-		if *unitRotate >= *needRotate {
-			step = *unitRotate - *needRotate
-		} else {
-			step = *needRotate - *unitRotate
-		}
-	}
+	for i := 0; i < step; i++ {
 
-	if unitRotate != needRotate {
-		if directionRotate(*unitRotate, *needRotate) {
-			*unitRotate += step
+		if *unitRotate != *needRotate {
+
+			if directionRotate(*unitRotate, *needRotate) {
+				*unitRotate++
+				if *unitRotate >= 360 {
+					*unitRotate -= 360
+				}
+			} else {
+				*unitRotate--
+				if *unitRotate < 0 {
+					*unitRotate += 360
+				}
+			}
+
 		} else {
-			*unitRotate -= step
+			return
 		}
 	}
 }

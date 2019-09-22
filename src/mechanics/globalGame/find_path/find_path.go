@@ -6,19 +6,12 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
 
 //** SOURCE CODE https://github.com/JavaDar/aStar **//
-
-const (
-	FREE = iota
-	BLOCKED
-	START
-	END
-	PATH
-)
 
 type Points map[string]*coordinate.Coordinate
 
@@ -27,27 +20,58 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 	startX := moveUnit.X
 	startY := moveUnit.Y
 
-	//path := make([]*unit.PathUnit, 0)
-
 	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
-	err, path := FindPath(mp, &coordinate.Coordinate{X: startX, Y: startY},
-		&coordinate.Coordinate{X: int(ToX), Y: int(ToY)}, moveUnit, size, allUnits, uuid)
 
-	//for _, unitPath := range path2 {
-	//	path = append(path, &unit.PathUnit{X: unitPath.X, Y: unitPath.Y, Rotate: unitPath.Rotate, Millisecond: 250,
-	//		Speed: float64(moveUnit.Speed), Animate: true})
-	//}
+	start := &coordinate.Coordinate{X: startX, Y: startY}
+	end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
 
+	err, regions := FindRegionPath(mp, start, end, moveUnit, uuid)
 	if err != nil {
-		println(err.Error())
-	}
 
-	return path, err
+		// если не удалось построить путь по регионам то делаем без регионов
+		// todo однако это не правильно
+
+		println("без регионов")
+		err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, regions)
+		return path, err
+	} else {
+
+		if debug.Store.RegionResult {
+			for _, region := range regions {
+				drawRegion(region, mp.Id, "blue")
+			}
+		}
+
+		err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, regions)
+		if err != nil {
+
+			// если не удалось построить путь по регионам то делаем без регионов
+			// todo однако это не правильно
+
+			// координаты портятся поэтому заного создаем
+			start := &coordinate.Coordinate{X: startX, Y: startY}
+			end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
+
+			err, path = FindPath(mp, start, end, moveUnit, size, allUnits, uuid, nil)
+			println(len(path))
+		}
+
+		if debug.Store.AStartResult {
+			for _, cell := range path {
+				debug.Store.AddMessage("CreateRect", "green", cell.X, cell.Y, 0, 0, game_math.CellSize, mp.Id, 0)
+			}
+		}
+
+		return path, err
+	}
 }
 
-func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
+func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
 
-	xSize, ySize := gameMap.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
+	println(mp.QSize * game_math.HexagonWidth)
+	println(int(float64(mp.RSize) * float64(game_math.HexagonHeight) * 0.75))
+
+	xSize, ySize := mp.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
 
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
 	start.Rotate = gameUnit.Rotate
@@ -58,26 +82,6 @@ func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUni
 		return nil, nil, 0, 0, errors.New("start or end out the range")
 	}
 
-	// если конечная точка является невалидной то ищем ближайшую валидную точку и говорим что это цель
-	_, valid := checkValidForMoveCoordinate(gameMap, end.X, end.Y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits)
-	if !valid {
-		getValidEnd := func() *coordinate.Coordinate {
-			for radius := 0; radius < 10; radius++ {
-				for angle := 10; angle < 360; angle += 10 {
-					x := int(math.Round(float64(float64(end.X) + float64(radius)*math.Cos(float64(angle)))))
-					y := int(math.Round(float64(float64(end.Y) + float64(radius)*math.Sin(float64(angle)))))
-
-					_, valid := checkValidForMoveCoordinate(gameMap, x, y, end.X, end.Y, gameUnit.Rotate, gameUnit, scaleMap, allUnits)
-					if valid {
-						return &coordinate.Coordinate{X: x, Y: y}
-					}
-				}
-			}
-			return nil
-		}
-		end = getValidEnd()
-	}
-
 	if end == nil {
 		return nil, nil, 0, 0, errors.New("end point not valid")
 	} else {
@@ -85,15 +89,17 @@ func PrepareInData(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUni
 	}
 }
 
-func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int, allUnits map[int]*unit.ShortUnitInfo, uuid string) (error, []*coordinate.Coordinate) {
+func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
+	allUnits map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region) (error, []*coordinate.Coordinate) {
 
-	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, allUnits)
-	if err != nil {
-		return err, nil
-	}
+	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap)
 
 	openPoints, closePoints := Points{}, Points{} // создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints[start.Key()] = start               // кладем в карту посещенных точек стартовую точку
+
+	if err != nil {
+		return err, nil
+	}
 
 	var path []*coordinate.Coordinate
 	var noSortedPath []*coordinate.Coordinate
@@ -101,7 +107,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	for uuid == gameUnit.MoveUUID {
 
 		if len(openPoints) <= 0 {
-			return errors.New("path no find"), nil
+			return errors.New("a star path no find"), nil
 		}
 		current := MinF(openPoints, xSize, ySize) // Берем точку с мин стоимостью пути
 
@@ -110,13 +116,13 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 			for !current.EqualXY(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
 
 				current = current.Parent     // по родительским точкам
-				if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то
+				if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то добавляем в путь координату
 					noSortedPath = append(noSortedPath, current)
 				}
 			}
 			break
 		}
-		parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits)
+		parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits, regions)
 	}
 
 	for i := len(noSortedPath); i > 0; i-- {
@@ -139,28 +145,31 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	return nil, path
 }
 
-func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map,
-	end *coordinate.Coordinate, gameUnit *unit.Unit, xSize, ySize, scaleMap int, allUnits map[int]*unit.ShortUnitInfo) {
+func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map, end *coordinate.Coordinate,
+	gameUnit *unit.Unit, xSize, ySize, scaleMap int, allUnits map[int]*unit.ShortUnitInfo, regions []*_map.Region) {
 
 	delete(*open, curr.Key())   // удаляем ячейку из не посещенных
 	(*close)[curr.Key()] = curr // добавляем в массив посещенные
 
-	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits, xSize, ySize, regions) // берем всех соседей этой клетки
 
 	for _, xLine := range nCoordinate {
 		for _, c := range xLine {
 
-			if c.X < xSize && c.Y < ySize && c.X > 0 && c.Y > 0 {
-				if (*close)[c.Key()] != nil || (*open)[c.Key()] != nil {
-					continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
-				}
-				// считаем для поинта значения пути
-				c.G = curr.GetXYG(c) // стоимость клетки
-				c.H = GetH(c, end)   // приближение от точки до конечной цели.
-				c.F = c.GetF()       // длина пути до цели
-				c.Parent = curr      //ref is needed?
+			if (*close)[c.Key()] != nil || (*open)[c.Key()] != nil {
+				continue // если ячейка является блокированой или находиться в масиве посещенных то пропускаем ее
+			}
 
-				(*open)[c.Key()] = c // добавляем точку в масив не посещеных
+			// считаем для поинта значения пути
+			c.G = curr.GetXYG(c) // стоимость клетки
+			c.H = GetH(c, end)   // приближение от точки до конечной цели.
+			c.F = c.GetF()       // длина пути до цели
+			c.Parent = curr      //ref is needed?
+
+			(*open)[c.Key()] = c // добавляем точку в масив не посещеных
+
+			if debug.Store.AStartNeighbours {
+				debug.Store.AddMessage("CreateRect", "orange", c.X*scaleMap, c.Y*scaleMap, 0, 0, scaleMap, gameMap.Id, 20)
 			}
 		}
 	}
@@ -181,5 +190,6 @@ func MinF(points Points, xSize, ySize int) (min *coordinate.Coordinate) { // б�
 			min = p
 		}
 	}
+
 	return
 }

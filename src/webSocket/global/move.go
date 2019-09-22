@@ -82,19 +82,6 @@ func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
 		if resetSpeed {
 			moveUnit.CurrentSpeed = 0
 		}
-
-		//go SendMessage(Message{
-		//	Event:     "MoveTo",
-		//	ShortUnit: moveUnit.GetShortInfo(),
-		//	PathUnit: &unit.PathUnit{
-		//		X:           moveUnit.X,
-		//		Y:           moveUnit.Y,
-		//		Rotate:      moveUnit.Rotate,
-		//		Millisecond: 100,
-		//		Speed:       moveUnit.CurrentSpeed,
-		//	},
-		//	IDMap: moveUnit.MapID,
-		//})
 	}
 }
 
@@ -152,6 +139,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 	defer func() {
 		stopMove(moveUnit, false)
+
 		if moveUnit != nil {
 			moveUnit.MoveChecker = false
 		}
@@ -159,6 +147,15 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		if moveRepeat {
 			Move(user, msg, false)
 		}
+
+		go SendMessage(Message{
+			Event:     "MoveStop",
+			ShortUnit: moveUnit.GetShortInfo(),
+			PathUnit: &unit.PathUnit{
+				Speed: moveUnit.CurrentSpeed,
+			},
+			IDMap: moveUnit.MapID,
+		})
 	}()
 
 	for i, pathUnit := range *path {

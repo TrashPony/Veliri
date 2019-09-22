@@ -8,6 +8,8 @@ const HexagonHeight = 55 // Константы описывающие свойс
 const HexagonWidth = 50
 const VerticalOffset = HexagonHeight * 3 / 4
 const HorizontalOffset = HexagonWidth
+const CellSize = 30
+const DiscreteSize = 6 * CellSize
 
 func GetQRfromXY(x, y int) (int, int) {
 

@@ -73,6 +73,8 @@ type Player struct {
 
 	UserInterface map[string]map[string]*Window `json:"user_interface"` // resolution, window_id, state
 	StoryEpisode  int                           `json:"story_episode"`
+
+	DebugMoveMessage []interface{}
 }
 
 type ShortUserInfo struct {

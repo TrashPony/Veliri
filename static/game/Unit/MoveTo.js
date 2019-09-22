@@ -1,6 +1,6 @@
 // движение на глобальной карте
 function MoveTo(jsonData) {
-    console.log(jsonData)
+    console.log(jsonData.path_unit.Speed)
     if (!game || !game.units) return;
 
     let unit = game.units[jsonData.short_unit.id];
@@ -13,11 +13,15 @@ function MoveTo(jsonData) {
             thoriumEfficiency.innerHTML = (path.Speed * 10).toFixed(0);
         }
 
-        game.add.tween(unit.sprite).to({
+        unit.moveTween = game.add.tween(unit.sprite).to({
                 x: path.x,
                 y: path.y
             }, path.millisecond, Phaser.Easing.Linear.None, true, 0
         );
+
+        unit.moveTween.onComplete.add(function () {
+            unit.moveTween = null;
+        });
 
         unit.speed = path.Speed * 10;
         unit.animateSpeed = path.animate;
@@ -27,6 +31,23 @@ function MoveTo(jsonData) {
         CreateMiniMap();
     } else {
         CreateNewUnit(unit)
+    }
+}
+
+function MoveStop(jsonData) {
+    if (!game || !game.units) return;
+
+    let unit = game.units[jsonData.short_unit.id];
+    let path = jsonData.path_unit;
+
+    if (unit) {
+        if (unit.moveTween) {
+            unit.moveTween.onComplete.add(function () {
+                unit.speed = path.Speed * 10;
+            });
+        } else {
+            unit.speed = path.Speed * 10;
+        }
     }
 }
 

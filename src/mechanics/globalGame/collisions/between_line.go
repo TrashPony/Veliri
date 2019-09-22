@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
@@ -87,9 +88,7 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 	}
 }
 
-func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body) bool {
-	// идем по линии со скорость 10 рх
-	speed := 10.0
+func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, speed float64) bool {
 
 	// текущее положение курсора
 	currentX, currentY := startX, startY
@@ -108,8 +107,15 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body 
 			return false
 		}
 
+		if debug.Store.SearchCollisionLine {
+			debug.Store.AddMessage("CreateRect", "orange", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
+		}
+
 		possibleMove, _ := CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
 		if !possibleMove {
+			if debug.Store.SearchCollisionLine {
+				debug.Store.AddMessage("CreateRect", "red", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
+			}
 			return true
 		}
 

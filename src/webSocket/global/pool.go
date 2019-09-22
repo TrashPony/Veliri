@@ -16,6 +16,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -127,6 +128,9 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 	println("WS global Сессия: login: " + login + " id: " + strconv.Itoa(id))
 	go Reader(ws, newPlayer)
 
+	if debug.Store.Move {
+		DebugMoveWorker(newPlayer)
+	}
 }
 
 func SendMessage(msg Message) {
