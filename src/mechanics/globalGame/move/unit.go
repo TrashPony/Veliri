@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
+func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64) ([]*unit.PathUnit, error) {
 
 	start := time.Now()
 
@@ -33,8 +33,8 @@ func Unit(moveUnit *unit.Unit, ToX, ToY float64) ([]*unit.PathUnit, error) {
 	moveUnit.ToX = ToX
 	moveUnit.ToY = ToY
 
-	startX := float64(moveUnit.X)
-	startY := float64(moveUnit.Y)
+	startX := StartX
+	startY := StartY
 	rotate := 90
 
 	maxSpeed := float64(moveUnit.Speed)

@@ -16,8 +16,6 @@ import (
 	"time"
 )
 
-// TODO все алгоритмы движения/столкновений не оптимальны, поэтому пишу так что бы их можно было легко подменить
-
 func Move(user *player.Player, msg Message, newAction bool) {
 	if user.GetSquad() != nil && msg.UnitsID != nil {
 
@@ -46,27 +44,37 @@ func Move(user *player.Player, msg Message, newAction bool) {
 				mp, find := maps.Maps.GetByID(moveUnit.MapID)
 				if find && user.InBaseID == 0 && !moveUnit.Evacuation {
 
-					for moveUnit.MoveChecker && moveUnit.OnMap {
-						time.Sleep(10 * time.Millisecond) // без этого будет блокировка
-						// Ожидаем пока не завершится текущая клетка хода
-						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
-						// менятся и когда начнется движение то отряд телепортирует обратно
-						// todo расчет движения без остановки
-						//  (расчитывать путь пока юнит ходит и когда путь будет расчинан заменять его путь,
-						//  однако непонятно откуда начинать считать путь, можно например давать фору на 2-3 ячейки
-						//  и начинать расчет с них, после долждатся когда проиграются эти 3 клетки и запускать новый путь)
+					for moveUnit.LastPathCell == nil && moveUnit.MoveChecker {
+						// ждем пока юнит начнет инициализацию выхода из текущего метода движения если оно есть
+						// пока он доходит последнюю клетку LastPathCell мы начинаем формировать путь
+						// это уменьшаяет лаги на клиента
+						time.Sleep(time.Millisecond)
 					}
 
-					path, err := move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y))
-					moveUnit.ActualPath = &path
+					var path []*unit.PathUnit
+					var err error
 
-					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
-					go FollowUnit(user, moveUnit, msg)
+					if moveUnit.LastPathCell != nil {
+						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.LastPathCell.X), float64(moveUnit.LastPathCell.Y))
+					} else {
+						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.X), float64(moveUnit.Y))
+					}
 
 					if err != nil && len(path) == 0 {
 						println(err.Error())
 						go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: moveUnit.MapID, Bot: user.Bot})
 					}
+
+					for moveUnit.MoveChecker && moveUnit.OnMap {
+						time.Sleep(time.Millisecond)
+						// Ожидаем пока не завершится текущая клетка хода
+						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
+						// менятся и когда начнется движение то отряд телепортирует обратно
+					}
+
+					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
+					go FollowUnit(user, moveUnit, msg)
+
 					go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(),
 						IDMap: moveUnit.MapID, Bot: user.Bot, ShortUnit: moveUnit.GetShortInfo()})
 				}
@@ -140,6 +148,8 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 	defer func() {
 		stopMove(moveUnit, false)
 
+		moveUnit.LastPathCell = nil
+
 		if moveUnit != nil {
 			moveUnit.MoveChecker = false
 		}
@@ -158,10 +168,29 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		})
 	}()
 
+	countExit := 1
+	moveUnit.ActualPath = path
+
 	for i, pathUnit := range *path {
-		// юнит или отряд умер или путь изменился
-		if user.GetSquad() == nil || moveUnit == nil || !moveUnit.OnMap || moveUnit.HP <= 0 || moveUnit.ActualPath == nil || moveUnit.ActualPath != path {
+		// юнит или отряд умер
+		if user.GetSquad() == nil || moveUnit == nil || !moveUnit.OnMap || moveUnit.HP <= 0 {
 			return
+		}
+
+		if moveUnit.ActualPath == nil || moveUnit.ActualPath != path {
+			// если актуальный путь сменился то выполняем еще 1 итерацию из старого пути дабы дать время сгенерить новый путь
+			if countExit <= 0 {
+				return
+			}
+			countExit--
+
+			if moveUnit.LastPathCell == nil && len(*path)-1 >= i+countExit {
+				moveUnit.LastPathCell = (*path)[i+countExit]
+			} else {
+				if len(*path)-1 < i+countExit {
+					moveUnit.LastPathCell = (*path)[len(*path)-1]
+				}
+			}
 		}
 
 		newGravity := move.GetGravity(moveUnit.X, moveUnit.Y, user.GetSquad().MatherShip.MapID)

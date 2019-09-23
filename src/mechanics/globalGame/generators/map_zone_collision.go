@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -12,6 +13,7 @@ import (
 func UpdateMapZoneCollision() {
 	for _, mp := range maps.Maps.GetAllMap() {
 		FillMapZone(mp)
+		go BodyCollisionCash(mp)
 	}
 }
 
@@ -136,6 +138,22 @@ func SearchEntries(region *_map.Region, mp *_map.Map, parentZone *_map.Zone) {
 
 			//низ право
 			createLink(checkCoordinate(cell.X+game_math.CellSize, cell.Y+game_math.CellSize, cell))
+		}
+	}
+}
+
+func BodyCollisionCash(mp *_map.Map) {
+	bodies := gameTypes.Bodies.GetAllType()
+
+	for _, body := range bodies {
+		for _, x := range mp.GeoZones {
+			for _, zone := range x {
+				if zone != nil {
+					for _, cell := range zone.Cells {
+						collisions.CheckCollisionsOnStaticMap(cell.X, cell.Y, 0, mp, &body, false, true)
+					}
+				}
+			}
 		}
 	}
 }

@@ -10,8 +10,10 @@ var Store = newStore()
 func newStore() *MessageStore {
 	return &MessageStore{
 		messages: make([]*Message, 0),
-		Move:     true,
+		Move:     false,
 		MoveInit: false,
+
+		MoveEndPoint: false,
 
 		AStartNeighbours: false,
 		AStartResult:     false,
@@ -36,6 +38,7 @@ type MessageStore struct {
 	RegionResult        bool
 	HandAlgorithm       bool
 	SearchCollisionLine bool
+	MoveEndPoint        bool
 }
 
 type Message struct {

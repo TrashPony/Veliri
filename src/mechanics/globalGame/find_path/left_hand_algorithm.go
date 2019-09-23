@@ -10,6 +10,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"math"
 	"strconv"
 	"time"
 )
@@ -19,22 +20,16 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 
 	// 0 пытаемя проложить путь от начала пути до конечной точки по прямой
-	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit.Body, game_math.CellSize)
+	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit.Body, 5)
 	if !collision {
 		return []*coordinate.Coordinate{{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)}}, nil
 	} else {
 		// 0.3 на прямой были найдены препятвия
-		// size 5 потому что из за большой скорость можнео не заметить препятвия на конце линии, важно для endIsObstacle
-		entryPoint, outPoint, _, collision, endIsObstacle := collisions.BetweenLine(startX, startY, ToX, ToY, mp, moveUnit.Body, true, 5)
-
-		// 0.1 если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
-		if endIsObstacle {
-			// последние точки это колизия вокруг точки назначения
-			lastEntryX, lastEntryY := &entryPoint[len(entryPoint)-1].X, &entryPoint[len(entryPoint)-1].Y
-			lastOutX, lastOutY := &outPoint[len(outPoint)-1].X, &outPoint[len(outPoint)-1].Y
-
-			// ищем ближайшую точку которая не в колизии
-			EndIsObstacle(&ToX, &ToY, lastEntryX, lastEntryY, lastOutX, lastOutY, &collision, moveUnit, len(entryPoint))
+		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(ToX), int(ToY), 0, mp, moveUnit.Body, false, true)
+		// если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
+		if !possibleMove {
+			ToX, ToY, collision = SearchEndPoint(startX, startY, ToX, ToY, moveUnit, mp)
+			moveUnit.ToX, moveUnit.ToY = ToX, ToY
 		}
 
 		if !collision {
@@ -45,17 +40,64 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 	}
 }
 
+func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_map.Map) (float64, float64, bool) {
+
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time search end point: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+		}
+	}()
+
+	if debug.Store.MoveEndPoint {
+		debug.Store.AddMessage("CreateRect", "red", int(ToX), int(ToY), 0, 0, 5, mp.Id, 20)
+	}
+
+	toTmpX, toTmpY := ToX, ToY
+	toTmpX2, toTmpY2 := ToX, ToY
+
+	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
+	radian := float64(angle) * math.Pi / 180
+
+	// идем в обе стороны по направлению вектра пока не найдем пригодную точку выхода
+	for {
+		stopX, stopY := float64(game_math.CellSize)*math.Cos(radian), float64(game_math.CellSize)*math.Sin(radian)
+		stopX2, stopY2 := float64(-game_math.CellSize)*math.Cos(radian), float64(-game_math.CellSize)*math.Sin(radian)
+
+		toTmpX, toTmpY = toTmpX+stopX, toTmpY+stopY
+		toTmpX2, toTmpY2 = toTmpX2+stopX2, toTmpY2+stopY2
+
+		possibleMove1, _ := collisions.CheckCollisionsOnStaticMap(int(toTmpX), int(toTmpY), 0, mp, moveUnit.Body, false, true)
+		if possibleMove1 {
+
+			if debug.Store.MoveEndPoint {
+				debug.Store.AddMessage("CreateRect", "green", int(toTmpX), int(toTmpY), 0, 0, game_math.CellSize, mp.Id, 20)
+			}
+
+			return toTmpX, toTmpY, collisions.SearchCollisionInLine(startX, startY, toTmpX, toTmpY, mp, moveUnit.Body, game_math.CellSize)
+		}
+		possibleMove2, _ := collisions.CheckCollisionsOnStaticMap(int(toTmpX2), int(toTmpY2), 0, mp, moveUnit.Body, false, true)
+		if possibleMove2 {
+
+			if debug.Store.MoveEndPoint {
+				debug.Store.AddMessage("CreateRect", "green", int(toTmpX2), int(toTmpY2), 0, 0, game_math.CellSize, mp.Id, 20)
+			}
+
+			return toTmpX2, toTmpY2, collisions.SearchCollisionInLine(startX, startY, toTmpX2, toTmpY2, mp, moveUnit.Body, game_math.CellSize)
+		}
+	}
+}
+
 func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, size int, mp *_map.Map) ([]*coordinate.Coordinate, error) {
 
 	path := make([]*coordinate.Coordinate, 0)
-
+	last := false
 	var points []*coordinate.Coordinate
 
 	for moveUnit.MoveUUID == uuid {
 
-		_, _, _, collision, _ := collisions.BetweenLine(float64(x), float64(y), ToX, ToY, mp, moveUnit.Body, false, size)
-
-		if collision {
+		if !last {
 
 			// ищем путь алгоритмом А*
 			if points == nil {
@@ -67,9 +109,14 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 				}
 			}
 			// находим максимальную отдаленную точку куда может попать юнит
-			x, y = SearchPoint(&points, x, y, mp, moveUnit, float64(size))
+			x, y, last = SearchPoint(&points, x, y, mp, moveUnit, float64(size))
 			if x == 0 && y == 0 {
 				return nil, errors.New("line not to cell")
+			}
+
+			if last {
+				// если последняя точка то не добавляем ее тут а прокидываем в конец
+				continue
 			}
 
 			if debug.Store.HandAlgorithm && len(path) > 0 {
@@ -88,29 +135,7 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 	return path, nil
 }
 
-func EndIsObstacle(ToX, ToY *float64, lastEntryX, lastEntryY, lastOutX, lastOutY *int, collision *bool, moveUnit *unit.Unit, countCollision int) {
-
-	collisionStartDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *lastEntryX, *lastEntryY)
-	collisionEndDist := game_math.GetBetweenDist(int(*ToX), int(*ToY), *lastOutX, *lastOutY)
-
-	// если то старта колизии ближе чем до конца то считаем что маршрут без колизий
-	if collisionStartDist < collisionEndDist {
-		*ToX, *ToY = float64(*lastEntryX), float64(*lastEntryY)
-		moveUnit.ToX, moveUnit.ToY = float64(*lastEntryX), float64(*lastEntryY)
-
-		// говорим что нет колизий если она всего одна
-		if countCollision == 1 {
-			*collision = false
-		}
-
-	} else {
-		// иначе переназначаем конечный пункт что бы не искать путь вечно
-		*ToX, *ToY = float64(*lastOutX), float64(*lastOutY)
-		moveUnit.ToX, moveUnit.ToY = float64(*lastOutX), float64(*lastOutY)
-	}
-}
-
-func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64) (int, int) {
+func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64) (int, int, bool) {
 
 	startTime := time.Now()
 	defer func() {
@@ -121,6 +146,7 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Ma
 	}()
 
 	// todo самый дорогой метод на дальних дистациях из за того что он считается много раз, возможно можно просчитать его в 1 фор
+	// 	но у меня чет не вышло
 	// ищем самую дальнюю точку до которой можем дойти
 
 	x, y := 0, 0
@@ -128,6 +154,7 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Ma
 	countClose := 0
 
 	for i := len(*points) - 1; i >= 0; i-- {
+
 		go func(index int) {
 
 			defer func() {
@@ -147,9 +174,9 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Ma
 		}(i)
 	}
 
-	for countClose < len(*points) {
+	for countClose < len(*points)-1 {
 		time.Sleep(time.Millisecond)
 	}
 
-	return x, y
+	return x, y, len(*points)-1 == lastIndex
 }

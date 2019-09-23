@@ -1,17 +1,28 @@
 package collisions
 
 import (
+	"fmt"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
+	"strconv"
+	"time"
 )
 
 // возвращает xКолизии, yКолизии, хВыхода из колизии, yВыхода из колизии прошли без столкновений
 func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, startMove bool, size int) (
 	entryPoints, collisionPoints, outPoints []*coordinate.Coordinate, collision, endIsObstacle bool) {
+
+	startTime := time.Now()
+	defer func() {
+		if debug.Store.Move {
+			elapsed := time.Since(startTime)
+			fmt.Println("time between line line: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
+		}
+	}()
 
 	// идем по линии со скорость 10 рх
 	speed := float64(size)
