@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
@@ -99,7 +100,7 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 	}
 }
 
-func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Body, speed float64) bool {
+func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameUnit *unit.Unit, speed float64, units map[int]*unit.ShortUnitInfo) bool {
 
 	// текущее положение курсора
 	currentX, currentY := startX, startY
@@ -122,12 +123,19 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, body 
 			debug.Store.AddMessage("CreateRect", "orange", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
 		}
 
-		possibleMove, _ := CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
+		possibleMove, _ := CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, gameUnit.Body, false, true)
 		if !possibleMove {
 			if debug.Store.SearchCollisionLine {
 				debug.Store.AddMessage("CreateRect", "red", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
 			}
 			return true
+		}
+
+		if units != nil {
+			free, _ := CheckCollisionsPlayers(gameUnit, int(currentX), int(currentY), 0, units, true, false, true)
+			if !free {
+				return true
+			}
 		}
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)

@@ -13,6 +13,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
+	"github.com/satori/go.uuid"
 	"time"
 )
 
@@ -30,6 +31,9 @@ func Move(user *player.Player, msg Message, newAction bool) {
 		for i, unitID := range msg.UnitsID {
 
 			moveUnit := user.GetSquad().GetUnitByID(unitID)
+
+			moveUUID := uuid.NewV1().String()
+			moveUnit.MoveUUID = moveUUID
 
 			if moveUnit != nil && moveUnit.OnMap {
 
@@ -54,10 +58,14 @@ func Move(user *player.Player, msg Message, newAction bool) {
 					var path []*unit.PathUnit
 					var err error
 
+					units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
+
 					if moveUnit.LastPathCell != nil {
-						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.LastPathCell.X), float64(moveUnit.LastPathCell.Y))
+						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.LastPathCell.X),
+							float64(moveUnit.LastPathCell.Y), moveUnit.LastPathCell.Rotate, moveUUID, units)
 					} else {
-						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.X), float64(moveUnit.Y))
+						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.X),
+							float64(moveUnit.Y), moveUnit.Rotate, moveUUID, units)
 					}
 
 					if err != nil && len(path) == 0 {
@@ -66,17 +74,23 @@ func Move(user *player.Player, msg Message, newAction bool) {
 					}
 
 					for moveUnit.MoveChecker && moveUnit.OnMap {
+						if moveUnit.MoveUUID != moveUUID {
+							return
+						}
+
 						time.Sleep(time.Millisecond)
 						// Ожидаем пока не завершится текущая клетка хода
 						// иначе будут рывки в игре из за того что пока путь просчитывается х у отряда будет
 						// менятся и когда начнется движение то отряд телепортирует обратно
 					}
 
-					go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
-					go FollowUnit(user, moveUnit, msg)
+					if moveUnit.MoveUUID == moveUUID {
+						go MoveGlobalUnit(msg, user, &path, moveUnit, mp)
+						go FollowUnit(user, moveUnit, msg)
 
-					go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(),
-						IDMap: moveUnit.MapID, Bot: user.Bot, ShortUnit: moveUnit.GetShortInfo()})
+						go SendMessage(Message{Event: "PreviewPath", Path: path, IDUserSend: user.GetID(),
+							IDMap: moveUnit.MapID, Bot: user.Bot, ShortUnit: moveUnit.GetShortInfo()})
+					}
 				}
 			}
 		}
@@ -201,8 +215,14 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		// колизии юнит - юнит
-		noCollision, collisionUnit := collisions.InitCheckCollision(moveUnit, pathUnit)
+		noCollision, collisionUnit, x, y, percent := collisions.InitCheckCollision(moveUnit, pathUnit)
 		if !noCollision && collisionUnit != nil {
+
+			pathUnit.X, pathUnit.Y = x, y
+			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+			time.Sleep(time.Duration((pathUnit.Millisecond*percent)/100) * time.Millisecond)
+
+			moveUnit.X, moveUnit.Y, moveUnit.Rotate = x, y, pathUnit.Rotate
 
 			unitPath, toUnitPath := collisions.UnitToUnitCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
 

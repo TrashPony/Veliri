@@ -127,6 +127,7 @@ type ShortUnitInfo struct {
 	Evacuation      bool   `json:"evacuation"`
 	ForceEvacuation bool   `json:"force_evacuation"`
 	InSky           bool   `json:"in_sky"` /* отряд по той или иной причине летит Оо */
+	MoveChecker     bool   `json:"move_checker"`
 }
 
 type PathUnit struct {
@@ -167,6 +168,7 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 	hostile.Evacuation = unit.Evacuation
 	hostile.ForceEvacuation = unit.ForceEvacuation
 	hostile.InSky = unit.InSky
+	hostile.MoveChecker = unit.MoveChecker
 
 	hostile.Body, _ = gameTypes.Bodies.GetByID(unit.Body.ID)
 	hostile.OwnerID = unit.OwnerID

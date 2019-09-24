@@ -10,20 +10,20 @@ var Store = newStore()
 func newStore() *MessageStore {
 	return &MessageStore{
 		messages: make([]*Message, 0),
-		Move:     false,
+		Move:     true,
 		MoveInit: false,
 
-		MoveEndPoint: false,
+		MoveEndPoint: true,
 
-		AStartNeighbours: false,
-		AStartResult:     false,
+		AStartNeighbours: true,
+		AStartResult:     true,
 
 		RegionFindDebug: false,
 		RegionResult:    false,
 
-		HandAlgorithm: false,
+		HandAlgorithm: true,
 
-		SearchCollisionLine: false,
+		SearchCollisionLine: true,
 	}
 }
 

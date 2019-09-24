@@ -6,7 +6,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
@@ -22,12 +21,10 @@ type Points struct {
 	mx     sync.Mutex
 }
 
-func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string) ([]*coordinate.Coordinate, error) {
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string, units map[int]*unit.ShortUnitInfo) ([]*coordinate.Coordinate, error) {
 
 	startX := moveUnit.X
 	startY := moveUnit.Y
-
-	allUnits := globalGame.Clients.GetAllShortUnits(mp.Id, true)
 
 	start := &coordinate.Coordinate{X: startX, Y: startY}
 	end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
@@ -42,7 +39,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 		// если не удалось построить путь по регионам то делаем без регионов
 		// todo однако это не правильно
 
-		err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, regions)
+		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions)
 		return path, err
 	} else {
 
@@ -52,7 +49,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 			}
 		}
 
-		err, path := FindPath(mp, start, end, moveUnit, size, allUnits, uuid, regions)
+		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions)
 		if err != nil {
 
 			// если не удалось построить путь по регионам то делаем без регионов
@@ -62,7 +59,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 			start := &coordinate.Coordinate{X: startX, Y: startY}
 			end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
 
-			err, path = FindPath(mp, start, end, moveUnit, size, allUnits, uuid, nil)
+			err, path = FindPath(mp, start, end, moveUnit, size, units, uuid, nil)
 		}
 
 		if debug.Store.AStartResult {
@@ -96,7 +93,7 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 }
 
 func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
-	allUnits map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region) (error, []*coordinate.Coordinate) {
+	units map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region) (error, []*coordinate.Coordinate) {
 
 	startTime := time.Now()
 	defer func() {
@@ -165,7 +162,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 			}
 
 			if !exit {
-				parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, allUnits, regions)
+				parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, units, regions)
 			}
 		}()
 
@@ -195,9 +192,9 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 }
 
 func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map, end *coordinate.Coordinate,
-	gameUnit *unit.Unit, xSize, ySize, scaleMap int, allUnits map[int]*unit.ShortUnitInfo, regions []*_map.Region) {
+	gameUnit *unit.Unit, xSize, ySize, scaleMap int, units map[int]*unit.ShortUnitInfo, regions []*_map.Region) {
 
-	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, allUnits, xSize, ySize, regions) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, units, xSize, ySize, regions) // берем всех соседей этой клетки
 
 	open.mx.Lock()
 	defer open.mx.Unlock()

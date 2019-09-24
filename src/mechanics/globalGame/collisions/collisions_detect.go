@@ -187,7 +187,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 	return nil
 }
 
-func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo) (bool, *unit.ShortUnitInfo) {
+func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo, min, max, onlyStanding bool) (bool, *unit.ShortUnitInfo) {
 
 	for _, otherUnit := range units {
 
@@ -199,9 +199,13 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 			continue
 		}
 
+		if onlyStanding && otherUnit.MoveChecker {
+			continue
+		}
+
 		if otherUnit != nil && (moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
 
-			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, false, false)
+			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, max, min)
 			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false, false)
 
 			if mUserRect.centerX == userRect.centerX && mUserRect.centerY == userRect.centerY {

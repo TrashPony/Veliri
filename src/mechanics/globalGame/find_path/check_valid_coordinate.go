@@ -8,19 +8,20 @@ import (
 )
 
 func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, xSize, ySize int, gameUnit *unit.Unit,
-	scaleMap int, regions []*_map.Region, allUnits map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, bool) {
+	scaleMap int, regions []*_map.Region, units map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, bool) {
 
 	// за пределами карты
 	if x > xSize || y > ySize || x < 0 || y < 0 {
 		return nil, false
 	}
 
-	//if allUnits != nil {
-	//	free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap, y*scaleMap, pRotate, allUnits)
-	//	if !free {
-	//		return nil, false
-	//	}
-	//}
+	if units != nil {
+		free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2,
+			0, units, false, true, true)
+		if !free {
+			return nil, false
+		}
+	}
 
 	find := true
 

@@ -7,55 +7,55 @@ import (
 )
 
 func generateNeighboursCoordinate(curr *coordinate.Coordinate, gameMap *_map.Map, gameUnit *unit.Unit, scaleMap int,
-	allUnits map[int]*unit.ShortUnitInfo, xSize, ySize int, regions []*_map.Region) (res map[string]map[string]*coordinate.Coordinate) {
+	units map[int]*unit.ShortUnitInfo, xSize, ySize int, regions []*_map.Region) (res map[string]map[string]*coordinate.Coordinate) {
 
 	// берет все соседние клетки от текущей
 	res = make(map[string]map[string]*coordinate.Coordinate)
 
 	//строго лево
-	leftCoordinate, left := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	leftCoordinate, left := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if left {
 		coordinate.AddXYCoordinate(res, leftCoordinate)
 	}
 
 	//строго право
-	rightCoordinate, right := checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	rightCoordinate, right := checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if right {
 		coordinate.AddXYCoordinate(res, rightCoordinate)
 	}
 
 	//верх центр
-	topCoordinate, top := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	topCoordinate, top := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if top {
 		coordinate.AddXYCoordinate(res, topCoordinate)
 	}
 
 	//низ центр
-	bottomCoordinate, bottom := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	bottomCoordinate, bottom := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if bottom {
 		coordinate.AddXYCoordinate(res, bottomCoordinate)
 	}
 
 	//верх лево
-	gameCoordinate, find := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	gameCoordinate, find := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
 		coordinate.AddXYCoordinate(res, gameCoordinate)
 	}
 
 	//верх право
-	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
 		coordinate.AddXYCoordinate(res, gameCoordinate)
 	}
 
 	//низ лево
-	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
 		coordinate.AddXYCoordinate(res, gameCoordinate)
 	}
 
 	//низ право
-	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, allUnits)
+	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
 		coordinate.AddXYCoordinate(res, gameCoordinate)
 	}

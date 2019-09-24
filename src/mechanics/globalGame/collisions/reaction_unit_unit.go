@@ -4,13 +4,53 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
 
-func InitCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *unit.ShortUnitInfo) {
+func InitCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *unit.ShortUnitInfo, int, int, int) {
 	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
 	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
-	return CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units)
+
+	noCollision, collisionUnit := CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units, false, false, false)
+
+	x, y := moveUnit.X, moveUnit.Y
+	percent := 0
+	if !noCollision {
+		x, y, noCollision, percent = detailCheckCollision(moveUnit, pathUnit, units)
+	}
+	return noCollision, collisionUnit, x, y, percent
+}
+
+func detailCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit, units map[int]*unit.ShortUnitInfo) (int, int, bool, int) {
+
+	// юнит имеет высокую скорость последние точки делить его путь что бы адекватно обработать колизии
+	x, y := float64(moveUnit.X), float64(moveUnit.Y)
+
+	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
+	startDist := game_math.GetBetweenDist(int(x), int(y), pathUnit.X, pathUnit.Y)
+	minDist := startDist
+
+	for {
+
+		dist := game_math.GetBetweenDist(int(x), int(y), pathUnit.X, pathUnit.Y)
+		if dist <= 1 || minDist < dist {
+			return int(x), int(y), true, 100
+		}
+
+		radRotate := float64(pathUnit.Rotate) * math.Pi / 180
+		stopX := float64(1) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(1) * math.Sin(radRotate)
+
+		noCollision, _ := CheckCollisionsPlayers(moveUnit, int(x), int(y), pathUnit.Rotate, units, false, false, false)
+		if !noCollision {
+			return int(x), int(y), false, int((dist * 100) / startDist)
+		}
+
+		x += stopX
+		y += stopY
+		minDist = dist
+	}
 }
 
 func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *unit.PathUnit) {
@@ -61,8 +101,8 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *
 	xVel2 = xVel2prime*cosAlfa - yVel2prime*sinAlfa
 	yVel2 = yVel2prime*cosAlfa + xVel2prime*sinAlfa
 
-	speed1 := math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))
-	speed2 := math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))
+	speed1 := (math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))) / 5
+	speed2 := (math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))) / 5
 
 	takeUnit.CurrentSpeed = speed1
 	takeUnit.X += int(float64(-speed1) * math.Cos(needRad))
@@ -82,7 +122,7 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *
 	)
 
 	// проверка нового места толкаемого юзера на колизию с другими юзерами // TODO не отдебажено
-	noCollision, _ := InitCheckCollision(toUnit, &unit.PathUnit{
+	noCollision, _, _, _, _ := InitCheckCollision(toUnit, &unit.PathUnit{
 		X:      int(toUnit.X + int(float64(speed2)*math.Cos(needRad))),
 		Y:      int(toUnit.Y + int(float64(speed2)*math.Sin(needRad))),
 		Rotate: toUnit.Rotate,
