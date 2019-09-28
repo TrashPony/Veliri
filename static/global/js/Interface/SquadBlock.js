@@ -9,6 +9,90 @@ function FillSquadBlock(squad) {
             fillEquipBlock(squad.mather_ship.units[i].unit);
         }
     }
+
+    fillFormation(Data.squad, scaleFormation);
+}
+
+let scaleFormation = 5;
+
+function changeScaleFormation(change) {
+    if (scaleFormation + change > 0) {
+        scaleFormation += change;
+        fillFormation(Data.squad, scaleFormation);
+    }
+}
+
+function fillFormation(squad, scale) {
+    // окно строя 150/150px центр 75 75
+    // TODO подсвечивать придерживается юнит строя или нет
+
+    let formationUnits = document.getElementById("formationUnits");
+    let notFormationUnits = document.getElementById("notFormationUnits");
+    formationUnits.innerHTML = ``;
+    notFormationUnits.innerHTML = ``;
+
+    let createNotPosUnit = function (unit, content) {
+        notFormationUnits.innerHTML += `
+            <div onclick="NewFormationPos(${unit.id}, 0, 0)">${content}</div>
+        `
+    };
+
+    let crateBlock = function (unit, x, y, content, ms) {
+
+        if (!ms && x === 0 && y === 0) {
+            createNotPosUnit(unit, content)
+        }
+
+        let width = unit.body.height / scale, height = unit.body.width / scale;
+
+        let unitBlock = document.createElement("div");
+        unitBlock.className = "formationUnit";
+        unitBlock.style.height = (height * 2) + "px";
+        unitBlock.style.width = (width * 2) + "px";
+        unitBlock.style.top = ((75 + y / scale) - height) + "px";
+        unitBlock.style.left = ((75 + x / scale) - width) + "px";
+        unitBlock.innerHTML = content;
+        formationUnits.appendChild(unitBlock);
+
+        if (!ms) {
+            $(unitBlock).draggable({
+                containment: "#formationUnits",
+                stop: function (event, ui) {
+                    let stopPos = $(this).position();
+
+                    stopPos.x = (stopPos.left - 75 + width) * scale;
+                    stopPos.y = (stopPos.top - 75 + height) * scale;
+
+                    NewFormationPos(unit.id, stopPos.x, stopPos.y)
+                }
+            })
+        }
+    };
+
+
+    crateBlock(squad.mather_ship, 0, 0, "↑", true);
+
+    for (let i in squad.mather_ship.units) {
+        if (squad.mather_ship.units.hasOwnProperty(i) && squad.mather_ship.units[i].unit) {
+            let unit = squad.mather_ship.units[i].unit;
+            if (unit.on_map) {
+                if (unit.formation_pos) {
+                    crateBlock(unit, unit.formation_pos.x, unit.formation_pos.y, squad.mather_ship.units[i].number_slot, false);
+                } else {
+                    createNotPosUnit(unit, squad.mather_ship.units[i].number_slot)
+                }
+            }
+        }
+    }
+}
+
+function NewFormationPos(unitID, x, y) {
+    global.send(JSON.stringify({
+        event: "NewFormationPos",
+        unit_id: Number(unitID),
+        x: Math.round(x),
+        y: Math.round(y),
+    }))
 }
 
 function fillSquadUnit(id, unit) {
@@ -21,7 +105,7 @@ function fillSquadUnit(id, unit) {
         if (id !== 'MS') {
 
             let backButton = "";
-            if (unit.on_map){
+            if (unit.on_map) {
                 backButton = "background: url(https://img.icons8.com/cute-clipart/64/000000/login-rounded-up.png) center center / contain no-repeat, rgba(0, 0, 0, 0.6);"
             }
 
@@ -85,8 +169,8 @@ function fillSquadUnit(id, unit) {
         `;
 
             $('#reactorStatus').html(`
-        <div id="countPower">${(unit.power/100).toFixed(0)} / ${(unit.max_power/100).toFixed(0)}</div>
-        <div id="recoverPower">+${(unit.recovery_power/100).toFixed(1)} <span>ед/сек.</span></div>`)
+        <div id="countPower">${(unit.power / 100).toFixed(0)} / ${(unit.max_power / 100).toFixed(0)}</div>
+        <div id="recoverPower">+${(unit.recovery_power / 100).toFixed(1)} <span>ед/сек.</span></div>`)
         }
     }
 
@@ -210,7 +294,7 @@ function fillEquipBlock(unit) {
     hpBar.style.width = percentHP + "%";
 
     let energyBar = document.getElementById('energy' + unit.id);
-    if (energyBar){
+    if (energyBar) {
         let percent = 100 / (unit.body.max_power / unit.power);
         energyBar.style.width = percent + "%";
     }

@@ -96,6 +96,8 @@ type Unit struct {
 
 	FollowUnitID int  `json:"follow_unit_id"`
 	Return       bool `json:"returning"`
+
+	FormationPos *coordinate.Coordinate `json:"formation_pos"`
 }
 
 type ShortUnitInfo struct {

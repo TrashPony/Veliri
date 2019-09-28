@@ -246,6 +246,10 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			go SendMessage(Message{Event: msg.Event, IDUserSend: user.GetID(), Missions: user.Missions, MissionUUID: user.SelectMission})
 		}
 
+		if msg.Event == "NewFormationPos" {
+			NewFormationPos(user, msg)
+		}
+
 		if msg.Event == "SelectMission" {
 
 			if msg.MissionUUID == "" {

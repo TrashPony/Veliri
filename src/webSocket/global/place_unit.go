@@ -77,6 +77,14 @@ func placeUnit(user *player.Player, msg Message) {
 				go globalGame.Clients.PlaceUnit(outUnit)
 				go update.Squad(user.GetSquad(), true)
 				go SendMessage(Message{Event: "PlaceUnit", ShortUnit: outUnit.GetShortInfo(), IDMap: outUnit.MapID})
+
+				if outUnit.FormationPos != nil {
+					x, y := user.GetSquad().GetFormationCoordinate(outUnit.FormationPos.X, outUnit.FormationPos.Y)
+					msg.ToX, msg.ToY = float64(x), float64(y)
+					msg.UnitsID = []int{outUnit.ID}
+
+					Move(user, msg, true)
+				}
 			} else {
 				go SendMessage(Message{Event: "Error", Error: "place is busy", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 			}

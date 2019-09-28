@@ -2,6 +2,7 @@ package squad
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"math"
 	"sync"
 )
 
@@ -38,4 +39,13 @@ func (s *Squad) GetUnitByID(id int) *unit.Unit {
 	}
 
 	return nil
+}
+
+func (s *Squad) GetFormationCoordinate(x, y int) (int, int) {
+	//хз почему +90 но работает)
+	alpha := float64(s.MatherShip.Rotate+90) * math.Pi / 180
+	newX := float64(x)*math.Cos(alpha) - float64(y)*math.Sin(alpha) + float64(s.MatherShip.X)
+	newY := float64(x)*math.Sin(alpha) + float64(y)*math.Cos(alpha) + float64(s.MatherShip.Y)
+
+	return int(newX), int(newY)
 }

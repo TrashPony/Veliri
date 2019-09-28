@@ -5,9 +5,11 @@ function RemoveUnit(jsonData) {
     let unit = game.units[jsonData.short_unit.id];
     if (unit) {
 
-        while (0 < unit.oldPoint.length) {
-            let label = unit.oldPoint.shift();
-            if (label) label.destroy();
+        if (unit.oldPoint) {
+            while (0 < unit.oldPoint.length) {
+                let label = unit.oldPoint.shift();
+                if (label) label.destroy();
+            }
         }
 
         if (unit.sprite) {

@@ -23,8 +23,8 @@ func (r *Polygon) rotate(rotate int) {
 
 	rotatePoint := func(x, y, x0, y0 float64, rotate int) (newX, newY float64) {
 		alpha := float64(rotate) * math.Pi / 180
-		newX = (x-x0)*math.Cos(float64(alpha)) - (y-y0)*math.Sin(float64(alpha)) + x0
-		newY = (x-x0)*math.Sin(float64(alpha)) + (y-y0)*math.Cos(float64(alpha)) + y0
+		newX = (x-x0)*math.Cos(alpha) - (y-y0)*math.Sin(alpha) + x0
+		newY = (x-x0)*math.Sin(alpha) + (y-y0)*math.Cos(alpha) + y0
 		return
 	}
 

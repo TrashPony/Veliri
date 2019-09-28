@@ -29,6 +29,7 @@
     <link href="./css/anomalyScanner.css" rel="stylesheet">
     <link href="./css/action_panel.css" rel="stylesheet">
     <link href="./css/mission_block.css" rel="stylesheet">
+    <link href="./css/formation.css" rel="stylesheet">
 
     <script src="../assets/components/servicesWebSockets.js"></script>
 
@@ -348,6 +349,14 @@
                     </div>
                 </div>
             </div>
+            <div id="formationOption">
+                <div id="formationOptionWrapper">
+                    <h4>Построение: </h4>
+                    <select>
+                        <option value="-">-</option>
+                    </select>
+                </div>
+            </div>
             <div id="ActionPanel">
                 <div id="ActionPanelWrapper">
                     <div id="Attack" onclick="Attack()"
@@ -393,6 +402,12 @@
                     <div class="weapon"></div>
                     <div class="ammo"></div>
                 </div>
+            </div>
+            <div id="formation">
+                <div id="formationUnits"></div>
+                <div class="scaleFormationButton" style="right: 24px;" onclick="changeScaleFormation(1)">-</div>
+                <div class="scaleFormationButton" onclick="changeScaleFormation(-1)">+</div>
+                <div id="notFormationUnits"></div>
             </div>
         </div>
     </div>

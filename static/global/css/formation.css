@@ -1,0 +1,101 @@
+#formation {
+    border-radius: 5px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    float: left;
+    margin-left: 2px;
+    box-shadow: 0 0 2px black;
+    background: rgba(0, 0, 0, 0.3);
+    position: relative;
+    top: -23px;
+}
+
+#formationOption {
+    height: 21px;
+    border-radius: 5px;
+    padding: 2px 4px;
+    float: right;
+    margin-left: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 2px black;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#formationOptionWrapper {
+    display: block;
+    border-radius: 5px;
+    width: 143px;
+    height: 19px;
+    float: right;
+}
+
+#formationOption select {
+    width: 139px;
+}
+
+#formationUnits {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.formationUnit {
+    background: rgba(255, 255, 255, 0.6);
+    position: absolute;
+    box-shadow: 0 0 2px black;
+    font-weight: 900;
+}
+
+.formationUnit:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.formationUnit:active {
+    background: rgba(10, 245, 255, 0.9);
+}
+
+.scaleFormationButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: yellow;
+    height: 15px;
+    width: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px black;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    transition: 200ms;
+}
+
+.scaleFormationButton:hover, #notFormationUnits div:hover {
+    box-shadow: 0 0 2px white;
+}
+
+.scaleFormationButton:active, #notFormationUnits div:active {
+    transform: scale(0.95);
+}
+
+#notFormationUnits {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: yellow;
+}
+
+#notFormationUnits div {
+    height: 15px;
+    width: 15px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px black;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    transition: 200ms;
+    float: left;
+    margin-right: 2px;
+}

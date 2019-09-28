@@ -8,7 +8,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "PreviewPath") {
-        PreviewPath(jsonData);
+        //PreviewPath(jsonData);
     }
 
     if (jsonData.event === "MoveTo") {
@@ -200,6 +200,11 @@ function ReadResponse(jsonData) {
 
     if (jsonData.event === "ClearPath") {
         findPath.clear();
+    }
+
+    if (jsonData.event === "NewFormationPos") {
+        Data.squad = jsonData.squad;
+        fillFormation(Data.squad, scaleFormation);
     }
 }
 
