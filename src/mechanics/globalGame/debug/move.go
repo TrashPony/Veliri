@@ -13,17 +13,17 @@ func newStore() *MessageStore {
 		Move:     true,
 		MoveInit: false,
 
-		MoveEndPoint: true,
+		MoveEndPoint: false,
 
-		AStartNeighbours: true,
-		AStartResult:     true,
+		AStartNeighbours: false,
+		AStartResult:     false,
 
 		RegionFindDebug: false,
 		RegionResult:    false,
 
-		HandAlgorithm: true,
+		HandAlgorithm: false,
 
-		SearchCollisionLine: true,
+		SearchCollisionLine: false,
 	}
 }
 

@@ -208,6 +208,16 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, max, min)
 			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false, false)
 
+			if mUserRect.detectPointInRectangle(float64(otherUnit.X), float64(otherUnit.Y)) {
+				// цент находится внутри прямоуголника, пересекается
+				return false, otherUnit
+			}
+
+			if userRect.detectPointInRectangle(float64(x), float64(y)) {
+				// цент находится внутри прямоуголника, пересекается
+				return false, otherUnit
+			}
+
 			if mUserRect.centerX == userRect.centerX && mUserRect.centerY == userRect.centerY {
 				// при одинаковом прямоугольнике и одинаковым центром, не будет пересечений и колизия будет не найдена
 				// поэтому это тут

@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
 func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, xSize, ySize int, gameUnit *unit.Unit,
@@ -16,10 +17,14 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, xSize, ySize int, game
 	}
 
 	if units != nil {
-		free, _ := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2,
-			0, units, false, true, true)
+		free, collisionUnit := collisions.CheckCollisionsPlayers(gameUnit, x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2,
+			0, units, false, true, false)
+
 		if !free {
-			return nil, false
+			dist := game_math.GetBetweenDist(x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2, collisionUnit.X, collisionUnit.Y)
+			if !collisionUnit.MoveChecker || dist < 350 {
+				return nil, false
+			}
 		}
 	}
 

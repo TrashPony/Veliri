@@ -20,14 +20,14 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 
 	// 0 пытаемя проложить путь от начала пути до конечной точки по прямой
-	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit, 5, units)
+	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit, 5, units, false)
 	if !collision {
 		return []*coordinate.Coordinate{{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)}}, nil
 	} else {
 
 		// конец пути находится в препятсвие
 		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(ToX), int(ToY), 0, mp, moveUnit.Body, false, true)
-		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units, false, true, true)
+		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units, false, true, false)
 		// если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
 		if !possibleMove || !free {
 			ToX, ToY, collision = SearchEndPoint(startX, startY, ToX, ToY, moveUnit, mp, units)
@@ -56,39 +56,40 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 		debug.Store.AddMessage("CreateRect", "red", int(ToX), int(ToY), 0, 0, 5, mp.Id, 20)
 	}
 
-	toTmpX, toTmpY := ToX, ToY
-	toTmpX2, toTmpY2 := ToX, ToY
+	search := func(x, y, steep float64, angle int) (float64, float64, bool, bool) {
 
-	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
-	radian := float64(angle) * math.Pi / 180
+		radian := float64(angle) * math.Pi / 180
+		stopX, stopY := float64(game_math.CellSize*steep)*math.Cos(radian)+x, float64(game_math.CellSize*steep)*math.Sin(radian)+y
+
+		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(stopX), int(stopY), 0, mp, moveUnit.Body, false, true)
+		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(stopX), int(stopY), 0, units, false, true, true)
+		if possibleMove && free {
+
+			if debug.Store.MoveEndPoint {
+				debug.Store.AddMessage("CreateRect", "green", int(stopX), int(stopY), 0, 0, game_math.CellSize, mp.Id, 20)
+			}
+
+			return stopX, stopY,
+				collisions.SearchCollisionInLine(startX, startY, stopX, stopY, mp, moveUnit, game_math.CellSize, units, false), true
+		}
+
+		if debug.Store.MoveEndPoint {
+			debug.Store.AddMessage("CreateRect", "white", int(stopX), int(stopY), 0, 0, game_math.CellSize, mp.Id, 20)
+		}
+
+		return 0, 0, false, false
+	}
 
 	// идем в обе стороны по направлению вектра пока не найдем пригодную точку выхода
+
+	step := 0
 	for {
-		stopX, stopY := float64(game_math.CellSize)*math.Cos(radian), float64(game_math.CellSize)*math.Sin(radian)
-		stopX2, stopY2 := float64(-game_math.CellSize)*math.Cos(radian), float64(-game_math.CellSize)*math.Sin(radian)
-
-		toTmpX, toTmpY = toTmpX+stopX, toTmpY+stopY
-		toTmpX2, toTmpY2 = toTmpX2+stopX2, toTmpY2+stopY2
-
-		possibleMove1, _ := collisions.CheckCollisionsOnStaticMap(int(toTmpX), int(toTmpY), 0, mp, moveUnit.Body, false, true)
-		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(toTmpX), int(toTmpY), 0, units, false, true, true)
-		if possibleMove1 && free {
-
-			if debug.Store.MoveEndPoint {
-				debug.Store.AddMessage("CreateRect", "green", int(toTmpX), int(toTmpY), 0, 0, game_math.CellSize, mp.Id, 20)
+		step++
+		for angle := 0; angle <= 360; angle += 45 {
+			x, y, collision, passed := search(ToX, ToY, float64(step), angle)
+			if passed {
+				return x, y, collision
 			}
-
-			return toTmpX, toTmpY, collisions.SearchCollisionInLine(startX, startY, toTmpX, toTmpY, mp, moveUnit, game_math.CellSize, units)
-		}
-		possibleMove2, _ := collisions.CheckCollisionsOnStaticMap(int(toTmpX2), int(toTmpY2), 0, mp, moveUnit.Body, false, true)
-		free2, _ := collisions.CheckCollisionsPlayers(moveUnit, int(toTmpX2), int(toTmpY2), 0, units, false, true, true)
-		if possibleMove2 && free2 {
-
-			if debug.Store.MoveEndPoint {
-				debug.Store.AddMessage("CreateRect", "green", int(toTmpX2), int(toTmpY2), 0, 0, game_math.CellSize, mp.Id, 20)
-			}
-
-			return toTmpX2, toTmpY2, collisions.SearchCollisionInLine(startX, startY, toTmpX2, toTmpY2, mp, moveUnit, game_math.CellSize, units)
 		}
 	}
 }
@@ -97,6 +98,8 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 
 	path := make([]*coordinate.Coordinate, 0)
 	last := false
+	tryCount := 3
+
 	var points []*coordinate.Coordinate
 
 	for moveUnit.MoveUUID == uuid {
@@ -109,12 +112,24 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 				var err error
 				points, err = MoveUnit(moveUnit, ToX, ToY, mp, size, uuid, units)
 				if err != nil {
-					return nil, err
+
+					collision := false
+					ToX, ToY, collision = SearchEndPoint(float64(x), float64(y), ToX, ToY, moveUnit, mp, units)
+					moveUnit.ToX, moveUnit.ToY = ToX, ToY
+					points = nil
+					tryCount--
+
+					if !collision || tryCount == 0 {
+						return nil, err
+					}
 				}
 			}
+
 			// находим максимальную отдаленную точку куда может попать юнит
 			x, y, last = SearchPoint(&points, x, y, mp, moveUnit, float64(size), units)
 			if x == 0 && y == 0 {
+				points = nil
+				tryCount--
 				return nil, errors.New("line not to cell")
 			}
 
@@ -157,25 +172,27 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Ma
 	lastIndex := 0
 	countClose := 0
 
-	for i := len(*points) - 1; i >= 0; i-- {
+	if len(*points) > 0 {
+		for i := len(*points) - 1; i >= 0; i-- {
 
-		go func(index int) {
+			go func(index int, cell *coordinate.Coordinate) {
 
-			defer func() {
-				countClose++
-			}()
+				defer func() {
+					countClose++
+				}()
 
-			collision := collisions.SearchCollisionInLine(
-				float64((*points)[index].X)+size/2,
-				float64((*points)[index].Y)+size/2,
-				float64(unitX),
-				float64(unitY), mp, gameUnit, size, units)
-			if !collision {
-				if index > lastIndex {
-					x, y, lastIndex = (*points)[index].X+int(size)/2, (*points)[index].Y+int(size)/2, index
+				collision := collisions.SearchCollisionInLine(
+					float64(cell.X)+size/2,
+					float64(cell.Y)+size/2,
+					float64(unitX),
+					float64(unitY), mp, gameUnit, size, units, false)
+				if !collision {
+					if index > lastIndex {
+						x, y, lastIndex = cell.X+int(size)/2, cell.Y+int(size)/2, index
+					}
 				}
-			}
-		}(i)
+			}(i, (*points)[i])
+		}
 	}
 
 	for countClose < len(*points)-1 {

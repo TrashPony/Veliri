@@ -12,7 +12,7 @@ function update() {
     }
 
     if (game && game.typeService === "global") {
-        //DebugCollision();
+        // DebugCollision();
         // AnimateDigger();
 
 
@@ -30,6 +30,7 @@ function update() {
                 }
             }
         }
+
         StartSelectableUnits();
         AnimateMiningLaser();
     }

@@ -169,7 +169,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 			}
 
 			if units != nil {
-				free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(forecastX), int(forecastY), 0, units, true, false, true)
+				free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(forecastX), int(forecastY), 0, units, true, false, false)
 				if !free {
 					return path, true
 				}

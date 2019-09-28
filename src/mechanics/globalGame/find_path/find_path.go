@@ -72,7 +72,8 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 	}
 }
 
-func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
+func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
+	regions []*_map.Region, units map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
 
 	xSize, ySize := mp.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
 
@@ -80,6 +81,27 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	start.Rotate = gameUnit.Rotate
 
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
+
+	// если конечная точка является невалидной то ищем ближайшую валидную точку и говорим что это цель
+	_, free := checkValidForMoveCoordinate(mp, end.X, end.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
+	if !free {
+		getValidEnd := func() *coordinate.Coordinate {
+			for radius := 0; radius < 10; radius++ {
+				for angle := 10; angle < 360; angle += 10 {
+
+					x := int(math.Round(float64(float64(end.X) + float64(radius)*math.Cos(float64(angle)))))
+					y := int(math.Round(float64(float64(end.Y) + float64(radius)*math.Sin(float64(angle)))))
+
+					_, free := checkValidForMoveCoordinate(mp, x, y, xSize, ySize, gameUnit, scaleMap, regions, units)
+					if free {
+						return &coordinate.Coordinate{X: x, Y: y}
+					}
+				}
+			}
+			return nil
+		}
+		end = getValidEnd()
+	}
 
 	if end.X >= xSize || end.Y >= ySize || end.X < 0 || end.Y < 0 || start.X >= xSize || start.Y >= ySize || start.X < 0 || start.Y < 0 {
 		return nil, nil, 0, 0, errors.New("start or end out the range")
@@ -103,7 +125,10 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 		}
 	}()
 
-	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap)
+	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, regions, units)
+	if debug.Store.AStartNeighbours {
+		debug.Store.AddMessage("CreateRect", "blue", end.X*scaleMap, end.Y*scaleMap, 0, 0, scaleMap, gameMap.Id, 0)
+	}
 
 	// создаем 2 карты для посещенных (open) и непосещеных (close) точек
 	openPoints, closePoints := Points{points: make(map[string]*coordinate.Coordinate)}, Points{points: make(map[string]*coordinate.Coordinate)}

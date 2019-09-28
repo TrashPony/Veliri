@@ -15,7 +15,8 @@ function CreateObject(coordinate, x, y) {
             coordinate.shadow_intensity);
     }
 
-    ObjectEvents(coordinate, object, x, y);
+    // TODO метод вызывающий фризы
+    //ObjectEvents(coordinate, object, x, y);
 
     coordinate.objectSprite = object;
 }
