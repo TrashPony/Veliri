@@ -5,9 +5,9 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 )
 
-func PlaceHandler(coordinate *coordinate.Coordinate, mp *_map.Map, toQ, toR, toBaseId, toMapId int, typeHandler string) {
+func PlaceHandler(coordinate *coordinate.Coordinate, mp *_map.Map, toX, toY, toBaseId, toMapId int, typeHandler string) {
 
-	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
+	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
 
 	coordinate.Handler = typeHandler
 	// TODO

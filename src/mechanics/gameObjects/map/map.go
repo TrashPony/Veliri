@@ -11,8 +11,8 @@ import (
 type Map struct {
 	Id                  int `json:"id"`
 	Name                string
-	QSize               int
-	RSize               int
+	XSize               int
+	YSize               int
 	DefaultTypeID       int
 	DefaultLevel        int
 	Specification       string
@@ -166,8 +166,8 @@ func (mp *Map) GetShortInfoMap() *ShortInfoMap {
 	return &ShortInfoMap{
 		Id:                  mp.Id,
 		Name:                mp.Name,
-		QSize:               mp.QSize,
-		RSize:               mp.RSize,
+		QSize:               mp.XSize,
+		RSize:               mp.YSize,
 		Specification:       mp.Specification,
 		Global:              mp.Global,
 		HandlersCoordinates: mp.HandlersCoordinates,
@@ -301,8 +301,8 @@ type Emitter struct {
 	Yoyo          bool   `json:"yoyo"`
 }
 
-func (mp *Map) GetCoordinate(q, r int) (coordinate *coordinate.Coordinate, find bool) {
-	coordinate, find = mp.OneLayerMap[q][r]
+func (mp *Map) GetCoordinate(x, y int) (coordinate *coordinate.Coordinate, find bool) {
+	coordinate, find = mp.OneLayerMap[x][y]
 	return
 }
 
@@ -311,8 +311,8 @@ func (mp *Map) GetResource(q, r int) *resource.Map {
 	return res
 }
 
-func (mp *Map) SetXYSize(hexWidth, hexHeight, Scale int) (int, int) {
-	return (mp.QSize * hexWidth) / Scale, int(float64(mp.RSize)*float64(hexHeight)*0.75) / Scale
+func (mp *Map) SetXYSize(Scale int) (int, int) {
+	return mp.XSize / Scale, mp.YSize / Scale
 }
 
 // TODO GetMaxPriorityTexture, GetMaxPriorityObject близнецы
@@ -345,10 +345,10 @@ func (mp *Map) GetMaxPriorityObject() int {
 }
 
 func (mp *Map) AddResourceInMap(reservoir *resource.Map) {
-	if mp.Reservoir[reservoir.Q] != nil {
-		mp.Reservoir[reservoir.Q][reservoir.R] = reservoir
+	if mp.Reservoir[reservoir.X] != nil {
+		mp.Reservoir[reservoir.X][reservoir.Y] = reservoir
 	} else {
-		mp.Reservoir[reservoir.Q] = make(map[int]*resource.Map)
-		mp.Reservoir[reservoir.Q][reservoir.R] = reservoir
+		mp.Reservoir[reservoir.X] = make(map[int]*resource.Map)
+		mp.Reservoir[reservoir.X][reservoir.Y] = reservoir
 	}
 }

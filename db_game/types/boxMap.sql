@@ -5,8 +5,8 @@ CREATE TABLE box_in_map
   destroy_time        timestamp, /* время когда ящик самоликвидируется */
   id_map              INT REFERENCES maps (id),
   id_box_type         INT     not null default 0,
-  q                   int,
-  r                   int,
+  x                   int,
+  y                   int,
   rotate              int,
   current_hp          int     not null default 1,
   owned_by_map_object boolean not null default false -- говорит что это инвентарь обьекта на карте

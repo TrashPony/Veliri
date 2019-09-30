@@ -29,6 +29,8 @@ func NewFormationPos(user *player.Player, msg Message) {
 		moveUnit.FormationPos = &coordinate.Coordinate{X: int(msg.X), Y: int(msg.Y)}
 	}
 
+	moveUnit.Formation = true
+
 	x, y := user.GetSquad().GetFormationCoordinate(moveUnit.FormationPos.X, moveUnit.FormationPos.Y)
 	msg.ToX, msg.ToY = float64(x), float64(y)
 

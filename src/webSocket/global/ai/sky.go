@@ -2,7 +2,6 @@ package ai
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	wsGlobal "github.com/TrashPony/Veliri/src/webSocket/global"
 	"github.com/satori/go.uuid"
 	"math"
@@ -29,8 +28,6 @@ func CreateCloud(mapID int) {
 	randomCloud := "cloud" + strconv.Itoa(rand.Intn(13))
 	randomPos := rand.Intn(2)
 
-	sizeMapX := (game_math.HexagonWidth+5)*mp.QSize + 500
-	sizeMapY := 185 * mp.RSize / 2
 	speed := rand.Intn(40) + 20
 	alpha := 0.2 + rand.Float64()*(0.8-0.2)
 
@@ -41,9 +38,9 @@ func CreateCloud(mapID int) {
 			Uuid:     Uuid.String(),
 			Speed:    speed,
 			Alpha:    alpha,
-			SizeMapX: sizeMapX,
-			SizeMapY: sizeMapY,
-			X:        rand.Intn(sizeMapX),
+			SizeMapX: mp.XSize,
+			SizeMapY: mp.YSize,
+			X:        rand.Intn(mp.XSize),
 			Y:        -500,
 			Angle:    135,
 			IDMap:    mp.Id,
@@ -55,10 +52,10 @@ func CreateCloud(mapID int) {
 			Uuid:     Uuid.String(),
 			Speed:    speed,
 			Alpha:    alpha,
-			SizeMapX: sizeMapX,
-			SizeMapY: sizeMapY,
-			X:        sizeMapX + 500,
-			Y:        rand.Intn(sizeMapY),
+			SizeMapX: mp.XSize,
+			SizeMapY: mp.YSize,
+			X:        mp.XSize + 500,
+			Y:        rand.Intn(mp.YSize),
 			Angle:    135,
 			IDMap:    mp.Id,
 		}

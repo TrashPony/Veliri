@@ -9,7 +9,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 	"math/rand"
 	"time"
@@ -26,16 +25,10 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
 	stopY := float64(65) * math.Sin(radRotate)
 
-	forecastX := float64(user.GetSquad().MatherShip.X) - stopX // - т.к. нам нужна точка позади
-	forecastY := float64(user.GetSquad().MatherShip.Y) - stopY
+	forecastX := user.GetSquad().MatherShip.X - int(stopX) // - т.к. нам нужна точка позади
+	forecastY := user.GetSquad().MatherShip.Y - int(stopY)
 
-	q, r := game_math.GetQRfromXY(int(forecastX), int(forecastY))
-	hexCoordinate, find := mp.OneLayerMap[q][r]
-	if !find {
-		return errors.New("wrong place"), nil
-	}
-
-	oldBox, mx := boxes.Boxes.GetByQR(hexCoordinate.Q, hexCoordinate.R, mp.Id)
+	oldBox, mx := boxes.Boxes.GetByXY(forecastX, forecastY, mp.Id)
 	mx.Unlock()
 
 	if oldBox != nil {
@@ -49,7 +42,7 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 
 			slot.RemoveItemBySlot(1)
 
-			newBox := boxInMap.Box{Q: hexCoordinate.Q, R: hexCoordinate.R, Rotate: rand.Intn(360), MapID: mp.Id,
+			newBox := boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id,
 				TypeID: typeBox.TypeID, DestroyTime: time.Now()}
 
 			newBox.GetStorage().Slots = make(map[int]*inventory.Slot)

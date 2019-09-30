@@ -29,16 +29,6 @@ type Player struct {
 	squad  *squad.Squad   // отряд игрока
 	squads []*squad.Squad // не активные отряды которые ждут игрока на безах
 
-	unitStorage []*unit.Unit // юниты которы находяться не на поле игры в трюме мса
-
-	watch              map[string]map[string]*coordinate.Coordinate // map[X]map[Y] координаты которые видит пользватель
-	units              map[string]map[string]*unit.Unit             // map[X]map[Y] свои юниты представленные ввиде карты на поле
-	hostileUnits       map[string]map[string]*unit.Unit             // map[X]map[Y] вражеские юниты которы видно в настоящее время
-	memoryHostileUnits map[string]unit.Unit                         // Юниты которые видел и запомнил пользователь за всю игру
-
-	gameID int
-	Ready  bool
-
 	Training   int `json:"training"`
 	openDialog *dialog.Dialog
 
@@ -181,30 +171,6 @@ func (client *Player) SetID(id int) {
 
 func (client *Player) GetID() (id int) {
 	return client.ID
-}
-
-func (client *Player) SetGameID(id int) {
-	client.gameID = id
-}
-
-func (client *Player) GetGameID() (id int) {
-	return client.gameID
-}
-
-func (client *Player) SetReady(ready bool) {
-	client.Ready = ready
-}
-
-func (client *Player) GetReady() bool {
-	return client.Ready
-}
-
-func (client *Player) SetLobbyReady(ready bool) {
-	client.LobbyReady = ready
-}
-
-func (client *Player) GetLobbyReady() bool {
-	return client.LobbyReady
 }
 
 func (client *Player) GetSquad() *squad.Squad {

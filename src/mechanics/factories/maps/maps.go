@@ -32,6 +32,7 @@ func newMapStore() *mapStore {
 
 		for _, q := range mp.OneLayerMap {
 			for _, mapCoordinate := range q {
+
 				// переносим координаты со слушателями в отдельный масив для удобного доступа
 				if mapCoordinate.Handler != "" || mapCoordinate.Transport {
 					mapCoordinate.HandlerOpen = true
@@ -41,7 +42,7 @@ func newMapStore() *mapStore {
 				// если координата хранит инвентарь то создаем его в карте
 				if mapCoordinate.ObjectInventory {
 
-					box, mx := boxes.Boxes.GetByQR(mapCoordinate.Q, mapCoordinate.R, mp.Id)
+					box, mx := boxes.Boxes.GetByXY(mapCoordinate.X, mapCoordinate.Y, mp.Id)
 					mx.Unlock()
 
 					if box == nil {
@@ -49,8 +50,8 @@ func newMapStore() *mapStore {
 							MapID:            mp.Id,
 							CapacitySize:     100.00,
 							Protect:          false,
-							Q:                mapCoordinate.Q,
-							R:                mapCoordinate.R,
+							X:                mapCoordinate.X,
+							Y:                mapCoordinate.Y,
 							HP:               -1,
 							OwnedByMapObject: true,
 						}
@@ -67,9 +68,10 @@ func newMapStore() *mapStore {
 		m.maps[id] = mp
 	}
 
+	// парсим названия и описания обьектов на карте
 	for _, mp := range m.maps {
-		for _, q := range mp.OneLayerMap {
-			for _, mapCoordinate := range q {
+		for _, x := range mp.OneLayerMap {
+			for _, mapCoordinate := range x {
 				if mapCoordinate.ObjectName != "" {
 					// userName, BaseName, ToBaseName, ToSectorName, userFraction
 					toMapName := ""
@@ -84,7 +86,7 @@ func newMapStore() *mapStore {
 								for _, mapCoordinate2 := range q2 {
 									if mapCoordinate2.Handler == "sector" && mapCoordinate2.ToMapID == mp.Id {
 										for _, points := range mapCoordinate2.Positions {
-											if points.Q == mapCoordinate.Q && points.R == mapCoordinate.R {
+											if points.X == mapCoordinate.X && points.Y == mapCoordinate.Y {
 												toMapName = mp2.Name
 											}
 										}
@@ -149,12 +151,12 @@ func (m *mapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
 	return respawns
 }
 
-func (m *mapStore) GetReservoirByQR(q, r, mapID int) *resource.Map {
+func (m *mapStore) GetReservoirByXY(x, y, mapID int) *resource.Map {
 	mp, findMap := m.maps[mapID]
 	if findMap {
-		q, findQ := mp.Reservoir[q]
+		q, findQ := mp.Reservoir[x]
 		if findQ {
-			reservoir := q[r]
+			reservoir := q[y]
 			return reservoir
 		}
 	}
@@ -198,7 +200,7 @@ func (m *mapStore) AddNewAnomaly(newAnomaly *anomaly.Anomaly, mapID int) {
 
 func (m *mapStore) GetMapAnomaly(mapID, q, r int) *anomaly.Anomaly {
 	for _, anomalyMap := range Maps.anomaly[mapID] {
-		if anomalyMap != nil && anomalyMap.GetQ() == q && anomalyMap.GetR() == r {
+		if anomalyMap != nil && anomalyMap.GetX() == q && anomalyMap.GetY() == r {
 			return anomalyMap
 		}
 	}
@@ -207,7 +209,7 @@ func (m *mapStore) GetMapAnomaly(mapID, q, r int) *anomaly.Anomaly {
 
 func (m *mapStore) RemoveMapAnomaly(mapID, q, r int) {
 	for i, anomalyMap := range Maps.anomaly[mapID] {
-		if anomalyMap != nil && anomalyMap.GetQ() == q && anomalyMap.GetR() == r {
+		if anomalyMap != nil && anomalyMap.GetX() == q && anomalyMap.GetY() == r {
 			Maps.anomaly[mapID][i] = nil
 		}
 	}

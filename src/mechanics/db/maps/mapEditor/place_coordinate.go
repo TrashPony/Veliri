@@ -7,7 +7,7 @@ import (
 
 func PlaceCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, newIDType int) {
 
-	oldType := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
+	oldType := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
 
 	newType := getTypeByID(newIDType)
 
@@ -29,7 +29,7 @@ func PlaceCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, newIDType 
 	coordinate.YShadowOffset = 10
 
 	if oldType != nil {
-		DeleteCooordinateByQR(coordinate.Q, coordinate.R, mp.Id)
+		DeleteCooordinateByQR(coordinate.X, coordinate.Y, mp.Id)
 	}
 
 	InsertMapCoordinate(coordinate, mp)

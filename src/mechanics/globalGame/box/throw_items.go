@@ -8,7 +8,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 	"math/rand"
 	"time"
@@ -26,66 +25,55 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
 	stopY := float64(65) * math.Sin(radRotate)
 
-	forecastX := float64(user.GetSquad().MatherShip.X) - stopX // - т.к. нам нужна точка позади
-	forecastY := float64(user.GetSquad().MatherShip.Y) - stopY
+	forecastX := user.GetSquad().MatherShip.X - int(stopX) // - т.к. нам нужна точка позади
+	forecastY := user.GetSquad().MatherShip.Y - int(stopY)
 
-	q, r := game_math.GetQRfromXY(int(forecastX), int(forecastY))
-	hexCoordinate, find := mp.OneLayerMap[q][r]
-	if ! find {
-		return errors.New("not allow place"), false, nil
-	}
+	// TODO проверка на колизию с другими ящика, предметами и тд
+	oldBox, mx := boxes.Boxes.GetByXY(forecastX, forecastY, mp.Id)
 
-	if hexCoordinate.Move {
-		oldBox, mx := boxes.Boxes.GetByQR(hexCoordinate.Q, hexCoordinate.R, mp.Id)
-
-		if oldBox != nil {
-			for i, slot := range slots {
-				if slot.Item != nil {
-					realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
-					if ok {
-						addOk := oldBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
-						if addOk {
-							realSlot.RemoveItemBySlot(realSlot.Quantity)
-						}
+	if oldBox != nil {
+		for i, slot := range slots {
+			if slot.Item != nil {
+				realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
+				if ok {
+					addOk := oldBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
+					if addOk {
+						realSlot.RemoveItemBySlot(realSlot.Quantity)
 					}
 				}
-			}
-			mx.Unlock()
-			boxes.Boxes.UpdateBox(oldBox)
-
-			return nil, false, oldBox
-		} else {
-			mx.Unlock()
-			newBox := boxInMap.Box{Q: hexCoordinate.Q, R: hexCoordinate.R, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
-				DestroyTime: time.Now()}
-
-			newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
-			newBox.GetStorage().SetSlotsSize(999)
-
-			createBox := false
-			for i, slot := range slots {
-				if slot.Item != nil {
-					realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
-					if ok {
-						createBox = true
-						addOk := newBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
-						if addOk {
-							realSlot.RemoveItemBySlot(realSlot.Quantity)
-						}
-					}
-				}
-			}
-
-			if createBox {
-				update.Squad(user.GetSquad(), true)
-				return nil, createBox, boxes.Boxes.InsertNewBox(&newBox)
-			} else {
-				return errors.New("not find items"), createBox, nil
 			}
 		}
-	} else {
-		return errors.New("not allow place"), false, nil
-	}
+		mx.Unlock()
+		boxes.Boxes.UpdateBox(oldBox)
 
-	return errors.New("unknown error"), false, nil
+		return nil, false, oldBox
+	} else {
+		mx.Unlock()
+		newBox := boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
+			DestroyTime: time.Now()}
+
+		newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
+		newBox.GetStorage().SetSlotsSize(999)
+
+		createBox := false
+		for i, slot := range slots {
+			if slot.Item != nil {
+				realSlot, ok := user.GetSquad().MatherShip.Inventory.Slots[i]
+				if ok {
+					createBox = true
+					addOk := newBox.GetStorage().AddItemFromSlot(realSlot, user.GetID())
+					if addOk {
+						realSlot.RemoveItemBySlot(realSlot.Quantity)
+					}
+				}
+			}
+		}
+
+		if createBox {
+			update.Squad(user.GetSquad(), true)
+			return nil, createBox, boxes.Boxes.InsertNewBox(&newBox)
+		} else {
+			return errors.New("not find items"), createBox, nil
+		}
+	}
 }

@@ -274,7 +274,7 @@ func (m *missions) StartWorkersMonitor(client *player.Player, gameMission *missi
 
 		}
 		if action.TypeFuncMonitor == "to_q_r" {
-			go toQR(gameMission, action, client)
+			go toXY(gameMission, action, client)
 		}
 		if action.TypeFuncMonitor == "talk_with_base" {
 

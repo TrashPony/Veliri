@@ -6,7 +6,7 @@ import (
 )
 
 func PlaceTextures(coordinate *coordinate.Coordinate, mp *_map.Map, textureName string) {
-	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
+	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
 
 	coordinate.TextureOverFlore = textureName
 

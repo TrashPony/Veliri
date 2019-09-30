@@ -2,8 +2,8 @@ CREATE TABLE maps
 (
   id              SERIAL PRIMARY KEY,
   name            VARCHAR(64),
-  q_size          INT, /* размер карты по Х */
-  r_size          INT, /* размер карты по Y */
+  x_size          INT, /* размер карты по Х */
+  y_size          INT, /* размер карты по Y */
   id_type         INT REFERENCES coordinate_type (id), /* определяет основной тип тесктур если они явно не указаны в конструкторе */
   level           INT, /* определяет основной уровень координат на карте еще он не перепределен конструктором */
   specification   VARCHAR(255), /* описание карты */
@@ -36,8 +36,8 @@ CREATE TABLE map_constructor
   texture_priority   INT,
   /* тоже самое но для обьектов */
   object_priority    INT,
-  q                  INT,
-  r                  INT,
+  x                  INT,
+  y                  INT,
   level              INT, /* определяет уровень координаты ""примечание 1"" */
   rotate             INT, /* говорит на сколько повернуться спрайту обьекта в координате если он есть конечно */
   animate_speed      INT, /* если координата анимация говорит с какой скоростью ее вопспроизводить, кадров в секунду */
@@ -57,7 +57,7 @@ CREATE TABLE map_constructor
   handler            VARCHAR(64),
 
   /* соотвественно место куда попадает игрок после ивента */
-  to_positions       json, -- [ {"q": 1, "r": 1, "resp_rotate":90}, {"q": 2, "r": 2, "resp_rotate":90} ], координаты куда ведет телепорт
+  to_positions       json, -- [ {"x": 1, "y": 1, "resp_rotate":90}, {"x": 2, "y": 2, "resp_rotate":90} ], координаты куда ведет телепорт
   to_base_id         INT,  -- не внешний ключь потому что в го нет налов, а сылки на базу может и не быть)
   to_map_id          INT REFERENCES maps (id)
 );

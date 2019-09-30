@@ -1,4 +1,4 @@
-function CreateTerrain(coordinate, x, y, q, r) {
+function CreateTerrain(coordinate, x, y) {
     if (coordinate.coordinateText) {
         for (let text in coordinate.coordinateText) {
             coordinate.coordinateText[text].destroy();

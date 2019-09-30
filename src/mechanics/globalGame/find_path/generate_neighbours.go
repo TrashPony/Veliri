@@ -15,49 +15,49 @@ func generateNeighboursCoordinate(curr *coordinate.Coordinate, gameMap *_map.Map
 	//строго лево
 	leftCoordinate, left := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if left {
-		coordinate.AddXYCoordinate(res, leftCoordinate)
+		coordinate.AddCoordinate(res, leftCoordinate)
 	}
 
 	//строго право
 	rightCoordinate, right := checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if right {
-		coordinate.AddXYCoordinate(res, rightCoordinate)
+		coordinate.AddCoordinate(res, rightCoordinate)
 	}
 
 	//верх центр
 	topCoordinate, top := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if top {
-		coordinate.AddXYCoordinate(res, topCoordinate)
+		coordinate.AddCoordinate(res, topCoordinate)
 	}
 
 	//низ центр
 	bottomCoordinate, bottom := checkValidForMoveCoordinate(gameMap, curr.X, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if bottom {
-		coordinate.AddXYCoordinate(res, bottomCoordinate)
+		coordinate.AddCoordinate(res, bottomCoordinate)
 	}
 
 	//верх лево
 	gameCoordinate, find := checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
-		coordinate.AddXYCoordinate(res, gameCoordinate)
+		coordinate.AddCoordinate(res, gameCoordinate)
 	}
 
 	//верх право
 	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y-1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
-		coordinate.AddXYCoordinate(res, gameCoordinate)
+		coordinate.AddCoordinate(res, gameCoordinate)
 	}
 
 	//низ лево
 	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X-1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
-		coordinate.AddXYCoordinate(res, gameCoordinate)
+		coordinate.AddCoordinate(res, gameCoordinate)
 	}
 
 	//низ право
 	gameCoordinate, find = checkValidForMoveCoordinate(gameMap, curr.X+1, curr.Y+1, xSize, ySize, gameUnit, scaleMap, regions, units)
 	if find {
-		coordinate.AddXYCoordinate(res, gameCoordinate)
+		coordinate.AddCoordinate(res, gameCoordinate)
 	}
 
 	return

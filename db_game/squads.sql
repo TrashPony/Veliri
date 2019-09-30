@@ -6,11 +6,6 @@ CREATE TABLE squads
   id_user INT REFERENCES users (id), /* кому принадлежит */
   in_game BOOLEAN, /* отряд в бою */
 
-  /* позиция отряда на глобальной карте */
-  q       int,
-  r       int,
-  --id_map  INT REFERENCES maps (id), -- устарело, МС определяет главынй мап_ид отряда
-
   /* если отряд неактивен то он храниться на конкретной базе */
   id_base INT REFERENCES bases (id)
 );
@@ -22,6 +17,7 @@ CREATE TABLE squad_thorium_slots
   slot     INT, /* слот тория в мсе */
   thorium  INT /* сколько тория заряжено в слот */
 );
+
 
 CREATE TABLE squad_units
 (

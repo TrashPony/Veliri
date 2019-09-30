@@ -41,8 +41,8 @@ CREATE TABLE actions
   description           text    not null default '',
   short_description     text    not null default '',
   base_id               INT     not null default 0,
-  Q                     INT     not null default 0,
-  R                     INT     not null default 0,
+  x                     INT     not null default 0,
+  y                     INT     not null default 0,
   map_id                INT     not null default 0,    -- ид карты куда достигать Q R )
   radius                int     not null default 0,    -- Q,R являются центром цели радиус показывает растояние от цели
   sec                   int     not null default 0,    -- количество секунд, например надо записать показания в точке QR (постоять там секунд 30)
@@ -59,6 +59,7 @@ CREATE TABLE actions
   owner_place           BOOLEAN not null default true, -- указывает что это должен сделать владелец задания и только он (например положить предмет куда то)
   end_text              text    not null default ''    -- текст который отсылается игроку при завершение экшона
 );
+
 
 CREATE TABLE need_action_items
 (

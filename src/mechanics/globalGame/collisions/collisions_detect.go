@@ -12,10 +12,7 @@ import (
 
 func CheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail.Body, full, min bool) (bool, bool) {
 
-	q, r := game_math.GetQRfromXY(x, y)
-	_, find := mp.OneLayerMap[q][r]
-
-	if !find {
+	if x < 0 || y < 0 || x > mp.XSize || y > mp.YSize {
 		return false, true
 	}
 
@@ -156,8 +153,7 @@ func CheckMapReservoir(x, y, rotate int, mp *_map.Map, body *detail.Body, full, 
 				continue
 			}
 
-			reservoirX, reservoirY := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
-			if rect.detectCollisionRectToCircle(&point{x: float64(reservoirX), y: float64(reservoirY)}, reservoirRadius) {
+			if rect.detectCollisionRectToCircle(&point{x: float64(reservoir.X), y: float64(reservoir.Y)}, reservoirRadius) {
 				return false, true
 			}
 		}
@@ -179,8 +175,7 @@ func CheckCollisionsBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.
 			continue
 		}
 
-		xBox, yBox := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
-		if rect.detectCollisionRectToCircle(&point{x: float64(xBox), y: float64(yBox)}, boxRadius) {
+		if rect.detectCollisionRectToCircle(&point{x: float64(mapBox.X), y: float64(mapBox.Y)}, boxRadius) {
 			return mapBox
 		}
 	}

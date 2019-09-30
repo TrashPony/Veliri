@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-func DeleteCooordinateByQR(q, r, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE q=$1 AND r=$2 AND id_map=$3", q, r, mapID)
+func DeleteCooordinateByQR(x, y, mapID int) {
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE x=$1 AND y=$2 AND id_map=$3", x, y, mapID)
 	if err != nil {
 		log.Fatal(err)
 	}

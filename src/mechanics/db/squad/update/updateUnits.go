@@ -54,8 +54,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"id_squad, "+
 				"id_body, "+
 				"slot, "+
-				"q, "+
-				"r, "+
+				"x, "+
+				"y, "+
 				"rotate, "+
 				"on_map, "+
 				"target, "+
@@ -72,8 +72,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				squad.ID,
 				slotUnit.Unit.Body.ID,
 				slot,
-				slotUnit.Unit.Q,
-				slotUnit.Unit.R,
+				slotUnit.Unit.X,
+				slotUnit.Unit.Y,
 				slotUnit.Unit.Rotate,
 				slotUnit.Unit.OnMap,
 				parseTarget(slotUnit.Unit.GetTarget()),
@@ -97,8 +97,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 			_, err := tx.Exec(
 				"UPDATE squad_units SET "+
 					"id_body = $1, "+
-					"q = $2, "+
-					"r = $3, "+
+					"x = $2, "+
+					"y = $3, "+
 					"rotate = $4, "+
 					"target = $5, "+
 					"hp = $6, "+
@@ -115,8 +115,8 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"id_map = $19 "+
 					"WHERE id_squad = $11 AND slot = $12",
 				slotUnit.Unit.Body.ID,
-				slotUnit.Unit.Q,
-				slotUnit.Unit.R,
+				slotUnit.Unit.X,
+				slotUnit.Unit.Y,
 				slotUnit.Unit.Rotate,
 				parseTarget(slotUnit.Unit.GetTarget()),
 				slotUnit.Unit.HP,
@@ -148,7 +148,7 @@ func parseTarget(targetCoordinate *coordinate.Coordinate) string {
 	var target string
 
 	if targetCoordinate != nil {
-		target = strconv.Itoa(targetCoordinate.Q) + ":" + strconv.Itoa(targetCoordinate.R)
+		target = strconv.Itoa(targetCoordinate.X) + ":" + strconv.Itoa(targetCoordinate.Y)
 	}
 
 	return target

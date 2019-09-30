@@ -38,8 +38,8 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 		_, err := tx.Exec(
 			"UPDATE squad_units SET "+
 				"id_body = $1, "+
-				"q = $2, "+
-				"r = $3, "+
+				"x = $2, "+
+				"y = $3, "+
 				"rotate = $4, "+
 				"target = $5, "+
 				"hp = $6, "+
@@ -54,8 +54,8 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"id_map = $17 "+
 				"WHERE id_squad = $10 AND mother_ship = $11",
 			bodyID,
-			ship.Q,
-			ship.R,
+			ship.X,
+			ship.Y,
 			ship.Rotate,
 			parseTarget(ship.GetTarget()),
 			ship.HP,
@@ -82,8 +82,8 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 			err := tx.QueryRow("INSERT INTO squad_units ("+
 				"id_squad, "+
 				"id_body, "+
-				"q, "+
-				"r, "+
+				"x, "+
+				"y, "+
 				"rotate, "+
 				"target, "+
 				"hp, "+
@@ -98,8 +98,8 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 				squad.ID,
 				bodyID,
-				ship.Q,
-				ship.R,
+				ship.X,
+				ship.Y,
 				ship.Rotate,
 				parseTarget(ship.GetTarget()),
 				ship.HP,

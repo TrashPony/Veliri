@@ -17,9 +17,6 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	Q int `json:"q"`
-	R int `json:"r"`
-
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
 	Leave  bool `json:"leave"`
@@ -98,6 +95,7 @@ type Unit struct {
 	Return       bool `json:"returning"`
 
 	FormationPos *coordinate.Coordinate `json:"formation_pos"`
+	Formation    bool                   `json:"formation"`
 }
 
 type ShortUnitInfo struct {
@@ -106,8 +104,6 @@ type ShortUnitInfo struct {
 	Rotate int `json:"rotate"`
 	X      int `json:"x"`
 	Y      int `json:"y"`
-	Q      int `json:"q"`
-	R      int `json:"r"`
 
 	/*видимый фит*/
 	Body *detail.Body `json:"body"`
@@ -135,8 +131,6 @@ type ShortUnitInfo struct {
 type PathUnit struct {
 	X           int `json:"x"`
 	Y           int `json:"y"`
-	Q           int `json:"q"`
-	R           int `json:"r"`
 	Rotate      int `json:"rotate"`
 	Millisecond int `json:"millisecond"`
 	Speed       float64
@@ -163,8 +157,7 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 
 	hostile.X = unit.X
 	hostile.Y = unit.Y
-	hostile.Q = unit.Q
-	hostile.R = unit.R
+
 	hostile.Rotate = unit.Rotate
 	hostile.MapID = unit.MapID
 	hostile.Evacuation = unit.Evacuation
@@ -256,26 +249,6 @@ func (unit *Unit) SetEquip() {
 
 func (unit *Unit) SetAmmo() {
 
-}
-
-func (unit *Unit) SetQ(q int) {
-	unit.Q = q
-}
-
-func (unit *Unit) GetQ() int {
-	return unit.Q
-}
-
-func (unit *Unit) SetR(y int) {
-	unit.R = y
-}
-
-func (unit *Unit) GetR() int {
-	return unit.R
-}
-
-func (unit *Unit) GetY() int {
-	return -unit.Q - unit.R
 }
 
 func (unit *Unit) GetWatchZone() int {

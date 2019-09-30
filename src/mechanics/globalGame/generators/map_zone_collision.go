@@ -20,11 +20,11 @@ func UpdateMapZoneCollision() {
 func FillMapZone(mp *_map.Map) {
 	mp.GeoZones = make([][]*_map.Zone, 100)
 
-	for x := 0; x < mp.QSize*game_math.HexagonWidth; x += game_math.DiscreteSize {
+	for x := 0; x < mp.XSize; x += game_math.DiscreteSize {
 
 		mp.GeoZones[x/game_math.DiscreteSize] = make([]*_map.Zone, 100)
 
-		for y := 0; y < mp.RSize*game_math.HexagonHeight; y += game_math.DiscreteSize {
+		for y := 0; y < mp.YSize; y += game_math.DiscreteSize {
 
 			mp.GeoZones[x/game_math.DiscreteSize][y/game_math.DiscreteSize] = &_map.Zone{
 				Size:      game_math.DiscreteSize,

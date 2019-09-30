@@ -35,7 +35,7 @@ func OutBase(base *base.Base) *coordinate.Coordinate {
 
 func CheckBaseRespawn(base *base.Base) (bool, *coordinate.Coordinate) {
 	for _, resp := range base.Respawns {
-		if !CheckTransportCoordinate(resp.Q, resp.R, 15, 100, base.MapID) {
+		if !CheckTransportCoordinate(resp.X, resp.Y, 15, 100, base.MapID) {
 			return true, resp
 		}
 	}
@@ -43,9 +43,7 @@ func CheckBaseRespawn(base *base.Base) (bool, *coordinate.Coordinate) {
 	return false, nil
 }
 
-func CheckTransportCoordinate(q, r, seconds, distCheck, mapID int) bool { // заставляет игроков эвакуироватся с точки респауна базы
-
-	x, y := game_math.GetXYCenterHex(q, r)
+func CheckTransportCoordinate(x, y, seconds, distCheck, mapID int) bool { // заставляет игроков эвакуироватся с точки респауна базы
 
 	lock := false
 	units := globalGame.Clients.GetAllShortUnits(mapID, true)

@@ -13,8 +13,7 @@ func HandlerDetect(moveUnit *unit.Unit) *coordinate.Coordinate {
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 
 	for _, coor := range mp.HandlersCoordinates {
-		xHandle, yHandle := game_math.GetXYCenterHex(coor.Q, coor.R)
-		dist := int(game_math.GetBetweenDist(moveUnit.X, moveUnit.Y, xHandle, yHandle))
+		dist := int(game_math.GetBetweenDist(moveUnit.X, moveUnit.Y, coor.X, coor.Y))
 		if dist < 60 && coor.Handler != "" {
 			return coor
 		}
@@ -28,12 +27,11 @@ func CheckHandlerCoordinate(coor *coordinate.Coordinate, users map[*websocket.Co
 
 	for _, exit := range coor.Positions {
 
-		x, y := game_math.GetXYCenterHex(exit.Q, exit.R)
 		busy := false
 
 		for _, user := range users {
 			if user.GetSquad() != nil && coor.ToMapID == user.GetSquad().MatherShip.MapID {
-				dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+				dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, exit.X, exit.Y)
 				if dist < 135 {
 					busy = true
 				}

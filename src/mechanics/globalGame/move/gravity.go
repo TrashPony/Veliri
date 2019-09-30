@@ -9,9 +9,7 @@ func GetGravity(x, y, mapID int) bool { // если тру то highGravity
 	mapBases := bases.Bases.GetBasesByMap(mapID)
 
 	for _, mapBase := range mapBases {
-		xBase, yBase := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
-
-		dist := game_math.GetBetweenDist(x, y, xBase, yBase)
+		dist := game_math.GetBetweenDist(x, y, mapBase.X, mapBase.Y)
 		if int(dist) < mapBase.GravityRadius {
 			return false
 		}

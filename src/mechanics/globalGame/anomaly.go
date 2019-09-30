@@ -29,16 +29,14 @@ func GetVisibleAnomaly(user *player.Player, slot *detail.BodyEquipSlot) (visible
 			continue
 		}
 
-		x, y := game_math.GetXYCenterHex(anomaly.GetQ(), anomaly.GetR())
-
-		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, anomaly.GetX(), anomaly.GetY())
 		maxDist := (anomaly.GetPower() + slot.Equip.Radius) * 100
 
 		if int(dist) < maxDist {
 			signal := (int(dist) * 100) / maxDist // уровень сигнала от 0 до 100%
 
 			//  math.Atan2 куда у - текущие у, куда х - текущие х, получаем угол
-			needRad := math.Atan2(float64(y-user.GetSquad().MatherShip.Y), float64(x-user.GetSquad().MatherShip.X))
+			needRad := math.Atan2(float64(anomaly.GetY()-user.GetSquad().MatherShip.Y), float64(anomaly.GetX()-user.GetSquad().MatherShip.X))
 			// переводим в градусы
 			needRotate := int(needRad * 180 / 3.14)
 

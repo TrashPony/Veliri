@@ -11,8 +11,8 @@ type Map struct {
 	Resource    *Resource `json:"resource"`
 	Count       int       `json:"count"`
 	MapID       int       `json:"map_id"`
-	Q           int       `json:"q"`
-	R           int       `json:"r"`
+	X           int       `json:"x"`
+	Y           int       `json:"y"`
 	Rotate      int       `json:"rotate"`
 	DestroyTime time.Time `json:"destroy_time"`
 	MaxCount    int       `json:"max_count"`

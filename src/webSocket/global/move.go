@@ -18,11 +18,18 @@ import (
 )
 
 func Move(user *player.Player, msg Message, newAction bool) {
+
+	// TODO движение отряда
+	// отряд двигается с минимальной скорость из всех юнитов
+	// при старте движения все юниты сначало должны принять необходимое положение, угол
+	// и когда все будут готовы то начинать двигатся в составе формирования
+
 	if user.GetSquad() != nil && msg.UnitsID != nil {
 
 		var toPos []*coordinate.Coordinate
+
 		if len(msg.UnitsID) > 1 {
-			toPos = move.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
+			// TODO toPos = move.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
 		} else {
 			toPos = make([]*coordinate.Coordinate, 0)
 			toPos = append(toPos, &coordinate.Coordinate{X: int(msg.ToX), Y: int(msg.ToY)})
@@ -311,14 +318,9 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		moveUnit.X = int(pathUnit.X)
 		moveUnit.Y = int(pathUnit.Y)
 
-		if ((pathUnit.Q != 0 && pathUnit.R != 0) && (pathUnit.Q != moveUnit.Q && pathUnit.R != moveUnit.R)) || i+1 == len(*path) {
-
-			moveUnit.Q = pathUnit.Q
-			moveUnit.R = pathUnit.R
-
-			if !user.Bot { // TODO апдейт юнитов
-				go update.Squad(user.GetSquad(), false)
-			}
+		// todo оптимизировать а то каждый раз обновлять это ужасно
+		if !user.Bot { // TODO апдейт юнитов
+			go update.Squad(user.GetSquad(), false)
 		}
 	}
 }

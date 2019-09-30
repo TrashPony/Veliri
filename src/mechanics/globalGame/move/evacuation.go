@@ -22,8 +22,7 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]*unit.PathUnit, int, *ba
 
 	for _, mapBase := range mapBases {
 
-		x, y := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
-		dist := game_math.GetBetweenDist(unit.X, unit.Y, x, y)
+		dist := game_math.GetBetweenDist(unit.X, unit.Y, mapBase.X, mapBase.Y)
 		transport := mapBase.GetFreeTransport()
 
 		if ((dist < minDist && int(dist) < mapBase.GravityRadius) ||
@@ -41,10 +40,9 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]*unit.PathUnit, int, *ba
 			transport.Job = true
 
 			if transport.X == 0 && transport.Y == 0 {
-				startX, startY = game_math.GetXYCenterHex(evacuationBase.Q, evacuationBase.R)
+				startX, startY = evacuationBase.X, evacuationBase.Y
 			} else {
-				startX = transport.X
-				startY = transport.Y
+				startX, startY = transport.X, transport.Y
 			}
 
 			_, path := To(float64(startX), float64(startY), 15, 1, 1,
@@ -61,9 +59,8 @@ func LaunchEvacuation(unit *unit.Unit, mp *_map.Map) ([]*unit.PathUnit, int, *ba
 
 func ReturnEvacuation(unit *unit.Unit, mp *_map.Map, baseID int, transport *base.Transport) []*unit.PathUnit {
 	mapBase, _ := bases.Bases.Get(baseID)
-	endX, endY := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
 
 	_, path := To(float64(unit.X), float64(unit.Y), 15, 15, 15,
-		float64(endX), float64(endY), transport.Rotate, 10)
+		float64(mapBase.X), float64(mapBase.Y), transport.Rotate, 10)
 	return path
 }

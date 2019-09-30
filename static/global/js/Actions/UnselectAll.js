@@ -6,9 +6,9 @@ function UnselectAll() {
 
 function UnselectResource() {
     // ресурсы
-    for (let q in game.map.reservoir) {
-        for (let r in game.map.reservoir[q]) {
-            game.map.reservoir[q][r].sprite.events.onInputDown.removeAll();
+    for (let x in game.map.reservoir) {
+        for (let y in game.map.reservoir[x]) {
+            game.map.reservoir[x][y].sprite.events.onInputDown.removeAll();
         }
     }
 

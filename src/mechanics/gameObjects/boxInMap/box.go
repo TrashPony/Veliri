@@ -17,8 +17,8 @@ type Box struct {
 	password     int
 	DestroyTime  time.Time            `json:"destroy_time"`
 	Underground  bool                 `json:"underground"`
-	Q            int                  `json:"q"`
-	R            int                  `json:"r"`
+	X            int                  `json:"x"`
+	Y            int                  `json:"y"`
 	Rotate       int                  `json:"rotate"`
 	storage      *inventory.Inventory // содержимое не публично т.к. что бы узнать содержимое надо его открыть или просканирова
 	HP           int                  `json:"hp"`

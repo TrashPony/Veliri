@@ -27,8 +27,7 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 	for {
 		time.Sleep(300 * time.Millisecond)
 
-		xEntry, yEntry := game_math.GetXYCenterHex(coor.Q, coor.R)
-		checkTransitionUser(xEntry, yEntry, mp.Id, coor)
+		checkTransitionUser(coor.X, coor.Y, mp.Id, coor)
 
 		if coor.Handler == "base" {
 			continue
@@ -38,12 +37,12 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 
 		if globalGame.CheckHandlerCoordinate(coor, users) == nil {
 			// отключение телепорта
-			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerClose", IDMap: mp.Id, Q: coor.Q, R: coor.R})
+			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerClose", IDMap: mp.Id, X: coor.X, Y: coor.Y})
 			coor.HandlerOpen = false
 		} else {
 			// включение телепорт
 			if !coor.HandlerOpen {
-				go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerOpen", IDMap: mp.Id, Q: coor.Q, R: coor.R})
+				go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerOpen", IDMap: mp.Id, X: coor.X, Y: coor.Y})
 				coor.HandlerOpen = true
 			}
 		}

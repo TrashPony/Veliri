@@ -27,8 +27,7 @@ func openBox(user *player.Player, msg Message) {
 
 	if mapBox != nil {
 
-		x, y := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
-		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, x, y)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mapBox.X, mapBox.Y)
 
 		if dist < 75 {
 			if mapBox.Protect {
@@ -126,8 +125,8 @@ func updateBoxInfo(box *boxInMap.Box) {
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 	for _, user := range users {
-		boxX, boxY := game_math.GetXYCenterHex(box.Q, box.R)
-		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
+
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, box.X, box.Y)
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
 			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID,

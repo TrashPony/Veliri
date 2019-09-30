@@ -1,21 +1,20 @@
 function CreateReservoirs() {
-    for (let q in game.map.reservoir) {
-        for (let r in game.map.reservoir[q]) {
-            let reservoir = game.map.reservoir[q][r];
-            CreateReservoir(reservoir, q, r);
+    for (let x in game.map.reservoir) {
+        for (let y in game.map.reservoir[x]) {
+            let reservoir = game.map.reservoir[x][y];
+            CreateReservoir(reservoir, Number(x), Number(y));
         }
     }
 }
 
-function CreateReservoir(reservoir, q, r) {
-    let xy = GetXYCenterHex(q, r);
+function CreateReservoir(reservoir, x, y) {
 
-    if (game.map.reservoir[q] === undefined || game.map.reservoir[q][r] === undefined) {
-        if (game.map.reservoir.hasOwnProperty(q)) {
-            game.map.reservoir[q][r] = reservoir;
+    if (game.map.reservoir[x] === undefined || game.map.reservoir[x][y] === undefined) {
+        if (game.map.reservoir.hasOwnProperty(x)) {
+            game.map.reservoir[x][y] = reservoir;
         } else {
-            game.map.reservoir[q] = {};
-            game.map.reservoir[q][r] = reservoir;
+            game.map.reservoir[x] = {};
+            game.map.reservoir[x][y] = reservoir;
         }
     }
 
@@ -54,28 +53,28 @@ function CreateReservoir(reservoir, q, r) {
         reservoirTexture += "_full"
     }
 
-    game.map.reservoir[q][r].sprite = gameObjectCreate(xy.x, xy.y, reservoirTexture, 20, shadow, reservoir.rotate,
+    game.map.reservoir[x][y].sprite = gameObjectCreate(x, y, reservoirTexture, 20, shadow, reservoir.rotate,
         0, 0, group, shadowXOffset, shadowYOffset, 40);
 
-    game.map.reservoir[q][r].sprite.inputEnabled = true;
-    game.map.reservoir[q][r].sprite.input.pixelPerfectOver = true;
-    game.map.reservoir[q][r].sprite.input.pixelPerfectClick = true;
-    game.map.reservoir[q][r].sprite.input.pixelPerfectAlpha = 1;
+    game.map.reservoir[x][y].sprite.inputEnabled = true;
+    game.map.reservoir[x][y].sprite.input.pixelPerfectOver = true;
+    game.map.reservoir[x][y].sprite.input.pixelPerfectClick = true;
+    game.map.reservoir[x][y].sprite.input.pixelPerfectAlpha = 1;
 
     let tip;
     let posInterval;
-    game.map.reservoir[q][r].sprite.events.onInputOver.add(function () {
+    game.map.reservoir[x][y].sprite.events.onInputOver.add(function () {
 
-        if (!game.map.reservoir[q][r].border) {
-            game.map.reservoir[q][r].border = CreateBorder(xy.x, xy.y, reservoirTexture, 20, reservoir.rotate,
+        if (!game.map.reservoir[x][y].border) {
+            game.map.reservoir[x][y].border = CreateBorder(x, y, reservoirTexture, 20, reservoir.rotate,
                 0, 0, group);
-            group.swap(game.map.reservoir[q][r].sprite, game.map.reservoir[q][r].border);
+            group.swap(game.map.reservoir[x][y].sprite, game.map.reservoir[x][y].border);
         } else {
-            game.map.reservoir[q][r].border.visible = true;
+            game.map.reservoir[x][y].border.visible = true;
         }
 
         tip = document.createElement("div");
-        tip.id = "reservoirTip" + q + "" + r;
+        tip.id = "reservoirTip" + x + "" + y;
         tip.className = "reservoirTip";
         tip.style.left = stylePositionParams.left + "px";
         tip.style.top = stylePositionParams.top + "px";
@@ -87,7 +86,7 @@ function CreateReservoir(reservoir, q, r) {
             <div class="reservoirInfo">
                 <div class="iconOreTip" style="background: url('/assets/resource/${reservoir.name}.png') center center / contain no-repeat"></div>
                 <div class="nameOre">${reservoir.name}</div>
-                <div class="countOre" id="countOre${q}${r}">${game.map.reservoir[q][r].count}</div>
+                <div class="countOre" id="countOre${x}${y}">${game.map.reservoir[x][y].count}</div>
             </div>
         `;
 
@@ -97,9 +96,9 @@ function CreateReservoir(reservoir, q, r) {
         }, 10)
     });
 
-    game.map.reservoir[q][r].sprite.events.onInputOut.add(function () {
-        if (game.map.reservoir[q][r].border) game.map.reservoir[q][r].border.visible = false;
+    game.map.reservoir[x][y].sprite.events.onInputOut.add(function () {
+        if (game.map.reservoir[x][y].border) game.map.reservoir[x][y].border.visible = false;
         setInterval(posInterval);
-        tip.remove();
+        if (tip) tip.remove();
     });
 }

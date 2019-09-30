@@ -21,8 +21,6 @@ type Coordinate struct {
 	Y                   int              `json:"y"`
 	Rotate              int              `json:"rotate"` // используется при расчете поиска пути
 	Z                   int              `json:"z"`
-	R                   int              `json:"r"`
-	Q                   int              `json:"q"`
 	State               int              `json:"state"`
 	Effects             []*effect.Effect `json:"effects"`
 	Move                bool             `json:"move"`
@@ -90,8 +88,8 @@ func (coor *Coordinate) GetQ() int {
 	return coor.X
 }
 func (coor *Coordinate) GetG(target Coordinate) int { // наименьшая стоимость пути в End из стартовой вершины
-	if target.Q != coor.Q && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
-		target.R != coor.R { // можно реализовывать стоимость пути по различной поверхности
+	if target.X != coor.X && // настолько я понял если конец пути находиться на искосок то стоимость клетки 14
+		target.Y != coor.Y { // можно реализовывать стоимость пути по различной поверхности
 		return coor.G + 14
 	}
 
@@ -117,19 +115,9 @@ func (coor *Coordinate) GetF() int { // длина пути до цели, ко�
 }
 
 func (coor *Coordinate) Key() string { //создает уникальный ключ для карты "X:Y"
-	return strconv.Itoa(coor.Q) + ":" + strconv.Itoa(coor.R) + ":" + strconv.Itoa(coor.X) + ":" + strconv.Itoa(coor.Y)
+	return strconv.Itoa(coor.X) + ":" + strconv.Itoa(coor.Y)
 }
 
 func (coor *Coordinate) Equal(b *Coordinate) bool { // сравнивает точки на одинаковость
-	return coor.Q == b.Q && coor.R == b.R
-}
-
-func (coor *Coordinate) EqualXY(b *Coordinate) bool { // сравнивает точки на одинаковость
 	return coor.X == b.X && coor.Y == b.Y
-}
-
-func (coor *Coordinate) CalculateXYZ() {
-	coor.X = coor.Q - (coor.R-(coor.R&1))/2
-	coor.Z = coor.R
-	coor.Y = -coor.X - coor.Z
 }

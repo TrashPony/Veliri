@@ -9,7 +9,7 @@ func SelectEquip(user *player.Player, msg Message) {
 			equip := selectUnit.Body.GetEquip(msg.TypeSlot, msg.Slot)
 			if equip != nil && equip.Equip != nil {
 				if equip.Equip.Applicable == "digger" {
-					selectDigger(user, msg, equip)
+					// TODO selectDigger(user, msg, equip)
 				}
 
 				if equip.Equip.Applicable == "ore" {

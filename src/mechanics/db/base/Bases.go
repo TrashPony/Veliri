@@ -14,8 +14,8 @@ func Bases() map[int]*base.Base {
 		"SELECT " +
 		" id," +
 		" base_name," +
-		" q," +
-		" r," +
+		" x," +
+		" y," +
 		" id_map," +
 		" transport_count," +
 		" defender_count," +
@@ -36,7 +36,7 @@ func Bases() map[int]*base.Base {
 		var transports int
 		var defenders int
 
-		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.Q, &gameBase.R, &gameBase.MapID, &transports,
+		err := rows.Scan(&gameBase.ID, &gameBase.Name, &gameBase.X, &gameBase.Y, &gameBase.MapID, &transports,
 			&defenders, &gameBase.GravityRadius, &gameBase.BoundaryAmountOfResources, &gameBase.SumWorkResources,
 			&gameBase.Fraction, &gameBase.Capital)
 		if err != nil {
@@ -57,8 +57,8 @@ func respawnBases(gameBase *base.Base) {
 
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"SELECT "+
-		" q,"+
-		" r,"+
+		" x,"+
+		" y,"+
 		" rotate "+
 		" FROM bases_respawns WHERE base_id = $1", gameBase.ID)
 	if err != nil {
@@ -69,7 +69,7 @@ func respawnBases(gameBase *base.Base) {
 	for rows.Next() {
 		var respawn coordinate.Coordinate
 
-		err := rows.Scan(&respawn.Q, &respawn.R, &respawn.RespRotate)
+		err := rows.Scan(&respawn.X, &respawn.Y, &respawn.RespRotate)
 		if err != nil {
 			log.Fatal("scan all respawn in base " + err.Error())
 		}
