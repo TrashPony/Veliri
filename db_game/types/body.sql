@@ -23,18 +23,10 @@ CREATE TABLE body_type (
   standard_size_big          BOOLEAN,  /* оружие которое может использовать корпус small, medium, big */
 
   /*методанные для детектора колизий*/
-  body_front_radius          INT,   /* радиус передней сферы мешины */
-  body_left_front_angle      INT,   /* градус отклонения для детектора колизий */
-  body_right_front_angle     INT,   /* градус отклонения для детектора колизий */
-
-  body_back_radius          INT,   /* радиус задней сферы мешины */
-  body_left_back_angle      INT,   /* градус отклонения для детектора колизий */
-  body_right_back_angle     INT,   /* градус отклонения для детектора колизий */
-
-  body_side_radius          INT,   /* радиус боковой сферы мешины */
   height                    int,   /* высота прямоуголника машинки */
   width                     int    /* ширина прямоуголника машинки */
 );
+
 
 CREATE TABLE body_thorium_slots (
   id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/

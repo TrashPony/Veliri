@@ -150,7 +150,7 @@ func BodyCollisionCash(mp *_map.Map) {
 			for _, zone := range x {
 				if zone != nil {
 					for _, cell := range zone.Cells {
-						collisions.CheckCollisionsOnStaticMap(cell.X, cell.Y, 0, mp, &body, false, true)
+						collisions.BodyCheckCollisionsOnStaticMap(cell.X, cell.Y, 0, mp, &body, false, true)
 					}
 				}
 			}

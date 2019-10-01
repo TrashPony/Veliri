@@ -9,4 +9,6 @@ type Box struct {
 	Protect      bool    `json:"protect"`
 	ProtectLvl   int     `json:"protect_lvl"`
 	Underground  bool    `json:"underground"`
+	Height       int     `json:"height"`
+	Width        int     `json:"width"`
 }

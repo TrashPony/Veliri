@@ -163,61 +163,61 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			DisconnectUser(user, false)
 		}
 
-		if msg.Event == "InitGame" {
+		if msg.Event == "InitGame" { // +
 			LoadGame(user, msg)
 		}
 
-		if msg.Event == "MoveTo" {
+		if msg.Event == "MoveTo" { // +
 			go Move(user, msg, true)
 		}
 
-		if msg.Event == "PlaceUnit" {
+		if msg.Event == "PlaceUnit" { // +
 			placeUnit(user, msg)
 		}
 
-		if msg.Event == "StopMove" {
+		if msg.Event == "StopMove" { // +
 			for _, id := range msg.UnitsID {
 				stopMove(globalGame.Clients.GetUnitByID(id), true)
 			}
 		}
 
-		if msg.Event == "ThrowItems" {
+		if msg.Event == "ThrowItems" { // +
 			throwItems(user, msg)
 		}
 
-		if msg.Event == "openBox" {
+		if msg.Event == "openBox" { // +
 			openBox(user, msg)
 		}
 
-		if msg.Event == "placeNewBox" {
+		if msg.Event == "placeNewBox" { // +
 			placeNewBox(user, msg)
 		}
 
-		if msg.Event == "getItemsFromBox" || msg.Event == "getItemFromBox" {
+		if msg.Event == "getItemsFromBox" || msg.Event == "getItemFromBox" { // +
 			useBox(user, msg)
 		}
 
-		if msg.Event == "placeItemToBox" || msg.Event == "placeItemsToBox" {
+		if msg.Event == "placeItemToBox" || msg.Event == "placeItemsToBox" { // +
 			useBox(user, msg)
 		}
 
-		if msg.Event == "boxToBoxItem" || msg.Event == "boxToBoxItems" {
+		if msg.Event == "boxToBoxItem" || msg.Event == "boxToBoxItems" { // +
 			boxToBox(user, msg)
 		}
 
-		if msg.Event == "evacuation" {
+		if msg.Event == "evacuation" { // +
 			evacuationUnit(user.GetSquad().MatherShip) // игрок может инициализировать эвакуацию только МС
 		}
 
-		if msg.Event == "updateThorium" {
+		if msg.Event == "updateThorium" { // +
 			updateThorium(user, msg)
 		}
 
-		if msg.Event == "removeThorium" {
+		if msg.Event == "removeThorium" { // +
 			removeThorium(user, msg)
 		}
 
-		if msg.Event == "AfterburnerToggle" {
+		if msg.Event == "AfterburnerToggle" { // +
 			afterburnerToggle(user, msg)
 		}
 
@@ -225,7 +225,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			startMining(globalGame.Clients.GetUnitByID(msg.UnitID), msg)
 		}
 
-		if msg.Event == "SelectEquip" {
+		if msg.Event == "SelectEquip" { // +
 			SelectEquip(user, msg)
 		}
 

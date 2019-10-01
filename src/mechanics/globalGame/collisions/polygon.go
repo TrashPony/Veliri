@@ -71,7 +71,23 @@ func (r *Polygon) detectCollisionRectToCircle(centerCircle *point, radius int) b
 	return false
 }
 
-func (r *Polygon) detectCollisionRectToRect(r2 *Polygon, alpha11, alpha22 float64) bool {
+func (r *Polygon) detectCollisionRectToRect(r2 *Polygon) bool {
+
+	if r.detectPointInRectangle(float64(r2.centerX), float64(r2.centerY)) {
+		// цент находится внутри прямоуголника, пересекается
+		return true
+	}
+
+	if r2.detectPointInRectangle(float64(r.centerX), float64(r.centerY)) {
+		// цент находится внутри прямоуголника, пересекается
+		return true
+	}
+
+	if r.centerX == r2.centerX && r.centerY == r2.centerY {
+		// при одинаковом прямоугольнике и одинаковым центром, не будет пересечений и колизия будет не найдена
+		// поэтому это тут
+		return true
+	}
 
 	intersection := func(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2 float64) bool {
 		v1 := (bx2-bx1)*(ay1-by1) - (by2-by1)*(ax1-bx1)

@@ -4,10 +4,12 @@ import (
 	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"math"
 	"math/rand"
 	"time"
@@ -22,14 +24,20 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 
 	// берем координату позади отряда смотрим что бы она была пустая
 	radRotate := float64(user.GetSquad().MatherShip.Rotate) * math.Pi / 180
-	stopX := float64(65) * math.Cos(radRotate) // идем по вектору движения корпуса
-	stopY := float64(65) * math.Sin(radRotate)
+	stopX := float64(75) * math.Cos(radRotate) // идем по вектору движения корпуса
+	stopY := float64(75) * math.Sin(radRotate)
 
 	forecastX := user.GetSquad().MatherShip.X - int(stopX) // - т.к. нам нужна точка позади
 	forecastY := user.GetSquad().MatherShip.Y - int(stopY)
 
-	// TODO проверка на колизию с другими ящика, предметами и тд
-	oldBox, mx := boxes.Boxes.GetByXY(forecastX, forecastY, mp.Id)
+	boxType, _ := gameTypes.Boxes.GetByID(1)
+	newBox := &boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
+		DestroyTime: time.Now(), Height: boxType.Height, Width: boxType.Width}
+
+	placeFree, oldBox := collisions.CheckBoxCollision(newBox, mp)
+	if !placeFree && oldBox == nil {
+		return errors.New("place busy"), false, nil
+	}
 
 	if oldBox != nil {
 		for i, slot := range slots {
@@ -43,14 +51,10 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 				}
 			}
 		}
-		mx.Unlock()
 		boxes.Boxes.UpdateBox(oldBox)
 
 		return nil, false, oldBox
 	} else {
-		mx.Unlock()
-		newBox := boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
-			DestroyTime: time.Now()}
 
 		newBox.GetStorage().Slots = make(map[int]*inventory.Slot)
 		newBox.GetStorage().SetSlotsSize(999)
@@ -71,7 +75,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 
 		if createBox {
 			update.Squad(user.GetSquad(), true)
-			return nil, createBox, boxes.Boxes.InsertNewBox(&newBox)
+			return nil, createBox, boxes.Boxes.InsertNewBox(newBox)
 		} else {
 			return errors.New("not find items"), createBox, nil
 		}

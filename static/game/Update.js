@@ -12,11 +12,11 @@ function update() {
     }
 
     if (game && game.typeService === "global") {
-        // DebugCollision();
+        DebugCollision();
         // AnimateDigger();
 
 
-        for (let i in game.units){
+        for (let i in game.units) {
             let unit = game.units[i];
             AnimationMove(unit);
 
@@ -39,17 +39,14 @@ function update() {
 function DebugCollision() {
     if (game) {
 
-        for (let i in game.units){
-            CreateCollision(game.units[i].colision, game.units[i].body, game.units[i].rotate, game.units[i]);
+        for (let i in game.units) {
+            CreateCollision(game.units[i].colision, game.units[i].body.height, game.units[i].body.width, game.units[i].rotate, game.units[i]);
         }
 
-        // for (let i = 0; i < game.boxes.length; i++) {
-        //     game.squad.colision.beginFill(0xFF0000, 0.5);
-        //     if (game.boxes[i] && game.boxes[i].sprite) {
-        //         game.squad.colision.drawCircle(game.boxes[i].sprite.x, game.boxes[i].sprite.y, 10);
-        //     }
-        // }
-        //
+        for (let i in game.boxes) {
+            CreateCollision(game.boxes[i].colision, game.boxes[i].height, game.boxes[i].width, game.boxes[i].rotate, game.boxes[i]);
+        }
+
         // for (let q in game.map.reservoir) {
         //     for (let r in game.map.reservoir[q]) {
         //         let reservoir = game.map.reservoir[q][r];

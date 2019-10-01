@@ -257,7 +257,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		// если на пути встречается ящик то мы его давим и падает скорость
-		mapBox := collisions.CheckCollisionsBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, moveUnit.MapID, moveUnit.Body)
+		mapBox := collisions.BodyCheckCollisionBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, moveUnit.MapID, moveUnit.Body)
 		if mapBox != nil {
 			go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
 			boxes.Boxes.DestroyBox(mapBox)

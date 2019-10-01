@@ -71,7 +71,7 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
 
-		possibleMove, _ := CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
+		possibleMove, _ := BodyCheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, body, false, true)
 		if !possibleMove {
 			// если юнит по каким то причинам стартует из колизии то дать ему выйти и потом уже искать колизию
 			//if !(distToStart < speed+2 && startMove) {
@@ -123,7 +123,7 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameU
 			debug.Store.AddMessage("CreateRect", "orange", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
 		}
 
-		possibleMove, _ := CheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, gameUnit.Body, false, true)
+		possibleMove, _ := BodyCheckCollisionsOnStaticMap(int(currentX), int(currentY), angle, mp, gameUnit.Body, false, true)
 		if !possibleMove {
 			if debug.Store.SearchCollisionLine {
 				debug.Store.AddMessage("CreateRect", "red", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)

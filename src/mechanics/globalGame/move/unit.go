@@ -163,7 +163,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 
 		if searchCollision {
 			// TODO если юнит имеет высокую скорость последние точки делить его путь что бы адекватно обработать колизии
-			possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(forecastX), int(forecastY), rotate, mp, moveUnit.Body, false, false)
+			possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(forecastX), int(forecastY), rotate, mp, moveUnit.Body, false, false)
 			if !possibleMove {
 				return path, true
 			}

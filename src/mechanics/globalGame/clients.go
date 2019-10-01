@@ -58,14 +58,10 @@ func (c *wsUsers) AddNewClient(newWS *websocket.Conn, newClient *player.Player) 
 		newClient.GetSquad().MatherShip.ID = c.getBotID()
 	}
 
-	GetPlaceCoordinate(newClient.GetSquad().MatherShip, c.GetAllShortUnits(newClient.GetSquad().MatherShip.MapID, false))
 	c.units[newClient.GetSquad().MatherShip.ID] = newClient.GetSquad().MatherShip
 
 	for _, unitSlot := range newClient.GetSquad().MatherShip.Units {
 		if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap {
-			// юнит на карте
-			GetPlaceCoordinate(unitSlot.Unit, c.GetAllShortUnits(unitSlot.Unit.MapID, false))
-
 			if unitSlot.Unit.ID == 0 {
 				unitSlot.Unit.ID = c.getBotID()
 			}
