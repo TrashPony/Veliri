@@ -4,20 +4,20 @@ function UseDigger(jsonData) {
         sprite.visible = false;
     });
 
-    if (Number(jsonData.other_user.squad_id) === game.squad.id) {
+    let unit = game.units[jsonData.short_unit.id];
 
-        if (!game.squad.equipDrons) {
-            game.squad.equipDrons = [];
+    if (unit) {
+        if (!unit.equipDrons) {
+            unit.equipDrons = [];
         }
 
-        let equipSlot = GetEquip(jsonData.type_slot, jsonData.slot);
-        let equipDrone = LaunchDrone(equipSlot.equip.name, game.squad);
+        let equipSlot = GetEquip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot);
+        let equipDrone = LaunchDrone(equipSlot.equip.name, unit);
 
-        let xy = GetXYCenterHex(jsonData.q, jsonData.r);
-        game.squad.equipDrons.push({
+        unit.equipDrons.push({
             drone: equipDrone,
-            xy: xy,
-            id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot,
+            xy: {x: jsonData.x, y: jsonData.y},
+            id: "reloadEquip" + unit.id + "" + jsonData.type_slot + "" + jsonData.slot,
             toSquad: false,
             move: false,
             spriteCrater: jsonData.dynamic_object.texture_background,
@@ -25,28 +25,12 @@ function UseDigger(jsonData) {
             angleCrater: jsonData.dynamic_object.background_rotate
         });
 
-        let progressBar = document.getElementById("miningEquip" + jsonData.type_slot + jsonData.slot);
-        progressBar.style.animation = "none";
-        setTimeout(function () {
-            progressBar.style.animation = "reload " + equipSlot.equip.reload + "s linear 1";
-        }, 10);
-    } else {
-        for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-            if (game.otherUsers[i].user_name === jsonData.other_user.user_name) {
-                if (!game.otherUsers[i].equipDrons) {
-                    game.otherUsers[i].equipDrons = [];
-                }
-
-                let equipDrone = LaunchDrone(jsonData.name, game.otherUsers[i]);
-                let xy = GetXYCenterHex(jsonData.q, jsonData.r);
-                game.otherUsers[i].equipDrons.push({
-                    drone: equipDrone,
-                    xy: xy,
-                    id: "miningEquip" + jsonData.type_slot + "" + jsonData.slot,
-                    toSquad: false,
-                    move: false,
-                });
-            }
+        let progressBar = document.getElementById("reloadEquip" + unit.id + "" + jsonData.type_slot + "" + jsonData.slot);
+        if (progressBar) {
+            progressBar.style.animation = "none";
+            setTimeout(function () {
+                progressBar.style.animation = "reload " + equipSlot.equip.reload + "s linear 1";
+            }, 10);
         }
     }
 
@@ -92,8 +76,8 @@ function LaunchDrone(name, squad) {
     game.add.tween(equipDrone.shadow).to({alpha: 0.3}, 700, Phaser.Easing.Linear.None, true, 0);
     game.add.tween(equipDrone).to({alpha: 1}, 700, Phaser.Easing.Linear.None, true, 0);
 
-    game.add.tween(equipDrone.shadow.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
-    game.add.tween(equipDrone.scale).to({x: 0.1, y: 0.1}, 700, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(equipDrone.shadow.scale).to({x: 0.3, y: 0.3}, 700, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(equipDrone.scale).to({x: 0.3, y: 0.3}, 700, Phaser.Easing.Linear.None, true, 0);
 
     game.add.tween(equipDrone.shadow).to({
         x: squad.sprite.x + game.shadowXOffset * 5,

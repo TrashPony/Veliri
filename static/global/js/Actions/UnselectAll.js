@@ -2,6 +2,9 @@
 function UnselectAll() {
     UnselectResource();
     UnselectUnits();
+    UnselectDigger();
+
+    dontMove = false;
 }
 
 function UnselectResource() {
@@ -17,6 +20,17 @@ function UnselectResource() {
         if (unit.selectMiningLine) {
             unit.selectMiningLine.graphics.destroy();
             unit.selectMiningLine = null;
+        }
+    }
+}
+
+function UnselectDigger() {
+    game.input.onDown.removeAll();
+    for (let i in game.units) {
+        let unit = game.units[i];
+        if (unit.selectDiggerLine) {
+            unit.selectDiggerLine.graphics.destroy();
+            unit.selectDiggerLine = null;
         }
     }
 }

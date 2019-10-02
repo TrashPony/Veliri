@@ -13,7 +13,7 @@ function FillSquadBlock(squad) {
     fillFormation(Data.squad, scaleFormation);
 }
 
-let scaleFormation = 5;
+let scaleFormation = 2;
 
 function changeScaleFormation(change) {
     if (scaleFormation + change > 0) {

@@ -1,36 +1,24 @@
-function SelectDigger(coordinates, slot, typeSlot) {
+function SelectDigger(unitID, numberSlot, type, equip) {
 
-    //game.input.onDown.remove(initMove, game);
+    let unit = game.units[unitID];
+    let graphics = game.add.graphics(0, 0);
+    unit.selectDiggerLine = {graphics: graphics, radius: equip.equip.radius};
+    game.floorObjectLayer.add(graphics);
 
-    for (let i in coordinates) {
-        if (coordinates.hasOwnProperty(i) && coordinates[i]) {
-            let xy = GetXYCenterHex(coordinates[i].q, coordinates[i].r);
-            let select = game.floorSelectLineLayer.create(xy.x, xy.y, 'selectEmpty');
-            select.alpha = 0.5;
-            select.scale.setTo(0.5);
-            select.anchor.setTo(0.5);
+    game.input.onDown.add(function () {
+        dontMove = true;
 
-            select.inputEnabled = true;
-            select.events.onInputDown.add(function () {
-                //game.input.onDown.add(initMove, game);
-                global.send(JSON.stringify({
-                    event: "useDigger",
-                    q: coordinates[i].q,
-                    r: coordinates[i].r,
-                    slot: slot,
-                    type_slot: typeSlot,
-                }));
-            });
+        let x = (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x;
+        let y = (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y;
 
-            select.events.onInputOver.add(function () {
-                select.animations.add('select');
-                select.animations.play('select', 5, true);
-            });
-            select.events.onInputOut.add(function () {
-                select.animations.getAnimation('select').stop(false);
-                select.animations.frame = 0;
-            });
-            select.input.priorityID = 1;
-        }
-    }
+        UnselectDigger();
+
+        global.send(JSON.stringify({
+            event: "useDigger",
+            x: Math.round(x),
+            y: Math.round(y),
+            slot: Number(numberSlot),
+            type_slot: type,
+        }));
+    });
 }

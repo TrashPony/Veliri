@@ -301,9 +301,19 @@ type Emitter struct {
 	Yoyo          bool   `json:"yoyo"`
 }
 
-func (mp *Map) GetCoordinate(x, y int) (coordinate *coordinate.Coordinate, find bool) {
-	coordinate, find = mp.OneLayerMap[x][y]
-	return
+func (mp *Map) GetCoordinate(x, y int) (*coordinate.Coordinate, bool) {
+	mapCoordinate, find := mp.OneLayerMap[x][y]
+	if !find {
+		mapCoordinate = &coordinate.Coordinate{X: x, Y: y}
+
+		if mp.OneLayerMap[x] == nil {
+			mp.OneLayerMap[x] = make(map[int]*coordinate.Coordinate)
+		}
+
+		mp.OneLayerMap[x][y] = mapCoordinate
+	}
+
+	return mapCoordinate, true
 }
 
 func (mp *Map) GetResource(q, r int) *resource.Map {

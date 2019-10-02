@@ -8,7 +8,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "PreviewPath") {
-        //PreviewPath(jsonData);
+        PreviewPath(jsonData);
     }
 
     if (jsonData.event === "MoveTo") {
@@ -125,8 +125,8 @@ function ReadResponse(jsonData) {
         RemoveOldAnomaly();
     }
 
-    if (jsonData.event === "SelectDigger") {
-        SelectDigger(jsonData.coordinates, jsonData.slot, jsonData.type_slot);
+    if (jsonData.event === "InitDigger") {
+        SelectDigger(jsonData.short_unit.id, jsonData.slot, jsonData.type_slot, jsonData.equip)
     }
 
     if (jsonData.event === "useDigger") {

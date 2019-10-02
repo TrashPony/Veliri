@@ -13,8 +13,8 @@ function update() {
 
     if (game && game.typeService === "global") {
         DebugCollision();
-        // AnimateDigger();
 
+        StartSelectableUnits();
 
         for (let i in game.units) {
             let unit = game.units[i];
@@ -29,10 +29,10 @@ function update() {
                     }));
                 }
             }
-        }
 
-        StartSelectableUnits();
-        AnimateMiningLaser();
+            AnimateMiningLaser(unit);
+            AnimateDigger(unit);
+        }
     }
 }
 

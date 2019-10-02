@@ -10,6 +10,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/getlantern/deepcopy"
 	"math/rand"
 )
@@ -198,18 +199,21 @@ func (m *mapStore) AddNewAnomaly(newAnomaly *anomaly.Anomaly, mapID int) {
 	m.anomaly[mapID] = append(m.anomaly[mapID], newAnomaly)
 }
 
-func (m *mapStore) GetMapAnomaly(mapID, q, r int) *anomaly.Anomaly {
+func (m *mapStore) GetMapAnomaly(mapID, x, y int) *anomaly.Anomaly {
 	for _, anomalyMap := range Maps.anomaly[mapID] {
-		if anomalyMap != nil && anomalyMap.GetX() == q && anomalyMap.GetY() == r {
-			return anomalyMap
+		if anomalyMap != nil {
+			dist := game_math.GetBetweenDist(x, y, anomalyMap.GetX(), anomalyMap.GetY())
+			if dist < 150 {
+				return anomalyMap
+			}
 		}
 	}
 	return nil
 }
 
-func (m *mapStore) RemoveMapAnomaly(mapID, q, r int) {
+func (m *mapStore) RemoveMapAnomaly(mapID int, removeAnomaly *anomaly.Anomaly) {
 	for i, anomalyMap := range Maps.anomaly[mapID] {
-		if anomalyMap != nil && anomalyMap.GetX() == q && anomalyMap.GetY() == r {
+		if anomalyMap != nil && anomalyMap.GetX() == removeAnomaly.GetX() && anomalyMap.GetY() == removeAnomaly.GetY() {
 			Maps.anomaly[mapID][i] = nil
 		}
 	}

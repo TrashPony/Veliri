@@ -29,7 +29,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 		var toPos []*coordinate.Coordinate
 
 		if len(msg.UnitsID) > 1 {
-			// TODO toPos = move.GetUnitPos(msg.UnitsID, user.GetSquad().MatherShip.MapID, int(msg.ToX), int(msg.ToY))
+			toPos = move.GetUnitPos(msg.UnitsID, user, msg.ToX, msg.ToY)
 		} else {
 			toPos = make([]*coordinate.Coordinate, 0)
 			toPos = append(toPos, &coordinate.Coordinate{X: int(msg.ToX), Y: int(msg.ToY)})

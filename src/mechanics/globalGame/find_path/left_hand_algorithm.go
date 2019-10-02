@@ -83,13 +83,13 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 
 	step := 0
 	for {
-		step++
 		for angle := 0; angle <= 360; angle += 45 {
 			x, y, collision, passed := search(ToX, ToY, float64(step), angle)
 			if passed {
 				return x, y, collision
 			}
 		}
+		step++
 	}
 }
 
