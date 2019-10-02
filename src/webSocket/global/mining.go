@@ -11,7 +11,7 @@ import (
 )
 
 func startMining(miner *unit.Unit, msg Message) {
-	reservoir := maps.Maps.GetReservoirByQR(msg.Q, msg.R, miner.MapID)
+	reservoir := maps.Maps.GetReservoirByXY(msg.X, msg.Y, miner.MapID)
 	if reservoir == nil {
 		go SendMessage(Message{Event: "Error", Error: "no reservoir", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		return
@@ -28,12 +28,11 @@ func startMining(miner *unit.Unit, msg Message) {
 		return
 	}
 
-	x, y := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
-	dist := game_math.GetBetweenDist(miner.X, miner.Y, x, y)
+	dist := game_math.GetBetweenDist(miner.X, miner.Y, reservoir.X, reservoir.Y)
 	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker {
 
 		go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Equip.Reload,
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: miner.MapID})
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID})
 
 		miningEquip.Equip.MiningChecker = true
 		miningEquip.Equip.CreateMining()
@@ -84,8 +83,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 					exit = true
 				}
 
-				x, y := game_math.GetXYCenterHex(reservoir.Q, reservoir.R)
-				dist := game_math.GetBetweenDist(miner.X, miner.Y, x, y)
+				dist := game_math.GetBetweenDist(miner.X, miner.Y, reservoir.X, reservoir.Y)
 
 				if int(dist) > miningEquip.Radius {
 					// игрок уехал слишком далеко
@@ -128,22 +126,22 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 		//update.Squad(user.GetSquad(), true) todo
 
 		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
-		go SendMessage(Message{Event: "updateReservoir", Q: reservoir.Q, R: reservoir.R, Count: reservoir.Count, IDMap: miner.MapID})
+		go SendMessage(Message{Event: "updateReservoir", X: reservoir.X, Y: reservoir.Y, Count: reservoir.Count, IDMap: miner.MapID})
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
 			go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
 				TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
 
-			maps.Maps.RemoveReservoirByQR(reservoir.Q, reservoir.R, reservoir.MapID)
-			go SendMessage(Message{Event: "destroyReservoir", ShortUnit: miner.GetShortInfo(), Q: reservoir.Q,
-				R: reservoir.R, IDMap: miner.MapID})
+			maps.Maps.RemoveReservoirByQR(reservoir.X, reservoir.Y, reservoir.MapID)
+			go SendMessage(Message{Event: "destroyReservoir", ShortUnit: miner.GetShortInfo(), X: reservoir.X,
+				Y: reservoir.Y, IDMap: miner.MapID})
 
 			miningEquip.MiningChecker = false
 			return
 		} else {
 			go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, Q: reservoir.Q, R: reservoir.R, IDMap: miner.MapID})
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID})
 		}
 	}
 }

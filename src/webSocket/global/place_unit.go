@@ -61,7 +61,7 @@ func placeUnit(user *player.Player, msg Message) {
 			mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
 			okUnits, _ := collisions.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units, false, false, false)
-			okMap, _ := collisions.CheckCollisionsOnStaticMap(outUnit.X, outUnit.Y, outUnit.Rotate, mp, outUnit.Body, false, false)
+			okMap, _ := collisions.BodyCheckCollisionsOnStaticMap(outUnit.X, outUnit.Y, outUnit.Rotate, mp, outUnit.Body, false, false)
 
 			if okUnits && okMap {
 

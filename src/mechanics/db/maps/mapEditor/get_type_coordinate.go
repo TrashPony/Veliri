@@ -69,7 +69,7 @@ func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coo
 }
 
 // берет координату из таблицы map_constructor, если ее там нет то вернут nil
-func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
+func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 
 	var level int
 	var idType int
@@ -81,8 +81,8 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type, rotate, animate_speed, x_offset, y_offset "+
 		"FROM map_constructor "+
-		"WHERE id_map = $1 AND q=$2 AND r = $3",
-		idMap, q, r)
+		"WHERE id_map = $1 AND x=$2 AND y = $3",
+		idMap, x, y)
 	if err != nil {
 		log.Fatal("get mc coordinate in editor map " + err.Error())
 	}
@@ -100,8 +100,8 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	} else {
 		mcCoordinate := getTypeByID(idType)
 		mcCoordinate.Level = level
-		mcCoordinate.Q = q
-		mcCoordinate.R = r
+		mcCoordinate.X = x
+		mcCoordinate.Y = y
 		mcCoordinate.ObjRotate = rotate
 		mcCoordinate.AnimationSpeed = animateSpeed
 
@@ -112,17 +112,17 @@ func getMapCoordinateInMC(idMap, q, r int) *coordinate.Coordinate {
 	}
 }
 
-func getSizeMap(idMap int) (qSize, rSize int) {
+func getSizeMap(idMap int) (xSize, ySize int) {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT q_size, r_size FROM maps WHERE id = $1", idMap)
+	rows, err := dbConnect.GetDBConnect().Query("SELECT x_size, y_size FROM maps WHERE id = $1", idMap)
 	if err != nil {
 		log.Fatal("get default level and type map in editor map " + err.Error())
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&qSize, &rSize)
+		rows.Scan(&xSize, &ySize)
 	}
 
-	return qSize, rSize
+	return xSize, ySize
 }

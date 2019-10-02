@@ -37,8 +37,6 @@ type Message struct {
 	Bases         map[int]*base.Base              `json:"bases"`
 	X             int                             `json:"x"`
 	Y             int                             `json:"y"`
-	Q             int                             `json:"q"`
-	R             int                             `json:"r"`
 	ToX           float64                         `json:"to_x"`
 	ToY           float64                         `json:"to_y"`
 	PathUnit      *unit.PathUnit                  `json:"path_unit"`
@@ -270,8 +268,8 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 					Event:      "GetPortalPointToGlobalPath",
 					IDUserSend: user.GetID(),
 					Name:       msg.Name,
-					Q:          transitionPoints[0].Q,
-					R:          transitionPoints[0].R,
+					X:          transitionPoints[0].X,
+					Y:          transitionPoints[0].Y,
 				})
 			}
 		}

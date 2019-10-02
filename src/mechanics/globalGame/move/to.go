@@ -19,8 +19,6 @@ func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotat
 	//minDistRotate := 10 + ((maxSpeed*(180/float64(rotateAngle)))/(2*math.Pi))*2
 
 	for {
-		forecastQ := 0
-		forecastR := 0
 
 		// находим длинную вектора до цели
 		dist := game_math.GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
@@ -67,8 +65,7 @@ func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotat
 		forecastX = forecastX + stopX
 		forecastY = forecastY + stopY
 
-		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100,
-			Q: forecastQ, R: forecastR, Speed: speed, Animate: true})
+		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100, Speed: speed, Animate: true})
 	}
 
 	if len(path) > 1 {

@@ -15,8 +15,8 @@ func Maps() map[int]*_map.Map {
 		"Select " +
 		"id, " +
 		"name, " +
-		"q_size, " +
-		"r_size, " +
+		"x_size, " +
+		"y_size, " +
 		"id_type, " +
 		"level, " +
 		"specification, " +
@@ -39,7 +39,7 @@ func Maps() map[int]*_map.Map {
 
 		mp := &_map.Map{}
 
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.QSize, &mp.RSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
 			&mp.Global, &mp.InGame, &mp.XGlobal, &mp.YGlobal, &mp.Fraction, &mp.PossibleBattle)
 		if err != nil {
 			log.Fatal(err)
@@ -184,7 +184,7 @@ func GeoData(mp *_map.Map) {
 func CoordinatesMap(mp *_map.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.q, mc.r, ct.type, ct.texture_flore, "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.x, mc.y, ct.type, ct.texture_flore, "+
 		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
 		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
 		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_positions, mc.to_base_id, mc.to_map_id, "+
@@ -203,7 +203,7 @@ func CoordinatesMap(mp *_map.Map) {
 		var gameCoordinate coordinate.Coordinate
 		var positions []byte
 
-		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.Q, &gameCoordinate.R, &gameCoordinate.Type,
+		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type,
 			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move, &gameCoordinate.View,
 			&gameCoordinate.Attack, &gameCoordinate.Level, &gameCoordinate.AnimateSpriteSheets,
 			&gameCoordinate.AnimateLoop, &gameCoordinate.Scale,
@@ -225,47 +225,37 @@ func CoordinatesMap(mp *_map.Map) {
 			gameCoordinate.Positions = make([]*coordinate.Coordinate, 0)
 		}
 
-		// в бд карта храниться в хексовых координатах
-		gameCoordinate.X = gameCoordinate.Q - (gameCoordinate.R-(gameCoordinate.R&1))/2
-		gameCoordinate.Z = gameCoordinate.R
-		gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
-
-		if oneLayerMap[gameCoordinate.Q] != nil {
-			oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
+		if oneLayerMap[gameCoordinate.X] != nil {
+			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
 		} else {
-			oneLayerMap[gameCoordinate.Q] = make(map[int]*coordinate.Coordinate)
-			oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
+			oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
+			oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
 		}
 	}
 
-	defaultCoordinate := DefaultCoordinateType(mp)
-
-	for q := 0; q < mp.QSize; q++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
-		for r := 0; r < mp.RSize; r++ {
-			_, find := oneLayerMap[q][r]
-			if !find {
-
-				var gameCoordinate coordinate.Coordinate
-
-				gameCoordinate = defaultCoordinate
-				gameCoordinate.ID = mp.DefaultTypeID
-
-				gameCoordinate.Q = q
-				gameCoordinate.R = r
-				// в бд карта храниться в хексовых координатах
-				gameCoordinate.X = q - (r-(r&1))/2
-				gameCoordinate.Z = r
-				gameCoordinate.Y = -gameCoordinate.X - gameCoordinate.Z
-
-				if oneLayerMap[gameCoordinate.Q] != nil {
-					oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
-				} else {
-					oneLayerMap[gameCoordinate.Q] = make(map[int]*coordinate.Coordinate)
-					oneLayerMap[gameCoordinate.Q][gameCoordinate.R] = &gameCoordinate
-				}
-			}
-		}
-	}
+	//defaultCoordinate := DefaultCoordinateType(mp)
+	//for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
+	//	for y := 0; y < mp.YSize; y++ {
+	//		_, find := oneLayerMap[x][y]
+	//		if !find {
+	//
+	//			var gameCoordinate coordinate.Coordinate
+	//
+	//			gameCoordinate = defaultCoordinate
+	//			gameCoordinate.ID = mp.DefaultTypeID
+	//
+	//			gameCoordinate.X = x
+	//			gameCoordinate.Y = y
+	//
+	//			if oneLayerMap[gameCoordinate.X] != nil {
+	//				oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+	//			} else {
+	//				oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
+	//				oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
+	//			}
+	//		}
+	//	}
+	//}
 
 	mp.OneLayerMap = oneLayerMap
 }

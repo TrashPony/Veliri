@@ -22,8 +22,7 @@ func throwItems(user *player.Player, msg Message) {
 			users, rLock := globalGame.Clients.GetAll()
 			defer rLock.Unlock()
 			for _, user := range users {
-				boxX, boxY := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
-				dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
+				dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mapBox.X, mapBox.Y)
 
 				if dist < 175 { // что бы содержимое ящика не видили те кто далеко
 					go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: mapBox.ID,

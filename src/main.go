@@ -57,7 +57,7 @@ func main() {
 	go ai.HandlersLife()  // мониторинг входов выходов секторов
 
 	//go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
-	go ai.InitAI() // запускает ботов
+	// TODO go ai.InitAI() // запускает ботов
 
 	port := "8080"
 	log.Println("http server started on :" + port)

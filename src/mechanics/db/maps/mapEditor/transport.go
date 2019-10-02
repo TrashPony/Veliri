@@ -7,7 +7,7 @@ import (
 
 func PlaceTransport(coordinate *coordinate.Coordinate, mp *_map.Map) {
 
-	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
+	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
 
 	coordinate.Transport = true
 

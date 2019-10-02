@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
@@ -58,23 +59,25 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 
 	for i < count {
 
-		q := rand.Intn(mp.QSize)
-		r := rand.Intn(mp.RSize)
+		x := rand.Intn(mp.XSize)
+		y := rand.Intn(mp.YSize)
 
-		coordinate, _ := mp.GetCoordinate(q, r)
-		_, findRes := mp.Reservoir[q][r]
-
-		if !findRes && coordinate.Move && coordinate.AnimateSpriteSheets == "" && coordinate.TextureObject == "" && checkPlace(mp, q, r) {
+		if checkPlace(mp, x, y) {
 			i++
 			newRes, _ := gameTypes.Resource.GetMapReservoirByID(typeRes.TypeID)
 
-			newRes.Q = q
-			newRes.R = r
+			newRes.X = x
+			newRes.Y = y
 			newRes.Rotate = rand.Intn(360)
 			newRes.MapID = mp.Id
 
 			if !newRes.Move() {
-				mp.OneLayerMap[coordinate.Q][coordinate.R].Move = false // т.к. на координате ресурс то координата не проходима
+				coordinateMap, ok := mp.OneLayerMap[newRes.X][newRes.Y]
+				if ok {
+					coordinateMap.Move = false // т.к. на координате ресурс то координата не проходима
+				} else {
+					coordinate.AddIntCoordinate(mp.OneLayerMap, &coordinate.Coordinate{Move: false})
+				}
 			}
 
 			mp.AddResourceInMap(newRes)
@@ -82,7 +85,7 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 	}
 }
 
-func checkPlace(mp *_map.Map, q, r int) bool {
+func checkPlace(mp *_map.Map, x, y int) bool {
 
 	// ресурсы должны быть дальше на 150 px от
 	// баз
@@ -91,20 +94,14 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 
 	minDist := 150.0
 
-	game_math.GetXYCenterHex(q, r)
-
-	x, y := game_math.GetXYCenterHex(q, r)
-
 	for _, base := range bases.Bases.GetBasesByMap(mp.Id) {
-		baseX, baseY := game_math.GetXYCenterHex(base.Q, base.R)
-		if game_math.GetBetweenDist(x, y, baseX, baseY) < 350 {
+		if game_math.GetBetweenDist(x, y, base.X, base.Y) < 350 {
 			return false
 		}
 	}
 
 	for _, handler := range mp.HandlersCoordinates {
-		handlerX, handlerY := game_math.GetXYCenterHex(handler.Q, handler.R)
-		if game_math.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+		if game_math.GetBetweenDist(x, y, handler.X, handler.Y) < minDist {
 			return false
 		}
 
@@ -112,8 +109,7 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 
 	entryPoints := maps.Maps.GetEntryPointsByMapID(mp.Id)
 	for _, exit := range entryPoints {
-		handlerX, handlerY := game_math.GetXYCenterHex(exit.Q, exit.R)
-		if game_math.GetBetweenDist(x, y, handlerX, handlerY) < minDist {
+		if game_math.GetBetweenDist(x, y, exit.X, exit.Y) < minDist {
 			return false
 		}
 	}
@@ -125,10 +121,9 @@ func checkPlace(mp *_map.Map, q, r int) bool {
 	}
 
 	for _, xLine := range mp.OneLayerMap {
-		for _, coordinate := range xLine {
-			if strings.Contains(coordinate.TextureObject, "road") {
-				coordinateX, coordinateY := game_math.GetXYCenterHex(coordinate.Q, coordinate.R)
-				if game_math.GetBetweenDist(x, y, coordinateX, coordinateY) < minDist {
+		for _, coordinateMap := range xLine {
+			if strings.Contains(coordinateMap.TextureObject, "road") {
+				if game_math.GetBetweenDist(x, y, coordinateMap.X, coordinateMap.Y) < minDist {
 					return false
 				}
 			}

@@ -1,21 +1,20 @@
-function CreateDynamicObjects(dynamicObject, q, r, needBackGround, coordinate) {
+function CreateDynamicObjects(dynamicObject, x, y, needBackGround, coordinate) {
     if (coordinate && !coordinate.dynamicObjects) {
         coordinate.dynamicObjects = [];
     }
 
     let dynamicObjectSprite = {background: undefined, object: undefined, shadow: undefined};
 
-    let xy = GetXYCenterHex(q, r);
     if (needBackGround && dynamicObject.texture_background !== '') {
-        let background = game.floorLayer.create(xy.x, xy.y, dynamicObject.texture_background);
-        background.scale.set((dynamicObject.background_scale / 100)/2);
+        let background = game.floorLayer.create(x, y, dynamicObject.texture_background);
+        background.scale.set((dynamicObject.background_scale / 100) / 2);
         background.angle = dynamicObject.background_rotate;
         background.anchor.setTo(0.5);
         dynamicObjectSprite.background = background;
     }
 
-    let objectSprite = game.floorObjectLayer.create(xy.x, xy.y, dynamicObject.texture_object);
-    objectSprite.scale.set((dynamicObject.object_scale / 100)/2);
+    let objectSprite = game.floorObjectLayer.create(x, y, dynamicObject.texture_object);
+    objectSprite.scale.set((dynamicObject.object_scale / 100) / 2);
     objectSprite.angle = dynamicObject.object_rotate;
     objectSprite.anchor.setTo(0.5);
     dynamicObjectSprite.object = objectSprite;
@@ -23,12 +22,12 @@ function CreateDynamicObjects(dynamicObject, q, r, needBackGround, coordinate) {
     if (dynamicObject.shadow > 0) {
 
         let shadow = game.floorObjectLayer.create(
-            xy.x + game.shadowXOffset * (dynamicObject.shadow / 100),
-            xy.y + game.shadowYOffset * (dynamicObject.shadow / 100),
+            x + game.shadowXOffset * (dynamicObject.shadow / 100),
+            y + game.shadowYOffset * (dynamicObject.shadow / 100),
             dynamicObject.texture_object
         );
 
-        shadow.scale.set((dynamicObject.object_scale / 100)/2);
+        shadow.scale.set((dynamicObject.object_scale / 100) / 2);
         shadow.angle = dynamicObject.object_rotate;
         shadow.anchor.setTo(0.5);
         shadow.tint = 0x000000;
@@ -44,7 +43,7 @@ function CreateDynamicObjects(dynamicObject, q, r, needBackGround, coordinate) {
 
         let paketLine;
         objectSprite.events.onInputOver.add(function () {
-            paketLine = game.floorObjectSelectLineLayer.create(xy.x, xy.y, dynamicObject.texture_object);
+            paketLine = game.floorObjectSelectLineLayer.create(x, y, dynamicObject.texture_object);
             paketLine.anchor.setTo(0.5);
             paketLine.scale.set(0.22);
             paketLine.angle = dynamicObject.object_rotate;

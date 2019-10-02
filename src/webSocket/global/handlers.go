@@ -46,8 +46,8 @@ func ChangeSector(user *player.Player, mapID int, coor *coordinate.Coordinate) {
 	DisconnectUser(user, true) // если только сообщение то можно не горутиной
 
 	user.GetSquad().MatherShip.MapID = mapID
-	user.GetSquad().MatherShip.Q = toPosition.Q
-	user.GetSquad().MatherShip.R = toPosition.R
+	user.GetSquad().MatherShip.X = toPosition.X
+	user.GetSquad().MatherShip.Y = toPosition.Y
 	user.GetSquad().MatherShip.Rotate = toPosition.RespRotate
 
 	user.GetSquad().MatherShip.X = 0

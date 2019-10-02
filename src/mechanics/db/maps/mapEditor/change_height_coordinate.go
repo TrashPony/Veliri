@@ -7,7 +7,7 @@ import (
 
 func ChangeHeightCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, change int) {
 
-	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.Q, coordinate.R)
+	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
 
 	if changeCoordinate != nil {
 		updateChangeHeight(coordinate, mp, change)

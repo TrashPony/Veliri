@@ -60,8 +60,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"id, "+
 			"id_body, "+
 			"hp, "+
-			"q, "+
-			"r, "+
+			"x, "+
+			"y, "+
 			"rotate, "+
 			"target, "+
 			"power, mother_ship, "+
@@ -95,8 +95,8 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			&ship.ID,
 			&idBody,
 			&ship.HP,
-			&ship.Q,
-			&ship.R,
+			&ship.X,
+			&ship.Y,
 			&ship.Rotate,
 			&target,
 			&ship.Power,
@@ -173,8 +173,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"id, "+
 			"id_body, "+
 			"hp, "+
-			"q, "+
-			"r, "+
+			"x, "+
+			"y, "+
 			"rotate, "+
 			"target, "+
 			"on_map, "+
@@ -208,8 +208,8 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			&squadUnit.ID,
 			&idBody,
 			&squadUnit.HP,
-			&squadUnit.Q,
-			&squadUnit.R,
+			&squadUnit.X,
+			&squadUnit.Y,
 			&squadUnit.Rotate,
 			&target,
 			&squadUnit.OnMap,
@@ -276,10 +276,10 @@ func ParseTarget(targetKey string) *coordinate.Coordinate {
 	targetCell := strings.Split(targetKey, ":")
 
 	if len(targetCell) > 1 { // устанавливаем таргет если он есть
-		q, ok := strconv.Atoi(targetCell[0])
-		r, ok := strconv.Atoi(targetCell[1])
+		x, ok := strconv.Atoi(targetCell[0])
+		y, ok := strconv.Atoi(targetCell[1])
 		if ok == nil {
-			target := coordinate.Coordinate{Q: q, R: r}
+			target := coordinate.Coordinate{X: x, Y: y}
 			return &target
 		} else {
 			return nil

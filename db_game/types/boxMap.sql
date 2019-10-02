@@ -5,8 +5,8 @@ CREATE TABLE box_in_map
   destroy_time        timestamp, /* время когда ящик самоликвидируется */
   id_map              INT REFERENCES maps (id),
   id_box_type         INT     not null default 0,
-  q                   int,
-  r                   int,
+  x                   int,
+  y                   int,
   rotate              int,
   current_hp          int     not null default 1,
   owned_by_map_object boolean not null default false -- говорит что это инвентарь обьекта на карте
@@ -22,7 +22,11 @@ CREATE TABLE box_type
   protect       BOOLEAN, /* тру-на ящик можно поставить пароль */
   protect_lvl   int, /* 1-5 число описывающие сложность замка */
   underground   BOOLEAN, /* если ящик под землей то его нельзя задавить */
-  hp            int not null default 100
+  hp            int not null default 100,
+
+  /*методанные для детектора колизий*/
+  height        int, /* высота прямоуголника машинки */
+  width         int /* ширина прямоуголника машинки */
 );
 
 CREATE TABLE box_storage

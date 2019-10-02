@@ -96,10 +96,10 @@ func AddActions(updateMission *mission.Mission, tx *sql.Tx) {
 	for i, action := range updateMission.Actions {
 
 		err := tx.QueryRow("INSERT INTO actions (id_mission, type_monitor, description, short_description, "+
-			"base_id, Q, R, radius, sec, count, dialog_id, number, async, alternative_dialog_id, map_id, owner_place, end_text) "+
+			"base_id, x, y, radius, sec, count, dialog_id, number, async, alternative_dialog_id, map_id, owner_place, end_text) "+
 			"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id",
-			updateMission.ID, action.TypeFuncMonitor, action.Description, action.ShortDescription, action.BaseID, action.Q,
-			action.R, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async,
+			updateMission.ID, action.TypeFuncMonitor, action.Description, action.ShortDescription, action.BaseID, action.X,
+			action.Y, action.Radius, action.Sec, action.Count, action.DialogID, action.Number, action.Async,
 			action.AlternativeDialogId, action.MapID, action.OwnerPlace, action.EndText).Scan(&updateMission.Actions[i].ID)
 		if err != nil {
 			log.Fatal("add new action in mission " + err.Error())

@@ -7,8 +7,8 @@ import (
 )
 
 type Anomaly struct {
-	q     int
-	r     int
+	x     int
+	y     int
 	MapID int `json:"map_id"`
 	power int // сила это растояние на котором можно увидить аномалию на сканере со сканером нулевого радиуса, общая дальность сила аномалии + радиус сканера
 	Type  int
@@ -19,20 +19,20 @@ type Anomaly struct {
 	text     *dialog.Dialog
 }
 
-func (a *Anomaly) GetQ() int {
-	return a.q
+func (a *Anomaly) GetX() int {
+	return a.x
 }
 
-func (a *Anomaly) SetQ(q int) {
-	a.q = q
+func (a *Anomaly) SetX(x int) {
+	a.x = x
 }
 
-func (a *Anomaly) GetR() int {
-	return a.r
+func (a *Anomaly) GetY() int {
+	return a.y
 }
 
-func (a *Anomaly) SetR(r int) {
-	a.r = r
+func (a *Anomaly) SetY(y int) {
+	a.y = y
 }
 
 func (a *Anomaly) GetPower() int {

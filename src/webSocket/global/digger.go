@@ -3,188 +3,126 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
 	"time"
 )
 
-func selectDigger(user *player.Player, msg Message, diggerSlot *detail.BodyEquipSlot) {
-	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
-
-	q, r := game_math.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
-	squadCoordinate, find := mp.OneLayerMap[q][r]
-	if ! find {
-		go SendMessage(Message{Event: "Error", Error: "wrong place", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-		return
-	}
-
-	if squadCoordinate != nil {
-
-		result := make([]*coordinate.Coordinate, 0)
-
-		radius := coordinate.GetCoordinatesRadius(squadCoordinate, diggerSlot.Equip.Radius+1)
-		deadZone := coordinate.GetCoordinatesRadius(squadCoordinate, 1)
-
-		for _, radiusCoordinate := range radius {
-			mapCoordinate, find := mp.GetCoordinate(radiusCoordinate.Q, radiusCoordinate.R)
-			if find && mapCoordinate.Move && !(radiusCoordinate.Q == squadCoordinate.Q && radiusCoordinate.R == squadCoordinate.R) {
-				result = append(result, mapCoordinate)
-			}
-		}
-
-		// т.к. мс стоит на 7 клетках то копать он может только на следующих
-		for i, resultCoordinate := range result {
-			for _, deadCoordinate := range deadZone {
-				if resultCoordinate.Q == deadCoordinate.Q && resultCoordinate.R == deadCoordinate.R {
-					result[i] = nil
-				}
-			}
-		}
-
-		go SendMessage(Message{Event: "SelectDigger", Coordinates: result, IDUserSend: user.GetID(),
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: user.GetSquad().MatherShip.MapID})
-	}
-}
-
 func useDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
-	q, r := game_math.GetQRfromXY(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y)
-	squadCoordinate, find := mp.OneLayerMap[q][r]
-	if ! find {
-		go SendMessage(Message{Event: "Error", Error: "wrong place", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+
+	stopMove(user.GetSquad().MatherShip, true)
+
+	diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
+	if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {
+		go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		return
 	}
 
-	if squadCoordinate != nil {
+	users, rLock := globalGame.Clients.GetAll()
+	defer rLock.Unlock()
 
-		stopMove(user.GetSquad().MatherShip, true)
+	// перезаряджка
+	diggerSlot.Equip.CurrentReload = diggerSlot.Equip.Reload
+	go func() {
+		for diggerSlot.Equip.CurrentReload > 0 {
+			time.Sleep(1 * time.Second)
+			diggerSlot.Equip.CurrentReload--
+		}
+	}()
 
-		diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
-		if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {
-			go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-			return
+	mpCoordinate, _ := mp.GetCoordinate(msg.X, msg.Y)
+
+	var dynamicObject dynamicMapObject.DynamicObject
+	dynamicObject.TextureBackground = "crater_2"
+	dynamicObject.BackgroundScale = 75
+	dynamicObject.BackgroundRotate = rand.Intn(360)
+	mpCoordinate.DynamicObject = &dynamicObject
+
+	// todo проверить что координата свободна от игрока
+	anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.X, msg.Y)
+
+	if anomaly != nil {
+		maps.Maps.RemoveMapAnomaly(mp.Id, anomaly)
+
+		box, res, AnomalyText := anomaly.GetLoot()
+		// TODO запуст горутины на уничтожение
+
+		if box != nil {
+
+			box.MapID = mp.Id
+			box.X = anomaly.GetX()
+			box.X = anomaly.GetY()
+			box.Rotate = rand.Intn(360)
+
+			boxes.Boxes.InsertNewBox(box)
 		}
 
-		result := make([]*coordinate.Coordinate, 0)
+		if res != nil {
+			if mpCoordinate != nil {
 
-		radius := coordinate.GetCoordinatesRadius(squadCoordinate, diggerSlot.Equip.Radius+1)
-		deadZone := coordinate.GetCoordinatesRadius(squadCoordinate, 1)
+				res.X = anomaly.GetX()
+				res.Y = anomaly.GetY()
+				res.Rotate = rand.Intn(360)
+				res.MapID = mp.Id
+				mpCoordinate.Move = false
 
-		for _, radiusCoordinate := range radius {
-			mapCoordinate, find := mp.GetCoordinate(radiusCoordinate.Q, radiusCoordinate.R)
-			if find && mapCoordinate.Move && !(radiusCoordinate.Q == squadCoordinate.Q && radiusCoordinate.R == squadCoordinate.R) {
-				result = append(result, mapCoordinate)
+				mp.AddResourceInMap(res)
 			}
 		}
 
-		// т.к. мс стоит на 7 клетках то копать он может только на следующих
-		for i, resultCoordinate := range result {
-			for _, deadCoordinate := range deadZone {
-				if resultCoordinate.Q == deadCoordinate.Q && resultCoordinate.R == deadCoordinate.R {
-					result[i] = nil
-				}
+		if AnomalyText != nil {
+			if mpCoordinate != nil {
+				dynamicObject.TextureObject = "infoAnomaly"
+				dynamicObject.Dialog = AnomalyText
+				dynamicObject.Destroyed = true
+				dynamicObject.DestroyTime = time.Now()
+				dynamicObject.ObjectScale = 20
+				dynamicObject.ObjectRotate = rand.Intn(360)
+				dynamicObject.Shadow = 50
+				dynamicObject.Move = true
+				dynamicObject.View = true
+				dynamicObject.Attack = true
 			}
 		}
 
-		users, rLock := globalGame.Clients.GetAll()
-		defer rLock.Unlock()
+		go SendMessage(Message{
+			Event:     msg.Event,
+			ShortUnit: user.GetSquad().MatherShip.GetShortInfo(),
+			X:         msg.X, Y: msg.Y,
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot,
+			Box:           box,
+			Reservoir:     res,
+			DynamicObject: &dynamicObject,
+			Name:          diggerSlot.Equip.Name,
+			IDMap:         user.GetSquad().MatherShip.MapID,
+		})
 
-		for _, resultCoordinate := range result {
-			if resultCoordinate != nil && msg.Q == resultCoordinate.Q && msg.R == resultCoordinate.R {
-				diggerCoordinate, ok := mp.GetCoordinate(msg.Q, msg.R)
-				if ok && diggerCoordinate.Move {
-
-					// перезаряджка
-					diggerSlot.Equip.CurrentReload = diggerSlot.Equip.Reload
-					go func() {
-						for diggerSlot.Equip.CurrentReload > 0 {
-							time.Sleep(1 * time.Second)
-							diggerSlot.Equip.CurrentReload--
-						}
-					}()
-
-					mpCoordinate, _ := mp.GetCoordinate(msg.Q, msg.R)
-					var dynamicObject dynamicMapObject.DynamicObject
-					dynamicObject.TextureBackground = "crater_2"
-					dynamicObject.BackgroundScale = 75
-					dynamicObject.BackgroundRotate = rand.Intn(360)
-
-					// todo проверить что координата свободна от игрока
-					anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.Q, msg.R)
-					if anomaly != nil {
-						maps.Maps.RemoveMapAnomaly(mp.Id, msg.Q, msg.R)
-
-						box, res, AnomalyText := anomaly.GetLoot()
-						// TODO запуст горутины на уничтожение
-
-						if box != nil {
-
-							box.MapID = mp.Id
-							box.Q = anomaly.GetQ()
-							box.R = anomaly.GetR()
-							box.Rotate = rand.Intn(360)
-
-							boxes.Boxes.InsertNewBox(box)
-						}
-
-						if res != nil {
-							if mpCoordinate != nil {
-
-								res.Q = anomaly.GetQ()
-								res.R = anomaly.GetR()
-								res.Rotate = rand.Intn(360)
-								res.MapID = mp.Id
-								mpCoordinate.Move = false
-
-								mp.AddResourceInMap(res)
-							}
-						}
-
-						if AnomalyText != nil {
-							if mpCoordinate != nil {
-								dynamicObject.TextureObject = "infoAnomaly"
-								dynamicObject.Dialog = AnomalyText
-								dynamicObject.Destroyed = true
-								dynamicObject.DestroyTime = time.Now()
-								dynamicObject.ObjectScale = 20
-								dynamicObject.ObjectRotate = rand.Intn(360)
-								dynamicObject.Shadow = 50
-								dynamicObject.Move = true
-								dynamicObject.View = true
-								dynamicObject.Attack = true
-							}
-						}
-
-						mpCoordinate.DynamicObject = &dynamicObject
-
-						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: box, Reservoir: res,
-							DynamicObject: &dynamicObject, Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MatherShip.MapID})
-
-						for _, otherUser := range users {
-							equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
-							anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
-							if err == nil {
-								go SendMessage(Message{Event: "AnomalySignal", IDUserSend: otherUser.GetID(),
-									Anomalies: anomalies, IDMap: user.GetSquad().MatherShip.MapID})
-							} else {
-								go SendMessage(Message{Event: "RemoveAnomalies", IDUserSend: otherUser.GetID(),
-									IDMap: user.GetSquad().MatherShip.MapID})
-							}
-						}
-					} else {
-						mpCoordinate.DynamicObject = &dynamicObject
-						go SendMessage(Message{Event: msg.Event, OtherUser: user.GetShortUserInfo(true), Q: msg.Q, R: msg.R,
-							TypeSlot: msg.TypeSlot, Slot: msg.Slot, Box: nil, Reservoir: nil, DynamicObject: &dynamicObject,
-							Name: diggerSlot.Equip.Name, IDMap: user.GetSquad().MatherShip.MapID})
-					}
-				}
+		for _, otherUser := range users {
+			equipSlot := otherUser.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
+			anomalies, err := globalGame.GetVisibleAnomaly(otherUser, equipSlot)
+			if err == nil {
+				go SendMessage(Message{Event: "AnomalySignal", IDUserSend: otherUser.GetID(),
+					Anomalies: anomalies, IDMap: user.GetSquad().MatherShip.MapID})
+			} else {
+				go SendMessage(Message{Event: "RemoveAnomalies", IDUserSend: otherUser.GetID(),
+					IDMap: user.GetSquad().MatherShip.MapID})
 			}
 		}
+
+	} else {
+		go SendMessage(Message{
+			Event:     msg.Event,
+			ShortUnit: user.GetSquad().MatherShip.GetShortInfo(),
+			X:         msg.X, Y: msg.Y,
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot,
+			Box:           nil,
+			Reservoir:     nil,
+			DynamicObject: &dynamicObject,
+			Name:          diggerSlot.Equip.Name,
+			IDMap:         user.GetSquad().MatherShip.MapID,
+		})
 	}
 }

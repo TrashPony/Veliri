@@ -26,9 +26,8 @@ func EvacuationsLife() {
 			for _, transport := range mapBase.Transports {
 
 				// задаем начальное положение эвакуаторов как у баз
-				x, y := game_math.GetXYCenterHex(mapBase.Q, mapBase.R)
-				transport.X = x
-				transport.Y = y
+				transport.X = mapBase.X
+				transport.Y = mapBase.Y
 
 				go LaunchTransport(transport, mapBase, mp)
 			}
@@ -41,14 +40,13 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 	// мониторить ячейки для эвакуации, если они в ПРЕДЕЛАХ БАЗЫ
 
 	// находим рандомную точку окружности что бы туда следовать
-	xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
 
 	for {
 		radRotate := float64(rand.Intn(360)) * math.Pi / 180 // берем рандомный угол
 
 		radius := rand.Intn(transportBase.GravityRadius) // и рандомную дальность в радиусе базы
-		x := int(float64(radius)*math.Cos(radRotate)) + xBase
-		y := int(float64(radius)*math.Sin(radRotate)) + yBase
+		x := int(float64(radius)*math.Cos(radRotate)) + transportBase.X
+		y := int(float64(radius)*math.Sin(radRotate)) + transportBase.Y
 
 		// формируем путь для движения
 		// минимальная и текущая скорость должна быть 1 иначе будут мертвые зоны и дедлоки
@@ -88,13 +86,10 @@ func TransportMonitor(transportBase *base.Base, mp *_map.Map) {
 	for {
 		for _, coordinate := range mp.HandlersCoordinates {
 
-			xHandle, yHandle := game_math.GetXYCenterHex(coordinate.Q, coordinate.R)
-			xBase, yBase := game_math.GetXYCenterHex(transportBase.Q, transportBase.R)
-
-			dist := int(game_math.GetBetweenDist(xBase, yBase, xHandle, yHandle))
+			dist := int(game_math.GetBetweenDist(transportBase.X, transportBase.Y, coordinate.X, coordinate.Y))
 			if dist < transportBase.GravityRadius {
 				if coordinate.Transport {
-					wsGlobal.CheckTransportCoordinate(coordinate.Q, coordinate.R, 20, 60, mp.Id)
+					wsGlobal.CheckTransportCoordinate(coordinate.X, coordinate.Y, 20, 60, mp.Id)
 				}
 			}
 		}

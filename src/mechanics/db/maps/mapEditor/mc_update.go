@@ -32,10 +32,10 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"id_type = $20, "+
 		"object_priority = $21 "+
 		""+
-		"WHERE id_map = $1 AND q=$2 AND r = $3",
+		"WHERE id_map = $1 AND x=$2 AND y = $3",
 		mp.Id,
-		coordinate.Q,
-		coordinate.R,
+		coordinate.X,
+		coordinate.Y,
 		coordinate.TextureOverFlore,
 		coordinate.TexturePriority,
 		coordinate.Level,

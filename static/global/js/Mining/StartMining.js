@@ -1,12 +1,9 @@
 function StartMining(jsonData) {
 
-    let q = jsonData.q;
-    let r = jsonData.r;
-
     let attachPoint = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).attachPoint;
     let equipSprite = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).sprite;
 
-    let xy = GetXYCenterHex(q, r);
+    let xy = {x: jsonData.x, y: jsonData.y};
     let laserOut = game.add.graphics(0, 0);
     laserOut.lineStyle(6, 0xFFEDFF, 1);
 
@@ -74,10 +71,10 @@ function InitMiningOre(unitID, numberSlot, type, equip) {
     unit.selectMiningLine = {graphics: graphics, radius: equip.equip.radius};
     game.floorObjectLayer.add(graphics);
 
-    for (let q in game.map.reservoir) {
-        for (let r in game.map.reservoir[q]) {
+    for (let x in game.map.reservoir) {
+        for (let y in game.map.reservoir[x]) {
 
-            let reservoir = game.map.reservoir[q][r];
+            let reservoir = game.map.reservoir[x][y];
 
             reservoir.sprite.events.onInputDown.add(function () {
                 global.send(JSON.stringify({
@@ -85,8 +82,8 @@ function InitMiningOre(unitID, numberSlot, type, equip) {
                     unit_id: unitID,
                     slot: Number(numberSlot),
                     type_slot: type,
-                    q: reservoir.q,
-                    r: reservoir.r,
+                    x: reservoir.x,
+                    y: reservoir.y,
                 }));
                 UnselectResource()
             });

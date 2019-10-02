@@ -17,40 +17,37 @@ func AnomalyGenerator(mp *_map.Map) {
 
 		typeAnomaly := rand.Intn(4)
 
-		q := rand.Intn(mp.QSize)
-		r := rand.Intn(mp.RSize)
-		coordinatePlace, _ := mp.GetCoordinate(q, r)
+		x := rand.Intn(mp.XSize)
+		y := rand.Intn(mp.YSize)
 
-		if coordinatePlace.Move {
+		// TODO проверка на колизию с обьектами, юнитами и тд
+		anomalyMap := &anomaly.Anomaly{Type: typeAnomaly, MapID: mp.Id}
 
-			anomalyMap := &anomaly.Anomaly{Type: typeAnomaly, MapID: mp.Id}
+		anomalyMap.SetX(x)
+		anomalyMap.SetY(y)
+		anomalyMap.SetPower(rand.Intn(6))
 
-			anomalyMap.SetQ(q)
-			anomalyMap.SetR(r)
-			anomalyMap.SetPower(rand.Intn(6))
-
-			// коробка с ресурсами 2+лвл
-			if typeAnomaly == 0 {
-				anomalyMap.SetBox(boxes.Boxes.GetAnomalyRandomBox(typeAnomaly, gameTypes.Boxes.GetRandomBox()))
-			}
-
-			// коробка с чертежом
-			if typeAnomaly == 1 {
-				anomalyMap.SetBox(boxes.Boxes.GetAnomalyRandomBox(typeAnomaly, gameTypes.Boxes.GetRandomBox()))
-			}
-
-			// руда
-			if typeAnomaly == 2 {
-				anomalyMap.SetRes(gameTypes.Resource.GetRandomMapResource())
-			}
-
-			// текст
-			if typeAnomaly == 3 {
-				// todo TEXT
-			}
-
-			maps.Maps.AddNewAnomaly(anomalyMap, mp.Id)
-			i++
+		// коробка с ресурсами 2+лвл
+		if typeAnomaly == 0 {
+			anomalyMap.SetBox(boxes.Boxes.GetAnomalyRandomBox(typeAnomaly, gameTypes.Boxes.GetRandomBox()))
 		}
+
+		// коробка с чертежом
+		if typeAnomaly == 1 {
+			anomalyMap.SetBox(boxes.Boxes.GetAnomalyRandomBox(typeAnomaly, gameTypes.Boxes.GetRandomBox()))
+		}
+
+		// руда
+		if typeAnomaly == 2 {
+			anomalyMap.SetRes(gameTypes.Resource.GetRandomMapResource())
+		}
+
+		// текст
+		if typeAnomaly == 3 {
+			// todo TEXT
+		}
+
+		maps.Maps.AddNewAnomaly(anomalyMap, mp.Id)
+		i++
 	}
 }

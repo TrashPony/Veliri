@@ -2,13 +2,16 @@
 function UnselectAll() {
     UnselectResource();
     UnselectUnits();
+    UnselectDigger();
+
+    dontMove = false;
 }
 
 function UnselectResource() {
     // ресурсы
-    for (let q in game.map.reservoir) {
-        for (let r in game.map.reservoir[q]) {
-            game.map.reservoir[q][r].sprite.events.onInputDown.removeAll();
+    for (let x in game.map.reservoir) {
+        for (let y in game.map.reservoir[x]) {
+            game.map.reservoir[x][y].sprite.events.onInputDown.removeAll();
         }
     }
 
@@ -17,6 +20,17 @@ function UnselectResource() {
         if (unit.selectMiningLine) {
             unit.selectMiningLine.graphics.destroy();
             unit.selectMiningLine = null;
+        }
+    }
+}
+
+function UnselectDigger() {
+    game.input.onDown.removeAll();
+    for (let i in game.units) {
+        let unit = game.units[i];
+        if (unit.selectDiggerLine) {
+            unit.selectDiggerLine.graphics.destroy();
+            unit.selectDiggerLine = null;
         }
     }
 }

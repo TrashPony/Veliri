@@ -163,7 +163,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 
 		if searchCollision {
 			// TODO если юнит имеет высокую скорость последние точки делить его путь что бы адекватно обработать колизии
-			possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(forecastX), int(forecastY), rotate, mp, moveUnit.Body, false, false)
+			possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(forecastX), int(forecastY), rotate, mp, moveUnit.Body, false, false)
 			if !possibleMove {
 				return path, true
 			}
@@ -179,9 +179,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 		forecastX = forecastX + stopX
 		forecastY = forecastY + stopY
 
-		q, r := game_math.GetQRfromXY(int(forecastX), int(forecastY))
-		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: ms,
-			Q: q, R: r, Speed: speed, Animate: true})
+		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: ms, Speed: speed, Animate: true})
 
 		if countRotateAngle == 0 && onlyRotate {
 			return path, false

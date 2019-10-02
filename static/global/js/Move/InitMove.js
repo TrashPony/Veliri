@@ -3,7 +3,7 @@ let start = false; // что бы не генерить прямоуголник
 
 let selectRect = null;
 let rectOption = {x: 0, y: 0, height: 0, width: 0};
-let selectOneUnit = false;
+let dontMove = false;
 
 function StartSelectableUnits() {
     // создаем прямоуголник который тянется от точки куда тыкнул юзер изначально до текущего положения курсора
@@ -57,7 +57,7 @@ function CheckBoxInBox(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
 
 function SelectOneUnit(unit, boxSprite, setFlag) {
     if (setFlag) {
-        selectOneUnit = true;
+        dontMove = true;
     }
 
     if (unit.owner_id !== game.user_id) {
@@ -121,8 +121,7 @@ function UnSelectUnit() {
 function initMove(pointer) {
     if (game.input.activePointer.leftButton.isDown && pointer.duration <= 200) {
 
-
-        if (!selectOneUnit) {
+        if (!dontMove) {
 
             // todo если игрок передумал и тыкнул в другое место то не преследовать ящик
             // if (game.units[selectUnits[i].id] && game.units[selectUnits[i].id].toBox) {
@@ -140,7 +139,7 @@ function initMove(pointer) {
                 units_id: getIDsSelectUnits(),
             }));
         } else {
-            selectOneUnit = false;
+            dontMove = false;
         }
     }
 }

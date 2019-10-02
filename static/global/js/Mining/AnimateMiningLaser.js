@@ -1,4 +1,4 @@
-function AnimateMiningLaser() {
+function AnimateMiningLaser(unit) {
 
     function animateLaser(squad, miningLaser) {
 
@@ -24,22 +24,19 @@ function AnimateMiningLaser() {
         miningLaser.in.lineTo(targetX * 4, targetY * 4);
     }
 
-    for (let i in game.units) {
-        let unit = game.units[i];
 
-        if (unit.selectMiningLine) {
-            unit.selectMiningLine.graphics.clear();
-            unit.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
-            unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
-            unit.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
-            unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
-        }
+    if (unit.selectMiningLine) {
+        unit.selectMiningLine.graphics.clear();
+        unit.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
+        unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
+        unit.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
+        unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
+    }
 
-        if (unit.miningLaser && unit.miningLaser.length > 0) {
-            for (let j in unit.miningLaser) {
-                if (unit.miningLaser[j]) {
-                    animateLaser(unit, unit.miningLaser[j])
-                }
+    if (unit.miningLaser && unit.miningLaser.length > 0) {
+        for (let j in unit.miningLaser) {
+            if (unit.miningLaser[j]) {
+                animateLaser(unit, unit.miningLaser[j])
             }
         }
     }

@@ -23,8 +23,8 @@ func OutBase(user *player.Player) error {
 
 		respCoordinate := global.OutBase(gameBase)
 
-		user.GetSquad().MatherShip.Q = respCoordinate.Q
-		user.GetSquad().MatherShip.R = respCoordinate.R
+		user.GetSquad().MatherShip.X = respCoordinate.X
+		user.GetSquad().MatherShip.Y = respCoordinate.Y
 		user.GetSquad().MatherShip.MapID = gameBase.MapID
 		user.GetSquad().MatherShip.Rotate = respCoordinate.RespRotate
 

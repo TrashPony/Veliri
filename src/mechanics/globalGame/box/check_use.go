@@ -12,9 +12,8 @@ import (
 func checkUseBox(user *player.Player, boxID int) (error, *boxInMap.Box, *sync.Mutex) {
 	mapBox, mx := boxes.Boxes.Get(boxID)
 	if mapBox != nil {
-		boxX, boxY := game_math.GetXYCenterHex(mapBox.Q, mapBox.R)
 
-		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, boxX, boxY)
+		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mapBox.X, mapBox.Y)
 		if dist < 150 {
 			return nil, mapBox, mx
 		} else {

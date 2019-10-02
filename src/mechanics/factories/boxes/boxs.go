@@ -48,10 +48,10 @@ func (b *store) Get(id int) (*boxInMap.Box, *sync.Mutex) {
 	return nil, &b.mx
 }
 
-func (b *store) GetByQR(q, r, mapID int) (*boxInMap.Box, *sync.Mutex) {
+func (b *store) GetByXY(x, y, mapID int) (*boxInMap.Box, *sync.Mutex) {
 	b.mx.Lock()
 	for _, mapBox := range b.boxes {
-		if mapBox.MapID == mapID && mapBox.Q == q && mapBox.R == r {
+		if mapBox.MapID == mapID && mapBox.X == x && mapBox.Y == y {
 			return mapBox, &b.mx
 		}
 	}

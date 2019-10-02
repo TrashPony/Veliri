@@ -10,8 +10,8 @@ import (
 type Base struct {
 	ID                        int                      `json:"id"`
 	Name                      string                   `json:"name"`
-	Q                         int                      `json:"q"`
-	R                         int                      `json:"r"`
+	X                         int                      `json:"x"`
+	Y                         int                      `json:"y"`
 	MapID                     int                      `json:"map_id"`
 	Transports                map[int]*Transport       `json:"transports"`
 	Defenders                 map[int]*Transport       `json:"defenders"`

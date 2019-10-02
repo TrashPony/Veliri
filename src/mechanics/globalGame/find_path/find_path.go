@@ -75,7 +75,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
 	regions []*_map.Region, units map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
 
-	xSize, ySize := mp.SetXYSize(game_math.HexagonWidth, game_math.HexagonHeight, scaleMap) // расчтиамем высоту и ширину карты в ху
+	xSize, ySize := mp.SetXYSize(scaleMap) // расчтиамем высоту и ширину карты в ху
 
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
 	start.Rotate = gameUnit.Rotate
@@ -172,13 +172,13 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 				countWorker--
 			}()
 
-			if current.EqualXY(end) { // если текущая точка и есть конец начинаем генерить путь
+			if current.Equal(end) { // если текущая точка и есть конец начинаем генерить путь
 
-				for !current.EqualXY(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
+				for !current.Equal(start) { // идем обратно до тех пока пока не дойдем до стартовой точки
 
 					current = current.Parent // по родительским точкам
 
-					if !current.EqualXY(start) { // если текущая точка попрежнему не стартовая то добавляем в путь координату
+					if !current.Equal(start) { // если текущая точка попрежнему не стартовая то добавляем в путь координату
 						noSortedPath = append(noSortedPath, current)
 					}
 				}

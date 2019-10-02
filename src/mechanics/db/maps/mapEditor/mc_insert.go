@@ -12,8 +12,8 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 	_, err := dbConnect.GetDBConnect().Exec(""+
 		"INSERT INTO map_constructor ("+
 		"id_map, "+
-		"q, "+
-		"r, "+
+		"x, "+
+		"y, "+
 		"texture_over_flore, "+
 		"texture_priority, "+
 		"level, "+
@@ -36,8 +36,8 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		") "+
 		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)",
 		mp.Id,
-		coordinate.Q,
-		coordinate.R,
+		coordinate.X,
+		coordinate.Y,
 		coordinate.TextureOverFlore,
 		coordinate.TexturePriority,
 		coordinate.Level,

@@ -1,63 +1,47 @@
 function CreateMap() {
-    return new Promise((resolve) => {
-        let verticalOffset = game.hexagonHeight * 3 / 4;
-        let horizontalOffset = game.hexagonWidth;
-        let startX;
-        let startY;
-        let startXInit = game.hexagonWidth / 2;
-        let startYInit = game.hexagonHeight / 2;
 
-        game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
+    game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
+    game.bmdTerrain.clear();
 
-        game.bmdTerrain.clear();
+    for (let x in game.map.OneLayerMap) {
+        if (game.map.OneLayerMap.hasOwnProperty(x)) {
+            for (let y in game.map.OneLayerMap[x]) {
+                if (game.map.OneLayerMap[x].hasOwnProperty(y)) {
 
-        for (let r = 0; r < game.map.RSize; r++) {
 
-            if (r % 2 !== 0) {
-                startX = 2 * startXInit;
-            } else {
-                startX = startXInit;
-            }
+                    let coordinate = game.map.OneLayerMap[x][y];
 
-            startY = startYInit + (r * verticalOffset);
+                    // TODO CreateTerrain(coordinate, x, y);
 
-            for (let q = 0; q < game.map.QSize; q++) {
-                let coordinate = game.map.OneLayerMap[q][r];
+                    if (coordinate.dynamic_object) {
+                        CreateDynamicObjects(coordinate.dynamic_object, Number(x), Number(x), true, coordinate);
+                    }
 
-                CreateTerrain(coordinate, startX, startY, q, r);
+                    if (coordinate.effects != null && coordinate.effects.length > 0) {
+                        MarkZoneEffect(coordinate, Number(x), Number(x));
+                    }
 
-                if (coordinate.dynamic_object) {
-                    CreateDynamicObjects(coordinate.dynamic_object, q, r, true, coordinate);
+                    game.mapPoints.push({
+                        x: Number(x),
+                        y: Number(y),
+                        coordinate: coordinate,
+                        fogOfWar: true,
+                    });
                 }
-
-                if (coordinate.effects != null && coordinate.effects.length > 0) {
-                    MarkZoneEffect(coordinate, startX, startY);
-                }
-
-                game.mapPoints.push({
-                    x: startX,
-                    y: startY,
-                    q: q,
-                    r: r,
-                    coordinate: coordinate,
-                    fogOfWar: true,
-                }); // x y - пиксельная координата положения, q r гексовая сеть
-                startX += horizontalOffset;
             }
         }
+    }
 
-        CreateTexture().then(function () {
-            CreateObjects();
-        }).then(function () {
-            CreateBeams();
-        }).then(function () {
-            // TODO CreateEmitters();
-        }).then(function () {
-            CreateAllFogOfWar();
-        }).then(function () {
-            game.fogOfWar.add(game.add.sprite(0, 0, game.bmdFogOfWar));
-            resolve()
-        });
+    CreateTexture().then(function () {
+        CreateObjects();
+    }).then(function () {
+        CreateBeams();
+    }).then(function () {
+        // TODO CreateEmitters();
+    }).then(function () {
+        CreateAllFogOfWar();
+    }).then(function () {
+        game.fogOfWar.add(game.add.sprite(0, 0, game.bmdFogOfWar));
     });
 }
 

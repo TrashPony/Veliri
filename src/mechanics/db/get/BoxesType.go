@@ -18,7 +18,9 @@ func Boxes() map[int]box.Box {
 		" fold_size," +
 		" protect," +
 		" protect_lvl," +
-		" underground" +
+		" underground," +
+		" height," +
+		" width" +
 		" " +
 		"FROM box_type ")
 	if err != nil {
@@ -29,7 +31,7 @@ func Boxes() map[int]box.Box {
 	for rows.Next() {
 		typeBox := box.Box{}
 		err := rows.Scan(&typeBox.TypeID, &typeBox.Name, &typeBox.Type, &typeBox.CapacitySize, &typeBox.FoldSize,
-			&typeBox.Protect, &typeBox.ProtectLvl, &typeBox.Underground)
+			&typeBox.Protect, &typeBox.ProtectLvl, &typeBox.Underground, &typeBox.Height, &typeBox.Width)
 		if err != nil {
 			log.Fatal("get scan all type box " + err.Error())
 		}

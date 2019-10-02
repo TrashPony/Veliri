@@ -5,8 +5,8 @@ CREATE TABLE bases
   /* id сектора то есть карты где находиться база */
   id_map                       INT REFERENCES maps (id),
   /* позиция базы, на иговой карте берется обьект на этой координате и накладывается событие при нажатии */
-  q                            int,
-  r                            int,
+  x                            int,
+  y                            int,
   transport_count              int, /* количество эвакуатор у базы */
   defender_count               int, /* количество защитников */
   gravity_radius               int, /* радиус стабильной гравитации вокруг баз */
@@ -21,13 +21,13 @@ CREATE TABLE bases
 );
 
 -- таблица в себе содержит точки респаунов на
-/* resp q,r это точка выхода из базы, когда игрок нажимает выйти из базы он попадает сюда */
+/* resp x,y это точка выхода из базы, когда игрок нажимает выйти из базы он попадает сюда */
 CREATE TABLE bases_respawns
 (
   id      SERIAL PRIMARY KEY,
   base_id INT REFERENCES bases (id),
-  q       int,
-  r       int,
+  x       int,
+  y       int,
   rotate  int not null default 0 -- направление выхода с базы, угол от 0 до 360 который принимает корпус при выходе
 );
 

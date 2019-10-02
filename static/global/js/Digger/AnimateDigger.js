@@ -1,24 +1,18 @@
-function AnimateDigger() {
-    if (game.squad && game.squad.equipDrons && game.squad.equipDrons.length > 0) {
-        for (let i in game.squad.equipDrons) {
-            if (game.squad.equipDrons[i] && game.squad.equipDrons[i].drone.alive) {
-                FlyDrone(game.squad.equipDrons[i]);
-                if (game.squad.equipDrons[i].toSquad) {
-                    BackDrone(game.squad.equipDrons[i], game.squad)
-                }
-            }
-        }
+function AnimateDigger(unit) {
+
+    if (unit.selectDiggerLine) {
+        unit.selectDiggerLine.graphics.clear();
+        unit.selectDiggerLine.graphics.lineStyle(3, 0xb74213, 0.2);
+        unit.selectDiggerLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectDiggerLine.radius);
+        unit.selectDiggerLine.graphics.lineStyle(1, 0xff0000, 1);
+        unit.selectDiggerLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectDiggerLine.radius);
     }
 
-    for (let i = 0; game.otherUsers && i < game.otherUsers.length; i++) {
-        if (game.otherUsers[i].equipDrons && game.otherUsers[i].equipDrons.length > 0) {
-            for (let j in game.otherUsers[i].equipDrons) {
-                if (game.otherUsers[i].equipDrons[j]) {
-                    FlyDrone(game.otherUsers[i].equipDrons[j]);
-                    if (game.otherUsers[i].equipDrons[j].toSquad) {
-                        BackDrone(game.otherUsers[i].equipDrons[j], game.otherUsers[i]);
-                    }
-                }
+    for (let i in unit.equipDrons) {
+        if (unit.equipDrons[i] && unit.equipDrons[i].drone.alive) {
+            FlyDrone(unit.equipDrons[i]);
+            if (unit.equipDrons[i].toSquad) {
+                BackDrone(unit.equipDrons[i], unit)
             }
         }
     }

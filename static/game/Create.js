@@ -16,9 +16,6 @@ function CreateGame(map, loadFunc, typeService) {
 }
 
 function create(game) {
-    // размеры гексов карты по умолчанию
-    game.hexagonWidth = 50;
-    game.hexagonHeight = 55;
     // параметры смещения тени игры
     game.shadowXOffset = 4;
     game.shadowYOffset = 5;
@@ -31,13 +28,11 @@ function create(game) {
     game.time.desiredFps = 60;       // макс фпс 60
     game.time.slowMotion = 1;        // плавный переход в мин фпс
 
-    let heightMap = (game.map.RSize * game.hexagonHeight * 0.75);
-
     //game.stage.disableVisibilityChange = true; // не дает уснуть игры при сворачивание браузера
-    game.world.setBounds(0, 0, game.hexagonWidth * game.map.QSize + 30, heightMap + 30); //размеры карты
+    game.world.setBounds(0, 0, game.map.XSize, game.map.YSize); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
-    game.bmdTerrain = game.make.bitmapData(game.hexagonWidth * game.map.QSize + 30, heightMap + 30);
+    game.bmdTerrain = game.make.bitmapData(game.map.XSize, game.map.YSize);
     game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
 
     game.floorLayer = game.add.group();
@@ -85,7 +80,7 @@ function create(game) {
 
     game.fogOfWar = game.add.group(); // группа тумана войны что бы воспроизводить анимацию открытия клеток
     game.fogOfWar.alpha = 0.5;
-    game.bmdFogOfWar = game.make.bitmapData(game.hexagonWidth * game.map.QSize + 80, heightMap + 80);
+    game.bmdFogOfWar = game.make.bitmapData(game.map.XSize, game.map.YSize);
 
     game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
@@ -95,13 +90,13 @@ function create(game) {
 
     game.typeService = TypeService;
 
-    CreateMap().then(function () {
-        if (LoadFunc) {
-            LoadFunc();
-        }
+    CreateMap();
 
-        if (game.map.reservoir) {
-            CreateReservoirs()
-        }
-    });
+    if (LoadFunc) {
+        LoadFunc();
+    }
+
+    if (game.map.reservoir) {
+        CreateReservoirs()
+    }
 }

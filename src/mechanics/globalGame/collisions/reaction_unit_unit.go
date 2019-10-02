@@ -111,7 +111,7 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *
 	// проверка нового места толкаемого юзера на колизию в статичной карте
 	mp, _ := maps.Maps.GetByID(takeUnit.MapID)
 
-	possibleMove, _ := CheckCollisionsOnStaticMap(
+	possibleMove, _ := BodyCheckCollisionsOnStaticMap(
 		int(toUnit.X+int(float64(speed2)*math.Cos(needRad))),
 		int(toUnit.Y+int(float64(speed2)*math.Sin(needRad))),
 		toUnit.Rotate,

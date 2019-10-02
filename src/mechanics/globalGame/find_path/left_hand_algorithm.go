@@ -26,7 +26,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 	} else {
 
 		// конец пути находится в препятсвие
-		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(ToX), int(ToY), 0, mp, moveUnit.Body, false, true)
+		possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(ToX), int(ToY), 0, mp, moveUnit.Body, false, true)
 		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units, false, true, false)
 		// если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
 		if !possibleMove || !free {
@@ -42,6 +42,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 	}
 }
 
+// метод пускает от точки ToX, ToY 8 лузей по разным направлениям, что бы найти первое ближайшее место куда может встать юнит
 func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_map.Map, units map[int]*unit.ShortUnitInfo) (float64, float64, bool) {
 
 	startTime := time.Now()
@@ -61,7 +62,7 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 		radian := float64(angle) * math.Pi / 180
 		stopX, stopY := float64(game_math.CellSize*steep)*math.Cos(radian)+x, float64(game_math.CellSize*steep)*math.Sin(radian)+y
 
-		possibleMove, _ := collisions.CheckCollisionsOnStaticMap(int(stopX), int(stopY), 0, mp, moveUnit.Body, false, true)
+		possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(stopX), int(stopY), 0, mp, moveUnit.Body, false, true)
 		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(stopX), int(stopY), 0, units, false, true, true)
 		if possibleMove && free {
 
@@ -80,17 +81,15 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 		return 0, 0, false, false
 	}
 
-	// идем в обе стороны по направлению вектра пока не найдем пригодную точку выхода
-
 	step := 0
 	for {
-		step++
 		for angle := 0; angle <= 360; angle += 45 {
 			x, y, collision, passed := search(ToX, ToY, float64(step), angle)
 			if passed {
 				return x, y, collision
 			}
 		}
+		step++
 	}
 }
 

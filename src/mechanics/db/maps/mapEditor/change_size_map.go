@@ -70,39 +70,39 @@ func RemoveEndColumn(mapID int) {
 
 // -------------------//
 func rOffset(offset, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET r = r + $1 WHERE id_map=$2",
+	_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET y = y + $1 WHERE id_map=$2",
 		offset, mapID)
 	if err != nil {
-		log.Fatal("offset r coordinates map " + err.Error())
+		log.Fatal("offset y coordinates map " + err.Error())
 	}
 }
 
 func qOffset(offset, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET q = q + $1 WHERE id_map=$2",
+	_, err := dbConnect.GetDBConnect().Exec("UPDATE map_constructor SET x = x + $1 WHERE id_map=$2",
 		offset, mapID)
 	if err != nil {
-		log.Fatal("offset q coordinates map " + err.Error())
+		log.Fatal("offset x coordinates map " + err.Error())
 	}
 }
 
 func removeAllQCoordinate(q, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE q = $1 AND id_map = $2",
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE x = $1 AND id_map = $2",
 		q, mapID)
 	if err != nil {
-		log.Fatal("delete q coordinate " + err.Error())
+		log.Fatal("delete x coordinate " + err.Error())
 	}
 }
 
 func removeAllRCoordinate(r, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE r = $1 AND id_map = $2",
+	_, err := dbConnect.GetDBConnect().Exec("DELETE FROM map_constructor WHERE y = $1 AND id_map = $2",
 		r, mapID)
 	if err != nil {
-		log.Fatal("delete r coordinate " + err.Error())
+		log.Fatal("delete y coordinate " + err.Error())
 	}
 }
 
 func setNewSizeMap(qSize, rSize, mapID int) {
-	_, err := dbConnect.GetDBConnect().Exec("UPDATE maps SET q_size = $1, r_size = $2 WHERE id=$3",
+	_, err := dbConnect.GetDBConnect().Exec("UPDATE maps SET x_size = $1, y_size = $2 WHERE id=$3",
 		qSize, rSize, mapID)
 	if err != nil {
 		log.Fatal("update size map " + err.Error())

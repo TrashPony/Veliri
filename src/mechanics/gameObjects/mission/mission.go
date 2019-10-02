@@ -50,8 +50,8 @@ type Action struct {
 	Description         string               `json:"description"`
 	ShortDescription    string               `json:"short_description"`
 	BaseID              int                  `json:"base_id"`
-	Q                   int                  `json:"q"`
-	R                   int                  `json:"r"`
+	X                   int                  `json:"x"`
+	Y                   int                  `json:"y"`
 	MapID               int                  `json:"map_id"`
 	Radius              int                  `json:"radius"`
 	Sec                 int                  `json:"sec"`

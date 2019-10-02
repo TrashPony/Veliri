@@ -68,11 +68,6 @@ func getLocalChat(client *player.Player) (*chatGroup.Group, string) {
 		return chats.Groups.GetLocalGroup("base:" + strconv.Itoa(client.InBaseID)), "base:" + strconv.Itoa(client.InBaseID)
 	}
 
-	if client.GetSquad().InGame {
-		// игрок в игре
-		return chats.Groups.GetLocalGroup("game:" + strconv.Itoa(client.GetGameID())), "game:" + strconv.Itoa(client.GetGameID())
-	}
-
 	// игрок на глобальной карте
 	return chats.Groups.GetLocalGroup("map:" + strconv.Itoa(client.GetSquad().MatherShip.MapID)), "map:" + strconv.Itoa(client.GetSquad().MatherShip.MapID)
 }

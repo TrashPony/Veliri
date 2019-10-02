@@ -12,11 +12,11 @@ func Insert(newBox *boxInMap.Box) *boxInMap.Box {
 		id := 0
 		err := dbConnect.GetDBConnect().QueryRow("INSERT INTO "+
 			"box_in_map "+
-			"(password, destroy_time, id_map, id_box_type, q, r, rotate, current_hp, owned_by_map_object) "+
+			"(password, destroy_time, id_map, id_box_type, x, y, rotate, current_hp, owned_by_map_object) "+
 			"VALUES "+
 			"($1, $2, $3, $4, $5, $6, $7, $8, $9) "+
 			"RETURNING id",
-			newBox.GetPassword(), newBox.DestroyTime, newBox.MapID, newBox.TypeID, newBox.Q, newBox.R, newBox.Rotate,
+			newBox.GetPassword(), newBox.DestroyTime, newBox.MapID, newBox.TypeID, newBox.X, newBox.Y, newBox.Rotate,
 			newBox.HP, newBox.OwnedByMapObject).Scan(&id)
 		if err != nil {
 			log.Fatal("add new box " + err.Error())

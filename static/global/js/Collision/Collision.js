@@ -1,4 +1,4 @@
-function CreateCollision(graphics, body, angle, squad) {
+function CreateCollision(graphics, height, width, angle, squad) {
     if (!graphics) {
         squad.colision = game.add.graphics(0, 0);
         graphics = squad.colision;
@@ -11,7 +11,9 @@ function CreateCollision(graphics, body, angle, squad) {
     squad.rectDebag.clear();
     squad.rectDebag.lineStyle(1, 0xFF0000, 0.8);
 
-    let height = body.height, width = body.width;
+    if (!squad.sprite) {
+        return
+    }
 
     let x = squad.sprite.x;
     let y = squad.sprite.y;
