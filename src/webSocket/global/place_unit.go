@@ -60,7 +60,8 @@ func placeUnit(user *player.Player, msg Message) {
 			units := globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true)
 			mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
-			okUnits, _ := collisions.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units, false, false, false)
+			okUnits, _ := collisions.CheckCollisionsPlayers(outUnit, outUnit.X, outUnit.Y, outUnit.Rotate, units,
+				false, false, false, false, true, nil)
 			okMap, _ := collisions.BodyCheckCollisionsOnStaticMap(outUnit.X, outUnit.Y, outUnit.Rotate, mp, outUnit.Body, false, false)
 
 			if okUnits && okMap {
@@ -79,6 +80,7 @@ func placeUnit(user *player.Player, msg Message) {
 				go SendMessage(Message{Event: "PlaceUnit", ShortUnit: outUnit.GetShortInfo(), IDMap: outUnit.MapID})
 
 				if outUnit.FormationPos != nil {
+
 					x, y := user.GetSquad().GetFormationCoordinate(outUnit.FormationPos.X, outUnit.FormationPos.Y)
 					msg.ToX, msg.ToY = float64(x), float64(y)
 					msg.UnitsID = []int{outUnit.ID}

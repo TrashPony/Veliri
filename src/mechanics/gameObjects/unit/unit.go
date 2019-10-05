@@ -68,8 +68,9 @@ type Unit struct {
 	PointsPath []*coordinate.Coordinate
 
 	/* путь по которому идет юнит */
-	ActualPath   *[]*PathUnit `json:"actual_path"`
-	LastPathCell *PathUnit    `json:"actual_path"`
+	ActualPath     *[]*PathUnit `json:"actual_path"`
+	ActualPathCell *PathUnit    `json:"actual_path_cell"`
+	LastPathCell   *PathUnit    `json:"actual_path"`
 
 	CurrentSpeed float64 `json:"current_speed"`
 	HighGravity  bool    `json:"high_gravity"`
@@ -119,13 +120,14 @@ type ShortUnitInfo struct {
 	WeaponTexture string `json:"weapon_texture"`
 
 	/*ид владелдьца*/
-	OwnerID         int    `json:"owner_id"`
-	Owner           string `json:"owner"`
-	MapID           int    `json:"map_id"`
-	Evacuation      bool   `json:"evacuation"`
-	ForceEvacuation bool   `json:"force_evacuation"`
-	InSky           bool   `json:"in_sky"` /* отряд по той или иной причине летит Оо */
-	MoveChecker     bool   `json:"move_checker"`
+	OwnerID         int       `json:"owner_id"`
+	Owner           string    `json:"owner"`
+	MapID           int       `json:"map_id"`
+	Evacuation      bool      `json:"evacuation"`
+	ForceEvacuation bool      `json:"force_evacuation"`
+	InSky           bool      `json:"in_sky"` /* отряд по той или иной причине летит Оо */
+	MoveChecker     bool      `json:"move_checker"`
+	ActualPathCell  *PathUnit `json:"actual_path_cell"`
 }
 
 type PathUnit struct {
@@ -164,6 +166,7 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 	hostile.ForceEvacuation = unit.ForceEvacuation
 	hostile.InSky = unit.InSky
 	hostile.MoveChecker = unit.MoveChecker
+	hostile.ActualPathCell = unit.ActualPathCell
 
 	hostile.Body, _ = gameTypes.Bodies.GetByID(unit.Body.ID)
 	hostile.OwnerID = unit.OwnerID

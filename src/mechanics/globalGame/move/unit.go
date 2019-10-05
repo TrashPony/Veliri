@@ -17,7 +17,8 @@ import (
 	"time"
 )
 
-func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64, unitRotate int, uuid string, units map[int]*unit.ShortUnitInfo) ([]*unit.PathUnit, error) {
+func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64, unitRotate int, uuid string,
+	units map[int]*unit.ShortUnitInfo, unitsID []int) ([]*unit.PathUnit, error) {
 
 	if uuid != moveUnit.MoveUUID {
 		return nil, errors.New("wrong uuid")
@@ -26,7 +27,6 @@ func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64, unitRotate int,
 	start := time.Now()
 
 	defer func() {
-		// TODO идиальное время 200 мс :С
 		if debug.Store.Move {
 			elapsed := time.Since(start)
 			fmt.Println("time all path: " + strconv.FormatFloat(elapsed.Seconds(), 'f', 6, 64))
@@ -60,7 +60,7 @@ func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64, unitRotate int,
 	}
 
 	// что бы игрок не смог сгенерить одновременно много путей
-	pathPoints, err := find_path.LeftHandAlgorithm(moveUnit, startX, startY, ToX, ToY, uuid, units)
+	pathPoints, err := find_path.LeftHandAlgorithm(moveUnit, startX, startY, ToX, ToY, uuid, units, unitsID)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +119,12 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 	path := make([]*unit.PathUnit, 0)
 
 	if start {
+
+		needRotate := game_math.GetBetweenAngle(ToX, ToY, forecastX, forecastY)
+		tmpNeedRotate := needRotate
+		tmpRotate := rotate
+		diffAngle := RotateUnit(&tmpRotate, &tmpNeedRotate, 360)
+
 		// пытаемя сгенерить путь с поворотом в движение
 		rotatePath, collision := UnitTo(forecastX, forecastY, speed, ToX, ToY, rotate, rotateAngle, ms,
 			true, false, false, mp, moveUnit, units)
@@ -127,7 +133,7 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 			false, true, false, mp, moveUnit, units)
 
 		// если с поворотом в движение будет колизия то берем путь без движения
-		if collision {
+		if collision || diffAngle > 90 {
 			path = noRotatePath
 		} else {
 			path = rotatePath
@@ -169,7 +175,8 @@ func UnitTo(forecastX, forecastY, speed, ToX, ToY float64, rotate, rotateAngle, 
 			}
 
 			if units != nil {
-				free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(forecastX), int(forecastY), 0, units, true, false, false)
+				free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(forecastX), int(forecastY), rotate, units,
+					false, false, false, false, false, nil)
 				if !free {
 					return path, true
 				}

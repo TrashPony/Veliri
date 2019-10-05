@@ -15,19 +15,25 @@ import (
 	"time"
 )
 
-func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uuid string, units map[int]*unit.ShortUnitInfo) ([]*coordinate.Coordinate, error) {
+func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uuid string,
+	units map[int]*unit.ShortUnitInfo, unitsID []int) ([]*coordinate.Coordinate, error) {
 
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
 
 	// 0 пытаемя проложить путь от начала пути до конечной точки по прямой
-	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit, 5, units, false)
-	if !collision {
+	collision := collisions.SearchCollisionInLine(startX, startY, ToX, ToY, mp, moveUnit, 5, units,
+		false, true, false, unitsID)
+	free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units,
+		false, true, false, false, false, unitsID)
+
+	if !collision && free {
 		return []*coordinate.Coordinate{{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)}}, nil
 	} else {
 
 		// конец пути находится в препятсвие
 		possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(ToX), int(ToY), 0, mp, moveUnit.Body, false, true)
-		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units, false, true, false)
+		free, _ = collisions.CheckCollisionsPlayers(moveUnit, int(ToX), int(ToY), 0, units,
+			false, true, false, false, false, unitsID)
 		// если конечная точка находится в препятсвие то смотрим куда ближе идти ко входу или к выходу
 		if !possibleMove || !free {
 			ToX, ToY, collision = SearchEndPoint(startX, startY, ToX, ToY, moveUnit, mp, units)
@@ -37,7 +43,7 @@ func LeftHandAlgorithm(moveUnit *unit.Unit, startX, startY, ToX, ToY float64, uu
 		if !collision {
 			return []*coordinate.Coordinate{{X: int(ToX), Y: int(ToY)}}, nil
 		} else {
-			return startFind(moveUnit, int(startX), int(startY), ToX, ToY, uuid, game_math.CellSize, mp, units)
+			return startFind(moveUnit, int(startX), int(startY), ToX, ToY, uuid, game_math.CellSize, mp, units, unitsID)
 		}
 	}
 }
@@ -63,7 +69,8 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 		stopX, stopY := float64(game_math.CellSize*steep)*math.Cos(radian)+x, float64(game_math.CellSize*steep)*math.Sin(radian)+y
 
 		possibleMove, _ := collisions.BodyCheckCollisionsOnStaticMap(int(stopX), int(stopY), 0, mp, moveUnit.Body, false, true)
-		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(stopX), int(stopY), 0, units, false, true, true)
+		free, _ := collisions.CheckCollisionsPlayers(moveUnit, int(stopX), int(stopY), 0, units,
+			false, true, false, true, false, nil)
 		if possibleMove && free {
 
 			if debug.Store.MoveEndPoint {
@@ -71,7 +78,8 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 			}
 
 			return stopX, stopY,
-				collisions.SearchCollisionInLine(startX, startY, stopX, stopY, mp, moveUnit, game_math.CellSize, units, false), true
+				collisions.SearchCollisionInLine(startX, startY, stopX, stopY, mp, moveUnit, game_math.CellSize, units,
+					false, true, false, nil), true
 		}
 
 		if debug.Store.MoveEndPoint {
@@ -93,7 +101,8 @@ func SearchEndPoint(startX, startY, ToX, ToY float64, moveUnit *unit.Unit, mp *_
 	}
 }
 
-func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, size int, mp *_map.Map, units map[int]*unit.ShortUnitInfo) ([]*coordinate.Coordinate, error) {
+func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, size int, mp *_map.Map,
+	units map[int]*unit.ShortUnitInfo, unitsID []int) ([]*coordinate.Coordinate, error) {
 
 	path := make([]*coordinate.Coordinate, 0)
 	last := false
@@ -109,7 +118,7 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 			if points == nil {
 				// т.к. он не будет менятся нам нет смысла искать его всегда заного
 				var err error
-				points, err = MoveUnit(moveUnit, ToX, ToY, mp, size, uuid, units)
+				points, err = MoveUnit(moveUnit, ToX, ToY, mp, size, uuid, units, unitsID)
 				if err != nil {
 
 					collision := false
@@ -124,28 +133,32 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 				}
 			}
 
+			if points == nil {
+				return nil, errors.New("a start no find path")
+			}
+
 			// находим максимальную отдаленную точку куда может попать юнит
-			x, y, last = SearchPoint(&points, x, y, mp, moveUnit, float64(size), units)
+			x, y, last = SearchPoint(&points, x, y, mp, moveUnit, float64(size), units, unitsID)
 			if x == 0 && y == 0 {
 				points = nil
 				tryCount--
 				return nil, errors.New("line not to cell")
 			}
 
-			if last {
-				// если последняя точка то не добавляем ее тут а прокидываем в конец
-				continue
-			}
+			//if last {
+			//	// если последняя точка то не добавляем ее тут а прокидываем в конец
+			//	continue
+			//}
 
 			if debug.Store.HandAlgorithm && len(path) > 0 {
-				debug.Store.AddMessage("CreateLine", "red", path[len(path)-1].X,
+				debug.Store.AddMessage("CreateLine", "orange", path[len(path)-1].X,
 					path[len(path)-1].Y, x, y, size, mp.Id, 20)
 			}
 
 			path = append(path, &coordinate.Coordinate{X: x, Y: y})
 		} else {
 			//  2.1.1 если между координатой истиного пути и целью нет препятсвий формируем путь. Выходим из функции.
-			path = append(path, &coordinate.Coordinate{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)})
+			// path = append(path, &coordinate.Coordinate{X: int(moveUnit.ToX), Y: int(moveUnit.ToY)})
 			break
 		}
 	}
@@ -153,7 +166,8 @@ func startFind(moveUnit *unit.Unit, x, y int, ToX, ToY float64, uuid string, siz
 	return path, nil
 }
 
-func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64, units map[int]*unit.ShortUnitInfo) (int, int, bool) {
+func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Map, gameUnit *unit.Unit, size float64,
+	units map[int]*unit.ShortUnitInfo, unitsID []int) (int, int, bool) {
 
 	startTime := time.Now()
 	defer func() {
@@ -184,18 +198,36 @@ func SearchPoint(points *[]*coordinate.Coordinate, unitX, unitY int, mp *_map.Ma
 					float64(cell.X)+size/2,
 					float64(cell.Y)+size/2,
 					float64(unitX),
-					float64(unitY), mp, gameUnit, size, units, false)
+					float64(unitY), mp, gameUnit, size, units, false, false, true, unitsID)
 				if !collision {
+
+					if debug.Store.SearchCollisionLineStep {
+						debug.Store.AddMessage("CreateLine", "white", cell.X+int(size)/2, cell.Y+int(size)/2,
+							unitX, unitY, 0, mp.Id, 20)
+					}
+
 					if index > lastIndex {
 						x, y, lastIndex = cell.X+int(size)/2, cell.Y+int(size)/2, index
 					}
+
+				} else {
+
+					if debug.Store.SearchCollisionLineStep {
+						debug.Store.AddMessage("CreateLine", "red", cell.X+int(size)/2, cell.Y+int(size)/2,
+							unitX, unitY, 0, mp.Id, 20)
+					}
+
 				}
 			}(i, (*points)[i])
 		}
 	}
 
-	for countClose < len(*points)-1 {
+	for countClose < len(*points) {
 		time.Sleep(time.Millisecond)
+	}
+
+	if debug.Store.SearchCollisionLineResult {
+		debug.Store.AddMessage("CreateLine", "blue", x, y, unitX, unitY, 0, mp.Id, 20)
 	}
 
 	return x, y, len(*points)-1 == lastIndex

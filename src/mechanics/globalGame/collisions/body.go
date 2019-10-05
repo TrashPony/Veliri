@@ -50,7 +50,8 @@ func BodyCheckCollisionBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInM
 	return checkCollisionsBoxes(mapID, rectBody, false)
 }
 
-func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo, min, max, onlyStanding bool) (bool, *unit.ShortUnitInfo) {
+func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo,
+	min, max, hostileMax, onlyStanding, nextPoint bool, excludeIds []int) (bool, *unit.ShortUnitInfo) {
 
 	for _, otherUnit := range units {
 
@@ -66,16 +67,39 @@ func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int
 			continue
 		}
 
+		if excludeIds != nil && findExcludeUnit(otherUnit, excludeIds) {
+			continue
+		}
+
 		if otherUnit != nil && (moveUnit.ID != otherUnit.ID) { // todo && !user.GetSquad().Evacuation
 
 			mUserRect := getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, max, min)
-			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false, false)
+			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, hostileMax, false)
 
 			if mUserRect.detectCollisionRectToRect(userRect) {
 				return false, otherUnit
+			}
+
+			if nextPoint && otherUnit.ActualPathCell != nil {
+				mUserRect = getBodyRect(moveUnit.Body, float64(x), float64(y), rotate, max, min)
+				userRect = getBodyRect(otherUnit.Body, float64(otherUnit.ActualPathCell.X),
+					float64(otherUnit.ActualPathCell.Y), otherUnit.ActualPathCell.Rotate, hostileMax, false)
+
+				if mUserRect.detectCollisionRectToRect(userRect) {
+					return false, otherUnit
+				}
 			}
 		}
 	}
 
 	return true, nil
+}
+
+func findExcludeUnit(unit *unit.ShortUnitInfo, ids []int) bool {
+	for _, id := range ids {
+		if id == unit.ID {
+			return true
+		}
+	}
+	return false
 }

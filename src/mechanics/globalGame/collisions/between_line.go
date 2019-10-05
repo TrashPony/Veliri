@@ -100,7 +100,8 @@ func BetweenLine(startX, startY, ToX, ToY float64, mp *_map.Map, body *detail.Bo
 	}
 }
 
-func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameUnit *unit.Unit, speed float64, units map[int]*unit.ShortUnitInfo, onlyStanding bool) bool {
+func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameUnit *unit.Unit, speed float64,
+	units map[int]*unit.ShortUnitInfo, onlyStanding, min, max bool, unitsID []int) bool {
 
 	// текущее положение курсора
 	currentX, currentY := startX, startY
@@ -132,13 +133,10 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameU
 		}
 
 		if units != nil {
-			free, collisionUnit := CheckCollisionsPlayers(gameUnit, int(currentX), int(currentY), 0, units, true, false, onlyStanding)
+			free, _ := CheckCollisionsPlayers(gameUnit, int(currentX), int(currentY), 0, units,
+				min, max, false, onlyStanding, false, unitsID)
 			if !free {
-
-				dist := game_math.GetBetweenDist(int(currentX), int(currentY), int(collisionUnit.X), int(collisionUnit.Y))
-				if dist < 250 {
-					return true
-				}
+				return true
 			}
 		}
 
