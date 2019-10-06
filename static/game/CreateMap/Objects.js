@@ -15,8 +15,10 @@ function CreateObject(coordinate, x, y) {
             coordinate.shadow_intensity);
     }
 
-    // TODO метод вызывающий фризы
-    //ObjectEvents(coordinate, object, x, y);
+    if (game.typeService !== "mapEditor") {
+        // TODO метод вызывающий фризы
+        //ObjectEvents(coordinate, object, x, y);
+    }
 
     coordinate.objectSprite = object;
 }

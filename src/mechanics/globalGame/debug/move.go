@@ -23,22 +23,29 @@ func newStore() *MessageStore {
 
 		HandAlgorithm: false,
 
-		SearchCollisionLine: false,
+		SearchCollisionLine:       false,
+		SearchCollisionLineResult: false,
+		SearchCollisionLineStep:   false,
+
+		UnitUnitCollision: false,
 	}
 }
 
 type MessageStore struct {
-	messages            []*Message
-	mx                  sync.Mutex
-	Move                bool
-	MoveInit            bool
-	AStartNeighbours    bool
-	AStartResult        bool
-	RegionFindDebug     bool
-	RegionResult        bool
-	HandAlgorithm       bool
-	SearchCollisionLine bool
-	MoveEndPoint        bool
+	messages                  []*Message
+	mx                        sync.Mutex
+	Move                      bool
+	MoveInit                  bool
+	AStartNeighbours          bool
+	AStartResult              bool
+	RegionFindDebug           bool
+	RegionResult              bool
+	HandAlgorithm             bool
+	SearchCollisionLineResult bool
+	SearchCollisionLine       bool
+	MoveEndPoint              bool
+	UnitUnitCollision         bool
+	SearchCollisionLineStep   bool
 }
 
 type Message struct {

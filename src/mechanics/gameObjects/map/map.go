@@ -21,6 +21,7 @@ type Map struct {
 	Global              bool                          `json:"global"`
 	InGame              bool                          `json:"in_game"`
 	HandlersCoordinates []*coordinate.Coordinate      `json:"handlers_coordinates"`
+	EntryPoints         []*coordinate.Coordinate      `json:"entry_points"`
 	Beams               []*Beam                       `json:"beams"`
 	Emitters            []*Emitter                    `json:"emitters"`
 	GeoData             []*ObstaclePoint              `json:"geo_data"`

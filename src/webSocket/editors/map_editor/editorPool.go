@@ -23,10 +23,7 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 
 	mutex.Lock()
 
-	utils.CheckDoubleLogin(login, &usersWs)
-
 	newPlayer, ok := players.Users.Get(id)
-
 	if !ok {
 		newPlayer = players.Users.Add(id, login)
 	}
@@ -47,11 +44,8 @@ func AddNewUser(ws *websocket.Conn, login string, id int) {
 type Message struct {
 	Event string `json:"event"`
 	ID    int    `json:"id"`
-	Q     int    `json:"q"`
-	R     int    `json:"r"`
 
-	ToQ         int    `json:"to_q"`
-	ToR         int    `json:"to_r"`
+	ToPos       string `json:"to_pos"`
 	ToBaseID    int    `json:"to_base_id"`
 	ToMapID     int    `json:"to_map_id"`
 	TypeHandler string `json:"type_handler"`
@@ -129,17 +123,9 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: bdMap.AllTypeCoordinate()})
 		}
 
-		if msg.Event == "addHeightCoordinate" {
-			heightCoordinate(msg, ws, 1) // +
-		}
-
-		if msg.Event == "subtractHeightCoordinate" { // +
-			heightCoordinate(msg, ws, -1)
-		}
-
 		if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 
 			if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" {
 				coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
@@ -152,6 +138,7 @@ func Reader(ws *websocket.Conn) {
 			}
 
 			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
+			selectMap(msg, ws)
 		}
 
 		if msg.Event == "loadNewTypeTerrain" {
@@ -174,13 +161,13 @@ func Reader(ws *websocket.Conn) {
 		}
 
 		if msg.Event == "changeType" {
-			mapEditor.ChangeType(msg.IDType, msg.Move, msg.Watch, msg.Attack)
-			selectMap(msg, ws)
+			//mapEditor.ChangeType(msg.IDType, msg.Move, msg.Watch, msg.Attack)
+			//selectMap(msg, ws)
 		}
 
-		if msg.Event == "rotateObject" {
+		if msg.Event == "rotateObject" { // +
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 
 			coordinateMap.ObjRotate = msg.Rotate
 			coordinateMap.AnimationSpeed = msg.Speed
@@ -239,41 +226,41 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "addOverTexture" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 			mapEditor.PlaceTextures(coordinateMap, mapChange, msg.TextureName)
 		}
 
 		if msg.Event == "removeOverTexture" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 			mapEditor.RemoveTextures(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addTransport" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 			mapEditor.PlaceTransport(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeTransport" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 			mapEditor.RemoveTransport(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "addHandler" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
-			mapEditor.PlaceHandler(coordinateMap, mapChange, msg.ToQ, msg.ToR, msg.ToBaseID, msg.ToMapID, msg.TypeHandler)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+			mapEditor.PlaceHandler(coordinateMap, mapChange, msg.ToPos, msg.ToBaseID, msg.ToMapID, msg.TypeHandler)
 			selectMap(msg, ws)
 		}
 
 		if msg.Event == "removeHandler" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 			mapEditor.RemoveHandler(coordinateMap, mapChange)
 			selectMap(msg, ws)
 		}
@@ -296,7 +283,7 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "toBack" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 
 			coordinateMap.TexturePriority = 0
 			coordinateMap.ObjectPriority = 0
@@ -307,7 +294,7 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "toFront" {
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.Q, msg.R)
+			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
 
 			coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
 			coordinateMap.TexturePriority++

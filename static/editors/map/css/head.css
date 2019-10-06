@@ -4,9 +4,8 @@
 }
 
 #miniMap {
-    left: 0;
-    bottom: 25px;
-    top: unset;
+    left: 1215px;
+    top: 12px;
 }
 
 #head {
@@ -16,7 +15,8 @@
     border-radius: 10px;
     float: left;
     padding-right: 15px;
-    height: 810px;
+    height: 670px;
+    font-size: 12px;
 }
 
 #head table {
@@ -65,8 +65,7 @@
 #coordinates {
     position: relative;
     float: right;
-    height: 570px;
-    width: 460px;
+    height: 753px;
     margin-top: 10px;
     background-size: 5px 2px;
     background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
@@ -80,38 +79,6 @@
     margin: 5px auto;
     text-shadow: 0 0 2px black;
     border-radius: 10px;
-}
-
-#newCoordinate {
-    float: right;
-    height: 310px;
-    width: 460px;
-    border-radius: 10px;
-    background-size: 5px 2px;
-    background-image: linear-gradient(1deg, rgba(33, 176, 255, 0.611764705882353), rgba(37, 160, 225, 0.1411764705882353) 6px);
-}
-
-#newCoordinate h4 {
-    background: linear-gradient(22deg, rgb(221, 112, 52), #6c6c6c);
-    color: aliceblue;
-    width: 260px;
-    margin: 5px auto;
-    text-shadow: 0 0 2px black;
-    border-radius: 10px;
-}
-
-#newCoordinate table {
-    text-align: left;
-}
-
-#newCoordinate table tr td:first-child {
-    text-align: right;
-}
-
-#newCoordinate table input[type="submit"] {
-    padding: 0;
-    height: 20px;
-    width: 20px;
 }
 
 #hideMeta {
@@ -136,4 +103,21 @@
 #hideMeta:active {
     position: relative;
     top: 2px;
+}
+
+#MousePosition {
+    position: absolute;
+    height: 20px;
+    line-height: 20px;
+    width: 120px;
+    background: rgba(71, 71, 71, 0.4);
+    color: greenyellow;
+}
+
+#posTable {
+
+}
+
+#posTable input {
+    width: 70px;
 }

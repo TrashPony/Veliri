@@ -88,9 +88,6 @@ function preload() {
     game.load.image('secure_underground_box', 'http://' + window.location.host + '/assets/map/boxes/secure_underground_box.png');
     game.load.image('underground_box', 'http://' + window.location.host + '/assets/map/boxes/underground_box.png');
 
-    // fog
-    game.load.image('FogOfWar', 'http://' + window.location.host + '/assets/map/fogOfWar.png');
-
     // Interface marks
     game.load.image('MarkMoveLastCell', 'http://' + window.location.host + '/assets/select/toMove.png');
     game.load.image('MarkTarget', 'http://' + window.location.host + '/assets/select/aim.png');

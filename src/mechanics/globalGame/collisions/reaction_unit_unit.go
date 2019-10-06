@@ -12,13 +12,14 @@ func InitCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *un
 	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
 	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
 
-	noCollision, collisionUnit := CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units, false, false, false)
+	noCollision, collisionUnit := CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units,
+		false, false, false, false, true, nil)
 
 	x, y := moveUnit.X, moveUnit.Y
 	percent := 0
-	if !noCollision {
-		x, y, noCollision, percent = detailCheckCollision(moveUnit, pathUnit, units)
-	}
+	//if !noCollision {
+	//	x, y, noCollision, percent = detailCheckCollision(moveUnit, pathUnit, units)
+	//}
 	return noCollision, collisionUnit, x, y, percent
 }
 
@@ -42,7 +43,8 @@ func detailCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit, units ma
 		stopX := float64(1) * math.Cos(radRotate) // идем по вектору движения корпуса
 		stopY := float64(1) * math.Sin(radRotate)
 
-		noCollision, _ := CheckCollisionsPlayers(moveUnit, int(x), int(y), pathUnit.Rotate, units, false, false, false)
+		noCollision, _ := CheckCollisionsPlayers(moveUnit, int(x), int(y), pathUnit.Rotate, units,
+			false, false, false, false, false, nil)
 		if !noCollision {
 			return int(x), int(y), false, int((dist * 100) / startDist)
 		}

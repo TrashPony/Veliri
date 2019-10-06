@@ -12,9 +12,9 @@ function update() {
     }
 
     if (game && game.typeService === "global") {
-        DebugCollision();
-
+        //DebugCollision();
         StartSelectableUnits();
+        UpdateFogOfWar();
 
         for (let i in game.units) {
             let unit = game.units[i];
@@ -56,4 +56,27 @@ function DebugCollision() {
         //     }
         // }
     }
+}
+
+function UpdateFogOfWar() {
+    if (!game.FogOfWar.ms) return;
+
+    let fringe = 64;
+
+    let gradient = game.FogOfWar.bmd.context.createRadialGradient(
+        game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x),
+        game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y),
+        game.FogOfWar.ms.body.range_view,
+        game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x),
+        game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y),
+        game.FogOfWar.ms.body.range_view - fringe
+    );
+
+    gradient.addColorStop(0, 'rgba(0,0,0,0.4');
+    gradient.addColorStop(0.4, 'rgba(0,0,0,0.2');
+    gradient.addColorStop(1, 'rgba(0,0,0,0');
+
+    game.FogOfWar.bmd.clear();
+    game.FogOfWar.bmd.context.fillStyle = gradient;
+    game.FogOfWar.bmd.context.fillRect(0, 0, game.camera.width, game.camera.height);
 }

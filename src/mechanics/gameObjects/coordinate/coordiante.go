@@ -26,7 +26,6 @@ type Coordinate struct {
 	Move                bool             `json:"move"`
 	View                bool             `json:"view"`
 	Attack              bool             `json:"attack"`
-	Level               int              `json:"level"`
 	Scale               int              `json:"scale"`
 	Shadow              bool             `json:"shadow"`
 	UnitOverlap         bool             `json:"unit_overlap"`

@@ -11,14 +11,14 @@ function CreateMap() {
 
                     let coordinate = game.map.OneLayerMap[x][y];
 
-                    // TODO CreateTerrain(coordinate, x, y);
+                    CreateLabels(coordinate, Number(x), Number(y));
 
                     if (coordinate.dynamic_object) {
-                        CreateDynamicObjects(coordinate.dynamic_object, Number(x), Number(x), true, coordinate);
+                        CreateDynamicObjects(coordinate.dynamic_object, Number(x), Number(y), true, coordinate);
                     }
 
                     if (coordinate.effects != null && coordinate.effects.length > 0) {
-                        MarkZoneEffect(coordinate, Number(x), Number(x));
+                        MarkZoneEffect(coordinate, Number(x), Number(y));
                     }
 
                     game.mapPoints.push({
@@ -38,20 +38,7 @@ function CreateMap() {
         CreateBeams();
     }).then(function () {
         // TODO CreateEmitters();
-    }).then(function () {
-        CreateAllFogOfWar();
-    }).then(function () {
-        game.fogOfWar.add(game.add.sprite(0, 0, game.bmdFogOfWar));
     });
-}
-
-function CreateAllFogOfWar() {
-    game.bmdFogOfWar.clear();
-    for (let i in game.mapPoints) {
-        if (game.mapPoints[i].fogOfWar && game.typeService === "battle") {
-            CreateFowOfWar(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
-        }
-    }
 }
 
 function CreateObjects() {

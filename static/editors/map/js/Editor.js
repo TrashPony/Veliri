@@ -1,78 +1,44 @@
-function addHeightCoordinate(q, r) {
-    if (game.input.activePointer.leftButton.isDown) {
-        mapEditor.send(JSON.stringify({
-            event: "addHeightCoordinate",
-            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(q),
-            r: Number(r)
-        }));
-    }
-
-    let xy = GetXYCenterHex(q, r);
-    game.map.OneLayerMap[q][r].level++;
-    CreateTerrain(game.map.OneLayerMap[q][r], xy.x, xy.y, q, r)
-}
-
-function subtractHeightCoordinate(q, r) {
-    if (game.input.activePointer.leftButton.isDown) {
-        mapEditor.send(JSON.stringify({
-            event: "subtractHeightCoordinate",
-            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(q),
-            r: Number(r)
-        }));
-    }
-
-    let xy = GetXYCenterHex(q, r);
-    game.map.OneLayerMap[q][r].level--;
-    CreateTerrain(game.map.OneLayerMap[q][r], xy.x, xy.y, q, r)
-}
-
 function PlaceCoordinate(event, type) {
 
-    let newType = Object.assign({}, type);
+    let object = game.add.sprite(0, 0, type.texture_object);
+    object.anchor.setTo(0.5);
+    object.scale.set(0.5);
 
-    let callBack = function (q, r) {
+    setInterval(function () {
+        object.x = ((game.input.mousePointer.x + game.camera.x) / game.camera.scale.x);
+        object.y = ((game.input.mousePointer.y + game.camera.y) / game.camera.scale.y);
+    }, 10);
+
+    game.input.onUp.add(function () {
+
+        object.destroy();
+        game.input.onUp.removeAll();
+
+        let x = (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x;
+        let y = (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y;
+
         mapEditor.send(JSON.stringify({
             event: event,
             id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
             id_type: Number(type.id),
-            q: Number(q),
-            r: Number(r)
+            x: Number(x),
+            y: Number(y)
         }));
 
-        newType.q = q;
-        newType.r = r;
-
-        newType.scale = 100;
-        newType.shadow = false;
-        newType.x_shadow_offset = 10;
-        newType.y_shadow_offset = 10;
-        newType.level = game.map.OneLayerMap[q][r].level;
-        newType.coordinateText = game.map.OneLayerMap[q][r].coordinateText;
-
-        for (let i in game.mapPoints) {
-
-            if (game.mapPoints[i].q === Number(q) && game.mapPoints[i].r === Number(r)) {
-
-                if (game.mapPoints[i].coordinate.objectSprite) {
-                    if (game.mapPoints[i].coordinate.objectSprite.shadow) {
-                        game.mapPoints[i].coordinate.objectSprite.shadow.destroy();
-                    }
-                    game.mapPoints[i].coordinate.objectSprite.destroy();
-                }
-
-                game.mapPoints[i].coordinate = newType;
-                game.map.OneLayerMap[q][r] = newType;
-
-                ReloadCoordinate(game.mapPoints[i]);
-            }
-        }
-    };
-
-    SelectedSprite(event, newType.impact_radius, callBack, null, null, null, true)
+    }, this);
 }
 
+function RemoveCoordinate() {
+    SelectedSprite("", 0, function (x, y) {
+        mapEditor.send(JSON.stringify({
+            event: "placeCoordinate",
+            id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
+            id_type: 1,
+            x: Number(x),
+            y: Number(y)
+        }));
+    }, true, false, false, false)
+}
 
 function SendCommand(command) {
     mapEditor.send(JSON.stringify({

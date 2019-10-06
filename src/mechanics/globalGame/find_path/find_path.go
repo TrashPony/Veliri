@@ -21,7 +21,8 @@ type Points struct {
 	mx     sync.Mutex
 }
 
-func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string, units map[int]*unit.ShortUnitInfo) ([]*coordinate.Coordinate, error) {
+func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uuid string,
+	units map[int]*unit.ShortUnitInfo, unitsID []int) ([]*coordinate.Coordinate, error) {
 
 	startX := moveUnit.X
 	startY := moveUnit.Y
@@ -39,7 +40,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 		// если не удалось построить путь по регионам то делаем без регионов
 		// todo однако это не правильно
 
-		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions)
+		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions, unitsID)
 		return path, err
 	} else {
 
@@ -49,7 +50,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 			}
 		}
 
-		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions)
+		err, path := FindPath(mp, start, end, moveUnit, size, units, uuid, regions, unitsID)
 		if err != nil {
 
 			// если не удалось построить путь по регионам то делаем без регионов
@@ -59,7 +60,7 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 			start := &coordinate.Coordinate{X: startX, Y: startY}
 			end := &coordinate.Coordinate{X: int(ToX), Y: int(ToY)}
 
-			err, path = FindPath(mp, start, end, moveUnit, size, units, uuid, nil)
+			err, path = FindPath(mp, start, end, moveUnit, size, units, uuid, nil, unitsID)
 		}
 
 		if debug.Store.AStartResult {
@@ -73,17 +74,18 @@ func MoveUnit(moveUnit *unit.Unit, ToX, ToY float64, mp *_map.Map, size int, uui
 }
 
 func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
-	regions []*_map.Region, units map[int]*unit.ShortUnitInfo) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
+	regions []*_map.Region, units map[int]*unit.ShortUnitInfo, unitsID []int) (*coordinate.Coordinate, *coordinate.Coordinate, int, int, error) {
 
 	xSize, ySize := mp.SetXYSize(scaleMap) // расчтиамем высоту и ширину карты в ху
 
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
 	start.Rotate = gameUnit.Rotate
+	start.State = 1
 
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
 
 	// если конечная точка является невалидной то ищем ближайшую валидную точку и говорим что это цель
-	_, free := checkValidForMoveCoordinate(mp, end.X, end.Y, xSize, ySize, gameUnit, scaleMap, regions, units)
+	_, free, _ := checkValidForMoveCoordinate(mp, end.X, end.Y, xSize, ySize, gameUnit, scaleMap, regions, units, unitsID)
 	if !free {
 		getValidEnd := func() *coordinate.Coordinate {
 			for radius := 0; radius < 10; radius++ {
@@ -92,7 +94,7 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 					x := int(math.Round(float64(float64(end.X) + float64(radius)*math.Cos(float64(angle)))))
 					y := int(math.Round(float64(float64(end.Y) + float64(radius)*math.Sin(float64(angle)))))
 
-					_, free := checkValidForMoveCoordinate(mp, x, y, xSize, ySize, gameUnit, scaleMap, regions, units)
+					_, free, _ := checkValidForMoveCoordinate(mp, x, y, xSize, ySize, gameUnit, scaleMap, regions, units, unitsID)
 					if free {
 						return &coordinate.Coordinate{X: x, Y: y}
 					}
@@ -115,7 +117,7 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 }
 
 func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *unit.Unit, scaleMap int,
-	units map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region) (error, []*coordinate.Coordinate) {
+	units map[int]*unit.ShortUnitInfo, uuid string, regions []*_map.Region, unitsID []int) (error, []*coordinate.Coordinate) {
 
 	startTime := time.Now()
 	defer func() {
@@ -125,7 +127,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 		}
 	}()
 
-	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, regions, units)
+	start, end, xSize, ySize, err := PrepareInData(gameMap, start, end, gameUnit, scaleMap, regions, units, unitsID)
 	if debug.Store.AStartNeighbours {
 		debug.Store.AddMessage("CreateRect", "blue", end.X*scaleMap, end.Y*scaleMap, 0, 0, scaleMap, gameMap.Id, 0)
 	}
@@ -187,7 +189,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 			}
 
 			if !exit {
-				parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, units, regions)
+				parseNeighbours(current, &openPoints, &closePoints, gameMap, end, gameUnit, xSize, ySize, scaleMap, units, regions, unitsID)
 			}
 		}()
 
@@ -217,9 +219,9 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 }
 
 func parseNeighbours(curr *coordinate.Coordinate, open, close *Points, gameMap *_map.Map, end *coordinate.Coordinate,
-	gameUnit *unit.Unit, xSize, ySize, scaleMap int, units map[int]*unit.ShortUnitInfo, regions []*_map.Region) {
+	gameUnit *unit.Unit, xSize, ySize, scaleMap int, units map[int]*unit.ShortUnitInfo, regions []*_map.Region, unitsID []int) {
 
-	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, units, xSize, ySize, regions) // берем всех соседей этой клетки
+	nCoordinate := generateNeighboursCoordinate(curr, gameMap, gameUnit, scaleMap, units, xSize, ySize, regions, unitsID) // берем всех соседей этой клетки
 
 	open.mx.Lock()
 	defer open.mx.Unlock()

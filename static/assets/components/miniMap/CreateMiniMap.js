@@ -15,43 +15,89 @@ function CreateMiniMap() {
 
     let canvas = document.getElementById("canvasMap");
 
-    if (!game.map) return;
+    if ((!game.map || !game.FogOfWar.ms) && window.location.pathname !== "/editors/map/") return;
 
     if (canvas) {
-        let ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        let ctx = canvas.getContext("2d");
+        let offsetX = game.map.XSize / canvas.width;
+        let offsetY = game.map.YSize / canvas.height;
         canvas.onmousedown = function (e) {
             fastMove(e, canvas)
         };
 
-        let offsetX = game.map.XSize / canvas.width;
-        let offsetY = game.map.YSize / canvas.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#4e4e4e";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i in game.mapPoints) {
-            if (game.mapPoints[i].coordinate.move) {
-                ctx.fillStyle = "#7f8189";
-            } else {
-                ctx.fillStyle = "#000000";
+        if (game.FogOfWar.ms) {
+
+
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.ellipse(game.FogOfWar.ms.sprite.x / offsetX, game.FogOfWar.ms.sprite.y / offsetY,
+                game.FogOfWar.ms.body.range_view / offsetX, game.FogOfWar.ms.body.range_view / offsetY,
+                0, 0, 2 * Math.PI, true);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // todo довольно тормазнуто отрисовывать всю геодату каждый раз, возможно есть способ это закешировать)
+        for (let i in game.map.geo_data) {
+
+            let obstacle = game.map.geo_data[i];
+
+            ctx.beginPath();
+            ctx.fillStyle = "#000000";
+            ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+            ctx.ellipse(obstacle.x / offsetX, obstacle.y / offsetY,
+                obstacle.radius / offsetX, obstacle.radius / offsetY,
+                0, 0, 2 * Math.PI, true);
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        for (let i in game.map.handlers_coordinates) {
+            let outSector = game.map.handlers_coordinates[i];
+            if (outSector.handler === "sector") {
+                // TODO стрелочка тут будет уместнее
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(0, 155, 0, 1)";
+                ctx.strokeStyle = "#00fff5";
+                ctx.ellipse(outSector.x / offsetX, outSector.y / offsetY,
+                    60 / offsetX, 60 / offsetY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
             }
-            ctx.fillRect(game.mapPoints[i].x / offsetX, game.mapPoints[i].y / offsetY, 1, 1);
+        }
 
-            if (game.mapPoints[i].fogOfWar && game.typeService === "battle") {
-                ctx.fillStyle = "#4e4e4e";
-                ctx.fillRect(game.mapPoints[i].x / offsetX, game.mapPoints[i].y / offsetY, 1, 1);
+        for (let i in game.map.entry_points) {
+            for (let j in game.map.entry_points[i].positions) {
+                let position = game.map.entry_points[i].positions[j];
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(155, 155, 0, 1)";
+                ctx.strokeStyle = "#00fff9";
+                ctx.ellipse(position.x / offsetX, position.y / offsetY,
+                    30 / offsetX, 30 / offsetY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
             }
         }
 
         for (let id in game.units) {
             if (game.units[id].sprite) {
                 if (game.units[id].owner_id === game.user_id) {
+
                     ctx.fillStyle = "#19ff00"; // свои юниты
 
                     if (game.units[id].moveTo) {
                         ctx.beginPath();
                         ctx.strokeStyle = "#00fcff";
-                        ctx.moveTo(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY);
-                        ctx.lineTo(game.units[id].moveTo.x / offsetX, game.units[id].moveTo.y / offsetY);
+                        ctx.moveTo(game.units[id].sprite.x / offsetX + 1, game.units[id].sprite.y / offsetY + 3);
+                        ctx.lineTo(game.units[id].moveTo.x / offsetX + 1, game.units[id].moveTo.y / offsetY + 3);
                         ctx.stroke();
                     }
 
@@ -61,32 +107,24 @@ function CreateMiniMap() {
                     ctx.fillStyle = "#ff7a00"; // нейтрал
                 }
 
-                ctx.fillRect(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY, 6, 3);
+                ctx.fillRect(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY, 6, 4);
             }
         }
 
-        // // todo
-        // if (game.squad) {
-        //     if (game.squad.missionMove) {
-        //         ctx.beginPath();
-        //         ctx.strokeStyle = "#00ff03";
-        //         ctx.moveTo(game.squad.sprite.x / kX + hexagonWidth / 2, game.squad.sprite.y / kY + hexagonHeight / 2);
-        //         ctx.lineTo(game.squad.missionMove.x / kX, game.squad.missionMove.y / kY);
-        //         ctx.stroke();
-        //
-        //         ctx.beginPath();
-        //         ctx.strokeStyle = "rgba(0, 255, 0, 0.5)";
-        //         ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
-        //         ctx.ellipse(game.squad.missionMove.x / kX + hexagonWidth / 2, game.squad.missionMove.y / kY + hexagonHeight / 2,
-        //             game.squad.missionMove.radius / kX, game.squad.missionMove.radius / kY,
-        //             0, 0, 2 * Math.PI, true);
-        //         ctx.fill();
-        //         ctx.stroke();
-        //     }
-        //
-        //     ctx.fillStyle = "#19ff00";
-        //     ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
-        // }
+        for (let q in game.map.reservoir) {
+            for (let r in game.map.reservoir[q]) {
+                let reservoir = game.map.reservoir[q][r];
+
+                ctx.beginPath();
+                ctx.fillStyle = "#ffd700";
+                ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+                ctx.ellipse(reservoir.x / offsetX, reservoir.y / offsetY,
+                    15 / offsetX, 15 / offsetY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
 
         for (let i in game.bases) {
             ctx.fillStyle = "#1efcff";
@@ -99,7 +137,7 @@ function CreateMiniMap() {
         }
 
         for (let i in game.boxes) {
-            ctx.fillStyle = "#aba9bc";
+            ctx.fillStyle = "#e8e6ff";
             if (game.boxes[i].sprite) {
                 ctx.fillRect(game.boxes[i].sprite.x / offsetX, game.boxes[i].sprite.y / offsetY, 6, 3)
             }
@@ -125,6 +163,29 @@ function CreateMiniMap() {
             ctx.fill();
             ctx.stroke();
         }
+
+        // // todo
+        // if (game.squad) {
+        //     if (game.squad.missionMove) {
+        //         ctx.beginPath();
+        //         ctx.strokeStyle = "#00ff03";
+        //         ctx.moveTo(game.squad.sprite.x / kX + hexagonWidth / 2, game.squad.sprite.y / kY + hexagonHeight / 2);
+        //         ctx.lineTo(game.squad.missionMove.x / kX, game.squad.missionMove.y / kY);
+        //         ctx.stroke();
+        //
+        //         ctx.beginPath();
+        //         ctx.strokeStyle = "rgba(0, 255, 0, 0.5)";
+        //         ctx.fillStyle = "rgba(0, 255, 0, 0.1)";
+        //         ctx.ellipse(game.squad.missionMove.x / kX + hexagonWidth / 2, game.squad.missionMove.y / kY + hexagonHeight / 2,
+        //             game.squad.missionMove.radius / kX, game.squad.missionMove.radius / kY,
+        //             0, 0, 2 * Math.PI, true);
+        //         ctx.fill();
+        //         ctx.stroke();
+        //     }
+        //
+        //     ctx.fillStyle = "#19ff00";
+        //     ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
+        // }
 
         let kXCam = (game.camera.scale.x * offsetX);
         let kYCam = (game.camera.scale.y * offsetY);

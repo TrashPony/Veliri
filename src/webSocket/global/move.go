@@ -23,8 +23,14 @@ func Move(user *player.Player, msg Message, newAction bool) {
 	// отряд двигается с минимальной скорость из всех юнитов
 	// при старте движения все юниты сначало должны принять необходимое положение, угол
 	// и когда все будут готовы то начинать двигатся в составе формирования
+	// игнорировать юнитов в формирование при поиске пути т.к. они не могут пересечься
 
 	if user.GetSquad() != nil && msg.UnitsID != nil {
+
+		formationMove := false
+		if FormationInit(user, msg.UnitsID) {
+			formationMove = true
+		}
 
 		var toPos []*coordinate.Coordinate
 
@@ -41,6 +47,10 @@ func Move(user *player.Player, msg Message, newAction bool) {
 
 			moveUUID := uuid.NewV1().String()
 			moveUnit.MoveUUID = moveUUID
+
+			if !formationMove && !moveUnit.Body.MotherShip {
+				moveUnit.Formation = false
+			}
 
 			if moveUnit != nil && moveUnit.OnMap {
 
@@ -69,10 +79,10 @@ func Move(user *player.Player, msg Message, newAction bool) {
 
 					if moveUnit.LastPathCell != nil {
 						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.LastPathCell.X),
-							float64(moveUnit.LastPathCell.Y), moveUnit.LastPathCell.Rotate, moveUUID, units)
+							float64(moveUnit.LastPathCell.Y), moveUnit.LastPathCell.Rotate, moveUUID, units, msg.UnitsID)
 					} else {
 						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.X),
-							float64(moveUnit.Y), moveUnit.Rotate, moveUUID, units)
+							float64(moveUnit.Y), moveUnit.Rotate, moveUUID, units, msg.UnitsID)
 					}
 
 					if err != nil && len(path) == 0 {
@@ -111,6 +121,44 @@ func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
 		if resetSpeed {
 			moveUnit.CurrentSpeed = 0
 		}
+	}
+}
+
+func FormationInit(user *player.Player, unitsID []int) bool {
+	for _, id := range unitsID {
+
+		if user.GetSquad().MatherShip.ID == id && !user.GetSquad().MatherShip.Formation {
+			user.GetSquad().MatherShip.Formation = true
+			go FormationMove(user)
+			return true
+		} else {
+			if user.GetSquad().MatherShip.Formation {
+				return true
+			}
+		}
+
+	}
+
+	return false
+}
+
+func FormationMove(user *player.Player) {
+	for {
+		for _, unitSlot := range user.GetSquad().MatherShip.Units {
+
+			if unitSlot.Unit != nil && unitSlot.Unit.OnMap && unitSlot.Unit.Formation {
+
+				x, y := user.GetSquad().GetFormationCoordinate(unitSlot.Unit.FormationPos.X, unitSlot.Unit.FormationPos.Y)
+
+				msg := Message{}
+				msg.ToX, msg.ToY = float64(x), float64(y)
+				msg.UnitsID = []int{unitSlot.Unit.ID}
+
+				Move(user, msg, true)
+			}
+		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 }
 
@@ -167,6 +215,8 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 	moveUnit.MoveChecker = true
 
 	defer func() {
+		moveUnit.ActualPathCell = nil
+
 		stopMove(moveUnit, false)
 
 		moveUnit.LastPathCell = nil
@@ -176,6 +226,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		if moveRepeat {
+			msg.UnitsID = []int{moveUnit.ID}
 			Move(user, msg, false)
 		}
 
@@ -214,6 +265,8 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			}
 		}
 
+		moveUnit.ActualPathCell = pathUnit
+
 		newGravity := move.GetGravity(moveUnit.X, moveUnit.Y, user.GetSquad().MatherShip.MapID)
 		if moveUnit.HighGravity != newGravity {
 			moveUnit.HighGravity = newGravity
@@ -222,23 +275,53 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		// колизии юнит - юнит
-		noCollision, collisionUnit, x, y, percent := collisions.InitCheckCollision(moveUnit, pathUnit)
+		noCollision, collisionUnit := collisionUnitToUnit(moveUnit, pathUnit, path, i)
+
 		if !noCollision && collisionUnit != nil {
 
-			pathUnit.X, pathUnit.Y = x, y
-			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
-			time.Sleep(time.Duration((pathUnit.Millisecond*percent)/100) * time.Millisecond)
+			timeCount := 0
 
-			moveUnit.X, moveUnit.Y, moveUnit.Rotate = x, y, pathUnit.Rotate
+			go SendMessage(Message{
+				Event:     "MoveStop",
+				ShortUnit: moveUnit.GetShortInfo(),
+				PathUnit: &unit.PathUnit{
+					Speed: 0,
+				},
+				IDMap: moveUnit.MapID,
+			})
 
-			unitPath, toUnitPath := collisions.UnitToUnitCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
+			for collisionUnit != nil && collisionUnit.MoveChecker && timeCount < 10 && !noCollision {
 
-			go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPath, IDMap: moveUnit.MapID})
-			go SendMessage(Message{Event: "MoveTo", ShortUnit: collisionUnit, PathUnit: toUnitPath, IDMap: moveUnit.MapID})
-			time.Sleep(200 * time.Millisecond)
+				noCollision, collisionUnit = collisionUnitToUnit(moveUnit, pathUnit, path, i)
 
-			moveRepeat = true
-			return
+				if collisionUnit != nil && !collisionUnit.MoveChecker {
+					moveRepeat = true
+					return
+				}
+
+				timeCount++
+				time.Sleep(100 * time.Millisecond)
+			}
+
+			if collisionUnit != nil {
+				moveRepeat = true
+				return
+			}
+
+			//pathUnit.X, pathUnit.Y = x, y
+			//go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+			//time.Sleep(time.Duration((pathUnit.Millisecond*percent)/100) * time.Millisecond)
+			//
+			//moveUnit.X, moveUnit.Y, moveUnit.Rotate = x, y, pathUnit.Rotate
+			//
+			//unitPath, toUnitPath := collisions.UnitToUnitCollisionReaction(moveUnit, globalGame.Clients.GetUnitByID(collisionUnit.ID))
+			//
+			//go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPath, IDMap: moveUnit.MapID})
+			//go SendMessage(Message{Event: "MoveTo", ShortUnit: collisionUnit, PathUnit: toUnitPath, IDMap: moveUnit.MapID})
+			//time.Sleep(200 * time.Millisecond)
+			//
+			//moveRepeat = true
+			//return
 		}
 
 		//possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(pathUnit.X, pathUnit.Y, pathUnit.Rotate, mp, moveUnit.Body, false)
@@ -320,7 +403,26 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 		// todo оптимизировать а то каждый раз обновлять это ужасно
 		if !user.Bot { // TODO апдейт юнитов
-			go update.Squad(user.GetSquad(), false)
+			go update.Squad(user.GetSquad(), true)
 		}
 	}
+}
+
+func collisionUnitToUnit(moveUnit *unit.Unit, pathUnit *unit.PathUnit, path *[]*unit.PathUnit, i int) (bool, *unit.ShortUnitInfo) {
+	if pathUnit.Speed == 0 {
+		return true, nil
+	}
+
+	// колизии юнит - юнит
+	noCollision, collisionUnit, _, _, _ := collisions.InitCheckCollision(moveUnit, pathUnit)
+
+	if !noCollision {
+		return noCollision, collisionUnit
+	}
+
+	if len(*path)-1 > i+1 && pathUnit.Speed > 0 {
+		noCollision, collisionUnit, _, _, _ = collisions.InitCheckCollision(moveUnit, (*path)[i+1])
+	}
+
+	return noCollision, collisionUnit
 }

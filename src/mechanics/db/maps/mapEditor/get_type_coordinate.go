@@ -71,7 +71,6 @@ func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coo
 // берет координату из таблицы map_constructor, если ее там нет то вернут nil
 func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 
-	var level int
 	var idType int
 	var id int
 	var rotate int
@@ -79,7 +78,7 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 	var xOffset int
 	var yOffset int
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, level, id_type, rotate, animate_speed, x_offset, y_offset "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, id_type, rotate, animate_speed, x_offset, y_offset "+
 		"FROM map_constructor "+
 		"WHERE id_map = $1 AND x=$2 AND y = $3",
 		idMap, x, y)
@@ -89,7 +88,7 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&id, &level, &idType, &rotate, &animateSpeed, &xOffset, &yOffset)
+		err := rows.Scan(&id, &idType, &rotate, &animateSpeed, &xOffset, &yOffset)
 		if err != nil {
 			log.Fatal("getMapCoordinateInMC() " + err.Error())
 		}
@@ -99,7 +98,6 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 		return nil
 	} else {
 		mcCoordinate := getTypeByID(idType)
-		mcCoordinate.Level = level
 		mcCoordinate.X = x
 		mcCoordinate.Y = y
 		mcCoordinate.ObjRotate = rotate

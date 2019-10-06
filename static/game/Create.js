@@ -78,9 +78,15 @@ function create(game) {
 
     game.cloudsLayer = game.add.group();
 
-    game.fogOfWar = game.add.group(); // группа тумана войны что бы воспроизводить анимацию открытия клеток
-    game.fogOfWar.alpha = 0.5;
-    game.bmdFogOfWar = game.make.bitmapData(game.map.XSize, game.map.YSize);
+    let fogBmd = game.make.bitmapData(game.camera.width, game.camera.height);
+    let fogSprite = fogBmd.addToWorld();
+    fogSprite.fixedToCamera = true;
+    game.FogOfWar = {
+        bmd: fogBmd,
+        sprite: fogSprite,
+        overviewCircle: null,
+        ms: null,
+    };
 
     game.redactorButton = game.add.group();
     game.redactorMetaText = game.add.group();
