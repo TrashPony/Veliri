@@ -38,21 +38,18 @@ function selectMap() {
     }));
 }
 
+let bases = null;
+
 function createGame(jsonMessage) {
 
     if (game) {
+        bases = JSON.parse(jsonMessage).bases;
         UpdateMap(JSON.parse(jsonMessage).map, game, JSON.parse(jsonMessage).bases);
+        CreateMeta(JSON.parse(jsonMessage));
     } else {
 
         let loadFunc = function () {
-            if (JSON.parse(jsonMessage).bases) {
-                CreateLabelBase(JSON.parse(jsonMessage).bases);
-            }
-            CreateMiniMap();
-            CreateGeoData(JSON.parse(jsonMessage).map.geo_data);
-            CreateEmittersZone(JSON.parse(jsonMessage).map.emitters);
-            CreateAnomalies(JSON.parse(jsonMessage).map.anomalies);
-            CreateLabelEntry(JSON.parse(jsonMessage).entry_to_sector);
+            CreateMeta(JSON.parse(jsonMessage));
         };
 
         game = CreateGame(JSON.parse(jsonMessage).map, loadFunc, "mapEditor");
@@ -60,37 +57,33 @@ function createGame(jsonMessage) {
     }
 }
 
-function CreateLabelEntry(entryPoints) {
-    for (let i of entryPoints) {
-        for (let position of i.positions) {
-            let xy = GetXYCenterHex(position.q, position.r);
-            let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
-            baseResp.angle = position.resp_rotate;
-            baseResp.anchor.setTo(0.5);
-            baseResp.scale.setTo(0.05);
-        }
+function CreateMeta(data) {
+    if (data.bases) {
+        CreateLabelBase(data.bases);
     }
-}
+    CreateMiniMap();
+    CreateGeoData(data.map.geo_data);
+    CreateEmittersZone(data.map.emitters);
+    CreateAnomalies(data.map.anomalies);
+    CreateLabelEntry(data.entry_to_sector);
 
-function CreateLabelBase(bases) {
-    for (let i in bases) {
-        if (bases.hasOwnProperty(i) && game.map.OneLayerMap.hasOwnProperty(bases[i].q) && game.map.OneLayerMap.hasOwnProperty(bases[i].r)) {
+    let position = document.getElementById("MousePosition");
+    if (!position) {
 
-            let xy = GetXYCenterHex(bases[i].q, bases[i].r);
+        position = document.createElement("div");
+        position.id = "MousePosition";
+        document.body.appendChild(position);
 
-            let base = game.icon.create(xy.x, xy.y, 'baseIcon');
-            base.anchor.setTo(0.5);
-            base.scale.setTo(0.1);
-
-            for (let j in bases[i].respawns) {
-                let respPount = bases[i].respawns[j];
-                let xy = GetXYCenterHex(respPount.q, respPount.r);
-                let baseResp = game.icon.create(xy.x, xy.y, 'baseResp');
-
-                baseResp.angle = respPount.resp_rotate;
-                baseResp.anchor.setTo(0.5);
-                baseResp.scale.setTo(0.05);
-            }
-        }
+        document.body.onmousemove = function (e) {
+            position.style.left = (e.pageX + 3) + "px";
+            position.style.top = (e.pageY + 3) + "px";
+        };
     }
+
+    game.input.addMoveCallback(function () {
+        let x = Math.round((game.input.mousePointer.x + game.camera.x) / game.camera.scale.x);
+        let y = Math.round((game.input.mousePointer.y + game.camera.y) / game.camera.scale.y);
+
+        position.innerHTML = `y:${x} / y:${y}`
+    }, null);
 }

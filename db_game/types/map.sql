@@ -30,7 +30,7 @@ CREATE TABLE map_constructor
 (
   id                 SERIAL PRIMARY KEY,
   id_map             INT REFERENCES maps (id), /* ид карты к которой принадлежит координата */
-  id_type            INT REFERENCES coordinate_type (id), /* ид типа координаты */
+  id_type            INT, /* ид типа координаты */
   texture_over_flore VARCHAR(64), /* название текстуры поверх гекса и ближайших*/
   /* говорит в какой последовательности отрисовывать текстуры, ид енподходит т.к. координата уже могла быть в бд перед нанесения текстуры */
   texture_priority   INT,
@@ -38,7 +38,6 @@ CREATE TABLE map_constructor
   object_priority    INT,
   x                  INT,
   y                  INT,
-  level              INT, /* определяет уровень координаты ""примечание 1"" */
   rotate             INT, /* говорит на сколько повернуться спрайту обьекта в координате если он есть конечно */
   animate_speed      INT, /* если координата анимация говорит с какой скоростью ее вопспроизводить, кадров в секунду */
   x_offset           INT, /* смещение обьекта по Х от центра координаты */

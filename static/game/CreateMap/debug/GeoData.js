@@ -1,10 +1,11 @@
 function CreateGeoData(geoData) {
-
-    if (!game.geoData) {
-        game.geoData = game.add.graphics(0, 0);
-        game.geoDataLayer.add(game.geoData);
+    if (game.geoData) {
+        game.geoData.clear();
+        game.geoData.destroy();
     }
-    game.geoData.clear();
+
+    game.geoData = game.add.graphics(0, 0);
+    game.geoDataLayer.add(game.geoData);
 
     for (let i = 0; i < geoData.length; i++) {
         if (geoData[i]) {
@@ -12,8 +13,4 @@ function CreateGeoData(geoData) {
             game.geoData.drawCircle(geoData[i].x, geoData[i].y, geoData[i].radius * 2);
         }
     }
-}
-
-function RemoveGeoDataLabel() {
-    game.geoData.clear();
 }

@@ -1,14 +1,17 @@
 let responseChangeOption = [];
 
 function OptionSprite() {
-    let callBack = function (q, r) {
-        ChangeOptionSprite(q, r)
+    let callBack = function (x, y) {
+        ChangeOptionSprite(x, y)
     };
     SelectedSprite(event, 0, callBack, true)
 }
 
-function ChangeOptionSprite(q, r) {
-    let coordinate = game.map.OneLayerMap[q][r];
+function ChangeOptionSprite(x, y) {
+    let coordinate = game.map.OneLayerMap[x][y];
+
+    x = Number(x);
+    y = Number(y);
 
     let block = document.getElementById("coordinates");
     if (document.getElementById("rotateBlock")) document.getElementById("rotateBlock").remove();
@@ -52,15 +55,13 @@ function ChangeOptionSprite(q, r) {
 
     // TODO включение и отключение теней при изменение состояние чекбокса для теней
 
-    let xy = GetXYCenterHex(q, r);
-
     // отправить спрайт на задний план
     $('#backSprite').click(function () {
         mapEditor.send(JSON.stringify({
             event: "toBack",
             id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(coordinate.q),
-            r: Number(coordinate.r),
+            x: Number(coordinate.x),
+            y: Number(coordinate.y),
         }));
 
         rotate.remove();
@@ -70,12 +71,12 @@ function ChangeOptionSprite(q, r) {
         mapEditor.send(JSON.stringify({
             event: "toFront",
             id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(coordinate.q),
-            r: Number(coordinate.r),
+            x: Number(coordinate.x),
+            y: Number(coordinate.y),
         }));
 
         for (let i in game.mapPoints) {
-            if (game.mapPoints[i].q === Number(coordinate.q) && game.mapPoints[i].r === Number(coordinate.r)) {
+            if (game.mapPoints[i].x === Number(coordinate.x) && game.mapPoints[i].y === Number(coordinate.y)) {
                 ReloadCoordinate(game.mapPoints[i]);
             }
         }
@@ -115,18 +116,18 @@ function ChangeOptionSprite(q, r) {
     // Сдвиг по Х
     $('#rangeXOffset').on('input', function () {
         $('#XOutput').text(this.value);
-        coordinate.objectSprite.x = xy.x + Number(this.value);
+        coordinate.objectSprite.x = x + Number(this.value);
         if (coordinate.objectSprite.shadow) {
-            coordinate.objectSprite.shadow.x = xy.x + game.shadowXOffset + Number($('#rangeShadowXOffset').val()) + Number($('#rangeXOffset').val());
+            coordinate.objectSprite.shadow.x = x + game.shadowXOffset + Number($('#rangeShadowXOffset').val()) + Number($('#rangeXOffset').val());
         }
     });
 
     // Сдвиг по У
     $('#rangeYOffset').on('input', function () {
         $('#YOutput').text(this.value);
-        coordinate.objectSprite.y = xy.y + Number(this.value);
+        coordinate.objectSprite.y = y + Number(this.value);
         if (coordinate.objectSprite.shadow) {
-            coordinate.objectSprite.shadow.y = xy.y + game.shadowYOffset + Number($('#rangeShadowYOffset').val()) + Number($('#rangeYOffset').val());
+            coordinate.objectSprite.shadow.y = y + game.shadowYOffset + Number($('#rangeShadowYOffset').val()) + Number($('#rangeYOffset').val());
         }
     });
 
@@ -136,13 +137,13 @@ function ChangeOptionSprite(q, r) {
     // Сдвиг тени по Х
     $('#rangeShadowXOffset').on('input', function () {
         $('#XShadowOutput').text(this.value);
-        coordinate.objectSprite.shadow.x = xy.x + game.shadowXOffset + Number($('#rangeShadowXOffset').val()) + Number($('#rangeXOffset').val());
+        coordinate.objectSprite.shadow.x = x + game.shadowXOffset + Number($('#rangeShadowXOffset').val()) + Number($('#rangeXOffset').val());
     });
 
     // Сдвиг тени по Y
     $('#rangeShadowYOffset').on('input', function () {
         $('#YShadowOutput').text(this.value);
-        coordinate.objectSprite.shadow.y = xy.y + game.shadowYOffset + Number($('#rangeShadowYOffset').val()) + Number($('#rangeYOffset').val());
+        coordinate.objectSprite.shadow.y = y + game.shadowYOffset + Number($('#rangeShadowYOffset').val()) + Number($('#rangeYOffset').val());
     });
 
     // Интенсивность тени
@@ -160,8 +161,8 @@ function ChangeOptionSprite(q, r) {
         mapEditor.send(JSON.stringify({
             event: "rotateObject",
             id: Number(document.getElementById("mapSelector").options[document.getElementById("mapSelector").selectedIndex].value),
-            q: Number(coordinate.q),
-            r: Number(coordinate.r),
+            x: Number(coordinate.x),
+            y: Number(coordinate.y),
             rotate: Number(document.getElementById("rotateRange").value),
             speed: speed,
             x_offset: Number(document.getElementById("rangeXOffset").value),
@@ -174,7 +175,7 @@ function ChangeOptionSprite(q, r) {
         }));
 
         for (let i in game.mapPoints) {
-            if (game.mapPoints[i].q === Number(coordinate.q) && game.mapPoints[i].r === Number(coordinate.r)) {
+            if (game.mapPoints[i].x === Number(coordinate.x) && game.mapPoints[i].y === Number(coordinate.y)) {
 
                 game.mapPoints[i].coordinate.obj_rotate = Number(document.getElementById("rotateRange").value);
                 game.mapPoints[i].coordinate.animation_speed = speed;

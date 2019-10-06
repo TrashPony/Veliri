@@ -29,7 +29,7 @@ func Maps() map[int]*_map.Map {
 		"" +
 		"FROM maps")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error() + " get all maps")
 	}
 	defer rows.Close()
 
@@ -42,7 +42,7 @@ func Maps() map[int]*_map.Map {
 		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
 			&mp.Global, &mp.InGame, &mp.XGlobal, &mp.YGlobal, &mp.Fraction, &mp.PossibleBattle)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err.Error() + " scan all maps")
 		}
 
 		CoordinatesMap(mp)
@@ -185,7 +185,7 @@ func CoordinatesMap(mp *_map.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.x, mc.y, ct.type, ct.texture_flore, "+
-		"ct.texture_object, ct.move, ct.view, ct.attack, mc.level, ct.animate_sprite_sheets, ct.animate_loop, "+
+		"ct.texture_object, ct.move, ct.view, ct.attack, ct.animate_sprite_sheets, ct.animate_loop, "+
 		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
 		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_positions, mc.to_base_id, mc.to_map_id, "+
 		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority, mc.object_priority, "+
@@ -205,7 +205,7 @@ func CoordinatesMap(mp *_map.Map) {
 
 		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type,
 			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move, &gameCoordinate.View,
-			&gameCoordinate.Attack, &gameCoordinate.Level, &gameCoordinate.AnimateSpriteSheets,
+			&gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
 			&gameCoordinate.AnimateLoop, &gameCoordinate.Scale,
 			&gameCoordinate.Shadow, &gameCoordinate.ObjRotate, &gameCoordinate.AnimationSpeed, &gameCoordinate.XOffset,
 			&gameCoordinate.YOffset, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
@@ -233,59 +233,7 @@ func CoordinatesMap(mp *_map.Map) {
 		}
 	}
 
-	//defaultCoordinate := DefaultCoordinateType(mp)
-	//for x := 0; x < mp.XSize; x++ { // заполняем карту пустыми клетками тоесть дефолтными по карте
-	//	for y := 0; y < mp.YSize; y++ {
-	//		_, find := oneLayerMap[x][y]
-	//		if !find {
-	//
-	//			var gameCoordinate coordinate.Coordinate
-	//
-	//			gameCoordinate = defaultCoordinate
-	//			gameCoordinate.ID = mp.DefaultTypeID
-	//
-	//			gameCoordinate.X = x
-	//			gameCoordinate.Y = y
-	//
-	//			if oneLayerMap[gameCoordinate.X] != nil {
-	//				oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
-	//			} else {
-	//				oneLayerMap[gameCoordinate.X] = make(map[int]*coordinate.Coordinate)
-	//				oneLayerMap[gameCoordinate.X][gameCoordinate.Y] = &gameCoordinate
-	//			}
-	//		}
-	//	}
-	//}
-
 	mp.OneLayerMap = oneLayerMap
-}
-
-func DefaultCoordinateType(mp *_map.Map) coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT type, texture_flore, texture_object, move, view, "+
-		"attack, animate_sprite_sheets, animate_loop "+
-		"FROM coordinate_type "+
-		"WHERE id = $1;", strconv.Itoa(mp.DefaultTypeID))
-
-	if err != nil {
-		println("Get Default coordinate type")
-		log.Fatal(err)
-	}
-
-	defer rows.Close()
-
-	gameCoordinate := coordinate.Coordinate{Level: mp.DefaultLevel}
-
-	for rows.Next() {
-		err := rows.Scan(&gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
-			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
-			&gameCoordinate.AnimateLoop)
-		if err != nil {
-			println("Get Default coordinate type")
-			log.Fatal(err)
-		}
-	}
-
-	return gameCoordinate
 }
 
 func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
@@ -317,8 +265,7 @@ func AllTypeCoordinate() []*coordinate.Coordinate {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, " +
 		"attack, animate_sprite_sheets, animate_loop, unit_overlap FROM coordinate_type")
 	if err != nil {
-		println("get all type coordinates")
-		log.Fatal(err)
+		log.Fatal(err.Error() + "get all type coordinates")
 	}
 
 	coordinates := make([]*coordinate.Coordinate, 0)
@@ -331,8 +278,7 @@ func AllTypeCoordinate() []*coordinate.Coordinate {
 			&gameCoordinate.AnimateLoop, &gameCoordinate.UnitOverlap)
 
 		if err != nil {
-			println("AllTypeCoordinate()")
-			log.Fatal(err)
+			log.Fatal(err.Error() + " scan all type coorinate")
 		}
 
 		CoordinateEffects(&gameCoordinate)

@@ -6,42 +6,32 @@ function ViewPatternCoordinate(typeCoordinates) {
         let typeBlock = document.createElement("div");
         typeBlock.className = "coordinateType";
 
-        if (typeCoordinates[i].texture_object === "" && typeCoordinates[i].animate_sprite_sheets === "") {
+        if (typeCoordinates[i].animate_sprite_sheets !== "") {
 
-            typeBlock.style.background = "url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/animate/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / contain no-repeat"
 
-        } else if (typeCoordinates[i].animate_sprite_sheets !== "") {
-
-            typeBlock.style.background = "url(/assets/map/animate/" + typeCoordinates[i].animate_sprite_sheets + ".png)  center center / contain no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
         } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "mountain") {
 
-            typeBlock.style.background = "url(/assets/map/objects/mountains/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/mountains/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
 
         } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "plant") {
 
-            typeBlock.style.background = "url(/assets/map/objects/plants/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/plants/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
 
         } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "ravine") {
 
-            typeBlock.style.background = "url(/assets/map/objects/ravines/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/ravines/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
 
         } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[0] === "road") {
 
-            typeBlock.style.background = "url(/assets/map/objects/roads/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/roads/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
 
         } else if (typeCoordinates[i].texture_object.split('_').length > 0 && typeCoordinates[i].texture_object.split('_')[1] === "base") {
 
-            typeBlock.style.background = "url(/assets/map/objects/bases/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/bases/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
 
         } else {
-            typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat," +
-                " url(/assets/map/terrain/" + typeCoordinates[i].texture_flore + ".png)  center center / 115% no-repeat";
+            typeBlock.style.background = "url(/assets/map/objects/" + typeCoordinates[i].texture_object + ".png)  center center / 90% no-repeat"
         }
 
         if (typeCoordinates[i].type === "respawn") {
@@ -52,12 +42,6 @@ function ViewPatternCoordinate(typeCoordinates) {
 
         typeBlock.onclick = function () {
             PlaceCoordinate("placeCoordinate", typeCoordinates[i]);
-        };
-        typeBlock.onmousemove = tipTypeCoordinate;
-        typeBlock.onmouseout = function () {
-            if (document.getElementById("typeTip")) {
-                document.getElementById("typeTip").remove()
-            }
         };
 
         let menuBlock = document.createElement("div");
@@ -139,45 +123,4 @@ function ViewAnimateObjectsCoordinate(typeCoordinates) {
             coordinateBlock.appendChild(typeBlock);
         }
     }
-}
-
-function tipTypeCoordinate() {
-    if (document.getElementById("typeTip")) {
-        document.getElementById("typeTip").style.top = stylePositionParams.top + "px";
-        document.getElementById("typeTip").style.left = stylePositionParams.left + "px";
-    } else {
-        CreateTipType(this.coordinateType)
-    }
-}
-
-function CreateTipType(type) {
-    let tip = document.createElement("div");
-    tip.id = "typeTip";
-    tip.style.top = stylePositionParams.top + "px";
-    tip.style.left = stylePositionParams.left + "px";
-
-    let move = "#F00";
-    let view = "#F00";
-    let attack = "#F00";
-
-    if (type.move) {
-        move = "#0F0";
-    }
-
-    if (type.view) {
-        view = "#0F0";
-    }
-
-    if (type.attack) {
-        attack = "#0F0";
-    }
-
-    tip.innerHTML = "<div><span> Move </span><span style=color:" + move + ">" + type.move + "</span></div>" +
-        "<div><span> Watch </span><span style=color:" + view + ">" + type.view + "</span></div>" +
-        "<div><span> Attack </span><span style=color:" + attack + ">" + type.attack + "</span></div>" +
-        "<div><span> Размер </span><span style=color:#fff91e>" + type.scale + " %</span></div>" +
-        "<div><span> Обьект </span><span style=color:#fff91e>" + type.texture_object + "</span></div>";
-
-
-    document.body.appendChild(tip);
 }

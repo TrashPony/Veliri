@@ -1,4 +1,4 @@
-function UpdateMap(newMap, game, bases) {
+function UpdateMap(newMap, game) {
 
     removeSubMenus();
 
@@ -32,13 +32,8 @@ function UpdateMap(newMap, game, bases) {
     clear(game.geoDataLayer);
     clear(game.icon);
 
-    if (bases) {
-        CreateLabelBase(bases);
-    }
-
     CreateMiniMap();
     CreateMap();
-    CreateGeoData(game.map.geo_data);
 }
 
 function clear(group) {

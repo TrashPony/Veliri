@@ -15,9 +15,10 @@ function CreateMiniMap() {
 
     let canvas = document.getElementById("canvasMap");
 
-    if (!game.map || !game.FogOfWar.ms) return;
+    if ((!game.map || !game.FogOfWar.ms) && window.location.pathname !== "/editors/map/") return;
 
     if (canvas) {
+
         let ctx = canvas.getContext("2d");
         let offsetX = game.map.XSize / canvas.width;
         let offsetY = game.map.YSize / canvas.height;
@@ -29,14 +30,18 @@ function CreateMiniMap() {
         ctx.fillStyle = "#4e4e4e";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.beginPath();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-        ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-        ctx.ellipse(game.FogOfWar.ms.sprite.x / offsetX, game.FogOfWar.ms.sprite.y / offsetY,
-            game.FogOfWar.ms.body.range_view / offsetX, game.FogOfWar.ms.body.range_view / offsetY,
-            0, 0, 2 * Math.PI, true);
-        ctx.fill();
-        ctx.stroke();
+        if (game.FogOfWar.ms) {
+
+
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.ellipse(game.FogOfWar.ms.sprite.x / offsetX, game.FogOfWar.ms.sprite.y / offsetY,
+                game.FogOfWar.ms.body.range_view / offsetX, game.FogOfWar.ms.body.range_view / offsetY,
+                0, 0, 2 * Math.PI, true);
+            ctx.fill();
+            ctx.stroke();
+        }
 
         // todo довольно тормазнуто отрисовывать всю геодату каждый раз, возможно есть способ это закешировать)
         for (let i in game.map.geo_data) {
@@ -55,7 +60,7 @@ function CreateMiniMap() {
 
         for (let i in game.map.handlers_coordinates) {
             let outSector = game.map.handlers_coordinates[i];
-            if (outSector.handler === "sector"){
+            if (outSector.handler === "sector") {
                 // TODO стрелочка тут будет уместнее
                 ctx.beginPath();
                 ctx.fillStyle = "rgba(0, 155, 0, 1)";
@@ -69,15 +74,17 @@ function CreateMiniMap() {
         }
 
         for (let i in game.map.entry_points) {
-            let entryPoint = game.map.entry_points[i];
-            ctx.beginPath();
-            ctx.fillStyle = "rgba(155, 155, 0, 1)";
-            ctx.strokeStyle = "#00fff9";
-            ctx.ellipse(entryPoint.x / offsetX, entryPoint.y / offsetY,
-                30 / offsetX, 30 / offsetY,
-                0, 0, 2 * Math.PI, true);
-            ctx.fill();
-            ctx.stroke();
+            for (let j in game.map.entry_points[i].positions) {
+                let position = game.map.entry_points[i].positions[j];
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(155, 155, 0, 1)";
+                ctx.strokeStyle = "#00fff9";
+                ctx.ellipse(position.x / offsetX, position.y / offsetY,
+                    30 / offsetX, 30 / offsetY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
+            }
         }
 
         for (let id in game.units) {

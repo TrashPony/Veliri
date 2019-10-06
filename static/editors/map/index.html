@@ -24,13 +24,11 @@
     <script src="./js/GetMapList.js"></script>
     <script src="./js/ViewTypeCoordinate.js"></script>
     <script src="./js/Editor.js"></script>
-    <script src="./js/CreateNewType.js"></script>
     <script src="./js/NavBar.js"></script>
     <script src="./js/UpdateMap.js"></script>
     <script src="./js/HideMeta.js"></script>
     <script src="./js/SubMenu.js"></script>
     <script src="./js/changeOptionSprite.js"></script>
-    <script src="./js/HeightCoordinate.js"></script>
     <script src="./js/SelectedSprite.js"></script>
     <script src="./js/Textures.js"></script>
     <script src="./js/transport.js"></script>
@@ -38,7 +36,6 @@
     <script src="./js/GeoData.js"></script>
     <script src="./js/Beams.js"></script>
     <script src="./js/Emitters.js"></script>
-    <script src="./js/SaveMap.js"></script>
     <script src="./js/reloadCoordinate.js"></script>
 
     <script src="../../game/Create.js"></script>
@@ -50,12 +47,13 @@
     <script src="../../game/CreateMap/CreateMap.js"></script>
     <script src="../../game/CreateMap/Objects.js"></script>
     <script src="../../game/CreateMap/Animate.js"></script>
-    <script src="../../game/CreateMap/Terrain.js"></script>
+    <script src="../../game/CreateMap/Lebels.js"></script>
     <script src="../../game/CreateMap/MarkZoneEffect.js"></script>
     <script src="../../game/CreateMap/DynamicMap.js"></script>
     <script src="../../game/CreateMap/Beam.js"></script>
     <script src="../../game/CreateMap/Emitters.js"></script>
     <script src="../../game/CreateMap/Reservoir.js"></script>
+    <script src="../../game/CreateMap/DynamicObjects.js"></script>
 
     <script src="../../game/CreateMap/debug/GeoData.js"></script>
     <script src="../../game/CreateMap/debug/Anomalies.js"></script>
@@ -76,7 +74,6 @@
 
     <script src="../../game/utils/hexRadius.js"></script>
     <script src="../../game/CreateMap/DynamicShadowMap.js"></script>
-    <script src="../../game/utils/getXYCenterHex.js"></script>
 
     <script src="../../assets/lib/phaser.js"></script>
     <script src="../../assets/lib/jquery-3.3.1.js"></script>
@@ -134,14 +131,71 @@
         <div id="hideMeta" onclick="HideMeta()"> Скрыть мето данные</div>
 
         <div id="HeightCoordinates">
-            <h4>Изменение высот</h4>
-            <div onclick="HeightCoordinate(true)">+</div>
-            <div onclick="HeightCoordinate(false)">-</div>
+            <h4>Изменить обьект</h4>
             <div onclick="OptionSprite()"> Opt</div>
+            <div onclick="RemoveCoordinate()"> Del</div>
         </div>
 
+        <div id="Emitters">
+            <h4> Излучатели </h4>
+            <div onclick="RemoveEmitter()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="ChangeEmitter()"
+                 style='background: url("/assets/changeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddEmitter()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
+        </div>
+        <div id="transportBlock">
+            <h4> Эвакуатор хедлер </h4>
+            <div onclick="RemoveTransport()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddTransport()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
+        </div>
+        <div id="handlerBlock">
+            <h4> Переходы </h4>
+            <div onclick="RemoveHandler()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddHandler()"
+                 style='background: url("") center center / 115% no-repeat;'>add</div>
+            <div onclick="EditPos()"
+                 style='background: url("") center center / 115% no-repeat;'>editPos</div>
+        </div>
+        <div id="geoPoint">
+            <h4> Гео дата </h4>
+            <div onclick="RemoveGeoData()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="CancelGeoData()"
+                 style='background: url("/assets/cancelIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddGeoData()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
+        </div>
+        <div id="Beams">
+            <h4> Лучи ¯\_(ツ)_/¯ </h4>
+            <div onclick="RemoveBeam()"
+                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
+            <div onclick="AddBeam()"
+                 style='background: url("") center center / 115% no-repeat;'></div>
+        </div>
+    </div>
+
+    <div id="main">
+
+    </div>
+
+    <div id="coordinates">
+        <h3>Типы Координат</h3>
+
+        <div id="coordinateBlock">
+            <div id="navBar">
+                <div id="oneMenu" class="active" data-id-menu="1" onclick="getTypesCoordinate(1)"> Шаблоны</div>
+                <div id="twoMenu" data-id-menu="2" onclick="getTypesCoordinate(2)"> Местность</div>
+                <div id="threeMenu" data-id-menu="3" onclick="getTypesCoordinate(3)"> Обьекты</div>
+                <div id="fourMenu" data-id-menu="4" onclick="getTypesCoordinate(4)"> Аним. обьекты</div>
+            </div>
+        </div>
+
+        <h3>Типы Земли</h3>
         <div id="texturesBlock">
-            <h4>Текстуры земли</h4>
             <div id="textures">
                 <div onclick="RemoveTexture()"
                      style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
@@ -175,117 +229,6 @@
                      style='background: url("/assets/terrainTextures/icon/ravine_1_9.png") center center / 115% no-repeat;'></div>
                 <div onclick="PlaceTexture('ravine_2_9')"
                      style='background: url("/assets/terrainTextures/icon/ravine_2_9.png") center center / 115% no-repeat;'></div>
-            </div>
-        </div>
-        <div id="Emitters">
-            <h4> Излучатели </h4>
-            <div onclick="RemoveEmitter()"
-                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="ChangeEmitter()"
-                 style='background: url("/assets/changeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddEmitter()"
-                 style='background: url("") center center / 115% no-repeat;'></div>
-        </div>
-        <div id="transportBlock">
-            <h4> Эвакуатор хедлер </h4>
-            <div onclick="RemoveTransport()"
-                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddTransport()"><img src="https://img.icons8.com/color/40/000000/drone.png"></div>
-        </div>
-        <div id="handlerBlock">
-            <h4> Переходы </h4>
-            <div onclick="RemoveHandler()"
-                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddHandler()"
-                 style='background: url("") center center / 115% no-repeat;'></div>
-        </div>
-        <div id="geoPoint">
-            <h4> Гео дата </h4>
-            <div onclick="RemoveGeoData()"
-                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="CancelGeoData()"
-                 style='background: url("/assets/cancelIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddGeoData()"
-                 style='background: url("") center center / 115% no-repeat;'></div>
-        </div>
-        <div id="Beams">
-            <h4> Лучи ¯\_(ツ)_/¯ </h4>
-            <div onclick="RemoveBeam()"
-                 style='background: url("/assets/removeIcon.png") center center / 115% no-repeat;'></div>
-            <div onclick="AddBeam()"
-                 style='background: url("") center center / 115% no-repeat;'></div>
-        </div>
-    </div>
-
-    <div id="newCoordinate">
-        <h4>Создать новый тип координаты: </h4>
-        <form name="uploadNewTerrain" onsubmit="return false;">
-            <table style="float: right;">
-                <tr>
-                    <td> Текстура земли</td>
-                    <td><input required type="file" name="terrainTexture"></td>
-                </tr>
-            </table>
-            <input style="margin: 5px; width: 95px;" type="submit" value="Загрузить" onclick="CreateNewTerrain()">
-        </form>
-
-        <form name="uploadNewObject" onsubmit="return false;">
-            <table>
-                <tr>
-                    <td> Текстура обьекта</td>
-                    <td><input type="file" name="objectTexture"></td>
-                </tr>
-                <tr>
-                    <td> Анимация спрайта</td>
-                    <td><input type="file" name="animateSprite"></td>
-                </tr>
-                <tr>
-                    <td> Через нее можно смотреть</td>
-                    <td><input type="checkbox" checked name="watch" title="watch"> Через нее можно ходить <input
-                                type="checkbox" checked name="move" title="move"></td>
-                </tr>
-                <tr>
-                    <td> Через нее можно стрелять</td>
-                    <td><input type="checkbox" checked name="attack" title="attack"> Обьект отбрасывает тень <input
-                                type="checkbox" checked name="shadow" title="shadow"></td>
-                </tr>
-                <tr>
-                    <td> Радиус воздействия</td>
-                    <td><input type="number" value="0" name="radius" title="radius"></td>
-                </tr>
-                <tr>
-                    <td> Размер (1=1% 100 = 100%)</td>
-                    <td><input type="number" value="100" name="scale" title="scale"></td>
-                </tr>
-                <tr>
-                    <td> Количество спрайтов</td>
-                    <td><input type="number" value="1" name="countSprite" title="countSprite"></td>
-                </tr>
-                <tr>
-                    <td> Размер 1го спрайта (px)</td>
-                    <td> X: <input style="width: 60px" type="number" value="256" name="xSize" title="xSize">
-                        Y:<input style="width: 60px" type="number" value="256" name="ySize" title="ySize">
-                    </td>
-                </tr>
-            </table>
-            <input type="submit" value="Загрузить" onclick="CreateNewObject()">
-        </form>
-        <input type="button" value="Сохранить карту" onclick="SaveMap()">
-    </div>
-
-    <div id="main">
-
-    </div>
-
-    <div id="coordinates">
-        <h3>Типы Координат</h3>
-
-        <div id="coordinateBlock">
-            <div id="navBar">
-                <div id="oneMenu" class="active" data-id-menu="1" onclick="getTypesCoordinate(1)"> Шаблоны</div>
-                <div id="twoMenu" data-id-menu="2" onclick="getTypesCoordinate(2)"> Местность</div>
-                <div id="threeMenu" data-id-menu="3" onclick="getTypesCoordinate(3)"> Обьекты</div>
-                <div id="fourMenu" data-id-menu="4" onclick="getTypesCoordinate(4)"> Аним. обьекты</div>
             </div>
         </div>
     </div>

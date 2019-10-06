@@ -1,4 +1,4 @@
-function CreateTerrain(coordinate, x, y) {
+function CreateLabels(coordinate, x, y) {
     if (coordinate.coordinateText) {
         for (let text in coordinate.coordinateText) {
             coordinate.coordinateText[text].destroy();
@@ -8,35 +8,6 @@ function CreateTerrain(coordinate, x, y) {
     }
 
     if (game && game.typeService === "mapEditor") {
-        let style = {font: "12px Arial", fill: "#ffed00", align: "center"};
-
-        //if (metaAlpha && metaAlpha === 0) {
-            coordinate.coordinateText.qr = game.add.text(x - 10, y - 15, q + "," + r, style, game.redactorMetaText);
-        //}
-
-        let allow = {font: "12px Arial", fill: "#150bff", align: "center"};
-        let noAllow = {font: "12px Arial", fill: "#ff2821", align: "center"};
-
-        if (!(coordinate.move && coordinate.view && coordinate.attack)) {
-            if (coordinate.move) {
-                coordinate.coordinateText.move = game.add.text(x - 20, y - 15, 'm', allow, game.redactorMetaText);
-            } else {
-                coordinate.coordinateText.move = game.add.text(x - 20, y - 15, 'm', noAllow, game.redactorMetaText);
-            }
-
-            if (coordinate.view) {
-                coordinate.coordinateText.view = game.add.text(x - 12, y - 15, 'w', allow, game.redactorMetaText);
-            } else {
-                coordinate.coordinateText.view = game.add.text(x - 12, y - 15, 'w', noAllow, game.redactorMetaText);
-            }
-
-            if (coordinate.attack) {
-                coordinate.coordinateText.attack = game.add.text(x - 5, y - 15, 'a', allow, game.redactorMetaText);
-            } else {
-                coordinate.coordinateText.attack = game.add.text(x - 5, y - 15, 'a', noAllow, game.redactorMetaText);
-            }
-        }
-
 
         if (coordinate.transport) {
             let transportIcon = game.redactorMetaText.create(x + 10, y - 10, 'transportIcon');
@@ -79,6 +50,37 @@ function CreateTerrain(coordinate, x, y) {
         if (coordinate.level === 5) {
             let style = {font: "24px Arial", fill: "#ff2821", align: "center"};
             coordinate.coordinateText.height = game.add.text(x - 5, y - 5, coordinate.level, style, game.redactorMetaText);
+        }
+    }
+}
+
+function CreateLabelEntry(entryPoints) {
+    for (let i of entryPoints) {
+        for (let position of i.positions) {
+            let baseResp = game.icon.create(position.x, position.y, 'baseResp');
+            baseResp.angle = position.resp_rotate;
+            baseResp.anchor.setTo(0.5);
+            baseResp.scale.setTo(0.05);
+        }
+    }
+}
+
+function CreateLabelBase(bases) {
+    for (let i in bases) {
+        if (bases.hasOwnProperty(i)) {
+
+            let base = game.icon.create(bases[i].x, bases[i].y, 'baseIcon');
+            base.anchor.setTo(0.5);
+            base.scale.setTo(0.1);
+
+            for (let j in bases[i].respawns) {
+                let respPount = bases[i].respawns[j];
+                let baseResp = game.icon.create(respPount.x, respPount.y, 'baseResp');
+
+                baseResp.angle = respPount.resp_rotate;
+                baseResp.anchor.setTo(0.5);
+                baseResp.scale.setTo(0.05);
+            }
         }
     }
 }

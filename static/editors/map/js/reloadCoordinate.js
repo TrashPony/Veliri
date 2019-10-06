@@ -14,5 +14,5 @@ function ReloadCoordinate(mapPoint) {
         CreateAnimate(mapPoint.coordinate, mapPoint.x, mapPoint.y);
     }
 
-    CreateTerrain(game.map.OneLayerMap[mapPoint.q][mapPoint.r], mapPoint.x, mapPoint.y, mapPoint.q, mapPoint.r)
+    CreateLabels(game.map.OneLayerMap[mapPoint.x][mapPoint.y], mapPoint.x, mapPoint.y)
 }

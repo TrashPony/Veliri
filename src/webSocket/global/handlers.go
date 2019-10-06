@@ -50,8 +50,6 @@ func ChangeSector(user *player.Player, mapID int, coor *coordinate.Coordinate) {
 	user.GetSquad().MatherShip.Y = toPosition.Y
 	user.GetSquad().MatherShip.Rotate = toPosition.RespRotate
 
-	user.GetSquad().MatherShip.X = 0
-	user.GetSquad().MatherShip.Y = 0
 	user.GetSquad().MatherShip.PointsPath = nil
 
 	if user.Bot {

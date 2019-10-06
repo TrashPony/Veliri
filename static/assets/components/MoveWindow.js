@@ -1,14 +1,16 @@
 function moveWindow(event, id) {
-    let window = document.getElementById(id);
+    let mWindow = document.getElementById(id);
 
-    $(window).draggable({
+    $(mWindow).draggable({
         disabled: false,
         stop: function (event, ui) {
-            setState(window.id, $(window).position().left, $(window).position().top, $(window).height(), $(window).width(), true);
+            if (window.location.pathname !== "/editors/map/") {
+                setState(mWindow.id, $(mWindow).position().left, $(mWindow).position().top, $(mWindow).height(), $(mWindow).width(), true);
+            }
         }
     });
     this.onmouseup = function () {
-        $(window).draggable({
+        $(mWindow).draggable({
             disabled: true,
         });
     }
