@@ -38,20 +38,7 @@ function CreateMap() {
         CreateBeams();
     }).then(function () {
         // TODO CreateEmitters();
-    }).then(function () {
-        CreateAllFogOfWar();
-    }).then(function () {
-        game.fogOfWar.add(game.add.sprite(0, 0, game.bmdFogOfWar));
     });
-}
-
-function CreateAllFogOfWar() {
-    game.bmdFogOfWar.clear();
-    for (let i in game.mapPoints) {
-        if (game.mapPoints[i].fogOfWar && game.typeService === "battle") {
-            CreateFowOfWar(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
-        }
-    }
 }
 
 function CreateObjects() {

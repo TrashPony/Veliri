@@ -29,6 +29,7 @@ func newMapStore() *mapStore {
 	}
 
 	for id, mp := range m.maps {
+
 		mp.HandlersCoordinates = make([]*coordinate.Coordinate, 0)
 
 		for _, q := range mp.OneLayerMap {
@@ -67,6 +68,11 @@ func newMapStore() *mapStore {
 			}
 		}
 		m.maps[id] = mp
+	}
+
+	// собираем в масив все входы в сектор
+	for id, mp := range m.maps {
+		mp.EntryPoints = m.GetEntryPointsByMapID(id)
 	}
 
 	// парсим названия и описания обьектов на карте
