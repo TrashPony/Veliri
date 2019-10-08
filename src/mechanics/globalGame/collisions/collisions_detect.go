@@ -128,6 +128,12 @@ func checkCollisionsBoxes(mapID int, rect *Polygon, undergroundBox bool) *boxInM
 
 	for _, mapBox := range boxs {
 
+		if mapBox.Height == 0 || mapBox.Width == 0 {
+			// todo если ящик состоит из 1 точки то колизия происходит всегда
+			mapBox.Height = 5
+			mapBox.Width = 5
+		}
+
 		rectBox := getCenterRect(float64(mapBox.X), float64(mapBox.Y), float64(mapBox.Height), float64(mapBox.Width))
 		rectBox.rotate(mapBox.Rotate)
 
@@ -143,13 +149,17 @@ func checkCollisionsBoxes(mapID int, rect *Polygon, undergroundBox bool) *boxInM
 	return nil
 }
 
-func checkCollisionsUnits(rect *Polygon, units map[int]*unit.ShortUnitInfo, mapID int) bool {
+func checkCollisionsUnits(rect *Polygon, units map[int]*unit.ShortUnitInfo, mapID int, excludeUnitID int) bool {
 	for _, otherUnit := range units {
 		if otherUnit == nil {
 			continue
 		}
 
 		if mapID != otherUnit.MapID {
+			continue
+		}
+
+		if excludeUnitID == otherUnit.ID {
 			continue
 		}
 

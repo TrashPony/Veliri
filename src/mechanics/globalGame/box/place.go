@@ -38,7 +38,7 @@ func PlaceNewBox(user *player.Player, numberSlot, password int) (error, *boxInMa
 			newBox := &boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id,
 				TypeID: typeBox.TypeID, DestroyTime: time.Now()}
 
-			placeFree, _ := collisions.CheckBoxCollision(newBox, mp)
+			placeFree, _ := collisions.CheckBoxCollision(newBox, mp, 0)
 			if !placeFree {
 				return errors.New("place busy"), nil
 			}

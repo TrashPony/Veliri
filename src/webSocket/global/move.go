@@ -2,7 +2,6 @@ package global
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -339,12 +338,27 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		// если на пути встречается ящик то мы его давим и падает скорость
-		mapBox := collisions.BodyCheckCollisionBoxes(int(pathUnit.X), int(pathUnit.Y), pathUnit.Rotate, moveUnit.MapID, moveUnit.Body)
+		mapBox, _, _, _ := collisions.BodyCheckCollisionBoxes(moveUnit, moveUnit.Body, pathUnit)
 		if mapBox != nil {
-			go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
-			boxes.Boxes.DestroyBox(mapBox)
-			moveUnit.CurrentSpeed -= float64(moveUnit.Speed)
-			moveRepeat = true
+			//
+			//// todo без детального хода при большой скорости столкновение происходит очень далеко
+			////доходим до куда можем
+			//pathUnit.X, pathUnit.Y, pathUnit.Millisecond = x, y, (pathUnit.Millisecond*percent)/100
+			//SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+			//
+			//// ждем события столкновения
+			//time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
+			//moveUnit.X, moveUnit.Y, moveUnit.Rotate = pathUnit.X, pathUnit.Y, pathUnit.Rotate
+
+			// обрабатываем столкновение
+			unitPos, boxPos := collisions.UnitToBoxCollisionReaction(moveUnit, mapBox)
+			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID})
+			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID})
+
+			//go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
+			//boxes.Boxes.DestroyBox(mapBox)
+			//moveUnit.CurrentSpeed -= float64(moveUnit.Speed)
+			//moveRepeat = true
 			return
 		}
 

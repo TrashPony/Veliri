@@ -8,6 +8,8 @@ import (
 type Polygon struct {
 	sides            []*sideRec
 	centerX, centerY float64
+	Height, Width    float64
+	Angle            int
 }
 
 type sideRec struct {
@@ -20,6 +22,8 @@ func (r *Polygon) rotate(rotate int) {
 	// поворачиваем квадрат по формуле (x0:y0 - центр)
 	//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
 	//Y = (x — x0) * sin(alpha) + (y — y0) * cos(alpha) + y0;
+
+	r.Angle = rotate
 
 	rotatePoint := func(x, y, x0, y0 float64, rotate int) (newX, newY float64) {
 		alpha := float64(rotate) * math.Pi / 180
@@ -184,6 +188,8 @@ func getCenterRect(x, y, height, width float64) *Polygon {
 		},
 		centerX: float64(x),
 		centerY: float64(y),
+		Height:  height,
+		Width:   width,
 	}
 }
 
@@ -191,15 +197,17 @@ func getRect(x, y, height, width float64) *Polygon {
 	return &Polygon{
 		sides: []*sideRec{
 			// A 									// B
-			{x1: x, y1: y, x2: x, y2: y + height},
+			{x1: x - width, y1: y - height, x2: x - width, y2: y + height},
 			// B									// C
-			{x1: x, y1: y + height, x2: x + width, y2: y + height},
+			{x1: x - width, y1: y + height, x2: x + width, y2: y + height},
 			// C									// D
-			{x1: x + width, y1: y + height, x2: x + width, y2: y},
+			{x1: x + width, y1: y + height, x2: x + width, y2: y - height},
 			// D									// A
-			{x1: x + width, y1: y, x2: x, y2: y},
+			{x1: x + width, y1: y - height, x2: x - width, y2: y - height},
 		},
-		centerX: float64(x + width/2),
-		centerY: float64(y + height/2),
+		centerX: float64(x),
+		centerY: float64(y),
+		Height:  height,
+		Width:   width,
 	}
 }

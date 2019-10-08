@@ -14,15 +14,15 @@ function FreeMoveEvacuation(jsonData) {
     game.add.tween(sprite).to({
             x: jsonData.path_unit.x,
             y: jsonData.path_unit.y
-        }, 200, Phaser.Easing.Linear.None, true, 0
+        }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
     );
 
     game.add.tween(sprite.shadow).to({
             x: jsonData.path_unit.x + game.shadowXOffset * 10,
             y: jsonData.path_unit.y + game.shadowYOffset * 10
-        }, 200, Phaser.Easing.Linear.None, true, 0
+        }, jsonData.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
     );
 
-    ShortDirectionRotateTween(sprite, Phaser.Math.degToRad(jsonData.path_unit.rotate), 200)
-    ShortDirectionRotateTween(sprite.shadow, Phaser.Math.degToRad(jsonData.path_unit.rotate), 200)
+    ShortDirectionRotateTween(sprite, Phaser.Math.degToRad(jsonData.path_unit.rotate), jsonData.path_unit.millisecond);
+    ShortDirectionRotateTween(sprite.shadow, Phaser.Math.degToRad(jsonData.path_unit.rotate), jsonData.path_unit.millisecond);
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // функция смотри колизию коробки со всеми обьектами мира, если колизия с коробкой то возвращается коробка с которой колизия
-func CheckBoxCollision(box *boxInMap.Box, mp *_map.Map) (bool, *boxInMap.Box) {
+func CheckBoxCollision(box *boxInMap.Box, mp *_map.Map, excludeUnitID int) (bool, *boxInMap.Box) {
 
 	rect := getCenterRect(float64(box.X), float64(box.Y), float64(box.Height), float64(box.Width))
 	rect.rotate(box.Rotate)
@@ -24,7 +24,7 @@ func CheckBoxCollision(box *boxInMap.Box, mp *_map.Map) (bool, *boxInMap.Box) {
 	}
 
 	units := globalGame.Clients.GetAllShortUnits(mp.Id, true)
-	free := checkCollisionsUnits(rect, units, mp.Id)
+	free := checkCollisionsUnits(rect, units, mp.Id, excludeUnitID)
 	if !free {
 		return false, nil
 	}

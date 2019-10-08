@@ -34,7 +34,7 @@ func ThrowItems(user *player.Player, slots []inventory.Slot) (error, bool, *boxI
 	newBox := &boxInMap.Box{X: forecastX, Y: forecastY, Rotate: rand.Intn(360), MapID: mp.Id, TypeID: 1,
 		DestroyTime: time.Now(), Height: boxType.Height, Width: boxType.Width}
 
-	placeFree, oldBox := collisions.CheckBoxCollision(newBox, mp)
+	placeFree, oldBox := collisions.CheckBoxCollision(newBox, mp, 0)
 	if !placeFree && oldBox == nil {
 		return errors.New("place busy"), false, nil
 	}

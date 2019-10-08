@@ -44,10 +44,23 @@ func BodyCheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail
 	}
 }
 
-func BodyCheckCollisionBoxes(x, y, rotate, mapID int, body *detail.Body) *boxInMap.Box {
-	rectBody := getBodyRect(body, float64(x), float64(y), rotate, false, false)
+func BodyCheckCollisionBoxes(moveUnit *unit.Unit, body *detail.Body, path *unit.PathUnit) (*boxInMap.Box, int, int, int) {
+	rectBody := getBodyRect(body, float64(path.X), float64(path.Y), path.Rotate, false, false)
+	mapBox := checkCollisionsBoxes(moveUnit.MapID, rectBody, false)
 
-	return checkCollisionsBoxes(mapID, rectBody, false)
+	if mapBox != nil {
+
+		rectBody = getBodyRect(body, float64(moveUnit.X), float64(moveUnit.Y), moveUnit.Rotate, false, false)
+		rectBox := getCenterRect(float64(mapBox.X), float64(mapBox.Y), float64(mapBox.Height), float64(mapBox.Width))
+		rectBox.rotate(mapBox.Rotate)
+
+		x, y, free, percent := detailCheckCollisionPolygons(rectBody, rectBox, path)
+		if !free {
+			return mapBox, x, y, percent
+		}
+	}
+
+	return nil, 0, 0, 0
 }
 
 func CheckCollisionsPlayers(moveUnit *unit.Unit, x, y, rotate int, units map[int]*unit.ShortUnitInfo,

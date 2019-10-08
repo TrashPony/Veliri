@@ -15,6 +15,10 @@ function ReadResponse(jsonData) {
         MoveTo(jsonData);
     }
 
+    if (jsonData.event === "BoxTo") {
+        BoxMove(jsonData.path_unit, jsonData.box_id)
+    }
+
     if (jsonData.event === "MoveStop") {
         MoveStop(jsonData)
     }
