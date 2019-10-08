@@ -5,7 +5,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -363,29 +362,9 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 		// расход топлива
 		// TODO если расход топлима изменился или топливо кончилось то останавливатся или перерасчитывать путь
-		if !moveUnit.Body.MotherShip {
-
-			fakeThoriumSlots := make(map[int]*detail.ThoriumSlot)
-			fakeThoriumSlots[1] = &detail.ThoriumSlot{Number: 1, WorkedOut: float32(moveUnit.Power), Inversion: true, Count: 1}
-
-			move.WorkOutThorium(fakeThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
-			if moveUnit.Afterburner {
-				SquadDamage(user, 1, moveUnit)
-			}
-
-			moveUnit.Power = int(fakeThoriumSlots[1].WorkedOut)
-
-			go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
-				ThoriumSlots: fakeThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
-		} else {
-
-			move.WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
-			if moveUnit.Afterburner {
-				SquadDamage(user, 1, moveUnit)
-			}
-			go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
-				ThoriumSlots: moveUnit.Body.ThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
-		}
+		moveUnit.WorkOutMovePower()
+		go SendMessage(Message{Event: "WorkOutThorium", IDUserSend: user.GetID(), Unit: moveUnit,
+			ThoriumSlots: moveUnit.Body.ThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
 
 		// оповещаем мир как двигается отряд
 		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})

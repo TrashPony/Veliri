@@ -1,6 +1,7 @@
 function ThoriumBar(unit, thoriumSlots) {
 
     if (!game || !game.units) return;
+    let power = unit.power;
 
     unit = game.units[unit.id];
 
@@ -84,9 +85,8 @@ function ThoriumBar(unit, thoriumSlots) {
 
         thoriumEfficiency.innerHTML = (thoriumEfficiencyCalc).toFixed(0) + "%";
     } else if (unit && unit.owner_id === game.user_id) {
-
         let energyBar = document.getElementById('energy' + unit.id);
-        let percent = 100 / (unit.body.max_power / thoriumSlots[1].worked_out);
+        let percent = 100 / (unit.body.max_power / power);
         energyBar.style.width = percent + "%";
     }
 }

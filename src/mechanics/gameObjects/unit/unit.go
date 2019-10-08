@@ -297,6 +297,61 @@ func (unit *Unit) SetWeaponSlot(newWeaponSlot *detail.BodyWeaponSlot) {
 	}
 }
 
+func (unit *Unit) GetReactorEfficiency() int {
+	// метод отдает эффективность реактора мобильной платформы
+	// высчитвается как количество слотов в реакторе под торий / количество занятых слотов
+	if unit.Body.MotherShip {
+		fullCount := 0
+		for _, slot := range unit.Body.ThoriumSlots {
+			if slot.Count > 0 {
+				fullCount++
+			}
+		}
+
+		efficiency := (fullCount * 100) / len(unit.Body.ThoriumSlots)
+		if unit.Afterburner {
+			efficiency *= 2
+		}
+		return efficiency
+	} else {
+		// у бота нет слотов поэтому там всегда 100
+		return 100
+	}
+}
+
+func (unit *Unit) WorkOutPower(count float32) {
+	if unit.Body.MotherShip {
+		for _, slot := range unit.Body.ThoriumSlots {
+			slot.WorkedOut += count
+			if slot.WorkedOut >= 100 {
+				slot.Count--
+				slot.WorkedOut = 0
+			}
+		}
+	} else {
+		unit.Power -= int(count)
+	}
+}
+
+func (unit *Unit) WorkOutMovePower() {
+	// формула выроботки топлива, если работает только 1 ячейка из 3х то ее эффективность в 66% больше
+	thorium := 1 / float32(100/unit.GetReactorEfficiency())
+
+	if !unit.HighGravity && !unit.Afterburner { // если не форсах и не высокая гравитация, то не тратим топливо
+		return
+	}
+
+	if unit.HighGravity && unit.Afterburner { // если активирован форсаж и высокая гравитация то топливо тратиться х15
+		thorium = thorium * 15
+	}
+
+	if !unit.HighGravity && unit.Afterburner { // если активирован форсаж и низкая гравитация то топливо тратиться х5
+		thorium = thorium * 5
+	}
+
+	unit.WorkOutPower(thorium)
+}
+
 func (unit *Unit) CalculateParams() {
 
 	if unit.Body == nil {
@@ -469,7 +524,7 @@ func (unit *Unit) CalculateParams() {
 	}
 
 	// высчитывает повер рековери
-	unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
+	// TODO unit.RecoveryPower = unit.Body.RecoveryPower - (unit.Body.GetUsePower() / 4)
 	// востанавление энергии зависит от используемой энергии, чем больше обородования тем выше штраф
 	// todo штраф так же должен зависеть от скила пользвотеля
 }

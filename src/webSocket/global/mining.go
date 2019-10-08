@@ -3,6 +3,7 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -10,7 +11,7 @@ import (
 	"time"
 )
 
-func startMining(miner *unit.Unit, msg Message) {
+func startMining(miner *unit.Unit, msg Message, user *player.Player) {
 	reservoir := maps.Maps.GetReservoirByXY(msg.X, msg.Y, miner.MapID)
 	if reservoir == nil {
 		go SendMessage(Message{Event: "Error", Error: "no reservoir", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
@@ -29,7 +30,8 @@ func startMining(miner *unit.Unit, msg Message) {
 	}
 
 	dist := game_math.GetBetweenDist(miner.X, miner.Y, reservoir.X, reservoir.Y)
-	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker {
+
+	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker && miner.Power >= miningEquip.Equip.UsePower {
 
 		go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Equip.Reload,
 			TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID})
@@ -37,26 +39,32 @@ func startMining(miner *unit.Unit, msg Message) {
 		miningEquip.Equip.MiningChecker = true
 		miningEquip.Equip.CreateMining()
 
-		go Mining(miner, miningEquip.Equip, reservoir, msg)
+		go Mining(miner, miningEquip.Equip, reservoir, msg, user)
+
 	} else {
 		if int(dist) > miningEquip.Equip.Radius {
 			go SendMessage(Message{Event: "Error", Error: "not enough distance", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
-			return
 		}
 		if miningEquip.Equip.MiningChecker {
 			go SendMessage(Message{Event: "Error", Error: "extractor work", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
-			return
+		}
+		if miner.Power < miningEquip.Equip.UsePower {
+			go SendMessage(Message{Event: "Error", Error: "lacks power", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		}
 	}
 }
 
-func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map, msg Message) {
+func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map, msg Message, user *player.Player) {
 	exit := false
 
 	for {
 
 		// переменная для проверки времени цикла
 		miningEquip.CurrentReload = miningEquip.Reload
+
+		// отнимаем энергию которую потребляет майнер
+		miner.Power -= miningEquip.UsePower
+		go SendMessage(Message{Event: "FillSquadBlock", IDUserSend: miner.OwnerID, IDMap: miner.MapID, Squad: user.GetSquad(), Bot: user.Bot})
 
 		// проверка на полный трюм
 		if miner.Body.CapacitySize < miner.Inventory.GetSize()+reservoir.Resource.Size {

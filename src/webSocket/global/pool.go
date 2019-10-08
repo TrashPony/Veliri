@@ -222,7 +222,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "startMining" {
-			startMining(globalGame.Clients.GetUnitByID(msg.UnitID), msg)
+			startMining(globalGame.Clients.GetUnitByID(msg.UnitID), msg, user)
 		}
 
 		if msg.Event == "SelectEquip" {

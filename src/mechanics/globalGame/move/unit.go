@@ -42,8 +42,8 @@ func Unit(moveUnit *unit.Unit, ToX, ToY, StartX, StartY float64, unitRotate int,
 
 	maxSpeed := float64(moveUnit.Speed)
 	if moveUnit.Body.MotherShip {
-		efficiency := WorkOutThorium(moveUnit.Body.ThoriumSlots, moveUnit.Afterburner, moveUnit.HighGravity)
-		maxSpeed = (maxSpeed * efficiency) / 100
+		efficiency := moveUnit.GetReactorEfficiency()
+		maxSpeed = (maxSpeed * float64(efficiency)) / 100
 	}
 
 	if moveUnit.FollowUnitID != 0 {

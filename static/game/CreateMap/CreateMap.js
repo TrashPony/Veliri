@@ -37,6 +37,8 @@ function CreateMap() {
     }).then(function () {
         CreateBeams();
     }).then(function () {
+        CreateReservoirs()
+    }).then(function () {
         // TODO CreateEmitters();
     });
 }

@@ -101,8 +101,4 @@ function create(game) {
     if (LoadFunc) {
         LoadFunc();
     }
-
-    if (game.map.reservoir) {
-        CreateReservoirs()
-    }
 }

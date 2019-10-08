@@ -1,5 +1,6 @@
 function FillSquadBlock(squad) {
     if (!squad) return;
+
     fillSquadUnit("MS", squad.mather_ship);
     fillEquipBlock(squad.mather_ship);
 
@@ -101,6 +102,14 @@ function fillSquadUnit(id, unit) {
 
     if (unitEquip) {
         // TODO ленивое обновление данных
+
+        if (id !== 'MS') {
+
+        } else {
+            $('#reactorStatus').html(`
+            <div id="countPower">${(unit.power / 100).toFixed(0)} / ${(unit.max_power / 100).toFixed(0)}</div>
+            <div id="recoverPower">+${(unit.recovery_power / 100).toFixed(1)} <span>ед/сек.</span></div>`)
+        }
     } else {
         if (id !== 'MS') {
 
@@ -167,7 +176,6 @@ function fillSquadUnit(id, unit) {
                     </div>
                 </div>
         `;
-
             $('#reactorStatus').html(`
         <div id="countPower">${(unit.power / 100).toFixed(0)} / ${(unit.max_power / 100).toFixed(0)}</div>
         <div id="recoverPower">+${(unit.recovery_power / 100).toFixed(1)} <span>ед/сек.</span></div>`)
@@ -258,6 +266,12 @@ function fillEquipBlock(unit) {
                         // что бы не грузит картинку каждый раз при обновление
                         if (equipSlot.style.background.indexOf(equip.name) < 0) {
                             equipSlot.style.background = back;
+
+                            let progressBar = document.createElement("div");
+                            progressBar.id = "reloadEquip" + unit.id + type + i;
+                            progressBar.className = "reloadEquip";
+                            progressBar.style.animation = "reload " + equip.current_reload + "s linear 1";
+                            equipSlot.appendChild(progressBar);
                         }
 
                         equipSlot.onclick = function () {
@@ -269,12 +283,6 @@ function fillEquipBlock(unit) {
                                 slot: Number(i),
                             }));
                         };
-
-                        let progressBar = document.createElement("div");
-                        progressBar.id = "reloadEquip" + unit.id + type + i;
-                        progressBar.className = "reloadEquip";
-                        progressBar.style.animation = "reload " + equip.current_reload + "s linear 1";
-                        equipSlot.appendChild(progressBar);
                     }
                 }
             }

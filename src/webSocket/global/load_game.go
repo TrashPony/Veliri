@@ -26,6 +26,9 @@ func LoadGame(user *player.Player, msg Message) {
 
 		GetPlaceSquad(user, mp)
 
+		// запускаем реактор машины
+		go RecoveryPowerWorker(user)
+
 		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
 			Event:       msg.Event,

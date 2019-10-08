@@ -10,13 +10,15 @@ import (
 	"time"
 )
 
+// TODO рефакторинг
 func useDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
 	stopMove(user.GetSquad().MatherShip, true)
 
 	diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
-	if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" || diggerSlot.Equip.CurrentReload > 0 {
+	if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" ||
+		diggerSlot.Equip.CurrentReload > 0 || user.GetSquad().MatherShip.Power < diggerSlot.Equip.UsePower {
 		go SendMessage(Message{Event: "Error", Error: "no equip", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		return
 	}
@@ -24,6 +26,7 @@ func useDigger(user *player.Player, msg Message) {
 	users, rLock := globalGame.Clients.GetAll()
 	defer rLock.Unlock()
 
+	user.GetSquad().MatherShip.Power -= diggerSlot.Equip.UsePower
 	// перезаряджка
 	diggerSlot.Equip.CurrentReload = diggerSlot.Equip.Reload
 	go func() {
