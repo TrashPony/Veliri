@@ -206,6 +206,14 @@ function ReadResponse(jsonData) {
         findPath.clear();
     }
 
+    if (jsonData.event === "CreatePolygon") {
+        PolygonDraw(jsonData.polygon)
+    }
+
+    if (jsonData.event === "ClearPolygon") {
+        if (polygonCanvas) polygonCanvas.clear();
+    }
+
     if (jsonData.event === "NewFormationPos") {
         Data.squad = jsonData.squad;
         fillFormation(Data.squad, scaleFormation);
@@ -214,6 +222,42 @@ function ReadResponse(jsonData) {
 
 let moveDebug = null;
 let findPath = null;
+let polygonCanvas = null;
+
+function PolygonDraw(polygon) {
+    if (!game) return;
+
+    if (!polygonCanvas) {
+        setTimeout(function () {
+            polygonCanvas = game.add.graphics(0, 0);
+        }, 2500)
+    }
+
+    polygonCanvas.lineStyle(1, 0xFF0000, 0.8);
+    for (let i in polygon.sides) {
+
+        let side = polygon.sides[i];
+
+        polygonCanvas.moveTo(side.x_1, side.y_1);
+        polygonCanvas.lineTo(side.x_2, side.y_2);
+
+        polygonCanvas.endFill();
+    }
+    /*
+    squad.rectDebag.moveTo(bodyRec.sides[0].x1, bodyRec.sides[0].y1);
+    squad.rectDebag.lineTo(bodyRec.sides[0].x2, bodyRec.sides[0].y2);
+
+    squad.rectDebag.lineTo(bodyRec.sides[1].x1, bodyRec.sides[1].y1);
+    squad.rectDebag.lineTo(bodyRec.sides[1].x2, bodyRec.sides[1].y2);
+
+    squad.rectDebag.lineTo(bodyRec.sides[2].x1, bodyRec.sides[2].y1);
+    squad.rectDebag.lineTo(bodyRec.sides[2].x2, bodyRec.sides[2].y2);
+
+    squad.rectDebag.lineTo(bodyRec.sides[3].x1, bodyRec.sides[3].y1);
+    squad.rectDebag.lineTo(bodyRec.sides[3].x2, bodyRec.sides[3].y2);
+    squad.rectDebag.endFill();
+    */
+}
 
 function FindPathDebug(jsonData) {
     if (!moveDebug) {

@@ -6,18 +6,20 @@ import (
 )
 
 type Polygon struct {
-	sides            []*sideRec
+	Sides            []*SideRec `json:"sides"`
 	centerX, centerY float64
 	Height, Width    float64
 	Angle            int
 }
 
-type sideRec struct {
-	x1, y1 float64
-	x2, y2 float64
+type SideRec struct {
+	X1 float64 `json:"x_1"`
+	Y1 float64 `json:"y_1"`
+	X2 float64 `json:"x_2"`
+	Y2 float64 `json:"y_2"`
 }
 
-func (r *Polygon) rotate(rotate int) {
+func (r *Polygon) Rotate(rotate int) {
 
 	// поворачиваем квадрат по формуле (x0:y0 - центр)
 	//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
@@ -32,12 +34,12 @@ func (r *Polygon) rotate(rotate int) {
 		return
 	}
 
-	rotateSide := func(side *sideRec, x0, y0 float64, rotate int) {
-		side.x1, side.y1 = rotatePoint(side.x1, side.y1, x0, y0, rotate)
-		side.x2, side.y2 = rotatePoint(side.x2, side.y2, x0, y0, rotate)
+	rotateSide := func(side *SideRec, x0, y0 float64, rotate int) {
+		side.X1, side.Y1 = rotatePoint(side.X1, side.Y1, x0, y0, rotate)
+		side.X2, side.Y2 = rotatePoint(side.X2, side.Y2, x0, y0, rotate)
 	}
 
-	for _, side := range r.sides {
+	for _, side := range r.Sides {
 		rotateSide(side, r.centerX, r.centerY, rotate)
 	}
 }
@@ -57,10 +59,10 @@ func (r *Polygon) detectCollisionRectToCircle(centerCircle *point, radius int) b
 		    intersectCircle(S, (D, A))
 	*/
 
-	a := &point{x: r.sides[0].x1, y: r.sides[0].y1}
-	b := &point{x: r.sides[1].x1, y: r.sides[1].y1}
-	c := &point{x: r.sides[2].x1, y: r.sides[2].y1}
-	d := &point{x: r.sides[3].x1, y: r.sides[3].y1}
+	a := &point{x: r.Sides[0].X1, y: r.Sides[0].Y1}
+	b := &point{x: r.Sides[1].X1, y: r.Sides[1].Y1}
+	c := &point{x: r.Sides[2].X1, y: r.Sides[2].Y1}
+	d := &point{x: r.Sides[3].X1, y: r.Sides[3].Y1}
 
 	intersect1, _, _ := IntersectVectorToCircle(a, b, centerCircle, radius)
 	intersect2, _, _ := IntersectVectorToCircle(b, c, centerCircle, radius)
@@ -102,9 +104,9 @@ func (r *Polygon) detectCollisionRectToRect(r2 *Polygon) bool {
 		return (v1*v2 < 0) && (v3*v4 < 0)
 	}
 
-	for _, side1 := range r.sides {
-		for _, side2 := range r2.sides {
-			if intersection(side1.x1, side1.y1, side1.x2, side1.y2, side2.x1, side2.y1, side2.x2, side2.y2) {
+	for _, side1 := range r.Sides {
+		for _, side2 := range r2.Sides {
+			if intersection(side1.X1, side1.Y1, side1.X2, side1.Y2, side2.X1, side2.Y1, side2.X2, side2.Y2) {
 				return true
 			}
 		}
@@ -120,15 +122,15 @@ func (r *Polygon) detectPointInRectangle(x, y float64) bool {
 
 	// A - [0]1 B - [1]1 C = [2]1 D = [3]1
 	//0 ≤ AP·AB ≤ AB·AB and 0 ≤ AP·AD ≤ AD·AD
-	AB := vector(&point{x: r.sides[0].x1, y: r.sides[0].y1}, &point{x: r.sides[1].x1, y: r.sides[1].y1})
-	AM := vector(&point{x: r.sides[0].x1, y: r.sides[0].y1}, &point{x: x, y: y})
-	BC := vector(&point{x: r.sides[1].x1, y: r.sides[1].y1}, &point{x: r.sides[2].x1, y: r.sides[2].y1})
-	BM := vector(&point{x: r.sides[1].x1, y: r.sides[1].y1}, &point{x: x, y: y})
+	AB := vector(&point{x: r.Sides[0].X1, y: r.Sides[0].Y1}, &point{x: r.Sides[1].X1, y: r.Sides[1].Y1})
+	AM := vector(&point{x: r.Sides[0].X1, y: r.Sides[0].Y1}, &point{x: x, y: y})
+	BC := vector(&point{x: r.Sides[1].X1, y: r.Sides[1].Y1}, &point{x: r.Sides[2].X1, y: r.Sides[2].Y1})
+	BM := vector(&point{x: r.Sides[1].X1, y: r.Sides[1].Y1}, &point{x: x, y: y})
 
 	return 0 <= dot(AB, AM) && dot(AB, AM) <= dot(AB, AB) && 0 <= dot(BC, BM) && dot(BC, BM) <= dot(BC, BC)
 }
 
-func getBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *Polygon {
+func GetBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *Polygon {
 
 	/*
 		squad.rectDebag.moveTo(-50, -25);
@@ -164,46 +166,31 @@ func getBodyRect(body *detail.Body, x, y float64, rotate int, full, min bool) *P
 		}
 	}
 
-	bodyRec := getCenterRect(x, y, heightBody*2, widthBody*2)
-	bodyRec.rotate(rotate)
+	bodyRec := GetCenterRect(x, y, heightBody*2, widthBody*2)
+	bodyRec.Rotate(rotate)
 	return bodyRec
 }
 
-func getCenterRect(x, y, height, width float64) *Polygon {
+func GetCenterRect(x, y, height, width float64) *Polygon {
 
 	// делем на 2 что бы центр квадрата был в х у
 	height = height / 2
 	width = width / 2
 
-	return &Polygon{
-		sides: []*sideRec{
-			// A 									// B
-			{x1: x - width, y1: y - height, x2: x - width, y2: y + height},
-			// B									// C
-			{x1: x - width, y1: y + height, x2: x + width, y2: y + height},
-			// C									// D
-			{x1: x + width, y1: y + height, x2: x + width, y2: y - height},
-			// D									// A
-			{x1: x + width, y1: y - height, x2: x - width, y2: y - height},
-		},
-		centerX: float64(x),
-		centerY: float64(y),
-		Height:  height,
-		Width:   width,
-	}
+	return GetRect(x, y, height, width)
 }
 
-func getRect(x, y, height, width float64) *Polygon {
+func GetRect(x, y, height, width float64) *Polygon {
 	return &Polygon{
-		sides: []*sideRec{
+		Sides: []*SideRec{
 			// A 									// B
-			{x1: x - width, y1: y - height, x2: x - width, y2: y + height},
+			{X1: x - width, Y1: y - height, X2: x - width, Y2: y + height},
 			// B									// C
-			{x1: x - width, y1: y + height, x2: x + width, y2: y + height},
+			{X1: x - width, Y1: y + height, X2: x + width, Y2: y + height},
 			// C									// D
-			{x1: x + width, y1: y + height, x2: x + width, y2: y - height},
+			{X1: x + width, Y1: y + height, X2: x + width, Y2: y - height},
 			// D									// A
-			{x1: x + width, y1: y - height, x2: x - width, y2: y - height},
+			{X1: x + width, Y1: y - height, X2: x - width, Y2: y - height},
 		},
 		centerX: float64(x),
 		centerY: float64(y),

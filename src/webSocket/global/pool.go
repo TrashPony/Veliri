@@ -16,6 +16,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/gorilla/websocket"
 	"log"
@@ -87,6 +88,8 @@ type Message struct {
 
 	Color    string `json:"color"`
 	RectSize int    `json:"rect_size"`
+
+	Polygon collisions.Polygon `json:"polygon"`
 }
 
 type Cloud struct {

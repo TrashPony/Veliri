@@ -9,8 +9,8 @@ import (
 // функция смотри колизию коробки со всеми обьектами мира, если колизия с коробкой то возвращается коробка с которой колизия
 func CheckBoxCollision(box *boxInMap.Box, mp *_map.Map, excludeUnitID int) (bool, *boxInMap.Box) {
 
-	rect := getCenterRect(float64(box.X), float64(box.Y), float64(box.Height), float64(box.Width))
-	rect.rotate(box.Rotate)
+	rect := GetCenterRect(float64(box.X), float64(box.Y), float64(box.Height), float64(box.Width))
+	rect.Rotate(box.Rotate)
 
 	// проверяем колизии со статичной картой
 	possibleMove, _ := searchStaticMapCollisionByRect(box.X, box.Y, mp, false, rect, 0, 150)

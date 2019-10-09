@@ -159,43 +159,38 @@ func UnitToUnitCollisionReaction(takeUnit, toUnit *unit.Unit) (*unit.PathUnit, *
 	return &userPath, &toUserPath
 }
 
-func detailCheckCollisionPolygons(rect1 *Polygon, rect2 *Polygon, pathUnit *unit.PathUnit) (int, int, bool, int) {
+func detailCheckCollisionPolygons(moveUnit *unit.Unit, pathUnit *unit.PathUnit, mapID int) (int, int, int, *boxInMap.Box) {
 
-	// юнит имеет высокую скорость последние точки делить его путь что бы адекватно обработать колизии
+	rect1 := GetBodyRect(moveUnit.Body, float64(moveUnit.X), float64(moveUnit.Y), moveUnit.Rotate, false, false)
 
-	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
-	startDist := game_math.GetBetweenDist(int(rect1.centerX), int(rect1.centerY), int(rect2.centerX), int(rect2.centerY))
+	startDist := game_math.GetBetweenDist(int(rect1.centerX), int(rect1.centerY), int(pathUnit.X), int(pathUnit.Y))
 	minDist := startDist
-
-	if rect1.detectCollisionRectToRect(rect2) {
-		return int(rect1.centerX), int(rect1.centerY), false, 1
-	}
+	dist := startDist
 
 	for {
 
-		dist := game_math.GetBetweenDist(int(rect1.centerX), int(rect1.centerY), int(rect2.centerX), int(rect2.centerY))
-		if dist <= 1 || minDist < dist {
-			return int(rect1.centerX), int(rect1.centerY), true, 100
-		}
+		percentPath := 100 - (int((dist * 100) / startDist))
 
 		radRotate := float64(pathUnit.Rotate) * math.Pi / 180
-		stopX := float64(1) * math.Cos(radRotate) // идем по вектору движения корпуса
-		stopY := float64(1) * math.Sin(radRotate)
+		stopX := float64(3) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(3) * math.Sin(radRotate)
 
-		angle := rect1.Angle
-		oldX, oldY := rect1.centerX, rect2.centerY
-		rect1 = getRect(
-			(rect1.centerX+stopX)-(rect1.Width/2),
-			(rect1.centerY+stopY)-(rect1.Height/2),
-			rect1.Height, rect1.Width)
-		rect1.rotate(angle)
+		rect1 := GetBodyRect(moveUnit.Body, float64(moveUnit.X)+stopX, float64(moveUnit.Y)+stopY, moveUnit.Rotate, false, false)
 
-		if rect1.detectCollisionRectToRect(rect2) {
-			return int(oldX), int(oldY), false, int((dist * 100) / startDist)
+		mapBox := checkCollisionsBoxes(mapID, rect1, false)
+		if mapBox != nil {
+			return int(moveUnit.X), int(moveUnit.Y), percentPath, mapBox
+		}
+
+		moveUnit.X += int(stopX)
+		moveUnit.Y += int(stopY)
+
+		dist = game_math.GetBetweenDist(int(rect1.centerX), int(rect1.centerY), int(pathUnit.X), int(pathUnit.Y))
+		if dist <= 1 || minDist < dist {
+			return int(rect1.centerX), int(rect1.centerY), percentPath, nil
 		}
 
 		minDist = dist
-
 	}
 }
 
@@ -248,7 +243,7 @@ func UnitToBoxCollisionReaction(takeUnit *unit.Unit, toBox *boxInMap.Box) (*unit
 	yVel2 = yVel2prime*cosAlfa + xVel2prime*sinAlfa
 
 	speed1 := (math.Sqrt((xVel1 * xVel1) + (yVel1 * yVel1))) / 3
-	speed2 := (math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))) / 3
+	speed2 := (math.Sqrt((xVel2 * xVel2) + (yVel2 * yVel2))) / 2
 
 	takeUnit.CurrentSpeed = speed1
 	takeUnit.X += int(float64(-speed1) * math.Cos(needRad))
@@ -256,7 +251,6 @@ func UnitToBoxCollisionReaction(takeUnit *unit.Unit, toBox *boxInMap.Box) (*unit
 
 	// проверка нового места толкаемого юзера на колизию в статичной карте
 	mp, _ := maps.Maps.GetByID(takeUnit.MapID)
-
 	free, _ := CheckBoxCollision(toBox, mp, takeUnit.ID)
 
 	if free {
@@ -264,8 +258,8 @@ func UnitToBoxCollisionReaction(takeUnit *unit.Unit, toBox *boxInMap.Box) (*unit
 		toBox.Y += int(float64(speed2) * math.Sin(needRad))
 	} else {
 		// оталкиваем игрока инициализирующего столкновение иначе они застрянут
-		takeUnit.X += int(float64(-speed2) * math.Cos(needRad))
-		takeUnit.Y += int(float64(-speed2) * math.Sin(needRad))
+		takeUnit.X += int(float64(-speed2/3) * math.Cos(needRad))
+		takeUnit.Y += int(float64(-speed2/3) * math.Sin(needRad))
 	}
 
 	userPath := unit.PathUnit{

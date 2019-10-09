@@ -338,23 +338,23 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		}
 
 		// если на пути встречается ящик то мы его давим и падает скорость
-		mapBox, _, _, _ := collisions.BodyCheckCollisionBoxes(moveUnit, moveUnit.Body, pathUnit)
+		mapBox, x, y, percent := collisions.BodyCheckCollisionBoxes(moveUnit, moveUnit.Body, pathUnit)
 		if mapBox != nil {
-			//
-			//// todo без детального хода при большой скорости столкновение происходит очень далеко
-			////доходим до куда можем
-			//pathUnit.X, pathUnit.Y, pathUnit.Millisecond = x, y, (pathUnit.Millisecond*percent)/100
-			//SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
-			//
+
+			//доходим до куда можем
+			pathUnit.X, pathUnit.Y, pathUnit.Millisecond = x, y, (pathUnit.Millisecond*percent)/100
+			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+
 			//// ждем события столкновения
-			//time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
-			//moveUnit.X, moveUnit.Y, moveUnit.Rotate = pathUnit.X, pathUnit.Y, pathUnit.Rotate
+			time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
+			moveUnit.X, moveUnit.Y, moveUnit.Rotate = pathUnit.X, pathUnit.Y, pathUnit.Rotate
 
 			// обрабатываем столкновение
 			unitPos, boxPos := collisions.UnitToBoxCollisionReaction(moveUnit, mapBox)
 			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID})
 			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID})
 
+			// TODO тнимаение зп ящика и если 0 то уничтожать
 			//go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
 			//boxes.Boxes.DestroyBox(mapBox)
 			//moveUnit.CurrentSpeed -= float64(moveUnit.Speed)

@@ -1,8 +1,11 @@
 package global
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"time"
@@ -10,6 +13,7 @@ import (
 
 func DebugMoveWorker(user *player.Player) {
 	go DebugSender()
+	go PolygonSender()
 
 	if !debug.Store.MoveInit {
 		return
@@ -94,6 +98,36 @@ func CreateRect(color string, startX, startY int, rectSize, mapID int, ms int64)
 		X: int(startX), Y: int(startY), IDMap: mapID})
 
 	time.Sleep(time.Duration(ms) * time.Millisecond)
+}
+
+func PolygonSender() {
+	for {
+
+		mps := maps.Maps.GetAllShortInfoMap()
+
+		for _, mp := range mps {
+			go SendMessage(Message{Event: "ClearPolygon", Color: "red", IDMap: mp.Id})
+		}
+
+		for _, mp := range mps {
+
+			for _, box := range boxes.Boxes.GetAllBoxByMapID(mp.Id) {
+
+				boxRect := collisions.GetRect(float64(box.X), float64(box.Y), float64(box.Height), float64(box.Width))
+				boxRect.Rotate(box.Rotate)
+
+				go SendMessage(Message{Event: "CreatePolygon", Color: "red", IDMap: mp.Id, Polygon: *boxRect})
+			}
+
+			for _, unit := range globalGame.Clients.GetAllShortUnits(mp.Id, true) {
+				unitRect := collisions.GetBodyRect(unit.Body, float64(unit.X), float64(unit.Y), unit.Rotate, false, false)
+
+				go SendMessage(Message{Event: "CreatePolygon", Color: "red", IDMap: mp.Id, Polygon: *unitRect})
+			}
+		}
+
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func ClearVisiblePath(mapID int) {

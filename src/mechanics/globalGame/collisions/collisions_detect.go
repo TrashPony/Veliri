@@ -134,8 +134,8 @@ func checkCollisionsBoxes(mapID int, rect *Polygon, undergroundBox bool) *boxInM
 			mapBox.Width = 5
 		}
 
-		rectBox := getCenterRect(float64(mapBox.X), float64(mapBox.Y), float64(mapBox.Height), float64(mapBox.Width))
-		rectBox.rotate(mapBox.Rotate)
+		rectBox := GetCenterRect(float64(mapBox.X), float64(mapBox.Y), float64(mapBox.Height), float64(mapBox.Width))
+		rectBox.Rotate(mapBox.Rotate)
 
 		// поздемные ящики не имеют колизий
 		if mapBox.Underground && !undergroundBox {
@@ -164,7 +164,7 @@ func checkCollisionsUnits(rect *Polygon, units map[int]*unit.ShortUnitInfo, mapI
 		}
 
 		if otherUnit != nil {
-			userRect := getBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false, false)
+			userRect := GetBodyRect(otherUnit.Body, float64(otherUnit.X), float64(otherUnit.Y), otherUnit.Rotate, false, false)
 			if rect.detectCollisionRectToRect(userRect) {
 				return false
 			}

@@ -8,7 +8,7 @@ import (
 
 func FillMapZone(x, y int, zone *_map.Zone, mp *_map.Map) {
 	// +50 что бы в область папали пограничные препятсвия
-	zoneRect := getRect(float64(x), float64(y), game_math.DiscreteSize+50, game_math.DiscreteSize+50)
+	zoneRect := GetRect(float64(x), float64(y), game_math.DiscreteSize+50, game_math.DiscreteSize+50)
 
 	zone.Obstacle = make([]*_map.ObstaclePoint, 0)
 
@@ -34,7 +34,7 @@ func FillMapZone(x, y int, zone *_map.Zone, mp *_map.Map) {
 
 	for _, cell := range zone.Cells {
 
-		cellRect := getRect(float64(cell.X), float64(cell.Y), game_math.CellSize, game_math.CellSize)
+		cellRect := GetRect(float64(cell.X), float64(cell.Y), game_math.CellSize, game_math.CellSize)
 
 		for i := 0; i < len(mp.GeoData); i++ {
 
