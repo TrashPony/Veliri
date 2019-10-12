@@ -128,6 +128,8 @@ type ShortUnitInfo struct {
 	InSky           bool      `json:"in_sky"` /* отряд по той или иной причине летит Оо */
 	MoveChecker     bool      `json:"move_checker"`
 	ActualPathCell  *PathUnit `json:"actual_path_cell"`
+
+	HP int `json:"hp"` // TODO хп видно только тогда когда юнит в радаре
 }
 
 type PathUnit struct {
@@ -180,6 +182,7 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 	hostile.WeaponColor1 = unit.WeaponColor1
 	hostile.WeaponColor2 = unit.WeaponColor2
 	hostile.WeaponTexture = unit.WeaponTexture
+	hostile.HP = unit.HP
 
 	if unit.GetWeaponSlot() != nil && unit.GetWeaponSlot().Weapon != nil {
 		for _, weaponSlot := range hostile.Body.Weapons {

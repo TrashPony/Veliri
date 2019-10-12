@@ -97,7 +97,9 @@ function NewFormationPos(unitID, x, y) {
 }
 
 function fillSquadUnit(id, unit) {
-    let msBlock = document.getElementById(id);
+    let unitBlock = document.getElementById(id);
+    $(unitBlock).data("unit_id", unit.id);
+
     let unitEquip = document.getElementById('unitEquip' + unit.id);
 
     if (unitEquip) {
@@ -118,8 +120,8 @@ function fillSquadUnit(id, unit) {
                 backButton = "background: url(https://img.icons8.com/cute-clipart/64/000000/login-rounded-up.png) center center / contain no-repeat, rgba(0, 0, 0, 0.6);"
             }
 
-            msBlock.style.background = "none";
-            msBlock.innerHTML += `
+            unitBlock.style.background = "none";
+            unitBlock.innerHTML += `
                 <div id="unitEquip${unit.id}">
                     <div class="unitButtonsMask">
                         <div class="selectUnit" title="Выделить и показать" onclick="FocusUnit(${unit.id})"></div>
@@ -149,7 +151,7 @@ function fillSquadUnit(id, unit) {
             `;
         } else {
 
-            msBlock.innerHTML += ` 
+            unitBlock.innerHTML += ` 
                 <div id="unitEquip${unit.id}">
                     <div class="unitButtonsMask">
                         <div class="openUnitHold" title="Открыть трюм" onclick="InitInventoryMenu(null, 'inventory')"></div>
@@ -183,54 +185,54 @@ function fillSquadUnit(id, unit) {
     }
 
 
-    for (let i in msBlock.childNodes) {
+    for (let i in unitBlock.childNodes) {
 
-        if (msBlock.childNodes[i].nodeName === "SPAN") msBlock.childNodes[i].style.visibility = "hidden";
+        if (unitBlock.childNodes[i].nodeName === "SPAN") unitBlock.childNodes[i].style.visibility = "hidden";
 
         // что бы не грузит картинку каждый раз при обновление
-        if (msBlock.childNodes[i].className === "body" && msBlock.childNodes[i].style.background.indexOf(unit.body.name) < 0) {
-            msBlock.childNodes[i].style.background = "url(/assets/units/body/" + unit.body.name + ".png)" +
+        if (unitBlock.childNodes[i].className === "body" && unitBlock.childNodes[i].style.background.indexOf(unit.body.name) < 0) {
+            unitBlock.childNodes[i].style.background = "url(/assets/units/body/" + unit.body.name + ".png)" +
                 " center center / contain no-repeat, url(/assets/units/body/" + unit.body.name + "_bottom.png) center center / contain no-repeat, rgba(76, 76, 76, 0.66)";
-            msBlock.childNodes[i].style.visibility = "visible";
+            unitBlock.childNodes[i].style.visibility = "visible";
         }
 
-        if (msBlock.childNodes[i].className === "weapon") {
+        if (unitBlock.childNodes[i].className === "weapon") {
             for (let j in unit.body.weapons) {
                 if (unit.body.weapons.hasOwnProperty(j) && unit.body.weapons[j].weapon) {
                     // что бы не грузит картинку каждый раз при обновление
-                    if (msBlock.childNodes[i].style.background.indexOf(unit.body.weapons[j].weapon.name) < 0) {
-                        msBlock.childNodes[i].style.background = "url(/assets/units/weapon/" + unit.body.weapons[j].weapon.name
+                    if (unitBlock.childNodes[i].style.background.indexOf(unit.body.weapons[j].weapon.name) < 0) {
+                        unitBlock.childNodes[i].style.background = "url(/assets/units/weapon/" + unit.body.weapons[j].weapon.name
                             + ".png) center bottom / contain no-repeat, rgba(76, 76, 76, 0.66)";
                     }
                 }
             }
-            msBlock.childNodes[i].style.visibility = "visible";
+            unitBlock.childNodes[i].style.visibility = "visible";
         }
 
-        if (msBlock.childNodes[i].className === "ammo") {
+        if (unitBlock.childNodes[i].className === "ammo") {
             for (let j in unit.body.weapons) {
                 if (unit.body.weapons.hasOwnProperty(j) && unit.body.weapons[j].weapon && unit.body.weapons[j].ammo) {
 
                     // что бы не грузит картинку каждый раз при обновление
-                    if (msBlock.childNodes[i].style.background.indexOf(unit.body.weapons[j].ammo.name) < 0) {
-                        msBlock.childNodes[i].style.background = "url(/assets/units/ammo/" + unit.body.weapons[j].ammo.name
+                    if (unitBlock.childNodes[i].style.background.indexOf(unit.body.weapons[j].ammo.name) < 0) {
+                        unitBlock.childNodes[i].style.background = "url(/assets/units/ammo/" + unit.body.weapons[j].ammo.name
                             + ".png) center center / cover no-repeat, rgba(76, 76, 76, 0.66)";
                     }
 
                     let percentHP = 100 / (unit.body.weapons[j].ammo_capacity / unit.body.weapons[j].ammo_quantity);
-                    msBlock.childNodes[i].innerHTML = `
+                    unitBlock.childNodes[i].innerHTML = `
                     <span class="ammoCount" style="color: ${GetColorDamage(percentHP)}">${unit.body.weapons[j].ammo_quantity}</span>`
                 }
             }
-            msBlock.childNodes[i].style.visibility = "visible";
+            unitBlock.childNodes[i].style.visibility = "visible";
         }
     }
 }
 
 function GetColorDamage(percentHP) {
-    if (percentHP === 100) {
+    if (percentHP >= 80) {
         return "#00ff0f"
-    } else if (percentHP < 100 && percentHP >= 75) {
+    } else if (percentHP < 80 && percentHP >= 75) {
         return "#fff326"
     } else if (percentHP < 75 && percentHP >= 50) {
         return "#fac227"

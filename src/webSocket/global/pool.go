@@ -240,6 +240,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			//todo методы атаки,
 			// просто землю
 			// обьекты на карте
+			// ящик
 			// игроков/нпс
 		}
 

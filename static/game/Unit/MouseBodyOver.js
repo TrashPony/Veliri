@@ -15,9 +15,6 @@ function mouseBodyOver(body, unit, unitBox) {
 function unitInfo(unit, unitBox) {
     if (game.user_id === unit.owner_id) {
         unitBox.frame = 1;
-    } else {
-        //todo враг красны
-        unitBox.frame = 2;
     }
 
     clearTimeout(checksTimeOut[unit.id]);

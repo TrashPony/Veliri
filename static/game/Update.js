@@ -12,9 +12,10 @@ function update() {
     }
 
     if (game && game.typeService === "global") {
-        //DebugCollision();
         StartSelectableUnits();
         UpdateFogOfWar();
+
+        game.UnitStatusLayer.bmd.clear();
 
         for (let i in game.units) {
             let unit = game.units[i];
@@ -32,29 +33,54 @@ function update() {
 
             AnimateMiningLaser(unit);
             AnimateDigger(unit);
+            CreateMapHealBar(unit.sprite, unit.body.max_hp, unit.hp);
+        }
+
+        for (let i in game.boxes) {
+            CreateMapHealBar(game.boxes[i].sprite, game.boxes[i].max_hp, game.boxes[i].hp);
         }
     }
 }
 
-function DebugCollision() {
-    if (game) {
+function CreateMapHealBar(sprite, maxHP, hp) {
 
-        for (let i in game.units) {
-            CreateCollision(game.units[i].colision, game.units[i].body.height, game.units[i].body.width, game.units[i].rotate, game.units[i]);
+    if (!game.UnitStatusLayer) return;
+
+    let hpInBox = 5;
+    let sizeBox = 4;
+    let interval = 2; // промеж уток между квадратиками
+
+    let centerX = sprite.x - (game.camera.x / game.camera.scale.x);
+    let centerY = sprite.y - (game.camera.y / game.camera.scale.y);
+
+    let countBoxes = Math.ceil(maxHP / hpInBox);
+    // для особо жирных
+    if (countBoxes > 10) {
+        hpInBox = 10;
+        countBoxes = Math.ceil(maxHP / hpInBox);
+    }
+
+    let startX = Math.round(centerX - ((countBoxes / 2) * (sizeBox + interval)));
+
+    let percentHP = 100 / (maxHP / hp);
+
+    for (let i = 0; i < countBoxes; i++) {
+
+        game.UnitStatusLayer.bmd.ctx.beginPath();
+        game.UnitStatusLayer.bmd.ctx.rect(startX, centerY + sprite.offsetY / 1.5, sizeBox, sizeBox);
+
+        if (hp > 0) {
+            game.UnitStatusLayer.bmd.ctx.fillStyle = GetColorDamage(percentHP);
+        } else {
+            game.UnitStatusLayer.bmd.ctx.fillStyle = '#999b9f';
         }
 
-        for (let i in game.boxes) {
-            CreateCollision(game.boxes[i].colision, game.boxes[i].height, game.boxes[i].width, game.boxes[i].rotate, game.boxes[i]);
-        }
+        game.UnitStatusLayer.bmd.ctx.strokeStyle = '#000000';
+        game.UnitStatusLayer.bmd.ctx.fill();
+        game.UnitStatusLayer.bmd.ctx.stroke();
 
-        // for (let q in game.map.reservoir) {
-        //     for (let r in game.map.reservoir[q]) {
-        //         let reservoir = game.map.reservoir[q][r];
-        //         if (reservoir && reservoir.sprite) {
-        //             game.squad.colision.drawCircle(reservoir.sprite.x, reservoir.sprite.y, 30);
-        //         }
-        //     }
-        // }
+        hp -= hpInBox;
+        startX += sizeBox + interval
     }
 }
 
@@ -63,12 +89,15 @@ function UpdateFogOfWar() {
 
     let fringe = 64;
 
+    let centerX = game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x);
+    let centerY = game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y);
+
     let gradient = game.FogOfWar.bmd.context.createRadialGradient(
-        game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x),
-        game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y),
+        centerX,
+        centerY,
         game.FogOfWar.ms.body.range_view,
-        game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x),
-        game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y),
+        centerX,
+        centerY,
         game.FogOfWar.ms.body.range_view - fringe
     );
 

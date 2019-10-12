@@ -76,7 +76,7 @@ func getTypeBox(gameBox *boxInMap.Box) {
 
 	for rows.Next() {
 		err := rows.Scan(&gameBox.Type, &gameBox.CapacitySize, &gameBox.FoldSize, &gameBox.Protect,
-			&gameBox.ProtectLvl, &gameBox.Underground, &gameBox.HP, &gameBox.Height, &gameBox.Width)
+			&gameBox.ProtectLvl, &gameBox.Underground, &gameBox.MaxHP, &gameBox.Height, &gameBox.Width)
 		if err != nil {
 			log.Fatal("get scan type box " + err.Error())
 		}

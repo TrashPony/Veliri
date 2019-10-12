@@ -48,27 +48,6 @@ function create(game) {
     // уровень обьектов которые над юнитом
     game.floorOverObjectLayer = game.add.group();
 
-    game.SelectLayer = game.add.group();
-    game.SelectLayer.alpha = 0.4;
-
-    game.SelectRangeLayer = game.add.group();
-    game.SelectRangeLayer.alpha = 0.6;
-
-    game.PreviewPath = game.add.group();
-    game.PreviewPath.alpha = 0.6;
-
-    game.SelectLineLayer = game.add.group();
-    game.SelectLineLayer.alpha = 0.9;
-    game.add.tween(game.SelectLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
-
-    game.GameZone = game.add.group();
-    game.GameZone.alpha = 0.9;
-    game.add.tween(game.GameZone).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
-
-    game.SelectTargetLineLayer = game.add.group();
-    game.SelectTargetLineLayer.alpha = 0.9;
-    game.add.tween(game.SelectTargetLineLayer).to({alpha: 0.4}, 1500, "Linear").loop(true).yoyo(true).start();
-
     game.effectsLayer = game.add.group();
 
     game.artilleryBulletLayer = game.add.group();
@@ -86,6 +65,14 @@ function create(game) {
         sprite: fogSprite,
         overviewCircle: null,
         ms: null,
+    };
+
+    let UnitStatusBMD = game.make.bitmapData(game.camera.width, game.camera.height);
+    let UnitStatusSprite = UnitStatusBMD.addToWorld();
+    UnitStatusSprite.fixedToCamera = true;
+    game.UnitStatusLayer = {
+        bmd: UnitStatusBMD,
+        sprite: UnitStatusSprite,
     };
 
     game.redactorButton = game.add.group();

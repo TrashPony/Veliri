@@ -27,6 +27,7 @@ func Insert(newBox *boxInMap.Box) *boxInMap.Box {
 
 	if !newBox.OwnedByMapObject {
 		getTypeBox(newBox)
+		newBox.HP = newBox.MaxHP
 	}
 
 	return newBox

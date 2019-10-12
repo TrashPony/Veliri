@@ -25,6 +25,7 @@ type Box struct {
 	Rotate  int                  `json:"rotate"`
 	storage *inventory.Inventory // содержимое не публично т.к. что бы узнать содержимое надо его открыть или просканирова
 	HP      int                  `json:"hp"`
+	MaxHP   int                  `json:"max_hp"`
 
 	OwnedByMapObject bool `json:"owned_by_map_object"`
 }

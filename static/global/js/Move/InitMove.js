@@ -5,6 +5,18 @@ let selectRect = null;
 let rectOption = {x: 0, y: 0, height: 0, width: 0};
 let dontMove = false;
 
+setInterval(function () {
+    $('.selectedUnit').removeClass("selectedUnit");
+    for (let i in selectUnits) {
+        let unitBlock = $('div').filter(function () {
+            return $(this).data('unit_id') && $(this).data('unit_id') === selectUnits[i].id;
+        });
+
+        unitBlock.addClass("selectedUnit");
+    }
+
+}, 100);
+
 function StartSelectableUnits() {
     // создаем прямоуголник который тянется от точки куда тыкнул юзер изначально до текущего положения курсора
     if (game.input.activePointer.leftButton.isDown && !start) {
@@ -76,7 +88,7 @@ function SelectOneUnit(unit, boxSprite, setFlag) {
 }
 
 function CheckSelectUnits() {
-    // каждое выделение снимает выделение с других, но если юнит уже был выделен то снимать не надо
+    // каждое выделение снимает выделение с других
     selectUnits = [];
 
     for (let i in game.units) {

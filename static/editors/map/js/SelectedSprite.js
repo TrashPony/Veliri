@@ -70,5 +70,4 @@ function SelectedSprite(event, radius, callBack, onlyObj, onlyTexture, transport
 
 function destroyAllSelectedSprite() {
     clear(game.redactorButton);
-    clear(game.SelectLayer);
 }
