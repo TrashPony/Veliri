@@ -2,9 +2,9 @@ function AnimateDigger(unit) {
 
     if (unit.selectDiggerLine) {
         unit.selectDiggerLine.graphics.clear();
-        unit.selectDiggerLine.graphics.lineStyle(3, 0xb74213, 0.2);
+        unit.selectDiggerLine.graphics.lineStyle(3, 0x00ff00, 0.2);
         unit.selectDiggerLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectDiggerLine.radius);
-        unit.selectDiggerLine.graphics.lineStyle(1, 0xff0000, 1);
+        unit.selectDiggerLine.graphics.lineStyle(1, 0x00ff00, 1);
         unit.selectDiggerLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectDiggerLine.radius);
     }
 

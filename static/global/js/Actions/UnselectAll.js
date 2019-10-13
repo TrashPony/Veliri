@@ -3,6 +3,7 @@ function UnselectAll() {
     UnselectResource();
     UnselectUnits();
     UnselectDigger();
+    UnselectAttack();
 
     dontMove = false;
 }
@@ -33,6 +34,10 @@ function UnselectDigger() {
             unit.selectDiggerLine = null;
         }
     }
+}
+
+function UnselectAttack() {
+    game.input.onDown.removeAll();
 }
 
 function UnselectUnits() {

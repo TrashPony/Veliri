@@ -2,12 +2,28 @@ let positionsInterval = {};
 let checksTimeOut = {};
 
 function mouseBodyOver(body, unit, unitBox) {
-
     body.events.onInputOver.add(function () {
+
+        for (let j in unit.body.weapons) {
+            if (unit.body.weapons.hasOwnProperty(j) && unit.body.weapons[j].weapon) {
+                let graphics = game.add.graphics(0, 0);
+                unit.AttackLine = {
+                    graphics: graphics,
+                    minRadius: unit.body.weapons[j].weapon.min_attack_range,
+                    maxRadius: unit.body.weapons[j].weapon.range
+                };
+                game.floorObjectLayer.add(graphics);
+            }
+        }
+
         //unitInfo(unit, unitBox)
     }, this);
 
     body.events.onInputOut.add(function () {
+        if (unit.AttackLine) {
+            unit.AttackLine.graphics.destroy();
+            unit.AttackLine = null;
+        }
         unitRemoveInfo(unit, unitBox)
     }, this);
 }

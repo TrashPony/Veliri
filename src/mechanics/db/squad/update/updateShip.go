@@ -41,29 +41,27 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"x = $2, "+
 				"y = $3, "+
 				"rotate = $4, "+
-				"target = $5, "+
-				"hp = $6, "+
-				"power = $7, "+
-				"action_point = $8, "+
-				"defend = $9,"+
-				"move = $12,"+
-				"body_color_1 = $13,"+
-				"body_color_2 = $14,"+
-				"weapon_color_1 = $15,"+
-				"weapon_color_2 = $16,"+
-				"id_map = $17 "+
-				"WHERE id_squad = $10 AND mother_ship = $11",
+				"hp = $5, "+
+				"power = $6, "+
+				"action_point = $7, "+
+				"defend = $8,"+
+				"move = $11,"+
+				"body_color_1 = $12,"+
+				"body_color_2 = $13,"+
+				"weapon_color_1 = $14,"+
+				"weapon_color_2 = $15,"+
+				"id_map = $16 "+
+				"WHERE id_squad = $9 AND mother_ship = $10",
 			bodyID,
 			ship.X,
 			ship.Y,
 			ship.Rotate,
-			parseTarget(ship.GetTarget()),
 			ship.HP,
 			ship.Power,
 			ship.ActionPoints,
 			ship.Defend,
 			squad.ID,
-			true, // mother_ship = $11
+			true, // mother_ship = $10
 			ship.Move,
 			ship.BodyColor1,
 			ship.BodyColor2,
@@ -85,7 +83,6 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"x, "+
 				"y, "+
 				"rotate, "+
-				"target, "+
 				"hp, "+
 				"power, "+
 				"mother_ship, "+
@@ -95,13 +92,12 @@ func MotherShip(squad *squad.Squad, tx *sql.Tx) {
 				"move,"+
 				"id_map "+
 				") "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
 				squad.ID,
 				bodyID,
 				ship.X,
 				ship.Y,
 				ship.Rotate,
-				parseTarget(ship.GetTarget()),
 				ship.HP,
 				ship.Power,
 				true, // mother_ship

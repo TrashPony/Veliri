@@ -2,10 +2,8 @@ package update
 
 import (
 	"database/sql"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"log"
-	"strconv"
 )
 
 func Units(squad *squad.Squad, tx *sql.Tx) {
@@ -68,7 +66,7 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"id_map "+
 				""+
 				") "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id",
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
 				squad.ID,
 				slotUnit.Unit.Body.ID,
 				slot,
@@ -76,7 +74,6 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				slotUnit.Unit.Y,
 				slotUnit.Unit.Rotate,
 				slotUnit.Unit.OnMap,
-				parseTarget(slotUnit.Unit.GetTarget()),
 				slotUnit.Unit.HP,
 				slotUnit.Unit.Power,
 				false, //mother_ship
@@ -100,25 +97,23 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 					"x = $2, "+
 					"y = $3, "+
 					"rotate = $4, "+
-					"target = $5, "+
-					"hp = $6, "+
-					"on_map = $7, "+
-					"power = $8, "+
-					"action_point = $9, "+
-					"defend = $10, "+
-					"move = $13, "+
-					"id_game = $14, "+
-					"body_color_1 = $15,"+
-					"body_color_2 = $16,"+
-					"weapon_color_1 = $17,"+
-					"weapon_color_2 = $18,"+
-					"id_map = $19 "+
-					"WHERE id_squad = $11 AND slot = $12",
+					"hp = $5, "+
+					"on_map = $6, "+
+					"power = $7, "+
+					"action_point = $8, "+
+					"defend = $9, "+
+					"move = $12, "+
+					"id_game = $13, "+
+					"body_color_1 = $14,"+
+					"body_color_2 = $15,"+
+					"weapon_color_1 = $16,"+
+					"weapon_color_2 = $17,"+
+					"id_map = $18 "+
+					"WHERE id_squad = $10 AND slot = $11",
 				slotUnit.Unit.Body.ID,
 				slotUnit.Unit.X,
 				slotUnit.Unit.Y,
 				slotUnit.Unit.Rotate,
-				parseTarget(slotUnit.Unit.GetTarget()),
 				slotUnit.Unit.HP,
 				slotUnit.Unit.OnMap,
 				slotUnit.Unit.Power,
@@ -142,14 +137,4 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 			UpdateBody(units[slot].Unit, squad.ID, tx)
 		}
 	}
-}
-
-func parseTarget(targetCoordinate *coordinate.Coordinate) string {
-	var target string
-
-	if targetCoordinate != nil {
-		target = strconv.Itoa(targetCoordinate.X) + ":" + strconv.Itoa(targetCoordinate.Y)
-	}
-
-	return target
 }

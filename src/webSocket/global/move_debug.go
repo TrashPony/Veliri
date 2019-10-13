@@ -12,14 +12,22 @@ import (
 )
 
 func DebugMoveWorker(user *player.Player) {
+	time.Sleep(10 * time.Second)
+
 	go DebugSender()
-	go PolygonSender()
+
+	if debug.Store.Collisions {
+		go PolygonSender()
+	}
+
+	if debug.Store.WeaponFirePos {
+		go WeaponFirePos()
+	}
 
 	if !debug.Store.MoveInit {
 		return
 	}
 
-	time.Sleep(10 * time.Second)
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 	for _, zoneX := range mp.GeoZones {
 		for _, zone := range zoneX {
@@ -98,6 +106,27 @@ func CreateRect(color string, startX, startY int, rectSize, mapID int, ms int64)
 		X: int(startX), Y: int(startY), IDMap: mapID})
 
 	time.Sleep(time.Duration(ms) * time.Millisecond)
+}
+
+func WeaponFirePos() {
+	for {
+		//mps := maps.Maps.GetAllShortInfoMap()
+		//
+		//for _, mp := range mps {
+		//	go SendMessage(Message{Event: "ClearPath", Color: "red", IDMap: mp.Id})
+		//}
+
+		users, lock := globalGame.Clients.GetAll()
+		for _, user := range users {
+			pos := user.GetSquad().MatherShip.GetWeaponFirePos()
+			for _, wPos := range pos {
+				CreateRect("white", wPos.X, wPos.Y, 2, user.GetSquad().MatherShip.MapID, 0)
+			}
+		}
+
+		lock.Unlock()
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func PolygonSender() {

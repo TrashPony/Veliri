@@ -2,7 +2,7 @@ package collisions
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
-	"math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
 type Polygon struct {
@@ -21,22 +21,11 @@ type SideRec struct {
 
 func (r *Polygon) Rotate(rotate int) {
 
-	// поворачиваем квадрат по формуле (x0:y0 - центр)
-	//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
-	//Y = (x — x0) * sin(alpha) + (y — y0) * cos(alpha) + y0;
-
 	r.Angle = rotate
 
-	rotatePoint := func(x, y, x0, y0 float64, rotate int) (newX, newY float64) {
-		alpha := float64(rotate) * math.Pi / 180
-		newX = (x-x0)*math.Cos(alpha) - (y-y0)*math.Sin(alpha) + x0
-		newY = (x-x0)*math.Sin(alpha) + (y-y0)*math.Cos(alpha) + y0
-		return
-	}
-
 	rotateSide := func(side *SideRec, x0, y0 float64, rotate int) {
-		side.X1, side.Y1 = rotatePoint(side.X1, side.Y1, x0, y0, rotate)
-		side.X2, side.Y2 = rotatePoint(side.X2, side.Y2, x0, y0, rotate)
+		side.X1, side.Y1 = game_math.RotatePoint(side.X1, side.Y1, x0, y0, rotate)
+		side.X2, side.Y2 = game_math.RotatePoint(side.X2, side.Y2, x0, y0, rotate)
 	}
 
 	for _, side := range r.Sides {

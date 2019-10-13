@@ -2,10 +2,12 @@ package unit
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/ammo"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/getlantern/deepcopy"
 )
 
@@ -17,13 +19,13 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	Rotate int  `json:"rotate"`
-	OnMap  bool `json:"on_map"`
-	Leave  bool `json:"leave"`
-	GameID int  `json:"game_id"`
+	GunRotate int  `json:"gun_rotate"`
+	Rotate    int  `json:"rotate"`
+	OnMap     bool `json:"on_map"`
+	Leave     bool `json:"leave"`
+	GameID    int  `json:"game_id"`
 
-	Target *coordinate.Coordinate `json:"target"`
-	Defend bool                   `json:"defend"`
+	Defend bool `json:"defend"`
 
 	HP           int  `json:"hp"`
 	Power        int  `json:"power"`
@@ -97,14 +99,37 @@ type Unit struct {
 
 	FormationPos *coordinate.Coordinate `json:"formation_pos"`
 	Formation    bool                   `json:"formation"`
+
+	Target *Target `json:"target"`
+}
+
+type Target struct {
+	Type string `json:"type"` // box, unit, map
+	ID   int    `json:"id"`
+	X    int    `json:"x"`
+	Y    int    `json:"y"`
+}
+
+type Bullet struct {
+	UUID    string         `json:"uuid"`
+	Weapon  *detail.Weapon `json:"-"`
+	Ammo    *ammo.Ammo     `json:"ammo"`
+	Rotate  int            `json:"rotate"`
+	X       int            `json:"x"`
+	Y       int            `json:"y"`
+	Z       int            `json:"z"` // определяет "высоту" пули (сильнее отдалять тени)
+	Speed   int            `json:"speed"`
+	Target  *Target        `json:"target"`
+	OwnerID int            `json:"owner_id"` // какой игрок стрелял
 }
 
 type ShortUnitInfo struct {
 	ID int `json:"id"`
 	/* позиция */
-	Rotate int `json:"rotate"`
-	X      int `json:"x"`
-	Y      int `json:"y"`
+	GunRotate int `json:"gun_rotate"`
+	Rotate    int `json:"rotate"`
+	X         int `json:"x"`
+	Y         int `json:"y"`
 
 	/*видимый фит*/
 	Body *detail.Body `json:"body"`
@@ -136,6 +161,7 @@ type PathUnit struct {
 	X           int `json:"x"`
 	Y           int `json:"y"`
 	Rotate      int `json:"rotate"`
+	RotateGun   int `json:"rotate_gun"`
 	Millisecond int `json:"millisecond"`
 	Speed       float64
 	Traversed   bool `json:"traversed"`
@@ -162,6 +188,7 @@ func (unit *Unit) GetShortInfo() *ShortUnitInfo {
 	hostile.X = unit.X
 	hostile.Y = unit.Y
 
+	hostile.GunRotate = unit.GunRotate
 	hostile.Rotate = unit.Rotate
 	hostile.MapID = unit.MapID
 	hostile.Evacuation = unit.Evacuation
@@ -227,10 +254,6 @@ func (unit *Unit) GetBody() *detail.Body {
 	return unit.Body
 }
 
-func (unit *Unit) GetTarget() *coordinate.Coordinate {
-	return unit.Target
-}
-
 func (unit *Unit) DelBody() {
 	if unit.Body != nil {
 		unit.Body = nil
@@ -292,6 +315,47 @@ func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз док
 		return weaponSlot
 	}
 	return nil
+}
+
+func (unit *Unit) GetWeaponPos() (int, int) {
+	return unit.relativeToAbsolutePointWeapon(unit.X, unit.Y, unit.GetWeaponSlot().XAttach, unit.GetWeaponSlot().YAttach, unit.Rotate)
+}
+
+func (unit *Unit) GetWeaponFirePos() []*coordinate.Coordinate {
+
+	realPos := make([]*coordinate.Coordinate, 0)
+	for _, pos := range unit.GetWeaponSlot().Weapon.FirePositions {
+		xWeapon, yWeapon := unit.GetWeaponPos()
+		// TODO не работает
+		x, y := unit.relativeToAbsolutePointWeapon(
+			xWeapon-unit.GetWeaponSlot().Weapon.XAttach,
+			yWeapon-unit.GetWeaponSlot().Weapon.YAttach,
+			pos.X, pos.Y, unit.GunRotate)
+
+		realPos = append(realPos, &coordinate.Coordinate{X: x, Y: y})
+	}
+
+	return realPos
+}
+
+func (unit *Unit) relativeToAbsolutePointWeapon(x0, y0, x, y, rotate int) (int, int) {
+	// TODO координаты атача для оружия считавются правильно но слишком много условностей которые подбирались на фронте...
+	weaponScale := 0.0
+	spriteOffset := 0.0
+	if unit.Body.MotherShip {
+		weaponScale = 0.25
+		spriteOffset = 50
+	} else {
+		weaponScale = 0.20
+		spriteOffset = 20
+	}
+
+	xWeapon := x0 + int(((float64(x))/(1/weaponScale))-spriteOffset)
+	yWeapon := y0 + int(((float64(y))/(1/weaponScale))-spriteOffset)
+
+	// поворачиваем точку крепления по отношению к телу
+	newX, newY := game_math.RotatePoint(float64(xWeapon), float64(yWeapon), float64(x0), float64(y0), rotate)
+	return int(newX), int(newY)
 }
 
 func (unit *Unit) SetWeaponSlot(newWeaponSlot *detail.BodyWeaponSlot) {
@@ -383,7 +447,6 @@ func (unit *Unit) CalculateParams() {
 		unit.GetWeaponSlot().Artillery = unit.GetWeaponSlot().Weapon.Artillery
 		unit.GetWeaponSlot().EquipDamage = unit.GetWeaponSlot().Weapon.EquipDamage
 		unit.GetWeaponSlot().EquipCriticalDamage = unit.GetWeaponSlot().Weapon.EquipCriticalDamage
-		unit.GetWeaponSlot().Initiative = unit.GetWeaponSlot().Weapon.Initiative
 
 		if unit.GetWeaponSlot().Ammo != nil {
 			unit.GetWeaponSlot().MinDamage = unit.GetWeaponSlot().Ammo.MinDamage

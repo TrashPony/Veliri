@@ -22,6 +22,7 @@ function LoadGame() {
     game.my_squad_sprite = {};
 
     game.units = Data.short_units;
+    game.bullets = {};
 
     CreateUnits(game.units);
     CreateBase(Data.bases);

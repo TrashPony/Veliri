@@ -1,4 +1,4 @@
-function SetAngle(unit, angle, time, ignoreOldTween) {
+function SetBodyAngle(unit, angle, time, ignoreOldTween) {
     if (!unit.rotateTween || ignoreOldTween) {
         SetShadowAngle(unit, time);
         if (angle > 180) {
@@ -12,14 +12,16 @@ function SetAngle(unit, angle, time, ignoreOldTween) {
     }
 }
 
-function SetShadowAngle(unit, time) {
+function RotateGun(unit, angle, time) {
 
-    let shadowTime = function (sprite, newX, newY, rotateTime = 10) {
-        game.add.tween(sprite).to({
-            'x': newX,
-            'y': newY,
-        }, rotateTime, Phaser.Easing.Linear.None, true);
-    };
+    ShortDirectionRotateTween(unit.sprite.weapon, Phaser.Math.degToRad(angle - unit.sprite.angle), time);
+    ShortDirectionRotateTween(unit.sprite.weaponShadow, Phaser.Math.degToRad(angle - unit.sprite.angle), time);
+
+    let connectWeapons = PositionAttachSprite(45 - unit.sprite.angle, game.shadowXOffset / 2);
+    shadowTime(unit.sprite.weaponShadow, connectWeapons.x + unit.sprite.weapon.xAttach, connectWeapons.y + unit.sprite.weapon.yAttach, time);
+}
+
+function SetShadowAngle(unit, time) {
 
     // поворачиваем тени относительно поворота главного спрайта unit.sprite.angle
     // выставляем положение каждые 100мс
@@ -29,11 +31,6 @@ function SetShadowAngle(unit, time) {
 
         shadowTime(unit.sprite.bodyShadow, connectPoints.x, connectPoints.y);
         shadowTime(unit.sprite.bodyBottomShadow, connectPoints.x, connectPoints.y);
-
-        if (unit.sprite.weapon) {
-            let connectWeapons = PositionAttachSprite(shadowAngle, game.shadowXOffset / 2);
-            shadowTime(unit.sprite.weaponShadow, connectWeapons.x + unit.sprite.weapon.xAttach, connectWeapons.y + unit.sprite.weapon.yAttach);
-        }
 
         for (let i = 0; i < unit.sprite.equipSprites.length; i++) {
             let slot = unit.sprite.equipSprites[i];
@@ -47,4 +44,12 @@ function SetShadowAngle(unit, time) {
     setTimeout(function () {
         clearInterval(rotateShadow);
     }, time)
+}
+
+
+function shadowTime(sprite, newX, newY, rotateTime = 10) {
+    game.add.tween(sprite).to({
+        'x': newX,
+        'y': newY,
+    }, rotateTime, Phaser.Easing.Linear.None, true);
 }

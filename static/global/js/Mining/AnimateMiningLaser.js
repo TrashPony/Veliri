@@ -27,9 +27,9 @@ function AnimateMiningLaser(unit) {
 
     if (unit.selectMiningLine) {
         unit.selectMiningLine.graphics.clear();
-        unit.selectMiningLine.graphics.lineStyle(3, 0xb74213, 0.2);
+        unit.selectMiningLine.graphics.lineStyle(3, 0x00ff00, 0.2);
         unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
-        unit.selectMiningLine.graphics.lineStyle(1, 0xff0000, 1);
+        unit.selectMiningLine.graphics.lineStyle(1, 0x00ff00, 1);
         unit.selectMiningLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.selectMiningLine.radius);
     }
 

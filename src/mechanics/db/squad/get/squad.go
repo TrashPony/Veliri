@@ -4,13 +4,10 @@ import (
 	"database/sql"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	inv "github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"log"
-	"strconv"
-	"strings"
 )
 
 func UserSquads(userID int) (squads []*squad.Squad, err error) {
@@ -63,7 +60,6 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			"x, "+
 			"y, "+
 			"rotate, "+
-			"target, "+
 			"power, mother_ship, "+
 			"action_point, "+
 			"on_map, "+
@@ -86,8 +82,6 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 
 	ship = &unit.Unit{}
 
-	var target string
-
 	for rows.Next() {
 		var idBody sql.NullInt64
 
@@ -98,7 +92,6 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			&ship.X,
 			&ship.Y,
 			&ship.Rotate,
-			&target,
 			&ship.Power,
 			&ship.MS,
 			&ship.ActionPoints,
@@ -118,8 +111,6 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			log.Fatal("scan get ship squad " + err.Error())
 		}
 
-		ship.Target = ParseTarget(target)
-
 		if idBody.Valid {
 			ship.Body, _ = gameTypes.Bodies.GetByID(int(idBody.Int64))
 
@@ -128,7 +119,7 @@ func SquadMatherShip(squadID int) (ship *unit.Unit) {
 			ship.Inventory = SquadInventory(ship.ID)
 
 			ship.CalculateParams()
-
+			ship.GunRotate = ship.Rotate
 		} else {
 			ship.Body = nil
 		}
@@ -176,7 +167,6 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			"x, "+
 			"y, "+
 			"rotate, "+
-			"target, "+
 			"on_map, "+
 			"power, "+
 			"mother_ship, "+
@@ -201,7 +191,6 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 
 	var squadUnit unit.Unit
 	var idBody int
-	var target string
 
 	for rows.Next() {
 		err = rows.Scan(
@@ -211,7 +200,6 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 			&squadUnit.X,
 			&squadUnit.Y,
 			&squadUnit.Rotate,
-			&target,
 			&squadUnit.OnMap,
 			&squadUnit.Power,
 			&squadUnit.MS,
@@ -234,8 +222,9 @@ func SquadUnits(squadID int, slot int) *unit.Unit {
 
 	squadUnit.Body, _ = gameTypes.Bodies.GetByID(idBody)
 	BodyEquip(&squadUnit)
-	squadUnit.Target = ParseTarget(target)
+
 	squadUnit.Inventory = SquadInventory(squadUnit.ID)
+	squadUnit.GunRotate = squadUnit.Rotate
 
 	squadUnit.CalculateParams()
 
@@ -270,21 +259,4 @@ func SquadInventory(unitID int) *inv.Inventory {
 	inventory.FillInventory(rows)
 
 	return &inventory
-}
-
-func ParseTarget(targetKey string) *coordinate.Coordinate {
-	targetCell := strings.Split(targetKey, ":")
-
-	if len(targetCell) > 1 { // устанавливаем таргет если он есть
-		x, ok := strconv.Atoi(targetCell[0])
-		y, ok := strconv.Atoi(targetCell[1])
-		if ok == nil {
-			target := coordinate.Coordinate{X: x, Y: y}
-			return &target
-		} else {
-			return nil
-		}
-	} else {
-		return nil
-	}
 }

@@ -137,28 +137,8 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
 
     unit.sprite.angle = rotate;
     SetShadowAngle(unit, rotate);
-
-    if (healBar) {
-        let healBar = game.unitLayer.create(unitBox.world.x, unitBox.world.y + 45, 'healBar');
-        healBar.anchor.setTo(0.5);
-        healBar.alpha = 0;
-        healBar.scale.setTo(1);
-
-        let heal = game.make.sprite(-50, 0, 'heal');
-        healBar.addChild(heal);
-        heal.anchor.setTo(0, 0.5);
-        heal.alpha = 1;
-
-        unit.sprite.healBar = healBar;
-        unit.sprite.heal = heal;
-
-        setInterval(function () {
-            healBar.world.x = unitBox.world.x;
-            healBar.world.y = unitBox.world.y + 45;
-        }, 100);
-
-        CalculateHealBar(unit);
-    }
+    // принимаем угол башни
+    RotateGun(unit, unit.gun_rotate, 10);
 
     return unit
 }

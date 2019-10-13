@@ -22,6 +22,17 @@ func GetBetweenAngle(x, y, targetX, targetY float64) int {
 	return int(needRad * 180 / 3.14)
 }
 
+func RotatePoint(x, y, x0, y0 float64, rotate int) (newX, newY float64) {
+	// поворачиваем квадрат по формуле (x0:y0 - центр)
+	//X = (x — x0) * cos(alpha) — (y — y0) * sin(alpha) + x0;
+	//Y = (x — x0) * sin(alpha) + (y — y0) * cos(alpha) + y0;
+
+	alpha := float64(rotate) * math.Pi / 180
+	newX = (x-x0)*math.Cos(alpha) - (y-y0)*math.Sin(alpha) + x0
+	newY = (x-x0)*math.Sin(alpha) + (y-y0)*math.Cos(alpha) + y0
+	return
+}
+
 func GetBetweenDistLinePoint(xPoint, yPoint, x1Line, y1Line, x2Line, y2Line int) int {
 
 	A := y1Line - y2Line

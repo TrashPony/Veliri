@@ -1,54 +1,37 @@
 function Attack() {
-    if (!game.squad.AttackLine) {
-        // рисует радиус оружия // todo переделать на зону оружия
-        game.squad.AttackLine = {
-            graphics: game.add.graphics(0, 0),
-            diameter: (game.squad.mather_ship.range_view * game.hexagonHeight) * 4,
-            visible: false,
-        };
-        game.squad.sprite.addChild(game.squad.AttackLine.graphics);
-        Attack();
-    } else {
-        game.squad.AttackLine.graphics.clear();
 
-        // если игрок нажал и линия была видна, то значит игрок вЫключил режим атаки и убераем ивенты у всех мсов
-        if (game.squad.AttackLine.visible) {
-            game.squad.AttackLine.visible = false;
-            for (let i = 0; i < game.otherUsers.length; i++) {
-                // удаляем всем мсам ивент на клик
-                game.otherUsers[i].sprite.unitBody.events.onInputDown.removeAll();
-            }
-        } else {
-            // иначе игрок нажал атаку и вешаем всем мсам ивент для атаки, так же всем обьектам на карте
+    let targetCursorSprite = game.add.sprite(0, 0, 'selectTarget');
+    targetCursorSprite.scale.setTo(0.25);
+    targetCursorSprite.anchor.setTo(0.5);
+    targetCursorSprite.animations.add('select');
+    targetCursorSprite.animations.play('select', 5, true);
 
-            // рисуем линию
-            game.squad.AttackLine.visible = true;
-            game.squad.AttackLine.graphics.lineStyle(3, 0xb74213, 0.2);
-            game.squad.AttackLine.graphics.drawCircle(0, 0, game.squad.AttackLine.diameter);
-            game.squad.AttackLine.graphics.lineStyle(1, 0xff0000, 1);
-            game.squad.AttackLine.graphics.drawCircle(0, 0, game.squad.AttackLine.diameter);
+    document.getElementById("GameCanvas").style.cursor = "none";
 
-            // TODO переназначить ивент на землю с движения на стрельбу, если игрок стреляет в землю отправлять ивент
-            // todo если в игрока отсылать то что в игрока, если в обьект то отсылать что в обьект
-            // todo но только 1 ивент
-            // todo добавить ховер всем целям что бы было понятно что игрок атакует
+    setInterval(function () {
+        targetCursorSprite.x = ((game.input.mousePointer.x + game.camera.x) / game.camera.scale.x);
+        targetCursorSprite.y = ((game.input.mousePointer.y + game.camera.y) / game.camera.scale.y);
+    }, 10);
 
-            for (let i = 0; i < game.otherUsers.length; i++) {
-                if (!game.otherUsers[i].sprite) continue;
-                console.log(game.otherUsers[i]);
-                game.otherUsers[i].sprite.unitBody.inputEnabled = true;
-                game.otherUsers[i].sprite.unitBody.input.pixelPerfectOver = true;
-                game.otherUsers[i].sprite.unitBody.input.pixelPerfectClick = true;
-                game.otherUsers[i].sprite.unitBody.events.onInputDown.add(function () {
-                    global.send(JSON.stringify({
-                        event: "Attack",
-                        to_squad_id: game.otherUsers[i].squad_id,
-                    }));
-                })
-            }
+    game.input.onDown.add(function () {
 
-            // todo ящики
-            // todo обьекты на карте с хп
-        }
-    }
+        dontMove = true;
+        document.getElementById("GameCanvas").style.cursor = "unset";
+        targetCursorSprite.destroy();
+
+        // TODO анимация на земле как подтверждение что действие совершилось
+
+        let x = (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x;
+        let y = (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y;
+
+        UnselectAttack();
+
+        global.send(JSON.stringify({
+            event: "Attack",
+            type: "map",
+            x: Math.round(x),
+            y: Math.round(y),
+            units_id: getIDsSelectUnits(),
+        }));
+    });
 }

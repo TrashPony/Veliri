@@ -390,6 +390,9 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			moveUnit.CurrentSpeed = 0
 		}
 
+		// TODO поворот корпуса влияет и на оружие это надо учитывать
+		moveUnit.GunRotate -= moveUnit.Rotate - pathUnit.Rotate
+
 		moveUnit.Rotate = pathUnit.Rotate
 		moveUnit.X = int(pathUnit.X)
 		moveUnit.Y = int(pathUnit.Y)

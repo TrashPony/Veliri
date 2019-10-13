@@ -17,8 +17,7 @@ func BodyEquip(ship *unit.Unit) {
 		"quantity, "+
 		"used, "+
 		"steps_for_reload, "+
-		"hp, "+
-		"target "+
+		"hp "+
 		""+
 		"FROM squad_units_equipping "+
 		"WHERE id_squad_unit = $1", ship.GetID())
@@ -35,28 +34,27 @@ func BodyEquip(ship *unit.Unit) {
 	var used bool
 	var stepsForReload int
 	var hp int
-	var target string
 
 	for rows.Next() {
-		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity, &used, &stepsForReload, &hp, &target)
+		err := rows.Scan(&idEquip, &slot, &equipType, &slotType, &quantity, &used, &stepsForReload, &hp)
 		if err != nil {
 			log.Fatal("scan body equip " + err.Error())
 		}
 
 		if slotType == 1 {
-			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType, used, stepsForReload, hp, target)
+			ParseTypeSlot(ship.GetBody().EquippingI, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 2 {
-			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType, used, stepsForReload, hp, target)
+			ParseTypeSlot(ship.GetBody().EquippingII, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 3 {
-			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType, used, stepsForReload, hp, target)
+			ParseTypeSlot(ship.GetBody().EquippingIII, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 4 {
-			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType, used, stepsForReload, hp, target)
+			ParseTypeSlot(ship.GetBody().EquippingIV, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 		if slotType == 5 {
-			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType, used, stepsForReload, hp, target)
+			ParseTypeSlot(ship.GetBody().EquippingV, idEquip, slot, equipType, used, stepsForReload, hp)
 		}
 
 		if equipType == "weapon" || equipType == "ammo" {
@@ -75,14 +73,13 @@ func BodyEquip(ship *unit.Unit) {
 	}
 }
 
-func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string, used bool, stepsForReload, hp int, target string) {
+func ParseTypeSlot(equipping map[int]*detail.BodyEquipSlot, idEquip int, slot int, equipType string, used bool, stepsForReload, hp int) {
 	for i, bodyEquipSlot := range equipping {
 		if bodyEquipSlot.Number == slot {
 			if equipType == "equip" {
 				bodyEquipSlot.Used = used
 				bodyEquipSlot.StepsForReload = stepsForReload
 				bodyEquipSlot.HP = hp
-				bodyEquipSlot.Target = ParseTarget(target)
 
 				equipping[i].Equip, _ = gameTypes.Equips.GetByID(idEquip)
 			}

@@ -13,7 +13,7 @@ function preload() {
     game.load.spritesheet('selectEmpty', 'http://' + window.location.host + '/assets/select/empty.png', 80, 100, 6);
     game.load.spritesheet('mapEditor', 'http://' + window.location.host + '/assets/select/mapEditor.png', 80, 100, 6);
 
-    game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 80, 100, 3);
+    game.load.spritesheet('selectTarget', 'http://' + window.location.host + '/assets/select/TargetSet.png', 80, 100, 2);
     // path
     game.load.spritesheet('pathCell', 'http://' + window.location.host + '/assets/select/pathSelect.png', 80, 100, 1);
 
@@ -54,8 +54,9 @@ function preload() {
 
     // bullets
     game.load.spritesheet('missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/rocket.png', 128, 128, 40);
-    game.load.image('ballistics_small_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_small_bullet.png');
+    game.load.image('piu-piu', 'http://' + window.location.host + '/assets/units/gameAmmo/piu-piu.png');
     game.load.image('ballistics_artillery_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_artillery_bullet.png');
+
     // fire effects
     game.load.image('smoke_puff', 'http://' + window.location.host + '/assets/fire_effects/smoke_puff.png');
     game.load.image('fire1', 'http://' + window.location.host + '/assets/fire_effects/fire1.png');

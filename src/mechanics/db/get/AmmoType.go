@@ -19,8 +19,9 @@ func AmmoType() map[int]ammo.Ammo {
 		" standard_size," +
 		" size," +
 		" equip_damage," +
-		" equip_critical_damage " +
-		"" +
+		" equip_critical_damage, " +
+		" chase_target, " +
+		" bullet_speed " +
 		"FROM ammunition_type")
 	if err != nil {
 		log.Fatal("get all type ammo " + err.Error())
@@ -34,7 +35,7 @@ func AmmoType() map[int]ammo.Ammo {
 
 		err := rows.Scan(&ammoType.ID, &ammoType.Name, &ammoType.Type, &ammoType.TypeAttack, &ammoType.MinDamage,
 			&ammoType.MaxDamage, &ammoType.AreaCovers, &ammoType.StandardSize, &ammoType.Size, &ammoType.EquipDamage,
-			&ammoType.EquipCriticalDamage)
+			&ammoType.EquipCriticalDamage, &ammoType.ChaseTarget, &ammoType.BulletSpeed)
 		if err != nil {
 			log.Fatal("get scan all type ammo " + err.Error())
 		}

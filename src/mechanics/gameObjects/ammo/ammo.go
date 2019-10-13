@@ -14,4 +14,6 @@ type Ammo struct {
 	EquipDamage         int     `json:"equip_damage"`
 	EquipCriticalDamage int     `json:"equip_critical_damage"`
 	Size                float32 `json:"size"`
+	ChaseTarget         bool    `json:"chase_target"`
+	BulletSpeed         int     `json:"bullet_speed"`
 }

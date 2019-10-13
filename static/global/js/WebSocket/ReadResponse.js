@@ -15,6 +15,35 @@ function ReadResponse(jsonData) {
         MoveTo(jsonData);
     }
 
+    if (jsonData.event === "RotateGun") {
+        if (!game || !game.units) return;
+        let unit = game.units[jsonData.short_unit.id];
+        let path = jsonData.path_unit;
+
+        RotateGun(unit, path.rotate_gun, path.millisecond);
+    }
+
+    if (jsonData.event === "FlyBullet") {
+
+        let bullet = game.bullets[jsonData.bullet.uuid];
+        if (!bullet) {
+            bullet = game.unitLayer.create(jsonData.bullet.x, jsonData.bullet.y, jsonData.bullet.ammo.name);
+            bullet.anchor.setTo(0.5, 0.5);
+            bullet.scale.setTo(0.2);
+            bullet.angle = jsonData.bullet.rotate;
+
+            game.bullets[jsonData.bullet.uuid] = bullet;
+        }
+
+        let path = jsonData.path_unit;
+        game.add.tween(bullet).to(
+            {x: path.x, y: path.y},
+            path.millisecond, Phaser.Easing.Linear.None, true, 0
+        );
+
+        console.log(jsonData)
+    }
+
     if (jsonData.event === "BoxTo") {
         BoxMove(jsonData.path_unit, jsonData.box_id)
     }

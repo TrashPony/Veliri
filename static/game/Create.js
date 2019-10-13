@@ -82,6 +82,7 @@ function create(game) {
     game.icon = game.add.group();
 
     game.typeService = TypeService;
+    game.canvas.id = 'GameCanvas';
 
     CreateMap();
 

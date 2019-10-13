@@ -151,7 +151,7 @@ function evacuationMove(jsonData, squadMove) {
                 y: path.y
             }, path.millisecond, Phaser.Easing.Linear.None, true, 0
         );
-        SetAngle(unit, path.rotate, path.millisecond, true);
+        SetBodyAngle(unit, path.rotate, path.millisecond, true);
     }
 }
 
@@ -180,7 +180,7 @@ function placeEvacuation(jsonData) {
 
     setTimeout(function () {
         let unit = game.units[jsonData.short_unit.id];
-        SetAngle(unit, sprite.angle, 0, true);
+        SetBodyAngle(unit, sprite.angle, 0, true);
         EvacuationUp(sprite, unit.sprite);
     }, 1200)
 }

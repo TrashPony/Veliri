@@ -10,7 +10,7 @@ var Store = newStore()
 func newStore() *MessageStore {
 	return &MessageStore{
 		messages: make([]*Message, 0),
-		Move:     false,
+		Move:     true,
 		MoveInit: false,
 
 		MoveEndPoint: false,
@@ -28,6 +28,9 @@ func newStore() *MessageStore {
 		SearchCollisionLineStep:   false,
 
 		UnitUnitCollision: false,
+
+		Collisions:    false,
+		WeaponFirePos: true,
 	}
 }
 
@@ -46,6 +49,8 @@ type MessageStore struct {
 	MoveEndPoint              bool
 	UnitUnitCollision         bool
 	SearchCollisionLineStep   bool
+	WeaponFirePos             bool
+	Collisions                bool
 }
 
 type Message struct {

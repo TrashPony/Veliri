@@ -1,7 +1,6 @@
 // движение на глобальной карте
 function MoveTo(jsonData) {
 
-    console.log(jsonData.path_unit)
     if (!game || !game.units) return;
 
     let unit = game.units[jsonData.short_unit.id];
@@ -28,7 +27,7 @@ function MoveTo(jsonData) {
         unit.animateSpeed = path.animate;
         unit.rotate = path.rotate;
 
-        SetAngle(unit, path.rotate, path.millisecond, true);
+        SetBodyAngle(unit, path.rotate, path.millisecond, true);
         CreateMiniMap();
     } else {
         CreateNewUnit(unit)

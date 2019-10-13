@@ -34,12 +34,30 @@ function update() {
             AnimateMiningLaser(unit);
             AnimateDigger(unit);
             CreateMapHealBar(unit.sprite, unit.body.max_hp, unit.hp);
+
+            if (unit.AttackLine) {
+                CreateAttackLine(unit);
+            }
         }
 
         for (let i in game.boxes) {
             CreateMapHealBar(game.boxes[i].sprite, game.boxes[i].max_hp, game.boxes[i].hp);
         }
     }
+}
+
+function CreateAttackLine(unit) {
+    // TODO сделать общий метод для отрисовки линий
+    unit.AttackLine.graphics.clear();
+    unit.AttackLine.graphics.lineStyle(3, 0xb74213, 0.2);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius);
+    unit.AttackLine.graphics.lineStyle(1, 0xff0000, 1);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius);
+
+    unit.AttackLine.graphics.lineStyle(3, 0xb74213, 0.2);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius);
+    unit.AttackLine.graphics.lineStyle(1, 0xff0000, 1);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius);
 }
 
 function CreateMapHealBar(sprite, maxHP, hp) {

@@ -40,6 +40,7 @@ type Message struct {
 	Y             int                             `json:"y"`
 	ToX           float64                         `json:"to_x"`
 	ToY           float64                         `json:"to_y"`
+	Bullet        *unit.Bullet                    `json:"bullet"`
 	PathUnit      *unit.PathUnit                  `json:"path_unit"`
 	Path          []*unit.PathUnit                `json:"path"`
 	BaseID        int                             `json:"base_id"`
@@ -85,6 +86,7 @@ type Message struct {
 	UnitID        int                             `json:"unit_id"`
 	Equip         *detail.BodyEquipSlot           `json:"equip"`
 	HighGravity   bool                            `json:"high_gravity"`
+	Type          string                          `json:"type"`
 
 	Color    string `json:"color"`
 	RectSize int    `json:"rect_size"`
@@ -237,11 +239,7 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "Attack" {
-			//todo методы атаки,
-			// просто землю
-			// обьекты на карте
-			// ящик
-			// игроков/нпс
+			Attack(user, msg)
 		}
 
 		if msg.Event == "GetMissions" {
