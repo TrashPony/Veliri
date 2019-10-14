@@ -289,9 +289,13 @@ function PolygonDraw(polygon) {
 }
 
 function FindPathDebug(jsonData) {
+    if (!game) return;
+
     if (!moveDebug) {
-        moveDebug = game.add.graphics(0, 0);
-        findPath = game.add.graphics(0, 0);
+        setTimeout(function () {
+            moveDebug = game.add.graphics(0, 0);
+            findPath = game.add.graphics(0, 0);
+        }, 2500)
     }
 
     let color = 0xFFFFFF;

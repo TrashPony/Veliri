@@ -12,7 +12,6 @@ import (
 )
 
 func DebugMoveWorker(user *player.Player) {
-	time.Sleep(10 * time.Second)
 
 	go DebugSender()
 
@@ -122,6 +121,10 @@ func WeaponFirePos() {
 			for _, wPos := range pos {
 				CreateRect("white", wPos.X, wPos.Y, 2, user.GetSquad().MatherShip.MapID, 0)
 			}
+
+			weaponX, weaponY := user.GetSquad().MatherShip.GetWeaponPos()
+			CreateRect("red", weaponX, weaponY, 2, user.GetSquad().MatherShip.MapID, 0)
+
 		}
 
 		lock.Unlock()

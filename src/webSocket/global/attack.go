@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/attack"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 	"time"
@@ -96,12 +97,19 @@ func GunWorker(user *player.Player) {
 			weaponSlot := attackUnit.GetWeaponSlot()
 			dist := int(game_math.GetBetweenDist(attackUnit.Target.X, attackUnit.Target.Y, xWeapon, yWeapon))
 
+			if debug.Store.WeaponFirePos {
+				debug.Store.AddMessage("CreateLine", "orange", attackUnit.Target.X,
+					attackUnit.Target.Y, xWeapon, yWeapon, 0, attackUnit.MapID, 0)
+			}
+
 			if needRotate == attackUnit.GunRotate && dist <= weaponSlot.Weapon.Range {
 
 				bullets, startAttack := attack.Fire(attackUnit)
 				if startAttack {
 					for _, bullet := range bullets {
 						// todo отправка сообщения что бы проигралась анимация выстрела на клиенте
+						// задержка перед выстрелом
+						time.Sleep(250 * time.Millisecond)
 						go FlyBullet(bullet, attackUnit.MapID)
 					}
 				}
@@ -118,16 +126,16 @@ func GunWorker(user *player.Player) {
 		if user != nil && user.GetSquad() != nil && user.GetSquad().MatherShip != nil {
 
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
-				fireGun(user.GetSquad().MatherShip)
 				rotateGun(user.GetSquad().MatherShip)
+				fireGun(user.GetSquad().MatherShip)
 			}
 
 			for _, unitSlot := range user.GetSquad().MatherShip.Units {
 				if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap &&
 					unitSlot.Unit.GetWeaponSlot() != nil && unitSlot.Unit.GetWeaponSlot().Weapon != nil {
 
-					fireGun(unitSlot.Unit)
 					rotateGun(unitSlot.Unit)
+					fireGun(unitSlot.Unit)
 				}
 			}
 		}
@@ -138,30 +146,66 @@ func GunWorker(user *player.Player) {
 
 // функция которая заставляет лететь снаряды)
 func FlyBullet(bullet *unit.Bullet, idMap int) {
-	tickTime := 250
+	tickTime := 100
 
 	realSpeed := float64(bullet.Speed / (1000 / tickTime))
+	radRotate := float64(bullet.Rotate) * math.Pi / 180
+
+	SendMessage(Message{
+		Event:    "FlyBullet",
+		Bullet:   bullet,
+		PathUnit: &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: tickTime},
+		IDMap:    idMap},
+	)
+	time.Sleep(time.Duration(tickTime) * time.Millisecond)
+
 	for {
 
-		// TODO детальная проверка что бы пуля долетала прям до пикселя
-		dist := game_math.GetBetweenDist(int(bullet.X), int(bullet.Y), int(bullet.Target.X), int(bullet.Target.Y))
-		if dist < realSpeed+5 {
-			break
-		}
-
-		radRotate := float64(bullet.Rotate) * math.Pi / 180
 		stopX := realSpeed * math.Cos(radRotate) // идем по вектору движения выстрела
 		stopY := realSpeed * math.Sin(radRotate)
+
+		percent, end := detailFlyBullet(bullet, float64(bullet.X)+stopX, float64(bullet.Y)+stopY, radRotate)
+
+		ms := (tickTime * percent) / 100
 
 		go SendMessage(Message{
 			Event:    "FlyBullet",
 			Bullet:   bullet,
-			PathUnit: &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X + int(stopX), Y: bullet.Y + int(stopY), Millisecond: tickTime},
+			PathUnit: &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: ms},
 			IDMap:    idMap},
 		)
 
-		bullet.X, bullet.Y = bullet.X+int(stopX), bullet.Y+int(stopY)
+		if end {
+			break
+		}
 
-		time.Sleep(time.Duration(tickTime) * time.Millisecond)
+		time.Sleep(time.Duration(ms) * time.Millisecond)
+	}
+}
+
+func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64) (int, bool) {
+
+	startDist := game_math.GetBetweenDist(bullet.X, bullet.Y, int(toX), int(toY))
+	minDist := startDist
+	dist := startDist
+
+	x, y := float64(bullet.X), float64(bullet.Y)
+
+	for {
+		percentPath := 100 - (int((dist * 100) / startDist))
+
+		stopX := float64(2) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(2) * math.Sin(radRotate)
+
+		x += stopX
+		y += stopY
+
+		dist = game_math.GetBetweenDist(int(x), int(y), int(toX), int(toY))
+		if dist <= 1 || minDist < dist {
+			bullet.X, bullet.Y = int(x), int(y)
+			return percentPath, 15 > game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
+		}
+
+		minDist = dist
 	}
 }

@@ -318,28 +318,34 @@ func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз док
 }
 
 func (unit *Unit) GetWeaponPos() (int, int) {
-	return unit.relativeToAbsolutePointWeapon(unit.X, unit.Y, unit.GetWeaponSlot().XAttach, unit.GetWeaponSlot().YAttach, unit.Rotate)
+	return unit.relativeToAbsolutePointWeapon(unit.X, unit.Y, unit.GetWeaponSlot().XAttach, unit.GetWeaponSlot().YAttach, unit.Rotate, false)
 }
 
 func (unit *Unit) GetWeaponFirePos() []*coordinate.Coordinate {
 
 	realPos := make([]*coordinate.Coordinate, 0)
-	for _, pos := range unit.GetWeaponSlot().Weapon.FirePositions {
-		xWeapon, yWeapon := unit.GetWeaponPos()
-		// TODO не работает
-		x, y := unit.relativeToAbsolutePointWeapon(
-			xWeapon-unit.GetWeaponSlot().Weapon.XAttach,
-			yWeapon-unit.GetWeaponSlot().Weapon.YAttach,
-			pos.X, pos.Y, unit.GunRotate)
+	weaponScale, _ := unit.getOffsetSpritesSize()
 
-		realPos = append(realPos, &coordinate.Coordinate{X: x, Y: y})
+	for _, pos := range unit.GetWeaponSlot().Weapon.FirePositions {
+
+		xWeapon, yWeapon := unit.relativeToAbsolutePointWeapon(
+			unit.X, unit.Y,
+			unit.GetWeaponSlot().XAttach, unit.GetWeaponSlot().YAttach,
+			unit.Rotate, false) // я хз почему тут false но оно работает ¯\_(ツ)_/¯
+
+		// берем координаты оружия без разворота, отнимаем сдвиг что бы получить 0:0 спрайта в игровой сети и прибавляем сдвиг для выстрела
+		x := xWeapon - unit.GetWeaponSlot().Weapon.XAttach/int(1/weaponScale) + pos.X/int(1/weaponScale)
+		y := yWeapon - unit.GetWeaponSlot().Weapon.YAttach/int(1/weaponScale) + pos.Y/int(1/weaponScale)
+
+		newX, newY := game_math.RotatePoint(float64(x), float64(y), float64(xWeapon), float64(yWeapon), unit.GunRotate)
+
+		realPos = append(realPos, &coordinate.Coordinate{X: int(newX), Y: int(newY)})
 	}
 
 	return realPos
 }
 
-func (unit *Unit) relativeToAbsolutePointWeapon(x0, y0, x, y, rotate int) (int, int) {
-	// TODO координаты атача для оружия считавются правильно но слишком много условностей которые подбирались на фронте...
+func (unit *Unit) getOffsetSpritesSize() (float64, float64) {
 	weaponScale := 0.0
 	spriteOffset := 0.0
 	if unit.Body.MotherShip {
@@ -349,13 +355,24 @@ func (unit *Unit) relativeToAbsolutePointWeapon(x0, y0, x, y, rotate int) (int, 
 		weaponScale = 0.20
 		spriteOffset = 20
 	}
+	return weaponScale, spriteOffset
+}
+
+func (unit *Unit) relativeToAbsolutePointWeapon(x0, y0, x, y, rotate int, noRotate bool) (int, int) {
+	// TODO координаты атача для оружия считавются правильно но слишком много условностей которые подбирались на фронте...
+
+	weaponScale, spriteOffset := unit.getOffsetSpritesSize()
 
 	xWeapon := x0 + int(((float64(x))/(1/weaponScale))-spriteOffset)
 	yWeapon := y0 + int(((float64(y))/(1/weaponScale))-spriteOffset)
 
-	// поворачиваем точку крепления по отношению к телу
-	newX, newY := game_math.RotatePoint(float64(xWeapon), float64(yWeapon), float64(x0), float64(y0), rotate)
-	return int(newX), int(newY)
+	if noRotate {
+		return xWeapon, yWeapon
+	} else {
+		// поворачиваем точку крепления по отношению к телу
+		newX, newY := game_math.RotatePoint(float64(xWeapon), float64(yWeapon), float64(x0), float64(y0), rotate)
+		return int(newX), int(newY)
+	}
 }
 
 func (unit *Unit) SetWeaponSlot(newWeaponSlot *detail.BodyWeaponSlot) {

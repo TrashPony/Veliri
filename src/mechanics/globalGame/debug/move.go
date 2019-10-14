@@ -10,7 +10,7 @@ var Store = newStore()
 func newStore() *MessageStore {
 	return &MessageStore{
 		messages: make([]*Message, 0),
-		Move:     true,
+		Move:     false,
 		MoveInit: false,
 
 		MoveEndPoint: false,
@@ -30,7 +30,7 @@ func newStore() *MessageStore {
 		UnitUnitCollision: false,
 
 		Collisions:    false,
-		WeaponFirePos: true,
+		WeaponFirePos: false,
 	}
 }
 
