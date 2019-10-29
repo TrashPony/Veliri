@@ -3,6 +3,7 @@ package coordinate
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"strconv"
 )
 
@@ -59,7 +60,8 @@ type Coordinate struct {
 	ObjectHP          int    `json:"object_hp"`
 	BoxID             int    `json:"box_id"`
 
-	Find bool `json:"-"`
+	GeoData []*obstacle_point.ObstaclePoint `json:"geo_data"`
+	Find    bool                            `json:"-"`
 }
 
 func (coor *Coordinate) GetZ() int {

@@ -6,6 +6,8 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"log"
 	"strconv"
 )
@@ -157,7 +159,7 @@ func Anomalies(mp *_map.Map) {
 }
 
 func GeoData(mp *_map.Map) {
-	mp.GeoData = make([]*_map.ObstaclePoint, 0)
+	mp.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
 	rows, err := dbConnect.GetDBConnect().Query(""+
 		"Select "+
 		"id, "+
@@ -171,7 +173,7 @@ func GeoData(mp *_map.Map) {
 	}
 
 	for rows.Next() { // заполняем карту значащами клетками
-		var obstaclePoint _map.ObstaclePoint
+		var obstaclePoint obstacle_point.ObstaclePoint
 		err := rows.Scan(&obstaclePoint.ID, &obstaclePoint.X, &obstaclePoint.Y, &obstaclePoint.Radius)
 		mp.GeoData = append(mp.GeoData, &obstaclePoint)
 		if err != nil {
@@ -189,7 +191,7 @@ func CoordinatesMap(mp *_map.Map) {
 		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, "+
 		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_positions, mc.to_base_id, mc.to_map_id, "+
 		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority, mc.object_priority, "+
-		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp "+
+		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp, ct.geo_data "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
 
@@ -202,6 +204,7 @@ func CoordinatesMap(mp *_map.Map) {
 	for rows.Next() { // заполняем карту значащами клетками
 		var gameCoordinate coordinate.Coordinate
 		var positions []byte
+		var geoData []byte
 
 		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type,
 			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.AnimateSpriteSheets,
@@ -211,7 +214,7 @@ func CoordinatesMap(mp *_map.Map) {
 			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID, &gameCoordinate.XShadowOffset,
 			&gameCoordinate.YShadowOffset, &gameCoordinate.ShadowIntensity, &gameCoordinate.TexturePriority,
 			&gameCoordinate.ObjectPriority, &gameCoordinate.ObjectName, &gameCoordinate.ObjectDescription,
-			&gameCoordinate.ObjectInventory, &gameCoordinate.ObjectHP)
+			&gameCoordinate.ObjectInventory, &gameCoordinate.ObjectHP, &geoData)
 		if err != nil {
 			log.Fatal(err.Error() + "scan map constructor")
 		}
@@ -221,6 +224,29 @@ func CoordinatesMap(mp *_map.Map) {
 		err = json.Unmarshal(positions, &gameCoordinate.Positions)
 		if err != nil {
 			gameCoordinate.Positions = make([]*coordinate.Coordinate, 0)
+		}
+
+		err = json.Unmarshal(geoData, &gameCoordinate.GeoData)
+		if err != nil {
+			gameCoordinate.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
+		} else {
+			for _, geoPoint := range gameCoordinate.GeoData {
+				// применяем размер обьекта к геодате
+				geoPoint.Radius = int(float64(geoPoint.Radius) * (float64(gameCoordinate.Scale) / 100))
+				geoPoint.X = int(float64(geoPoint.X) * (float64(gameCoordinate.Scale) / 100))
+				geoPoint.Y = int(float64(geoPoint.Y) * (float64(gameCoordinate.Scale) / 100))
+
+				// получаем позицию гео точки на карте
+				geoPoint.X += gameCoordinate.X
+				geoPoint.Y += gameCoordinate.Y
+
+				// поворачиваем геодату на угол обьекта
+				newX, newY := game_math.RotatePoint(float64(geoPoint.X), float64(geoPoint.Y), float64(gameCoordinate.X),
+					float64(gameCoordinate.Y), gameCoordinate.ObjRotate)
+
+				geoPoint.X = int(newX)
+				geoPoint.Y = int(newY)
+			}
 		}
 
 		if oneLayerMap[gameCoordinate.X] != nil {

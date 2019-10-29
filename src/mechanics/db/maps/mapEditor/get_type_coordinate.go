@@ -71,7 +71,7 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 	var rotate int
 	var animateSpeed int
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, id_type, rotate, animate_speed, x_offset, y_offset "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, id_type, rotate, animate_speed "+
 		"FROM map_constructor "+
 		"WHERE id_map = $1 AND x=$2 AND y = $3",
 		idMap, x, y)

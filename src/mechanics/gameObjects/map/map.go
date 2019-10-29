@@ -2,6 +2,7 @@ package _map
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
@@ -17,14 +18,14 @@ type Map struct {
 	DefaultLevel        int
 	Specification       string
 	OneLayerMap         map[int]map[int]*coordinate.Coordinate
-	Reservoir           map[int]map[int]*resource.Map `json:"reservoir"`
-	Global              bool                          `json:"global"`
-	InGame              bool                          `json:"in_game"`
-	HandlersCoordinates []*coordinate.Coordinate      `json:"handlers_coordinates"`
-	EntryPoints         []*coordinate.Coordinate      `json:"entry_points"`
-	Beams               []*Beam                       `json:"beams"`
-	Emitters            []*Emitter                    `json:"emitters"`
-	GeoData             []*ObstaclePoint              `json:"geo_data"`
+	Reservoir           map[int]map[int]*resource.Map   `json:"reservoir"`
+	Global              bool                            `json:"global"`
+	InGame              bool                            `json:"in_game"`
+	HandlersCoordinates []*coordinate.Coordinate        `json:"handlers_coordinates"`
+	EntryPoints         []*coordinate.Coordinate        `json:"entry_points"`
+	Beams               []*Beam                         `json:"beams"`
+	Emitters            []*Emitter                      `json:"emitters"`
+	GeoData             []*obstacle_point.ObstaclePoint `json:"geo_data"`
 
 	// разделяем карту на зоны (DiscreteSize х DiscreteSize) при загрузке сервера,
 	// добавляем в зону все поинты которые пересекают данных квадрат и ближайшие к нему
@@ -44,12 +45,12 @@ type Map struct {
 }
 
 type Zone struct {
-	Size      int                      `json:"size"`
-	DiscreteX int                      `json:"discrete_x"`
-	DiscreteY int                      `json:"discrete_y"`
-	Obstacle  []*ObstaclePoint         `json:"obstacle"`
-	Regions   []*Region                `json:"regions"`
-	Cells     []*coordinate.Coordinate `json:"cells"` // все координаты в зоне
+	Size      int                             `json:"size"`
+	DiscreteX int                             `json:"discrete_x"`
+	DiscreteY int                             `json:"discrete_y"`
+	Obstacle  []*obstacle_point.ObstaclePoint `json:"obstacle"`
+	Regions   []*Region                       `json:"regions"`
+	Cells     []*coordinate.Coordinate        `json:"cells"` // все координаты в зоне
 }
 
 func (z *Zone) GetNeighboursZone(mp *Map) []*Zone {
@@ -262,13 +263,6 @@ func (mp *ShortInfoMap) GetAllEntrySectors() []*coordinate.Coordinate {
 	}
 
 	return entrySectors
-}
-
-type ObstaclePoint struct {
-	ID     int `json:"id"`
-	X      int `json:"x"`
-	Y      int `json:"y"`
-	Radius int `json:"radius"`
 }
 
 type Beam struct {

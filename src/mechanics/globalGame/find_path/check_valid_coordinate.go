@@ -45,7 +45,7 @@ func checkValidForMoveCoordinate(gameMap *_map.Map, x, y, xSize, ySize int, game
 	} else {
 		c := &coordinate.Coordinate{X: x, Y: y} //, Rotate: game_math.GetBetweenAngle(float64(x), float64(y), float64(pX), float64(pY))}
 		//+scaleMap/2 потомучто юнит находится в центре клетки
-		possible, _ := collisions.BodyCheckCollisionsOnStaticMap(x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2, c.Rotate, gameMap, gameUnit.Body, false, true)
+		possible, _ := collisions.BodyCheckCollisionsOnStaticMap(x*scaleMap+scaleMap/2, y*scaleMap+scaleMap/2, 0, gameMap, gameUnit.Body, false, true)
 
 		if possible {
 			return c, true, false

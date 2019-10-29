@@ -48,14 +48,16 @@ function CreateMiniMap() {
 
             let obstacle = game.map.geo_data[i];
 
-            ctx.beginPath();
-            ctx.fillStyle = "#000000";
-            ctx.strokeStyle = "rgba(255, 255, 255, 0)";
-            ctx.ellipse(obstacle.x / offsetX, obstacle.y / offsetY,
-                obstacle.radius / offsetX, obstacle.radius / offsetY,
-                0, 0, 2 * Math.PI, true);
-            ctx.fill();
-            ctx.stroke();
+            if (obstacle) {
+                ctx.beginPath();
+                ctx.fillStyle = "#000000";
+                ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+                ctx.ellipse(obstacle.x / offsetX, obstacle.y / offsetY,
+                    obstacle.radius / offsetX, obstacle.radius / offsetY,
+                    0, 0, 2 * Math.PI, true);
+                ctx.fill();
+                ctx.stroke();
+            }
         }
 
         for (let i in game.map.handlers_coordinates) {

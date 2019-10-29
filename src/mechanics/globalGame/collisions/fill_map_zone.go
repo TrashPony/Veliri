@@ -3,6 +3,7 @@ package collisions
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 )
 
@@ -10,7 +11,7 @@ func FillMapZone(x, y int, zone *_map.Zone, mp *_map.Map) {
 	// +50 что бы в область папали пограничные препятсвия
 	zoneRect := GetRect(float64(x), float64(y), game_math.DiscreteSize+50, game_math.DiscreteSize+50)
 
-	zone.Obstacle = make([]*_map.ObstaclePoint, 0)
+	zone.Obstacle = make([]*obstacle_point.ObstaclePoint, 0)
 
 	for i := 0; i < len(mp.GeoData); i++ {
 		if zoneRect.detectCollisionRectToCircle(&point{x: float64(mp.GeoData[i].X), y: float64(mp.GeoData[i].Y)}, mp.GeoData[i].Radius) {

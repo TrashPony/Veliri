@@ -79,7 +79,7 @@ func PrepareInData(mp *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	xSize, ySize := mp.SetXYSize(scaleMap) // расчтиамем высоту и ширину карты в ху
 
 	start.X, start.Y = start.X/scaleMap, start.Y/scaleMap
-	start.Rotate = gameUnit.Rotate
+	start.Rotate = gameUnit.Rotate // todo возможно не нужно
 	start.State = 1
 
 	end.X, end.Y = end.X/scaleMap, end.Y/scaleMap
@@ -207,7 +207,7 @@ func FindPath(gameMap *_map.Map, start, end *coordinate.Coordinate, gameUnit *un
 	end.X *= scaleMap
 	end.Y *= scaleMap
 
-	if len(path) > 0 {
+	if len(path) > 0 { // todo возможно не нужно
 		end.Rotate = game_math.GetBetweenAngle(float64(end.X), float64(end.Y), float64(path[len(path)-1].X), float64(path[len(path)-1].Y))
 	} else {
 		start.X, start.Y = start.X*scaleMap, start.Y*scaleMap
