@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
+func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, oldX, oldY int) {
 	positions, err := json.Marshal(coordinate.Positions)
 	if err != nil {
 		fmt.Println(err)
@@ -22,31 +22,29 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"texture_priority = $5, "+
 		"rotate = $6, "+
 		"animate_speed = $7, "+
-		"x_offset = $8, "+
-		"y_offset = $9, "+
-		"x_shadow_offset = $10, "+
-		"y_shadow_offset = $11, "+
-		"shadow_intensity = $12, "+
-		"scale = $13, "+
-		"shadow = $14, "+
-		"transport = $15, "+
-		"handler = $16, "+
-		"to_base_id = $17, "+
-		"to_map_id = $18,"+
-		"id_type = $19, "+
-		"object_priority = $20,"+
-		"to_positions = $21 "+
+		"x_shadow_offset = $8, "+
+		"y_shadow_offset = $9, "+
+		"shadow_intensity = $10, "+
+		"scale = $11, "+
+		"shadow = $12, "+
+		"transport = $13, "+
+		"handler = $14, "+
+		"to_base_id = $15, "+
+		"to_map_id = $16,"+
+		"id_type = $17, "+
+		"object_priority = $18,"+
+		"to_positions = $19,"+
+		"x = $20,"+
+		"y = $21 "+
 		""+
 		"WHERE id_map = $1 AND x=$2 AND y = $3",
 		mp.Id,
-		coordinate.X,
-		coordinate.Y,
+		oldX,
+		oldY,
 		coordinate.TextureOverFlore,
 		coordinate.TexturePriority,
 		coordinate.ObjRotate,
 		coordinate.AnimationSpeed,
-		coordinate.XOffset,
-		coordinate.YOffset,
 		coordinate.XShadowOffset,
 		coordinate.YShadowOffset,
 		coordinate.ShadowIntensity,
@@ -59,6 +57,8 @@ func UpdateMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.ID,
 		coordinate.ObjectPriority,
 		string(positions),
+		coordinate.X,
+		coordinate.Y,
 	)
 	if err != nil {
 		log.Fatal("update mc coordinate" + err.Error())

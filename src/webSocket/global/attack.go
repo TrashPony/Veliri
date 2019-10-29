@@ -30,6 +30,8 @@ func Attack(user *player.Player, msg Message) {
 		//  по карте мы стреляем 1 раз
 	}
 
+	// если цель юнит/ящик/обьект то берется Х:У по вектору проходящий через юнита в конце дальности атаки оружия
+	// тогда оружие промахивается и оружие бьет дальше - это относится ко всему кроме артилерии и тактических ракет
 	if msg.Type == "unit" {
 
 	}
@@ -60,6 +62,7 @@ func GunWorker(user *player.Player) {
 	}
 
 	rotateGun := func(rotateUnit *unit.Unit) {
+
 		if rotateUnit.Target != nil {
 
 			pathUnit, diffAngle := attack.RotateGunToTarget(
@@ -82,7 +85,7 @@ func GunWorker(user *player.Player) {
 		}
 	}
 
-	fireGun := func(attackUnit *unit.Unit) {
+	fireGun := func(attackUnit *unit.Unit) bool {
 		if attackUnit.Target != nil {
 
 			// TODO проверка перезарядки
@@ -107,35 +110,50 @@ func GunWorker(user *player.Player) {
 				bullets, startAttack := attack.Fire(attackUnit)
 				if startAttack {
 					for _, bullet := range bullets {
-						// todo отправка сообщения что бы проигралась анимация выстрела на клиенте
-						// задержка перед выстрелом
-						time.Sleep(250 * time.Millisecond)
-						go FlyBullet(bullet, attackUnit.MapID)
-					}
-				}
 
-				if attackUnit.Target.Type == "map" {
-					// если это атака тупо в карту то происхдит только 1 выстрел
-					attackUnit.Target = nil
+						// для отыгрыша анимации выстрела
+						SendMessage(Message{
+							Event:  "FireWeapon",
+							X:      bullet.X,
+							Y:      bullet.Y,
+							Weapon: weaponSlot.Weapon,
+							IDMap:  attackUnit.MapID,
+						})
+
+						go FlyBullet(bullet, attackUnit.MapID)
+						time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
+					}
+
+					if attackUnit.Target.Type == "map" {
+						// если это атака тупо в карту то происхдит только 1 выстрел
+						attackUnit.Target = nil
+					}
+
+					return true
 				}
 			}
 		}
+
+		return false
 	}
 
 	for {
 		if user != nil && user.GetSquad() != nil && user.GetSquad().MatherShip != nil {
 
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
-				rotateGun(user.GetSquad().MatherShip)
-				fireGun(user.GetSquad().MatherShip)
+
+				if !fireGun(user.GetSquad().MatherShip) {
+					rotateGun(user.GetSquad().MatherShip)
+				}
 			}
 
 			for _, unitSlot := range user.GetSquad().MatherShip.Units {
 				if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap &&
 					unitSlot.Unit.GetWeaponSlot() != nil && unitSlot.Unit.GetWeaponSlot().Weapon != nil {
 
-					rotateGun(unitSlot.Unit)
-					fireGun(unitSlot.Unit)
+					if !fireGun(unitSlot.Unit) {
+						rotateGun(unitSlot.Unit)
+					}
 				}
 			}
 		}
@@ -144,12 +162,33 @@ func GunWorker(user *player.Player) {
 	}
 }
 
-// функция которая заставляет лететь снаряды)
+// полет лазера
+func FlyLaser() {
+	// TODO
+}
+
+// самоводящиеся ракеты
+func FlyChaseRocket() {
+	// TODO
+}
+
+// артилерийские установки
+func FlyArtillery() {
+	// TODO
+}
+
+// функция которая заставляет лететь снаряды летящие по прямой
 func FlyBullet(bullet *unit.Bullet, idMap int) {
+
 	tickTime := 100
 
 	realSpeed := float64(bullet.Speed / (1000 / tickTime))
 	radRotate := float64(bullet.Rotate) * math.Pi / 180
+
+	// пуля летит по параболе, поэтому до половины пути она немного приподнимается по Z,
+	// а после половины пути стремительно идет к 0, это сказывается на анимации фронта, но не на логике
+	startDist := game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
+	minDist := startDist
 
 	SendMessage(Message{
 		Event:    "FlyBullet",
@@ -160,6 +199,17 @@ func FlyBullet(bullet *unit.Bullet, idMap int) {
 	time.Sleep(time.Duration(tickTime) * time.Millisecond)
 
 	for {
+
+		currentDist := game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
+		percentPath := 100 - (currentDist*100)/startDist
+
+		if percentPath > 50 {
+			// после 50% до цели пуля снижается и в конце пути удаляется о землю
+			bullet.Z = 1 - (((percentPath - 50) * 2) / 100)
+			if bullet.Z < 0 {
+				bullet.Z = 0
+			}
+		}
 
 		stopX := realSpeed * math.Cos(radRotate) // идем по вектору движения выстрела
 		stopY := realSpeed * math.Sin(radRotate)
@@ -175,10 +225,19 @@ func FlyBullet(bullet *unit.Bullet, idMap int) {
 			IDMap:    idMap},
 		)
 
-		if end {
+		if end || minDist < currentDist {
+			// для отыгрыша анимации взрыва
+			// TODO появление динамического обьекта кратера
+			SendMessage(Message{
+				Event:  "ExplosionBullet",
+				Bullet: bullet,
+				IDMap:  idMap,
+			})
+
 			break
 		}
 
+		minDist = currentDist
 		time.Sleep(time.Duration(ms) * time.Millisecond)
 	}
 }
@@ -194,16 +253,16 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64) (int, boo
 	for {
 		percentPath := 100 - (int((dist * 100) / startDist))
 
-		stopX := float64(2) * math.Cos(radRotate) // идем по вектору движения корпуса
-		stopY := float64(2) * math.Sin(radRotate)
+		stopX := float64(1) * math.Cos(radRotate) // идем по вектору движения корпуса
+		stopY := float64(1) * math.Sin(radRotate)
 
 		x += stopX
 		y += stopY
 
 		dist = game_math.GetBetweenDist(int(x), int(y), int(toX), int(toY))
-		if dist <= 1 || minDist < dist {
+		if dist <= 3 || minDist < dist {
 			bullet.X, bullet.Y = int(x), int(y)
-			return percentPath, 15 > game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
+			return percentPath, 25 > game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
 		}
 
 		minDist = dist

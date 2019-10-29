@@ -317,8 +317,22 @@ func (mp *Map) GetCoordinate(x, y int) (*coordinate.Coordinate, bool) {
 	return mapCoordinate, true
 }
 
-func (mp *Map) GetResource(q, r int) *resource.Map {
-	res, _ := mp.Reservoir[q][r]
+func (mp *Map) DeleteCoordinate(x, y int) {
+	_, find := mp.OneLayerMap[x][y]
+	if find {
+		delete(mp.OneLayerMap[x], y)
+	}
+}
+
+func (mp *Map) AddCoordinate(newCoordinate *coordinate.Coordinate) {
+	if mp.OneLayerMap[newCoordinate.X] == nil {
+		mp.OneLayerMap[newCoordinate.X] = make(map[int]*coordinate.Coordinate)
+	}
+	mp.OneLayerMap[newCoordinate.X][newCoordinate.Y] = newCoordinate
+}
+
+func (mp *Map) GetResource(x, y int) *resource.Map {
+	res, _ := mp.Reservoir[x][y]
 	return res
 }
 

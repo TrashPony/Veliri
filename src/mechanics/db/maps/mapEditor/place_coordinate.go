@@ -19,10 +19,6 @@ func PlaceCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, newIDType 
 	coordinate.AnimateLoop = newType.AnimateLoop
 	coordinate.UnitOverlap = newType.UnitOverlap
 
-	coordinate.Move = newType.Move
-	coordinate.View = newType.View
-	coordinate.Attack = newType.Attack
-
 	coordinate.Scale = 100
 	coordinate.Shadow = false
 	coordinate.XShadowOffset = 10

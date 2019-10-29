@@ -14,7 +14,7 @@ func PlaceTextures(coordinate *coordinate.Coordinate, mp *_map.Map, textureName 
 	coordinate.TexturePriority++
 
 	if changeCoordinate != nil {
-		UpdateMapCoordinate(coordinate, mp)
+		UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 	} else {
 		InsertMapCoordinate(coordinate, mp)
 	}
@@ -22,5 +22,5 @@ func PlaceTextures(coordinate *coordinate.Coordinate, mp *_map.Map, textureName 
 
 func RemoveTextures(coordinate *coordinate.Coordinate, mp *_map.Map) {
 	coordinate.TextureOverFlore = ""
-	UpdateMapCoordinate(coordinate, mp)
+	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 }

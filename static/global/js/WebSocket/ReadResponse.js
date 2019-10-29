@@ -23,25 +23,17 @@ function ReadResponse(jsonData) {
         RotateGun(unit, path.rotate_gun, path.millisecond);
     }
 
+    if (jsonData.event === "FireWeapon") {
+        // TODO отыгрываем анимаю выстрела weapon(много ифов ибо каждое оружие стрелять особенно ебано) в позиции х,у
+    }
+
     if (jsonData.event === "FlyBullet") {
+        FlyBullet(jsonData);
+    }
 
-        let bullet = game.bullets[jsonData.bullet.uuid];
-        if (!bullet) {
-            bullet = game.unitLayer.create(jsonData.bullet.x, jsonData.bullet.y, jsonData.bullet.ammo.name);
-            bullet.anchor.setTo(0.5, 0.5);
-            bullet.scale.setTo(0.2);
-            bullet.angle = jsonData.bullet.rotate;
-
-            game.bullets[jsonData.bullet.uuid] = bullet;
-        }
-
-        let path = jsonData.path_unit;
-        game.add.tween(bullet).to(
-            {x: path.x, y: path.y},
-            path.millisecond, Phaser.Easing.Linear.None, true, 0
-        );
-
-        console.log(jsonData)
+    if (jsonData.event === "ExplosionBullet") {
+        // TODO проигрываем взрыв в точке снаряда, (удаляем снаряд)
+        //   появляется кратер который прилетает с бека, если не прилетает то нет
     }
 
     if (jsonData.event === "BoxTo") {

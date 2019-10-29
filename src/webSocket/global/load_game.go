@@ -29,7 +29,7 @@ func LoadGame(user *player.Player, msg Message) {
 		// запускаем реактор машины
 		go RecoveryPowerWorker(user)
 		// отслеживание целей
-		go GunWorker(user)
+		go GunWorker(user) // todo если игрок заходит 2 раза то создается 2 функции
 
 		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{

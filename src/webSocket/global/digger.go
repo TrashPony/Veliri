@@ -70,7 +70,6 @@ func useDigger(user *player.Player, msg Message) {
 				res.Y = anomaly.GetY()
 				res.Rotate = rand.Intn(360)
 				res.MapID = mp.Id
-				mpCoordinate.Move = false
 
 				mp.AddResourceInMap(res)
 			}

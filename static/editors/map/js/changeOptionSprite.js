@@ -177,17 +177,19 @@ function ChangeOptionSprite(x, y) {
         for (let i in game.mapPoints) {
             if (game.mapPoints[i].x === Number(coordinate.x) && game.mapPoints[i].y === Number(coordinate.y)) {
 
+                let oldX = game.mapPoints[i].x;
+                let oldY = game.mapPoints[i].y;
+                game.mapPoints[i].x = Number(coordinate.x) + Number(document.getElementById("rangeXOffset").value);
+                game.mapPoints[i].y = Number(coordinate.y) + Number(document.getElementById("rangeYOffset").value);
                 game.mapPoints[i].coordinate.obj_rotate = Number(document.getElementById("rotateRange").value);
                 game.mapPoints[i].coordinate.animation_speed = speed;
-                game.mapPoints[i].coordinate.x_offset = Number(document.getElementById("rangeXOffset").value);
-                game.mapPoints[i].coordinate.y_offset = Number(document.getElementById("rangeYOffset").value);
                 game.mapPoints[i].coordinate.x_shadow_offset = Number(document.getElementById("rangeShadowXOffset").value);
                 game.mapPoints[i].coordinate.y_shadow_offset = Number(document.getElementById("rangeShadowYOffset").value);
                 game.mapPoints[i].coordinate.shadow_intensity = Number(document.getElementById("rangeShadowIntensity").value);
                 game.mapPoints[i].coordinate.scale = Number(document.getElementById("scaleRange").value);
                 game.mapPoints[i].coordinate.shadow = $('#needShadow').prop('checked');
 
-                ReloadCoordinate(game.mapPoints[i]);
+                ReloadCoordinate(game.mapPoints[i], oldX, oldY);
             }
         }
 

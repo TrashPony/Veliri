@@ -7,11 +7,11 @@ function CreateObject(coordinate, x, y) {
 
     if (coordinate.unit_overlap) {
         object = gameObjectCreate(x, y, coordinate.texture_object, coordinate.scale, coordinate.shadow, coordinate.obj_rotate,
-            coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
+            game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     } else {
         object = gameObjectCreate(x, y, coordinate.texture_object, coordinate.scale, coordinate.shadow, coordinate.obj_rotate,
-            coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
+            game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     }
 
@@ -23,11 +23,11 @@ function CreateObject(coordinate, x, y) {
     coordinate.objectSprite = object;
 }
 
-function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOffset, group, xShadowOffset, yShadowOffset, shadowIntensity) {
+function gameObjectCreate(x, y, texture, scale, needShadow, rotate, group, xShadowOffset, yShadowOffset, shadowIntensity) {
     let shadow;
 
     if (needShadow) {
-        shadow = group.create(x + xOffset + game.shadowXOffset + xShadowOffset, y + yOffset + game.shadowYOffset + yShadowOffset, texture);
+        shadow = group.create(x + game.shadowXOffset + xShadowOffset, y + game.shadowYOffset + yShadowOffset, texture);
         shadow.anchor.setTo(0.5);
         shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;
@@ -35,7 +35,7 @@ function gameObjectCreate(x, y, texture, scale, needShadow, rotate, xOffset, yOf
         shadow.alpha = shadowIntensity / 100;
     }
 
-    let object = group.create(x + xOffset, y + yOffset, texture);
+    let object = group.create(x, y, texture);
     object.anchor.setTo(0.5);
     object.scale.set((scale / 100) / 2);
     object.angle = rotate;
@@ -61,12 +61,10 @@ function ObjectEvents(coordinate, object, x, y) {
             // из за того что эта очень ресурсоемкая операция приходится вот так извращатся
             if (!object.border) {
                 if (coordinate.unit_overlap) {
-                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate,
-                        coordinate.x_offset, coordinate.y_offset, game.floorOverObjectLayer);
+                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate, game.floorOverObjectLayer);
                     game.floorOverObjectLayer.swap(object, object.border);
                 } else {
-                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate,
-                        coordinate.x_offset, coordinate.y_offset, game.floorObjectLayer);
+                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate, game.floorObjectLayer);
                     game.floorObjectLayer.swap(object, object.border);
                 }
             } else {
@@ -114,9 +112,9 @@ function ObjectEvents(coordinate, object, x, y) {
     }
 }
 
-function CreateBorder(x, y, texture, scale, rotate, xOffset, yOffset, group) {
+function CreateBorder(x, y, texture, scale, rotate, group) {
     let borderSprite = createSillhouette(texture);
-    let border = group.create(x + xOffset, y + yOffset, borderSprite);
+    let border = group.create(x, y, borderSprite);
     border.scale.set((scale / 100) / 1.9);
     border.anchor.setTo(0.5);
     border.tint = 0xffffff;

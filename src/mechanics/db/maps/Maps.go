@@ -185,8 +185,8 @@ func CoordinatesMap(mp *_map.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.x, mc.y, ct.type, ct.texture_flore, "+
-		"ct.texture_object, ct.move, ct.view, ct.attack, ct.animate_sprite_sheets, ct.animate_loop, "+
-		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, mc.x_offset, mc.y_offset, "+
+		"ct.texture_object, ct.animate_sprite_sheets, ct.animate_loop, "+
+		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, "+
 		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_positions, mc.to_base_id, mc.to_map_id, "+
 		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority, mc.object_priority, "+
 		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp "+
@@ -204,11 +204,9 @@ func CoordinatesMap(mp *_map.Map) {
 		var positions []byte
 
 		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type,
-			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.Move, &gameCoordinate.View,
-			&gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
-			&gameCoordinate.AnimateLoop, &gameCoordinate.Scale,
-			&gameCoordinate.Shadow, &gameCoordinate.ObjRotate, &gameCoordinate.AnimationSpeed, &gameCoordinate.XOffset,
-			&gameCoordinate.YOffset, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
+			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.AnimateSpriteSheets,
+			&gameCoordinate.AnimateLoop, &gameCoordinate.Scale, &gameCoordinate.Shadow, &gameCoordinate.ObjRotate,
+			&gameCoordinate.AnimationSpeed, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
 			&gameCoordinate.Transport, &gameCoordinate.Handler, &positions,
 			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID, &gameCoordinate.XShadowOffset,
 			&gameCoordinate.YShadowOffset, &gameCoordinate.ShadowIntensity, &gameCoordinate.TexturePriority,
@@ -262,8 +260,8 @@ func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
 }
 
 func AllTypeCoordinate() []*coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, " +
-		"attack, animate_sprite_sheets, animate_loop, unit_overlap FROM coordinate_type")
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, " +
+		" animate_sprite_sheets, animate_loop, unit_overlap FROM coordinate_type")
 	if err != nil {
 		log.Fatal(err.Error() + "get all type coordinates")
 	}
@@ -274,8 +272,7 @@ func AllTypeCoordinate() []*coordinate.Coordinate {
 		var gameCoordinate coordinate.Coordinate
 
 		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
-			&gameCoordinate.Move, &gameCoordinate.View, &gameCoordinate.Attack, &gameCoordinate.AnimateSpriteSheets,
-			&gameCoordinate.AnimateLoop, &gameCoordinate.UnitOverlap)
+			&gameCoordinate.AnimateSpriteSheets, &gameCoordinate.AnimateLoop, &gameCoordinate.UnitOverlap)
 
 		if err != nil {
 			log.Fatal(err.Error() + " scan all type coorinate")

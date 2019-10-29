@@ -21,7 +21,7 @@ func PlaceHandler(coordinate *coordinate.Coordinate, mp *_map.Map, pos string, t
 	coordinate.ToMapID = toMapId
 
 	if changeCoordinate != nil {
-		UpdateMapCoordinate(coordinate, mp)
+		UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 	} else {
 		InsertMapCoordinate(coordinate, mp)
 	}
@@ -29,5 +29,5 @@ func PlaceHandler(coordinate *coordinate.Coordinate, mp *_map.Map, pos string, t
 
 func RemoveHandler(coordinate *coordinate.Coordinate, mp *_map.Map) {
 	coordinate.Handler = ""
-	UpdateMapCoordinate(coordinate, mp)
+	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 }

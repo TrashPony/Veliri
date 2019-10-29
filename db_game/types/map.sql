@@ -31,7 +31,7 @@ CREATE TABLE map_constructor
   id                 SERIAL PRIMARY KEY,
   id_map             INT REFERENCES maps (id), /* ид карты к которой принадлежит координата */
   id_type            INT, /* ид типа координаты */
-  texture_over_flore VARCHAR(64), /* название текстуры поверх гекса и ближайших*/
+  texture_over_flore VARCHAR(64), /* название текстуры земли */
   /* говорит в какой последовательности отрисовывать текстуры, ид енподходит т.к. координата уже могла быть в бд перед нанесения текстуры */
   texture_priority   INT,
   /* тоже самое но для обьектов */
@@ -40,8 +40,6 @@ CREATE TABLE map_constructor
   y                  INT,
   rotate             INT, /* говорит на сколько повернуться спрайту обьекта в координате если он есть конечно */
   animate_speed      INT, /* если координата анимация говорит с какой скоростью ее вопспроизводить, кадров в секунду */
-  x_offset           INT, /* смещение обьекта по Х от центра координаты */
-  y_offset           INT, /* смещение обьекта по Y от центра координаты */
   x_shadow_offset    INT, /* смещение тени по Х от центра координаты */
   y_shadow_offset    INT, /* смещение тени по Y от центра координаты */
   shadow_intensity   INT, /* сила тени от 0 до 1, (val / 100) */
@@ -72,17 +70,21 @@ CREATE TABLE coordinate_type
   animate_sprite_sheets VARCHAR(64), /* имя файла анимации */
 
   animate_loop          BOOLEAN, /* если координата анимирована говорит что анимация будет всегда по кругу иначе анимацию должно что то активировать */
-  move                  BOOLEAN, /* определяет можно ли ходить через эту координату в локальном бою*/
-  view                  BOOLEAN, /* определяет можно ли видить через эту координату в локальном бою*/
-  attack                BOOLEAN, /* определяет можно ли атаковать через эту координату в локальном бою*/
-
   /* параметр чисто для отображения, говорит перекроет юнит своим телом этот обьект или нет если надетет на него*/
   unit_overlap          BOOLEAN,
 
   object_name           text    not null default '',
   object_description    text    not null default '',
-  object_inventory      BOOLEAN not null default false, -- todo хранить состояние инвентаря в таболице map_constructor
-  object_hp             int     not null default -1     -- -1 -бесмертный, 0 - мертвый
+  object_inventory      BOOLEAN not null default false, -- для этой координаты по ид создается ящик в таблице ящиков на карте
+  object_hp             int     not null default -1,    -- -2 - бесмертный и даже нет хп, -1 - бесмертный с хп, 0 - мертвый
+
+  /* геодата привязаная к обьекту,
+   работает как и глобальная дата но х у это смещение от центра обьекта и пропадает если обьекта больше нет.
+   x, y смещается если обьект повернут, имеет размер отличный от 100%
+   radius изменяется если обьект имеет размер отличный от 100%
+   [ {"x": 1, "y": 1, "radius":90}, {"x": 2, "y": 2, "radius":90} ]
+   */
+  geo_data              json    not null default '{}'
 );
 
 CREATE TABLE coordinate_type_effect

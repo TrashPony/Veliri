@@ -21,5 +21,5 @@ func insertNewHeightCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map, 
 }
 
 func updateChangeHeight(coordinate *coordinate.Coordinate, mp *_map.Map, change int) {
-	UpdateMapCoordinate(coordinate, mp)
+	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 }

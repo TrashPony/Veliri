@@ -50,20 +50,24 @@ func LaunchTransport(transport *base.Transport, transportBase *base.Base, mp *_m
 
 		// формируем путь для движения
 		// минимальная и текущая скорость должна быть 1 иначе будут мертвые зоны и дедлоки
-		_, path := move.To(float64(transport.X), float64(transport.Y), 15, 1, 1,
-			float64(x), float64(y), transport.Rotate, 10)
+		err, path := move.To(float64(transport.X), float64(transport.Y), 70, 10, 10,
+			float64(x), float64(y), transport.Rotate, 100, 300)
+
+		if err != nil {
+			continue
+		}
 
 		// запускаем транспорт
 		if FlyTransport(transport, transportBase, mp, path) {
 			continue
 		}
-		//time.Sleep(1 * time.Second)
 	}
 }
 
 func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.Map, path []*unit.PathUnit) bool {
 	for _, pathUnit := range path {
-		time.Sleep(200 * time.Millisecond)
+
+		time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
 
 		for transport.Job {
 			// если транспорт начал свою работу то ждем пока он не освободится)

@@ -1,15 +1,21 @@
 package move
 
 import (
+	"errors"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math"
 )
 
-func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate, rotateAngle int) (error, []*unit.PathUnit) {
+func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotate, rotateAngle int, ms int) (error, []*unit.PathUnit) {
 
 	path := make([]*unit.PathUnit, 0)
 
+	maxSpeed = maxSpeed / (1000 / float64(ms))
+	minSpeed = minSpeed / (1000 / float64(ms))
+	rotateAngle = rotateAngle / (1000 / ms)
+
+	speed = speed / (1000 / float64(ms))
 	//// скорость * (180/угол поворота) = длинна полокружности (грабая модель)
 	//// длинны окружности получаем ее радиус r= длинна полокружности /2 пи
 	//// r*2 получаем минимальное растояние от бтр до обьекта к которому он может повернутся не останавливаясь
@@ -18,7 +24,14 @@ func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotat
 	//// todo то тормазить машину до скорости в которой юнит сможет проехать
 	//minDistRotate := 10 + ((maxSpeed*(180/float64(rotateAngle)))/(2*math.Pi))*2
 
+	count := 0 // todo ксоытль
+
 	for {
+
+		count++
+		if count > 1000 {
+			return errors.New("no path"), nil
+		}
 
 		// находим длинную вектора до цели
 		dist := game_math.GetBetweenDist(int(forecastX), int(forecastY), int(ToX), int(ToY))
@@ -65,7 +78,7 @@ func To(forecastX, forecastY, maxSpeed, minSpeed, speed, ToX, ToY float64, rotat
 		forecastX = forecastX + stopX
 		forecastY = forecastY + stopY
 
-		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: 100, Speed: speed, Animate: true})
+		path = append(path, &unit.PathUnit{X: int(forecastX), Y: int(forecastY), Rotate: rotate, Millisecond: ms, Speed: speed, Animate: true})
 	}
 
 	if len(path) > 1 {

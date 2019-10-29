@@ -176,7 +176,6 @@ func (m *mapStore) RemoveReservoirByQR(q, r, mapID int) {
 		qLine, findQ := mp.Reservoir[q]
 		if findQ {
 			delete(qLine, r)
-			mp.OneLayerMap[q][r].Move = true
 		}
 	}
 }

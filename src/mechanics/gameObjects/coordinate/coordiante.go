@@ -23,16 +23,11 @@ type Coordinate struct {
 	Z                   int              `json:"z"`
 	State               int              `json:"state"`
 	Effects             []*effect.Effect `json:"effects"`
-	Move                bool             `json:"move"`
-	View                bool             `json:"view"`
-	Attack              bool             `json:"attack"`
 	Scale               int              `json:"scale"`
 	Shadow              bool             `json:"shadow"`
 	UnitOverlap         bool             `json:"unit_overlap"`
 	ObjRotate           int              `json:"obj_rotate"`
 	AnimationSpeed      int              `json:"animation_speed"`
-	XOffset             int              `json:"x_offset"`
-	YOffset             int              `json:"y_offset"`
 	XShadowOffset       int              `json:"x_shadow_offset"`
 	YShadowOffset       int              `json:"y_shadow_offset"`
 	ShadowIntensity     int              `json:"shadow_intensity"`

@@ -85,6 +85,7 @@ type Message struct {
 	Unit          *unit.Unit                      `json:"unit"`
 	UnitID        int                             `json:"unit_id"`
 	Equip         *detail.BodyEquipSlot           `json:"equip"`
+	Weapon        *detail.Weapon                  `json:"weapon"`
 	HighGravity   bool                            `json:"high_gravity"`
 	Type          string                          `json:"type"`
 

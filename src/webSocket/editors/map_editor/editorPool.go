@@ -167,19 +167,29 @@ func Reader(ws *websocket.Conn) {
 
 		if msg.Event == "rotateObject" { // +
 			mapChange, _ := maps.Maps.GetByID(msg.ID)
+
+			newX, newY := msg.X+msg.XOffset, msg.Y+msg.YOffset
+
+			oldCoordinate, _ := mapChange.GetCoordinate(newX, newY)
+			if oldCoordinate.ID > 0 {
+				continue
+			}
+
 			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+			mapChange.DeleteCoordinate(msg.X, msg.Y)
 
 			coordinateMap.ObjRotate = msg.Rotate
 			coordinateMap.AnimationSpeed = msg.Speed
-			coordinateMap.XOffset = msg.XOffset
-			coordinateMap.YOffset = msg.YOffset
 			coordinateMap.XShadowOffset = msg.XShadowOffset
 			coordinateMap.YShadowOffset = msg.YShadowOffset
 			coordinateMap.ShadowIntensity = msg.ShadowIntensity
 			coordinateMap.Scale = msg.Scale
 			coordinateMap.Shadow = msg.Shadow
+			coordinateMap.X = newX
+			coordinateMap.Y = newY
 
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
+			mapChange.AddCoordinate(coordinateMap)
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
 		}
 
 		// TODO ---------------------------- //
@@ -288,7 +298,7 @@ func Reader(ws *websocket.Conn) {
 			coordinateMap.TexturePriority = 0
 			coordinateMap.ObjectPriority = 0
 
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
 			selectMap(msg, ws)
 		}
 
@@ -302,7 +312,7 @@ func Reader(ws *websocket.Conn) {
 			coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
 			coordinateMap.ObjectPriority++
 
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange)
+			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
 		}
 	}
 }

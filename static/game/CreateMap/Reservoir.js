@@ -54,7 +54,7 @@ function CreateReservoir(reservoir, x, y) {
     }
 
     game.map.reservoir[x][y].sprite = gameObjectCreate(x, y, reservoirTexture, 20, shadow, reservoir.rotate,
-        0, 0, group, shadowXOffset, shadowYOffset, 40);
+        group, shadowXOffset, shadowYOffset, 40);
 
     game.map.reservoir[x][y].sprite.inputEnabled = true;
     game.map.reservoir[x][y].sprite.input.pixelPerfectOver = true;
@@ -66,8 +66,7 @@ function CreateReservoir(reservoir, x, y) {
     game.map.reservoir[x][y].sprite.events.onInputOver.add(function () {
 
         if (!game.map.reservoir[x][y].border) {
-            game.map.reservoir[x][y].border = CreateBorder(x, y, reservoirTexture, 20, reservoir.rotate,
-                0, 0, group);
+            game.map.reservoir[x][y].border = CreateBorder(x, y, reservoirTexture, 20, reservoir.rotate, group);
             group.swap(game.map.reservoir[x][y].sprite, game.map.reservoir[x][y].border);
         } else {
             game.map.reservoir[x][y].border.visible = true;

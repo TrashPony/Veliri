@@ -19,11 +19,12 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	GunRotate int  `json:"gun_rotate"`
-	Rotate    int  `json:"rotate"`
-	OnMap     bool `json:"on_map"`
-	Leave     bool `json:"leave"`
-	GameID    int  `json:"game_id"`
+	GunRotate int `json:"gun_rotate"`
+
+	Rotate int  `json:"rotate"`
+	OnMap  bool `json:"on_map"`
+	Leave  bool `json:"leave"`
+	GameID int  `json:"game_id"`
 
 	Defend bool `json:"defend"`
 
@@ -117,7 +118,7 @@ type Bullet struct {
 	Rotate  int            `json:"rotate"`
 	X       int            `json:"x"`
 	Y       int            `json:"y"`
-	Z       int            `json:"z"` // определяет "высоту" пули (сильнее отдалять тени)
+	Z       float64        `json:"z"` // определяет "высоту" пули (сильнее отдалять тени)
 	Speed   int            `json:"speed"`
 	Target  *Target        `json:"target"`
 	OwnerID int            `json:"owner_id"` // какой игрок стрелял

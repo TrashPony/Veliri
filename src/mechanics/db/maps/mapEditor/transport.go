@@ -12,7 +12,7 @@ func PlaceTransport(coordinate *coordinate.Coordinate, mp *_map.Map) {
 	coordinate.Transport = true
 
 	if changeCoordinate != nil {
-		UpdateMapCoordinate(coordinate, mp)
+		UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 	} else {
 		InsertMapCoordinate(coordinate, mp)
 	}
@@ -20,5 +20,5 @@ func PlaceTransport(coordinate *coordinate.Coordinate, mp *_map.Map) {
 
 func RemoveTransport(coordinate *coordinate.Coordinate, mp *_map.Map) {
 	coordinate.Transport = false
-	UpdateMapCoordinate(coordinate, mp)
+	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 }

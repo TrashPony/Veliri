@@ -12,9 +12,6 @@ func getTypeByID(idType int) *coordinate.Coordinate {
 		"type, "+
 		"texture_flore, "+
 		"texture_object, "+
-		"move, "+
-		"view, "+
-		"attack, "+
 		"animate_sprite_sheets, "+
 		"animate_loop, "+
 		"unit_overlap "+
@@ -29,8 +26,7 @@ func getTypeByID(idType int) *coordinate.Coordinate {
 
 	for rows.Next() {
 		err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
-			&coordinateType.Move, &coordinateType.View, &coordinateType.Attack, &coordinateType.AnimateSpriteSheets,
-			&coordinateType.AnimateLoop, &coordinateType.UnitOverlap)
+			&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop, &coordinateType.UnitOverlap)
 		if err != nil {
 			log.Fatal("getTypeByID() " + err.Error())
 		}
@@ -41,8 +37,8 @@ func getTypeByID(idType int) *coordinate.Coordinate {
 
 func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coordinate.Coordinate {
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, move, view, "+
-		"attack, animate_sprite_sheets, animate_loopFROM coordinate_type "+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, "+
+		" animate_sprite_sheets, animate_loopFROM coordinate_type "+
 		"WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
 		textureFlore, textureObject, animate)
 	if err != nil {
@@ -54,8 +50,7 @@ func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coo
 
 	for rows.Next() {
 		err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
-			&coordinateType.Move, &coordinateType.View, &coordinateType.Attack, &coordinateType.AnimateSpriteSheets,
-			&coordinateType.AnimateLoop)
+			&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop)
 		if err != nil {
 			log.Fatal("getTypeByTerrainAndObject() " + err.Error())
 		}
@@ -75,8 +70,6 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 	var id int
 	var rotate int
 	var animateSpeed int
-	var xOffset int
-	var yOffset int
 
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, id_type, rotate, animate_speed, x_offset, y_offset "+
 		"FROM map_constructor "+
@@ -88,7 +81,7 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&id, &idType, &rotate, &animateSpeed, &xOffset, &yOffset)
+		err := rows.Scan(&id, &idType, &rotate, &animateSpeed)
 		if err != nil {
 			log.Fatal("getMapCoordinateInMC() " + err.Error())
 		}
@@ -102,9 +95,6 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 		mcCoordinate.Y = y
 		mcCoordinate.ObjRotate = rotate
 		mcCoordinate.AnimationSpeed = animateSpeed
-
-		mcCoordinate.XOffset = xOffset
-		mcCoordinate.YOffset = yOffset
 
 		return mcCoordinate
 	}

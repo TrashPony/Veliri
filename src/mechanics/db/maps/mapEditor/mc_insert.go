@@ -23,8 +23,6 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"texture_priority, "+
 		"rotate, "+
 		"animate_speed, "+
-		"x_offset, "+
-		"y_offset, "+
 		"x_shadow_offset, "+
 		"y_shadow_offset, "+
 		"shadow_intensity, "+
@@ -39,7 +37,7 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		"to_positions "+
 		""+
 		") "+
-		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)",
+		"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)",
 		mp.Id,
 		coordinate.X,
 		coordinate.Y,
@@ -47,8 +45,6 @@ func InsertMapCoordinate(coordinate *coordinate.Coordinate, mp *_map.Map) {
 		coordinate.TexturePriority,
 		coordinate.ObjRotate,
 		coordinate.AnimationSpeed,
-		coordinate.XOffset,
-		coordinate.YOffset,
 		coordinate.XShadowOffset,
 		coordinate.YShadowOffset,
 		coordinate.ShadowIntensity,

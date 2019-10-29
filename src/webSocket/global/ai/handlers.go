@@ -36,6 +36,8 @@ func entranceMonitor(coor *coordinate.Coordinate, mp *_map.Map) {
 		users, rLock := globalGame.Clients.GetAll()
 
 		if globalGame.CheckHandlerCoordinate(coor, users) == nil {
+			// todo отправлять вместе с сообщение координату спрайта телепорта
+			// todo (спрайт телепорта это тот который удастся найти в радиусе 500 рх)
 			// отключение телепорта
 			go wsGlobal.SendMessage(wsGlobal.Message{Event: "handlerClose", IDMap: mp.Id, X: coor.X, Y: coor.Y})
 			coor.HandlerOpen = false

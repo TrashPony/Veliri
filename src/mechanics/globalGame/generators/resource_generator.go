@@ -4,7 +4,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/gameTypes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
@@ -70,15 +69,6 @@ func generate(mp *_map.Map, typeRes resource.Map, count int) {
 			newRes.Y = y
 			newRes.Rotate = rand.Intn(360)
 			newRes.MapID = mp.Id
-
-			if !newRes.Move() {
-				coordinateMap, ok := mp.OneLayerMap[newRes.X][newRes.Y]
-				if ok {
-					coordinateMap.Move = false // т.к. на координате ресурс то координата не проходима
-				} else {
-					coordinate.AddIntCoordinate(mp.OneLayerMap, &coordinate.Coordinate{Move: false})
-				}
-			}
 
 			mp.AddResourceInMap(newRes)
 		}

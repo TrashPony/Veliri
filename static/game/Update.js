@@ -6,14 +6,9 @@ function update() {
     //     // todo идея хорошая реализация нет DynamicShadowMap();
     // }
 
-    if (game && game.typeService === "battle") {
-        MoveUnit();
-        FlightBullet(); // ослеживает все летящие спрайты пуль
-    }
-
     if (game && game.typeService === "global") {
         StartSelectableUnits();
-        UpdateFogOfWar();
+        //UpdateFogOfWar();
 
         game.UnitStatusLayer.bmd.clear();
 
@@ -103,9 +98,11 @@ function CreateMapHealBar(sprite, maxHP, hp) {
 }
 
 function UpdateFogOfWar() {
+    // TODO вынести в воркер на бекенде и обновлять только тогда когда он изменился
+    // TODO мега не производительный метод
     if (!game.FogOfWar.ms) return;
 
-    let fringe = 64;
+    let fringe = 12;
 
     let centerX = game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x);
     let centerY = game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y);
@@ -120,7 +117,7 @@ function UpdateFogOfWar() {
     );
 
     gradient.addColorStop(0, 'rgba(0,0,0,0.4');
-    gradient.addColorStop(0.4, 'rgba(0,0,0,0.2');
+    gradient.addColorStop(0.5, 'rgba(0,0,0,0.2');
     gradient.addColorStop(1, 'rgba(0,0,0,0');
 
     game.FogOfWar.bmd.clear();

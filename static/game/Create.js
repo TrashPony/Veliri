@@ -6,8 +6,8 @@ function CreateGame(map, loadFunc, typeService) {
     LoadFunc = loadFunc;
     Map = map;
     TypeService = typeService;
-    //TODO что бы работал блюр на линиях и эмиторы надо делать WEBGL
-    return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
+
+    return new Phaser.Game('100', '100', Phaser.WEBGL, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -45,6 +45,7 @@ function create(game) {
     // UNITS
     game.unitLayer = game.add.group();
 
+    game.bulletLayer = game.add.group();
     // уровень обьектов которые над юнитом
     game.floorOverObjectLayer = game.add.group();
 
@@ -76,6 +77,7 @@ function create(game) {
     };
 
     game.redactorButton = game.add.group();
+    game.SelectLayer = game.add.group();
     game.redactorMetaText = game.add.group();
     game.geoDataLayer = game.add.group();
 

@@ -6,12 +6,10 @@ function CreateAnimate(coordinate, x, y) {
     }
     if (coordinate.unit_overlap) {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset,
-            game.floorOverObjectLayer, coordinate.animate_loop);
+            coordinate.obj_rotate, coordinate.animation_speed, game.floorOverObjectLayer, coordinate.animate_loop);
     } else {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, coordinate.x_offset, coordinate.y_offset,
-            game.floorObjectLayer, coordinate.animate_loop);
+            coordinate.obj_rotate, coordinate.animation_speed, game.floorObjectLayer, coordinate.animate_loop);
     }
 
     if (game.typeService !== "mapEditor") {
@@ -21,10 +19,10 @@ function CreateAnimate(coordinate, x, y) {
     coordinate.objectSprite = animate;
 }
 
-function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, xOffset, yOffset, group, needAnimate) {
+function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, group, needAnimate) {
     let shadow;
     if (needShadow) {
-        shadow = group.create(x + game.shadowXOffset + xOffset, y + game.shadowYOffset + yOffset, texture);
+        shadow = group.create(x + game.shadowXOffset, y + game.shadowYOffset, texture);
         shadow.anchor.setTo(0.5, 0.5);
         shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;
@@ -37,7 +35,7 @@ function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed
         }
     }
 
-    let object = group.create(x + xOffset, y + yOffset, texture);
+    let object = group.create(x, y, texture);
     object.anchor.setTo(0.5, 0.5);
     object.scale.set((scale / 100) / 2);
     object.angle = rotate;
