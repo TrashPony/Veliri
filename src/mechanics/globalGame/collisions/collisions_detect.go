@@ -123,6 +123,22 @@ func checkMapReservoir(mp *_map.Map, rect *Polygon) (bool, bool) {
 	return true, true
 }
 
+func checkObjectsMap(mp *_map.Map, rect *Polygon) (bool, bool) {
+	// TODO ужасная оптимизация, точнее ее отсутсвие. Сильно сказывается на поиске пути
+	// 	но сейчас у меня нет сил делать оптимизацию С:
+	for _, q := range mp.OneLayerMap {
+		for _, object := range q {
+			for _, geoPoint := range object.GeoData {
+				if rect.detectCollisionRectToCircle(&point{x: float64(geoPoint.X), y: float64(geoPoint.Y)}, geoPoint.Radius) {
+					return true, true
+				}
+			}
+		}
+	}
+
+	return false, false
+}
+
 func checkCollisionsBoxes(mapID int, rect *Polygon, undergroundBox bool) *boxInMap.Box {
 	boxs := boxes.Boxes.GetAllBoxByMapID(mapID)
 

@@ -10,7 +10,7 @@ var Store = newStore()
 func newStore() *MessageStore {
 	return &MessageStore{
 		messages: make([]*Message, 0),
-		Move:     false,
+		Move:     true,
 		MoveInit: false,
 
 		MoveEndPoint: false,

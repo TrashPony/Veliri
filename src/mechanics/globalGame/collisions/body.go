@@ -19,6 +19,13 @@ func BodyCheckCollisionsOnStaticMap(x, y, rotate int, mp *_map.Map, body *detail
 
 	rect := GetBodyRect(body, float64(x), float64(y), rotate, full, min)
 
+	// TODO ужасная оптимизация, точнее ее отсутсвие. Сильно сказывается на поиске пути
+	// 	но сейчас у меня нет сил делать оптимизацию С:
+	collision, _ := checkObjectsMap(mp, rect)
+	if collision {
+		return false, true
+	}
+
 	noCach := func() (bool, bool) {
 		possibleMove, front := searchStaticMapCollisionByRect(x, y, mp, min, rect, body.ID, body.Height*2)
 		if !possibleMove {
