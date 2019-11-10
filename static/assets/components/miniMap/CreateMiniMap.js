@@ -15,7 +15,7 @@ function CreateMiniMap() {
 
     let canvas = document.getElementById("canvasMap");
 
-    if ((!game.map || !game.FogOfWar.ms) && window.location.pathname !== "/editors/map/") return;
+    if ((!game.map) && window.location.pathname !== "/editors/map/") return;
 
     if (canvas) {
 
@@ -30,17 +30,34 @@ function CreateMiniMap() {
         ctx.fillStyle = "#4e4e4e";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (game.FogOfWar.ms) {
+        // дальность видимости
+        for (let id in game.units) {
+            if (game.units[id].sprite) {
+                if (game.units[id].owner_id === game.user_id) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgb(127, 127, 127)";
+                    ctx.fillStyle = "rgb(127, 127, 127)";
+                    ctx.ellipse(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY,
+                        game.units[id].body.range_view / offsetX, game.units[id].body.range_view / offsetY,
+                        0, 0, 2 * Math.PI, true);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+        }
 
-
-            ctx.beginPath();
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
-            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-            ctx.ellipse(game.FogOfWar.ms.sprite.x / offsetX, game.FogOfWar.ms.sprite.y / offsetY,
-                game.FogOfWar.ms.body.range_view / offsetX, game.FogOfWar.ms.body.range_view / offsetY,
-                0, 0, 2 * Math.PI, true);
-            ctx.fill();
-            ctx.stroke();
+        // линии радара
+        for (let id in game.units) {
+            if (game.units[id].sprite) {
+                if (game.units[id].owner_id === game.user_id && game.units[id].body.range_radar > 0) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(0, 0, 255, 1)";
+                    ctx.ellipse(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY,
+                        game.units[id].body.range_radar / offsetX, game.units[id].body.range_radar / offsetY,
+                        0, 0, 2 * Math.PI, true);
+                    ctx.stroke();
+                }
+            }
         }
 
         // todo довольно тормазнуто отрисовывать всю геодату каждый раз, возможно есть способ это закешировать)
@@ -98,8 +115,8 @@ function CreateMiniMap() {
                     if (game.units[id].moveTo) {
                         ctx.beginPath();
                         ctx.strokeStyle = "#00fcff";
-                        ctx.moveTo(game.units[id].sprite.x / offsetX + 1, game.units[id].sprite.y / offsetY + 3);
-                        ctx.lineTo(game.units[id].moveTo.x / offsetX + 1, game.units[id].moveTo.y / offsetY + 3);
+                        ctx.moveTo(game.units[id].sprite.x / offsetX - 1, game.units[id].sprite.y / offsetY - 1);
+                        ctx.lineTo(game.units[id].moveTo.x / offsetX - 1, game.units[id].moveTo.y / offsetY - 1);
                         ctx.stroke();
                     }
 
@@ -109,7 +126,7 @@ function CreateMiniMap() {
                     ctx.fillStyle = "#ff7a00"; // нейтрал
                 }
 
-                ctx.fillRect(game.units[id].sprite.x / offsetX, game.units[id].sprite.y / offsetY, 6, 4);
+                ctx.fillRect(game.units[id].sprite.x / offsetX - 3, game.units[id].sprite.y / offsetY - 2, 6, 4);
             }
         }
 

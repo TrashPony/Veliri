@@ -2,7 +2,6 @@ package global
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
-	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -30,6 +29,8 @@ func LoadGame(user *player.Player, msg Message) {
 		go RecoveryPowerWorker(user)
 		// отслеживание целей
 		go GunWorker(user) // todo если игрок заходит 2 раза то создается 2 функции
+		// работа обзора и радара отряда
+		go RadarWorker(user, mp) // todo если игрок заходит 2 раза то создается 2 функции
 
 		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
@@ -38,13 +39,13 @@ func LoadGame(user *player.Player, msg Message) {
 			User:        user,
 			Squad:       user.GetSquad(),
 			Bases:       bases.Bases.GetBasesByMap(mp.Id),
-			Boxes:       boxes.Boxes.GetAllBoxByMapID(mp.Id),
 			IDUserSend:  user.GetID(),
 			Credits:     user.GetCredits(),
 			IDMap:       user.GetSquad().MatherShip.MapID,
-			ShortUnits:  globalGame.Clients.GetAllShortUnits(user.GetSquad().MatherShip.MapID, true),
+			ShortUnits:  user.GetSquad().GetShortUnits(), // сначала отдаем только своих юнитов
 			Bot:         user.Bot,
 			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
+			//Boxes:       boxes.Boxes.GetAllBoxByMapID(mp.Id), ящики отдаем теперь тупо радаром (можно удалить)
 		})
 
 		// находим аномалии

@@ -8,7 +8,7 @@ function update() {
 
     if (game && game.typeService === "global") {
         StartSelectableUnits();
-        //UpdateFogOfWar();
+        ClearFog();
 
         game.UnitStatusLayer.bmd.clear();
 
@@ -29,6 +29,7 @@ function update() {
             AnimateMiningLaser(unit);
             AnimateDigger(unit);
             CreateMapHealBar(unit.sprite, unit.body.max_hp, unit.hp);
+            UpdateFogOfWar(unit);
 
             if (unit.AttackLine) {
                 CreateAttackLine(unit);
@@ -97,30 +98,26 @@ function CreateMapHealBar(sprite, maxHP, hp) {
     }
 }
 
-function UpdateFogOfWar() {
-    // TODO вынести в воркер на бекенде и обновлять только тогда когда он изменился
-    // TODO мега не производительный метод
-    if (!game.FogOfWar.ms) return;
 
-    let fringe = 12;
-
-    let centerX = game.FogOfWar.ms.sprite.x - (game.camera.x / game.camera.scale.x);
-    let centerY = game.FogOfWar.ms.sprite.y - (game.camera.y / game.camera.scale.y);
-
-    let gradient = game.FogOfWar.bmd.context.createRadialGradient(
-        centerX,
-        centerY,
-        game.FogOfWar.ms.body.range_view,
-        centerX,
-        centerY,
-        game.FogOfWar.ms.body.range_view - fringe
-    );
-
-    gradient.addColorStop(0, 'rgba(0,0,0,0.4');
-    gradient.addColorStop(0.5, 'rgba(0,0,0,0.2');
-    gradient.addColorStop(1, 'rgba(0,0,0,0');
-
+function ClearFog() {
     game.FogOfWar.bmd.clear();
-    game.FogOfWar.bmd.context.fillStyle = gradient;
-    game.FogOfWar.bmd.context.fillRect(0, 0, game.camera.width, game.camera.height);
+    game.FogOfWar.bmd.context.fillStyle = 'rgba(0,0,0,0.3)';
+    game.FogOfWar.bmd.context.rect(0, 0, game.camera.width, game.camera.height);
+    game.FogOfWar.bmd.context.fill();
+}
+
+function UpdateFogOfWar(unit) {
+    if (!game.FogOfWar || unit.owner_id !== game.user_id) return;
+
+    let centerX = unit.sprite.x - (game.camera.x / game.camera.scale.x);
+    let centerY = unit.sprite.y - (game.camera.y / game.camera.scale.y);
+
+    //http://stackoverflow.com/a/12895687/1250044 рисование очищающих кругов
+    game.FogOfWar.bmd.context.save();
+    game.FogOfWar.bmd.context.globalCompositeOperation = 'destination-out';
+    game.FogOfWar.bmd.context.beginPath();
+    game.FogOfWar.bmd.context.fillStyle = 'rgba(0,0,0,1)';
+    game.FogOfWar.bmd.context.arc(centerX, centerY, unit.body.range_view, 0, Math.PI * 2, true);
+    game.FogOfWar.bmd.context.fill();
+    game.FogOfWar.bmd.context.restore();
 }

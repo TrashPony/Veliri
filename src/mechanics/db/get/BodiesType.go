@@ -31,7 +31,8 @@ func BodiesType() map[int]detail.Body {
 		"standard_size_medium, " +
 		"standard_size_big, " +
 		"height," +
-		"width " +
+		"width," +
+		"range_radar " +
 		"" +
 		"FROM body_type")
 	if err != nil {
@@ -69,6 +70,7 @@ func BodiesType() map[int]detail.Body {
 			&body.StandardSizeBig,
 			&body.Height,
 			&body.Width,
+			&body.RangeRadar,
 		)
 		if err != nil {
 			log.Fatal("get scan all type body: " + err.Error())

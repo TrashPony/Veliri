@@ -239,6 +239,14 @@ function ReadResponse(jsonData) {
         Data.squad = jsonData.squad;
         fillFormation(Data.squad, scaleFormation);
     }
+
+    if (jsonData.event === "radarWork") {
+        RadarWork(jsonData)
+    }
+
+    if (jsonData.event === "markMove") {
+        MoveMark(jsonData)
+    }
 }
 
 let moveDebug = null;

@@ -93,6 +93,12 @@ type Message struct {
 	RectSize int    `json:"rect_size"`
 
 	Polygon collisions.Polygon `json:"polygon"`
+
+	NeedCheckView bool                  `json:"-"` // если тру то надо проверить сообщение на дальность видимости/радара
+	RadarMark     *squad.VisibleObjects `json:"radar_mark"`
+	ActionObject  string                `json:"action_object"` // удалить/создать обьект
+	ActionMark    string                `json:"action_mark"`   // удалить/создать/скрыть/раскрыть метку
+	Object        interface{}           `json:"object"`        // обьект (ящик, транспорт, юнит и тд)
 }
 
 type Cloud struct {
@@ -305,7 +311,15 @@ func MoveSender() {
 
 				// получают все в пределах карты
 				if resp.IDSender == 0 && resp.IDUserSend == 0 && client.MapID == resp.IDMap {
-					err = ws.WriteJSON(resp)
+					if resp.NeedCheckView {
+						// фильтр по дальности видимости
+						newResp := CheckView(globalGame.Clients.GetById(client.ID), &resp)
+						if newResp != nil {
+							err = ws.WriteJSON(newResp)
+						}
+					} else {
+						err = ws.WriteJSON(resp)
+					}
 				}
 
 				if err != nil {

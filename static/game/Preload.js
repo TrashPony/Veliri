@@ -304,5 +304,8 @@ function preload() {
     game.load.image('light_tank_mask2', 'http://' + window.location.host + '/assets/units/body/light_tank_mask2.png');
     game.load.spritesheet('light_tank_bottom_animate', 'http://' + window.location.host + '/assets/units/body/light_tank_bottom_animate.png', 200, 200, 11);
 
+    // Radar Icon
+    game.load.image('fly_radar_icon', 'http://' + window.location.host + '/assets/radar/fly.png');
+
     autoPreload();
 }

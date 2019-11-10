@@ -45,6 +45,7 @@ type Unit struct {
 	VulToThermo     int  `json:"vul_to_thermo"`
 	VulToExplosion  int  `json:"vul_to_explosion"`
 	RangeView       int  `json:"range_view"`
+	RangeRadar      int  `json:"range_radar"`
 	Accuracy        int  `json:"accuracy"`
 	MaxPower        int  `json:"max_power"`
 	RecoveryPower   int  `json:"recovery_power"`
@@ -437,6 +438,22 @@ func (unit *Unit) WorkOutMovePower() {
 	unit.WorkOutPower(thorium)
 }
 
+func (unit *Unit) CheckViewCoordinate(x, y int) (bool, bool) {
+	if !unit.OnMap && !unit.Body.MotherShip {
+		return false, false
+	}
+
+	if unit.RangeView >= int(game_math.GetBetweenDist(unit.X, unit.Y, x, y)) {
+		return true, true
+	}
+
+	if unit.RangeRadar >= int(game_math.GetBetweenDist(unit.X, unit.Y, x, y)) {
+		return false, true
+	}
+
+	return false, false
+}
+
 func (unit *Unit) CalculateParams() {
 
 	if unit.Body == nil {
@@ -504,6 +521,7 @@ func (unit *Unit) CalculateParams() {
 	unit.VulToKinetics = unit.Body.VulToKinetics
 	unit.VulToThermo = unit.Body.VulToThermo
 	unit.VulToExplosion = unit.Body.VulToExplosion
+	unit.RangeRadar = unit.Body.RangeRadar
 	unit.RangeView = unit.Body.RangeView
 	unit.Accuracy = unit.Body.Accuracy
 	unit.MaxPower = unit.Body.MaxPower

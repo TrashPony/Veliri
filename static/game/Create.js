@@ -7,7 +7,7 @@ function CreateGame(map, loadFunc, typeService) {
     Map = map;
     TypeService = typeService;
 
-    return new Phaser.Game('100', '100', Phaser.WEBGL, 'main', {
+    return new Phaser.Game('100', '100', Phaser.Canvas, 'main', {
         preload: preload,
         create: create,
         update: update,
@@ -64,8 +64,6 @@ function create(game) {
     game.FogOfWar = {
         bmd: fogBmd,
         sprite: fogSprite,
-        overviewCircle: null,
-        ms: null,
     };
 
     let UnitStatusBMD = game.make.bitmapData(game.camera.width, game.camera.height);

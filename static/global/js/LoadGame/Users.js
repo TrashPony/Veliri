@@ -17,7 +17,6 @@ function CreateUnits(units) {
 
             if (game.units[i].owner_id === game.user_id && game.units[i].body.mother_ship) {
                 FocusUnit(game.units[i].id);
-                game.FogOfWar.ms = game.units[i];
             }
         }
     }

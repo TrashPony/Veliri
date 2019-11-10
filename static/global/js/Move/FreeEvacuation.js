@@ -8,7 +8,19 @@ function FreeMoveEvacuation(jsonData) {
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
         sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id);
-        EvacuationUp(sprite)
+        sprite.shadow.x = sprite.x + game.shadowXOffset * 10;
+        sprite.shadow.y = sprite.x + game.shadowXOffset * 10;
+
+        sprite.shadow.scale.x = 0.15;
+        sprite.shadow.scale.y = 0.15;
+
+        sprite.scale.x = 0.15;
+        sprite.scale.y = 0.15;
+
+        sprite.angle = jsonData.path_unit.rotate;
+        sprite.shadow.angle = jsonData.path_unit.rotate;
+
+        //EvacuationUp(sprite)
     }
 
     game.add.tween(sprite).to({

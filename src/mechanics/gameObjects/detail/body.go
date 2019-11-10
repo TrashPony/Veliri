@@ -21,7 +21,9 @@ type Body struct {
 	VulToThermo    int `json:"vul_to_thermo"`
 	VulToExplosion int `json:"vul_to_explosion"`
 
-	RangeView     int  `json:"range_view"`
+	RangeView  int `json:"range_view"`
+	RangeRadar int `json:"range_radar"`
+
 	Accuracy      int  `json:"accuracy"`
 	MaxPower      int  `json:"max_power"`
 	RecoveryPower int  `json:"recovery_power"`

@@ -10,7 +10,8 @@ CREATE TABLE body_type (
   vulnerability_to_kinetics  INT,
   vulnerability_to_thermo    INT,
   vulnerability_to_explosion INT,
-  range_view                 INT,
+  range_view                 INT, -- дальность видимости
+  range_radar                INT, -- дальность радара
   accuracy                   INT,
   max_power                  INT,      /* макс колво энергии */
   recovery_power             INT,      /* востановление энергии за ход */
@@ -26,7 +27,6 @@ CREATE TABLE body_type (
   height                    int,   /* высота прямоуголника машинки */
   width                     int    /* ширина прямоуголника машинки */
 );
-
 
 CREATE TABLE body_thorium_slots (
   id_body       INT REFERENCES body_type (id), /* ид корпуса которому принадлежит слот*/

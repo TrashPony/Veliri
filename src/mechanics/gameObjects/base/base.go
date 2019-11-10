@@ -3,6 +3,8 @@ package base
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
+	"log"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -42,9 +44,18 @@ func (b *Base) CreateTransports(count int) {
 	b.Transports = make(map[int]*Transport)
 
 	for i := 0; i < count; i++ {
-		b.Transports[i] = &Transport{ID: i, Down: true, Fraction: b.Fraction}
-		if b.Transports[i].Fraction == "" {
-			b.Transports[i].Fraction = "Replics"
+
+		// ид формирует таким тупым способом что бы радар не умер ¯\_(ツ)_/¯,
+		// в общем так он будет уникален для каждого транспорта в игре
+		idString := strconv.Itoa(b.ID) + strconv.Itoa(i)
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		b.Transports[id] = &Transport{ID: id, Down: true, Fraction: b.Fraction}
+		if b.Transports[id].Fraction == "" {
+			b.Transports[id].Fraction = "Replics"
 		}
 	}
 }

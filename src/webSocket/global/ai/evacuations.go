@@ -75,7 +75,7 @@ func FlyTransport(transport *base.Transport, transportBase *base.Base, mp *_map.
 		}
 
 		go wsGlobal.SendMessage(wsGlobal.Message{Event: "FreeMoveEvacuation", PathUnit: pathUnit,
-			BaseID: transportBase.ID, TransportID: transport.ID, IDMap: mp.Id})
+			BaseID: transportBase.ID, TransportID: transport.ID, IDMap: mp.Id, NeedCheckView: true})
 
 		transport.X = pathUnit.X
 		transport.Y = pathUnit.Y
