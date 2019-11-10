@@ -12,7 +12,7 @@ func GetUnitPos(unitsID []int, user *player.Player, toX, toY float64) []*coordin
 
 	toPos := make([]*coordinate.Coordinate, 0)
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
-	units := globalGame.Clients.GetAllShortUnits(mp.Id, true)
+	units := globalGame.Clients.GetAllShortUnits(mp.Id)
 
 	for _, id := range unitsID {
 		moveUnit := user.GetSquad().GetUnitByID(id)

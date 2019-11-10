@@ -56,7 +56,6 @@ func Units(squad *squad.Squad, tx *sql.Tx) {
 				"y, "+
 				"rotate, "+
 				"on_map, "+
-				"target, "+
 				"hp, "+
 				"power, "+
 				"mother_ship, "+

@@ -46,7 +46,7 @@ func CheckBaseRespawn(base *base.Base) (bool, *coordinate.Coordinate) {
 func CheckTransportCoordinate(x, y, seconds, distCheck, mapID int) bool { // заставляет игроков эвакуироватся с точки респауна базы
 
 	lock := false
-	units := globalGame.Clients.GetAllShortUnits(mapID, true)
+	units := globalGame.Clients.GetAllShortUnits(mapID)
 
 	for _, gameUnit := range units {
 

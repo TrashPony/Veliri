@@ -16,7 +16,7 @@ type Squad struct {
 	BaseID               int                        `json:"base_id"` /* если отряд не у игрока то он храниться на этой базе */
 	SoftTransition       bool                       `json:"soft_transition"`
 	VisibleObjects       map[string]*VisibleObjects `json:"-"` // key id_object+type_object
-	updateVisibleObjects sync.Mutex                 `json:"-"`
+	updateVisibleObjects sync.RWMutex               `json:"-"`
 	updateDB             sync.Mutex                 `json:"-"`
 }
 
@@ -31,8 +31,8 @@ type VisibleObjects struct {
 }
 
 func (s *Squad) GetVisibleObjectByID(id string) *VisibleObjects {
-	s.updateVisibleObjects.Lock()
-	defer s.updateVisibleObjects.Unlock()
+	s.updateVisibleObjects.RLock()
+	defer s.updateVisibleObjects.RUnlock()
 
 	object, ok := s.VisibleObjects[id]
 	if ok {
@@ -112,6 +112,10 @@ func (s *Squad) GetFormationCoordinate(x, y int) (int, int) {
 func (s *Squad) CheckViewCoordinate(x, y int) (bool, bool) {
 
 	radarView := false
+
+	if s == nil || s.MatherShip == nil {
+		return false, false
+	}
 
 	view, radar := s.MatherShip.CheckViewCoordinate(x, y)
 	if view {

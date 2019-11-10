@@ -35,11 +35,13 @@ function HideMark(mark) {
 
 function UnhideMark(mark, x, y) {
     if (!game || !game.radar_marks) return;
-    mark = game.radar_marks[mark.uuid];
-    if (mark) {
-        mark.sprite.x = x;
-        mark.sprite.y = y;
-        mark.sprite.visible = true;
+    let oldMark = game.radar_marks[mark.uuid];
+    if (oldMark) {
+        oldMark.sprite.x = x;
+        oldMark.sprite.y = y;
+        oldMark.sprite.visible = true;
+    } else {
+        CreateMark(mark, x, y)
     }
 }
 

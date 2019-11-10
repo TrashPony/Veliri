@@ -38,9 +38,8 @@ func UpdateBody(unit *unit.Unit, squadID int, tx *sql.Tx) {
 				"quantity, "+
 				"used, "+
 				"steps_for_reload, "+
-				"hp, "+
-				"target ) "+
-				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+				"hp ) "+
+				"VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
 				squadID,
 				"weapon",
 				unit.GetID(),
@@ -51,7 +50,6 @@ func UpdateBody(unit *unit.Unit, squadID int, tx *sql.Tx) {
 				false,
 				0,
 				slot.HP,
-				"",
 			)
 			if err != nil {
 				log.Fatal("insert unit body weapon slot " + err.Error())

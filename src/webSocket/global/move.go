@@ -73,7 +73,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 					var path []*unit.PathUnit
 					var err error
 
-					units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
+					units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID)
 
 					if moveUnit.LastPathCell != nil {
 						path, err = move.Unit(moveUnit, float64(toPos[i].X), float64(toPos[i].Y), float64(moveUnit.LastPathCell.X),
@@ -343,7 +343,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 			//доходим до куда можем
 			pathUnit.X, pathUnit.Y, pathUnit.Millisecond = x, y, (pathUnit.Millisecond*percent)/100
-			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID, NeedCheckView: true})
 
 			//// ждем события столкновения
 			time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
@@ -351,7 +351,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 			// обрабатываем столкновение
 			unitPos, boxPos := collisions.UnitToBoxCollisionReaction(moveUnit, mapBox)
-			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID})
+			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID, NeedCheckView: true})
 			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID})
 
 			// TODO тнимаение зп ящика и если 0 то уничтожать
@@ -381,7 +381,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			ThoriumSlots: moveUnit.Body.ThoriumSlots, IDMap: moveUnit.MapID, Bot: user.Bot})
 
 		// оповещаем мир как двигается отряд
-		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID})
+		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID, NeedCheckView: true})
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
 			time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)

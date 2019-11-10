@@ -285,11 +285,12 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 	}
 }
 
+var i = 0
+
 func MoveSender() {
 	for {
 		select {
 		case resp := <-globalPipe:
-
 			usersGlobalWs, rLock := globalGame.Clients.GetAllConnects()
 			for ws, client := range usersGlobalWs {
 				// боты не получают сообщений они и так все знают
@@ -313,7 +314,7 @@ func MoveSender() {
 				if resp.IDSender == 0 && resp.IDUserSend == 0 && client.MapID == resp.IDMap {
 					if resp.NeedCheckView {
 						// фильтр по дальности видимости
-						newResp := CheckView(globalGame.Clients.GetById(client.ID), &resp)
+						newResp := CheckView(globalGame.Clients.GetByWs(ws), &resp)
 						if newResp != nil {
 							err = ws.WriteJSON(newResp)
 						}
@@ -324,7 +325,7 @@ func MoveSender() {
 
 				if err != nil {
 					go DisconnectUser(globalGame.Clients.GetByWs(ws), false)
-					log.Printf("error: %v", err)
+					log.Printf("error global: %v", err)
 				}
 			}
 			rLock.Unlock()

@@ -151,7 +151,7 @@ func PolygonSender() {
 				go SendMessage(Message{Event: "CreatePolygon", Color: "red", IDMap: mp.Id, Polygon: *boxRect})
 			}
 
-			for _, unit := range globalGame.Clients.GetAllShortUnits(mp.Id, true) {
+			for _, unit := range globalGame.Clients.GetAllShortUnits(mp.Id) {
 				unitRect := collisions.GetBodyRect(unit.Body, float64(unit.X), float64(unit.Y), unit.Rotate, false, false)
 
 				go SendMessage(Message{Event: "CreatePolygon", Color: "red", IDMap: mp.Id, Polygon: *unitRect})

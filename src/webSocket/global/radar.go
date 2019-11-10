@@ -2,9 +2,12 @@ package global
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/getlantern/deepcopy"
 	"github.com/satori/go.uuid"
 	"strconv"
 	"time"
@@ -26,24 +29,49 @@ func CheckView(client *player.Player, resp *Message) *Message {
 
 	// наверно это не супер оптимально но я не очень умный С:
 
-	if resp.Event == "FreeMoveEvacuation" {
-		view, radar := client.GetSquad().CheckViewCoordinate(resp.PathUnit.X, resp.PathUnit.Y)
+	var msg Message // создаем копию сообщения что бы не испортить его для других пользователей
+	err := deepcopy.Copy(&msg, &resp)
+	if err != nil {
+		println(err.Error())
+	}
+
+	if msg.Event == "FreeMoveEvacuation" {
+		view, radar := client.GetSquad().CheckViewCoordinate(msg.PathUnit.X, msg.PathUnit.Y)
 		if view {
-			return resp
+			return &msg
 		}
 
 		if radar {
 			// получаем метку, подменяем обьект на метку затирая методанные транспорта, а путь оставляем прежним
-			radarMark := client.GetSquad().GetVisibleObjectByID("transport" + strconv.Itoa(resp.TransportID))
+			radarMark := client.GetSquad().GetVisibleObjectByID("transport" + strconv.Itoa(msg.TransportID))
 			// если метки нет значит радар еще не нашел нехера и тупо игнорируем
 			if radarMark != nil {
-				resp.Event = "markMove"
-				resp.RadarMark = radarMark
-				resp.BaseID = 0
-				resp.TransportID = 0
-				return resp
+				msg.Event = "markMove"
+				msg.RadarMark = radarMark
+				msg.BaseID = 0
+				msg.TransportID = 0
+				return &msg
 			} else {
 				return nil
+			}
+		}
+	}
+
+	if msg.Event == "MoveTo" {
+		view, radar := client.GetSquad().CheckViewCoordinate(msg.PathUnit.X, msg.PathUnit.Y)
+		if view {
+			return &msg
+		}
+
+		if radar {
+			// получаем метку, подменяем обьект на метку затирая методанные, а путь оставляем прежним
+			radarMark := client.GetSquad().GetVisibleObjectByID("unit" + strconv.Itoa(msg.ShortUnit.ID))
+			// если метки нет значит радар еще не нашел нехера и тупо игнорируем
+			if radarMark != nil {
+				msg.Event = "markMove"
+				msg.RadarMark = radarMark
+				msg.ShortUnit = nil
+				return &msg
 			}
 		}
 	}
@@ -149,7 +177,27 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 				view, radar := user.GetSquad().CheckViewCoordinate(transport.X, transport.Y)
 
 				markEvent, objEvent, newMark := checkObjects(oldVisible, transport.ID, "fly", "transport", view, radar)
-				sendRadarMessage(markEvent, objEvent, newMark, transport, transport.X, transport.Y)
+				go sendRadarMessage(markEvent, objEvent, newMark, transport, transport.X, transport.Y)
+			}
+		}
+
+		// смотрим ящики, мои ящики.. видим мы их или нет
+		for _, gameBox := range boxes.Boxes.GetAllBoxByMapID(mp.Id) {
+			oldVisible := user.GetSquad().GetVisibleObjectByID("box" + strconv.Itoa(gameBox.ID))
+			view, radar := user.GetSquad().CheckViewCoordinate(gameBox.X, gameBox.Y)
+
+			markEvent, objEvent, newMark := checkObjects(oldVisible, gameBox.ID, "structure", "box", view, radar)
+			go sendRadarMessage(markEvent, objEvent, newMark, gameBox, gameBox.X, gameBox.Y)
+		}
+
+		// смотрим на других юнитов которые не наши)
+		for _, otherUnit := range globalGame.Clients.GetAllShortUnits(mp.Id) {
+			if otherUnit.OwnerID != user.GetID() {
+				oldVisible := user.GetSquad().GetVisibleObjectByID("unit" + strconv.Itoa(otherUnit.ID))
+				view, radar := user.GetSquad().CheckViewCoordinate(otherUnit.X, otherUnit.Y)
+
+				markEvent, objEvent, newMark := checkObjects(oldVisible, otherUnit.ID, "ground", "unit", view, radar)
+				go sendRadarMessage(markEvent, objEvent, newMark, otherUnit, otherUnit.X, otherUnit.Y)
 			}
 		}
 
@@ -157,7 +205,7 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 		user.GetSquad().RadarLock()
 		for _, vObj := range user.GetSquad().VisibleObjects {
 			if !vObj.Update {
-				sendRadarMessage("removeRadarMark", "removeObj", vObj, nil, 0, 0)
+				go sendRadarMessage("removeRadarMark", "removeObj", vObj, nil, 0, 0)
 
 				// что то пошло не так с мьютексами)
 				user.GetSquad().RadarUnlock()

@@ -12,7 +12,7 @@ func NewFormationPos(user *player.Player, msg Message) {
 
 	moveUnit := user.GetSquad().GetUnitByID(msg.UnitID)
 	mp, _ := maps.Maps.GetByID(moveUnit.MapID)
-	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
+	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID)
 
 	if moveUnit.FormationPos == nil {
 		x, y, _ := find_path.SearchEndPoint(float64(moveUnit.X), float64(moveUnit.Y), float64(user.GetSquad().MatherShip.X),

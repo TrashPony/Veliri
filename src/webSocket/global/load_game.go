@@ -32,7 +32,6 @@ func LoadGame(user *player.Player, msg Message) {
 		// работа обзора и радара отряда
 		go RadarWorker(user, mp) // todo если игрок заходит 2 раза то создается 2 функции
 
-		go SendMessage(Message{Event: "ConnectNewUser", ShortUnit: user.GetSquad().MatherShip.GetShortInfo(), IDSender: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 		go SendMessage(Message{
 			Event:       msg.Event,
 			Map:         mp,
@@ -45,7 +44,6 @@ func LoadGame(user *player.Player, msg Message) {
 			ShortUnits:  user.GetSquad().GetShortUnits(), // сначала отдаем только своих юнитов
 			Bot:         user.Bot,
 			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
-			//Boxes:       boxes.Boxes.GetAllBoxByMapID(mp.Id), ящики отдаем теперь тупо радаром (можно удалить)
 		})
 
 		// находим аномалии
@@ -76,7 +74,7 @@ func GetPlaceCoordinate(placeUnit *unit.Unit, mp *_map.Map) {
 		float64(placeUnit.Y),
 		placeUnit,
 		mp,
-		globalGame.Clients.GetAllShortUnits(mp.Id, true),
+		globalGame.Clients.GetAllShortUnits(mp.Id),
 	)
 
 	placeUnit.X = int(x)

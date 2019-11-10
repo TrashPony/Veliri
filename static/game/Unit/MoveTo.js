@@ -30,7 +30,7 @@ function MoveTo(jsonData) {
         SetBodyAngle(unit, path.rotate, path.millisecond, true);
         CreateMiniMap();
     } else {
-        CreateNewUnit(unit)
+        //CreateNewUnit(jsonData.short_unit)
     }
 }
 

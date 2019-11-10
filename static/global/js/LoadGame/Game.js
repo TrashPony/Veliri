@@ -5,7 +5,6 @@ let debug = true;
 function Game(jsonData) {
     Data = jsonData;
     game = CreateGame(jsonData.map, LoadGame, "global");
-    game.evacuations = [];
 }
 
 function LoadGame() {
@@ -24,10 +23,10 @@ function LoadGame() {
     game.units = Data.short_units;
     game.bullets = {};
     game.radar_marks = {};
+    game.boxes = [];
 
     CreateUnits(game.units);
     CreateBase(Data.bases);
-    //CreateBoxes(Data.boxes);
     ThoriumBar(Data.squad.mather_ship.body.thorium_slots);
     FillSquadBlock(Data.squad);
     Anomaly(Data.squad);

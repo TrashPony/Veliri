@@ -89,7 +89,7 @@ function ReadResponse(jsonData) {
     }
 
     if (jsonData.event === "DestroyBox") {
-        DestroyBox(jsonData.box_id)
+        DestroyBox(jsonData.box_id, true)
     }
 
     if (jsonData.event === "startMining") {

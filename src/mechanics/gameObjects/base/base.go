@@ -30,6 +30,7 @@ type Base struct {
 
 type Transport struct {
 	ID       int     `json:"id"`
+	BaseID   int     `json:"base_id"`
 	X        int     `json:"x"`
 	Y        int     `json:"y"`
 	Rotate   int     `json:"rotate"`
@@ -53,7 +54,7 @@ func (b *Base) CreateTransports(count int) {
 			log.Fatal(err)
 		}
 
-		b.Transports[id] = &Transport{ID: id, Down: true, Fraction: b.Fraction}
+		b.Transports[id] = &Transport{ID: id, Down: true, Fraction: b.Fraction, BaseID: b.ID}
 		if b.Transports[id].Fraction == "" {
 			b.Transports[id].Fraction = "Replics"
 		}

@@ -23,7 +23,7 @@ func CheckBoxCollision(box *boxInMap.Box, mp *_map.Map, excludeUnitID int) (bool
 		return possibleMove, nil
 	}
 
-	units := globalGame.Clients.GetAllShortUnits(mp.Id, true)
+	units := globalGame.Clients.GetAllShortUnits(mp.Id)
 	free := checkCollisionsUnits(rect, units, mp.Id, excludeUnitID)
 	if !free {
 		return false, nil

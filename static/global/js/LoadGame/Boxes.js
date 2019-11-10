@@ -1,13 +1,12 @@
 function CreateBoxes(boxes) {
-
-    game.boxes = [];
-
     for (let i = 0; i < boxes.length; i++) {
         CreateBox(boxes[i])
     }
 }
 
 function CreateBox(mapBox) {
+
+    if (!game) return;
 
     let boxShadow;
     if (!mapBox.underground) {

@@ -11,7 +11,7 @@ import (
 
 func InitCheckCollision(moveUnit *unit.Unit, pathUnit *unit.PathUnit) (bool, *unit.ShortUnitInfo, int, int, int) {
 	// вынесено в отдельную функцию что бы можно было беспробленнмно сделать defer rLock.Unlock()
-	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID, true)
+	units := globalGame.Clients.GetAllShortUnits(moveUnit.MapID)
 
 	noCollision, collisionUnit := CheckCollisionsPlayers(moveUnit, pathUnit.X, pathUnit.Y, pathUnit.Rotate, units,
 		false, false, false, false, true, nil)

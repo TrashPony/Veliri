@@ -5,15 +5,17 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/gorilla/websocket"
 	"sync"
+	"time"
 )
 
 type wsUsers struct {
-	users     map[*websocket.Conn]*player.Player // карта игроков которые онлайн
-	units     map[int]*unit.Unit                 // карта юнитов в игре (юнити и мсы)
-	connects  map[*websocket.Conn]gameConnect    // специальная карта для быстрой отправки сообщений.
-	usersMX   sync.RWMutex
-	connectMX sync.RWMutex
-	unitsMX   sync.RWMutex
+	users      map[*websocket.Conn]*player.Player // карта игроков которые онлайн
+	units      map[int]*unit.Unit                 // карта юнитов в игре (юнити и мсы)
+	connects   map[*websocket.Conn]gameConnect    // специальная карта для быстрой отправки сообщений.
+	shortUnits map[int]map[int]*unit.ShortUnitInfo
+	usersMX    sync.RWMutex
+	connectMX  sync.RWMutex
+	unitsMX    sync.RWMutex
 }
 
 type gameConnect struct {
@@ -26,9 +28,10 @@ var Clients = NewClientsStore()
 
 func NewClientsStore() *wsUsers {
 	return &wsUsers{
-		users:    make(map[*websocket.Conn]*player.Player),
-		connects: make(map[*websocket.Conn]gameConnect),
-		units:    make(map[int]*unit.Unit),
+		users:      make(map[*websocket.Conn]*player.Player),
+		connects:   make(map[*websocket.Conn]gameConnect),
+		units:      make(map[int]*unit.Unit),
+		shortUnits: make(map[int]map[int]*unit.ShortUnitInfo),
 	}
 }
 
@@ -91,26 +94,51 @@ func (c *wsUsers) PlaceUnit(newUnit *unit.Unit) {
 	c.units[newUnit.ID] = newUnit
 }
 
-func (c *wsUsers) GetAllShortUnits(mapID int, lock bool) map[int]*unit.ShortUnitInfo {
-	if lock {
-		c.unitsMX.Lock()
-		defer c.unitsMX.Unlock()
-	}
+func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
+	// оптимизировал функцию выдачи юнитов таким образом:
+	// при запросе юнитов сначало смотри заготовленая карта, если таковая имеется то отдаем ее и не генерим нечего
+	// если такой нет, то генерим карту, создаем специальную горутину которая будет поддерживать
+	// состояние карты каждый N милисекунд и при следующем запросе будет отдавать заготовленую карту а не генерить
+	// тогда мы можем генерить примерно раз в 100 мс что похоже намного быстрее чем запрашивать отовсюду заного)
 
-	shortUnits := make(map[int]*unit.ShortUnitInfo)
+	// стало лучше, но не сильно :(
 
-	for _, gameUnit := range c.units {
-		if gameUnit.MapID == mapID {
-			shortUnits[gameUnit.ID] = gameUnit.GetShortInfo()
+	getShort := func() map[int]*unit.ShortUnitInfo {
+		shortUnits := make(map[int]*unit.ShortUnitInfo)
+		for _, gameUnit := range c.units {
+			if gameUnit.MapID == mapID {
+				shortUnits[gameUnit.ID] = gameUnit.GetShortInfo()
+			}
 		}
+
+		return shortUnits
 	}
 
-	return shortUnits
+	c.unitsMX.Lock()
+	defer c.unitsMX.Unlock()
+
+	shortUnits, ok := c.shortUnits[mapID]
+	if ok {
+		return shortUnits
+	} else {
+		c.shortUnits[mapID] = getShort()
+		go func() {
+			time.Sleep(100 * time.Millisecond) // не надо сразу генерить
+			for {
+				c.unitsMX.Lock()
+				c.shortUnits[mapID] = getShort()
+				c.unitsMX.Unlock()
+				time.Sleep(100 * time.Millisecond)
+			}
+		}()
+
+		return c.shortUnits[mapID]
+	}
 }
 
 func (c *wsUsers) GetUnitByID(id int) *unit.Unit {
-	c.unitsMX.Lock()
-	defer c.unitsMX.Unlock()
+	c.unitsMX.RLock()
+	defer c.unitsMX.RUnlock()
 	return c.units[id]
 }
 
@@ -121,8 +149,8 @@ func (c *wsUsers) RemoveUnitByID(id int) {
 }
 
 func (c *wsUsers) GetUserByUnitId(unitID int) *player.Player {
-	c.usersMX.Lock()
-	defer c.usersMX.Unlock()
+	c.usersMX.RLock()
+	defer c.usersMX.RUnlock()
 
 	for _, user := range c.users {
 		if user.GetSquad() != nil && user.GetSquad().MatherShip != nil && user.GetSquad().GetUnitByID(unitID) != nil {
@@ -134,16 +162,16 @@ func (c *wsUsers) GetUserByUnitId(unitID int) *player.Player {
 }
 
 func (c *wsUsers) GetByWs(ws *websocket.Conn) *player.Player {
-	c.usersMX.Lock()
-	defer c.usersMX.Unlock()
+	c.usersMX.RLock()
+	defer c.usersMX.RUnlock()
 
 	user := c.users[ws]
 	return user
 }
 
 func (c *wsUsers) GetBySquadId(id int) *player.Player {
-	c.usersMX.Lock()
-	defer c.usersMX.Unlock()
+	c.usersMX.RLock()
+	defer c.usersMX.RUnlock()
 
 	for _, client := range c.users {
 		if client.GetSquad().ID == id {
@@ -155,8 +183,8 @@ func (c *wsUsers) GetBySquadId(id int) *player.Player {
 }
 
 func (c *wsUsers) GetById(id int) *player.Player {
-	c.usersMX.Lock()
-	defer c.usersMX.Unlock()
+	c.usersMX.RLock()
+	defer c.usersMX.RUnlock()
 
 	for _, client := range c.users {
 		if client.GetID() == id {
@@ -167,8 +195,8 @@ func (c *wsUsers) GetById(id int) *player.Player {
 }
 
 func (c *wsUsers) GetBotByUUID(uuid string) *player.Player {
-	c.usersMX.Lock()
-	defer c.usersMX.Unlock()
+	c.usersMX.RLock()
+	defer c.usersMX.RUnlock()
 
 	for _, client := range c.users {
 		if client.Bot && client.UUID == uuid {
