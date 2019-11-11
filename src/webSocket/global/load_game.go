@@ -26,6 +26,19 @@ func LoadGame(user *player.Player, msg Message) {
 
 		GetPlaceSquad(user, mp)
 
+		go SendMessage(Message{
+			Event:       msg.Event,
+			Map:         mp,
+			User:        user,
+			Squad:       user.GetSquad(),
+			Bases:       bases.Bases.GetBasesByMap(mp.Id),
+			IDUserSend:  user.GetID(),
+			Credits:     user.GetCredits(),
+			IDMap:       user.GetSquad().MatherShip.MapID,
+			Bot:         user.Bot,
+			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
+		})
+
 		// запускаем реактор машины
 		if user.GetSquad().RecoveryPowerWork {
 			user.GetSquad().RecoveryPowerExit = true
@@ -52,20 +65,6 @@ func LoadGame(user *player.Player, msg Message) {
 			}
 		}
 		go RadarWorker(user, mp)
-
-		go SendMessage(Message{
-			Event:       msg.Event,
-			Map:         mp,
-			User:        user,
-			Squad:       user.GetSquad(),
-			Bases:       bases.Bases.GetBasesByMap(mp.Id),
-			IDUserSend:  user.GetID(),
-			Credits:     user.GetCredits(),
-			IDMap:       user.GetSquad().MatherShip.MapID,
-			ShortUnits:  user.GetSquad().GetShortUnits(), // сначала отдаем только своих юнитов
-			Bot:         user.Bot,
-			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
-		})
 
 		// находим аномалии
 		equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")

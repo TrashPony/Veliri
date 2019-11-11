@@ -133,15 +133,16 @@ function CreateMiniMap() {
         for (let q in game.map.reservoir) {
             for (let r in game.map.reservoir[q]) {
                 let reservoir = game.map.reservoir[q][r];
-
-                ctx.beginPath();
-                ctx.fillStyle = "#ffd700";
-                ctx.strokeStyle = "rgba(255, 255, 255, 0)";
-                ctx.ellipse(reservoir.x / offsetX, reservoir.y / offsetY,
-                    15 / offsetX, 15 / offsetY,
-                    0, 0, 2 * Math.PI, true);
-                ctx.fill();
-                ctx.stroke();
+                if (reservoir) {
+                    ctx.beginPath();
+                    ctx.fillStyle = "#ffd700";
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+                    ctx.ellipse(reservoir.x / offsetX, reservoir.y / offsetY,
+                        15 / offsetX, 15 / offsetY,
+                        0, 0, 2 * Math.PI, true);
+                    ctx.fill();
+                    ctx.stroke();
+                }
             }
         }
 

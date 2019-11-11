@@ -16,7 +16,8 @@ func placeNewBox(user *player.Player, msg Message) {
 		go SendMessage(Message{Event: "Error", Error: err.Error(), IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 	} else {
 		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
-		go SendMessage(Message{Event: "NewBox", Box: newBox, X: user.GetSquad().MatherShip.X, Y: user.GetSquad().MatherShip.Y, IDMap: user.GetSquad().MatherShip.MapID})
+		go SendMessage(Message{Event: "NewBox", Box: newBox,
+			X: user.GetSquad().MatherShip.X, Y: user.GetSquad().MatherShip.Y, IDMap: user.GetSquad().MatherShip.MapID})
 	}
 }
 
@@ -30,22 +31,23 @@ func openBox(user *player.Player, msg Message) {
 		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, mapBox.X, mapBox.Y)
 
 		if dist < 75 {
+			// TODO проверять пароль не только при открытие ящика а еще при действие, пароль надо сохранять как сессия последнего открытого ящика
 			if mapBox.Protect {
 				if mapBox.GetPassword() == msg.BoxPassword || mapBox.GetPassword() == 0 {
-					go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-						Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+					go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(), X: mapBox.X, Y: mapBox.Y,
+						Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, NeedCheckView: true})
 				} else {
 					if msg.BoxPassword == 0 {
-						go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password",
-							IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+						go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Error: "need password", X: mapBox.X, Y: mapBox.Y,
+							IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, NeedCheckView: true})
 					} else {
 						go SendMessage(Message{Event: "Error", BoxID: mapBox.ID, Error: "wrong password",
 							IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
 					}
 				}
 			} else {
-				go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(),
-					Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID})
+				go SendMessage(Message{Event: msg.Event, BoxID: mapBox.ID, Inventory: mapBox.GetStorage(), X: mapBox.X, Y: mapBox.Y,
+					Size: mapBox.CapacitySize, IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, NeedCheckView: true})
 			}
 		}
 	}
@@ -129,8 +131,8 @@ func updateBoxInfo(box *boxInMap.Box) {
 		dist := game_math.GetBetweenDist(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, box.X, box.Y)
 
 		if dist < 175 { // что бы содержимое ящика не видили те кто далеко
-			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID,
-				Inventory: box.GetStorage(), Size: box.CapacitySize, IDMap: user.GetSquad().MatherShip.MapID})
+			go SendMessage(Message{Event: "UpdateBox", IDUserSend: user.GetID(), BoxID: box.ID, X: box.X, Y: box.Y,
+				Inventory: box.GetStorage(), Size: box.CapacitySize, IDMap: user.GetSquad().MatherShip.MapID, NeedCheckView: true})
 		}
 	}
 }

@@ -16,6 +16,12 @@ function CreateMark(mark, x, y) {
     return mark
 }
 
+function RemoveAllMark() {
+    for (let uuid in game.radar_marks) {
+        if (game.radar_marks[uuid]) RemoveMark(game.radar_marks[uuid]);
+    }
+}
+
 function RemoveMark(mark) {
     if (!game || !game.radar_marks) return;
     mark = game.radar_marks[mark.uuid];

@@ -9,7 +9,7 @@ function CreateReservoirs() {
 
 function CreateReservoir(reservoir, x, y) {
 
-    if (game.map.reservoir[x] === undefined || game.map.reservoir[x][y] === undefined) {
+    if (!game.map.reservoir[x] || !game.map.reservoir[x][y]) {
         if (game.map.reservoir.hasOwnProperty(x)) {
             game.map.reservoir[x][y] = reservoir;
         } else {

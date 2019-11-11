@@ -9,7 +9,7 @@ function ReadResponse(jsonData) {
         if (gameReady) {
             ReadResponse(jsonData)
         } else {
-            setTimeout(() => awaitReady(jsonData), 50); //wait 50 ms, then try again
+            setTimeout(() => awaitReady(jsonData), 50);
         }
     };
 
@@ -17,6 +17,17 @@ function ReadResponse(jsonData) {
         // игра еще не создалась, что бы не пропустить сообщения пусть они ждут пока игра не поднимется
         awaitReady(jsonData);
         return
+    }
+
+    if (jsonData.event === "RefreshRadar") {
+        RemoveAllMark();
+        removeAllObj();
+
+        // TODO окончание загрузки
+    }
+
+    if (jsonData.event === "focusMS") {
+        FocusUnit(jsonData.short_unit.id);
     }
 
     if (jsonData.event === "Error") {

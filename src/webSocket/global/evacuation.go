@@ -49,7 +49,7 @@ func evacuationUnit(unit *unit.Unit) {
 		unit.Evacuation = true
 
 		go SendMessage(Message{Event: "startMoveEvacuation", ShortUnit: unit.GetShortInfo(),
-			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, IDMap: unit.MapID})
+			PathUnit: path[0], BaseID: baseID, TransportID: transport.ID, IDMap: unit.MapID, NeedCheckView: true})
 
 		for _, pathUnit := range path {
 
@@ -59,7 +59,7 @@ func evacuationUnit(unit *unit.Unit) {
 			}
 
 			go SendMessage(Message{Event: "MoveEvacuation", PathUnit: pathUnit, BaseID: baseID,
-				TransportID: transport.ID, IDMap: unit.MapID})
+				TransportID: transport.ID, IDMap: unit.MapID, NeedCheckView: true})
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -69,7 +69,7 @@ func evacuationUnit(unit *unit.Unit) {
 		}
 
 		go SendMessage(Message{Event: "placeEvacuation", ShortUnit: unit.GetShortInfo(), BaseID: baseID,
-			TransportID: transport.ID, IDMap: unit.MapID})
+			TransportID: transport.ID, IDMap: unit.MapID, NeedCheckView: true, PathUnit: path[len(path)-1]})
 		time.Sleep(2 * time.Second) // задержка что бы проиграть анимацию забора мс
 
 		if unit.HP > 0 {
@@ -88,7 +88,7 @@ func evacuationUnit(unit *unit.Unit) {
 			}
 
 			go SendMessage(Message{Event: "ReturnEvacuation", ShortUnit: unit.GetShortInfo(), PathUnit: pathUnit,
-				BaseID: baseID, TransportID: transport.ID, IDMap: unit.MapID})
+				BaseID: baseID, TransportID: transport.ID, IDMap: unit.MapID, NeedCheckView: true})
 
 			transport.X = pathUnit.X
 			transport.Y = pathUnit.Y
@@ -101,7 +101,7 @@ func evacuationUnit(unit *unit.Unit) {
 		}
 
 		go SendMessage(Message{Event: "stopEvacuation", ShortUnit: unit.GetShortInfo(), BaseID: baseID,
-			TransportID: transport.ID, IDMap: unit.MapID})
+			TransportID: transport.ID, IDMap: unit.MapID, NeedCheckView: true, PathUnit: path[len(path)-1]})
 		time.Sleep(1 * time.Second) // задержка что бы опустить мс
 
 		user := globalGame.Clients.GetById(unit.OwnerID)

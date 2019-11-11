@@ -20,12 +20,12 @@ function LoadGame() {
     game.user_id = Data.user.id;
     game.my_squad_sprite = {};
 
-    game.units = Data.short_units;
+    game.units = {};
     game.bullets = {};
     game.radar_marks = {};
     game.boxes = [];
+    game.map.reservoir = [];
 
-    CreateUnits(game.units);
     CreateBase(Data.bases);
     ThoriumBar(Data.squad.mather_ship.body.thorium_slots);
     FillSquadBlock(Data.squad);
@@ -36,9 +36,14 @@ function LoadGame() {
 
     setTimeout(function () {
         CreateMiniMap();
+        global.send(JSON.stringify({
+            event: "RefreshRadar"
+        }));
         if (debug) {
             CreateGeoData(Data.map.geo_data);
             CreateAnomalies(Data.map.anomalies)
         }
-    }, 1000)
+    }, 1000);
+
+
 }

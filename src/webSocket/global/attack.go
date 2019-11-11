@@ -61,10 +61,11 @@ func GunWorker(user *player.Player) {
 
 	sendRotate := func(rotateUnit *unit.Unit, pathUnit *unit.PathUnit) {
 		go SendMessage(Message{
-			Event:     "RotateGun",
-			ShortUnit: rotateUnit.GetShortInfo(),
-			PathUnit:  pathUnit,
-			IDMap:     rotateUnit.MapID},
+			Event:         "RotateGun",
+			ShortUnit:     rotateUnit.GetShortInfo(),
+			PathUnit:      pathUnit,
+			IDMap:         rotateUnit.MapID,
+			NeedCheckView: true},
 		)
 	}
 
@@ -120,11 +121,12 @@ func GunWorker(user *player.Player) {
 
 						// для отыгрыша анимации выстрела
 						SendMessage(Message{
-							Event:  "FireWeapon",
-							X:      bullet.X,
-							Y:      bullet.Y,
-							Weapon: weaponSlot.Weapon,
-							IDMap:  attackUnit.MapID,
+							Event:         "FireWeapon",
+							X:             bullet.X,
+							Y:             bullet.Y,
+							Weapon:        weaponSlot.Weapon,
+							IDMap:         attackUnit.MapID,
+							NeedCheckView: true,
 						})
 
 						go FlyBullet(bullet, attackUnit.MapID)
@@ -204,10 +206,11 @@ func FlyBullet(bullet *unit.Bullet, idMap int) {
 	minDist := startDist
 
 	SendMessage(Message{
-		Event:    "FlyBullet",
-		Bullet:   bullet,
-		PathUnit: &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: tickTime},
-		IDMap:    idMap},
+		Event:         "FlyBullet",
+		Bullet:        bullet,
+		PathUnit:      &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: tickTime},
+		IDMap:         idMap,
+		NeedCheckView: true},
 	)
 	time.Sleep(time.Duration(tickTime) * time.Millisecond)
 
@@ -232,19 +235,21 @@ func FlyBullet(bullet *unit.Bullet, idMap int) {
 		ms := (tickTime * percent) / 100
 
 		go SendMessage(Message{
-			Event:    "FlyBullet",
-			Bullet:   bullet,
-			PathUnit: &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: ms},
-			IDMap:    idMap},
+			Event:         "FlyBullet",
+			Bullet:        bullet,
+			PathUnit:      &unit.PathUnit{Rotate: bullet.Rotate, X: bullet.X, Y: bullet.Y, Millisecond: ms},
+			IDMap:         idMap,
+			NeedCheckView: true},
 		)
 
 		if end || minDist < currentDist {
 			// для отыгрыша анимации взрыва
 			// TODO появление динамического обьекта кратера
 			SendMessage(Message{
-				Event:  "ExplosionBullet",
-				Bullet: bullet,
-				IDMap:  idMap,
+				Event:         "ExplosionBullet",
+				Bullet:        bullet,
+				IDMap:         idMap,
+				NeedCheckView: true,
 			})
 
 			break

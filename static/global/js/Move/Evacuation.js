@@ -56,7 +56,8 @@ function startMoveEvacuation(jsonData) {
 
         let evacuation = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
         if (!evacuation) {
-            evacuation = CreateEvacuation(x, y, jsonData.base_id, jsonData.transport_id);
+            return;
+            //evacuation = CreateEvacuation(x, y, jsonData.base_id, jsonData.transport_id);
         }
 
         if (unit.owner_id === game.user_id) {
@@ -126,9 +127,10 @@ function evacuationMove(jsonData, squadMove) {
 
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
-        sprite = CreateEvacuation(path.x, path.y, jsonData.base_id, jsonData.transport_id);
-        sprite.scale.set(0.15);
-        sprite.shadow.scale.set(0.15);
+        return;
+        // sprite = CreateEvacuation(path.x, path.y, jsonData.base_id, jsonData.transport_id);
+        // sprite.scale.set(0.15);
+        // sprite.shadow.scale.set(0.15);
     }
 
     game.add.tween(sprite).to({
@@ -159,7 +161,8 @@ function stopEvacuation(jsonData) {
 
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
-        sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id)
+        return;
+        //sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id)
     }
 
     let unit = game.units[jsonData.short_unit.id];
@@ -169,7 +172,8 @@ function stopEvacuation(jsonData) {
 function placeEvacuation(jsonData) {
     let sprite = game.bases[jsonData.base_id].transports[jsonData.transport_id].sprite;
     if (!sprite) {
-        sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id)
+        return;
+        //sprite = CreateEvacuation(jsonData.path_unit.x, jsonData.path_unit.y, jsonData.base_id, jsonData.transport_id)
     }
     // TODO создать еще 1 мелкую тень которая падает на корпус + тень которая на земле
     // TODO сделать так что бы мелкая тень при пересечение корпуса пропадала (и осталась ток на корпусе)

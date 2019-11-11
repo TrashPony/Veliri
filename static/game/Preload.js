@@ -308,6 +308,7 @@ function preload() {
     game.load.image('fly_radar_icon', 'http://' + window.location.host + '/assets/radar/fly.png');
     game.load.image('structure_radar_icon', 'http://' + window.location.host + '/assets/radar/structure.png');
     game.load.image('ground_radar_icon', 'http://' + window.location.host + '/assets/radar/ground.png');
+    game.load.image('resource_radar_icon', 'http://' + window.location.host + '/assets/radar/resource.png');
 
     autoPreload();
 }

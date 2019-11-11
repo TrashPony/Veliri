@@ -21,6 +21,7 @@ import (
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
+	"time"
 )
 
 var globalPipe = make(chan Message, 1)
@@ -176,7 +177,17 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 		}
 
 		if msg.Event == "InitGame" {
-			LoadGame(user, msg)
+			go LoadGame(user, msg)
+		}
+
+		if msg.Event == "RefreshRadar" {
+			// из за того что клиент начинает принимать сообщения раньше чем загрузится клиент, то данные теряются
+			go SendMessage(Message{Event: "RefreshRadar", IDUserSend: user.GetID()})
+			user.GetSquad().RadarLock()
+			user.GetSquad().VisibleObjects = make(map[string]*squad.VisibleObjects)
+			time.Sleep(500 * time.Millisecond)
+			user.GetSquad().RadarUnlock()
+			go SendMessage(Message{Event: "focusMS", IDUserSend: user.GetID(), ShortUnit: user.GetSquad().MatherShip.GetShortInfo()})
 		}
 
 		if msg.Event == "MoveTo" {

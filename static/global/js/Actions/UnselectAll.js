@@ -12,7 +12,9 @@ function UnselectResource() {
     // ресурсы
     for (let x in game.map.reservoir) {
         for (let y in game.map.reservoir[x]) {
-            game.map.reservoir[x][y].sprite.events.onInputDown.removeAll();
+            if (game.map.reservoir[x][y] && game.map.reservoir[x][y].sprite) {
+                game.map.reservoir[x][y].sprite.events.onInputDown.removeAll();
+            }
         }
     }
 

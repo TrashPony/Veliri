@@ -34,7 +34,7 @@ func startMining(miner *unit.Unit, msg Message, user *player.Player) {
 	if int(dist) < miningEquip.Equip.Radius && !miningEquip.Equip.MiningChecker && miner.Power >= miningEquip.Equip.UsePower {
 
 		go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Equip.Reload,
-			TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID})
+			TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID, NeedCheckView: true})
 
 		miningEquip.Equip.MiningChecker = true
 		miningEquip.Equip.CreateMining()
@@ -79,7 +79,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 				if exitNow {
 					// игрок сам отменить копание
 					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID, NeedCheckView: true})
 					exit = true
 				}
 			default:
@@ -87,7 +87,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 				if globalGame.Clients.GetById(miner.OwnerID) == nil {
 					// игрок вышел
 					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID, NeedCheckView: true})
 					exit = true
 				}
 
@@ -96,7 +96,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 				if int(dist) > miningEquip.Radius {
 					// игрок уехал слишком далеко
 					go SendMessage(Message{Event: "stopMining", ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
-						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID})
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, IDMap: miner.MapID, NeedCheckView: true})
 					exit = true
 				}
 
@@ -134,7 +134,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 		//update.Squad(user.GetSquad(), true) todo
 
 		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
-		go SendMessage(Message{Event: "updateReservoir", X: reservoir.X, Y: reservoir.Y, Count: reservoir.Count, IDMap: miner.MapID})
+		go SendMessage(Message{Event: "updateReservoir", X: reservoir.X, Y: reservoir.Y, Count: reservoir.Count, IDMap: miner.MapID, NeedCheckView: true})
 
 		if reservoir.Count == 0 {
 			// если руда капается в несколько руд, то пусть остановяться все лазеры )
@@ -149,7 +149,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 			return
 		} else {
 			go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.Reload,
-				TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID})
+				TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID, NeedCheckView: true})
 		}
 	}
 }

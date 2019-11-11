@@ -100,6 +100,7 @@ func useDigger(user *player.Player, msg Message) {
 			DynamicObject: &dynamicObject,
 			Name:          diggerSlot.Equip.Name,
 			IDMap:         user.GetSquad().MatherShip.MapID,
+			NeedCheckView: true,
 		})
 
 		for _, otherUser := range users {
@@ -125,6 +126,7 @@ func useDigger(user *player.Player, msg Message) {
 			DynamicObject: &dynamicObject,
 			Name:          diggerSlot.Equip.Name,
 			IDMap:         user.GetSquad().MatherShip.MapID,
+			NeedCheckView: true,
 		})
 	}
 }

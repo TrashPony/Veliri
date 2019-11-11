@@ -18,7 +18,7 @@ type Map struct {
 	DefaultLevel        int
 	Specification       string
 	OneLayerMap         map[int]map[int]*coordinate.Coordinate
-	Reservoir           map[int]map[int]*resource.Map   `json:"reservoir"`
+	Reservoir           map[int]map[int]*resource.Map   `json:"-"`
 	Global              bool                            `json:"global"`
 	InGame              bool                            `json:"in_game"`
 	HandlersCoordinates []*coordinate.Coordinate        `json:"handlers_coordinates"`
@@ -364,6 +364,10 @@ func (mp *Map) GetMaxPriorityObject() int {
 }
 
 func (mp *Map) AddResourceInMap(reservoir *resource.Map) {
+
+	idString := strconv.Itoa(reservoir.X) + strconv.Itoa(reservoir.Y)
+	reservoir.ID, _ = strconv.Atoi(idString)
+
 	if mp.Reservoir[reservoir.X] != nil {
 		mp.Reservoir[reservoir.X][reservoir.Y] = reservoir
 	} else {

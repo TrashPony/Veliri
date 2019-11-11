@@ -35,7 +35,8 @@ func CheckView(client *player.Player, resp *Message) *Message {
 		println(err.Error())
 	}
 
-	if msg.Event == "FreeMoveEvacuation" {
+	if msg.Event == "FreeMoveEvacuation" || msg.Event == "startMoveEvacuation" || msg.Event == "MoveEvacuation" ||
+		msg.Event == "placeEvacuation" || msg.Event == "ReturnEvacuation" || msg.Event == "stopEvacuation" {
 		view, radar := client.GetSquad().CheckViewCoordinate(msg.PathUnit.X, msg.PathUnit.Y)
 		if view {
 			return &msg
@@ -92,6 +93,59 @@ func CheckView(client *player.Player, resp *Message) *Message {
 				msg.BoxID = 0
 				return &msg
 			}
+		}
+	}
+
+	if msg.Event == "FlyBullet" {
+		view, _ := client.GetSquad().CheckViewCoordinate(msg.Bullet.X, msg.Bullet.Y)
+		if view {
+			return &msg
+		}
+		// TODO если пуля ушла в туман войны ее надо удалять, надо задействовать для этого RadarWorker,
+		//  а ракеты можно и на радаре показывать
+	}
+
+	// ExplosionBullet - взрыв, визуал
+	if msg.Event == "ExplosionBullet" {
+		view, _ := client.GetSquad().CheckViewCoordinate(msg.Bullet.X, msg.Bullet.Y)
+		if view {
+			return &msg
+		}
+	}
+
+	// MoveStop - месага чисто для визуала смысла не несет под радаром
+	// PlaceUnit - отработает за счет радара
+	// RemoveUnit - отработает за счет радара
+	// startMining - видить действие могут ток те кто видит юнита визуально
+	// stopMining - видить действие могут ток те кто видит юнита визуально
+	// RotateGun - что бы видить поворот башни, надо видить юнита
+	if msg.Event == "MoveStop" || msg.Event == "PlaceUnit" || msg.Event == "RemoveUnit" || msg.Event == "startMining" ||
+		msg.Event == "stopMining" || msg.Event == "RotateGun" {
+		view, _ := client.GetSquad().CheckViewCoordinate(msg.ShortUnit.X, msg.ShortUnit.Y)
+		if view {
+			return &msg
+		}
+	}
+
+	// NewBox - отработает за счет радара
+	if msg.Event == "NewBox" {
+		view, _ := client.GetSquad().CheckViewCoordinate(msg.Box.X, msg.Box.Y)
+		if view {
+			return &msg
+		}
+	}
+
+	// UpdateBox - видить содержимое могут только те кто видят ящик
+	// openBox - отрыть ящик могут только те кто видят его
+	// updateReservoir - видить обновление статы можно ток визуально
+	// destroyReservoir - отработает радар в зоне радара
+	// useDigger - видить действие могут ток те кто видит визуально, хотя тут не все так однозначно
+	// FireWeapon - что бы видеть начало выстрела надо, видить визуально начало выстрела)
+	if msg.Event == "UpdateBox" || msg.Event == "openBox" || msg.Event == "updateReservoir" || msg.Event == "destroyReservoir" ||
+		msg.Event == "useDigger" || msg.Event == "FireWeapon" {
+		view, _ := client.GetSquad().CheckViewCoordinate(msg.X, msg.Y)
+		if view {
+			return &msg
 		}
 	}
 
@@ -202,7 +256,6 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 		// смотрим транспорты видим мы их или нет
 		for _, gameBase := range bases.Bases.GetBasesByMap(mp.Id) {
 			for _, transport := range gameBase.Transports {
-
 				oldVisible := user.GetSquad().GetVisibleObjectByID("transport" + strconv.Itoa(transport.ID))
 				view, radar := user.GetSquad().CheckViewCoordinate(transport.X, transport.Y)
 
@@ -222,14 +275,26 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 
 		// смотрим на других юнитов которые не наши)
 		for _, otherUnit := range globalGame.Clients.GetAllShortUnits(mp.Id) {
-			if otherUnit.OwnerID != user.GetID() {
-				oldVisible := user.GetSquad().GetVisibleObjectByID("unit" + strconv.Itoa(otherUnit.ID))
-				view, radar := user.GetSquad().CheckViewCoordinate(otherUnit.X, otherUnit.Y)
+			oldVisible := user.GetSquad().GetVisibleObjectByID("unit" + strconv.Itoa(otherUnit.ID))
+			view, radar := user.GetSquad().CheckViewCoordinate(otherUnit.X, otherUnit.Y)
 
-				markEvent, objEvent, newMark := checkObjects(oldVisible, otherUnit.ID, "ground", "unit", view, radar)
-				go sendRadarMessage(markEvent, objEvent, newMark, otherUnit, otherUnit.X, otherUnit.Y)
+			markEvent, objEvent, newMark := checkObjects(oldVisible, otherUnit.ID, "ground", "unit", view, radar)
+			go sendRadarMessage(markEvent, objEvent, newMark, otherUnit, otherUnit.X, otherUnit.Y)
+		}
+
+		// смотрим на залежи ресурсов
+		for _, x := range mp.Reservoir {
+			for _, reservoir := range x {
+				oldVisible := user.GetSquad().GetVisibleObjectByID("reservoir" + strconv.Itoa(reservoir.ID))
+				view, radar := user.GetSquad().CheckViewCoordinate(reservoir.X, reservoir.Y)
+
+				markEvent, objEvent, newMark := checkObjects(oldVisible, reservoir.ID, "resource", "reservoir", view, radar)
+				go sendRadarMessage(markEvent, objEvent, newMark, reservoir, reservoir.X, reservoir.Y)
 			}
 		}
+
+		// TODO пули
+		// TODO обновление обьектов на карте которые могут пропадать и появлятся
 
 		// все не обновленные обьекты считаются потеряными из виду, например телепорт смерть и тд
 		user.GetSquad().RadarLock()

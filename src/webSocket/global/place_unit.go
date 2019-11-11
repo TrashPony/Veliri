@@ -77,7 +77,7 @@ func placeUnit(user *player.Player, msg Message) {
 
 				go globalGame.Clients.PlaceUnit(outUnit)
 				go update.Squad(user.GetSquad(), true)
-				go SendMessage(Message{Event: "PlaceUnit", ShortUnit: outUnit.GetShortInfo(), IDMap: outUnit.MapID})
+				go SendMessage(Message{Event: "PlaceUnit", ShortUnit: outUnit.GetShortInfo(), IDMap: outUnit.MapID, NeedCheckView: true})
 
 				if outUnit.FormationPos != nil {
 
@@ -98,9 +98,10 @@ func ReturnUnit(user *player.Player, moveUnit *unit.Unit) {
 	moveUnit.OnMap = false
 
 	go SendMessage(Message{
-		Event:     "RemoveUnit",
-		ShortUnit: moveUnit.GetShortInfo(),
-		IDMap:     moveUnit.MapID,
+		Event:         "RemoveUnit",
+		ShortUnit:     moveUnit.GetShortInfo(),
+		IDMap:         moveUnit.MapID,
+		NeedCheckView: true,
 	})
 	go globalGame.Clients.RemoveUnitByID(moveUnit.ID)
 	go update.Squad(user.GetSquad(), true)

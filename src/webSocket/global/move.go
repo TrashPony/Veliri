@@ -285,7 +285,8 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 				PathUnit: &unit.PathUnit{
 					Speed: 0,
 				},
-				IDMap: moveUnit.MapID,
+				IDMap:         moveUnit.MapID,
+				NeedCheckView: true,
 			})
 
 			for collisionUnit != nil && collisionUnit.MoveChecker && timeCount < 10 && !noCollision {

@@ -36,13 +36,17 @@ type VisibleObjects struct {
 	UUID       string `json:"uuid"`
 	View       bool   `json:"view"`  // в прямой видимости
 	Radar      bool   `json:"radar"` // видим только радаром
-	Type       string `json:"type"`  // fly(летающий), ground(наземный), structure(структура)
+	Type       string `json:"type"`  // fly(летающий), ground(наземный), structure(структура), resource(ресурс)
 	Update     bool   `json:"update"`
 }
 
 func (s *Squad) GetVisibleObjectByID(id string) *VisibleObjects {
 	s.updateVisibleObjects.RLock()
 	defer s.updateVisibleObjects.RUnlock()
+
+	if s.VisibleObjects == nil {
+		return nil
+	}
 
 	object, ok := s.VisibleObjects[id]
 	if ok {
