@@ -352,7 +352,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			// обрабатываем столкновение
 			unitPos, boxPos := collisions.UnitToBoxCollisionReaction(moveUnit, mapBox)
 			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID, NeedCheckView: true})
-			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID})
+			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID, NeedCheckView: true})
 
 			// TODO тнимаение зп ящика и если 0 то уничтожать
 			//go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})

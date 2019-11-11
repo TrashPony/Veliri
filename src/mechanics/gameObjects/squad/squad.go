@@ -18,6 +18,16 @@ type Squad struct {
 	VisibleObjects       map[string]*VisibleObjects `json:"-"` // key id_object+type_object
 	updateVisibleObjects sync.RWMutex               `json:"-"`
 	updateDB             sync.Mutex                 `json:"-"`
+
+	/* необходимые флаги что бы обеспечить правильную перегрзку методов воркеров*/
+	RecoveryPowerWork bool `json:"-"`
+	RecoveryPowerExit bool `json:"-"`
+
+	GunWorkerWork bool `json:"-"`
+	GunWorkerExit bool `json:"-"`
+
+	RadarWorkerWork bool `json:"-"`
+	RadarWorkerExit bool `json:"-"`
 }
 
 type VisibleObjects struct {

@@ -63,4 +63,5 @@ function MoveMark(data) {
             y: data.path_unit.y
         }, data.path_unit.millisecond, Phaser.Easing.Linear.None, true, 0
     );
+    CreateMiniMap();
 }

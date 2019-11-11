@@ -206,12 +206,35 @@ function CreateMiniMap() {
         //     ctx.fillRect(game.squad.sprite.x / kX, game.squad.sprite.y / kY, hexagonWidth, hexagonHeight);
         // }
 
+        // игровые метки радара
+        for (let uuid in game.radar_marks) {
+            let mark = game.radar_marks[uuid];
+            if (mark && mark.sprite && mark.sprite.visible) {
+                if (!radarMarks[mark.type]) {
+                    let markImg = new Image();
+                    markImg.addEventListener("load", function () {
+                        radarMarks[mark.type] = markImg;
+                    });
+                    markImg.src = 'http://' + window.location.host + '/assets/radar/' + mark.type + ".png";
+                } else {
+                    let size = 184;
+                    ctx.drawImage(radarMarks[mark.type],
+                        ((mark.sprite.x) / offsetX) - (size / offsetX) / 2,
+                        ((mark.sprite.y) / offsetY) - (size / offsetY) / 2,
+                        size / offsetX,
+                        size / offsetY);
+                }
+            }
+        }
+
         let kXCam = (game.camera.scale.x * offsetX);
         let kYCam = (game.camera.scale.y * offsetY);
         ctx.strokeStyle = "#fffc1f";
         ctx.strokeRect(game.camera.x / kXCam, game.camera.y / kYCam, game.camera.view.width / kXCam, game.camera.view.height / kYCam);
     }
 }
+
+let radarMarks = {};
 
 function fastMove(e, canvas) {
     // TODO неправильный расчет

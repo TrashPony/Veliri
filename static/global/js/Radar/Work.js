@@ -1,6 +1,6 @@
 function RadarWork(data) {
-
-    if (data.action_mark === "createRadarMark") {
+    // если обьект создается то метка не нужна
+    if (data.action_mark === "createRadarMark" && data.action_object !== "createObj") {
         CreateMark(data.radar_mark, data.x, data.y)
     }
 

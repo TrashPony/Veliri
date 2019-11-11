@@ -30,7 +30,7 @@ function FreeMoveEvacuation(jsonData) {
 
 function QuickUpEvacuation(sprite, rotate) {
     sprite.shadow.x = sprite.x + game.shadowXOffset * 10;
-    sprite.shadow.y = sprite.x + game.shadowXOffset * 10;
+    sprite.shadow.y = sprite.y + game.shadowXOffset * 10;
 
     sprite.shadow.scale.x = 0.15;
     sprite.shadow.scale.y = 0.15;

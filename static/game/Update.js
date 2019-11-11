@@ -1,4 +1,6 @@
+let gameReady = false;
 function update() {
+    gameReady = true;
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
 
     // if (game && game.mapPoints) {

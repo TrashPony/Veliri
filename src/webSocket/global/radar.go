@@ -76,18 +76,42 @@ func CheckView(client *player.Player, resp *Message) *Message {
 		}
 	}
 
+	if msg.Event == "BoxTo" {
+		view, radar := client.GetSquad().CheckViewCoordinate(msg.PathUnit.X, msg.PathUnit.Y)
+		if view {
+			return &msg
+		}
+
+		if radar {
+			// получаем метку, подменяем обьект на метку затирая методанные, а путь оставляем прежним
+			radarMark := client.GetSquad().GetVisibleObjectByID("box" + strconv.Itoa(msg.BoxID))
+			// если метки нет значит радар еще не нашел нехера и тупо игнорируем
+			if radarMark != nil {
+				msg.Event = "markMove"
+				msg.RadarMark = radarMark
+				msg.BoxID = 0
+				return &msg
+			}
+		}
+	}
+
 	return nil
 }
 
 func RadarWorker(user *player.Player, mp *_map.Map) {
-	// TODO ошибка многопоточности, если клиент обновляет страницу больше 1го раза, создаются еще функции воркеры.
-	// TODO надо гарантировать 1 воркер на 1 отряд
 	// функция должна отслеживать что обьект вышел за пределы радара/обзора и сообщать об этом клиент
 	// и наоборот небыл видим стал видим обьект вошел в зону радара/обзора
 	//    -- для этого надо хранить предыдущие состояния (в прошлый раз видел, теперь нет - обьект вышел из поля зрения)
 	// каждый обьект в зоне радара должен иметь метку например: objectType + id
 	// каждой метке радара надо давать uuid что бы можно было ее двигать и удалять
 	// так же метод получения UUID метки по objectType + id для фильтра исходящих сообщений в метода CheckView()
+
+	user.GetSquad().RadarWorkerWork = true
+	defer func() {
+		user.GetSquad().RadarWorkerWork = false
+	}()
+
+	// если мы заходим в метод значит произошла перезагрузка, радар инитим заного
 	user.GetSquad().VisibleObjects = make(map[string]*squad.VisibleObjects)
 
 	checkObjects := func(oldObj *squad.VisibleObjects, id int, typeMark, typeObject string, view, radar bool) (string, string, *squad.VisibleObjects) {
@@ -169,6 +193,12 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 	}
 
 	for {
+
+		if user.GetSquad().RadarWorkerExit {
+			user.GetSquad().RadarWorkerExit = false
+			return
+		}
+
 		// смотрим транспорты видим мы их или нет
 		for _, gameBase := range bases.Bases.GetBasesByMap(mp.Id) {
 			for _, transport := range gameBase.Transports {

@@ -9,6 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/find_path"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
+	"time"
 )
 
 func LoadGame(user *player.Player, msg Message) {
@@ -26,11 +27,31 @@ func LoadGame(user *player.Player, msg Message) {
 		GetPlaceSquad(user, mp)
 
 		// запускаем реактор машины
+		if user.GetSquad().RecoveryPowerWork {
+			user.GetSquad().RecoveryPowerExit = true
+			for user.GetSquad().RecoveryPowerWork {
+				time.Sleep(100 * time.Millisecond)
+			}
+		}
 		go RecoveryPowerWorker(user)
+
 		// отслеживание целей
-		go GunWorker(user) // todo если игрок заходит 2 раза то создается 2 функции
+		if user.GetSquad().GunWorkerWork {
+			user.GetSquad().GunWorkerExit = true
+			for user.GetSquad().GunWorkerWork {
+				time.Sleep(100 * time.Millisecond)
+			}
+		}
+		go GunWorker(user)
+
 		// работа обзора и радара отряда
-		go RadarWorker(user, mp) // todo если игрок заходит 2 раза то создается 2 функции
+		if user.GetSquad().RadarWorkerWork {
+			user.GetSquad().RadarWorkerExit = true
+			for user.GetSquad().RadarWorkerWork {
+				time.Sleep(100 * time.Millisecond)
+			}
+		}
+		go RadarWorker(user, mp)
 
 		go SendMessage(Message{
 			Event:       msg.Event,

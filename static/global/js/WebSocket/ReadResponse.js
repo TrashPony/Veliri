@@ -1,6 +1,22 @@
 function ReadResponse(jsonData) {
+
     if (jsonData.event === "InitGame") {
         Game(jsonData);
+        return;
+    }
+
+    let awaitReady = function (jsonData) {
+        if (gameReady) {
+            ReadResponse(jsonData)
+        } else {
+            setTimeout(() => awaitReady(jsonData), 50); //wait 50 ms, then try again
+        }
+    };
+
+    if (!gameReady) {
+        // игра еще не создалась, что бы не пропустить сообщения пусть они ждут пока игра не поднимется
+        awaitReady(jsonData);
+        return
     }
 
     if (jsonData.event === "Error") {

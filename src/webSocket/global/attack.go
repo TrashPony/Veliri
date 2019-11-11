@@ -52,6 +52,11 @@ func GunWorker(user *player.Player) {
 	// TODO ошибка многопоточности, если клиент обновляет страницу больше 1го раза, создаются еще функции воркеры.
 	// TODO надо гарантировать 1 воркер на 1 отряд
 
+	user.GetSquad().GunWorkerWork = true
+	defer func() {
+		user.GetSquad().GunWorkerWork = false
+	}()
+
 	tickTime := 250
 
 	sendRotate := func(rotateUnit *unit.Unit, pathUnit *unit.PathUnit) {
@@ -140,6 +145,12 @@ func GunWorker(user *player.Player) {
 	}
 
 	for {
+
+		if user.GetSquad().GunWorkerExit {
+			user.GetSquad().GunWorkerExit = false
+			return
+		}
+
 		if user != nil && user.GetSquad() != nil && user.GetSquad().MatherShip != nil {
 
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {

@@ -285,8 +285,6 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 	}
 }
 
-var i = 0
-
 func MoveSender() {
 	for {
 		select {

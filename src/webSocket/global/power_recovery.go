@@ -7,7 +7,18 @@ import (
 
 // TODO отключить игрока если он отключился
 func RecoveryPowerWorker(user *player.Player) {
+
+	user.GetSquad().RecoveryPowerWork = true
+	defer func() {
+		user.GetSquad().RecoveryPowerWork = false
+	}()
+
 	for {
+
+		if user.GetSquad().RecoveryPowerExit {
+			user.GetSquad().RecoveryPowerExit = false
+			return
+		}
 
 		update := false
 		if user != nil && user.GetSquad() != nil && user.GetSquad().MatherShip != nil {
