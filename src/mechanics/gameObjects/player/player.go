@@ -5,12 +5,14 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/skill"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/getlantern/deepcopy"
 	"github.com/gorilla/websocket"
 	"strconv"
 )
@@ -67,7 +69,7 @@ type Player struct {
 	DebugMoveMessage []interface{}
 
 	// запомненные динамические обьекты на карте
-	MemoryDynamicObjects map[int]map[int]*coordinate.Coordinate `json:"memory_dynamic_objects"`
+	MemoryDynamicObjects map[int]map[int]*dynamic_map_object.Object `json:"memory_dynamic_objects"`
 }
 
 type ShortUserInfo struct {
@@ -111,6 +113,25 @@ type Window struct {
 	Height int  `json:"height"`
 	Width  int  `json:"width"`
 	Open   bool `json:"open"`
+}
+
+func (client *Player) AddDynamicObject(object *dynamic_map_object.Object) {
+	var memoryObj dynamic_map_object.Object // создаем копию обьекта
+	err := deepcopy.Copy(&memoryObj, &object)
+	if err != nil {
+		println(err.Error())
+	}
+
+	if client.MemoryDynamicObjects[object.X] != nil {
+		client.MemoryDynamicObjects[object.X][object.Y] = &memoryObj
+	} else {
+		client.MemoryDynamicObjects[object.X] = make(map[int]*dynamic_map_object.Object)
+		client.MemoryDynamicObjects[object.X][object.Y] = &memoryObj
+	}
+}
+
+func (client *Player) RemoveDynamicObject(object *dynamic_map_object.Object) {
+	delete(client.MemoryDynamicObjects[object.X], object.Y)
 }
 
 func (client *Player) GetShortUserInfo(squad bool) *ShortUserInfo {

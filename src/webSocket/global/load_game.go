@@ -3,6 +3,7 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
@@ -26,17 +27,22 @@ func LoadGame(user *player.Player, msg Message) {
 
 		GetPlaceSquad(user, mp)
 
+		if user.MemoryDynamicObjects == nil {
+			user.MemoryDynamicObjects = make(map[int]map[int]*dynamic_map_object.Object)
+		}
+
 		go SendMessage(Message{
-			Event:       msg.Event,
-			Map:         mp,
-			User:        user,
-			Squad:       user.GetSquad(),
-			Bases:       bases.Bases.GetBasesByMap(mp.Id),
-			IDUserSend:  user.GetID(),
-			Credits:     user.GetCredits(),
-			IDMap:       user.GetSquad().MatherShip.MapID,
-			Bot:         user.Bot,
-			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
+			Event:          msg.Event,
+			Map:            mp,
+			User:           user,
+			Squad:          user.GetSquad(),
+			Bases:          bases.Bases.GetBasesByMap(mp.Id),
+			IDUserSend:     user.GetID(),
+			Credits:        user.GetCredits(),
+			IDMap:          user.GetSquad().MatherShip.MapID,
+			Bot:            user.Bot,
+			HighGravity:    move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
+			DynamicObjects: user.MemoryDynamicObjects,
 		})
 
 		// запускаем реактор машины

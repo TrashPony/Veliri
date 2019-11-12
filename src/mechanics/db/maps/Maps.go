@@ -50,8 +50,8 @@ func Maps() map[int]*_map.Map {
 		Anomalies(mp)
 		Beams(mp)
 		Emitters(mp)
-		mp.StaticObjects = GetObjects(mp, "ct.object_hp = -2;")
-		mp.DynamicObjects = GetObjects(mp, "ct.object_hp > -2;")
+		mp.StaticObjects = GetObjects(mp, "ct.object_hp < 0;")
+		mp.DynamicObjects = GetObjects(mp, "ct.object_hp > -1;")
 
 		allMap[mp.Id] = mp
 	}

@@ -45,15 +45,13 @@ function CreateObjects() {
         }
     }
 
-    // TODO динамические обьекты
-
     // сортировка по приоритету отрисовки обьектов
     game.objects.sort(function (a, b) {
         return a.object_priority - b.object_priority;
     });
 
     for (let i in game.objects) {
-        if (game.objects[i].texture_object !== '') {
+        if (game.objects[i].texture !== '') {
             CreateObject(game.objects[i], game.objects[i].x, game.objects[i].y);
         }
 

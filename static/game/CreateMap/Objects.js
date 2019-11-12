@@ -1,10 +1,6 @@
 function CreateObject(coordinate, x, y) {
     let object;
 
-    if (coordinate.impact) {
-        return
-    }
-
     if (coordinate.unit_overlap) {
         object = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,

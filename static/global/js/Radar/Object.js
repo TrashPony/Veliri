@@ -15,6 +15,16 @@ function CreateRadarObject(mark, object) {
     if (mark.type_object === "reservoir") {
         CreateReservoir(object, Number(object.x), Number(object.y));
     }
+
+    if (mark.type_object === "dynamic_objects") {
+        if (object.texture !== '') {
+            CreateObject(object, object.x, object.y);
+        }
+
+        if (object.animate_sprite_sheets !== '') {
+            CreateAnimate(object, object.x, object.y);
+        }
+    }
 }
 
 function RemoveRadarObject(mark) {
@@ -53,6 +63,10 @@ function RemoveRadarObject(mark) {
                 }
             }
         }
+    }
+
+    if (mark.type_object === "dynamic_objects") {
+        // TODO
     }
 }
 

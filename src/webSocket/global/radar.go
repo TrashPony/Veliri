@@ -293,8 +293,38 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 			}
 		}
 
+		// смотрим динамические обьекты, в отличие от прошлых обьектов эти можно увидеть только визуально
+		// при этом пользователь их запоминает, тоесть он 1 раз увидил куст, ушел в другой конец карты,
+		// куст будет виден через туман войны, НО если куст убьют то игрок будет всеравно его видеть
+		// в тумане пока не откроет его зону снова.
+
+		// проверяем видит ли юзер новые обьекты
+		for _, x := range mp.DynamicObjects {
+			for _, obj := range x {
+				view, _ := user.GetSquad().CheckViewCoordinate(obj.X, obj.Y)
+				_, ok := user.MemoryDynamicObjects[obj.X][obj.Y]
+				if view && !ok {
+					user.AddDynamicObject(obj)
+					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: obj.ID},
+						ActionMark: "", ActionObject: "createObj", Object: obj, X: obj.X, Y: obj.Y, IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
+				}
+			}
+		}
+
+		// проверяем видит ли место где были старые обьекты но их уже нет
+		for _, x := range user.MemoryDynamicObjects {
+			for _, obj := range x {
+				view, _ := user.GetSquad().CheckViewCoordinate(obj.X, obj.Y)
+				_, ok := mp.DynamicObjects[obj.X][obj.Y]
+				if view && !ok {
+					user.RemoveDynamicObject(obj)
+					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: obj.ID},
+						ActionMark: "", ActionObject: "removeObj", Object: obj, X: obj.X, Y: obj.Y, IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
+				}
+			}
+		}
+
 		// TODO пули
-		// TODO обновление обьектов на карте которые могут пропадать и появлятся
 
 		// все не обновленные обьекты считаются потеряными из виду, например телепорт смерть и тд
 		user.GetSquad().RadarLock()
