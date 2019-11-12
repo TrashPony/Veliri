@@ -1,37 +1,42 @@
 function StartMining(jsonData) {
-
-    let attachPoint = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).attachPoint;
-    let equipSprite = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).sprite;
-
-    let xy = {x: jsonData.x, y: jsonData.y};
-    let laserOut = game.add.graphics(0, 0);
-    laserOut.lineStyle(6, 0xFFEDFF, 1);
-
-    let laserIn = game.add.graphics(0, 0);
-    laserIn.lineStyle(2, 0xFFFFFF, 1);
-
-    let blurX = game.add.filter('BlurX');
-    let blurY = game.add.filter('BlurY');
-    blurX.blur = 2;
-    blurY.blur = 2;
-    laserOut.filters = [blurX, blurY];
-    blurX.blur = 1;
-    blurY.blur = 1;
-    laserIn.filters = [blurX, blurY];
-
-    attachPoint.addChild(laserOut);
-    attachPoint.addChild(laserIn);
-
-    setTimeout(function () {
-        laserOut.destroy();
-        laserIn.destroy();
-    }, jsonData.seconds * 1000 - 3000);
-
     let unit = game.units[jsonData.short_unit.id];
-
     if (unit) {
+
         //"reloadEquip" + unit.id + type + i
         let id = "reloadEquip" + unit.id + jsonData.type_slot + jsonData.slot;
+
+        for (let i in unit.miningLaser) {
+            if (unit.miningLaser[i].id === id) return; // мы уже заинитили этот сеанс добычи)
+        }
+
+        if (jsonData.seconds * 1000 - 3000 <= 0) return; // лазеры уже перестали работать
+
+        let attachPoint = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).attachPoint;
+        let equipSprite = GetSpriteEqip(jsonData.short_unit.id, jsonData.type_slot, jsonData.slot).sprite;
+
+        let xy = {x: jsonData.x, y: jsonData.y};
+        let laserOut = game.add.graphics(0, 0);
+        laserOut.lineStyle(6, 0xFFEDFF, 1);
+
+        let laserIn = game.add.graphics(0, 0);
+        laserIn.lineStyle(2, 0xFFFFFF, 1);
+
+        let blurX = game.add.filter('BlurX');
+        let blurY = game.add.filter('BlurY');
+        blurX.blur = 2;
+        blurY.blur = 2;
+        laserOut.filters = [blurX, blurY];
+        blurX.blur = 1;
+        blurY.blur = 1;
+        laserIn.filters = [blurX, blurY];
+
+        attachPoint.addChild(laserOut);
+        attachPoint.addChild(laserIn);
+
+        setTimeout(function () {
+            laserOut.destroy();
+            laserIn.destroy();
+        }, jsonData.seconds * 1000 - 3000);
 
         if (!unit.miningLaser) {
             unit.miningLaser = [];

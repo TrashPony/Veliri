@@ -117,7 +117,7 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 			&obj.AnimationSpeed, &obj.UnitOverlap,
 			&obj.XShadowOffset, &obj.YShadowOffset, &obj.ShadowIntensity,
 			&obj.Priority, &obj.Name, &obj.Description,
-			&obj.Inventory, &obj.HP, &geoData)
+			&obj.Inventory, &obj.MaxHP, &geoData)
 		if err != nil {
 			log.Fatal(err.Error() + "scan map obj")
 		}
@@ -131,6 +131,7 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 
 		idString := strconv.Itoa(obj.X) + strconv.Itoa(obj.Y)
 		obj.ID, _ = strconv.Atoi(idString)
+		obj.HP = obj.MaxHP
 
 		if objMap[obj.X] != nil {
 			objMap[obj.X][obj.Y] = &obj

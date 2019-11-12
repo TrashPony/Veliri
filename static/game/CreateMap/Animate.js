@@ -1,22 +1,16 @@
 function CreateAnimate(coordinate, x, y) {
-    let animate;
 
-    if (coordinate.impact) {
-        return
-    }
     if (coordinate.unit_overlap) {
-        animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
+        coordinate.objectSprite = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
             coordinate.rotate, coordinate.animation_speed, game.floorOverObjectLayer, coordinate.animate_loop);
     } else {
-        animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
+        coordinate.objectSprite = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
             coordinate.rotate, coordinate.animation_speed, game.floorObjectLayer, coordinate.animate_loop);
     }
 
     if (game.typeService !== "mapEditor") {
-        ObjectEvents(coordinate, animate);
+        ObjectEvents(coordinate, coordinate.objectSprite);
     }
-
-    coordinate.objectSprite = animate;
 }
 
 function gameAnimateObjectCreate(x, y, texture, scale, needShadow, rotate, speed, group, needAnimate) {

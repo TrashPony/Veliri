@@ -18,7 +18,6 @@ function LoadGame() {
 
     game.user_name = Data.user.login;
     game.user_id = Data.user.id;
-    game.my_squad_sprite = {};
 
     game.units = {};
     game.bullets = {};
@@ -37,6 +36,7 @@ function LoadGame() {
     for (let x in Data.dynamic_objects) {
         for (let y in Data.dynamic_objects[x]) {
             let object = Data.dynamic_objects[x][y];
+            game.objects.push(object);
             if (object.texture !== '') {
                 CreateObject(object, object.x, object.y);
             }

@@ -17,6 +17,7 @@ function CreateRadarObject(mark, object) {
     }
 
     if (mark.type_object === "dynamic_objects") {
+        game.objects.push(object);
         if (object.texture !== '') {
             CreateObject(object, object.x, object.y);
         }

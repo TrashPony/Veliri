@@ -1,4 +1,5 @@
 let gameReady = false;
+
 function update() {
     gameReady = true;
     GrabCamera(); // функцуия для перетаскивания карты мышкой /* Магия */
@@ -40,6 +41,12 @@ function update() {
 
         for (let i in game.boxes) {
             CreateMapHealBar(game.boxes[i].sprite, game.boxes[i].max_hp, game.boxes[i].hp);
+        }
+        for (let i in game.objects) {
+            // todo только те где нет тумана войны
+            if (game.objects[i].objectSprite && game.objects[i].hp > -2) { // TODO при -1 дать несколько кубов
+                CreateMapHealBar(game.objects[i].objectSprite, game.objects[i].max_hp, game.objects[i].hp);
+            }
         }
     }
 }

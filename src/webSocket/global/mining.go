@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/db/squad/update"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/equip"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
@@ -102,6 +103,13 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 
 				miningEquip.CurrentReload--
 				time.Sleep(time.Second)
+
+				if !exit {
+					// кидаем что бы если юнита открывают из тумана войны, или кто то не заинитил добычу, заинитили (ради анимации)
+					// TODO большая задержка видно что добыча инитится не сразу, мб стоит хранить состояние в самом юнита
+					go SendMessage(Message{Event: msg.Event, ShortUnit: miner.GetShortInfo(), Seconds: miningEquip.CurrentReload,
+						TypeSlot: msg.TypeSlot, Slot: msg.Slot, X: reservoir.X, Y: reservoir.Y, IDMap: miner.MapID, NeedCheckView: true})
+				}
 			}
 		}
 
@@ -131,7 +139,7 @@ func Mining(miner *unit.Unit, miningEquip *equip.Equip, reservoir *resource.Map,
 			reservoir.Count -= countRes
 		}
 
-		//update.Squad(user.GetSquad(), true) todo
+		go update.Squad(user.GetSquad(), true)
 
 		go SendMessage(Message{Event: "UpdateInventory", IDUserSend: miner.OwnerID, IDMap: miner.MapID})
 		go SendMessage(Message{Event: "updateReservoir", X: reservoir.X, Y: reservoir.Y, Count: reservoir.Count, IDMap: miner.MapID, NeedCheckView: true})

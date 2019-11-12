@@ -1,12 +1,10 @@
 function CreateObject(coordinate, x, y) {
-    let object;
-
     if (coordinate.unit_overlap) {
-        object = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
+        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     } else {
-        object = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
+        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     }
@@ -15,8 +13,6 @@ function CreateObject(coordinate, x, y) {
         // TODO метод вызывающий фризы
         //ObjectEvents(coordinate, object, x, y);
     }
-
-    coordinate.objectSprite = object;
 }
 
 function gameObjectCreate(x, y, texture, scale, needShadow, rotate, group, xShadowOffset, yShadowOffset, shadowIntensity) {

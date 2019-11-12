@@ -1,5 +1,6 @@
 function CreateMap() {
 
+    game.objects = [];
     game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
     game.bmdTerrain.clear();
 
@@ -37,8 +38,6 @@ function CreateMap() {
 }
 
 function CreateObjects() {
-    game.objects = [];
-
     for (let x in game.map.static_objects) {
         for (let y in game.map.static_objects[x]) {
             game.objects.push(game.map.static_objects[x][y]);

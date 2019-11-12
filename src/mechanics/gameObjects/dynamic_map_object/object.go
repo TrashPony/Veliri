@@ -21,6 +21,7 @@ type Object struct {
 	Description         string `json:"description"`
 	Inventory           bool   `json:"inventory"`
 	BoxID               int    `json:"box_id"`
+	MaxHP               int    `json:"max_hp"`
 	HP                  int    `json:"hp"`
 	Scale               int    `json:"scale"`
 	Shadow              bool   `json:"shadow"`
