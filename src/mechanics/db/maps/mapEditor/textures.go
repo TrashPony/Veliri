@@ -6,21 +6,22 @@ import (
 )
 
 func PlaceTextures(coordinate *coordinate.Coordinate, mp *_map.Map, textureName string) {
-	changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
-
-	coordinate.TextureOverFlore = textureName
-
-	coordinate.TexturePriority = mp.GetMaxPriorityTexture()
-	coordinate.TexturePriority++
-
-	if changeCoordinate != nil {
-		UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
-	} else {
-		InsertMapCoordinate(coordinate, mp)
-	}
+	//changeCoordinate := getMapCoordinateInMC(mp.Id, coordinate.X, coordinate.Y)
+	//
+	//coordinate.TextureOverFlore = textureName
+	//
+	//coordinate.TexturePriority = mp.GetMaxPriorityTexture()
+	//coordinate.TexturePriority++
+	//
+	//if changeCoordinate != nil {
+	//	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
+	//} else {
+	//	InsertMapCoordinate(coordinate, mp)
+	//}
+	// TODO
 }
 
 func RemoveTextures(coordinate *coordinate.Coordinate, mp *_map.Map) {
-	coordinate.TextureOverFlore = ""
-	UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
+	//coordinate.TextureOverFlore = ""
+	//UpdateMapCoordinate(coordinate, mp, coordinate.X, coordinate.Y)
 }

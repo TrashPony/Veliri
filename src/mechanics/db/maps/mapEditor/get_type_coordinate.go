@@ -7,60 +7,64 @@ import (
 )
 
 func getTypeByID(idType int) *coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT "+
-		"id, "+
-		"type, "+
-		"texture_flore, "+
-		"texture_object, "+
-		"animate_sprite_sheets, "+
-		"animate_loop, "+
-		"unit_overlap "+
-		""+
-		"FROM coordinate_type WHERE id=$1", idType)
-	if err != nil {
-		println("get by id type coordinates in map editor")
-		log.Fatal(err)
-	}
-
-	var coordinateType coordinate.Coordinate
-
-	for rows.Next() {
-		err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
-			&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop, &coordinateType.UnitOverlap)
-		if err != nil {
-			log.Fatal("getTypeByID() " + err.Error())
-		}
-	}
-
-	return &coordinateType
+	//rows, err := dbConnect.GetDBConnect().Query("SELECT "+
+	//	"id, "+
+	//	"type, "+
+	//	"texture_flore, "+
+	//	"texture_object, "+
+	//	"animate_sprite_sheets, "+
+	//	"animate_loop, "+
+	//	"unit_overlap "+
+	//	""+
+	//	"FROM coordinate_type WHERE id=$1", idType)
+	//if err != nil {
+	//	println("get by id type coordinates in map editor")
+	//	log.Fatal(err)
+	//}
+	//
+	//var coordinateType coordinate.Coordinate
+	//
+	//for rows.Next() {
+	//	err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
+	//		&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop, &coordinateType.UnitOverlap)
+	//	if err != nil {
+	//		log.Fatal("getTypeByID() " + err.Error())
+	//	}
+	//}
+	//
+	//return &coordinateType
+	return nil // TODO
 }
 
 func getTypeByTerrainAndObject(textureFlore, textureObject, animate string) *coordinate.Coordinate {
+	//
+	//rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, "+
+	//	" animate_sprite_sheets, animate_loopFROM coordinate_type "+
+	//	"WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
+	//	textureFlore, textureObject, animate)
+	//if err != nil {
+	//	println("get by Flore and Object coordinates in map editor")
+	//	log.Fatal(err)
+	//}
+	//
+	//var coordinateType coordinate.Coordinate
+	//
+	//for rows.Next() {
+	//	err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
+	//		&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop)
+	//	if err != nil {
+	//		log.Fatal("getTypeByTerrainAndObject() " + err.Error())
+	//	}
+	//}
+	//
+	//if coordinateType.ID != 0 {
+	//	return &coordinateType
+	//} else {
+	//	return nil
+	//}
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, "+
-		" animate_sprite_sheets, animate_loopFROM coordinate_type "+
-		"WHERE texture_flore=$1 AND texture_object=$2 AND animate_sprite_sheets=$3",
-		textureFlore, textureObject, animate)
-	if err != nil {
-		println("get by Flore and Object coordinates in map editor")
-		log.Fatal(err)
-	}
-
-	var coordinateType coordinate.Coordinate
-
-	for rows.Next() {
-		err := rows.Scan(&coordinateType.ID, &coordinateType.Type, &coordinateType.TextureFlore, &coordinateType.TextureObject,
-			&coordinateType.AnimateSpriteSheets, &coordinateType.AnimateLoop)
-		if err != nil {
-			log.Fatal("getTypeByTerrainAndObject() " + err.Error())
-		}
-	}
-
-	if coordinateType.ID != 0 {
-		return &coordinateType
-	} else {
-		return nil
-	}
+	// TODO
+	return nil
 }
 
 // берет координату из таблицы map_constructor, если ее там нет то вернут nil
@@ -93,8 +97,8 @@ func getMapCoordinateInMC(idMap, x, y int) *coordinate.Coordinate {
 		mcCoordinate := getTypeByID(idType)
 		mcCoordinate.X = x
 		mcCoordinate.Y = y
-		mcCoordinate.ObjRotate = rotate
-		mcCoordinate.AnimationSpeed = animateSpeed
+		//mcCoordinate.ObjRotate = rotate
+		//mcCoordinate.AnimationSpeed = animateSpeed
 
 		return mcCoordinate
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/players"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/base"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	gameMap "github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/webSocket/utils"
@@ -92,7 +93,7 @@ type Response struct {
 	Event           string                        `json:"event"`
 	Map             gameMap.Map                   `json:"map"`
 	Maps            map[int]*gameMap.ShortInfoMap `json:"maps"`
-	TypeCoordinates []*coordinate.Coordinate      `json:"type_coordinates"`
+	TypeCoordinates []*dynamic_map_object.Object  `json:"type_coordinates"`
 	Success         bool                          `json:"success"`
 	Bases           map[int]*base.Base            `json:"bases"`
 	Error           string                        `json:"error"`
@@ -123,23 +124,24 @@ func Reader(ws *websocket.Conn) {
 			ws.WriteJSON(Response{Event: msg.Event, TypeCoordinates: bdMap.AllTypeCoordinate()})
 		}
 
-		if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
-			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
-
-			if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" {
-				coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
-				coordinateMap.TexturePriority++
-			}
-
-			if msg.Event == "placeCoordinate" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
-				coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
-				coordinateMap.ObjectPriority++
-			}
-
-			mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
-			selectMap(msg, ws)
-		}
+		// TODO
+		//if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
+		//	mapChange, _ := maps.Maps.GetByID(msg.ID)
+		//	coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+		//
+		//	if msg.Event == "placeCoordinate" || msg.Event == "placeTerrain" {
+		//		coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
+		//		coordinateMap.TexturePriority++
+		//	}
+		//
+		//	if msg.Event == "placeCoordinate" || msg.Event == "placeObjects" || msg.Event == "placeAnimate" {
+		//		coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
+		//		coordinateMap.ObjectPriority++
+		//	}
+		//
+		//	mapEditor.PlaceCoordinate(coordinateMap, mapChange, msg.IDType)
+		//	selectMap(msg, ws)
+		//}
 
 		if msg.Event == "loadNewTypeTerrain" {
 			//ws.WriteJSON(Response{Event: "loadNewTypeTerrain", Success: mapEditor.CreateNewTerrain(msg.TerrainName)})
@@ -165,32 +167,33 @@ func Reader(ws *websocket.Conn) {
 			//selectMap(msg, ws)
 		}
 
-		if msg.Event == "rotateObject" { // +
-			mapChange, _ := maps.Maps.GetByID(msg.ID)
-
-			newX, newY := msg.X+msg.XOffset, msg.Y+msg.YOffset
-
-			oldCoordinate, _ := mapChange.GetCoordinate(newX, newY)
-			if oldCoordinate.ID > 0 {
-				continue
-			}
-
-			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
-			mapChange.DeleteCoordinate(msg.X, msg.Y)
-
-			coordinateMap.ObjRotate = msg.Rotate
-			coordinateMap.AnimationSpeed = msg.Speed
-			coordinateMap.XShadowOffset = msg.XShadowOffset
-			coordinateMap.YShadowOffset = msg.YShadowOffset
-			coordinateMap.ShadowIntensity = msg.ShadowIntensity
-			coordinateMap.Scale = msg.Scale
-			coordinateMap.Shadow = msg.Shadow
-			coordinateMap.X = newX
-			coordinateMap.Y = newY
-
-			mapChange.AddCoordinate(coordinateMap)
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
-		}
+		// TODO
+		//if msg.Event == "rotateObject" { // +
+		//	mapChange, _ := maps.Maps.GetByID(msg.ID)
+		//
+		//	newX, newY := msg.X+msg.XOffset, msg.Y+msg.YOffset
+		//
+		//	oldCoordinate, _ := mapChange.GetCoordinate(newX, newY)
+		//	if oldCoordinate.ID > 0 {
+		//		continue
+		//	}
+		//
+		//	coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+		//	mapChange.DeleteCoordinate(msg.X, msg.Y)
+		//
+		//	coordinateMap.ObjRotate = msg.Rotate
+		//	coordinateMap.AnimationSpeed = msg.Speed
+		//	coordinateMap.XShadowOffset = msg.XShadowOffset
+		//	coordinateMap.YShadowOffset = msg.YShadowOffset
+		//	coordinateMap.ShadowIntensity = msg.ShadowIntensity
+		//	coordinateMap.Scale = msg.Scale
+		//	coordinateMap.Shadow = msg.Shadow
+		//	coordinateMap.X = newX
+		//	coordinateMap.Y = newY
+		//
+		//	mapChange.AddCoordinate(coordinateMap)
+		//	mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
+		//}
 
 		// TODO ---------------------------- //
 		if msg.Event == "addStartRow" {
@@ -291,28 +294,29 @@ func Reader(ws *websocket.Conn) {
 
 		}
 
-		if msg.Event == "toBack" {
-			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
-
-			coordinateMap.TexturePriority = 0
-			coordinateMap.ObjectPriority = 0
-
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
-			selectMap(msg, ws)
-		}
-
-		if msg.Event == "toFront" {
-			mapChange, _ := maps.Maps.GetByID(msg.ID)
-			coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
-
-			coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
-			coordinateMap.TexturePriority++
-
-			coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
-			coordinateMap.ObjectPriority++
-
-			mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
-		}
+		// TODO
+		//if msg.Event == "toBack" {
+		//	mapChange, _ := maps.Maps.GetByID(msg.ID)
+		//	coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+		//
+		//	coordinateMap.TexturePriority = 0
+		//	coordinateMap.ObjectPriority = 0
+		//
+		//	mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
+		//	selectMap(msg, ws)
+		//}
+		//
+		//if msg.Event == "toFront" {
+		//	mapChange, _ := maps.Maps.GetByID(msg.ID)
+		//	coordinateMap, _ := mapChange.GetCoordinate(msg.X, msg.Y)
+		//
+		//	coordinateMap.TexturePriority = mapChange.GetMaxPriorityTexture()
+		//	coordinateMap.TexturePriority++
+		//
+		//	coordinateMap.ObjectPriority = mapChange.GetMaxPriorityObject()
+		//	coordinateMap.ObjectPriority++
+		//
+		//	mapEditor.UpdateMapCoordinate(coordinateMap, mapChange, msg.X, msg.Y)
+		//}
 	}
 }

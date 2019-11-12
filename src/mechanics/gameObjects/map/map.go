@@ -2,6 +2,7 @@ package _map
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
@@ -10,22 +11,32 @@ import (
 )
 
 type Map struct {
-	Id                  int `json:"id"`
-	Name                string
-	XSize               int
-	YSize               int
-	DefaultTypeID       int
-	DefaultLevel        int
-	Specification       string
-	OneLayerMap         map[int]map[int]*coordinate.Coordinate
-	Reservoir           map[int]map[int]*resource.Map   `json:"-"`
-	Global              bool                            `json:"global"`
-	InGame              bool                            `json:"in_game"`
-	HandlersCoordinates []*coordinate.Coordinate        `json:"handlers_coordinates"`
-	EntryPoints         []*coordinate.Coordinate        `json:"entry_points"`
-	Beams               []*Beam                         `json:"beams"`
-	Emitters            []*Emitter                      `json:"emitters"`
-	GeoData             []*obstacle_point.ObstaclePoint `json:"geo_data"`
+	Id            int `json:"id"`
+	Name          string
+	XSize         int
+	YSize         int
+	DefaultLevel  int
+	Specification string
+
+	// интерактивные координаты на карте, типо телепорты, выхода с баз, заходы на базы и тд
+	OneLayerMap map[int]map[int]*coordinate.Coordinate
+
+	Reservoir map[int]map[int]*resource.Map `json:"-"`
+	// текстуры земли
+	Flore map[int]map[int]*dynamic_map_object.Flore `json:"flore"`
+	// все обьекты у которых нет поведения находятся в карте OneLayerMap, дороги, горы, базы.
+	// Игрок видит эти обьекты всегда независимо от радара/обзора
+	StaticObjects map[int]map[int]*dynamic_map_object.Object `json:"static_objects"`
+	// в матрице DynamicObjects находятся обьекты которые могут передвигатся/уничтожатся/рождатся
+	// тоесть это обьекты с поведением, игрок их видит и запоминает последнее их состояние у себя.
+	// Игрок не видит если с обьектов что либо произошло вне поле его зрения.
+	DynamicObjects      map[int]map[int]*dynamic_map_object.Object `json:"-"`
+	Global              bool                                       `json:"global"`
+	HandlersCoordinates []*coordinate.Coordinate                   `json:"handlers_coordinates"`
+	EntryPoints         []*coordinate.Coordinate                   `json:"entry_points"`
+	Beams               []*Beam                                    `json:"beams"`
+	Emitters            []*Emitter                                 `json:"emitters"`
+	GeoData             []*obstacle_point.ObstaclePoint            `json:"geo_data"`
 
 	// разделяем карту на зоны (DiscreteSize х DiscreteSize) при загрузке сервера,
 	// добавляем в зону все поинты которые пересекают данных квадрат и ближайшие к нему
@@ -338,10 +349,10 @@ func (mp *Map) SetXYSize(Scale int) (int, int) {
 func (mp *Map) GetMaxPriorityTexture() int {
 	max := 0
 
-	for _, xLine := range mp.OneLayerMap {
-		for _, coordinate := range xLine {
-			if max < coordinate.TexturePriority {
-				max = coordinate.TexturePriority
+	for _, xLine := range mp.Flore {
+		for _, flore := range xLine {
+			if max < flore.TexturePriority {
+				max = flore.TexturePriority
 			}
 		}
 	}
@@ -352,10 +363,18 @@ func (mp *Map) GetMaxPriorityTexture() int {
 func (mp *Map) GetMaxPriorityObject() int {
 	max := 0
 
-	for _, xLine := range mp.OneLayerMap {
-		for _, coordinate := range xLine {
-			if max < coordinate.ObjectPriority {
-				max = coordinate.ObjectPriority
+	for _, xLine := range mp.StaticObjects {
+		for _, staticObj := range xLine {
+			if max < staticObj.Priority {
+				max = staticObj.Priority
+			}
+		}
+	}
+
+	for _, xLine := range mp.DynamicObjects {
+		for _, staticObj := range xLine {
+			if max < staticObj.Priority {
+				max = staticObj.Priority
 			}
 		}
 	}

@@ -1,43 +1,21 @@
 package coordinate
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"strconv"
 )
 
 type Coordinate struct {
-	ID                  int              `json:"id"`
-	Type                string           `json:"type"`
-	TextureFlore        string           `json:"texture_flore"`
-	TextureOverFlore    string           `json:"texture_over_flore"`
-	TexturePriority     int              `json:"texture_priority"`
-	TextureObject       string           `json:"texture_object"`
-	ObjectPriority      int              `json:"object_priority"`
-	AnimateSpriteSheets string           `json:"animate_sprite_sheets"`
-	AnimateLoop         bool             `json:"animate_loop"`
-	GameID              int              `json:"game_id"`
-	X                   int              `json:"x"`
-	Y                   int              `json:"y"`
-	Rotate              int              `json:"rotate"` // используется при расчете поиска пути
-	Z                   int              `json:"z"`
-	State               int              `json:"state"`
-	Effects             []*effect.Effect `json:"effects"`
-	Scale               int              `json:"scale"`
-	Shadow              bool             `json:"shadow"`
-	UnitOverlap         bool             `json:"unit_overlap"`
-	ObjRotate           int              `json:"obj_rotate"`
-	AnimationSpeed      int              `json:"animation_speed"`
-	XShadowOffset       int              `json:"x_shadow_offset"`
-	YShadowOffset       int              `json:"y_shadow_offset"`
-	ShadowIntensity     int              `json:"shadow_intensity"`
-	MapID               int              `json:"map_id"`
-	RespRotate          int              `json:"resp_rotate"`
+	ID     int `json:"id"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Rotate int `json:"rotate"` // используется при расчете поиска пути
+	State  int `json:"state"`
 
-	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
-	H, G, F       int
-	Parent        *Coordinate
+	MapID      int `json:"map_id"`
+	RespRotate int `json:"resp_rotate"`
+
+	H, G, F int
+	Parent  *Coordinate
 
 	/* мета слушателей */
 	/* если тру то с течением времени или по эвенту игрока эвакуируют с этой клетки без его желания */
@@ -54,18 +32,7 @@ type Coordinate struct {
 	ToBaseID  int           `json:"to_base_id"`
 	ToMapID   int           `json:"to_map_id"`
 
-	ObjectName        string `json:"object_name"`
-	ObjectDescription string `json:"object_description"`
-	ObjectInventory   bool   `json:"object_inventory"`
-	ObjectHP          int    `json:"object_hp"`
-	BoxID             int    `json:"box_id"`
-
-	GeoData []*obstacle_point.ObstaclePoint `json:"geo_data"`
-	Find    bool                            `json:"-"`
-}
-
-func (coor *Coordinate) GetZ() int {
-	return coor.Z
+	Find bool `json:"-"`
 }
 
 func (coor *Coordinate) GetY() int {

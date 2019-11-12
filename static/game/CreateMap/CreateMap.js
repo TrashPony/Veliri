@@ -8,14 +8,9 @@ function CreateMap() {
             for (let y in game.map.OneLayerMap[x]) {
                 if (game.map.OneLayerMap[x].hasOwnProperty(y)) {
 
-
                     let coordinate = game.map.OneLayerMap[x][y];
 
                     CreateLabels(coordinate, Number(x), Number(y));
-
-                    if (coordinate.dynamic_object) {
-                        CreateDynamicObjects(coordinate.dynamic_object, Number(x), Number(y), true, coordinate);
-                    }
 
                     if (coordinate.effects != null && coordinate.effects.length > 0) {
                         MarkZoneEffect(coordinate, Number(x), Number(y));
@@ -24,15 +19,13 @@ function CreateMap() {
                     game.mapPoints.push({
                         x: Number(x),
                         y: Number(y),
-                        coordinate: coordinate,
-                        fogOfWar: true,
                     });
                 }
             }
         }
     }
 
-    CreateTexture().then(function () {
+    CreateFlore().then(function () {
         CreateObjects();
     }).then(function () {
         CreateBeams();
@@ -44,18 +37,28 @@ function CreateMap() {
 }
 
 function CreateObjects() {
+    game.objects = [];
+
+    for (let x in game.map.static_objects) {
+        for (let y in game.map.static_objects[x]) {
+            game.objects.push(game.map.static_objects[x][y]);
+        }
+    }
+
+    // TODO динамические обьекты
+
     // сортировка по приоритету отрисовки обьектов
-    game.mapPoints.sort(function (a, b) {
-        return a.coordinate.object_priority - b.coordinate.object_priority;
+    game.objects.sort(function (a, b) {
+        return a.object_priority - b.object_priority;
     });
 
-    for (let i in game.mapPoints) {
-        if (game.mapPoints[i].coordinate.texture_object !== '') {
-            CreateObject(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
+    for (let i in game.objects) {
+        if (game.objects[i].texture_object !== '') {
+            CreateObject(game.objects[i], game.objects[i].x, game.objects[i].y);
         }
 
-        if (game.mapPoints[i].coordinate.animate_sprite_sheets !== '') {
-            CreateAnimate(game.mapPoints[i].coordinate, game.mapPoints[i].x, game.mapPoints[i].y);
+        if (game.objects[i].animate_sprite_sheets !== '') {
+            CreateAnimate(game.objects[i], game.objects[i].x, game.objects[i].y);
         }
     }
 }
@@ -97,18 +100,27 @@ function CreateBeams() {
     }
 }
 
-function CreateTexture() {
+function CreateFlore() {
     // сортировка по приоритету отрисовки текстур
     return new Promise(function (resolve) {
-        game.mapPoints.sort(function (a, b) {
-            return a.coordinate.texture_priority - b.coordinate.texture_priority;
+
+        game.flore = [];
+
+        for (let x in game.map.flore) {
+            for (let y in game.map.flore[x]) {
+                game.flore.push(game.map.flore[x][y]);
+            }
+        }
+
+        game.flore.sort(function (a, b) {
+            return a.texture_priority - b.texture_priority;
         });
 
-        for (let i in game.mapPoints) {
-            if (game.mapPoints[i].coordinate.texture_over_flore !== '') {
+        for (let i in game.flore) {
+            if (game.flore[i].texture_over_flore !== '') {
                 let bmd = game.make.bitmapData(512, 512);
-                bmd.alphaMask(game.mapPoints[i].coordinate.texture_over_flore, 'brush');
-                game.bmdTerrain.draw(bmd, game.mapPoints[i].x - 256, game.mapPoints[i].y - 256);
+                bmd.alphaMask(game.flore[i].texture_over_flore, 'brush');
+                game.bmdTerrain.draw(bmd, game.flore[i].x - 256, game.flore[i].y - 256);
                 bmd.destroy();
             }
         }

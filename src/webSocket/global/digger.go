@@ -3,7 +3,6 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"math/rand"
@@ -37,13 +36,7 @@ func useDigger(user *player.Player, msg Message) {
 	}()
 
 	mpCoordinate, _ := mp.GetCoordinate(msg.X, msg.Y)
-
-	var dynamicObject dynamicMapObject.DynamicObject
-	dynamicObject.TextureBackground = "crater_2"
-	dynamicObject.BackgroundScale = 75
-	dynamicObject.BackgroundRotate = rand.Intn(360)
-	mpCoordinate.DynamicObject = &dynamicObject
-
+	// TODO добавить кратер
 	// todo проверить что координата свободна от игрока
 	anomaly := maps.Maps.GetMapAnomaly(mp.Id, msg.X, msg.Y)
 
@@ -77,16 +70,7 @@ func useDigger(user *player.Player, msg Message) {
 
 		if AnomalyText != nil {
 			if mpCoordinate != nil {
-				dynamicObject.TextureObject = "infoAnomaly"
-				dynamicObject.Dialog = AnomalyText
-				dynamicObject.Destroyed = true
-				dynamicObject.DestroyTime = time.Now()
-				dynamicObject.ObjectScale = 20
-				dynamicObject.ObjectRotate = rand.Intn(360)
-				dynamicObject.Shadow = 50
-				dynamicObject.Move = true
-				dynamicObject.View = true
-				dynamicObject.Attack = true
+				// todo обьект с диалогом
 			}
 		}
 
@@ -95,9 +79,9 @@ func useDigger(user *player.Player, msg Message) {
 			ShortUnit: user.GetSquad().MatherShip.GetShortInfo(),
 			X:         msg.X, Y: msg.Y,
 			TypeSlot: msg.TypeSlot, Slot: msg.Slot,
-			Box:           box,
-			Reservoir:     res,
-			DynamicObject: &dynamicObject,
+			Box:       box,
+			Reservoir: res,
+			// todo DynamicObject: &dynamicObject,
 			Name:          diggerSlot.Equip.Name,
 			IDMap:         user.GetSquad().MatherShip.MapID,
 			NeedCheckView: true,
@@ -121,9 +105,9 @@ func useDigger(user *player.Player, msg Message) {
 			ShortUnit: user.GetSquad().MatherShip.GetShortInfo(),
 			X:         msg.X, Y: msg.Y,
 			TypeSlot: msg.TypeSlot, Slot: msg.Slot,
-			Box:           nil,
-			Reservoir:     nil,
-			DynamicObject: &dynamicObject,
+			Box:       nil,
+			Reservoir: nil,
+			// todo DynamicObject: &dynamicObject,
 			Name:          diggerSlot.Equip.Name,
 			IDMap:         user.GetSquad().MatherShip.MapID,
 			NeedCheckView: true,

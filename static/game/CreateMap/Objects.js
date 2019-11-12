@@ -6,11 +6,11 @@ function CreateObject(coordinate, x, y) {
     }
 
     if (coordinate.unit_overlap) {
-        object = gameObjectCreate(x, y, coordinate.texture_object, coordinate.scale, coordinate.shadow, coordinate.obj_rotate,
+        object = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     } else {
-        object = gameObjectCreate(x, y, coordinate.texture_object, coordinate.scale, coordinate.shadow, coordinate.obj_rotate,
+        object = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
             coordinate.shadow_intensity);
     }
@@ -61,10 +61,10 @@ function ObjectEvents(coordinate, object, x, y) {
             // из за того что эта очень ресурсоемкая операция приходится вот так извращатся
             if (!object.border) {
                 if (coordinate.unit_overlap) {
-                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate, game.floorOverObjectLayer);
+                    object.border = CreateBorder(x, y, coordinate.texture, coordinate.scale, coordinate.rotate, game.floorOverObjectLayer);
                     game.floorOverObjectLayer.swap(object, object.border);
                 } else {
-                    object.border = CreateBorder(x, y, coordinate.texture_object, coordinate.scale, coordinate.obj_rotate, game.floorObjectLayer);
+                    object.border = CreateBorder(x, y, coordinate.texture, coordinate.scale, coordinate.rotate, game.floorObjectLayer);
                     game.floorObjectLayer.swap(object, object.border);
                 }
             } else {
@@ -72,15 +72,15 @@ function ObjectEvents(coordinate, object, x, y) {
             }
 
             tip = document.createElement("div");
-            tip.id = "reservoirTip" + coordinate.q + "" + coordinate.r;
+            tip.id = "reservoirTip" + coordinate.x + "" + coordinate.y;
             tip.className = "reservoirTip";
             tip.style.left = stylePositionParams.left + "px";
             tip.style.top = stylePositionParams.top + "px";
             document.body.appendChild(tip);
 
             tip.innerHTML = `
-            <h3>${coordinate.object_name}</h3>
-            <div class="Description" style="margin-bottom: 5px"> ${coordinate.object_description}</div>
+            <h3>${coordinate.name}</h3>
+            <div class="Description" style="margin-bottom: 5px"> ${coordinate.description}</div>
             `;
 
             posInterval = setInterval(function () {
@@ -107,7 +107,7 @@ function ObjectEvents(coordinate, object, x, y) {
         })
     }
 
-    if (coordinate.texture_object.indexOf('base') + 1) {
+    if (coordinate.texture.indexOf('base') + 1) {
         // todo выводить окошо с мин информацией по базе
     }
 }

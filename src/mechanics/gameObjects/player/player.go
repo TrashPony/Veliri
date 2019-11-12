@@ -65,6 +65,9 @@ type Player struct {
 	StoryEpisode  int                           `json:"story_episode"`
 
 	DebugMoveMessage []interface{}
+
+	// запомненные динамические обьекты на карте
+	MemoryDynamicObjects map[int]map[int]*coordinate.Coordinate `json:"memory_dynamic_objects"`
 }
 
 type ShortUserInfo struct {

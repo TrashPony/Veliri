@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"github.com/TrashPony/Veliri/src/dbConnect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"log"
 	"strconv"
 )
@@ -19,11 +18,9 @@ func Maps() map[int]*_map.Map {
 		"name, " +
 		"x_size, " +
 		"y_size, " +
-		"id_type, " +
 		"level, " +
 		"specification, " +
 		"global, " +
-		"in_game, " +
 		"x_global, " +
 		"y_global," +
 		"fraction," +
@@ -41,22 +38,109 @@ func Maps() map[int]*_map.Map {
 
 		mp := &_map.Map{}
 
-		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultTypeID, &mp.DefaultLevel, &mp.Specification,
-			&mp.Global, &mp.InGame, &mp.XGlobal, &mp.YGlobal, &mp.Fraction, &mp.PossibleBattle)
+		err := rows.Scan(&mp.Id, &mp.Name, &mp.XSize, &mp.YSize, &mp.DefaultLevel, &mp.Specification,
+			&mp.Global, &mp.XGlobal, &mp.YGlobal, &mp.Fraction, &mp.PossibleBattle)
 		if err != nil {
 			log.Fatal(err.Error() + " scan all maps")
 		}
 
+		GetFlore(mp)
 		CoordinatesMap(mp)
 		GeoData(mp)
 		Anomalies(mp)
 		Beams(mp)
 		Emitters(mp)
+		mp.StaticObjects = GetObjects(mp, "ct.object_hp = -2;")
+		mp.DynamicObjects = GetObjects(mp, "ct.object_hp > -2;")
 
 		allMap[mp.Id] = mp
 	}
 
 	return allMap
+}
+
+func GetFlore(mp *_map.Map) {
+	mp.Flore = make(map[int]map[int]*dynamic_map_object.Flore)
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT x, y, texture_over_flore, texture_priority "+
+		"FROM map_constructor "+
+		"WHERE id_map = $1 AND texture_over_flore != ''", strconv.Itoa(mp.Id))
+
+	if err != nil {
+		log.Fatal(err.Error() + "get map flor")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() { // заполняем карту значащами клетками
+		var flore dynamic_map_object.Flore
+
+		err := rows.Scan(&flore.X, &flore.Y, &flore.TextureOverFlore, &flore.TexturePriority)
+		if err != nil {
+			log.Fatal(err.Error() + "scan map flor")
+		}
+
+		if mp.Flore[flore.X] != nil {
+			mp.Flore[flore.X][flore.Y] = &flore
+		} else {
+			mp.Flore[flore.X] = make(map[int]*dynamic_map_object.Flore)
+			mp.Flore[flore.X][flore.Y] = &flore
+		}
+	}
+}
+
+func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_object.Object {
+	objMap := make(map[int]map[int]*dynamic_map_object.Object)
+
+	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.x, mc.y, ct.type, "+
+		"ct.texture_object, ct.animate_sprite_sheets, ct.animate_loop, "+
+		"mc.scale, ct.shadow, mc.rotate, ct.animate_speed, "+
+		"ct.unit_overlap, "+
+		"mc.x_shadow_offset, mc.y_shadow_offset, ct.shadow_intensity, mc.object_priority, "+
+		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp, ct.geo_data "+
+		"FROM map_constructor mc, coordinate_type ct "+
+		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND "+objType, strconv.Itoa(mp.Id))
+
+	if err != nil {
+		log.Fatal(err.Error() + "get map obj")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() { // заполняем карту значащами клетками
+		var obj dynamic_map_object.Object
+		var geoData []byte
+
+		err := rows.Scan(&obj.Type, &obj.X, &obj.Y, &obj.Type,
+			&obj.Texture, &obj.AnimateSpriteSheets,
+			&obj.AnimateLoop, &obj.Scale, &obj.Shadow, &obj.Rotate,
+			&obj.AnimationSpeed, &obj.UnitOverlap,
+			&obj.XShadowOffset, &obj.YShadowOffset, &obj.ShadowIntensity,
+			&obj.Priority, &obj.Name, &obj.Description,
+			&obj.Inventory, &obj.HP, &geoData)
+		if err != nil {
+			log.Fatal(err.Error() + "scan map obj")
+		}
+
+		err = json.Unmarshal(geoData, &obj.GeoData)
+		if err != nil {
+			obj.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
+		} else {
+			obj.SetGeoData()
+		}
+
+		idString := strconv.Itoa(obj.X) + strconv.Itoa(obj.Y)
+		obj.ID, _ = strconv.Atoi(idString)
+
+		if objMap[obj.X] != nil {
+			objMap[obj.X][obj.Y] = &obj
+		} else {
+			objMap[obj.X] = make(map[int]*dynamic_map_object.Object)
+			objMap[obj.X][obj.Y] = &obj
+		}
+	}
+
+	return objMap
 }
 
 func Emitters(mp *_map.Map) {
@@ -186,14 +270,10 @@ func GeoData(mp *_map.Map) {
 func CoordinatesMap(mp *_map.Map) {
 	oneLayerMap := make(map[int]map[int]*coordinate.Coordinate)
 
-	rows, err := dbConnect.GetDBConnect().Query("SELECT ct.id, mc.x, mc.y, ct.type, ct.texture_flore, "+
-		"ct.texture_object, ct.animate_sprite_sheets, ct.animate_loop, "+
-		"mc.scale, mc.shadow, mc.rotate, mc.animate_speed, "+
-		"ct.unit_overlap, mc.texture_over_flore, mc.transport, mc.handler, mc.to_positions, mc.to_base_id, mc.to_map_id, "+
-		"mc.x_shadow_offset, mc.y_shadow_offset, mc.shadow_intensity, mc.texture_priority, mc.object_priority, "+
-		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp, ct.geo_data "+
-		"FROM map_constructor mc, coordinate_type ct "+
-		"WHERE mc.id_map = $1 AND mc.id_type = ct.id;", strconv.Itoa(mp.Id))
+	rows, err := dbConnect.GetDBConnect().Query("SELECT x, y, "+
+		"transport, handler, to_positions, to_base_id, to_map_id "+
+		"FROM map_constructor "+
+		"WHERE id_map = $1", strconv.Itoa(mp.Id))
 
 	if err != nil {
 		log.Fatal(err.Error() + "map constructor")
@@ -204,49 +284,17 @@ func CoordinatesMap(mp *_map.Map) {
 	for rows.Next() { // заполняем карту значащами клетками
 		var gameCoordinate coordinate.Coordinate
 		var positions []byte
-		var geoData []byte
 
-		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.X, &gameCoordinate.Y, &gameCoordinate.Type,
-			&gameCoordinate.TextureFlore, &gameCoordinate.TextureObject, &gameCoordinate.AnimateSpriteSheets,
-			&gameCoordinate.AnimateLoop, &gameCoordinate.Scale, &gameCoordinate.Shadow, &gameCoordinate.ObjRotate,
-			&gameCoordinate.AnimationSpeed, &gameCoordinate.UnitOverlap, &gameCoordinate.TextureOverFlore,
+		err := rows.Scan(&gameCoordinate.X, &gameCoordinate.Y,
 			&gameCoordinate.Transport, &gameCoordinate.Handler, &positions,
-			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID, &gameCoordinate.XShadowOffset,
-			&gameCoordinate.YShadowOffset, &gameCoordinate.ShadowIntensity, &gameCoordinate.TexturePriority,
-			&gameCoordinate.ObjectPriority, &gameCoordinate.ObjectName, &gameCoordinate.ObjectDescription,
-			&gameCoordinate.ObjectInventory, &gameCoordinate.ObjectHP, &geoData)
+			&gameCoordinate.ToBaseID, &gameCoordinate.ToMapID)
 		if err != nil {
 			log.Fatal(err.Error() + "scan map constructor")
 		}
 
-		CoordinateEffects(&gameCoordinate)
-
 		err = json.Unmarshal(positions, &gameCoordinate.Positions)
 		if err != nil {
 			gameCoordinate.Positions = make([]*coordinate.Coordinate, 0)
-		}
-
-		err = json.Unmarshal(geoData, &gameCoordinate.GeoData)
-		if err != nil {
-			gameCoordinate.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
-		} else {
-			for _, geoPoint := range gameCoordinate.GeoData {
-				// применяем размер обьекта к геодате
-				geoPoint.Radius = int(float64(geoPoint.Radius) * (float64(gameCoordinate.Scale) / 100))
-				geoPoint.X = int(float64(geoPoint.X) * (float64(gameCoordinate.Scale) / 100))
-				geoPoint.Y = int(float64(geoPoint.Y) * (float64(gameCoordinate.Scale) / 100))
-
-				// получаем позицию гео точки на карте
-				geoPoint.X += gameCoordinate.X
-				geoPoint.Y += gameCoordinate.Y
-
-				// поворачиваем геодату на угол обьекта
-				newX, newY := game_math.RotatePoint(float64(geoPoint.X), float64(geoPoint.Y), float64(gameCoordinate.X),
-					float64(gameCoordinate.Y), gameCoordinate.ObjRotate)
-
-				geoPoint.X = int(newX)
-				geoPoint.Y = int(newY)
-			}
 		}
 
 		if oneLayerMap[gameCoordinate.X] != nil {
@@ -260,53 +308,37 @@ func CoordinatesMap(mp *_map.Map) {
 	mp.OneLayerMap = oneLayerMap
 }
 
-func CoordinateEffects(mapCoordinate *coordinate.Coordinate) {
-
-	rows, err := dbConnect.GetDBConnect().Query("SELECT et.id, et.name, et.level, et.type, et.parameter, et.quantity, et.percentages, et.forever "+
-		"FROM effects_type et, coordinate_type_effect cte, coordinate_type ct "+
-		"WHERE et.id = cte.id_effect AND ct.id=cte.id_type AND ct.id = $1;", mapCoordinate.ID)
+func AllTypeCoordinate() []*dynamic_map_object.Object {
+	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_object, " +
+		" animate_sprite_sheets, animate_loop, unit_overlap, object_name, object_description," +
+		" object_inventory, object_hp, shadow_intensity, animate_speed, shadow, geo_data FROM coordinate_type")
 	if err != nil {
-		println("get coordinate effects")
-		log.Fatal(err)
+		log.Fatal(err.Error() + "get all type object")
 	}
-	defer rows.Close()
+
+	objS := make([]*dynamic_map_object.Object, 0)
 
 	for rows.Next() {
-		var coordinateEffect effect.Effect
+		var obj dynamic_map_object.Object
+		var geoData []byte
 
-		err := rows.Scan(&coordinateEffect.TypeID, &coordinateEffect.Name, &coordinateEffect.Level, &coordinateEffect.Type,
-			&coordinateEffect.Parameter, &coordinateEffect.Quantity, &coordinateEffect.Percentages, &coordinateEffect.Forever)
-		if err != nil {
-			println("get coordinate effects")
-			log.Fatal(err)
-		}
-
-		mapCoordinate.Effects = append(mapCoordinate.Effects, &coordinateEffect)
-	}
-}
-
-func AllTypeCoordinate() []*coordinate.Coordinate {
-	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_flore, texture_object, " +
-		" animate_sprite_sheets, animate_loop, unit_overlap FROM coordinate_type")
-	if err != nil {
-		log.Fatal(err.Error() + "get all type coordinates")
-	}
-
-	coordinates := make([]*coordinate.Coordinate, 0)
-
-	for rows.Next() {
-		var gameCoordinate coordinate.Coordinate
-
-		err := rows.Scan(&gameCoordinate.ID, &gameCoordinate.Type, &gameCoordinate.TextureFlore, &gameCoordinate.TextureObject,
-			&gameCoordinate.AnimateSpriteSheets, &gameCoordinate.AnimateLoop, &gameCoordinate.UnitOverlap)
+		err := rows.Scan(&obj.TypeID, &obj.Type, &obj.Texture, &obj.AnimateSpriteSheets, &obj.AnimateLoop,
+			&obj.UnitOverlap, &obj.Name, &obj.Description, &obj.Inventory, &obj.HP, &obj.ShadowIntensity,
+			&obj.AnimationSpeed, &obj.Shadow, &geoData)
 
 		if err != nil {
 			log.Fatal(err.Error() + " scan all type coorinate")
 		}
 
-		CoordinateEffects(&gameCoordinate)
-		coordinates = append(coordinates, &gameCoordinate)
+		err = json.Unmarshal(geoData, &obj.GeoData)
+		if err != nil {
+			obj.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
+		} else {
+			obj.SetGeoData()
+		}
+
+		objS = append(objS, &obj)
 	}
 
-	return coordinates
+	return objS
 }

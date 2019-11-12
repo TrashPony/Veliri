@@ -6,7 +6,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/anomaly"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dialog"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/resource"
@@ -40,11 +39,16 @@ func newMapStore() *mapStore {
 					mapCoordinate.HandlerOpen = true
 					mp.HandlersCoordinates = append(mp.HandlersCoordinates, mapCoordinate)
 				}
+			}
+		}
 
+		for _, q := range mp.StaticObjects {
+			for _, staticObj := range q {
 				// если координата хранит инвентарь то создаем его в карте
-				if mapCoordinate.ObjectInventory {
+				// для статичных обьектов которые существуют всегда и имеют свой ИД инвентарь приемлем
+				if staticObj.Inventory {
 
-					box, mx := boxes.Boxes.GetByXY(mapCoordinate.X, mapCoordinate.Y, mp.Id)
+					box, mx := boxes.Boxes.GetByXY(staticObj.X, staticObj.Y, mp.Id)
 					mx.Unlock()
 
 					if box == nil {
@@ -52,17 +56,17 @@ func newMapStore() *mapStore {
 							MapID:            mp.Id,
 							CapacitySize:     100.00,
 							Protect:          false,
-							X:                mapCoordinate.X,
-							Y:                mapCoordinate.Y,
+							X:                staticObj.X,
+							Y:                staticObj.Y,
 							HP:               -1,
 							OwnedByMapObject: true,
 						}
 						objectBox.GetStorage().Slots = make(map[int]*inventory.Slot)
 						objectBox.GetStorage().SetSlotsSize(999)
 
-						mapCoordinate.BoxID = boxes.Boxes.InsertNewBox(objectBox).ID
+						staticObj.BoxID = boxes.Boxes.InsertNewBox(objectBox).ID
 					} else {
-						mapCoordinate.BoxID = box.ID
+						staticObj.BoxID = box.ID
 					}
 				}
 			}
@@ -75,39 +79,40 @@ func newMapStore() *mapStore {
 		mp.EntryPoints = m.GetEntryPointsByMapID(id)
 	}
 
-	// парсим названия и описания обьектов на карте
-	for _, mp := range m.maps {
-		for _, x := range mp.OneLayerMap {
-			for _, mapCoordinate := range x {
-				if mapCoordinate.ObjectName != "" {
-					// userName, BaseName, ToBaseName, ToSectorName, userFraction
-					toMapName := ""
-					if mapCoordinate.Handler == "sector" {
-						toMapName = m.maps[mapCoordinate.ToMapID].Name
-					} else {
-
-						// ¯\_(ツ)_/¯
-
-						for _, mp2 := range m.maps {
-							for _, q2 := range mp2.OneLayerMap {
-								for _, mapCoordinate2 := range q2 {
-									if mapCoordinate2.Handler == "sector" && mapCoordinate2.ToMapID == mp.Id {
-										for _, points := range mapCoordinate2.Positions {
-											if points.X == mapCoordinate.X && points.Y == mapCoordinate.Y {
-												toMapName = mp2.Name
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					mapCoordinate.ObjectName = dialog.ProcessingText(mapCoordinate.ObjectName, "", "", "", toMapName, "")
-					mapCoordinate.ObjectDescription = dialog.ProcessingText(mapCoordinate.ObjectDescription, "", "", "", toMapName, "")
-				}
-			}
-		}
-	}
+	// TODO парсим названия и описания обьектов на карте
+	//for _, mp := range m.maps {
+	//	for _, x := range mp.StaticObjects {
+	//		for _, mapCoordinate := range x {
+	//
+	//			if mapCoordinate.Name != "" {
+	//				// userName, BaseName, ToBaseName, ToSectorName, userFraction
+	//				toMapName := ""
+	//				if mapCoordinate.Handler == "sector" {
+	//					toMapName = m.maps[mapCoordinate.ToMapID].Name
+	//				} else {
+	//
+	//					// ¯\_(ツ)_/¯
+	//
+	//					for _, mp2 := range m.maps {
+	//						for _, q2 := range mp2.OneLayerMap {
+	//							for _, mapCoordinate2 := range q2 {
+	//								if mapCoordinate2.Handler == "sector" && mapCoordinate2.ToMapID == mp.Id {
+	//									for _, points := range mapCoordinate2.Positions {
+	//										if points.X == mapCoordinate.X && points.Y == mapCoordinate.Y {
+	//											toMapName = mp2.Name
+	//										}
+	//									}
+	//								}
+	//							}
+	//						}
+	//					}
+	//				}
+	//				mapCoordinate.Name = dialog.ProcessingText(mapCoordinate.Name, "", "", "", toMapName, "")
+	//				mapCoordinate.Description = dialog.ProcessingText(mapCoordinate.Description, "", "", "", toMapName, "")
+	//			}
+	//		}
+	//	}
+	//}
 
 	return m
 }
@@ -140,22 +145,6 @@ func (m *mapStore) GetAllShortInfoMap() map[int]*_map.ShortInfoMap {
 		shortMap[mp.Id] = mp.GetShortInfoMap()
 	}
 	return shortMap
-}
-
-func (m *mapStore) GetRespawns(id int) map[int]*coordinate.Coordinate {
-	newMap, _ := m.maps[id]
-	var respawns = make(map[int]*coordinate.Coordinate)
-
-	for _, q := range newMap.OneLayerMap { // считает количество респаунов на карте
-		for _, mapCoordinate := range q {
-			if mapCoordinate.Type == "respawn" {
-				mapCoordinate.ID = len(respawns) + 1
-				respawns[len(respawns)+1] = mapCoordinate
-			}
-		}
-	}
-
-	return respawns
 }
 
 func (m *mapStore) GetReservoirByXY(x, y, mapID int) *resource.Map {

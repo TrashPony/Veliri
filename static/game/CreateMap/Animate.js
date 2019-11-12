@@ -6,10 +6,10 @@ function CreateAnimate(coordinate, x, y) {
     }
     if (coordinate.unit_overlap) {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, game.floorOverObjectLayer, coordinate.animate_loop);
+            coordinate.rotate, coordinate.animation_speed, game.floorOverObjectLayer, coordinate.animate_loop);
     } else {
         animate = gameAnimateObjectCreate(x, y, coordinate.animate_sprite_sheets, coordinate.scale, coordinate.shadow,
-            coordinate.obj_rotate, coordinate.animation_speed, game.floorObjectLayer, coordinate.animate_loop);
+            coordinate.rotate, coordinate.animation_speed, game.floorObjectLayer, coordinate.animate_loop);
     }
 
     if (game.typeService !== "mapEditor") {

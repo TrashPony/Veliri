@@ -7,7 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
-	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamicMapObject"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/mission"
@@ -28,67 +28,67 @@ var globalPipe = make(chan Message, 1)
 
 type Message struct {
 	// когда я забил х на эту структуру данных а теперь тут какое то адище
-	IDSender      int                             // переменная не для данных а для отсылки сообщений
-	IDUserSend    int                             // переменная не для данных а для отсылки сообщений
-	IDMap         int                             // переменная не для данных а для отсылки сообщений
-	Event         string                          `json:"event"`
-	Map           *_map.Map                       `json:"map"`
-	Error         string                          `json:"error"`
-	Squad         *squad.Squad                    `json:"squad"`
-	User          *player.Player                  `json:"user"`
-	Bases         map[int]*base.Base              `json:"bases"`
-	X             int                             `json:"x"`
-	Y             int                             `json:"y"`
-	ToX           float64                         `json:"to_x"`
-	ToY           float64                         `json:"to_y"`
-	Bullet        *unit.Bullet                    `json:"bullet"`
-	PathUnit      *unit.PathUnit                  `json:"path_unit"`
-	Path          []*unit.PathUnit                `json:"path"`
-	BaseID        int                             `json:"base_id"`
-	OtherUser     *player.ShortUserInfo           `json:"other_user"`
-	OtherUsers    []*player.ShortUserInfo         `json:"other_users"`
-	ThrowItems    []inventory.Slot                `json:"throw_items"`
-	Boxes         []*boxInMap.Box                 `json:"boxes"`
-	Box           *boxInMap.Box                   `json:"box"`
-	BoxID         int                             `json:"box_id"`
-	ToBoxID       int                             `json:"to_box_id"`
-	TypeSlot      int                             `json:"type_slot"`
-	Name          string                          `json:"name"`
-	Slot          int                             `json:"slot"`
-	Slots         []int                           `json:"slots"`
-	Size          float32                         `json:"size"`
-	Inventory     *inventory.Inventory            `json:"inventory"`
-	InventorySlot int                             `json:"inventory_slot"`
-	TransportID   int                             `json:"transport_id"`
-	ThoriumSlots  map[int]*detail.ThoriumSlot     `json:"thorium_slots"`
-	ThoriumSlot   int                             `json:"thorium_slot"`
-	Afterburner   bool                            `json:"afterburner"`
-	Credits       int                             `json:"credits"`
-	Experience    int                             `json:"experience"`
-	Seconds       int                             `json:"seconds"`
-	Count         int                             `json:"count"`
-	Coordinates   []*coordinate.Coordinate        `json:"coordinates"`
-	Radius        int                             `json:"radius"`
-	Anomalies     []globalGame.VisibleAnomaly     `json:"anomalies"`
-	Anomaly       *_map.Anomalies                 `json:"anomaly"`
-	DynamicObject *dynamicMapObject.DynamicObject `json:"dynamic_object"`
-	BoxPassword   int                             `json:"box_password"`
-	Reservoir     *resource.Map                   `json:"reservoir"`
-	Cloud         *Cloud                          `json:"cloud"`
-	ToSquadID     string                          `json:"to_squad_id"`
-	Bot           bool                            `json:"bot"`
-	MapID         int                             `json:"map_id"`
-	Missions      map[string]*mission.Mission     `json:"missions"`
-	MissionUUID   string                          `json:"mission_uuid"`
-	UnitsID       []int                           `json:"units_id"`
-	ShortUnits    map[int]*unit.ShortUnitInfo     `json:"short_units"`
-	ShortUnit     *unit.ShortUnitInfo             `json:"short_unit"`
-	Unit          *unit.Unit                      `json:"unit"`
-	UnitID        int                             `json:"unit_id"`
-	Equip         *detail.BodyEquipSlot           `json:"equip"`
-	Weapon        *detail.Weapon                  `json:"weapon"`
-	HighGravity   bool                            `json:"high_gravity"`
-	Type          string                          `json:"type"`
+	IDSender      int                         // переменная не для данных а для отсылки сообщений
+	IDUserSend    int                         // переменная не для данных а для отсылки сообщений
+	IDMap         int                         // переменная не для данных а для отсылки сообщений
+	Event         string                      `json:"event"`
+	Map           *_map.Map                   `json:"map"`
+	Error         string                      `json:"error"`
+	Squad         *squad.Squad                `json:"squad"`
+	User          *player.Player              `json:"user"`
+	Bases         map[int]*base.Base          `json:"bases"`
+	X             int                         `json:"x"`
+	Y             int                         `json:"y"`
+	ToX           float64                     `json:"to_x"`
+	ToY           float64                     `json:"to_y"`
+	Bullet        *unit.Bullet                `json:"bullet"`
+	PathUnit      *unit.PathUnit              `json:"path_unit"`
+	Path          []*unit.PathUnit            `json:"path"`
+	BaseID        int                         `json:"base_id"`
+	OtherUser     *player.ShortUserInfo       `json:"other_user"`
+	OtherUsers    []*player.ShortUserInfo     `json:"other_users"`
+	ThrowItems    []inventory.Slot            `json:"throw_items"`
+	Boxes         []*boxInMap.Box             `json:"boxes"`
+	Box           *boxInMap.Box               `json:"box"`
+	BoxID         int                         `json:"box_id"`
+	ToBoxID       int                         `json:"to_box_id"`
+	TypeSlot      int                         `json:"type_slot"`
+	Name          string                      `json:"name"`
+	Slot          int                         `json:"slot"`
+	Slots         []int                       `json:"slots"`
+	Size          float32                     `json:"size"`
+	Inventory     *inventory.Inventory        `json:"inventory"`
+	InventorySlot int                         `json:"inventory_slot"`
+	TransportID   int                         `json:"transport_id"`
+	ThoriumSlots  map[int]*detail.ThoriumSlot `json:"thorium_slots"`
+	ThoriumSlot   int                         `json:"thorium_slot"`
+	Afterburner   bool                        `json:"afterburner"`
+	Credits       int                         `json:"credits"`
+	Experience    int                         `json:"experience"`
+	Seconds       int                         `json:"seconds"`
+	Count         int                         `json:"count"`
+	Coordinates   []*coordinate.Coordinate    `json:"coordinates"`
+	Radius        int                         `json:"radius"`
+	Anomalies     []globalGame.VisibleAnomaly `json:"anomalies"`
+	Anomaly       *_map.Anomalies             `json:"anomaly"`
+	DynamicObject *dynamic_map_object.Object  `json:"dynamic_object"`
+	BoxPassword   int                         `json:"box_password"`
+	Reservoir     *resource.Map               `json:"reservoir"`
+	Cloud         *Cloud                      `json:"cloud"`
+	ToSquadID     string                      `json:"to_squad_id"`
+	Bot           bool                        `json:"bot"`
+	MapID         int                         `json:"map_id"`
+	Missions      map[string]*mission.Mission `json:"missions"`
+	MissionUUID   string                      `json:"mission_uuid"`
+	UnitsID       []int                       `json:"units_id"`
+	ShortUnits    map[int]*unit.ShortUnitInfo `json:"short_units"`
+	ShortUnit     *unit.ShortUnitInfo         `json:"short_unit"`
+	Unit          *unit.Unit                  `json:"unit"`
+	UnitID        int                         `json:"unit_id"`
+	Equip         *detail.BodyEquipSlot       `json:"equip"`
+	Weapon        *detail.Weapon              `json:"weapon"`
+	HighGravity   bool                        `json:"high_gravity"`
+	Type          string                      `json:"type"`
 
 	Color    string `json:"color"`
 	RectSize int    `json:"rect_size"`

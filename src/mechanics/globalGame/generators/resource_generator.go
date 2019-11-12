@@ -110,9 +110,9 @@ func checkPlace(mp *_map.Map, x, y int) bool {
 		}
 	}
 
-	for _, xLine := range mp.OneLayerMap {
+	for _, xLine := range mp.StaticObjects {
 		for _, coordinateMap := range xLine {
-			if strings.Contains(coordinateMap.TextureObject, "road") {
+			if strings.Contains(coordinateMap.Texture, "road") {
 				if game_math.GetBetweenDist(x, y, coordinateMap.X, coordinateMap.Y) < minDist {
 					return false
 				}
