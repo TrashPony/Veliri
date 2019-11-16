@@ -52,10 +52,10 @@ func main() {
 
 	go global.MoveSender()
 
-	go ai.AnomaliesLife() // запускает работу аномалий на карте
-	go ai.SkyGenerator()  // запускает генерацию облаков на картах, небо тоже немножко аи)
-	go ai.HandlersLife()  // мониторинг входов выходов секторов
-
+	go ai.AnomaliesLife()   // запускает работу аномалий на карте
+	go ai.SkyGenerator()    // запускает генерацию облаков на картах, небо тоже немножко аи)
+	go ai.HandlersLife()    // мониторинг входов выходов секторов
+	go ai.TerrainLifeInit() // управление генерацией растительности на карте
 	go ai.EvacuationsLife() // простенький аи для эвакуаторов на базах
 	// TODO go ai.InitAI() // запускает ботов
 

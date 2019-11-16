@@ -12,6 +12,7 @@ function update() {
     if (game && game.typeService === "global") {
         StartSelectableUnits();
         ClearFog();
+        //CreateDynamicObjGeo();
 
         game.UnitStatusLayer.bmd.clear();
 
@@ -44,7 +45,7 @@ function update() {
         }
         for (let i in game.objects) {
             // todo только те где нет тумана войны
-            if (game.objects[i].objectSprite && game.objects[i].hp > -2) { // TODO при -1 дать несколько кубов
+            if (game.objects[i] && game.objects[i].objectSprite && game.objects[i].hp > -2) { // TODO при -1 дать несколько кубов
                 CreateMapHealBar(game.objects[i].objectSprite, game.objects[i].max_hp, game.objects[i].hp);
             }
         }

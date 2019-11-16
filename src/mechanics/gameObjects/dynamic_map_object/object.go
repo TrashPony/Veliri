@@ -22,17 +22,23 @@ type Object struct {
 	Inventory           bool   `json:"inventory"`
 	BoxID               int    `json:"box_id"`
 	MaxHP               int    `json:"max_hp"`
+	TypeMaxHP           int    `json:"type_max_hp"`
 	HP                  int    `json:"hp"`
 	Scale               int    `json:"scale"`
+	MaxScale            int    `json:"max_scale"` // определяется рандомно для растений максимальный размер куста
+	GrowTime            int    `json:"grow_time"` // говорит время цикла когда растение росло для гладкой отрисовки
 	Shadow              bool   `json:"shadow"`
 	AnimationSpeed      int    `json:"animation_speed"`
 	Priority            int    `json:"priority"`
 
-	X               int `json:"x"`
-	Y               int `json:"y"`
-	XShadowOffset   int `json:"x_shadow_offset"`
-	YShadowOffset   int `json:"y_shadow_offset"`
-	ShadowIntensity int `json:"shadow_intensity"`
+	X int `json:"x"`
+	Y int `json:"y"`
+
+	TypeXShadowOffset int `json:"type_x_shadow_offset"`
+	XShadowOffset     int `json:"x_shadow_offset"`
+	TypeYShadowOffset int `json:"type_y_shadow_offset"`
+	YShadowOffset     int `json:"y_shadow_offset"`
+	ShadowIntensity   int `json:"shadow_intensity"`
 
 	Dialog *dialog.Dialog `json:"dialog"`
 
@@ -41,6 +47,20 @@ type Object struct {
 
 	Effects []*effect.Effect                `json:"effects"`
 	GeoData []*obstacle_point.ObstaclePoint `json:"geo_data"`
+}
+
+func (o *Object) CalculateScale() {
+	// подравниваем хп под размер туши
+	percentLife := (o.HP / o.MaxHP) * 100                                         // сохраняем хп в процентном соотношение
+	o.MaxHP = int(float64(o.TypeMaxHP) * float64(float64(o.Scale)/float64(100)))  // смотрим размер обьекта от оригинала и высчитываем его макс хп
+	o.HP = int(float64(percentLife) * float64((float64(o.Scale) / float64(100)))) // востанавливаем хп в % соотношение
+
+	// подравниваем тени под тушу
+	//println(o.TypeXShadowOffset, o.TypeYShadowOffset)
+	o.XShadowOffset = int(float64(o.TypeXShadowOffset) * (float64(o.Scale) / 100))
+	o.YShadowOffset = int(float64(o.TypeYShadowOffset) * (float64(o.Scale) / 100))
+	//println(o.XShadowOffset, o.YShadowOffset)
+
 }
 
 func (o *Object) SetGeoData() {

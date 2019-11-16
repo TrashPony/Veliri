@@ -20,6 +20,10 @@ function RadarWork(data) {
         CreateRadarObject(data.radar_mark, data.object)
     }
 
+    if (data.action_object === "updateObj") {
+        UpdateObject(data.radar_mark, data.object)
+    }
+
     if (data.action_object === "removeObj") {
         RemoveRadarObject(data.radar_mark)
     }

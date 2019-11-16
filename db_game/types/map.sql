@@ -79,7 +79,10 @@ CREATE TABLE coordinate_type
 
   shadow_intensity      INT, /* сила тени от 0 до 1, (val / 100) */
   animate_speed         INT, /* если координата анимация говорит с какой скоростью ее вопспроизводить, кадров в секунду */
-  shadow                BOOLEAN /* определяет нужна ли обьекту тень */
+  shadow                BOOLEAN, /* определяет нужна ли обьекту тень */
+
+  x_shadow_offset       INT, /* смещение тени по Х от центра координаты */
+  y_shadow_offset       INT /* смещение тени по Y от центра координаты */
 );
 
 CREATE TABLE coordinate_type_effect

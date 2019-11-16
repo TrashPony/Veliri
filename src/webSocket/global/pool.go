@@ -185,7 +185,10 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			// из за того что клиент начинает принимать сообщения раньше чем загрузится клиент, то данные теряются
 			go SendMessage(Message{Event: "RefreshRadar", IDUserSend: user.GetID()})
 			user.GetSquad().RadarLock()
+
 			user.GetSquad().VisibleObjects = make(map[string]*squad.VisibleObjects)
+			user.MemoryDynamicObjects = make(map[int]map[int]*dynamic_map_object.Object)
+
 			time.Sleep(500 * time.Millisecond)
 			user.GetSquad().RadarUnlock()
 			go SendMessage(Message{Event: "focusMS", IDUserSend: user.GetID(), ShortUnit: user.GetSquad().MatherShip.GetShortInfo()})

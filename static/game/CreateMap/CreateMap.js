@@ -1,6 +1,8 @@
 function CreateMap() {
 
     game.objects = [];
+    game.statickObjects = [];
+
     game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
     game.bmdTerrain.clear();
 
@@ -40,22 +42,22 @@ function CreateMap() {
 function CreateObjects() {
     for (let x in game.map.static_objects) {
         for (let y in game.map.static_objects[x]) {
-            game.objects.push(game.map.static_objects[x][y]);
+            game.statickObjects.push(game.map.static_objects[x][y]);
         }
     }
 
     // сортировка по приоритету отрисовки обьектов
-    game.objects.sort(function (a, b) {
+    game.statickObjects.sort(function (a, b) {
         return a.object_priority - b.object_priority;
     });
 
-    for (let i in game.objects) {
-        if (game.objects[i].texture !== '') {
-            CreateObject(game.objects[i], game.objects[i].x, game.objects[i].y);
+    for (let i in game.statickObjects) {
+        if (game.statickObjects[i].texture !== '') {
+            CreateObject(game.statickObjects[i], game.statickObjects[i].x, game.statickObjects[i].y);
         }
 
-        if (game.objects[i].animate_sprite_sheets !== '') {
-            CreateAnimate(game.objects[i], game.objects[i].x, game.objects[i].y);
+        if (game.statickObjects[i].animate_sprite_sheets !== '') {
+            CreateAnimate(game.statickObjects[i], game.statickObjects[i].x, game.statickObjects[i].y);
         }
     }
 }

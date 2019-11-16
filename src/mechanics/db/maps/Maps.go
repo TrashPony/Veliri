@@ -96,8 +96,9 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 		"ct.texture_object, ct.animate_sprite_sheets, ct.animate_loop, "+
 		"mc.scale, ct.shadow, mc.rotate, ct.animate_speed, "+
 		"ct.unit_overlap, "+
-		"mc.x_shadow_offset, mc.y_shadow_offset, ct.shadow_intensity, mc.object_priority, "+
-		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp, ct.geo_data "+
+		"ct.x_shadow_offset, ct.y_shadow_offset, ct.shadow_intensity, mc.object_priority, "+
+		"ct.object_name, ct.object_description, ct.object_inventory, ct.object_hp, ct.geo_data,"+
+		"mc.x_shadow_offset, mc.y_shadow_offset "+
 		"FROM map_constructor mc, coordinate_type ct "+
 		"WHERE mc.id_map = $1 AND mc.id_type = ct.id AND "+objType, strconv.Itoa(mp.Id))
 
@@ -110,6 +111,7 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 	for rows.Next() { // заполняем карту значащами клетками
 		var obj dynamic_map_object.Object
 		var geoData []byte
+		var addShadowOffsetX, addShadowOffsetY int
 
 		err := rows.Scan(&obj.Type, &obj.X, &obj.Y, &obj.Type,
 			&obj.Texture, &obj.AnimateSpriteSheets,
@@ -117,7 +119,7 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 			&obj.AnimationSpeed, &obj.UnitOverlap,
 			&obj.XShadowOffset, &obj.YShadowOffset, &obj.ShadowIntensity,
 			&obj.Priority, &obj.Name, &obj.Description,
-			&obj.Inventory, &obj.MaxHP, &geoData)
+			&obj.Inventory, &obj.MaxHP, &geoData, &addShadowOffsetX, &addShadowOffsetY)
 		if err != nil {
 			log.Fatal(err.Error() + "scan map obj")
 		}
@@ -132,6 +134,9 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 		idString := strconv.Itoa(obj.X) + strconv.Itoa(obj.Y)
 		obj.ID, _ = strconv.Atoi(idString)
 		obj.HP = obj.MaxHP
+
+		obj.XShadowOffset += addShadowOffsetX
+		obj.YShadowOffset += addShadowOffsetY
 
 		if objMap[obj.X] != nil {
 			objMap[obj.X][obj.Y] = &obj
@@ -312,7 +317,8 @@ func CoordinatesMap(mp *_map.Map) {
 func AllTypeCoordinate() []*dynamic_map_object.Object {
 	rows, err := dbConnect.GetDBConnect().Query("SELECT id, type, texture_object, " +
 		" animate_sprite_sheets, animate_loop, unit_overlap, object_name, object_description," +
-		" object_inventory, object_hp, shadow_intensity, animate_speed, shadow, geo_data FROM coordinate_type")
+		" object_inventory, object_hp, shadow_intensity, animate_speed, shadow, geo_data, x_shadow_offset, y_shadow_offset" +
+		" FROM coordinate_type")
 	if err != nil {
 		log.Fatal(err.Error() + "get all type object")
 	}
@@ -324,18 +330,20 @@ func AllTypeCoordinate() []*dynamic_map_object.Object {
 		var geoData []byte
 
 		err := rows.Scan(&obj.TypeID, &obj.Type, &obj.Texture, &obj.AnimateSpriteSheets, &obj.AnimateLoop,
-			&obj.UnitOverlap, &obj.Name, &obj.Description, &obj.Inventory, &obj.HP, &obj.ShadowIntensity,
-			&obj.AnimationSpeed, &obj.Shadow, &geoData)
+			&obj.UnitOverlap, &obj.Name, &obj.Description, &obj.Inventory, &obj.TypeMaxHP, &obj.ShadowIntensity,
+			&obj.AnimationSpeed, &obj.Shadow, &geoData, &obj.TypeXShadowOffset, &obj.TypeYShadowOffset)
 
 		if err != nil {
 			log.Fatal(err.Error() + " scan all type coorinate")
 		}
 
+		obj.MaxHP = obj.TypeMaxHP
+		obj.XShadowOffset = obj.TypeXShadowOffset
+		obj.YShadowOffset = obj.TypeYShadowOffset
+
 		err = json.Unmarshal(geoData, &obj.GeoData)
 		if err != nil {
 			obj.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
-		} else {
-			obj.SetGeoData()
 		}
 
 		objS = append(objS, &obj)

@@ -17,7 +17,6 @@ function CreateRadarObject(mark, object) {
     }
 
     if (mark.type_object === "dynamic_objects") {
-        game.objects.push(object);
         if (object.texture !== '') {
             CreateObject(object, object.x, object.y);
         }
@@ -25,6 +24,7 @@ function CreateRadarObject(mark, object) {
         if (object.animate_sprite_sheets !== '') {
             CreateAnimate(object, object.x, object.y);
         }
+        game.objects.push(object);
     }
 }
 
@@ -67,7 +67,16 @@ function RemoveRadarObject(mark) {
     }
 
     if (mark.type_object === "dynamic_objects") {
-        // TODO
+        for (let i in game.objects) {
+            if (game.objects[i] && Number(game.objects[i].id) === Number(mark.id_object)) {
+                if (game.objects[i].objectSprite.shadow) {
+                    game.objects[i].objectSprite.shadow.destroy();
+                }
+                game.objects[i].objectSprite.destroy();
+
+                game.objects[i] = null;
+            }
+        }
     }
 }
 
@@ -82,10 +91,6 @@ function removeReservoir(reservoir) {
         document.getElementById("reservoirTip" + reservoir.x + "" + reservoir.y).remove();
     }
     reservoir.sprite.destroy();
-}
-
-function removeTransport() {
-
 }
 
 function removeAllObj() {
@@ -116,6 +121,16 @@ function removeAllObj() {
                 game.bases[idBase].transports[idTransport].sprite.destroy();
                 game.bases[idBase].transports[idTransport].sprite = null;
             }
+        }
+    }
+
+    for (let i in game.objects) {
+        if (game.objects[i] && game.objects[i].objectSprite) {
+            if (game.objects[i].objectSprite.shadow) {
+                game.objects[i].objectSprite.shadow.destroy();
+            }
+            game.objects[i].objectSprite.destroy();
+            game.objects[i] = null;
         }
     }
 }

@@ -136,8 +136,8 @@ func checkObjectsMap(mp *_map.Map, rect *Polygon) (bool, bool) {
 		}
 	}
 
-	for _, q := range mp.DynamicObjects {
-		for _, object := range q {
+	for _, x := range mp.GetCopyMapDynamicObjects() {
+		for _, object := range x {
 			for _, geoPoint := range object.GeoData {
 				if rect.detectCollisionRectToCircle(&point{x: float64(geoPoint.X), y: float64(geoPoint.Y)}, geoPoint.Radius) {
 					return true, true

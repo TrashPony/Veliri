@@ -8,6 +8,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"math/rand"
 	"strconv"
+	"sync"
 )
 
 type Map struct {
@@ -31,6 +32,7 @@ type Map struct {
 	// тоесть это обьекты с поведением, игрок их видит и запоминает последнее их состояние у себя.
 	// Игрок не видит если с обьектов что либо произошло вне поле его зрения.
 	DynamicObjects      map[int]map[int]*dynamic_map_object.Object `json:"-"`
+	DynamicObjectsMX    sync.Mutex                                 `json:"dynamic_objects_mx"`
 	Global              bool                                       `json:"global"`
 	HandlersCoordinates []*coordinate.Coordinate                   `json:"handlers_coordinates"`
 	EntryPoints         []*coordinate.Coordinate                   `json:"entry_points"`
@@ -106,6 +108,68 @@ func (z *Zone) GetNeighboursZone(mp *Map) []*Zone {
 	//}
 
 	return neighboursZones
+}
+
+func (mp *Map) GetCopyMapDynamicObjects() map[int]map[int]*dynamic_map_object.Object {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+
+	copyMap := make(map[int]map[int]*dynamic_map_object.Object)
+
+	for _, x := range mp.DynamicObjects {
+		for _, obj := range x {
+			if copyMap[obj.X] != nil {
+				copyMap[obj.X][obj.Y] = obj
+			} else {
+				copyMap[obj.X] = make(map[int]*dynamic_map_object.Object)
+				copyMap[obj.X][obj.Y] = obj
+			}
+		}
+	}
+
+	return copyMap
+}
+
+func (mp *Map) GetDynamicObjects(x, y int) *dynamic_map_object.Object {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+
+	obj := mp.DynamicObjects[x][y]
+	return obj
+}
+
+func (mp *Map) AddDynamicObject(object *dynamic_map_object.Object) {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+
+	_, ok := mp.DynamicObjects[object.X][object.Y]
+	if ok {
+		// нельзя ставить в уже существующией обьект
+		return
+	}
+
+	object.SetGeoData()
+	idString := strconv.Itoa(object.X) + strconv.Itoa(object.Y)
+	object.ID, _ = strconv.Atoi(idString)
+
+	if mp.DynamicObjects[object.X] != nil {
+		mp.DynamicObjects[object.X][object.Y] = object
+	} else {
+		mp.DynamicObjects[object.X] = make(map[int]*dynamic_map_object.Object)
+		mp.DynamicObjects[object.X][object.Y] = object
+	}
+}
+
+func (mp *Map) RemoveDynamicObject(object *dynamic_map_object.Object) {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+	delete(mp.DynamicObjects[object.X], object.Y)
+}
+
+func (mp *Map) RemoveDynamicObjectByXY(x, y int) {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+	delete(mp.DynamicObjects[x], y)
 }
 
 func (z *Zone) GetRegionsByXY(x, y int) *Region {

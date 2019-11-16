@@ -1,25 +1,25 @@
 function CreateObject(coordinate, x, y) {
+
     if (coordinate.unit_overlap) {
         coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
-            game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
-            coordinate.shadow_intensity);
+            game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
     } else {
         coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
-            game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset,
-            coordinate.shadow_intensity);
+            game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
     }
 
     if (game.typeService !== "mapEditor") {
         // TODO метод вызывающий фризы
         //ObjectEvents(coordinate, object, x, y);
     }
+
 }
 
 function gameObjectCreate(x, y, texture, scale, needShadow, rotate, group, xShadowOffset, yShadowOffset, shadowIntensity) {
     let shadow;
 
     if (needShadow) {
-        shadow = group.create(x + game.shadowXOffset + xShadowOffset, y + game.shadowYOffset + yShadowOffset, texture);
+        shadow = group.create(x + xShadowOffset, y + yShadowOffset, texture);
         shadow.anchor.setTo(0.5);
         shadow.scale.set((scale / 100) / 2);
         shadow.tint = 0x000000;

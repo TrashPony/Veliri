@@ -3,12 +3,14 @@ package global
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/bases"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/dynamic_map_object"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/squad"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/getlantern/deepcopy"
 	"github.com/satori/go.uuid"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -167,6 +169,7 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 
 	// если мы заходим в метод значит произошла перезагрузка, радар инитим заного
 	user.GetSquad().VisibleObjects = make(map[string]*squad.VisibleObjects)
+	user.MemoryDynamicObjects = make(map[int]map[int]*dynamic_map_object.Object)
 
 	checkObjects := func(oldObj *squad.VisibleObjects, id int, typeMark, typeObject string, view, radar bool) (string, string, *squad.VisibleObjects) {
 
@@ -247,6 +250,7 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 	}
 
 	for {
+		// TODO сравнение и обновление обьектов
 
 		if user.GetSquad().RadarWorkerExit {
 			user.GetSquad().RadarWorkerExit = false
@@ -299,27 +303,38 @@ func RadarWorker(user *player.Player, mp *_map.Map) {
 		// в тумане пока не откроет его зону снова.
 
 		// проверяем видит ли юзер новые обьекты
-		for _, x := range mp.DynamicObjects {
+		for _, x := range mp.GetCopyMapDynamicObjects() {
 			for _, obj := range x {
+
 				view, _ := user.GetSquad().CheckViewCoordinate(obj.X, obj.Y)
-				_, ok := user.MemoryDynamicObjects[obj.X][obj.Y]
+				memoryObj, ok := user.MemoryDynamicObjects[obj.X][obj.Y]
+
 				if view && !ok {
 					user.AddDynamicObject(obj)
 					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: obj.ID},
 						ActionMark: "", ActionObject: "createObj", Object: obj, X: obj.X, Y: obj.Y, IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
+				}
+
+				if view && ok && !reflect.DeepEqual(obj, memoryObj) {
+					user.RemoveDynamicObject(memoryObj)
+					user.AddDynamicObject(obj)
+
+					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: obj.ID},
+						ActionMark: "", ActionObject: "updateObj", Object: obj, X: obj.X, Y: obj.Y, IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
 				}
 			}
 		}
 
 		// проверяем видит ли место где были старые обьекты но их уже нет
 		for _, x := range user.MemoryDynamicObjects {
-			for _, obj := range x {
-				view, _ := user.GetSquad().CheckViewCoordinate(obj.X, obj.Y)
-				_, ok := mp.DynamicObjects[obj.X][obj.Y]
-				if view && !ok {
-					user.RemoveDynamicObject(obj)
-					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: obj.ID},
-						ActionMark: "", ActionObject: "removeObj", Object: obj, X: obj.X, Y: obj.Y, IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
+			for _, memoryObj := range x {
+				view, _ := user.GetSquad().CheckViewCoordinate(memoryObj.X, memoryObj.Y)
+				obj := mp.GetDynamicObjects(memoryObj.X, memoryObj.Y)
+				if view && obj == nil {
+					user.RemoveDynamicObject(memoryObj)
+					go SendMessage(Message{Event: "radarWork", RadarMark: &squad.VisibleObjects{TypeObject: "dynamic_objects", IDObject: memoryObj.ID},
+						ActionMark: "", ActionObject: "removeObj", Object: memoryObj, X: memoryObj.X, Y: memoryObj.Y,
+						IDUserSend: user.GetID(), IDMap: mp.Id, Bot: user.Bot})
 				}
 			}
 		}

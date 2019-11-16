@@ -13,8 +13,9 @@ function LoadGame() {
     game.input.onUp.add(StopSelectableUnits, this);
     game.input.onUp.add(UnSelectUnit, this);
 
-    game.camera.scale.x = 1.5;
-    game.camera.scale.y = 1.5;
+    // TODO
+    // game.camera.scale.x = 1.5;
+    // game.camera.scale.y = 1.5;
 
     game.user_name = Data.user.login;
     game.user_id = Data.user.id;
@@ -33,19 +34,6 @@ function LoadGame() {
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     ChangeGravity(Data.high_gravity);
 
-    for (let x in Data.dynamic_objects) {
-        for (let y in Data.dynamic_objects[x]) {
-            let object = Data.dynamic_objects[x][y];
-            game.objects.push(object);
-            if (object.texture !== '') {
-                CreateObject(object, object.x, object.y);
-            }
-            if (object.animate_sprite_sheets !== '') {
-                CreateAnimate(object, object.x, object.y);
-            }
-        }
-    }
-
     setTimeout(function () {
         CreateMiniMap();
         global.send(JSON.stringify({
@@ -56,6 +44,4 @@ function LoadGame() {
             CreateAnomalies(Data.map.anomalies)
         }
     }, 1000);
-
-
 }
