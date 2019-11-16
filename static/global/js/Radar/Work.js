@@ -27,4 +27,5 @@ function RadarWork(data) {
     if (data.action_object === "removeObj") {
         RemoveRadarObject(data.radar_mark)
     }
+    CreateMiniMap();
 }

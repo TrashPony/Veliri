@@ -1,11 +1,26 @@
 function CreateObject(coordinate, x, y) {
 
-    if (coordinate.unit_overlap) {
-        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
-            game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
-    } else {
+    // todo некоторая логика растения слишком сложна что бы мне было не лень ее вносить в бд поэтому я буду писать ее тут
+    if (coordinate.texture === 'plant_4' && coordinate.scale <= 10) {
+        // маленькие кусты под машиной
         coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
             game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
+
+    } else if (coordinate.texture === 'plant_5') {
+        // деревья всегда вышле всех у них свой особый уровень
+        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
+            game.rootLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
+
+    } else if (coordinate.unit_overlap) {
+
+        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
+            game.floorOverObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
+
+    } else {
+
+        coordinate.objectSprite = gameObjectCreate(x, y, coordinate.texture, coordinate.scale, coordinate.shadow, coordinate.rotate,
+            game.floorObjectLayer, coordinate.x_shadow_offset, coordinate.y_shadow_offset, coordinate.shadow_intensity);
+
     }
 
     if (game.typeService !== "mapEditor") {

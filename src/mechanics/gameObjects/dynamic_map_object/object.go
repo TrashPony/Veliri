@@ -5,10 +5,12 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/effect"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/obstacle_point"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/getlantern/deepcopy"
 	"time"
 )
 
 type Object struct {
+	// везде где есть приставка Type это оригиналдьные данные типа, все остальное сформированые
 	ID                  int    `json:"id"`
 	TypeID              int    `json:"type_id"`
 	Type                string `json:"type"`
@@ -45,8 +47,9 @@ type Object struct {
 	Destroyed   bool      `json:"destroyed"`
 	DestroyTime time.Time `json:"destroy_time"`
 
-	Effects []*effect.Effect                `json:"effects"`
-	GeoData []*obstacle_point.ObstaclePoint `json:"geo_data"`
+	Effects     []*effect.Effect                `json:"effects"`
+	TypeGeoData []*obstacle_point.ObstaclePoint `json:"type_geo_data"`
+	GeoData     []*obstacle_point.ObstaclePoint `json:"geo_data"`
 }
 
 func (o *Object) CalculateScale() {
@@ -61,9 +64,16 @@ func (o *Object) CalculateScale() {
 	o.YShadowOffset = int(float64(o.TypeYShadowOffset) * (float64(o.Scale) / 100))
 	//println(o.XShadowOffset, o.YShadowOffset)
 
+	o.SetGeoData()
 }
 
 func (o *Object) SetGeoData() {
+
+	err := deepcopy.Copy(&o.GeoData, &o.TypeGeoData)
+	if err != nil {
+		println(err.Error())
+	}
+
 	for _, geoPoint := range o.GeoData {
 		// применяем размер обьекта к геодате
 		geoPoint.Radius = int(float64(geoPoint.Radius) * (float64(o.Scale) / 100))

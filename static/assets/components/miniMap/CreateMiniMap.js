@@ -61,19 +61,40 @@ function CreateMiniMap() {
         }
 
         // todo довольно тормазнуто отрисовывать всю геодату каждый раз, возможно есть способ это закешировать)
+        let fillGeoData = function (geoPoint) {
+            ctx.beginPath();
+            ctx.fillStyle = "#000000";
+            ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+            ctx.ellipse(geoPoint.x / offsetX, geoPoint.y / offsetY,
+                geoPoint.radius / offsetX, geoPoint.radius / offsetY,
+                0, 0, 2 * Math.PI, true);
+            ctx.fill();
+            ctx.stroke();
+        };
         for (let i in game.map.geo_data) {
 
             let obstacle = game.map.geo_data[i];
 
             if (obstacle) {
-                ctx.beginPath();
-                ctx.fillStyle = "#000000";
-                ctx.strokeStyle = "rgba(255, 255, 255, 0)";
-                ctx.ellipse(obstacle.x / offsetX, obstacle.y / offsetY,
-                    obstacle.radius / offsetX, obstacle.radius / offsetY,
-                    0, 0, 2 * Math.PI, true);
-                ctx.fill();
-                ctx.stroke();
+                fillGeoData(obstacle)
+                // ctx.beginPath();
+                // ctx.fillStyle = "#000000";
+                // ctx.strokeStyle = "rgba(255, 255, 255, 0)";
+                // ctx.ellipse(obstacle.x / offsetX, obstacle.y / offsetY,
+                //     obstacle.radius / offsetX, obstacle.radius / offsetY,
+                //     0, 0, 2 * Math.PI, true);
+                // ctx.fill();
+                // ctx.stroke();
+            }
+        }
+
+        for (let i in game.objects) {
+            let obj = game.objects[i];
+            if (obj && obj.geo_data && obj.geo_data.length > 0) {
+                for (let j in obj.geo_data) {
+                    let obstacle = obj.geo_data[j];
+                    fillGeoData(obstacle)
+                }
             }
         }
 

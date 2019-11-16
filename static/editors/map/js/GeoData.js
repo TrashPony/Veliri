@@ -58,7 +58,6 @@ function RemoveGeoData() {
                 id: game.map.geo_data[i].id,
             }));
             game.map.geo_data[i] = null;
-            CreateGeoData(game.map.geo_data);
             deleteButton.destroy();
             overSprite.destroy();
         });

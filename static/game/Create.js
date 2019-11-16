@@ -41,6 +41,7 @@ function create(game) {
 
     // уровень обьектов которые под юнитом
     game.floorObjectLayer = game.add.group();
+    game.floorObjectLayer.name = "floorObjectLayer";
 
     // UNITS
     game.unitLayer = game.add.group();
@@ -48,8 +49,12 @@ function create(game) {
     game.bulletLayer = game.add.group();
     // уровень обьектов которые над юнитом
     game.floorOverObjectLayer = game.add.group();
+    game.floorOverObjectLayer.name = "floorOverObjectLayer";
 
+    // взрывы
     game.effectsLayer = game.add.group();
+    // деревья которы закрывают обзор
+    game.rootLayer = game.add.group();
 
     game.artilleryBulletLayer = game.add.group();
     game.weaponEffectsLayer = game.add.group();

@@ -40,7 +40,6 @@ function LoadGame() {
             event: "RefreshRadar"
         }));
         if (debug) {
-            CreateGeoData(Data.map.geo_data);
             CreateAnomalies(Data.map.anomalies)
         }
     }, 1000);

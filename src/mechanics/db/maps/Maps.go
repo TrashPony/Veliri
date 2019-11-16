@@ -124,7 +124,7 @@ func GetObjects(mp *_map.Map, objType string) map[int]map[int]*dynamic_map_objec
 			log.Fatal(err.Error() + "scan map obj")
 		}
 
-		err = json.Unmarshal(geoData, &obj.GeoData)
+		err = json.Unmarshal(geoData, &obj.TypeGeoData)
 		if err != nil {
 			obj.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
 		} else {
@@ -341,7 +341,7 @@ func AllTypeCoordinate() []*dynamic_map_object.Object {
 		obj.XShadowOffset = obj.TypeXShadowOffset
 		obj.YShadowOffset = obj.TypeYShadowOffset
 
-		err = json.Unmarshal(geoData, &obj.GeoData)
+		err = json.Unmarshal(geoData, &obj.TypeGeoData)
 		if err != nil {
 			obj.GeoData = make([]*obstacle_point.ObstaclePoint, 0)
 		}

@@ -148,7 +148,6 @@ func (mp *Map) AddDynamicObject(object *dynamic_map_object.Object) {
 		return
 	}
 
-	object.SetGeoData()
 	idString := strconv.Itoa(object.X) + strconv.Itoa(object.Y)
 	object.ID, _ = strconv.Atoi(idString)
 

@@ -12,7 +12,8 @@ function update() {
     if (game && game.typeService === "global") {
         StartSelectableUnits();
         ClearFog();
-        //CreateDynamicObjGeo();
+
+        //DrawGeoData();
 
         game.UnitStatusLayer.bmd.clear();
 

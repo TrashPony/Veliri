@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const reservoirRadius = 15 // TODO
+
 func searchStaticMapCollisionByRect(x, y int, mp *_map.Map, min bool, rect *Polygon, bodyID, minDist int) (bool, bool) {
 	xZone, yZone := x/game_math.DiscreteSize, y/game_math.DiscreteSize
 
@@ -104,8 +106,6 @@ func searchStaticMapCollisionByRect(x, y int, mp *_map.Map, min bool, rect *Poly
 }
 
 func checkMapReservoir(mp *_map.Map, rect *Polygon) (bool, bool) {
-
-	const reservoirRadius = 15
 
 	for _, qLine := range mp.Reservoir {
 		for _, reservoir := range qLine {

@@ -94,7 +94,6 @@ func checkPlace(mp *_map.Map, x, y int) bool {
 		if game_math.GetBetweenDist(x, y, handler.X, handler.Y) < minDist {
 			return false
 		}
-
 	}
 
 	entryPoints := maps.Maps.GetEntryPointsByMapID(mp.Id)

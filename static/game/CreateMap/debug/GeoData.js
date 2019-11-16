@@ -1,35 +1,50 @@
-function CreateGeoData(geoData) {
-    if (game.geoData) {
-        game.geoData.clear();
-        game.geoData.destroy();
-    }
+function CreateGeoData() {
+    for (let i = 0; i < game.map.geo_data.length; i++) {
+        if (game.map.geo_data[i]) {
 
-    game.geoData = game.add.graphics(0, 0);
-    game.geoDataLayer.add(game.geoData);
-    game.geoData.beginFill(0xFF0000, 0.3);
+            let centerX = game.map.geo_data[i].x - (game.camera.x / game.camera.scale.x);
+            let centerY = game.map.geo_data[i].y - (game.camera.y / game.camera.scale.y);
 
-    for (let i = 0; i < geoData.length; i++) {
-        if (geoData[i]) {
-            game.geoData.drawCircle(geoData[i].x, geoData[i].y, geoData[i].radius * 2);
+            game.geoData.bmd.context.beginPath();
+            game.geoData.bmd.context.arc(centerX, centerY, game.map.geo_data[i].radius, 0, Math.PI * 2, true);
+            game.geoData.bmd.context.fill();
         }
     }
 }
 
 function CreateDynamicObjGeo() {
-    if (!game.geoData) {
-        return
-    }
-
     for (let i in game.objects) {
         let obj = game.objects[i];
         if (obj && obj.geo_data && obj.geo_data.length > 0) {
             for (let i = 0; i < obj.geo_data.length; i++) {
-                game.geoData.drawCircle(
-                    obj.geo_data[i].x,
-                    obj.geo_data[i].y,
-                    obj.geo_data[i].radius * 2
-                );
+
+                let centerX = obj.geo_data[i].x - (game.camera.x / game.camera.scale.x);
+                let centerY = obj.geo_data[i].y - (game.camera.y / game.camera.scale.y);
+
+                game.geoData.bmd.context.beginPath();
+                game.geoData.bmd.context.arc(centerX, centerY, obj.geo_data[i].radius, 0, Math.PI * 2, true);
+                game.geoData.bmd.context.fill();
             }
         }
     }
+}
+
+function DrawGeoData() {
+
+    if (game.geoData) {
+        game.geoData.bmd.clear();
+    } else {
+        let bmd = game.make.bitmapData(game.camera.width, game.camera.height);
+        let dmbSprite = bmd.addToWorld();
+        dmbSprite.fixedToCamera = true;
+        game.geoData = {
+            bmd: bmd,
+            sprite: dmbSprite,
+        };
+    }
+
+    game.geoData.bmd.context.fillStyle = 'rgba(255,0,0,0.3)';
+    CreateGeoData();
+    CreateDynamicObjGeo();
+    game.geoData.bmd.context.fill();
 }

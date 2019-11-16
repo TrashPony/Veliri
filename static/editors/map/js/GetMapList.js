@@ -62,7 +62,6 @@ function CreateMeta(data) {
         CreateLabelBase(data.bases);
     }
     CreateMiniMap();
-    CreateGeoData(data.map.geo_data);
     CreateEmittersZone(data.map.emitters);
     CreateAnomalies(data.map.anomalies);
     CreateLabelEntry(data.entry_to_sector);
