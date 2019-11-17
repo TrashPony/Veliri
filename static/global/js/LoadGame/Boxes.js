@@ -32,10 +32,11 @@ function CreateBox(mapBox) {
     box.inputEnabled = true;
     box.input.pixelPerfectOver = true;
     box.input.pixelPerfectClick = true;
+    box.input.priorityID = 2;
 
     box.events.onInputOver.add(function () {
         if (!box.border) {
-            box.border = CreateBorder(mapBox.x, mapBox.y, mapBox.type, 20, mapBox.rotate, 0, 0, game.floorObjectLayer);
+            box.border = CreateBorder(mapBox.x, mapBox.y, mapBox.type, 20, mapBox.rotate, game.floorObjectLayer);
             game.floorObjectLayer.swap(box, box.border);
         } else {
             box.border.visible = true;
@@ -47,6 +48,7 @@ function CreateBox(mapBox) {
     });
 
     box.events.onInputDown.add(function () {
+        // TODO создание события движения до ящика
         for (let i in selectUnits) {
             let selectedUnit = game.units[selectUnits[i].id];
             if (selectedUnit && selectedUnit.owner_id === game.user_id && selectedUnit.body.mother_ship) {

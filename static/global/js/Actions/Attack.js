@@ -13,25 +13,29 @@ function Attack() {
         targetCursorSprite.y = ((game.input.mousePointer.y + game.camera.y) / game.camera.scale.y);
     }, 10);
 
+    for (let i in game.objects) {
+        if (game.objects[i] && game.objects[i].objectSprite && game.objects[i].hp > -2) {
+            game.objects[i].objectSprite.events.onInputDown.add(function () {
+                console.log(1)
+            })
+        }
+    }
+
     game.input.onDown.add(function () {
-
-        dontMove = true;
-        document.getElementById("GameCanvas").style.cursor = "unset";
-        targetCursorSprite.destroy();
-
+        console.log(2)
         // TODO анимация на земле как подтверждение что действие совершилось
 
-        let x = (game.input.mousePointer.x + game.camera.x) / game.camera.scale.x;
-        let y = (game.input.mousePointer.y + game.camera.y) / game.camera.scale.y;
-
+        targetCursorSprite.destroy();
         UnselectAttack();
 
-        global.send(JSON.stringify({
-            event: "Attack",
-            type: "map",
-            x: Math.round(x),
-            y: Math.round(y),
-            units_id: getIDsSelectUnits(),
-        }));
+        if (game.input.activePointer.leftButton.isDown) {
+            global.send(JSON.stringify({
+                event: "Attack",
+                type: "map",
+                x: Math.round((game.input.mousePointer.x + game.camera.x) / game.camera.scale.x),
+                y: Math.round((game.input.mousePointer.y + game.camera.y) / game.camera.scale.y),
+                units_id: getIDsSelectUnits(),
+            }));
+        }
     });
 }

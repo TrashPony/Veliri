@@ -9,14 +9,13 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"github.com/satori/go.uuid"
 	"time"
 )
 
 func Move(user *player.Player, msg Message, newAction bool) {
-
+	// TODO рефакторинг
 	// TODO движение отряда
 	// отряд двигается с минимальной скорость из всех юнитов
 	// при старте движения все юниты сначало должны принять необходимое положение, угол
@@ -53,8 +52,18 @@ func Move(user *player.Player, msg Message, newAction bool) {
 			if moveUnit != nil && moveUnit.OnMap {
 
 				if newAction {
+
 					moveUnit.FollowUnitID = 0
 					moveUnit.Return = false
+
+					target := moveUnit.GetTarget()
+					if target != nil {
+						if target.Type == "map" {
+							moveUnit.SetTarget(nil)
+						} else {
+							moveUnit.SetFollowTarget(false)
+						}
+					}
 				}
 
 				// обнуляем маршрут что бы игрок больше не двигался
@@ -122,92 +131,6 @@ func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
 	}
 }
 
-func FormationInit(user *player.Player, unitsID []int) bool {
-	for _, id := range unitsID {
-
-		if user.GetSquad().MatherShip.ID == id && !user.GetSquad().MatherShip.Formation {
-			user.GetSquad().MatherShip.Formation = true
-			go FormationMove(user)
-			return true
-		} else {
-			if user.GetSquad().MatherShip.Formation {
-				return true
-			}
-		}
-
-	}
-
-	return false
-}
-
-func FormationMove(user *player.Player) {
-	for {
-		for _, unitSlot := range user.GetSquad().MatherShip.Units {
-
-			if unitSlot.Unit != nil && unitSlot.Unit.OnMap && unitSlot.Unit.Formation {
-
-				x, y := user.GetSquad().GetFormationCoordinate(unitSlot.Unit.FormationPos.X, unitSlot.Unit.FormationPos.Y)
-
-				msg := Message{}
-				msg.ToX, msg.ToY = float64(x), float64(y)
-				msg.UnitsID = []int{unitSlot.Unit.ID}
-
-				Move(user, msg, true)
-			}
-		}
-
-		time.Sleep(100 * time.Millisecond)
-	}
-}
-
-func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
-	// если юнит преследует другово юнита, то достаем его и мониторим его положение
-	// если по какойто причине (столкновение, гравитация и тд) надо перестроить маршрут то сохраняем FollowUnitID
-	// однако если сам игрок сгенерил событие движения то мы не сохраняем параметр FollowUnitID
-
-	var followUnit *unit.Unit
-	if moveUnit.FollowUnitID != 0 {
-		followUnit = globalGame.Clients.GetUnitByID(moveUnit.FollowUnitID)
-	} else {
-		return
-	}
-
-	if followUnit != nil {
-		for {
-
-			if moveUnit.FollowUnitID == 0 || !moveUnit.OnMap || !followUnit.OnMap || moveUnit.MapID != followUnit.MapID {
-				moveUnit.FollowUnitID = 0
-				moveUnit.Return = false
-				return
-			}
-
-			dist := game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
-			if dist < 90 {
-
-				stopMove(moveUnit, true)
-
-				if moveUnit.Return {
-					go ReturnUnit(user, moveUnit)
-					return
-				}
-
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
-
-			dist = game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.ToX), int(moveUnit.ToY))
-			if dist > 90 || moveUnit.ActualPath == nil {
-				msg.ToX = float64(followUnit.X)
-				msg.ToY = float64(followUnit.Y)
-				Move(user, msg, false)
-				return
-			}
-
-			time.Sleep(100 * time.Millisecond)
-		}
-	}
-}
-
 func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, moveUnit *unit.Unit, mp *_map.Map) {
 	moveRepeat := false
 	moveUnit.MoveChecker = true
@@ -241,6 +164,12 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 	countExit := 1
 	moveUnit.ActualPath = path
 
+	// если юнит вошел в метод с целью и флагов приследования, то это движения для атаки
+	followTargaet := false
+	if moveUnit.GetTarget() != nil && moveUnit.GetTarget().Follow {
+		followTargaet = true
+	}
+
 	for i, pathUnit := range *path {
 		// юнит или отряд умер
 		if user.GetSquad() == nil || moveUnit == nil || !moveUnit.OnMap || moveUnit.HP <= 0 {
@@ -262,6 +191,37 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 				}
 			}
 		}
+
+		// выходим если это атакующее движение при условиях:
+		if followTargaet {
+
+			// если цель изменилась или юнит больше не преследует
+			target := moveUnit.GetTarget()
+			if target == nil || !target.Follow {
+				return
+			}
+
+			//или цель в зоне поражения
+			if CheckFireToTarget(moveUnit, mp, target) {
+				return
+			}
+		}
+
+		go func() {
+			// горутина создана что бы оружием и тело имели актуальное положение независимо от тика сервера
+			// todo добавить тоже по х у
+			if pathUnit.Rotate > 0 {
+				msToOneAngle := pathUnit.Millisecond / pathUnit.Rotate
+				for {
+					oldRotate := moveUnit.Rotate
+					if move.RotateUnit(&moveUnit.Rotate, &pathUnit.Rotate, 1) == 0 {
+						return
+					}
+					moveUnit.GunRotate -= oldRotate - moveUnit.Rotate
+					time.Sleep(time.Millisecond * time.Duration(msToOneAngle))
+				}
+			}
+		}()
 
 		moveUnit.ActualPathCell = pathUnit
 
@@ -355,7 +315,7 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: unitPos, IDMap: moveUnit.MapID, NeedCheckView: true})
 			SendMessage(Message{Event: "BoxTo", PathUnit: boxPos, IDMap: moveUnit.MapID, BoxID: mapBox.ID, NeedCheckView: true})
 
-			// TODO тнимаение зп ящика и если 0 то уничтожать
+			// TODO отнимаение хп ящика и если 0 то уничтожать
 			//go SendMessage(Message{Event: "DestroyBox", BoxID: mapBox.ID, IDMap: moveUnit.MapID})
 			//boxes.Boxes.DestroyBox(mapBox)
 			//moveUnit.CurrentSpeed -= float64(moveUnit.Speed)
@@ -391,10 +351,10 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			moveUnit.CurrentSpeed = 0
 		}
 
-		// TODO поворот корпуса влияет и на оружие это надо учитывать
-		moveUnit.GunRotate -= moveUnit.Rotate - pathUnit.Rotate
+		// TODO поворот корпуса влияет и на оружие это надо учитывать, но из за тайминга все работает плохо
+		//moveUnit.GunRotate -= moveUnit.Rotate - pathUnit.Rotate
 
-		moveUnit.Rotate = pathUnit.Rotate
+		//moveUnit.Rotate = pathUnit.Rotate
 		moveUnit.X = int(pathUnit.X)
 		moveUnit.Y = int(pathUnit.Y)
 

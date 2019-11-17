@@ -39,7 +39,9 @@ function UnselectDigger() {
 }
 
 function UnselectAttack() {
+    document.getElementById("GameCanvas").style.cursor = "unset";
     game.input.onDown.removeAll();
+    dontMove = true;
 }
 
 function UnselectUnits() {

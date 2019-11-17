@@ -23,7 +23,6 @@ function CreateUnits(units) {
 }
 
 function CreateNewUnit(newUnit) {
-    console.log(game.units, newUnit)
     if (!game || !game.units || !newUnit || !newUnit.id) return;
 
     let unit = game.units[newUnit.id];

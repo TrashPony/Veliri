@@ -25,6 +25,7 @@ func placeUnit(user *player.Player, msg Message) {
 
 			outUnit.FollowUnitID = user.GetSquad().MatherShip.ID
 			outUnit.Return = true
+			outUnit.SetTarget(nil) // если юнит возвращается то он больше не имеет цели
 
 			Move(
 				user,

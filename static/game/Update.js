@@ -57,14 +57,14 @@ function CreateAttackLine(unit) {
     // TODO сделать общий метод для отрисовки линий
     unit.AttackLine.graphics.clear();
     unit.AttackLine.graphics.lineStyle(3, 0xb74213, 0.2);
-    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius*2);
     unit.AttackLine.graphics.lineStyle(1, 0xff0000, 1);
-    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.minRadius*2);
 
     unit.AttackLine.graphics.lineStyle(3, 0xb74213, 0.2);
-    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius*2);
     unit.AttackLine.graphics.lineStyle(1, 0xff0000, 1);
-    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius);
+    unit.AttackLine.graphics.drawCircle(unit.sprite.x, unit.sprite.y, unit.AttackLine.maxRadius*2);
 }
 
 function CreateMapHealBar(sprite, maxHP, hp) {

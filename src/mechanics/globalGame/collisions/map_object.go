@@ -15,82 +15,51 @@ func CheckObjectCollision(obj *dynamic_map_object.Object, mp *_map.Map, structCh
 	// это супер мега дорогой метод, однако он используется только для популяции растений и вызывается редко
 	// TODO а еще лень думоть
 
-	// статичные обьекты на карте
-	for _, x := range mp.StaticObjects {
-		for _, sObj := range x {
-			for _, sGeoPoint := range sObj.GeoData {
-				for _, GeoPoint := range obj.GeoData {
-					distToObstacle := game_math.GetBetweenDist(GeoPoint.X, GeoPoint.Y, sGeoPoint.X, sGeoPoint.Y)
-					if int(distToObstacle) < sGeoPoint.Radius+GeoPoint.Radius { // если растония меньше чем обра радиуса значит окружности пересекается
-						return true
-					}
-				}
-			}
-		}
-	}
-
-	// динамические обьекты
-	for _, x := range mp.GetCopyMapDynamicObjects() {
-		for _, sObj := range x {
-
-			if obj.ID == sObj.ID {
-				continue // исключаем себя
-			}
-
-			for _, sGeoPoint := range sObj.GeoData {
-				for _, GeoPoint := range obj.GeoData {
-					distToObstacle := game_math.GetBetweenDist(GeoPoint.X, GeoPoint.Y, sGeoPoint.X, sGeoPoint.Y)
-					if int(distToObstacle) < sGeoPoint.Radius+GeoPoint.Radius { // если растония меньше чем обра радиуса значит окружности пересекается
-						return true
-					}
-				}
-			}
-		}
-	}
-
-	// глобальная гео дата
-	for _, sGeoPoint := range mp.GeoData {
-		for _, GeoPoint := range obj.GeoData {
-			distToObstacle := game_math.GetBetweenDist(GeoPoint.X, GeoPoint.Y, sGeoPoint.X, sGeoPoint.Y)
-			if int(distToObstacle) < sGeoPoint.Radius+GeoPoint.Radius { // если растония меньше чем обра радиуса значит окружности пересекается
-				return true
-			}
-		}
-	}
-
-	// руды
-	for _, qLine := range mp.Reservoir {
-		for _, reservoir := range qLine {
-			for _, GeoPoint := range obj.GeoData {
-				distToObstacle := game_math.GetBetweenDist(GeoPoint.X, GeoPoint.Y, reservoir.X, reservoir.Y)
-				if int(distToObstacle) < 100 { // если растония меньше чем обра радиуса значит окружности пересекается
-					return true
-				}
-			}
-		}
-	}
-
-	// все юниты
 	units := globalGame.Clients.GetAllShortUnits(mp.Id)
-	for _, unit := range units {
-		rect := GetBodyRect(unit.Body, float64(unit.X), float64(unit.Y), unit.Rotate, false, false)
-		for _, GeoPoint := range obj.GeoData {
-			if rect.detectCollisionRectToCircle(&point{x: float64(GeoPoint.X), y: float64(GeoPoint.Y)}, GeoPoint.Radius) {
-				return true
-			}
-		}
-	}
-
-	// ящики
 	boxs := boxes.Boxes.GetAllBoxByMapID(mp.Id)
 
-	for _, mapBox := range boxs {
-		rect := GetCenterRect(float64(mapBox.X), float64(mapBox.Y), float64(mapBox.Height), float64(mapBox.Width))
-		rect.Rotate(mapBox.Rotate)
-		for _, GeoPoint := range obj.GeoData {
-			if rect.detectCollisionRectToCircle(&point{x: float64(GeoPoint.X), y: float64(GeoPoint.Y)}, GeoPoint.Radius) {
-				return true
+	for _, GeoPoint := range obj.GeoData {
+
+		// статичные обьекты на карте
+		if CircleStaticMap(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, mp) {
+			return true
+		}
+
+		// динамические обьекты
+		for _, x := range mp.GetCopyMapDynamicObjects() {
+			for _, sObj := range x {
+				for _, sGeoPoint := range sObj.GeoData {
+
+					if sObj.ID == obj.ID {
+						continue
+					}
+
+					distToObstacle := game_math.GetBetweenDist(GeoPoint.X, GeoPoint.Y, sGeoPoint.X, sGeoPoint.Y)
+					if int(distToObstacle) < sGeoPoint.Radius+GeoPoint.Radius {
+						return true
+					}
+				}
 			}
+		}
+
+		// глобальная гео дата
+		if CircleGlobalGeoDataMap(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, mp) {
+			return true
+		}
+
+		// руды
+		if CircleReservoirMap(GeoPoint.X, GeoPoint.Y, 100-reservoirRadius, mp) {
+			return true
+		}
+
+		// все юниты
+		if CircleUnits(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, units) {
+			return true
+		}
+
+		// все ящики
+		if CircleBoxes(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, boxs) {
+			return true
 		}
 	}
 

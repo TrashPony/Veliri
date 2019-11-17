@@ -124,15 +124,14 @@ function GetSelectUnitByID(unitID) {
     }
 }
 
-function UnSelectUnit() {
-    if (game.input.activePointer.rightButton.isDown && game.input.activePointer.rightButton.duration <= 100) {
+function UnSelectUnit(pointer) {
+    if (pointer.button === 2 && pointer.duration <= 150) {
         UnselectAll();
     }
 }
 
-function initMove(pointer) {
-    if (game.input.activePointer.leftButton.isDown && pointer.duration <= 200) {
-
+function initMove(sprite, pointer) {
+    if (pointer.isMouse && pointer.button === 0 && game.input.activePointer.leftButton.lastDuration <= 200) {
         if (!dontMove) {
 
             // todo если игрок передумал и тыкнул в другое место то не преследовать ящик

@@ -24,10 +24,8 @@ function CreateObject(coordinate, x, y) {
     }
 
     if (game.typeService !== "mapEditor") {
-        // TODO метод вызывающий фризы
-        //ObjectEvents(coordinate, object, x, y);
+        ObjectEvents(coordinate, coordinate.objectSprite, x, y);
     }
-
 }
 
 function gameObjectCreate(x, y, texture, scale, needShadow, rotate, group, xShadowOffset, yShadowOffset, shadowIntensity) {
@@ -54,26 +52,25 @@ function gameObjectCreate(x, y, texture, scale, needShadow, rotate, group, xShad
 
 function ObjectEvents(coordinate, object, x, y) {
 
-    object.inputEnabled = true;
-    object.input.pixelPerfectOver = true;
-    object.input.pixelPerfectClick = true;
-    object.input.pixelPerfectAlpha = 1;
+    if (coordinate.name !== "") {
 
-    if (coordinate.object_name !== "") {
+        object.inputEnabled = true;
+        object.input.pixelPerfectOver = true;
+        object.input.pixelPerfectClick = true;
+        object.input.pixelPerfectAlpha = 1;
+        object.input.priorityID = 2;
+
+        // некоторые обьекты имеют имя, но являются проходимыми например как базы, тунели, респауны
+        // поэтому вешаем на них эвент движения
+        AllowObjectMoveUnit(coordinate, object);
 
         let tip;
         let posInterval;
         object.events.onInputOver.add(function () {
-
             // из за того что эта очень ресурсоемкая операция приходится вот так извращатся
             if (!object.border) {
-                if (coordinate.unit_overlap) {
-                    object.border = CreateBorder(x, y, coordinate.texture, coordinate.scale, coordinate.rotate, game.floorOverObjectLayer);
-                    game.floorOverObjectLayer.swap(object, object.border);
-                } else {
-                    object.border = CreateBorder(x, y, coordinate.texture, coordinate.scale, coordinate.rotate, game.floorObjectLayer);
-                    game.floorObjectLayer.swap(object, object.border);
-                }
+                object.border = CreateBorder(x, y, object.key, coordinate.scale, coordinate.rotate, game[object.parent.name]);
+                game[object.parent.name].swap(object, object.border);
             } else {
                 object.border.visible = true;
             }
@@ -144,4 +141,10 @@ function forEachPixel(pixel) {
     pixel.g = 255;
     pixel.b = 255;
     return pixel
+}
+
+function AllowObjectMoveUnit(coordinate, object) {
+    if (object.key.indexOf('base') > -1 || object.key.indexOf('tunel_out') > -1 || object.key.indexOf('tunel') > -1) {
+        object.events.onInputUp.add(initMove);
+    }
 }

@@ -2,6 +2,7 @@ package collisions
 
 import (
 	"fmt"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/boxInMap"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/detail"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
@@ -138,6 +139,42 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameU
 			if !free {
 				return true
 			}
+		}
+
+		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)
+		currentX += stopX
+		currentY += stopY
+
+		minDist = distToEnd
+	}
+}
+
+func SearchCircleCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, radius int, units map[int]*unit.ShortUnitInfo, boxs []*boxInMap.Box) bool {
+	// текущее положение курсора
+	currentX, currentY := startX, startY
+
+	// угол от старта до конца
+	angle := game_math.GetBetweenAngle(ToX, ToY, startX, startY)
+	radian := float64(angle) * math.Pi / 180
+
+	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
+	minDist := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
+
+	speed := 3.0
+
+	for {
+		// находим длинную вектора до цели
+		distToEnd := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
+		if distToEnd < speed || minDist < distToEnd {
+			return false
+		}
+
+		if debug.Store.SearchCollisionLine {
+			debug.Store.AddMessage("CreateRect", "blue", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
+		}
+
+		if CircleAllCollisionCheck(int(currentX), int(currentY), radius, mp, units, boxs) {
+			return true
 		}
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)

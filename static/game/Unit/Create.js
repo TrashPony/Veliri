@@ -138,7 +138,9 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     unit.sprite.angle = rotate;
     SetShadowAngle(unit, rotate);
     // принимаем угол башни
-    RotateGun(unit, unit.gun_rotate, 10);
+    if (weaponSlot && weaponSlot.weapon) {
+        RotateGun(unit, unit.gun_rotate, 10);
+    }
 
     return unit
 }

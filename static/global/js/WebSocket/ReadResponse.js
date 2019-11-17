@@ -22,8 +22,10 @@ function ReadResponse(jsonData) {
     if (jsonData.event === "RefreshRadar") {
         RemoveAllMark();
         removeAllObj();
+    }
 
-        // TODO окончание загрузки
+    if (jsonData.event === "RefreshDynamicObj") {
+        CreateDynamicObjects(jsonData.dynamic_objects);
     }
 
     if (jsonData.event === "focusMS") {

@@ -95,7 +95,12 @@ func PopulationWorker(mp *_map.Map) {
 
 		// если на карте меньше N кустов то рождаем новые)
 		if GetCountPlantIMap("plant_4", mp) < 200 {
-			initPopulationSource(getRandomSource(), rand.Intn(mp.XSize/game_math.CellSize), rand.Intn(mp.YSize/game_math.CellSize), "plant_4", mp)
+			initPopulationSource(
+				getRandomSource(),
+				rand.Intn(mp.XSize/game_math.CellSize-6)+3, // -6+3 что бы совсем на краях не делались
+				rand.Intn(mp.YSize/game_math.CellSize-6)+3,
+				"plant_4",
+				mp)
 		}
 
 		time.Sleep(time.Millisecond * 2000)

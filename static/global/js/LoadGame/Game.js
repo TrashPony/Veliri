@@ -9,9 +9,21 @@ function Game(jsonData) {
 
 function LoadGame() {
 
-    game.input.onUp.add(initMove, this);
     game.input.onUp.add(StopSelectableUnits, this);
     game.input.onUp.add(UnSelectUnit, this);
+
+    // запоминаем последние тайминги нажатий
+    game.input.onUp.add(function (pointer) {
+        if (game.input.activePointer.leftButton.isDown) {
+            game.input.activePointer.leftButton.lastDuration = pointer.duration;
+        } else if (game.input.activePointer.rightButton.isDown) {
+            game.input.activePointer.rightButton.lastDuration = pointer.duration;
+        }
+    });
+
+    game.bmdTerrain.sprite.inputEnabled = true;
+    game.bmdTerrain.sprite.input.priorityID = 1;
+    game.bmdTerrain.sprite.events.onInputUp.add(initMove);
 
     // TODO
     // game.camera.scale.x = 1.5;
@@ -33,6 +45,8 @@ function LoadGame() {
 
     FillUserMeta(Data.credits, Data.experience, Data.squad);
     ChangeGravity(Data.high_gravity);
+
+    CreateDynamicObjects(Data.dynamic_objects)
 
     setTimeout(function () {
         CreateMiniMap();

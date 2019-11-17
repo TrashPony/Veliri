@@ -17,6 +17,11 @@ function CreateRadarObject(mark, object) {
     }
 
     if (mark.type_object === "dynamic_objects") {
+
+        for (let i in game.objects) {
+            if (game.objects[i] && game.objects[i].id === object.id) return;
+        }
+
         if (object.texture !== '') {
             CreateObject(object, object.x, object.y);
         }
@@ -131,6 +136,30 @@ function removeAllObj() {
             }
             game.objects[i].objectSprite.destroy();
             game.objects[i] = null;
+            game.objects.splice(i, 1);
+        }
+    }
+}
+
+function CreateDynamicObjects(dynamicObjects) {
+    for (let x in dynamicObjects) {
+        for (let y in dynamicObjects[x]) {
+            let object = dynamicObjects[x][y];
+
+            let find = false;
+            for (let i in game.objects) {
+                if (game.objects[i] && game.objects[i].id === object.id) find = true;
+            }
+
+            if (find) continue;
+
+            if (object.texture !== '') {
+                CreateObject(object, object.x, object.y);
+            }
+            if (object.animate_sprite_sheets !== '') {
+                CreateAnimate(object, object.x, object.y);
+            }
+            game.objects.push(object)
         }
     }
 }

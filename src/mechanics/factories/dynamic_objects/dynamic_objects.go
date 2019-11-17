@@ -19,7 +19,7 @@ func newObjectsStore() *store {
 	mapObjects := make(map[int]*dynamic_map_object.Object)
 
 	for _, obj := range object {
-		mapObjects[obj.ID] = obj
+		mapObjects[obj.TypeID] = obj
 	}
 
 	return &store{

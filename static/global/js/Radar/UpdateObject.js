@@ -51,6 +51,8 @@ function UpdatePlant(mark, object) {
                     Phaser.Easing.Linear.None, true, 0
                 );
             }
+
+            return;
         }
     }
 }

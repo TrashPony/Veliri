@@ -34,6 +34,9 @@ function StartMining(jsonData) {
         attachPoint.addChild(laserIn);
 
         setTimeout(function () {
+            for (let i in unit.miningLaser) {
+                if (unit.miningLaser[i].id === id) unit.miningLaser.splice(i, 1);
+            }
             laserOut.destroy();
             laserIn.destroy();
         }, jsonData.seconds * 1000 - 3000);
@@ -81,17 +84,19 @@ function InitMiningOre(unitID, numberSlot, type, equip) {
 
             let reservoir = game.map.reservoir[x][y];
 
-            reservoir.sprite.events.onInputDown.add(function () {
-                global.send(JSON.stringify({
-                    event: "startMining",
-                    unit_id: unitID,
-                    slot: Number(numberSlot),
-                    type_slot: type,
-                    x: reservoir.x,
-                    y: reservoir.y,
-                }));
-                UnselectResource()
-            });
+            if (reservoir && reservoir.sprite) {
+                reservoir.sprite.events.onInputDown.add(function () {
+                    global.send(JSON.stringify({
+                        event: "startMining",
+                        unit_id: unitID,
+                        slot: Number(numberSlot),
+                        type_slot: type,
+                        x: reservoir.x,
+                        y: reservoir.y,
+                    }));
+                    UnselectResource()
+                });
+            }
         }
     }
 }

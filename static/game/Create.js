@@ -32,8 +32,13 @@ function create(game) {
     game.world.setBounds(0, 0, game.map.XSize, game.map.YSize); //размеры карты
     game.stage.backgroundColor = "#242424"; //цвет фона
 
-    game.bmdTerrain = game.make.bitmapData(game.map.XSize, game.map.YSize);
-    game.add.image(0, 0, game.bmdTerrain); //bitmapData для отрисовки статичного нижнего слоя
+    //bitmapData для отрисовки статичного нижнего слоя
+    let bmdTerrain = game.make.bitmapData(game.map.XSize, game.map.YSize);
+    let bmdTerrainSprite = bmdTerrain.addToWorld();
+    game.bmdTerrain = {
+        bmd: bmdTerrain,
+        sprite: bmdTerrainSprite,
+    };
 
     game.floorLayer = game.add.group();
     game.floorSelectLineLayer = game.add.group();
@@ -45,16 +50,23 @@ function create(game) {
 
     // UNITS
     game.unitLayer = game.add.group();
+    game.unitLayer.name = "unitLayer";
 
+    // уровень летящих по прямой пулей
     game.bulletLayer = game.add.group();
+    game.bulletLayer.name = "bulletLayer";
+
     // уровень обьектов которые над юнитом
     game.floorOverObjectLayer = game.add.group();
     game.floorOverObjectLayer.name = "floorOverObjectLayer";
 
     // взрывы
     game.effectsLayer = game.add.group();
+    game.effectsLayer.name = "effectsLayer";
+
     // деревья которы закрывают обзор
     game.rootLayer = game.add.group();
+    game.rootLayer.name = "rootLayer";
 
     game.artilleryBulletLayer = game.add.group();
     game.weaponEffectsLayer = game.add.group();

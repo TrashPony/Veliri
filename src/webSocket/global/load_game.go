@@ -37,7 +37,6 @@ func LoadGame(user *player.Player, msg Message) {
 			IDMap:       user.GetSquad().MatherShip.MapID,
 			Bot:         user.Bot,
 			HighGravity: move.GetGravity(user.GetSquad().MatherShip.X, user.GetSquad().MatherShip.Y, user.GetSquad().MatherShip.MapID),
-			//DynamicObjects: sendDObj,
 		})
 
 		// запускаем реактор машины

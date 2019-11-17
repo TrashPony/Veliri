@@ -4,7 +4,7 @@ function CreateMap() {
     game.statickObjects = [];
 
     game.mapPoints = []; // карта точек координат для динамического обнавления карты в методе Update
-    game.bmdTerrain.clear();
+    game.bmdTerrain.bmd.clear();
 
     for (let x in game.map.OneLayerMap) {
         if (game.map.OneLayerMap.hasOwnProperty(x)) {
@@ -119,7 +119,7 @@ function CreateFlore() {
             if (game.flore[i].texture_over_flore !== '') {
                 let bmd = game.make.bitmapData(512, 512);
                 bmd.alphaMask(game.flore[i].texture_over_flore, 'brush');
-                game.bmdTerrain.draw(bmd, game.flore[i].x - 256, game.flore[i].y - 256);
+                game.bmdTerrain.bmd.draw(bmd, game.flore[i].x - 256, game.flore[i].y - 256);
                 bmd.destroy();
             }
         }

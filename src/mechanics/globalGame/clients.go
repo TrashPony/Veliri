@@ -5,7 +5,6 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/gorilla/websocket"
 	"sync"
-	"time"
 )
 
 type wsUsers struct {
@@ -95,14 +94,6 @@ func (c *wsUsers) PlaceUnit(newUnit *unit.Unit) {
 }
 
 func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
-	// оптимизировал функцию выдачи юнитов таким образом:
-	// при запросе юнитов сначало смотри заготовленая карта, если таковая имеется то отдаем ее и не генерим нечего
-	// если такой нет, то генерим карту, создаем специальную горутину которая будет поддерживать
-	// состояние карты каждый N милисекунд и при следующем запросе будет отдавать заготовленую карту а не генерить
-	// тогда мы можем генерить примерно раз в 100 мс что похоже намного быстрее чем запрашивать отовсюду заного)
-
-	// стало лучше, но не сильно :(
-
 	getShort := func() map[int]*unit.ShortUnitInfo {
 		shortUnits := make(map[int]*unit.ShortUnitInfo)
 		for _, gameUnit := range c.units {
@@ -117,23 +108,7 @@ func (c *wsUsers) GetAllShortUnits(mapID int) map[int]*unit.ShortUnitInfo {
 	c.unitsMX.Lock()
 	defer c.unitsMX.Unlock()
 
-	shortUnits, ok := c.shortUnits[mapID]
-	if ok {
-		return shortUnits
-	} else {
-		c.shortUnits[mapID] = getShort()
-		go func() {
-			time.Sleep(100 * time.Millisecond) // не надо сразу генерить
-			for {
-				c.unitsMX.Lock()
-				c.shortUnits[mapID] = getShort()
-				c.unitsMX.Unlock()
-				time.Sleep(100 * time.Millisecond)
-			}
-		}()
-
-		return c.shortUnits[mapID]
-	}
+	return getShort()
 }
 
 func (c *wsUsers) GetUnitByID(id int) *unit.Unit {

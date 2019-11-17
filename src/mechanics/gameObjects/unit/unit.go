@@ -9,6 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/getlantern/deepcopy"
+	"sync"
 )
 
 type Unit struct {
@@ -102,14 +103,16 @@ type Unit struct {
 	FormationPos *coordinate.Coordinate `json:"formation_pos"`
 	Formation    bool                   `json:"formation"`
 
-	Target *Target `json:"target"`
+	target   *Target
+	targetMX sync.Mutex
 }
 
 type Target struct {
-	Type string `json:"type"` // box, unit, map
-	ID   int    `json:"id"`
-	X    int    `json:"x"`
-	Y    int    `json:"y"`
+	Type   string `json:"type"` // box, unit, map
+	ID     int    `json:"id"`
+	X      int    `json:"x"`
+	Y      int    `json:"y"`
+	Follow bool   `json:"follow"`
 }
 
 type Bullet struct {
@@ -178,6 +181,24 @@ type ReloadAction struct {
 type Slot struct {
 	Unit       *Unit `json:"unit"`
 	NumberSlot int   `json:"number_slot"`
+}
+
+func (unit *Unit) GetTarget() *Target {
+	unit.targetMX.Lock()
+	defer unit.targetMX.Unlock()
+	return unit.target
+}
+
+func (unit *Unit) SetTarget(target *Target) {
+	unit.targetMX.Lock()
+	defer unit.targetMX.Unlock()
+	unit.target = target
+}
+
+func (unit *Unit) SetFollowTarget(follow bool) {
+	unit.targetMX.Lock()
+	defer unit.targetMX.Unlock()
+	unit.target.Follow = follow
 }
 
 func (unit *Unit) GetShortInfo() *ShortUnitInfo {

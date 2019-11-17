@@ -183,11 +183,12 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 
 		if msg.Event == "RefreshRadar" {
 			// из за того что клиент начинает принимать сообщения раньше чем загрузится клиент, то данные теряются
-			go SendMessage(Message{Event: "RefreshRadar", IDUserSend: user.GetID()})
 			user.GetSquad().RadarLock()
 
+			go SendMessage(Message{Event: "RefreshRadar", IDUserSend: user.GetID()})
 			user.GetSquad().VisibleObjects = make(map[string]*squad.VisibleObjects)
-			user.MemoryDynamicObjects = make(map[int]map[int]*dynamic_map_object.Object)
+			go SendMessage(Message{Event: "RefreshDynamicObj", IDUserSend: user.GetID(),
+				DynamicObjects: user.MemoryDynamicObjects[user.GetSquad().MatherShip.MapID]})
 
 			time.Sleep(500 * time.Millisecond)
 			user.GetSquad().RadarUnlock()

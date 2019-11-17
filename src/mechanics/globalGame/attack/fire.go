@@ -23,7 +23,7 @@ func Fire(attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
 			Ammo:    attackUnit.GetWeaponSlot().Ammo,
 			Rotate:  attackUnit.GunRotate,
 			Speed:   attackUnit.GetWeaponSlot().Weapon.BulletSpeed + attackUnit.GetWeaponSlot().Ammo.BulletSpeed,
-			Target:  attackUnit.Target,
+			Target:  attackUnit.GetTarget(),
 			OwnerID: attackUnit.OwnerID,
 		}
 

@@ -60,6 +60,7 @@ function CreateReservoir(reservoir, x, y) {
     game.map.reservoir[x][y].sprite.input.pixelPerfectOver = true;
     game.map.reservoir[x][y].sprite.input.pixelPerfectClick = true;
     game.map.reservoir[x][y].sprite.input.pixelPerfectAlpha = 1;
+    game.map.reservoir[x][y].sprite.input.priorityID = 2;
 
     let tip;
     let posInterval;
