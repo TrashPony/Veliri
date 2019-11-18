@@ -15,6 +15,7 @@ import (
 	"github.com/getlantern/deepcopy"
 	"github.com/gorilla/websocket"
 	"strconv"
+	"sync"
 )
 
 type Player struct {
@@ -69,7 +70,8 @@ type Player struct {
 	DebugMoveMessage []interface{}
 
 	// запомненные динамические обьекты на карте [map_id][x][y]
-	MemoryDynamicObjects map[int]map[int]map[int]*dynamic_map_object.Object `json:"memory_dynamic_objects"`
+	MemoryDynamicObjects   map[int]map[int]map[int]*dynamic_map_object.Object `json:"memory_dynamic_objects"`
+	memoryDynamicObjectsMX sync.Mutex
 }
 
 type ShortUserInfo struct {
@@ -116,6 +118,9 @@ type Window struct {
 }
 
 func (client *Player) AddDynamicObject(object *dynamic_map_object.Object, mapID int) {
+	client.memoryDynamicObjectsMX.Lock()
+	defer client.memoryDynamicObjectsMX.Unlock()
+
 	var memoryObj dynamic_map_object.Object // создаем копию обьекта
 	err := deepcopy.Copy(&memoryObj, &object)
 	if err != nil {
@@ -138,14 +143,40 @@ func (client *Player) AddDynamicObject(object *dynamic_map_object.Object, mapID 
 }
 
 func (client *Player) RemoveDynamicObject(object *dynamic_map_object.Object, mapID int) {
+	client.memoryDynamicObjectsMX.Lock()
+	defer client.memoryDynamicObjectsMX.Unlock()
+
 	delete(client.MemoryDynamicObjects[mapID][object.X], object.Y)
 }
 
 func (client *Player) GetMapDynamicObject(mapID, x, y int) *dynamic_map_object.Object {
+	client.memoryDynamicObjectsMX.Lock()
+	defer client.memoryDynamicObjectsMX.Unlock()
+
 	return client.MemoryDynamicObjects[mapID][x][y]
 }
 
+func (client *Player) GetMapDynamicObjectByID(mapID, id int) *dynamic_map_object.Object {
+	client.memoryDynamicObjectsMX.Lock()
+	defer client.memoryDynamicObjectsMX.Unlock()
+
+	if client.MemoryDynamicObjects[mapID] != nil {
+		for _, x := range client.MemoryDynamicObjects[mapID] {
+			for _, obj := range x {
+				if obj.ID == id {
+					return obj
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
 func (client *Player) GetMapDynamicObjects(mapID int) map[int]map[int]*dynamic_map_object.Object {
+	client.memoryDynamicObjectsMX.Lock()
+	defer client.memoryDynamicObjectsMX.Unlock()
+
 	return client.MemoryDynamicObjects[mapID]
 }
 

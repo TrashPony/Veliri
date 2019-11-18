@@ -138,6 +138,21 @@ func (mp *Map) GetDynamicObjects(x, y int) *dynamic_map_object.Object {
 	return obj
 }
 
+func (mp *Map) GetDynamicObjectsByID(id int) *dynamic_map_object.Object {
+	mp.DynamicObjectsMX.Lock()
+	defer mp.DynamicObjectsMX.Unlock()
+
+	for _, x := range mp.DynamicObjects {
+		for _, obj := range x {
+			if obj.ID == id {
+				return obj
+			}
+		}
+	}
+
+	return nil
+}
+
 func (mp *Map) AddDynamicObject(object *dynamic_map_object.Object) {
 	mp.DynamicObjectsMX.Lock()
 	defer mp.DynamicObjectsMX.Unlock()

@@ -1,6 +1,8 @@
 package global
 
 import (
+	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
@@ -53,5 +55,71 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 
 			time.Sleep(100 * time.Millisecond)
 		}
+	}
+}
+
+func FollowTarget(user *player.Player, followUnit *unit.Unit, mp *_map.Map) {
+
+	for {
+
+		target := followUnit.GetTarget()
+		if target == nil || !target.Follow {
+			// юнит перестал преследовать цель
+			return
+		}
+
+		if target.Type == "object" {
+			obj := user.GetMapDynamicObjectByID(followUnit.MapID, target.ID)
+			if obj == nil {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				followUnit.SetTarget(nil)
+			} else {
+				target.X, target.Y = obj.X, obj.Y
+			}
+		}
+
+		if target.Type == "box" {
+			mapBox, mx := boxes.Boxes.Get(target.ID)
+			mx.Unlock()
+
+			if mapBox == nil || mapBox.MapID != followUnit.MapID {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				followUnit.SetTarget(nil)
+			} else {
+				target.X, target.Y = mapBox.X, mapBox.Y
+			}
+		}
+
+		if target.Type == "unit" {
+			targetUnit := globalGame.Clients.GetUnitByID(target.ID)
+			if targetUnit == nil || targetUnit.MapID != followUnit.MapID {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				followUnit.SetTarget(nil)
+			} else {
+				target.X, target.Y = targetUnit.X, targetUnit.Y
+			}
+		}
+
+		if target.Type == "reservoir" {
+			// todo атаковать руду, почему бы и нет? :D
+		}
+
+		if target.Type == "transport" {
+			// todo защитников баз
+		}
+
+		// преследовать если оружия не достает (-50 что бы не рыпатся при любом движение цели) или если не прострельнут до цели
+		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 && !collisionWeaponRangeCollision(followUnit, mp, target) {
+			// иначе стоим стреляем до отмены приказа или пока цель не пропадет
+			stopMove(followUnit, true)
+		} else {
+			// что бы не генерить всегда новые события проверяем, может юнит уже на пути к цели
+			dist := int(game_math.GetBetweenDist(target.X, target.Y, int(followUnit.ToX), int(followUnit.ToY)))
+			if !followUnit.MoveChecker || dist > followUnit.GetWeaponRange()-50 {
+				Move(user, Message{ToX: float64(target.X), ToY: float64(target.Y), UnitsID: []int{followUnit.ID}}, false)
+			}
+		}
+
+		time.Sleep(100 * time.Millisecond)
 	}
 }

@@ -1,3 +1,5 @@
+let notOpen = false;
+
 function CreateBoxes(boxes) {
     for (let i = 0; i < boxes.length; i++) {
         CreateBox(boxes[i])
@@ -47,19 +49,22 @@ function CreateBox(mapBox) {
         if (box.border) box.border.visible = false;
     });
 
-    box.events.onInputDown.add(function () {
-        // TODO создание события движения до ящика
-        for (let i in selectUnits) {
-            let selectedUnit = game.units[selectUnits[i].id];
-            if (selectedUnit && selectedUnit.owner_id === game.user_id && selectedUnit.body.mother_ship) {
-                selectedUnit.toBox = {
-                    boxID: mapBox.id,
-                    to: true,
-                    x: box.x,
-                    y: box.y
-                }
-            }
-        }
+    box.events.onInputUp.add(function () {
+
+        // if (notOpen) return;
+        // console.log(2);
+        // // TODO создание события движения до ящика
+        // for (let i in selectUnits) {
+        //     let selectedUnit = game.units[selectUnits[i].id];
+        //     if (selectedUnit && selectedUnit.owner_id === game.user_id && selectedUnit.body.mother_ship) {
+        //         selectedUnit.toBox = {
+        //             boxID: mapBox.id,
+        //             to: true,
+        //             x: box.x,
+        //             y: box.y
+        //         }
+        //     }
+        // }
     });
 
     game.boxes.push(mapBox);

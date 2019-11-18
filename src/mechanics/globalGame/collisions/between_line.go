@@ -149,7 +149,8 @@ func SearchCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, gameU
 	}
 }
 
-func SearchCircleCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, radius int, units map[int]*unit.ShortUnitInfo, boxs []*boxInMap.Box) bool {
+func SearchCircleCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map, radius int,
+	units map[int]*unit.ShortUnitInfo, boxs []*boxInMap.Box, target *unit.Target) bool {
 	// текущее положение курсора
 	currentX, currentY := startX, startY
 
@@ -160,7 +161,7 @@ func SearchCircleCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map,
 	// перменная для контроля зависаний, если дальность начала возрастать значит алгоритм проебал точку выхода
 	minDist := game_math.GetBetweenDist(int(currentX), int(currentY), int(ToX), int(ToY))
 
-	speed := 3.0
+	speed := 1.0
 
 	for {
 		// находим длинную вектора до цели
@@ -173,8 +174,14 @@ func SearchCircleCollisionInLine(startX, startY, ToX, ToY float64, mp *_map.Map,
 			debug.Store.AddMessage("CreateRect", "blue", int(currentX), int(currentY), 0, 0, 5, mp.Id, 20)
 		}
 
-		if CircleAllCollisionCheck(int(currentX), int(currentY), radius, mp, units, boxs) {
-			return true
+		collision, typeCollision, id := CircleAllCollisionCheck(int(currentX), int(currentY), radius, mp, units, boxs)
+		if collision {
+			// если колизия наша цель то считай что до цели колизий нет
+			if target != nil && target.Type == typeCollision && target.ID == id {
+				return false
+			} else {
+				return true
+			}
 		}
 
 		stopX, stopY := float64(speed)*math.Cos(radian), float64(speed)*math.Sin(radian)

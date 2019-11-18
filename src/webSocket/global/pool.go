@@ -209,6 +209,16 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 			}
 		}
 
+		if msg.Event == "StopAll" {
+			for _, id := range msg.UnitsID {
+				selectUnit := globalGame.Clients.GetUnitByID(id)
+				stopMove(selectUnit, true)
+				selectUnit.SetTarget(nil)
+				// todo отмена майнинга
+				// todo отмена копания
+			}
+		}
+
 		if msg.Event == "ThrowItems" {
 			throwItems(user, msg)
 		}

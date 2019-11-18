@@ -45,10 +45,10 @@ function CreateUnit(unit, x, y, rotate, bColor, b2Color, wColor, w2Color, userID
     body.anchor.setTo(0.5);               // устанавливаем центр спрайта
     body.input.pixelPerfectOver = true;   // уберает ивенты наведения на пустую зону спрайта
     body.input.pixelPerfectClick = true;  // уберает ивенты кликов на пустую зону спрайта
-    body.input.priorityID = 1;
+    body.input.priorityID = 3;
 
     mouseBodyOver(body, unit, unitBox);
-    body.events.onInputDown.add(function () {
+    body.events.onInputUp.add(function () {
         SelectOneUnit(unit, unitBox, true);
     }, this);
 

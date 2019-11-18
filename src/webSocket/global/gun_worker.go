@@ -40,7 +40,7 @@ func GunWorker(user *player.Player) {
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
 
 				if !FireGun(user.GetSquad().MatherShip, mp) {
-					RotateGun(user.GetSquad().MatherShip, tickTime)
+					RotateGun(user, user.GetSquad().MatherShip, tickTime)
 				}
 			}
 
@@ -49,7 +49,7 @@ func GunWorker(user *player.Player) {
 					unitSlot.Unit.GetWeaponSlot() != nil && unitSlot.Unit.GetWeaponSlot().Weapon != nil {
 
 					if !FireGun(unitSlot.Unit, mp) {
-						RotateGun(unitSlot.Unit, tickTime)
+						RotateGun(user, unitSlot.Unit, tickTime)
 					}
 				}
 			}
@@ -59,7 +59,7 @@ func GunWorker(user *player.Player) {
 	}
 }
 
-func RotateGun(rotateUnit *unit.Unit, tickTime int) {
+func RotateGun(user *player.Player, rotateUnit *unit.Unit, tickTime int) {
 	sendRotate := func(rotateUnit *unit.Unit, pathUnit *unit.PathUnit) {
 		go SendMessage(Message{
 			Event:         "RotateGun",
@@ -74,6 +74,41 @@ func RotateGun(rotateUnit *unit.Unit, tickTime int) {
 
 	target := rotateUnit.GetTarget()
 	if target != nil {
+
+		// TODO обьеденить эти блоки с блоками из follow_unit и attack они одинаковы
+		if target.Type == "object" {
+			obj := user.GetMapDynamicObjectByID(rotateUnit.MapID, target.ID)
+			if obj == nil {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				rotateUnit.SetTarget(nil)
+				return
+			} else {
+				target.X, target.Y = obj.X, obj.Y
+			}
+		}
+
+		if target.Type == "box" {
+			mapBox, mx := boxes.Boxes.Get(target.ID)
+			mx.Unlock()
+
+			if mapBox == nil || mapBox.MapID != rotateUnit.MapID {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				rotateUnit.SetTarget(nil)
+				return
+			} else {
+				target.X, target.Y = mapBox.X, mapBox.Y
+			}
+		}
+
+		if target.Type == "unit" {
+			targetUnit := globalGame.Clients.GetUnitByID(target.ID)
+			if targetUnit == nil || targetUnit.MapID != rotateUnit.MapID {
+				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
+				rotateUnit.SetTarget(nil)
+			} else {
+				target.X, target.Y = targetUnit.X, targetUnit.Y
+			}
+		}
 
 		pathUnit, diffAngle := attack.RotateGunToTarget(
 			rotateUnit,
@@ -102,6 +137,7 @@ func FireGun(attackUnit *unit.Unit, mp *_map.Map) bool {
 
 		bullets, startAttack := attack.Fire(attackUnit)
 		if startAttack {
+
 			for _, bullet := range bullets {
 
 				// для отыгрыша анимации выстрела
@@ -140,34 +176,30 @@ func CheckFireToTarget(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target)
 		needRotate += 360
 	}
 
-	// и дистанция оружия доставала до цели
-	weaponSlot := attackUnit.GetWeaponSlot()
-	dist := int(game_math.GetBetweenDist(target.X, target.Y, xWeapon, yWeapon))
-
 	if debug.Store.WeaponFirePos {
 		debug.Store.AddMessage("CreateLine", "orange", target.X,
 			target.Y, xWeapon, yWeapon, 0, attackUnit.MapID, 0)
 	}
 
-	if needRotate == attackUnit.GunRotate && dist <= weaponSlot.Weapon.Range {
-
+	if needRotate == attackUnit.GunRotate && attackUnit.GetDistWeaponToTarget() <= attackUnit.GetWeaponRange() {
 		// и между оружием и целью нет колизий
-		units := globalGame.Clients.GetAllShortUnits(mp.Id)
-		boxs := boxes.Boxes.GetAllBoxByMapID(mp.Id)
-		firePos := attackUnit.GetWeaponFirePos()
-
-		delete(units, attackUnit.ID) // удаляем из карты что бы не обрабатывать в колизиях
-
-		collisionInLine := collisions.SearchCircleCollisionInLine(float64(firePos[0].X), float64(firePos[0].Y),
-			float64(target.X), float64(target.Y), mp, 3, units, boxs)
-
-		if collisionInLine {
+		if collisionWeaponRangeCollision(attackUnit, mp, target) {
 			return false
 		}
-
 	} else {
 		return false
 	}
 
 	return true
+}
+
+func collisionWeaponRangeCollision(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target) bool {
+	units := globalGame.Clients.GetAllShortUnits(mp.Id)
+	boxs := boxes.Boxes.GetAllBoxByMapID(mp.Id)
+	firePos := attackUnit.GetWeaponFirePos()
+
+	delete(units, attackUnit.ID) // удаляем из карты что бы не обрабатывать в колизиях
+
+	return collisions.SearchCircleCollisionInLine(float64(firePos[0].X), float64(firePos[0].Y),
+		float64(target.X), float64(target.Y), mp, 3, units, boxs, target)
 }

@@ -6,6 +6,7 @@ function UnselectAll() {
     UnselectAttack();
 
     dontMove = false;
+    notOpen = false;
 }
 
 function UnselectResource() {
@@ -40,8 +41,33 @@ function UnselectDigger() {
 
 function UnselectAttack() {
     document.getElementById("GameCanvas").style.cursor = "unset";
-    game.input.onDown.removeAll();
-    dontMove = true;
+    game.bmdTerrain.sprite.events.onInputDown.removeAll();
+    dontMove = false;
+    notOpen = false;
+
+    if (game.targetCursorSprite) {
+        game.targetCursorSprite.destroy();
+        game.targetCursorSprite = null;
+    }
+
+    for (let i in game.objects) {
+        if (game.objects[i] && game.objects[i].objectSprite) {
+            game.objects[i].objectSprite.events.onInputDown.removeAll();
+        }
+    }
+
+    for (let i in game.boxes) {
+        if (game.boxes[i] && game.boxes[i].sprite) {
+            game.boxes[i].sprite.events.onInputDown.removeAll();
+        }
+    }
+
+    for (let i in game.units) {
+        let unit = game.units[i];
+        if (unit && unit.sprite && unit.sprite.unitBody) {
+            unit.sprite.unitBody.events.onInputDown.removeAll();
+        }
+    }
 }
 
 function UnselectUnits() {

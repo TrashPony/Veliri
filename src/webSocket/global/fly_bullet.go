@@ -25,6 +25,10 @@ func FlyArtillery() {
 // функция которая заставляет лететь снаряды летящие по прямой
 func FlyBullet(bullet *unit.Bullet, idMap int) {
 
+	if bullet == nil {
+		return
+	}
+
 	tickTime := 100
 
 	realSpeed := float64(bullet.Speed / (1000 / tickTime))

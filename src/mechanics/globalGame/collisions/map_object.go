@@ -48,17 +48,20 @@ func CheckObjectCollision(obj *dynamic_map_object.Object, mp *_map.Map, structCh
 		}
 
 		// руды
-		if CircleReservoirMap(GeoPoint.X, GeoPoint.Y, 100-reservoirRadius, mp) {
+		collision, _ := CircleReservoirMap(GeoPoint.X, GeoPoint.Y, 100-reservoirRadius, mp)
+		if collision {
 			return true
 		}
 
 		// все юниты
-		if CircleUnits(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, units) {
+		collision, _ = CircleUnits(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, units)
+		if collision {
 			return true
 		}
 
 		// все ящики
-		if CircleBoxes(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, boxs) {
+		collision, _ = CircleBoxes(GeoPoint.X, GeoPoint.Y, GeoPoint.Radius, boxs)
+		if collision {
 			return true
 		}
 	}

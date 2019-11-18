@@ -201,10 +201,10 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 				return
 			}
 
-			//или цель в зоне поражения
-			if CheckFireToTarget(moveUnit, mp, target) {
-				return
-			}
+			////или цель в зоне поражения
+			//if CheckFireToTarget(moveUnit, mp, target) {
+			//	return
+			//}
 		}
 
 		go func() {
@@ -353,7 +353,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 		// TODO поворот корпуса влияет и на оружие это надо учитывать, но из за тайминга все работает плохо
 		//moveUnit.GunRotate -= moveUnit.Rotate - pathUnit.Rotate
-
 		//moveUnit.Rotate = pathUnit.Rotate
 		moveUnit.X = int(pathUnit.X)
 		moveUnit.Y = int(pathUnit.Y)

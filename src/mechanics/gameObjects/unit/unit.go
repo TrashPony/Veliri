@@ -183,6 +183,23 @@ type Slot struct {
 	NumberSlot int   `json:"number_slot"`
 }
 
+func (unit *Unit) GetDistWeaponToTarget() int {
+	unit.targetMX.Lock()
+	defer unit.targetMX.Unlock()
+
+	if unit.target == nil {
+		return 9999
+	}
+
+	xWeapon, yWeapon := unit.GetWeaponPos()
+	return int(game_math.GetBetweenDist(unit.target.X, unit.target.Y, xWeapon, yWeapon))
+}
+
+func (unit *Unit) GetWeaponRange() int {
+	weaponSlot := unit.GetWeaponSlot()
+	return weaponSlot.Weapon.Range
+}
+
 func (unit *Unit) GetTarget() *Target {
 	unit.targetMX.Lock()
 	defer unit.targetMX.Unlock()

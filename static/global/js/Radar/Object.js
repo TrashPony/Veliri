@@ -129,16 +129,16 @@ function removeAllObj() {
         }
     }
 
-    for (let i in game.objects) {
-        if (game.objects[i] && game.objects[i].objectSprite) {
-            if (game.objects[i].objectSprite.shadow) {
-                game.objects[i].objectSprite.shadow.destroy();
-            }
-            game.objects[i].objectSprite.destroy();
-            game.objects[i] = null;
-            game.objects.splice(i, 1);
-        }
-    }
+    // for (let i in game.objects) {
+    //     if (game.objects[i] && game.objects[i].objectSprite) {
+    //         if (game.objects[i].objectSprite.shadow) {
+    //             game.objects[i].objectSprite.shadow.destroy();
+    //         }
+    //         game.objects[i].objectSprite.destroy();
+    //         game.objects[i] = null;
+    //         game.objects.splice(i, 1);
+    //     }
+    // }
 }
 
 function CreateDynamicObjects(dynamicObjects) {

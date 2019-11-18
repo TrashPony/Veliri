@@ -7,7 +7,6 @@ import (
 
 // метод определяет начально положение пули скорость выстрела и направление полета
 func Fire(attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
-	// todo проверить что меду целью и пушкой нет колизий
 
 	bullets := make([]*unit.Bullet, 0)
 	firePos := attackUnit.GetWeaponFirePos()
