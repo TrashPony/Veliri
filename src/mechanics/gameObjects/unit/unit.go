@@ -20,7 +20,8 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	GunRotate int `json:"gun_rotate"`
+	GunRotate int  `json:"gun_rotate"`
+	GunFreeze bool `json:"-"`
 
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
@@ -116,16 +117,18 @@ type Target struct {
 }
 
 type Bullet struct {
-	UUID    string         `json:"uuid"`
-	Weapon  *detail.Weapon `json:"-"`
-	Ammo    *ammo.Ammo     `json:"ammo"`
-	Rotate  int            `json:"rotate"`
-	X       int            `json:"x"`
-	Y       int            `json:"y"`
-	Z       float64        `json:"z"` // определяет "высоту" пули (сильнее отдалять тени)
-	Speed   int            `json:"speed"`
-	Target  *Target        `json:"target"`
-	OwnerID int            `json:"owner_id"` // какой игрок стрелял
+	UUID     string         `json:"uuid"`
+	Weapon   *detail.Weapon `json:"-"`
+	Ammo     *ammo.Ammo     `json:"ammo"`
+	Rotate   int            `json:"rotate"`
+	X        int            `json:"x"`
+	Y        int            `json:"y"`
+	Z        float64        `json:"z"` // определяет "высоту" пули (сильнее отдалять тени)
+	Speed    int            `json:"speed"`
+	Target   *Target        `json:"target"`
+	OwnerID  int            `json:"owner_id"` // какой игрок стрелял
+	UnitID   int            `json:"unit_id"`
+	MaxRange int            `json:"max_range"`
 }
 
 type ShortUnitInfo struct {

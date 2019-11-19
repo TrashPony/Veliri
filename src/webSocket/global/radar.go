@@ -97,7 +97,7 @@ func CheckView(client *player.Player, resp *Message) *Message {
 		}
 	}
 
-	if msg.Event == "FlyBullet" {
+	if msg.Event == "FlyBullet" || msg.Event == "FlyLaser" {
 		view, _ := client.GetSquad().CheckViewCoordinate(msg.Bullet.X, msg.Bullet.Y)
 		if view {
 			return &msg

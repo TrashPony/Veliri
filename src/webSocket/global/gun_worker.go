@@ -1,16 +1,11 @@
 package global
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/attack"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
-	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"time"
 )
 
@@ -39,7 +34,8 @@ func GunWorker(user *player.Player) {
 
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
 
-				if !FireGun(user.GetSquad().MatherShip, mp) {
+				if !user.GetSquad().MatherShip.GunFreeze {
+					go FireGun(user, user.GetSquad().MatherShip, mp)
 					RotateGun(user, user.GetSquad().MatherShip, tickTime)
 				}
 			}
@@ -48,7 +44,8 @@ func GunWorker(user *player.Player) {
 				if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap &&
 					unitSlot.Unit.GetWeaponSlot() != nil && unitSlot.Unit.GetWeaponSlot().Weapon != nil {
 
-					if !FireGun(unitSlot.Unit, mp) {
+					if !unitSlot.Unit.GunFreeze {
+						go FireGun(user, unitSlot.Unit, mp)
 						RotateGun(user, unitSlot.Unit, tickTime)
 					}
 				}
@@ -73,42 +70,7 @@ func RotateGun(user *player.Player, rotateUnit *unit.Unit, tickTime int) {
 	}
 
 	target := rotateUnit.GetTarget()
-	if target != nil {
-
-		// TODO обьеденить эти блоки с блоками из follow_unit и attack они одинаковы
-		if target.Type == "object" {
-			obj := user.GetMapDynamicObjectByID(rotateUnit.MapID, target.ID)
-			if obj == nil {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				rotateUnit.SetTarget(nil)
-				return
-			} else {
-				target.X, target.Y = obj.X, obj.Y
-			}
-		}
-
-		if target.Type == "box" {
-			mapBox, mx := boxes.Boxes.Get(target.ID)
-			mx.Unlock()
-
-			if mapBox == nil || mapBox.MapID != rotateUnit.MapID {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				rotateUnit.SetTarget(nil)
-				return
-			} else {
-				target.X, target.Y = mapBox.X, mapBox.Y
-			}
-		}
-
-		if target.Type == "unit" {
-			targetUnit := globalGame.Clients.GetUnitByID(target.ID)
-			if targetUnit == nil || targetUnit.MapID != rotateUnit.MapID {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				rotateUnit.SetTarget(nil)
-			} else {
-				target.X, target.Y = targetUnit.X, targetUnit.Y
-			}
-		}
+	if attack.GetXYTarget(user, rotateUnit, target) {
 
 		pathUnit, diffAngle := attack.RotateGunToTarget(
 			rotateUnit,
@@ -128,14 +90,14 @@ func RotateGun(user *player.Player, rotateUnit *unit.Unit, tickTime int) {
 	}
 }
 
-func FireGun(attackUnit *unit.Unit, mp *_map.Map) bool {
+func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 
 	target := attackUnit.GetTarget()
 	weaponSlot := attackUnit.GetWeaponSlot()
 
-	if target != nil && CheckFireToTarget(attackUnit, mp, target) {
+	if target != nil && attack.CheckFireToTarget(attackUnit, mp, target) {
 
-		bullets, startAttack := attack.Fire(attackUnit)
+		bullets, startAttack := attack.Fire(user, attackUnit)
 		if startAttack {
 
 			for _, bullet := range bullets {
@@ -150,56 +112,23 @@ func FireGun(attackUnit *unit.Unit, mp *_map.Map) bool {
 					NeedCheckView: true,
 				})
 
-				go FlyBullet(bullet, attackUnit.MapID)
+				if weaponSlot.Weapon.Type == "firearms" && !weaponSlot.Weapon.Artillery {
+					go FlyBullet(bullet, mp)
+				}
+
+				if weaponSlot.Weapon.Type == "laser" {
+					go FlyLaser(bullet, mp)
+				}
+
+				attackUnit.GunFreeze = true
 				time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
+				attackUnit.GunFreeze = false
 			}
 
 			if target.Type == "map" {
 				// если это атака тупо в карту то происхдит только 1 выстрел
 				attackUnit.SetTarget(nil)
 			}
-
-			return true
 		}
 	}
-
-	return false
-}
-
-func CheckFireToTarget(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target) bool {
-	// TODO проверка перезарядки
-
-	// смотрим что бы оружие было повернуто в необходимом положение
-	xWeapon, yWeapon := attackUnit.GetWeaponPos()
-	needRotate := game_math.GetBetweenAngle(float64(target.X), float64(target.Y), float64(xWeapon), float64(yWeapon))
-	if needRotate < 0 {
-		needRotate += 360
-	}
-
-	if debug.Store.WeaponFirePos {
-		debug.Store.AddMessage("CreateLine", "orange", target.X,
-			target.Y, xWeapon, yWeapon, 0, attackUnit.MapID, 0)
-	}
-
-	if needRotate == attackUnit.GunRotate && attackUnit.GetDistWeaponToTarget() <= attackUnit.GetWeaponRange() {
-		// и между оружием и целью нет колизий
-		if collisionWeaponRangeCollision(attackUnit, mp, target) {
-			return false
-		}
-	} else {
-		return false
-	}
-
-	return true
-}
-
-func collisionWeaponRangeCollision(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target) bool {
-	units := globalGame.Clients.GetAllShortUnits(mp.Id)
-	boxs := boxes.Boxes.GetAllBoxByMapID(mp.Id)
-	firePos := attackUnit.GetWeaponFirePos()
-
-	delete(units, attackUnit.ID) // удаляем из карты что бы не обрабатывать в колизиях
-
-	return collisions.SearchCircleCollisionInLine(float64(firePos[0].X), float64(firePos[0].Y),
-		float64(target.X), float64(target.Y), mp, 3, units, boxs, target)
 }

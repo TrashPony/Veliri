@@ -60,9 +60,12 @@ function ReadResponse(jsonData) {
         FlyBullet(jsonData);
     }
 
+    if (jsonData.event === "FlyLaser") {
+        FlyLaser(jsonData);
+    }
+
     if (jsonData.event === "ExplosionBullet") {
-        // TODO проигрываем взрыв в точке снаряда, (удаляем снаряд)
-        //   появляется кратер который прилетает с бека, если не прилетает то нет
+        ExplosionBullet(jsonData);
     }
 
     if (jsonData.event === "BoxTo") {

@@ -1,11 +1,11 @@
 package global
 
 import (
-	"github.com/TrashPony/Veliri/src/mechanics/factories/boxes"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/attack"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"time"
 )
@@ -63,53 +63,13 @@ func FollowTarget(user *player.Player, followUnit *unit.Unit, mp *_map.Map) {
 	for {
 
 		target := followUnit.GetTarget()
-		if target == nil || !target.Follow {
+		if !attack.GetXYTarget(user, followUnit, target) || !target.Follow {
 			// юнит перестал преследовать цель
 			return
 		}
 
-		if target.Type == "object" {
-			obj := user.GetMapDynamicObjectByID(followUnit.MapID, target.ID)
-			if obj == nil {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				followUnit.SetTarget(nil)
-			} else {
-				target.X, target.Y = obj.X, obj.Y
-			}
-		}
-
-		if target.Type == "box" {
-			mapBox, mx := boxes.Boxes.Get(target.ID)
-			mx.Unlock()
-
-			if mapBox == nil || mapBox.MapID != followUnit.MapID {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				followUnit.SetTarget(nil)
-			} else {
-				target.X, target.Y = mapBox.X, mapBox.Y
-			}
-		}
-
-		if target.Type == "unit" {
-			targetUnit := globalGame.Clients.GetUnitByID(target.ID)
-			if targetUnit == nil || targetUnit.MapID != followUnit.MapID {
-				// по той или иной причине юнит перестал видит цель и больше не знает существует оно или нет
-				followUnit.SetTarget(nil)
-			} else {
-				target.X, target.Y = targetUnit.X, targetUnit.Y
-			}
-		}
-
-		if target.Type == "reservoir" {
-			// todo атаковать руду, почему бы и нет? :D
-		}
-
-		if target.Type == "transport" {
-			// todo защитников баз
-		}
-
 		// преследовать если оружия не достает (-50 что бы не рыпатся при любом движение цели) или если не прострельнут до цели
-		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 && !collisionWeaponRangeCollision(followUnit, mp, target) {
+		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 && !attack.CollisionWeaponRangeCollision(followUnit, mp, target) {
 			// иначе стоим стреляем до отмены приказа или пока цель не пропадет
 			stopMove(followUnit, true)
 		} else {

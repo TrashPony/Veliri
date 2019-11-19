@@ -42,7 +42,6 @@ function Attack() {
         if (game.boxes[i] && game.boxes[i].sprite) {
             game.boxes[i].sprite.events.onInputDown.add(function (sprite, pointer) {
                 // TODO анимация на земле как подтверждение что действие совершилось
-
                 UnselectAttack();
                 if (pointer.isMouse && pointer.button === 0) {
                     global.send(JSON.stringify({
@@ -81,6 +80,8 @@ function Attack() {
         // TODO анимация на земле как подтверждение что действие совершилось
 
         UnselectAttack();
+        dontMove = true; // TODO костыль из за которого надо делать еще 1 нажатие
+
         if (pointer.isMouse && pointer.button === 0) {
             global.send(JSON.stringify({
                 event: "Attack",

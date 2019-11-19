@@ -42,7 +42,6 @@ function UnselectDigger() {
 function UnselectAttack() {
     document.getElementById("GameCanvas").style.cursor = "unset";
     game.bmdTerrain.sprite.events.onInputDown.removeAll();
-    dontMove = false;
     notOpen = false;
 
     if (game.targetCursorSprite) {
