@@ -243,6 +243,7 @@ type BodyWeaponSlot struct {
 	HP           int        `json:"hp"`
 	XAttach      int        `json:"x_attach"`
 	YAttach      int        `json:"y_attach"`
+	Reload       bool       `json:"reload"`
 
 	//-- боевые характиристики оружия после расчета со снаряжением
 	MinAttackRange      int    `json:"min_attack_range"`

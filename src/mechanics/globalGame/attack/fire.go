@@ -24,6 +24,7 @@ func Fire(user *player.Player, attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
 
 	//  создаем обьект пули, дать ему направление и начальную позицию
 	for i := 0; i < attackUnit.GetWeaponSlot().Weapon.CountFireBullet; i++ {
+
 		bullet := &unit.Bullet{
 			UUID:     uuid.NewV1().String(),
 			X:        firePos[i].X,

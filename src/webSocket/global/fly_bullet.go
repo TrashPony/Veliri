@@ -2,10 +2,13 @@ package global
 
 import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/map"
+	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/attack"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"math"
 	"time"
 )
@@ -26,7 +29,7 @@ func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
 		bullet.Target.Y = bullet.Y + int(float64(bullet.MaxRange)*math.Sin(radRotate))
 	}
 
-	_, _, deltaTime := detailFlyBullet(bullet, float64(bullet.Target.X), float64(bullet.Target.Y), radRotate, gameMap)
+	_, _, deltaTime := detailFlyBullet(bullet, float64(bullet.Target.X), float64(bullet.Target.Y), radRotate, gameMap, 10)
 
 	go SendMessage(Message{
 		Event:         "FlyLaser",
@@ -38,7 +41,7 @@ func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
 }
 
 // функция которая заставляет лететь снаряды летящие по прямой
-func FlyBullet(bullet *unit.Bullet, gameMap *_map.Map) {
+func FlyBullet(user *player.Player, bullet *unit.Bullet, gameMap *_map.Map) {
 
 	if bullet == nil {
 		return
@@ -69,19 +72,32 @@ func FlyBullet(bullet *unit.Bullet, gameMap *_map.Map) {
 	)
 	time.Sleep(time.Duration(tickTime) * time.Millisecond)
 
+	distanceTraveled := 0.0
 	for {
 
+		if bullet.Ammo.ChaseTarget && attack.GetXYTarget2(user, bullet.Target, gameMap) {
+			needRotate := game_math.GetBetweenAngle(float64(bullet.Target.X), float64(bullet.Target.Y), float64(bullet.X), float64(bullet.Y))
+			move.RotateUnit(&bullet.Rotate, &needRotate, 5)
+			radRotate = float64(bullet.Rotate) * math.Pi / 180
+		}
+
 		currentDist := game_math.GetBetweenDist(bullet.X, bullet.Y, bullet.Target.X, bullet.Target.Y)
-		// высота пульки
-		bullet.Z = 1 - ((1.0 / float64(startDist)) * (startDist - currentDist))
+
+		if bullet.Ammo.Type != "missile" {
+			// высота пульки
+			bullet.Z = 1 - ((1.0 / float64(startDist)) * (startDist - currentDist))
+		}
 
 		stopX := realSpeed * math.Cos(radRotate) // идем по вектору движения выстрела
 		stopY := realSpeed * math.Sin(radRotate)
 
 		// deltaTime - время затрачено на проверку колизий, оно существенно поэтому надо учитывать
-		percent, end, deltaTime := detailFlyBullet(bullet, float64(bullet.X)+stopX, float64(bullet.Y)+stopY, radRotate, gameMap)
+		percent, end, deltaTime := detailFlyBullet(bullet, float64(bullet.X)+stopX, float64(bullet.Y)+stopY, radRotate, gameMap, realSpeed)
 
-		ms := (tickTime * percent) / 100
+		ms := tickTime
+		if end {
+			ms = (tickTime * percent) / 100
+		}
 
 		go SendMessage(Message{
 			Event:         "FlyBullet",
@@ -94,7 +110,7 @@ func FlyBullet(bullet *unit.Bullet, gameMap *_map.Map) {
 		minDist = currentDist
 		time.Sleep(time.Duration(ms-int(deltaTime)) * time.Millisecond)
 
-		if end || minDist < currentDist {
+		if end || (minDist < currentDist && bullet.Ammo.Type != "missile") || (int(distanceTraveled) > bullet.MaxRange) {
 			// для отыгрыша анимации взрыва
 			// TODO появление динамического обьекта кратера
 			SendMessage(Message{
@@ -106,12 +122,13 @@ func FlyBullet(bullet *unit.Bullet, gameMap *_map.Map) {
 
 			break
 		}
+
+		distanceTraveled += realSpeed
 	}
 }
 
 // самоводящиеся ракеты
-func FlyChaseRocket(bullet *unit.Bullet, gameMap *_map.Map) {
-	// ракеты это как снаряд прямой кинетики который преследует игрока
+func FlyArtilleryRocket(bullet *unit.Bullet, gameMap *_map.Map) {
 	// TODO
 }
 
@@ -120,7 +137,7 @@ func FlyArtillery() {
 	// TODO
 }
 
-func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *_map.Map) (int, bool, int64) {
+func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *_map.Map, speed float64) (int, bool, int64) {
 
 	startTime := time.Now()
 
@@ -130,11 +147,15 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *
 
 	x, y := float64(bullet.X), float64(bullet.Y)
 
+	if speed > 10 {
+		speed = speed / 10
+	}
+
 	for {
 		percentPath := 100 - (int((dist * 100) / startDist))
 
-		stopX := float64(10) * math.Cos(radRotate) // идем по вектору движения пуди
-		stopY := float64(10) * math.Sin(radRotate)
+		stopX := speed * math.Cos(radRotate) // идем по вектору движения пуди
+		stopY := speed * math.Sin(radRotate)
 
 		x += stopX
 		y += stopY
@@ -144,7 +165,7 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *
 		units := globalGame.Clients.GetAllShortUnits(gameMap.Id)
 		delete(units, bullet.UnitID) // стреляющий не может быть колизие
 
-		collision, typeCollision, id := collisions.CircleAllCollisionCheck(int(x), int(y), 3, gameMap, units, nil)
+		collision, typeCollision, id := collisions.CircleAllCollisionCheck(int(x), int(y), 2, gameMap, units, nil)
 		if typeCollision != "" {
 			println(typeCollision, id)
 		}
@@ -152,7 +173,7 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *
 		dist = game_math.GetBetweenDist(int(x), int(y), int(toX), int(toY))
 		distToTarget := game_math.GetBetweenDist(int(x), int(y), bullet.Target.X, bullet.Target.Y)
 
-		if dist <= 3 || minDist < dist || distToTarget < 12 || collision {
+		if dist <= 3 || minDist < dist || distToTarget < speed+2 || collision {
 
 			bullet.X, bullet.Y = int(x), int(y)
 
@@ -160,7 +181,7 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *
 				bullet.Target.X, bullet.Target.Y = int(x), int(y)
 			}
 
-			return percentPath, distToTarget < 12 || collision, time.Since(startTime).Nanoseconds() / int64(time.Millisecond)
+			return percentPath, distToTarget < speed+2 || collision, time.Since(startTime).Nanoseconds() / int64(time.Millisecond)
 		}
 
 		minDist = dist

@@ -40,6 +40,9 @@ function FlyBullet(jsonData) {
         Phaser.Easing.Linear.None, true, 0
     );
 
+    ShortDirectionRotateTween(bullet, Phaser.Math.degToRad(path.rotate), path.millisecond);
+    ShortDirectionRotateTween(bullet.shadow, Phaser.Math.degToRad(path.rotate), path.millisecond);
+
     console.log(jsonData)
 }
 

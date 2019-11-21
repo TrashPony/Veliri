@@ -96,6 +96,13 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 		bullets, startAttack := attack.Fire(user, attackUnit)
 		if startAttack {
 
+			weaponSlot.Reload = true
+			go func() {
+				// todo weaponSlot.Weapon.ReloadTime
+				time.Sleep(time.Duration(5000) * time.Millisecond)
+				weaponSlot.Reload = false
+			}()
+
 			for _, bullet := range bullets {
 
 				// для отыгрыша анимации выстрела
@@ -109,24 +116,18 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 				})
 
 				if (weaponSlot.Weapon.Type == "firearms" && !weaponSlot.Weapon.Artillery) ||
-					weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery && !weaponSlot.Ammo.ChaseTarget {
-					// не самоводящие ракеты и кинтическоре оружие по механике полета не чем не отличаются друг от друга
-					// todo разве что у ракеты не уменьшается высота, и она взрывается при достижение макс дальности полета
-					go FlyBullet(bullet, mp)
+					weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery {
+					// прямые ракеты и кинтическоре оружие по механике полета почти не чем не отличаются друг от друга
+					// разве что ракета преследует цель и у ракеты не уменьшается высота
+					go FlyBullet(user, bullet, mp)
 				}
 
 				if weaponSlot.Weapon.Type == "laser" {
 					go FlyLaser(bullet, mp)
 				}
 
-				if weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery && weaponSlot.Ammo.ChaseTarget {
-					go FlyChaseRocket(bullet, mp)
-				}
-
-				// задержка орудия после выстрела, что бы небыло моментального возврата на корпус
-				//attackUnit.GunFreeze = true
-				//time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
-				//attackUnit.GunFreeze = false
+				// задержка орудия после выстрела, если с 1 ордуия летит много снарядов то они вылетят не одновременно
+				time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
 			}
 
 			if target.Type == "map" {
