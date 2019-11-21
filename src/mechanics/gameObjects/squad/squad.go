@@ -60,6 +60,10 @@ func (s *Squad) AddVisibleObject(newObj *VisibleObjects) {
 	s.updateVisibleObjects.Lock()
 	defer s.updateVisibleObjects.Unlock()
 
+	if s.VisibleObjects == nil {
+		return
+	}
+
 	s.VisibleObjects[newObj.TypeObject+strconv.Itoa(newObj.IDObject)] = newObj
 }
 

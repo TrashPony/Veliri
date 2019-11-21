@@ -67,7 +67,7 @@ func Move(user *player.Player, msg Message, newAction bool) {
 				}
 
 				// обнуляем маршрут что бы игрок больше не двигался
-				stopMove(moveUnit, false)
+				move.StopMove(moveUnit, false)
 
 				mp, find := maps.Maps.GetByID(moveUnit.MapID)
 				if find && user.InBaseID == 0 && !moveUnit.Evacuation {
@@ -121,107 +121,31 @@ func Move(user *player.Player, msg Message, newAction bool) {
 	}
 }
 
-func stopMove(moveUnit *unit.Unit, resetSpeed bool) {
-	if moveUnit != nil {
-		moveUnit.ActualPath = nil // останавливаем прошлое движение
-
-		if resetSpeed {
-			moveUnit.CurrentSpeed = 0
-		}
-	}
-}
-
 func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, moveUnit *unit.Unit, mp *_map.Map) {
 	moveRepeat := false
 	moveUnit.MoveChecker = true
 
 	defer func() {
-		moveUnit.ActualPathCell = nil
-
-		stopMove(moveUnit, false)
-
-		moveUnit.LastPathCell = nil
-
-		if moveUnit != nil {
-			moveUnit.MoveChecker = false
-		}
-
-		if moveRepeat {
-			msg.UnitsID = []int{moveUnit.ID}
-			Move(user, msg, false)
-		}
-
-		go SendMessage(Message{
-			Event:     "MoveStop",
-			ShortUnit: moveUnit.GetShortInfo(),
-			PathUnit: &unit.PathUnit{
-				Speed: moveUnit.CurrentSpeed,
-			},
-			IDMap: moveUnit.MapID,
-		})
+		// без обертки не сработает moveRepeat
+		MoveGlobalUnitEnd(user, moveUnit, moveRepeat, msg)
 	}()
 
 	countExit := 1
 	moveUnit.ActualPath = path
 
 	// если юнит вошел в метод с целью и флагов приследования, то это движения для атаки
-	followTargaet := false
+	followTarget := false
 	if moveUnit.GetTarget() != nil && moveUnit.GetTarget().Follow {
-		followTargaet = true
+		followTarget = true
 	}
 
 	for i, pathUnit := range *path {
-		// юнит или отряд умер
-		if user.GetSquad() == nil || moveUnit == nil || !moveUnit.OnMap || moveUnit.HP <= 0 {
+
+		startTime := time.Now()
+
+		if move.CheckExit(user, moveUnit, path, &i, &countExit, followTarget) {
 			return
 		}
-
-		if moveUnit.ActualPath == nil || moveUnit.ActualPath != path {
-			// если актуальный путь сменился то выполняем еще 1 итерацию из старого пути дабы дать время сгенерить новый путь
-			if countExit <= 0 {
-				return
-			}
-			countExit--
-
-			if moveUnit.LastPathCell == nil && len(*path)-1 >= i+countExit {
-				moveUnit.LastPathCell = (*path)[i+countExit]
-			} else {
-				if len(*path)-1 < i+countExit {
-					moveUnit.LastPathCell = (*path)[len(*path)-1]
-				}
-			}
-		}
-
-		// выходим если это атакующее движение при условиях:
-		if followTargaet {
-
-			// если цель изменилась или юнит больше не преследует
-			target := moveUnit.GetTarget()
-			if target == nil || !target.Follow {
-				return
-			}
-
-			////или цель в зоне поражения
-			//if CheckFireToTarget(moveUnit, mp, target) {
-			//	return
-			//}
-		}
-
-		go func() {
-			// горутина создана что бы оружием и тело имели актуальное положение независимо от тика сервера
-			// todo добавить тоже по х у
-			if pathUnit.Rotate > 0 {
-				msToOneAngle := pathUnit.Millisecond / pathUnit.Rotate
-				for {
-					oldRotate := moveUnit.Rotate
-					if move.RotateUnit(&moveUnit.Rotate, &pathUnit.Rotate, 1) == 0 {
-						return
-					}
-					moveUnit.GunRotate -= oldRotate - moveUnit.Rotate
-					time.Sleep(time.Millisecond * time.Duration(msToOneAngle))
-				}
-			}
-		}()
 
 		moveUnit.ActualPathCell = pathUnit
 
@@ -234,7 +158,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 		// колизии юнит - юнит
 		noCollision, collisionUnit := collisionUnitToUnit(moveUnit, pathUnit, path, i)
-
 		if !noCollision && collisionUnit != nil {
 
 			timeCount := 0
@@ -283,12 +206,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			//return
 		}
 
-		//possibleMove, _, _, _ := collisions.CheckCollisionsOnStaticMap(pathUnit.X, pathUnit.Y, pathUnit.Rotate, mp, moveUnit.Body, false)
-		//if !possibleMove {
-		//	println("collision")
-		//	return
-		//}
-
 		if moveUnit.Body.MotherShip && moveUnit.HP > 0 {
 			// находим аномалии
 			equipSlot := user.GetSquad().MatherShip.Body.FindApplicableEquip("geo_scan")
@@ -323,11 +240,6 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 			return
 		}
 
-		// если клиент отключился то останавливаем его
-		if globalGame.Clients.GetById(user.GetID()) == nil {
-			return
-		}
-
 		// входит на базы и телепортироваться в другие сектор могут ток мп (мобильные платформы)
 		coor := globalGame.HandlerDetect(moveUnit)
 		if moveUnit.Body.MotherShip && coor != nil && coor.HandlerOpen {
@@ -345,23 +257,43 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID, NeedCheckView: true})
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
-			time.Sleep(time.Duration(pathUnit.Millisecond) * time.Millisecond)
+			move.SetPosition(moveUnit, pathUnit, time.Since(startTime).Nanoseconds()/int64(time.Millisecond))
 			moveUnit.CurrentSpeed = pathUnit.Speed
 		} else {
 			moveUnit.CurrentSpeed = 0
 		}
-
-		// TODO поворот корпуса влияет и на оружие это надо учитывать, но из за тайминга все работает плохо
-		//moveUnit.GunRotate -= moveUnit.Rotate - pathUnit.Rotate
-		//moveUnit.Rotate = pathUnit.Rotate
-		moveUnit.X = int(pathUnit.X)
-		moveUnit.Y = int(pathUnit.Y)
 
 		// todo оптимизировать а то каждый раз обновлять это ужасно
 		if !user.Bot { // TODO апдейт юнитов
 			go update.Squad(user.GetSquad(), true)
 		}
 	}
+}
+
+func MoveGlobalUnitEnd(user *player.Player, moveUnit *unit.Unit, moveRepeat bool, msg Message) {
+	moveUnit.ActualPathCell = nil
+
+	move.StopMove(moveUnit, false)
+
+	moveUnit.LastPathCell = nil
+
+	if moveUnit != nil {
+		moveUnit.MoveChecker = false
+	}
+
+	if moveRepeat {
+		msg.UnitsID = []int{moveUnit.ID}
+		Move(user, msg, false)
+	}
+
+	go SendMessage(Message{
+		Event:     "MoveStop",
+		ShortUnit: moveUnit.GetShortInfo(),
+		PathUnit: &unit.PathUnit{
+			Speed: moveUnit.CurrentSpeed,
+		},
+		IDMap: moveUnit.MapID,
+	})
 }
 
 func collisionUnitToUnit(moveUnit *unit.Unit, pathUnit *unit.PathUnit, path *[]*unit.PathUnit, i int) (bool, *unit.ShortUnitInfo) {

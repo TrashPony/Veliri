@@ -5,6 +5,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/factories/maps"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"math/rand"
 	"time"
 )
@@ -13,7 +14,7 @@ import (
 func useDigger(user *player.Player, msg Message) {
 	mp, _ := maps.Maps.GetByID(user.GetSquad().MatherShip.MapID)
 
-	stopMove(user.GetSquad().MatherShip, true)
+	move.StopMove(user.GetSquad().MatherShip, true)
 
 	diggerSlot := user.GetSquad().MatherShip.Body.GetEquip(msg.TypeSlot, msg.Slot)
 	if diggerSlot == nil || diggerSlot.Equip == nil || diggerSlot.Equip.Applicable != "digger" ||

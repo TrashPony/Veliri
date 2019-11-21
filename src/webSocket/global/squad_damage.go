@@ -4,6 +4,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/db/squad/remove"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/unit"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"time"
 )
 
@@ -31,7 +32,7 @@ func SquadDamage(user *player.Player, damage int, damageUnit *unit.Unit) {
 	// если умер мс то весь отряд умирает
 	if damageUnit.Body.MotherShip && damageUnit.HP <= 0 {
 		// останавливаем движение, Обязательно! иначае в методе move, приложение упадет на всех возможных проверках
-		stopMove(damageUnit, true)
+		move.StopMove(damageUnit, true)
 		go SendMessage(Message{Event: "DeadSquad", OtherUser: user.GetShortUserInfo(true), IDMap: damageUnit.MapID})
 		// время для проигрыша анимации например
 		time.Sleep(2 * time.Second)
@@ -44,7 +45,7 @@ func SquadDamage(user *player.Player, damage int, damageUnit *unit.Unit) {
 	} else {
 		if damageUnit.HP <= 0 {
 			// останавливаем движение, Обязательно! иначае в методе move, приложение упадет на всех возможных проверках
-			stopMove(damageUnit, true)
+			move.StopMove(damageUnit, true)
 			// todo удаляем юнита и обновляем в бд
 			go SendMessage(Message{Event: "DeadUnit", IDMap: damageUnit.MapID, Unit: damageUnit})
 		}

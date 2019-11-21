@@ -34,20 +34,16 @@ func GunWorker(user *player.Player) {
 
 			if user.GetSquad().MatherShip.GetWeaponSlot() != nil && user.GetSquad().MatherShip.GetWeaponSlot().Weapon != nil {
 
-				if !user.GetSquad().MatherShip.GunFreeze {
-					go FireGun(user, user.GetSquad().MatherShip, mp)
-					RotateGun(user, user.GetSquad().MatherShip, tickTime)
-				}
+				go FireGun(user, user.GetSquad().MatherShip, mp)
+				RotateGun(user, user.GetSquad().MatherShip, tickTime)
 			}
 
 			for _, unitSlot := range user.GetSquad().MatherShip.Units {
 				if unitSlot != nil && unitSlot.Unit != nil && unitSlot.Unit.OnMap &&
 					unitSlot.Unit.GetWeaponSlot() != nil && unitSlot.Unit.GetWeaponSlot().Weapon != nil {
 
-					if !unitSlot.Unit.GunFreeze {
-						go FireGun(user, unitSlot.Unit, mp)
-						RotateGun(user, unitSlot.Unit, tickTime)
-					}
+					go FireGun(user, unitSlot.Unit, mp)
+					RotateGun(user, unitSlot.Unit, tickTime)
 				}
 			}
 		}
@@ -112,7 +108,10 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 					NeedCheckView: true,
 				})
 
-				if weaponSlot.Weapon.Type == "firearms" && !weaponSlot.Weapon.Artillery {
+				if (weaponSlot.Weapon.Type == "firearms" && !weaponSlot.Weapon.Artillery) ||
+					weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery && !weaponSlot.Ammo.ChaseTarget {
+					// не самоводящие ракеты и кинтическоре оружие по механике полета не чем не отличаются друг от друга
+					// todo разве что у ракеты не уменьшается высота, и она взрывается при достижение макс дальности полета
 					go FlyBullet(bullet, mp)
 				}
 
@@ -120,9 +119,14 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 					go FlyLaser(bullet, mp)
 				}
 
-				attackUnit.GunFreeze = true
-				time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
-				attackUnit.GunFreeze = false
+				if weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery && weaponSlot.Ammo.ChaseTarget {
+					go FlyChaseRocket(bullet, mp)
+				}
+
+				// задержка орудия после выстрела, что бы небыло моментального возврата на корпус
+				//attackUnit.GunFreeze = true
+				//time.Sleep(time.Duration(weaponSlot.Weapon.DelayFollowingFire) * time.Millisecond)
+				//attackUnit.GunFreeze = false
 			}
 
 			if target.Type == "map" {

@@ -18,6 +18,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/collisions"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/debug"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"github.com/gorilla/websocket"
 	"log"
 	"strconv"
@@ -205,14 +206,14 @@ func Reader(ws *websocket.Conn, user *player.Player) {
 
 		if msg.Event == "StopMove" {
 			for _, id := range msg.UnitsID {
-				stopMove(globalGame.Clients.GetUnitByID(id), true)
+				move.StopMove(globalGame.Clients.GetUnitByID(id), true)
 			}
 		}
 
 		if msg.Event == "StopAll" {
 			for _, id := range msg.UnitsID {
 				selectUnit := globalGame.Clients.GetUnitByID(id)
-				stopMove(selectUnit, true)
+				move.StopMove(selectUnit, true)
 				selectUnit.SetTarget(nil)
 				// todo отмена майнинга
 				// todo отмена копания

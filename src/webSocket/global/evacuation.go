@@ -24,7 +24,7 @@ func evacuationUnit(unit *unit.Unit) {
 
 	if find && !unit.Evacuation {
 
-		stopMove(unit, true)
+		move.StopMove(unit, true)
 
 		path, baseID, transport, err := move.LaunchEvacuation(unit, mp)
 		defer func() {

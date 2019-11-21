@@ -20,8 +20,7 @@ type Unit struct {
 
 	Body *detail.Body `json:"body"`
 
-	GunRotate int  `json:"gun_rotate"`
-	GunFreeze bool `json:"-"`
+	GunRotate int `json:"gun_rotate"`
 
 	Rotate int  `json:"rotate"`
 	OnMap  bool `json:"on_map"`
@@ -354,9 +353,15 @@ func (unit *Unit) GetAmmoCount() int { // по диз доку оружие в �
 }
 
 func (unit *Unit) GetWeaponSlot() *detail.BodyWeaponSlot { // по диз доку оружие в юните может быть только одно
+
+	if unit.Body == nil {
+		return nil
+	}
+
 	for _, weaponSlot := range unit.Body.Weapons {
 		return weaponSlot
 	}
+
 	return nil
 }
 

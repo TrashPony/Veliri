@@ -6,6 +6,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/coordinate"
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/player"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"time"
 )
 
@@ -40,7 +41,7 @@ func ChangeSector(user *player.Player, mapID int, coor *coordinate.Coordinate) {
 		time.Sleep(300 * time.Millisecond)
 	}
 
-	stopMove(user.GetSquad().MatherShip, true)
+	move.StopMove(user.GetSquad().MatherShip, true)
 
 	go SendMessage(Message{Event: "changeSector", IDUserSend: user.GetID(), IDMap: user.GetSquad().MatherShip.MapID, Bot: user.Bot})
 	DisconnectUser(user, true) // если только сообщение то можно не горутиной

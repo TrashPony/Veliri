@@ -59,40 +59,69 @@ func GetInventory(client *player.Player) {
 
 		// если тела нет то надо выдать игроку стандартный набор снаряжения
 		if !findMS {
-			// ms ки
-			addBodyToStorage(7, client)
+			CreateStartKit(client, false)
+		}
+	}
+}
 
-			// юниты
-			addBodyToStorage(3, client)
-			addBodyToStorage(3, client)
-			addBodyToStorage(3, client)
+func CreateStartKit(client *player.Player, full bool) {
+	// ms ки
+	addBodyToStorage(7, client)
 
-			addEquip(1, client)
-			addEquip(2, client)
-			addEquip(5, client)
-			addEquip(6, client)
-			addEquip(7, client)
-			addEquip(8, client)
+	if full {
+		addBodyToStorage(5, client)
+		addBodyToStorage(6, client)
+	}
 
-			addWeapon(1, client)
-			addWeapon(3, client)
-			addWeapon(5, client)
-			addWeapon(5, client)
+	// юниты
+	addBodyToStorage(3, client)
+	addBodyToStorage(3, client)
+	addBodyToStorage(3, client)
+	if full {
+		addBodyToStorage(1, client)
+		addBodyToStorage(4, client)
+	}
 
-			getAmmo(1, client)
-			getAmmo(3, client)
-			getAmmo(5, client)
-			getAmmo(5, client)
+	addEquip(1, client)
+	addEquip(2, client)
+	addEquip(5, client)
+	addEquip(6, client)
+	addEquip(7, client)
+	addEquip(8, client)
+	if full {
+		addEquip(3, client)
+		addEquip(4, client)
+	}
 
-			getResource(1, client) // топливо
+	addWeapon(1, client)
+	addWeapon(3, client)
+	addWeapon(5, client)
+	addWeapon(5, client)
+	if full {
+		addWeapon(1, client)
+		addWeapon(2, client)
+		addWeapon(6, client)
+	}
 
-			//getBox(1, client)
-			//getBox(2, client)
-			//getBox(3, client)
+	getAmmo(1, client)
+	getAmmo(3, client)
+	getAmmo(5, client)
+	getAmmo(5, client)
+	if full {
+		getAmmo(2, client)
+		getAmmo(4, client)
+		getAmmo(6, client)
+	}
 
-			for i := 1; i < 36; i++ {
-				//getBlueprints(i, client)
-			}
+	getResource(1, client) // топливо
+
+	if full {
+		getBox(1, client)
+		getBox(2, client)
+		getBox(3, client)
+
+		for i := 1; i < 36; i++ {
+			getBlueprints(i, client)
 		}
 	}
 }

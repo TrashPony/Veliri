@@ -110,7 +110,8 @@ func FlyBullet(bullet *unit.Bullet, gameMap *_map.Map) {
 }
 
 // самоводящиеся ракеты
-func FlyChaseRocket() {
+func FlyChaseRocket(bullet *unit.Bullet, gameMap *_map.Map) {
+	// ракеты это как снаряд прямой кинетики который преследует игрока
 	// TODO
 }
 

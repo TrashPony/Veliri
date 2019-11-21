@@ -7,6 +7,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/attack"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
+	"github.com/TrashPony/Veliri/src/mechanics/globalGame/move"
 	"time"
 )
 
@@ -34,7 +35,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 			dist := game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
 			if dist < 90 {
 
-				stopMove(moveUnit, true)
+				move.StopMove(moveUnit, true)
 
 				if moveUnit.Return {
 					go ReturnUnit(user, moveUnit)
@@ -71,7 +72,7 @@ func FollowTarget(user *player.Player, followUnit *unit.Unit, mp *_map.Map) {
 		// преследовать если оружия не достает (-50 что бы не рыпатся при любом движение цели) или если не прострельнут до цели
 		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 && !attack.CollisionWeaponRangeCollision(followUnit, mp, target) {
 			// иначе стоим стреляем до отмены приказа или пока цель не пропадет
-			stopMove(followUnit, true)
+			move.StopMove(followUnit, true)
 		} else {
 			// что бы не генерить всегда новые события проверяем, может юнит уже на пути к цели
 			dist := int(game_math.GetBetweenDist(target.X, target.Y, int(followUnit.ToX), int(followUnit.ToY)))
