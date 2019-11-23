@@ -53,6 +53,10 @@ function InventoryTable(inventoryItems) {
     let parent = "squadInventory";
     inventoryStorage.find(".nameSection").remove();
 
+    if (!inventoryItems) {
+        return
+    }
+
     for (let i in inventoryItems.slots) {
         if (inventoryItems.slots.hasOwnProperty(i) && inventoryItems.slots[i].item !== null) {
 

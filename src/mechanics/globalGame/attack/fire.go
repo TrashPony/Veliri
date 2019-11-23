@@ -26,18 +26,19 @@ func Fire(user *player.Player, attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
 	for i := 0; i < attackUnit.GetWeaponSlot().Weapon.CountFireBullet; i++ {
 
 		bullet := &unit.Bullet{
-			UUID:     uuid.NewV1().String(),
-			X:        firePos[i].X,
-			Y:        firePos[i].Y,
-			Z:        1,
-			Weapon:   attackUnit.GetWeaponSlot().Weapon,
-			Ammo:     attackUnit.GetWeaponSlot().Ammo,
-			Rotate:   attackUnit.GunRotate,
-			Speed:    attackUnit.GetWeaponSlot().Weapon.BulletSpeed + attackUnit.GetWeaponSlot().Ammo.BulletSpeed,
-			Target:   bulletTarget,
-			OwnerID:  attackUnit.OwnerID,
-			UnitID:   attackUnit.ID,
-			MaxRange: attackUnit.GetWeaponRange(),
+			UUID:      uuid.NewV1().String(),
+			X:         firePos[i].X,
+			Y:         firePos[i].Y,
+			Z:         1,
+			Weapon:    attackUnit.GetWeaponSlot().Weapon,
+			Ammo:      attackUnit.GetWeaponSlot().Ammo,
+			Rotate:    attackUnit.GunRotate,
+			Speed:     attackUnit.GetWeaponSlot().Weapon.BulletSpeed + attackUnit.GetWeaponSlot().Ammo.BulletSpeed,
+			Target:    bulletTarget,
+			OwnerID:   attackUnit.OwnerID,
+			UnitID:    attackUnit.ID,
+			MaxRange:  attackUnit.GetWeaponRange(),
+			Artillery: attackUnit.GetWeaponSlot().Weapon.Artillery,
 		}
 
 		bullets = append(bullets, bullet)

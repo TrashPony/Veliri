@@ -121,6 +121,8 @@ func CheckFireToTarget(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target)
 		return false
 	}
 
+	// TODO MIN RANGE
+
 	// смотрим что бы оружие было повернуто в необходимом положение
 	xWeapon, yWeapon := attackUnit.GetWeaponPos()
 	needRotate := game_math.GetBetweenAngle(float64(target.X), float64(target.Y), float64(xWeapon), float64(yWeapon))
@@ -135,7 +137,7 @@ func CheckFireToTarget(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target)
 
 	if needRotate == attackUnit.GunRotate && attackUnit.GetDistWeaponToTarget() <= attackUnit.GetWeaponRange() {
 		// и между оружием и целью нет колизий
-		if CollisionWeaponRangeCollision(attackUnit, mp, target) {
+		if CollisionWeaponRangeCollision(attackUnit, mp, target) && !attackUnit.GetWeaponSlot().Weapon.Artillery {
 			return false
 		}
 	} else {

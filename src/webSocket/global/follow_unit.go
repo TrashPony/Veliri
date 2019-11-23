@@ -33,7 +33,7 @@ func FollowUnit(user *player.Player, moveUnit *unit.Unit, msg Message) {
 			}
 
 			dist := game_math.GetBetweenDist(followUnit.X, followUnit.Y, int(moveUnit.X), int(moveUnit.Y))
-			if dist < 90 {
+			if dist < 120 {
 
 				move.StopMove(moveUnit, true)
 
@@ -69,8 +69,13 @@ func FollowTarget(user *player.Player, followUnit *unit.Unit, mp *_map.Map) {
 			return
 		}
 
-		// преследовать если оружия не достает (-50 что бы не рыпатся при любом движение цели) или если не прострельнут до цели
-		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 && !attack.CollisionWeaponRangeCollision(followUnit, mp, target) {
+		// TODO MIN RANGE
+
+		// преследовать если оружия не достает (-50 что бы не рыпатся при любом движение цели)
+		if followUnit.GetDistWeaponToTarget() < followUnit.GetWeaponRange()-50 &&
+			// или если не прострелить до цель, арта может прострелить все
+			(!attack.CollisionWeaponRangeCollision(followUnit, mp, target) || followUnit.GetWeaponSlot().Weapon.Artillery) {
+
 			// иначе стоим стреляем до отмены приказа или пока цель не пропадет
 			move.StopMove(followUnit, true)
 		} else {

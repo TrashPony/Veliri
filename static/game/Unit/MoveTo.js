@@ -35,6 +35,7 @@ function MoveTo(jsonData) {
 }
 
 function MoveStop(jsonData) {
+
     if (!game || !game.units) return;
 
     let unit = game.units[jsonData.short_unit.id];

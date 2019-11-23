@@ -1,29 +1,11 @@
 function FlyBullet(jsonData) {
+    let bulletState = jsonData.bullet;
     let bullet = game.bullets[jsonData.bullet.uuid];
+    let path = jsonData.path_unit;
 
     if (!bullet) {
-
-        let shadowBullet = game.bulletLayer.create(
-            jsonData.bullet.x + game.shadowXOffset * jsonData.bullet.z,
-            jsonData.bullet.y + game.shadowYOffset * jsonData.bullet.z,
-            jsonData.bullet.ammo.name);
-
-        shadowBullet.anchor.setTo(0.5, 0.5);
-        shadowBullet.scale.setTo(0.2);
-        shadowBullet.angle = jsonData.bullet.rotate;
-        shadowBullet.tint = 0x000000;
-        shadowBullet.alpha = 0.3;
-
-        bullet = game.bulletLayer.create(jsonData.bullet.x, jsonData.bullet.y, jsonData.bullet.ammo.name);
-        bullet.anchor.setTo(0.5, 0.5);
-        bullet.scale.setTo(0.2);
-        bullet.angle = jsonData.bullet.rotate;
-
-        bullet.shadow = shadowBullet;
-        game.bullets[jsonData.bullet.uuid] = bullet;
+        bullet = CreateBullet(bulletState)
     }
-
-    let path = jsonData.path_unit;
 
     game.add.tween(bullet).to(
         {x: path.x, y: path.y},
@@ -33,8 +15,8 @@ function FlyBullet(jsonData) {
 
     game.add.tween(bullet.shadow).to(
         {
-            x: path.x + game.shadowXOffset * jsonData.bullet.z,
-            y: path.y + game.shadowYOffset * jsonData.bullet.z
+            x: path.x + GetOffsetBulletShadow(bulletState.z).x,
+            y: path.y + GetOffsetBulletShadow(bulletState.z).y
         },
         path.millisecond,
         Phaser.Easing.Linear.None, true, 0
@@ -43,7 +25,36 @@ function FlyBullet(jsonData) {
     ShortDirectionRotateTween(bullet, Phaser.Math.degToRad(path.rotate), path.millisecond);
     ShortDirectionRotateTween(bullet.shadow, Phaser.Math.degToRad(path.rotate), path.millisecond);
 
-    console.log(jsonData)
+    game.add.tween(bullet.scale).to(GetBulletSize(bulletState.z), path.millisecond, Phaser.Easing.Linear.None, true, 0);
+    game.add.tween(bullet.shadow.scale).to(GetBulletSize(bulletState.z), path.millisecond, Phaser.Easing.Linear.None, true, 0);
+}
+
+function GetBulletSize(z) {
+    if (z > 1) {
+        return {
+            x: 0.2 + (z - 1) / 5,
+            y: 0.2 + (z - 1) / 5,
+        }
+    } else {
+        return {
+            x: 0.2,
+            y: 0.2,
+        }
+    }
+}
+
+function GetOffsetBulletShadow(z) {
+    if (z > 1) {
+        return {
+            x: game.shadowXOffset * (z + ((z - 1) * 5)),
+            y: game.shadowYOffset * (z + ((z - 1) * 5)),
+        }
+    } else {
+        return {
+            x: game.shadowXOffset * z,
+            y: game.shadowYOffset * z,
+        }
+    }
 }
 
 function FlyLaser(jsonData) {
@@ -70,7 +81,7 @@ function FlyLaser(jsonData) {
             fakeBullet.destroy();
             fakeBullet = null;
         })
-    }, jsonData.path_unit.millisecond);
+    }, 100);
 
     let laserOut = game.add.graphics(0, 0);
     laserOut.lineStyle(3, 0x10EDFF, 1);

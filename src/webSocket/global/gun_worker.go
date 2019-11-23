@@ -88,6 +88,15 @@ func RotateGun(user *player.Player, rotateUnit *unit.Unit, tickTime int) {
 
 func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 
+	if attackUnit.FreezeGun {
+		return
+	}
+
+	defer func() {
+		attackUnit.FreezeGun = false
+	}()
+	attackUnit.FreezeGun = true
+
 	target := attackUnit.GetTarget()
 	weaponSlot := attackUnit.GetWeaponSlot()
 
@@ -96,12 +105,7 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 		bullets, startAttack := attack.Fire(user, attackUnit)
 		if startAttack {
 
-			weaponSlot.Reload = true
-			go func() {
-				// todo weaponSlot.Weapon.ReloadTime
-				time.Sleep(time.Duration(5000) * time.Millisecond)
-				weaponSlot.Reload = false
-			}()
+			go attack.ReloadGun(attackUnit)
 
 			for _, bullet := range bullets {
 
@@ -115,10 +119,11 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 					NeedCheckView: true,
 				})
 
-				if (weaponSlot.Weapon.Type == "firearms" && !weaponSlot.Weapon.Artillery) ||
-					weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery {
+				if weaponSlot.Weapon.Type == "firearms" || (weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery) {
+
 					// прямые ракеты и кинтическоре оружие по механике полета почти не чем не отличаются друг от друга
 					// разве что ракета преследует цель и у ракеты не уменьшается высота
+
 					go FlyBullet(user, bullet, mp)
 				}
 

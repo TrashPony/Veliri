@@ -255,9 +255,9 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 
 		// оповещаем мир как двигается отряд
 		go SendMessage(Message{Event: "MoveTo", ShortUnit: moveUnit.GetShortInfo(), PathUnit: pathUnit, IDMap: moveUnit.MapID, NeedCheckView: true})
+		move.SetPosition(moveUnit, pathUnit, time.Since(startTime).Nanoseconds()/int64(time.Millisecond))
 
 		if i+1 != len(*path) { // бeз этого ифа канал будет ловить деад лок
-			move.SetPosition(moveUnit, pathUnit, time.Since(startTime).Nanoseconds()/int64(time.Millisecond))
 			moveUnit.CurrentSpeed = pathUnit.Speed
 		} else {
 			moveUnit.CurrentSpeed = 0
@@ -271,29 +271,30 @@ func MoveGlobalUnit(msg Message, user *player.Player, path *[]*unit.PathUnit, mo
 }
 
 func MoveGlobalUnitEnd(user *player.Player, moveUnit *unit.Unit, moveRepeat bool, msg Message) {
-	moveUnit.ActualPathCell = nil
-
-	move.StopMove(moveUnit, false)
-
-	moveUnit.LastPathCell = nil
-
 	if moveUnit != nil {
+
+		moveUnit.ActualPathCell = nil
+		move.StopMove(moveUnit, false)
+		moveUnit.LastPathCell = nil
+
+		if moveRepeat {
+			msg.UnitsID = []int{moveUnit.ID}
+			go Move(user, msg, false)
+		} else {
+			moveUnit.CurrentSpeed = 0
+		}
+
+		go SendMessage(Message{
+			Event:     "MoveStop",
+			ShortUnit: moveUnit.GetShortInfo(),
+			PathUnit: &unit.PathUnit{
+				Speed: moveUnit.CurrentSpeed,
+			},
+			IDMap: moveUnit.MapID,
+		})
+
 		moveUnit.MoveChecker = false
 	}
-
-	if moveRepeat {
-		msg.UnitsID = []int{moveUnit.ID}
-		Move(user, msg, false)
-	}
-
-	go SendMessage(Message{
-		Event:     "MoveStop",
-		ShortUnit: moveUnit.GetShortInfo(),
-		PathUnit: &unit.PathUnit{
-			Speed: moveUnit.CurrentSpeed,
-		},
-		IDMap: moveUnit.MapID,
-	})
 }
 
 func collisionUnitToUnit(moveUnit *unit.Unit, pathUnit *unit.PathUnit, path *[]*unit.PathUnit, i int) (bool, *unit.ShortUnitInfo) {

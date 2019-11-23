@@ -25,17 +25,19 @@ func FormationInit(user *player.Player, unitsID []int) bool {
 
 func FormationMove(user *player.Player) {
 	for {
-		for _, unitSlot := range user.GetSquad().MatherShip.Units {
+		if user.GetSquad() != nil && user.GetSquad().MatherShip != nil {
+			for _, unitSlot := range user.GetSquad().MatherShip.Units {
 
-			if unitSlot.Unit != nil && unitSlot.Unit.OnMap && unitSlot.Unit.Formation {
+				if unitSlot.Unit != nil && unitSlot.Unit.OnMap && unitSlot.Unit.Formation {
 
-				x, y := user.GetSquad().GetFormationCoordinate(unitSlot.Unit.FormationPos.X, unitSlot.Unit.FormationPos.Y)
+					x, y := user.GetSquad().GetFormationCoordinate(unitSlot.Unit.FormationPos.X, unitSlot.Unit.FormationPos.Y)
 
-				msg := Message{}
-				msg.ToX, msg.ToY = float64(x), float64(y)
-				msg.UnitsID = []int{unitSlot.Unit.ID}
+					msg := Message{}
+					msg.ToX, msg.ToY = float64(x), float64(y)
+					msg.UnitsID = []int{unitSlot.Unit.ID}
 
-				Move(user, msg, true)
+					Move(user, msg, true)
+				}
 			}
 		}
 

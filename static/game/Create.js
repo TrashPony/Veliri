@@ -60,6 +60,10 @@ function create(game) {
     game.floorOverObjectLayer = game.add.group();
     game.floorOverObjectLayer.name = "floorOverObjectLayer";
 
+    // уровень летящих по небу пулей
+    game.artilleryLayer = game.add.group();
+    game.artilleryLayer.name = "artilleryLayer";
+
     // взрывы
     game.effectsLayer = game.add.group();
     game.effectsLayer.name = "effectsLayer";
