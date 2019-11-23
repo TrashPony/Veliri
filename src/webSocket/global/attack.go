@@ -85,7 +85,7 @@ func attackToMap(user *player.Player, fireUnit *unit.Unit, mp *_map.Map, toX, to
 		// — если цель вне досягаемости отменяем прошлую команду идем до цели
 		fireUnit.FollowUnitID = 0
 		fireUnit.SetTarget(&unit.Target{Type: "map", X: toX, Y: toY, Follow: true})
-		Move(user, Message{ToX: float64(toX), ToY: float64(toY), UnitsID: []int{fireUnit.ID}}, false)
+		go FollowTarget(user, fireUnit, mp)
 	}
 }
 

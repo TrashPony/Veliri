@@ -53,6 +53,7 @@ function preload() {
     game.load.image('tank_gun_mask2', 'http://' + window.location.host + '/assets/units/weapon/tank_gun_mask2.png');
 
     // bullets
+    game.load.spritesheet('big_missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/big_missile_bullet.png', 128, 128, 41);
     game.load.image('small_missile_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/small_missile_bullet.png');
     game.load.image('piu-piu', 'http://' + window.location.host + '/assets/units/gameAmmo/piu-piu.png');
     game.load.image('ballistics_artillery_bullet', 'http://' + window.location.host + '/assets/units/gameAmmo/ballistics_artillery_bullet.png');
@@ -70,15 +71,9 @@ function preload() {
     // Effects
     game.load.spritesheet('Smoke45Frames', 'http://' + window.location.host + '/assets/fire_effects/Smoke45Frames.png', 256, 256, 45);
 
-    // Map Terrains
-    game.load.image('desert', 'http://' + window.location.host + '/assets/map/terrain/desert.png');
-    game.load.image('desert_2', 'http://' + window.location.host + '/assets/map/terrain/desert_2.png');
-
     // Map Objects
     game.load.image('crater', 'http://' + window.location.host + '/assets/map/objects/crater.png');
     game.load.image('crater_2', 'http://' + window.location.host + '/assets/map/objects/crater_2.png');
-    game.load.image('fallen_01', 'http://' + window.location.host + '/assets/map/objects/fallen_01.png');
-    game.load.image('fallen_02', 'http://' + window.location.host + '/assets/map/objects/fallen_02.png');
 
     game.load.image('evacuation_explores', 'http://' + window.location.host + '/assets/map/evacuations/evacuation_explores.png');
     game.load.image('evacuation_replics', 'http://' + window.location.host + '/assets/map/evacuations/evacuation_replics.png');

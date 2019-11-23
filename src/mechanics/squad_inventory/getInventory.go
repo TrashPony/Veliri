@@ -101,6 +101,7 @@ func CreateStartKit(client *player.Player, full bool) {
 		addWeapon(1, client)
 		addWeapon(2, client)
 		addWeapon(6, client)
+		addWeapon(4, client)
 	}
 
 	getAmmo(1, client)

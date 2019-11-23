@@ -33,7 +33,7 @@ func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
 	go SendMessage(Message{
 		Event:         "FlyLaser",
 		Bullet:        bullet,
-		PathUnit:      &unit.PathUnit{Rotate: bullet.Rotate, X: startX, Y: startY, Millisecond: 50},
+		PathUnit:      &unit.PathUnit{Rotate: int(bullet.Rotate), X: startX, Y: startY, Millisecond: 50},
 		IDMap:         gameMap.Id,
 		NeedCheckView: true,
 	})

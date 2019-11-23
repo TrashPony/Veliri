@@ -38,6 +38,7 @@ func baseInit(mp *_map.Map) {
 			}
 		}
 
+		// TODO concurrent map read and map write
 		go gameBase.ConsumptionBaseResource()
 	}
 }

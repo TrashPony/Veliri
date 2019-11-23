@@ -109,6 +109,13 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 
 			for _, bullet := range bullets {
 
+				// если юнит находится в движение то из за DelayFollowingFire, позиция сместиться
+				realPos := attackUnit.GetWeaponFirePos()[bullet.FirePos]
+				bullet.X, bullet.Y = realPos.X, realPos.Y
+
+				// влияние точности оружия на выстрел
+				attack.AccuracyWeapon(attackUnit, bullet)
+
 				// для отыгрыша анимации выстрела
 				SendMessage(Message{
 					Event:         "FireWeapon",
@@ -119,16 +126,11 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 					NeedCheckView: true,
 				})
 
-				if weaponSlot.Weapon.Type == "firearms" || (weaponSlot.Weapon.Type == "missile" && !weaponSlot.Weapon.Artillery) {
-
-					// прямые ракеты и кинтическоре оружие по механике полета почти не чем не отличаются друг от друга
-					// разве что ракета преследует цель и у ракеты не уменьшается высота
-
-					go FlyBullet(user, bullet, mp)
-				}
-
+				// лазеры особенные :)
 				if weaponSlot.Weapon.Type == "laser" {
 					go FlyLaser(bullet, mp)
+				} else {
+					go FlyBullet(user, bullet, mp)
 				}
 
 				// задержка орудия после выстрела, если с 1 ордуия летит много снарядов то они вылетят не одновременно

@@ -130,6 +130,7 @@ type Bullet struct {
 	OwnerID   int            `json:"owner_id"` // какой игрок стрелял
 	UnitID    int            `json:"unit_id"`
 	MaxRange  int            `json:"max_range"`
+	FirePos   int            `json:"-"`
 }
 
 type ShortUnitInfo struct {
