@@ -78,16 +78,24 @@ func CircleDynamicMap(xCenter, yCenter, radius int, mp *_map.Map) (bool, *dynami
 	// динамические обьекты
 	for _, x := range mp.GetCopyMapDynamicObjects() {
 		for _, sObj := range x {
-			for _, sGeoPoint := range sObj.GeoData {
-				distToObstacle := game_math.GetBetweenDist(xCenter, yCenter, sGeoPoint.X, sGeoPoint.Y)
-				if int(distToObstacle) < sGeoPoint.Radius+radius { // если растония меньше чем обра радиуса значит окружности пересекается
-					return true, sObj
-				}
+			if CircleDynamicObj(xCenter, yCenter, radius, sObj) {
+				return true, sObj
 			}
 		}
 	}
 
 	return false, nil
+}
+
+func CircleDynamicObj(xCenter, yCenter, radius int, object *dynamic_map_object.Object) bool {
+	for _, sGeoPoint := range object.GeoData {
+		distToObstacle := game_math.GetBetweenDist(xCenter, yCenter, sGeoPoint.X, sGeoPoint.Y)
+		if int(distToObstacle) < sGeoPoint.Radius+radius { // если растония меньше чем обра радиуса значит окружности пересекается
+			return true
+		}
+	}
+
+	return false
 }
 
 func CircleGlobalGeoDataMap(xCenter, yCenter, radius int, mp *_map.Map) bool {

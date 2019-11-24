@@ -128,9 +128,9 @@ func FireGun(user *player.Player, attackUnit *unit.Unit, mp *_map.Map) {
 
 				// лазеры особенные :)
 				if weaponSlot.Weapon.Type == "laser" {
-					go FlyLaser(bullet, mp)
+					go FlyLaser(bullet, mp, attackUnit)
 				} else {
-					go FlyBullet(user, bullet, mp)
+					go FlyBullet(user, bullet, mp, attackUnit)
 				}
 
 				// задержка орудия после выстрела, если с 1 ордуия летит много снарядов то они вылетят не одновременно

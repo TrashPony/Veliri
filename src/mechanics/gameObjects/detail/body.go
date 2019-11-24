@@ -244,16 +244,4 @@ type BodyWeaponSlot struct {
 	XAttach      int        `json:"x_attach"`
 	YAttach      int        `json:"y_attach"`
 	Reload       bool       `json:"reload"`
-
-	//-- боевые характиристики оружия после расчета со снаряжением
-	MinAttackRange      int    `json:"min_attack_range"`
-	MaxAttackRange      int    `json:"max_attack_range"`
-	MinDamage           int    `json:"min_damage"`
-	MaxDamage           int    `json:"max_damage"`
-	AreaCovers          int    `json:"area_covers"`
-	Artillery           bool   `json:"artillery"`
-	TypeAttack          string `json:"type_attack"`
-	EquipDamage         int    `json:"equip_damage"`
-	EquipCriticalDamage int    `json:"equip_critical_damage"`
-	Initiative          int    `json:"initiative"`
 }

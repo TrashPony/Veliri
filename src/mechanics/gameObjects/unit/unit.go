@@ -9,6 +9,7 @@ import (
 	"github.com/TrashPony/Veliri/src/mechanics/gameObjects/inventory"
 	"github.com/TrashPony/Veliri/src/mechanics/globalGame/game_math"
 	"github.com/getlantern/deepcopy"
+	"math/rand"
 	"sync"
 )
 
@@ -128,9 +129,10 @@ type Bullet struct {
 	Speed     int            `json:"speed"`
 	Target    *Target        `json:"target"`
 	OwnerID   int            `json:"owner_id"` // какой игрок стрелял
-	UnitID    int            `json:"unit_id"`
 	MaxRange  int            `json:"max_range"`
 	FirePos   int            `json:"-"`
+	// состояние юнита на момент выстрела т.к. его состояние может изменится за время полету пути, а урон считать надо
+	Unit *Unit `json:"-"`
 }
 
 type ShortUnitInfo struct {
@@ -188,6 +190,13 @@ type Slot struct {
 	NumberSlot int   `json:"number_slot"`
 }
 
+// возарщает урон простой и урон по снаряжению
+func (unit *Unit) GetDamage() (int, int) {
+	damage := rand.Intn(unit.GetWeaponSlot().Ammo.MaxDamage-unit.GetWeaponSlot().Ammo.MinDamage) + unit.GetWeaponSlot().Ammo.MinDamage
+	// todo урон по снаряжению
+	return damage, 0
+}
+
 func (unit *Unit) GetDistWeaponToTarget() int {
 	unit.targetMX.Lock()
 	defer unit.targetMX.Unlock()
@@ -203,6 +212,11 @@ func (unit *Unit) GetDistWeaponToTarget() int {
 func (unit *Unit) GetWeaponRange() int {
 	weaponSlot := unit.GetWeaponSlot()
 	return weaponSlot.Weapon.Range
+}
+
+func (unit *Unit) GetWeaponMinRange() int {
+	weaponSlot := unit.GetWeaponSlot()
+	return weaponSlot.Weapon.MinAttackRange
 }
 
 func (unit *Unit) GetTarget() *Target {
@@ -522,43 +536,6 @@ func (unit *Unit) CalculateParams() {
 		unit.WallHack = false
 
 		return
-	}
-
-	// начальные параметры оружия
-	if unit.GetWeaponSlot() != nil && unit.GetWeaponSlot().Weapon != nil {
-		unit.GetWeaponSlot().MinAttackRange = unit.GetWeaponSlot().Weapon.MinAttackRange
-		unit.GetWeaponSlot().MaxAttackRange = unit.GetWeaponSlot().Weapon.Range
-		unit.GetWeaponSlot().Artillery = unit.GetWeaponSlot().Weapon.Artillery
-		unit.GetWeaponSlot().EquipDamage = unit.GetWeaponSlot().Weapon.EquipDamage
-		unit.GetWeaponSlot().EquipCriticalDamage = unit.GetWeaponSlot().Weapon.EquipCriticalDamage
-
-		if unit.GetWeaponSlot().Ammo != nil {
-			unit.GetWeaponSlot().MinDamage = unit.GetWeaponSlot().Ammo.MinDamage
-			unit.GetWeaponSlot().MaxDamage = unit.GetWeaponSlot().Ammo.MaxDamage
-			unit.GetWeaponSlot().AreaCovers = unit.GetWeaponSlot().Ammo.AreaCovers
-			unit.GetWeaponSlot().TypeAttack = unit.GetWeaponSlot().Ammo.TypeAttack
-			unit.GetWeaponSlot().EquipDamage = unit.GetWeaponSlot().Weapon.EquipDamage + unit.GetWeaponSlot().Ammo.EquipDamage
-			unit.GetWeaponSlot().EquipCriticalDamage = unit.GetWeaponSlot().Weapon.EquipCriticalDamage + unit.GetWeaponSlot().Ammo.EquipCriticalDamage
-		} else {
-			unit.GetWeaponSlot().MinDamage = 0
-			unit.GetWeaponSlot().MaxDamage = 0
-			unit.GetWeaponSlot().AreaCovers = 0
-			unit.GetWeaponSlot().TypeAttack = ""
-		}
-
-	} else {
-		if unit.GetWeaponSlot() != nil {
-			unit.GetWeaponSlot().MinAttackRange = 0
-			unit.GetWeaponSlot().MaxAttackRange = 0
-			unit.GetWeaponSlot().MinDamage = 0
-			unit.GetWeaponSlot().MaxDamage = 0
-			unit.GetWeaponSlot().AreaCovers = 0
-			unit.GetWeaponSlot().Artillery = false
-			unit.GetWeaponSlot().TypeAttack = ""
-			unit.GetWeaponSlot().EquipDamage = 0
-			unit.GetWeaponSlot().EquipCriticalDamage = 0
-			unit.GetWeaponSlot().Initiative = 0
-		}
 	}
 
 	// начальные параметры тела

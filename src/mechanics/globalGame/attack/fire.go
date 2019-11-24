@@ -24,6 +24,12 @@ func Fire(user *player.Player, attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
 		return nil, false
 	}
 
+	bulletUnit := &unit.Unit{}
+	err = deepcopy.Copy(bulletUnit, attackUnit)
+	if err != nil {
+		return nil, false
+	}
+
 	//  создаем обьект пули, дать ему направление и начальную позицию
 	for i := 0; i < attackUnit.GetWeaponSlot().Weapon.CountFireBullet; i++ {
 		// если количество пулей больше чем точек то пули вылетают по кругу
@@ -37,7 +43,7 @@ func Fire(user *player.Player, attackUnit *unit.Unit) ([]*unit.Bullet, bool) {
 			Speed:     attackUnit.GetWeaponSlot().Weapon.BulletSpeed + attackUnit.GetWeaponSlot().Ammo.BulletSpeed,
 			Target:    bulletTarget,
 			OwnerID:   attackUnit.OwnerID,
-			UnitID:    attackUnit.ID,
+			Unit:      bulletUnit,
 			MaxRange:  attackUnit.GetWeaponRange(),
 			Artillery: attackUnit.GetWeaponSlot().Weapon.Artillery,
 		}

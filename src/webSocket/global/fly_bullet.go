@@ -16,7 +16,7 @@ import (
 const tickTime = 100
 
 // полет лазера
-func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
+func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map, attackUnit *unit.Unit) {
 	// лазер летит со скоростью света, поэтому что все нам надо это отдать стартовое ХУ и конечную ХУ
 	// конечная ХУ это координата колизии или карты куда стреляет игрок
 
@@ -29,7 +29,9 @@ func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
 		bullet.Target.Y = bullet.Y + int(float64(bullet.MaxRange)*math.Sin(radRotate))
 	}
 
-	detailFlyBullet(bullet, float64(bullet.Target.X), float64(bullet.Target.Y), radRotate, gameMap, 10, nil, &startTime)
+	detailFlyBullet(bullet, float64(bullet.Target.X), float64(bullet.Target.Y), radRotate, gameMap,
+		10, nil, &startTime, attackUnit)
+
 	go SendMessage(Message{
 		Event:         "FlyLaser",
 		Bullet:        bullet,
@@ -40,7 +42,7 @@ func FlyLaser(bullet *unit.Bullet, gameMap *_map.Map) {
 }
 
 // функция которая заставляет лететь снаряды летящие по прямой
-func FlyBullet(user *player.Player, bullet *unit.Bullet, gameMap *_map.Map) {
+func FlyBullet(user *player.Player, bullet *unit.Bullet, gameMap *_map.Map, attackUnit *unit.Unit) {
 
 	if bullet == nil {
 		return
@@ -89,7 +91,8 @@ func FlyBullet(user *player.Player, bullet *unit.Bullet, gameMap *_map.Map) {
 		stopY := realSpeed * math.Sin(radRotate)
 
 		// deltaTime - время затрачено на проверку колизий, оно существенно поэтому надо учитывать
-		percent, end, deltaTime := detailFlyBullet(bullet, float64(bullet.X)+stopX, float64(bullet.Y)+stopY, radRotate, gameMap, realSpeed, &distanceTraveled, &startTime)
+		percent, end, deltaTime := detailFlyBullet(bullet, float64(bullet.X)+stopX, float64(bullet.Y)+stopY,
+			radRotate, gameMap, realSpeed, &distanceTraveled, &startTime, attackUnit)
 
 		ms := tickTime
 		if end {
@@ -113,14 +116,10 @@ func FlyBullet(user *player.Player, bullet *unit.Bullet, gameMap *_map.Map) {
 	}
 }
 
-// артилерийские ракеты
-func FlyArtilleryRocket(bullet *unit.Bullet, gameMap *_map.Map) {
-	// TODO
-}
-
 func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *_map.Map, speed float64,
-	distanceTraveled *float64, startTime *time.Time) (int, bool, int64) {
+	distanceTraveled *float64, startTime *time.Time, attackUnit *unit.Unit) (int, bool, int64) {
 
+	// TODO вовзращать список убитых обьектов
 	startDist := game_math.GetBetweenDist(bullet.X, bullet.Y, int(toX), int(toY))
 	minDist := startDist
 	dist := startDist
@@ -153,18 +152,23 @@ func detailFlyBullet(bullet *unit.Bullet, toX, toY, radRotate float64, gameMap *
 			// проверяем колизии ток для прямо летящих снарядов или низко летящей арты
 
 			units := globalGame.Clients.GetAllShortUnits(gameMap.Id)
-			delete(units, bullet.UnitID) // стреляющий не может быть в колизии
+			delete(units, attackUnit.ID) // стреляющий не может быть в колизии
 
-			// урон по ящикам и транспортам проходит только если стрелять по ним целенаправленно
+			// урон по ящикам и транспортам проходит только если стрелять по ним целенаправленно или задело взрывом
 			collision, typeCollision, id = collisions.CircleAllCollisionCheck(int(x), int(y), 2, gameMap, units, nil)
-
 			if typeCollision != "" {
-				// todo обработка колизий
-				println(typeCollision, id)
+				// обработка урона если пуля врезалась в обьект
+				attack.CollisionDamage(typeCollision, id, bullet, gameMap)
 			}
 		}
 
-		end := checkEndPath(bullet, distanceTraveled) || collision
+		end := checkEndPath(bullet, distanceTraveled)
+		if end && !collision && bullet.Ammo.AreaCovers > 0 {
+			// обработка урона если пуля долетела до цели и имеет зону поражения
+			attack.Explosion(bullet, gameMap)
+		}
+
+		end = end || collision
 
 		if dist <= 3 || minDist < dist || end {
 

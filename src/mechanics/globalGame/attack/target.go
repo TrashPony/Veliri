@@ -64,7 +64,6 @@ func GetXYTarget(user *player.Player, tUnit *unit.Unit, target *unit.Target) boo
 	return true
 }
 
-// TODO
 func GetXYTarget2(user *player.Player, target *unit.Target, mp *_map.Map) bool {
 
 	if target == nil {
@@ -121,10 +120,14 @@ func CheckFireToTarget(attackUnit *unit.Unit, mp *_map.Map, target *unit.Target)
 		return false
 	}
 
-	// TODO MIN RANGE
+	xWeapon, yWeapon := attackUnit.GetWeaponPos()
+	// смтрим что бы цель не была в мертвой зоне
+	dist := game_math.GetBetweenDist(xWeapon, yWeapon, target.X, target.Y)
+	if int(dist) < attackUnit.GetWeaponMinRange() {
+		return false
+	}
 
 	// смотрим что бы оружие было повернуто в необходимом положение
-	xWeapon, yWeapon := attackUnit.GetWeaponPos()
 	needRotate := game_math.GetBetweenAngle(float64(target.X), float64(target.Y), float64(xWeapon), float64(yWeapon))
 	if needRotate < 0 {
 		needRotate += 360
